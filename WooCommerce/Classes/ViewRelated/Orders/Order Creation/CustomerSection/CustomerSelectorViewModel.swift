@@ -8,8 +8,8 @@ final class CustomerSelectorViewModel {
     private let onCustomerSelected: (Customer) -> Void
 
     init(siteID: Int64,
-         onCustomerSelected: @escaping (Customer) -> Void,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         onCustomerSelected: @escaping (Customer) -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.onCustomerSelected = onCustomerSelected
@@ -18,7 +18,7 @@ final class CustomerSelectorViewModel {
     /// Loads the customer list data, a lighter version of the model without all the information
     ///
     func loadCustomersListData(onCompletion: @escaping (Result<(), Error>) -> Void) {
-        ServiceLocator.stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
+        stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
                                                                                     pageNumber: Constants.firstPageNumber,
                                                                                     pageSize: Constants.pageSize, onCompletion: onCompletion))
     }

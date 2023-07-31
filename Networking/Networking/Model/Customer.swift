@@ -4,7 +4,7 @@ import Codegen
 /// Represents a Customer entity:
 /// https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 ///
-public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The siteID for the customer
     public let siteID: Int64
 

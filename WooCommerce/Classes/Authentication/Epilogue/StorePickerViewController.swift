@@ -170,7 +170,6 @@ final class StorePickerViewController: UIViewController {
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let isStoreCreationEnabled: Bool
 
     init(configuration: StorePickerConfiguration,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
@@ -181,7 +180,6 @@ final class StorePickerViewController: UIViewController {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.viewModel = StorePickerViewModel(configuration: configuration)
-        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -340,8 +338,7 @@ private extension StorePickerViewController {
                 }
                 return false
             }()
-            return (appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)) && hasEmptyStores
+            return appleIDCredentialChecker.hasAppleUserID() && hasEmptyStores
         }()
         if isCloseAccountButtonVisible {
             let closeAccountAction = UIAlertAction(title: Localization.ActionMenu.closeAccount, style: .destructive) { [weak self] _ in
@@ -684,13 +681,8 @@ private extension StorePickerViewController {
     /// or the add store action sheet for simplified login.
     ///
     @IBAction private func addStoreWasPressed() {
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationM2) {
-            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-            presentAddStoreActionSheet(from: addStoreButton)
-        } else {
-            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-            presentSiteDiscovery()
-        }
+        ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+        presentAddStoreActionSheet(from: addStoreButton)
     }
 
     /// Proceeds with the Logout Flow.

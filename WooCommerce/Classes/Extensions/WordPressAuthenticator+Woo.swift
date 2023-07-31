@@ -7,7 +7,6 @@ extension WordPressAuthenticator {
     static func initializeWithCustomConfigs(dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
-        let isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
@@ -30,7 +29,7 @@ extension WordPressAuthenticator {
                                                                 isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen:
                                                                     isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen,
                                                                 enableWPComLoginOnlyInPrologue: false,
-                                                                enableSiteCreation: isStoreCreationEnabled,
+                                                                enableSiteCreation: true,
                                                                 enableSocialLogin: true,
                                                                 emphasizeEmailForWPComPassword: true,
                                                                 wpcomPasswordInstructions:

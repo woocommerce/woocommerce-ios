@@ -68,15 +68,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayBadge
 
-    /// Store creation milestone 2. https://wp.me/pe5sF9-I3
-    ///
-    case storeCreationM2
-
-    /// Whether in-app purchases are enabled for store creation milestone 2 behind `storeCreationM2` feature flag.
-    /// If disabled, purchases are backed by `WebPurchasesForWPComPlans` for checkout in a webview.
-    ///
-    case storeCreationM2WithInAppPurchasesEnabled
-
     /// Store creation milestone 3 - profiler questions
     ///
     case storeCreationM3Profiler

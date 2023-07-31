@@ -1,1 +1,0 @@
-Coupon management just became a breeze. You can now select multiple coupons when creating an order. It's also possible to add discounts to products when creating an order. Houd updates aan om te blijven genieten van de voortdurende verbeteringen en nieuwste functies van WooCommerce!

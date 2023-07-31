@@ -1,1 +1,0 @@
-Kupon yönetimi artık çok kolay. Artık bir sipariş oluştururken birden fazla kupon seçebilirsiniz. Ayrıca, sipariş oluştururken ürünlere indirimler de eklenebilir. WooCommerce'in sürekli iyileştirmelerinden ve en yeni özelliklerinden yararlanmak için güncellemelerinizi açık tutun!

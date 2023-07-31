@@ -2,7 +2,7 @@
 
 14.8
 -----
-
+- [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 
 14.7
 -----

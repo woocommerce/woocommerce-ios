@@ -2,7 +2,7 @@
 
 14.8
 -----
-
+- [*] Store creation: Improvements to the Upgrades screen accessibility [https://github.com/woocommerce/woocommerce-ios/pull/10363]
 
 14.7
 -----

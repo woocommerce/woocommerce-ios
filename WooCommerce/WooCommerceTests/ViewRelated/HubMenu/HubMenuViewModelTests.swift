@@ -334,7 +334,6 @@ final class HubMenuViewModelTests: XCTestCase {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
                                          stores: stores)
         viewModel.setupMenuElements()
 
@@ -352,7 +351,6 @@ final class HubMenuViewModelTests: XCTestCase {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService,
                                          stores: stores)
         viewModel.setupMenuElements()
 

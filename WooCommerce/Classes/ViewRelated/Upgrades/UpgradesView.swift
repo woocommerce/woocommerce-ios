@@ -81,7 +81,7 @@ struct UpgradesView: View {
                         dismiss()
                     })
 
-                    CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
+                    CurrentPlanDetailsView(expirationDate: subscriptionsViewModel.formattedPlanExpirationDate,
                                            daysLeft: subscriptionsViewModel.planDaysLeft)
                 }
                 .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)

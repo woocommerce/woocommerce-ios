@@ -518,9 +518,10 @@ final class EditableOrderViewModel: ObservableObject {
         })
     }
 
-    func addCustomerToOrder(customer: Customer) {
+    func addCustomerAddressToOrder(customer: Customer) {
         let input = Self.createAddressesInputIfPossible(billingAddress: customer.billing, shippingAddress: customer.shipping)
         orderSynchronizer.setAddresses.send(input)
+        resetAddressForm()
     }
 
     /// Updates the order creation draft with the current set customer note.

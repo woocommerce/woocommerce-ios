@@ -19,7 +19,7 @@ struct OrderCustomerSection: View {
                 NavigationView {
                     if viewModel.shouldShowCustomerSelectorScreen {
                         CustomerSelectorView(siteID: viewModel.siteID) { customer in
-                            viewModel.addCustomerToOrder(customer: customer)
+                            viewModel.addCustomerAddressToOrder(customer: customer)
                         }
                     } else {
                         EditOrderAddressForm(dismiss: {

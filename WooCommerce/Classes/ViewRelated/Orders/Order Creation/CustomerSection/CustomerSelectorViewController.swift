@@ -26,7 +26,6 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
     init(siteID: Int64,
          onCustomerSelected: @escaping (Customer) -> Void) {
-
         viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
         self.onCustomerSelected = onCustomerSelected
@@ -49,13 +48,11 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        ServiceLocator.stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
-                                                                                    pageNumber: Constants.firstPageNumber,
-                                                                                    pageSize: Constants.pageSize, onCompletion: { [weak self] result in
+        viewModel.loadCustomersListData(onCompletion: { [weak self] result in
             self?.removeGhostContent()
             self?.addSearchViewController()
             self?.configureActivityIndicator()
-        }))
+        })
     }
 
     func configureNavigation() {
@@ -128,10 +125,5 @@ private extension CustomerSelectorViewController {
         static let genericAddCustomerError = NSLocalizedString("Failed to fetch the customer data. Please try again.",
                                                                 comment: "Error message in the Add Customer to order screen " +
                                                                 "when getting the customer information")
-    }
-
-    enum Constants {
-        static let pageSize = 25
-        static let firstPageNumber = 1
     }
 }

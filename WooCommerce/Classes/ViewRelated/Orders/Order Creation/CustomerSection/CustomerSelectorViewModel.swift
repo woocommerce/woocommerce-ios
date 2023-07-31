@@ -15,6 +15,16 @@ final class CustomerSelectorViewModel {
         self.onCustomerSelected = onCustomerSelected
     }
 
+    /// Loads the customer list data, a lighter version of the model without all the information
+    ///
+    func loadCustomersListData(onCompletion: @escaping (Result<(), Error>) -> Void) {
+        ServiceLocator.stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
+                                                                                    pageNumber: Constants.firstPageNumber,
+                                                                                    pageSize: Constants.pageSize, onCompletion: onCompletion))
+    }
+
+    /// Loads the whole customer information and calls the completion closures
+    ///
     func onCustomerSelected(_ customer: Customer, onCompletion: @escaping (Result<(), Error>) -> Void) {
         guard customer.customerID != 0 else {
             // The customer is not registered, we won't get any further information. Dismiss and return data
@@ -34,5 +44,12 @@ final class CustomerSelectorViewModel {
                 break
             }
         }))
+    }
+}
+
+private extension CustomerSelectorViewModel {
+    enum Constants {
+        static let pageSize = 25
+        static let firstPageNumber = 1
     }
 }

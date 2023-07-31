@@ -111,6 +111,9 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let canBlaze = try optionsContainer.decode(Bool.self, forKey: .canBlaze)
         let isPublic = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .isPublic) ?? false
 
+        let planContainer = try siteContainer.nestedContainer(keyedBy: PlanInfo.self, forKey: .plan)
+        let plan = try planContainer.decode(String.self, forKey: .slug)
+
         self.init(siteID: siteID,
                   name: name,
                   description: description,
@@ -119,7 +122,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   loginURL: loginURL,
                   isSiteOwner: isSiteOwner,
                   frameNonce: frameNonce,
-                  plan: String(), // Not created on init. Added in supplementary API request.
+                  plan: plan,
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
@@ -209,6 +212,10 @@ private extension Site {
         case isJetpackThePluginInstalled = "jetpack"
         case isJetpackConnected          = "jetpack_connection"
         case wasEcommerceTrial           = "was_ecommerce_trial"
+    }
+
+    enum PlanInfo: String, CodingKey {
+        case slug = "product_slug"
     }
 
     enum CapabilitiesKeys: String, CodingKey {

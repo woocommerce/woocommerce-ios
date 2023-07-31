@@ -64,9 +64,8 @@ final class StoreCreationCoordinator: Coordinator {
     func start() {
         Task { @MainActor in
             let storeCreationNavigationController = WooNavigationController()
-            await presentStoreCreation(viewController: storeCreationNavigationController)
-
             startStoreCreation(from: storeCreationNavigationController)
+            await presentStoreCreation(viewController: storeCreationNavigationController)
         }
     }
 }

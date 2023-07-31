@@ -81,48 +81,11 @@ final class StoreCreationCoordinator: Coordinator {
     }
 
     func start() {
-        guard featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
-            return startStoreCreationM1()
-        }
         Task { @MainActor in
-            do {
-                let inProgressView = createIAPEligibilityInProgressView()
-                let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
-                await presentStoreCreation(viewController: storeCreationNavigationController)
+            let storeCreationNavigationController = WooNavigationController()
+            await presentStoreCreation(viewController: storeCreationNavigationController)
 
-                guard await purchasesManager.inAppPurchasesAreSupported() else {
-                    throw PlanPurchaseError.iapNotSupported
-                }
-                let plans = try await purchasesManager.fetchPlans()
-                let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
-                Constants.iapPlanIdentifier: Constants.webPlanIdentifier
-                guard let plan = plans.first,
-                      plan.id == expectedPlanIdentifier else {
-                    throw PlanPurchaseError.noMatchingProduct
-                }
-                guard try await purchasesManager.userIsEntitledToPlan(with: plan.id) == false else {
-                    throw PlanPurchaseError.productNotEligible
-                }
-
-                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: plan)
-            } catch let error as PlanPurchaseError {
-                let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
-                navigationController.dismiss(animated: true) { [weak self] in
-                    guard let self else { return }
-                    if isWebviewFallbackAllowed {
-                        self.startStoreCreationM1()
-                    } else {
-                        self.showIneligibleUI(from: self.navigationController, error: error)
-                    }
-                }
-            } catch {
-                navigationController.dismiss(animated: true) { [weak self] in
-                    guard let self else { return }
-
-                    // Show error alert
-                    self.showStoreCreationDefaultErrorAlert(from: self.navigationController)
-                }
-            }
+            startStoreCreation(from: storeCreationNavigationController)
         }
     }
 }
@@ -147,7 +110,7 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
+    func startStoreCreation(from navigationController: UINavigationController) {
         navigationController.navigationBar.prefersLargeTitles = true
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true

@@ -91,23 +91,6 @@ final class StoreCreationCoordinator: Coordinator {
 }
 
 private extension StoreCreationCoordinator {
-    func startStoreCreationM1() {
-        observeSiteURLsFromStoreCreation()
-
-        let viewModel = StoreCreationWebViewModel { [weak self] result in
-            self?.handleStoreCreationResult(result)
-        }
-        possibleSiteURLsFromStoreCreation = []
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        webViewController.addCloseNavigationBarButton(target: self, action: #selector(handleStoreCreationCloseAction))
-        let webNavigationController = WooNavigationController(rootViewController: webViewController)
-        // Disables interactive dismissal of the store creation modal.
-        webNavigationController.isModalInPresentation = true
-
-        Task { @MainActor in
-            await presentStoreCreation(viewController: webNavigationController)
-        }
-    }
 
     @MainActor
     func startStoreCreation(from navigationController: UINavigationController) {
@@ -164,36 +147,6 @@ private extension StoreCreationCoordinator {
                 }
             }
         }
-    }
-
-    @MainActor
-    func createIAPEligibilityInProgressView() -> UIViewController {
-        InProgressViewController(viewProperties:
-                .init(title: Localization.WaitingForIAPEligibility.title,
-                      message: Localization.WaitingForIAPEligibility.message),
-                                 hidesNavigationBar: true)
-    }
-
-    /// Shows UI when the user is not eligible for store creation.
-    func showIneligibleUI(from navigationController: UINavigationController, error: Error) {
-        let message: String
-        switch error {
-        case PlanPurchaseError.iapNotSupported:
-            message = Localization.IAPIneligibleAlert.notSupportedMessage
-        case PlanPurchaseError.productNotEligible:
-            message = Localization.IAPIneligibleAlert.productNotEligibleMessage
-        default:
-            message = Localization.IAPIneligibleAlert.defaultMessage
-        }
-
-        let alert = UIAlertController(title: nil,
-                                      message: message,
-                                      preferredStyle: .alert)
-        alert.view.tintColor = .text
-
-        alert.addCancelActionWithTitle(Localization.IAPIneligibleAlert.dismissActionTitle) { _ in }
-
-        navigationController.present(alert, animated: true)
     }
 
     /// Shows an alert with default error message

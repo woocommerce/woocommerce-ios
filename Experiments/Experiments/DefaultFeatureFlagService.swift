@@ -98,7 +98,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         default:
             return true
         }

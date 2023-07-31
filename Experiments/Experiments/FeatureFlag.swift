@@ -68,10 +68,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayBadge
 
-    /// Store creation MVP.
-    ///
-    case storeCreationMVP
-
     /// Store creation milestone 2. https://wp.me/pe5sF9-I3
     ///
     case storeCreationM2

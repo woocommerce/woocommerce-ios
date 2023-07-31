@@ -625,8 +625,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           stores: stores,
                                           authenticationManager: authenticationManager,
                                           pushNotesManager: pushNotesManager,
-                                          featureFlagService: featureFlagService,
-                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+                                          featureFlagService: featureFlagService)
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
@@ -669,8 +668,7 @@ final class AppCoordinatorTests: XCTestCase {
                                           stores: stores,
                                           authenticationManager: authenticationManager,
                                           pushNotesManager: pushNotesManager,
-                                          featureFlagService: featureFlagService,
-                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+                                          featureFlagService: featureFlagService)
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
@@ -707,7 +705,6 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
                          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
@@ -719,7 +716,6 @@ private extension AppCoordinatorTests {
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
-                              purchasesManager: purchasesManager ?? nil,
                               upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
     }
 }

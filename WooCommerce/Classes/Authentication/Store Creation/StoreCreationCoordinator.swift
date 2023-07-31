@@ -44,7 +44,6 @@ final class StoreCreationCoordinator: Coordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController

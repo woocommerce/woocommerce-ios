@@ -24,7 +24,6 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
     private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -47,7 +46,6 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
         self.window = window
         self.tabBarController = {
@@ -65,7 +63,6 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
-        self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
@@ -456,7 +453,6 @@ private extension AppCoordinator {
                                                    storageManager: storageManager,
                                                    stores: stores,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: purchasesManager,
                                                    pushNotesManager: pushNotesManager)
         self.storeCreationCoordinator = coordinator
         coordinator.start()

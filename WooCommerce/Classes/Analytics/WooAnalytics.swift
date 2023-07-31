@@ -243,6 +243,7 @@ private extension WooAnalytics {
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
+        updatedProperties[PropertyKeys.planKey] = site?.plan
         return updatedProperties
     }
 
@@ -286,5 +287,6 @@ private extension WooAnalytics {
         static let blogIDKey            = "blog_id"
         static let wpcomStoreKey        = "is_wpcom_store"
         static let ecommerceTrialKey    = "was_ecommerce_trial"
+        static let planKey              = "plan"
     }
 }

@@ -512,62 +512,6 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showDomainSelector(from navigationController: UINavigationController,
-                            storeName: String,
-                            category: StoreCreationCategoryAnswer?,
-                            sellingStatus: StoreCreationSellingStatusAnswer?,
-                            countryCode: SiteAddress.CountryCode?,
-                            planToPurchase: WPComPlanProduct) {
-        let domainSelector = FreeDomainSelectorHostingController(viewModel:
-                .init(title: Localization.domainSelectorTitle,
-                      subtitle: Localization.domainSelectorSubtitle,
-                      initialSearchTerm: storeName,
-                      dataProvider: FreeDomainSelectorDataProvider()),
-                                                                 onDomainSelection: { [weak self] domain in
-            guard let self else { return }
-            await self.createStoreAndContinueToStoreSummary(from: navigationController,
-                                                            name: storeName,
-                                                            category: category,
-                                                            sellingStatus: sellingStatus,
-                                                            countryCode: countryCode,
-                                                            flow: .onboarding(domain: domain.name),
-                                                            planToPurchase: planToPurchase)
-        }, onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        })
-        navigationController.pushViewController(domainSelector, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))
-    }
-
-    @MainActor
-    func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController,
-                                              name: String,
-                                              category: StoreCreationCategoryAnswer?,
-                                              sellingStatus: StoreCreationSellingStatusAnswer?,
-                                              countryCode: SiteAddress.CountryCode?,
-                                              flow: SiteCreationFlow,
-                                              planToPurchase: WPComPlanProduct) async {
-        let result = await createStore(name: name, flow: flow)
-        analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
-                                                                       sellingStatus: sellingStatus,
-                                                                       countryCode: countryCode))
-        switch result {
-        case .success(let siteResult):
-            showStoreSummary(from: navigationController,
-                             result: siteResult,
-                             category: category,
-                             countryCode: countryCode,
-                             planToPurchase: planToPurchase)
-        case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
-                                                                     error: error,
-                                                                     flow: .native,
-                                                                     isFreeTrial: false))
-            showStoreCreationErrorAlert(from: navigationController, error: error)
-        }
-    }
-
-    @MainActor
     func createStore(name: String, flow: SiteCreationFlow) async -> Result<SiteCreationResult, SiteCreationError> {
         await withCheckedContinuation { continuation in
             stores.dispatch(SiteAction.createSite(name: name, flow: flow) { result in

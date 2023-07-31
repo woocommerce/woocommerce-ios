@@ -81,7 +81,7 @@ extension Storage.Customer: ReadOnlyConvertible {
 
         billingFirstName = firstName
         billingLastName = lastName
-        shippingEmail = email
+        billingEmail = email
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`

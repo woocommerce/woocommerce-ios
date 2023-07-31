@@ -23,7 +23,6 @@ struct LocalNotification {
         case oneDayBeforeFreeTrialExpires(siteID: Int64, expiryDate: Date)
         case oneDayAfterFreeTrialExpires(siteID: Int64)
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
-        case twentyFourHoursAfterFreeTrialSubscribed(siteID: Int64)
         case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
         case threeDaysAfterStillExploring(siteID: Int64)
 
@@ -39,8 +38,6 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)"
             case let .sixHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
-            case let .twentyFourHoursAfterFreeTrialSubscribed(siteID):
-                return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)"
             case let .threeDaysAfterStillExploring(siteID):
@@ -53,7 +50,6 @@ struct LocalNotification {
                 static let oneDayBeforeFreeTrialExpires = "one_day_before_free_trial_expires"
                 static let oneDayAfterFreeTrialExpires = "one_day_after_free_trial_expires"
                 static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
-                static let twentyFourHoursAfterFreeTrialSubscribed = "twenty_four_hours_after_free_trial_subscribed"
                 static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
                 static let threeDaysAfterStillExploring = "three_days_after_still_exploring"
             }
@@ -68,8 +64,6 @@ struct LocalNotification {
                 return Identifier.Prefix.oneDayAfterFreeTrialExpires
             } else if identifier.hasPrefix(Identifier.Prefix.sixHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
-            } else if identifier.hasPrefix(Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed) {
-                return Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.threeDaysAfterStillExploring) {
@@ -151,10 +145,6 @@ extension LocalNotification {
             title = Localization.SixHoursAfterFreeTrialSubscribed.title
             body = Localization.SixHoursAfterFreeTrialSubscribed.body
 
-        case .twentyFourHoursAfterFreeTrialSubscribed:
-            title = Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
-            body = Localization.TwentyFourHoursAfterFreeTrialSubscribed.body
-
         case .freeTrialSurvey24hAfterFreeTrialSubscribed:
             title = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.title
             body = Localization.FreeTrialSurvey24hAfterFreeTrialSubscribed.body
@@ -226,17 +216,6 @@ extension LocalNotification {
         }
 
         enum SixHoursAfterFreeTrialSubscribed {
-            static let title = NSLocalizedString(
-                "🌟 Keep your business going!",
-                comment: "Title of the local notification to remind the user to purchase a plan."
-            )
-            static let body = NSLocalizedString(
-                "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best.",
-                comment: "Message on the local notification to remind the user to purchase a plan."
-            )
-        }
-
-        enum TwentyFourHoursAfterFreeTrialSubscribed {
             static let title = NSLocalizedString(
                 "🌟 Keep your business going!",
                 comment: "Title of the local notification to remind the user to purchase a plan."

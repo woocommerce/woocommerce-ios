@@ -7,7 +7,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
-    private let isStoreCreationMVPEnabled: Bool
     private let isStoreCreationM2Enabled: Bool
     private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
     private let isStoreCreationM3ProfilerEnabled: Bool
@@ -27,7 +26,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isShareProductAIEnabled: Bool
     private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let isFreeTrialInAppPurchasesUpgradeM2: Bool
-    private let isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
 
     init(isInboxOn: Bool = false,
@@ -35,7 +33,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false,
-         isStoreCreationMVPEnabled: Bool = true,
          isStoreCreationM2Enabled: Bool = false,
          isStoreCreationM2WithInAppPurchasesEnabled: Bool = false,
          isStoreCreationM3ProfilerEnabled: Bool = false,
@@ -55,14 +52,12 @@ struct MockFeatureFlagService: FeatureFlagService {
          isShareProductAIEnabled: Bool = false,
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
          isFreeTrialInAppPurchasesUpgradeM2: Bool = false,
-         isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
-        self.isStoreCreationMVPEnabled = isStoreCreationMVPEnabled
         self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
         self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
         self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
@@ -82,7 +77,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
-        self.isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled = isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
     }
 
@@ -98,8 +92,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return shippingLabelsOnboardingM1
         case .loginPrologueOnboarding:
             return isLoginPrologueOnboardingEnabled
-        case .storeCreationMVP:
-            return isStoreCreationMVPEnabled
         case .storeCreationM2:
             return isStoreCreationM2Enabled
         case .storeCreationM2WithInAppPurchasesEnabled:
@@ -136,8 +128,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isJustInTimeMessagesOnDashboardEnabled
         case .freeTrialInAppPurchasesUpgradeM2:
             return isFreeTrialInAppPurchasesUpgradeM2
-        case .freeTrialSurvey24hAfterFreeTrialSubscribed:
-            return isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         default:

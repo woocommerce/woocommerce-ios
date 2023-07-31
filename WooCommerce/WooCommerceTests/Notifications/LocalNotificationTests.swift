@@ -90,19 +90,6 @@ final class LocalNotificationTests: XCTestCase {
         XCTAssertNil(notification.actions)
     }
 
-    func test_twentyFourHoursAfterFreeTrialSubscribed_scenario_returns_correct_notification_contents() throws {
-        // Given
-        let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: 123)
-        let notification = LocalNotification(scenario: scenario)
-
-        // Then
-        let expectedTitle = LocalNotification.Localization.TwentyFourHoursAfterFreeTrialSubscribed.title
-        let expectedBody = LocalNotification.Localization.TwentyFourHoursAfterFreeTrialSubscribed.body
-        assertEqual(expectedTitle, notification.title)
-        assertEqual(expectedBody, notification.body)
-        XCTAssertNil(notification.actions)
-    }
-
     func test_freeTrialSurvey24hAfterFreeTrialSubscribed_scenario_returns_correct_notification_contents() throws {
         // Given
         let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: 123)

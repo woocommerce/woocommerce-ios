@@ -1,7 +1,1 @@
-Vi är tillbaka med några nya uppdateringar som kommer att förbättra din appupplevelse.
-
-Till att börja med har vi gjort delningsknappen mer användarvänlig. För ökad upptäckbarhet visas den nu som text istället för som en ikon.
-Vi har också åtgärdat en irriterande bugg som gjorde det omöjligt att lägga till nya anteckningar till en beställning. Du bör nu kunna lägga till anteckningar utan problem.
-Slutligen har vi även uppdaterat butiksskapandeprocessens timeout-vy. Om webbplatskontrollen tar längre tid än förväntat har du nu möjlighet att avbryta och försöka igen.
-
-Som alltid finns vi här för att göra din appresa smidigare och mer njutbar. Tack för att du fortsätter använda våra tjänster.
+Det har blivit mycket enklare att hantera rabattkoder. Du kan nu välja flera rabattkoder när du skapar en beställning. Det är också möjligt att lägga till rabattkoder till produkter när du skapar en beställning. Ha uppdateringar på för att fortsätta ta del av WooCommerces kontinuerliga förbättringar och senaste funktioner.

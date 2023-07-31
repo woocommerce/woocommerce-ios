@@ -280,7 +280,7 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
-            var rows: [Row] = []
+            var rows: [Row] = [.shippingZones]
 
             let site = stores.sessionManager.defaultSite
             if site?.isJetpackCPConnected == true ||
@@ -355,7 +355,6 @@ private extension SettingsViewModel {
                 return nil
             }
             guard appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
                     || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
                 return nil
             }

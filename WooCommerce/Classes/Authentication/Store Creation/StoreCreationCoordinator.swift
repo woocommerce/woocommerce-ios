@@ -597,43 +597,6 @@ private extension StoreCreationCoordinator {
     }
 
     enum Localization {
-        static var domainSelectorTitle: String {
-            NSLocalizedString("Choose a domain", comment: "Title of the domain selector in the store creation flow.")
-        }
-        static var domainSelectorSubtitle: String {
-            NSLocalizedString(
-                "This is where people will find you on the Internet. You can add another domain later.",
-                comment: "Subtitle of the domain selector in the store creation flow.")
-        }
-
-        enum WaitingForIAPEligibility {
-            static let title = NSLocalizedString(
-                "We are getting ready for your store creation",
-                comment: "Title of the in-progress view when waiting for the in-app purchase status before the store creation flow."
-            )
-            static let message = NSLocalizedString(
-                "Please remain connected.",
-                comment: "Message of the in-progress view when waiting for the in-app purchase status before the store creation flow."
-            )
-        }
-
-        enum IAPIneligibleAlert {
-            static let notSupportedMessage = NSLocalizedString(
-                "We're sorry, but store creation is not currently available in your country in the app.",
-                comment: "Message of the alert when the user cannot create a store because their App Store country is not supported."
-            )
-            static let productNotEligibleMessage = NSLocalizedString(
-                "Sorry, but you can only create one store. Your account is already associated with an active store.",
-                comment: "Message of the alert when the user cannot create a store because they already created one before."
-            )
-            static let defaultMessage = NSLocalizedString(
-                "We're sorry, but store creation is not currently available in the app.",
-                comment: "Message of the alert when the user cannot create a store for some reason."
-            )
-            static let dismissActionTitle = NSLocalizedString("OK",
-                                                             comment: "Button title to cancel the alert when the user cannot create a store.")
-        }
-
         enum DiscardChangesAlert {
             static let title = NSLocalizedString("Do you want to leave?",
                                                  comment: "Title of the alert when the user dismisses the store creation flow.")
@@ -658,23 +621,6 @@ private extension StoreCreationCoordinator {
             )
         }
 
-        enum PlanPurchaseErrorAlert {
-            static let title = NSLocalizedString("Issue purchasing the plan",
-                                                 comment: "Title of the alert when the WPCOM plan cannot be purchased in the store creation flow.")
-            static let defaultErrorMessage = NSLocalizedString(
-                "Please try again and make sure you are signed in to an App Store account eligible for purchase.",
-                comment: "Message of the alert when the WPCOM plan cannot be purchased in the store creation flow."
-            )
-            static let webPurchaseErrorMessage = NSLocalizedString(
-                "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress.",
-                comment: "Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow."
-            )
-            static let cancelActionTitle = NSLocalizedString(
-                "OK",
-                comment: "Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow."
-            )
-        }
-
         enum WaitingForJetpackSite {
             static let title = NSLocalizedString(
                 "Creating your store",
@@ -685,24 +631,10 @@ private extension StoreCreationCoordinator {
     }
 
     enum Constants {
-        // TODO: 8108 - update the identifier to production value when it's ready
-        static let iapPlanIdentifier = "debug.woocommerce.ecommerce.monthly"
-        static let webPlanIdentifier = "1021"
-
         /// Local notification scenarios during store creation.
         enum LocalNotificationScenario {
             static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
         }
-    }
-
-    /// Error scenarios when purchasing a WPCOM plan.
-    enum PlanPurchaseError: Error {
-        /// The user is not eligible for In-App Purchases.
-        case iapNotSupported
-        /// There is no matching product to purchase.
-        case noMatchingProduct
-        /// The user is already entitled to the product, and cannot purchase it anymore.
-        case productNotEligible
     }
 }
 

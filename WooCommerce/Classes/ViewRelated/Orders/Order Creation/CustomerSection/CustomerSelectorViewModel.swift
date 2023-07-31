@@ -15,11 +15,11 @@ final class CustomerSelectorViewModel {
         self.onCustomerSelected = onCustomerSelected
     }
 
-    func onCustomerSelected(_ customer: Customer, onCompletion: @escaping () -> Void) {
+    func onCustomerSelected(_ customer: Customer, onCompletion: @escaping (Result<(), Error>) -> Void) {
         guard customer.customerID != 0 else {
             // The customer is not registered, we won't get any further information. Dismiss and return data
             onCustomerSelected(customer)
-            onCompletion()
+            onCompletion(.success(()))
 
             return
         }
@@ -28,8 +28,9 @@ final class CustomerSelectorViewModel {
             switch result {
             case .success(let customer):
                 self?.onCustomerSelected(customer)
-                onCompletion()
-            case .failure(_):
+                onCompletion(.success(()))
+            case .failure(let error):
+                onCompletion(.failure(error))
                 break
             }
         }))

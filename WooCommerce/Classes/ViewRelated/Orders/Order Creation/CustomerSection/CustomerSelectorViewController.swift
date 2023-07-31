@@ -11,6 +11,10 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
 
+    /// Notice presentation handler
+    ///
+    private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
+
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
         indicator.hidesWhenStopped = true
@@ -96,10 +100,21 @@ private extension CustomerSelectorViewController {
 
     func onCustomerTapped(_ customer: Customer) {
         activityIndicator.startAnimating()
-        viewModel.onCustomerSelected(customer, onCompletion: { [weak self] in
+        viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
             self?.activityIndicator.stopAnimating()
-            self?.dismiss(animated: true)
+
+            switch result {
+            case .success(()):
+                self?.dismiss(animated: true)
+            case .failure(_):
+                self?.showErrorNotice()
+            }
         })
+    }
+
+    func showErrorNotice() {
+        noticePresenter.presentingViewController = self
+        noticePresenter.enqueue(notice: Notice(title: Localization.genericAddCustomerError, feedbackType: .error))
     }
 }
 
@@ -109,6 +124,10 @@ private extension CustomerSelectorViewController {
             "Add customer details",
             comment: "Title of the order customer selection screen."
         )
+
+        static let genericAddCustomerError = NSLocalizedString("Failed to fetch the customer data. Please try again.",
+                                                                comment: "Error message in the Add Customer to order screen " +
+                                                                "when getting the customer information")
     }
 
     enum Constants {

@@ -83,6 +83,7 @@ private extension CustomerSelectorViewController {
     @objc func presentNewCustomerDetailsFlow() {
         let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
                                                             self?.dismiss(animated: true, completion: { [weak self] in
+                                                                // Dismiss this view too
                                                                 self?.dismiss(animated: true)
                                                             })
                                                         },

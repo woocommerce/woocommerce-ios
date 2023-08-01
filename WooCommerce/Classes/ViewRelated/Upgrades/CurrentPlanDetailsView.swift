@@ -21,7 +21,7 @@ struct CurrentPlanDetailsView: View {
                 Text(String.localizedStringWithFormat(Localization.freeTrialText, daysLeftText, expirationDate))
                     .font(.footnote)
             } else {
-                Text(Localization.freeTrialAlternativeText)
+                Text(Localization.freeTrialExpiredText)
                     .font(.footnote)
             }
         }
@@ -46,9 +46,10 @@ private extension CurrentPlanDetailsView {
             "Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling.",
             comment: "Text within the Upgrade's summary card, informing the merchant of how much time they have to upgrade.")
 
-        static let freeTrialAlternativeText = NSLocalizedString(
-            "Your free trial will end soon. Upgrade to unlock new features and start selling.",
-            comment: "Text within the Upgrade's summary card, informing the merchant of how much time they have to upgrade.")
+        static let freeTrialExpiredText = NSLocalizedString(
+            "Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. " +
+            "Unlock more features, launch and start selling, and make your ecommerce business a reality.",
+            comment: "Text within the Upgrade's summary card, informing the merchant their Free Trial has expired.")
 
         static let daysLeftLabel = NSLocalizedString(
              "Days left in plan", comment: "Label for the text describing days left on a Plan to expire." +

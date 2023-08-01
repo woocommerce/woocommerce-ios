@@ -226,9 +226,13 @@ private extension SubscriptionsViewModel {
         return duration
     }
 
-    /// Returns the site plan expiration date formatted as "MMMM d". e.g: "August 11".
+    /// Returns the site plan expiration date formatted as "MMMM d". e.g: "August 11",
+    /// or nil if expired or we can't retrieve the expiration date
     ///
     func formattedExpirationDate(for plan: WPComSitePlan) -> String? {
+        guard daysLeft(for: plan) >= 0 else {
+            return nil
+        }
         guard let planExpiryDate = plan.expiryDate else {
             return nil
         }

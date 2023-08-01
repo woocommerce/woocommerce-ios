@@ -6,9 +6,10 @@ import SwiftUI
 ///
 struct CustomerSelectorView: UIViewControllerRepresentable {
     let siteID: Int64
+    let onCustomerSelected: (Customer) -> Void
 
     func makeUIViewController(context: Context) -> WooNavigationController {
-        let viewController = CustomerSelectorViewController(siteID: siteID)
+        let viewController = CustomerSelectorViewController(siteID: siteID, onCustomerSelected: onCustomerSelected)
 
         let navigationController = WooNavigationController(rootViewController: viewController)
         return navigationController

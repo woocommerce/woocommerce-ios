@@ -1656,6 +1656,8 @@
 		B958A7D628B5310100823EEF /* URLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D428B5302500823EEF /* URLOpener.swift */; };
 		B958A7D828B5316A00823EEF /* MockURLOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958A7D728B5316A00823EEF /* MockURLOpener.swift */; };
 		B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */; };
+		B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */; };
+		B95A45EC2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
 		B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */; };
@@ -4068,6 +4070,8 @@
 		B958A7D428B5302500823EEF /* URLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLOpener.swift; sourceTree = "<group>"; };
 		B958A7D728B5316A00823EEF /* MockURLOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLOpener.swift; sourceTree = "<group>"; };
 		B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDurationRecorder.swift; sourceTree = "<group>"; };
+		B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewModel.swift; sourceTree = "<group>"; };
+		B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
 		B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineViewModel.swift; sourceTree = "<group>"; };
@@ -8066,6 +8070,7 @@
 				68D1BEDC2900E4180074A29E /* CustomerSearchUICommand.swift */,
 				B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */,
 				B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */,
+				B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */,
 			);
 			path = CustomerSection;
 			sourceTree = "<group>";
@@ -8844,6 +8849,14 @@
 			path = DurationRecorder;
 			sourceTree = "<group>";
 		};
+		B95A45EA2A77D78F0073A91F /* CustomerSection */ = {
+			isa = PBXGroup;
+			children = (
+				B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */,
+			);
+			path = CustomerSection;
+			sourceTree = "<group>";
+		};
 		B99686E12A13C8D200D1AF62 /* ScanToPay */ = {
 			isa = PBXGroup;
 			children = (
@@ -9021,6 +9034,7 @@
 		CCB366AD274518CD007D437A /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B95A45EA2A77D78F0073A91F /* CustomerSection */,
 				B9FECD832A6043E5003D98B7 /* ProductsSection */,
 				CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */,
 				CC53FB3D2758E2D500C4CA4F /* ProductRowViewModelTests.swift */,
@@ -11764,6 +11778,7 @@
 				020732042988AB7B000A53C2 /* DomainContactInfoForm.swift in Sources */,
 				DE2FE595292737330018040A /* JetpackSetupView.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
+				B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */,
 				024DF3072372C18D006658FE /* AztecUIConfigurator.swift in Sources */,
 				CCF4346E290AE1F900B4475A /* ProductsOnboardingAnnouncementCardViewModel.swift in Sources */,
 				0217399E2772FB7E0084CD89 /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */,
@@ -12987,6 +13002,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */,
+				B95A45EC2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift in Sources */,
 				3178C1FD26409360000D771A /* BluetoothCardReaderSettingsConnectedViewModelTests.swift in Sources */,
 				02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests.swift in Sources */,
 				B63AAF4B254AD2C6000B28A2 /* URL+SurveyViewControllerTests.swift in Sources */,

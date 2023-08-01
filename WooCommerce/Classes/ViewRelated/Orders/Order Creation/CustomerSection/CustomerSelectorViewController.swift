@@ -8,11 +8,27 @@ import Yosemite
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
     private var searchViewController: UIViewController?
     private let siteID: Int64
+    private let onCustomerSelected: (Customer) -> Void
+    private let viewModel: CustomerSelectorViewModel
+
+    /// Notice presentation handler
+    ///
+    private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
+
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .medium)
+        indicator.hidesWhenStopped = true
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        return indicator
+    }()
 
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
 
-    init(siteID: Int64) {
+    init(siteID: Int64,
+         onCustomerSelected: @escaping (Customer) -> Void) {
+        viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
+        self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,12 +48,11 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        ServiceLocator.stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
-                                                                                    pageNumber: Constants.firstPageNumber,
-                                                                                    pageSize: Constants.pageSize, onCompletion: { [weak self] result in
+        viewModel.loadCustomersListData(onCompletion: { [weak self] result in
             self?.removeGhostContent()
             self?.addSearchViewController()
-        }))
+            self?.configureActivityIndicator()
+        })
     }
 
     func configureNavigation() {
@@ -47,6 +62,14 @@ private extension CustomerSelectorViewController {
                                                             style: .plain,
                                                             target: self,
                                                             action: #selector(presentNewCustomerDetailsFlow))
+    }
+
+    func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        NSLayoutConstraint.activate([
+            view.centerXAnchor.constraint(equalTo: activityIndicator.centerXAnchor),
+            view.centerYAnchor.constraint(equalTo: activityIndicator.centerYAnchor)
+        ])
     }
 
     @objc func cancelWasPressed() {
@@ -72,7 +95,24 @@ private extension CustomerSelectorViewController {
         self.searchViewController = searchViewController
     }
 
-    func onCustomerTapped(_ customer: Customer) {}
+    func onCustomerTapped(_ customer: Customer) {
+        activityIndicator.startAnimating()
+        viewModel.onCustomerSelected(customer, onCompletion: { [weak self] result in
+            self?.activityIndicator.stopAnimating()
+
+            switch result {
+            case .success:
+                self?.dismiss(animated: true)
+            case .failure:
+                self?.showErrorNotice()
+            }
+        })
+    }
+
+    func showErrorNotice() {
+        noticePresenter.presentingViewController = self
+        noticePresenter.enqueue(notice: Notice(title: Localization.genericAddCustomerError, feedbackType: .error))
+    }
 }
 
 private extension CustomerSelectorViewController {
@@ -81,10 +121,9 @@ private extension CustomerSelectorViewController {
             "Add customer details",
             comment: "Title of the order customer selection screen."
         )
-    }
 
-    enum Constants {
-        static let pageSize = 25
-        static let firstPageNumber = 1
+        static let genericAddCustomerError = NSLocalizedString(
+            "Failed to fetch the customer data. Please try again.",
+            comment: "Error message in the Add Customer to order screen when getting the customer information")
     }
 }

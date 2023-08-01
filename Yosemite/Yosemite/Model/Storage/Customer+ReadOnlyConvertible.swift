@@ -73,6 +73,15 @@ extension Storage.Customer: ReadOnlyConvertible {
             firstName = nameComponents.count > 1 ? nameComponents.dropLast().joined(separator: " ") : nameComponents.first
             lastName = nameComponents.count > 1 ? nameComponents.last : nil
         }
+
+        // Reuse information for addresses
+        shippingFirstName = firstName
+        shippingLastName = lastName
+        shippingEmail = email
+
+        billingFirstName = firstName
+        billingLastName = lastName
+        billingEmail = email
     }
 
     /// Returns a ReadOnly (`Networking.Customer`) version of the `Storage.Customer`
@@ -91,11 +100,7 @@ extension Storage.Customer: ReadOnlyConvertible {
 
     /// Helpers
     private func createReadOnlyBillingAddress() -> Yosemite.Address? {
-        guard let billingCountry = billingCountry else {
-            return nil
-        }
-
-        return Address(firstName: billingFirstName ?? "",
+        Address(firstName: billingFirstName ?? "",
                        lastName: billingLastName ?? "",
                        company: billingCompany ?? "",
                        address1: billingAddress1 ?? "",
@@ -103,18 +108,14 @@ extension Storage.Customer: ReadOnlyConvertible {
                        city: billingCity ?? "",
                        state: billingState ?? "",
                        postcode: billingPostcode ?? "",
-                       country: billingCountry,
+                       country: billingCountry ?? "",
                        phone: billingPhone,
                        email: billingEmail
         )
     }
 
     private func createReadOnlyShippingAddress() -> Yosemite.Address? {
-        guard let shippingCountry = shippingCountry else {
-            return nil
-        }
-
-        return Address(firstName: shippingFirstName ?? "",
+        Address(firstName: shippingFirstName ?? "",
                        lastName: shippingLastName ?? "",
                        company: shippingCompany ?? "",
                        address1: shippingAddress1 ?? "",
@@ -122,7 +123,7 @@ extension Storage.Customer: ReadOnlyConvertible {
                        city: shippingCity ?? "",
                        state: shippingState ?? "",
                        postcode: shippingPostcode ?? "",
-                       country: shippingCountry,
+                       country: shippingCountry ?? "",
                        phone: shippingPhone,
                        email: shippingEmail
         )

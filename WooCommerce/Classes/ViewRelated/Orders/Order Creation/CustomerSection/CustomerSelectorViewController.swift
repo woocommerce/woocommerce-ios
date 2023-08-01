@@ -101,9 +101,9 @@ private extension CustomerSelectorViewController {
             self?.activityIndicator.stopAnimating()
 
             switch result {
-            case .success(()):
+            case .success:
                 self?.dismiss(animated: true)
-            case .failure(_):
+            case .failure:
                 self?.showErrorNotice()
             }
         })

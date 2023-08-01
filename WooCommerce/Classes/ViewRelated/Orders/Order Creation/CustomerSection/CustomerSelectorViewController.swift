@@ -54,17 +54,21 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
         viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-            self?.removeGhostContent()
+            guard let self = self else {
+                return
+            }
+
+            self.removeGhostContent()
             switch result {
             case .success(let thereAreResults):
                 if thereAreResults {
-                    self?.addSearchViewController()
-                    self?.configureActivityIndicator()
+                    self.addSearchViewController()
+                    self.configureActivityIndicator()
                 } else {
-                    self?.displayNoResultsOverlay()
+                    self.showEmptyState(with: self.emptyStateConfiguration())
                 }
             case .failure(_):
-                break
+                self.showEmptyState(with: self.errorStateConfiguration())
             }
         })
     }
@@ -116,12 +120,16 @@ private extension CustomerSelectorViewController {
         self.searchViewController = searchViewController
     }
 
-    func displayNoResultsOverlay() {
+    func showEmptyState(with configuration: EmptyStateViewController.Config) {
         let emptyStateViewController = EmptyStateViewController(style: .list)
         displayViewController(emptyStateViewController)
         self.emptyStateViewController = emptyStateViewController
 
-        let configuration = EmptyStateViewController.Config.withButton(
+        emptyStateViewController.configure(configuration)
+    }
+
+    func emptyStateConfiguration() -> EmptyStateViewController.Config {
+        EmptyStateViewController.Config.withButton(
             message: .init(string: Localization.emptyStateMessage),
             image: .emptySearchResultsImage,
             details: Localization.emptyStateDetails,
@@ -129,8 +137,11 @@ private extension CustomerSelectorViewController {
         ) { [weak self] _ in
             self?.presentNewCustomerDetailsFlow()
         }
+    }
 
-        emptyStateViewController.configure(configuration)
+    func errorStateConfiguration() -> EmptyStateViewController.Config {
+        EmptyStateViewController.Config.simple(message: .init(string: Localization.genericFetchCustomersError),
+                                                                   image: .emptySearchResultsImage)
     }
 
     func displayViewController(_ viewController: UIViewController) {
@@ -180,5 +191,8 @@ private extension CustomerSelectorViewController {
         static let emptyStateActionTitle = NSLocalizedString(
             "Add Customer",
             comment: "The action title on the placeholder overlay when there are no customers on the customers list screen.")
+        static let genericFetchCustomersError = NSLocalizedString("Failed to fetch the customers data. Please try again later.",
+                                                                comment: "Error message in the Add Customer to order screen " +
+                                                                "when getting the customers information")
     }
 }

@@ -18,7 +18,7 @@ struct OrderCustomerSection: View {
             .sheet(isPresented: $showAddressForm) {
                 NavigationView {
                     if viewModel.shouldShowCustomerSelectorScreen {
-                        CustomerSelectorView(siteID: viewModel.siteID) { customer in
+                        CustomerSelectorView(siteID: viewModel.siteID, addressFormViewModel: addressFormViewModel) { customer in
                             viewModel.addCustomerAddressToOrder(customer: customer)
                         }
                     } else {

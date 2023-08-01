@@ -3,9 +3,10 @@
 14.8
 -----
 - [*] Store creation: Improvements to the Upgrades screen accessibility [https://github.com/woocommerce/woocommerce-ios/pull/10363]
+- [*] Stores with expired WooExpress plans can now be upgraded within the app (if eligible for IAP) via a new banner. [https://github.com/woocommerce/woocommerce-ios/pull/10369]
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
-
+ 
 14.7
 -----
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]

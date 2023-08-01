@@ -184,6 +184,6 @@ private extension StorePlanBannerPresenter {
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")
-        static let expiredPlan = NSLocalizedString("Your last plan has ended", comment: "Title on the banner when the site's WooExpress plan has expired")
+        static let expiredPlan = NSLocalizedString("Your site plan has ended", comment: "Title on the banner when the site's WooExpress plan has expired")
     }
 }

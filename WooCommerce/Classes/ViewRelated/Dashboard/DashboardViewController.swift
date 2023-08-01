@@ -129,7 +129,7 @@ final class DashboardViewController: UIViewController {
 
     /// Free trial banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: StorePlanBannerPresenter?
+    private var storePlanBannerPresenter: StorePlanBannerPresenter?
 
     /// Presenter for the privacy choices banner
     ///
@@ -166,7 +166,7 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeBannerVisibility()
-        configureFreeTrialBannerPresenter()
+        configurestorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
         Task { @MainActor in
@@ -179,7 +179,7 @@ final class DashboardViewController: UIViewController {
         // Reset title to prevent it from being empty right after login
         configureTitle()
 
-        freeTrialBannerPresenter?.reloadBannerVisibility()
+        storePlanBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -374,8 +374,8 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
-    func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  StorePlanBannerPresenter(viewController: self,
+    func configurestorePlanBannerPresenter() {
+        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: stackView,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
@@ -750,7 +750,7 @@ private extension DashboardViewController {
                                                                      site: site,
                                                                      onUpgradePlan: { [weak self] in
             guard let self else { return }
-            self.freeTrialBannerPresenter?.reloadBannerVisibility()
+            self.storePlanBannerPresenter?.reloadBannerVisibility()
         },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey

@@ -478,9 +478,9 @@ private extension StorePickerViewController {
             secondaryActionButton.isHidden = true
         case .available(let sites):
             addStoreButton.isHidden = true
-            if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
+//            if sites.allSatisfy({ $0.isWooCommerceActive == false }) {
                 updateActionButtonAndTableState(animating: false, enabled: false)
-            }
+//            }
         }
 
         tableView.separatorStyle = viewModel.separatorStyle
@@ -539,18 +539,18 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(site: Site) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
-            switch result {
-            case .success(.validWCVersion):
-                self?.updateUIForValidSite()
-            case .success(.invalidWCVersion):
-                self?.updateUIForInvalidSite(named: site.name)
-            case .success(.expiredWPComPlan):
-                self?.updateUIForExpiredWPComPlan(siteID: site.siteID)
-            case .failure:
-                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
-            }
-        }
+//        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
+//            switch result {
+//            case .success(.validWCVersion):
+                updateUIForValidSite()
+//            case .success(.invalidWCVersion):
+//                self?.updateUIForInvalidSite(named: site.name)
+//            case .success(.expiredWPComPlan):
+//                self?.updateUIForExpiredWPComPlan(siteID: site.siteID)
+//            case .failure:
+//                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
+//            }
+//        }
     }
 
     /// Update the UI upon receiving a response for a valid WC site
@@ -785,18 +785,18 @@ extension StorePickerViewController: UITableViewDelegate {
             return
         }
 
-        guard site.isWooCommerceActive else {
-            let isNonAtomicSite = !site.isJetpackConnected
-            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": isNonAtomicSite])
-
-            if isNonAtomicSite {
-                showNonAtomicSiteError(for: site)
-            } else {
-                showNoWooError(for: site)
-            }
-
-            return tableView.deselectRow(at: indexPath, animated: true)
-        }
+//        guard site.isWooCommerceActive else {
+//            let isNonAtomicSite = !site.isJetpackConnected
+//            ServiceLocator.analytics.track(.sitePickerNonWooSiteTapped, withProperties: ["is_non_atomic": isNonAtomicSite])
+//
+//            if isNonAtomicSite {
+//                showNonAtomicSiteError(for: site)
+//            } else {
+//                showNoWooError(for: site)
+//            }
+//
+//            return tableView.deselectRow(at: indexPath, animated: true)
+//        }
 
         currentlySelectedSite = site
         tableView.reloadData()
@@ -855,28 +855,28 @@ private extension StorePickerViewController {
 
         updateActionButtonAndTableState(animating: true, enabled: false)
 
-        viewModel.checkEligibility(for: site.siteID) { [weak self] result in
-            guard let self = self else { return }
-
-            self.updateActionButtonAndTableState(animating: false, enabled: true)
-
-            switch result {
-            case .success:
+//        viewModel.checkEligibility(for: site.siteID) { [weak self] result in
+//            guard let self = self else { return }
+//
+//            self.updateActionButtonAndTableState(animating: false, enabled: true)
+//
+//            switch result {
+//            case .success:
                 // if user is eligible, then switch to the desired store.
                 delegate.didSelectStore(with: site.siteID) { [weak self] in
                     self?.dismiss()
                 }
-            case .failure(let error):
-                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
-                    delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
-                        self?.dismiss()
-                    }
-                } else {
-                    self.displayUnknownErrorModal()
-                }
-            }
-        }
+//            case .failure(let error):
+//                if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
+//                    ServiceLocator.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
+//                    delegate.showRoleErrorScreen(for: site.siteID, errorInfo: errorInfo) { [weak self] in
+//                        self?.dismiss()
+//                    }
+//                } else {
+//                    self.displayUnknownErrorModal()
+//                }
+//            }
+//        }
     }
 }
 

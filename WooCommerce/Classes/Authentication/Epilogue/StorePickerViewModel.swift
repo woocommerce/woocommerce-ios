@@ -224,7 +224,8 @@ private extension StorePickerConfiguration {
     var predicate: NSPredicate? {
         switch self {
         case .switchingStores:
-            return NSPredicate(format: "isWooCommerceActive == YES")
+            return nil
+//            return NSPredicate(format: "isWooCommerceActive == YES")
         default:
             return nil
         }

@@ -68,7 +68,10 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldShowCustomerSelectorScreen: Bool {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
+        // If there are no addresses added 
+        orderSynchronizer.order.billingAddress == nil &&
+        orderSynchronizer.order.shippingAddress == nil
     }
 
     /// Indicates whether adding a product to the order via SKU scanning is enabled

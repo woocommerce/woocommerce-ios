@@ -105,7 +105,7 @@ public final class CustomerStore: Store {
             }
     }
 
-    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
@@ -114,7 +114,7 @@ public final class CustomerStore: Store {
                                      shouldDeleteExistingCustomers: pageNumber == 1,
                                      in: self.sharedDerivedStorage,
                                      onCompletion: {
-                    onCompletion(.success(()))
+                    onCompletion(.success(!customers.isEmpty))
                 })
             case .failure(let error):
                 onCompletion(.failure(error))

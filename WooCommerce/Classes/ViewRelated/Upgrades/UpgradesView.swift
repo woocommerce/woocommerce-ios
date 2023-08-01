@@ -80,24 +80,21 @@ struct UpgradesView: View {
                     UpgradeTopBarView(dismiss: {
                         dismiss()
                     })
-
-                    CurrentPlanDetailsView(expirationDate: subscriptionsViewModel.formattedPlanExpirationDate,
-                                           daysLeft: subscriptionsViewModel.planDaysLeft)
                 }
                 .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
-                    OwnerUpgradesView(upgradePlans: [
+                    OwnerUpgradesView(subscriptionsViewModel: subscriptionsViewModel, upgradePlans: [
                         .skeletonPlan(frequency: .year, shortName: "Essential"),
                         .skeletonPlan(frequency: .year, shortName: "Performance"),
                         .skeletonPlan(frequency: .month, shortName: "Essential"),
                         .skeletonPlan(frequency: .month, shortName: "Performance")],
                                       isPurchasing: .constant(false),
                                       purchasePlanAction: { _ in }, isLoading: true)
-                        .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
+                    .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
-                    OwnerUpgradesView(upgradePlans: plans,
+                    OwnerUpgradesView(subscriptionsViewModel: subscriptionsViewModel, upgradePlans: plans,
                                       isPurchasing: $upgradesViewModel.isPurchasing,
                                       purchasePlanAction: { selectedPlan in
                         Task {

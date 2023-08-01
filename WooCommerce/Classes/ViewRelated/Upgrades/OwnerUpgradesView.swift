@@ -3,15 +3,19 @@ import Yosemite
 import WooFoundation
 
 struct OwnerUpgradesView: View {
+    @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
+
     @State var upgradePlans: [WooWPComPlan]
     @Binding var isPurchasing: Bool
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
-    init(upgradePlans: [WooWPComPlan],
+    init(subscriptionsViewModel: SubscriptionsViewModel,
+         upgradePlans: [WooWPComPlan],
          isPurchasing: Binding<Bool>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
+        self.subscriptionsViewModel = subscriptionsViewModel
         _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = isPurchasing
         self.purchasePlanAction = purchasePlanAction
@@ -26,6 +30,15 @@ struct OwnerUpgradesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            VStack {
+                CurrentPlanDetailsView(expirationDate: subscriptionsViewModel.formattedPlanExpirationDate,
+                                       daysLeft: subscriptionsViewModel.planDaysLeft)
+                .background(Color(.secondarySystemGroupedBackground))
+            }
+            .padding(.horizontal)
+            .cornerRadius(Layout.cornerRadius)
+            .background(Color(.systemGroupedBackground))
+
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {
                     Text($0.paymentFrequencyLocalizedString)
@@ -87,6 +100,13 @@ struct OwnerUpgradesView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+private extension OwnerUpgradesView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 8.0
     }
 }
 

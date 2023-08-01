@@ -17,8 +17,6 @@ final class StoreCreationCoordinator: Coordinator {
 
     let navigationController: UINavigationController
 
-    let isFreeTrialCreation: Bool
-
     // MARK: - Store creation M1
 
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
@@ -47,9 +45,6 @@ final class StoreCreationCoordinator: Coordinator {
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
-    private var jetpackCheckRetryInterval: TimeInterval {
-        isFreeTrialCreation ? 10 : 5
-    }
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
@@ -75,7 +70,6 @@ final class StoreCreationCoordinator: Coordinator {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
-        self.isFreeTrialCreation = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
 
         Task { @MainActor in
@@ -158,7 +152,6 @@ private extension StoreCreationCoordinator {
         navigationController.isModalInPresentation = true
 
         let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
-        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let continueAfterEnteringStoreName = { [weak self] storeName in
             if isProfilerEnabled {
                 /// `storeCreationM3Profiler` is currently disabled.
@@ -167,22 +160,11 @@ private extension StoreCreationCoordinator {
                 ///
                 self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
             } else {
-                if isFreeTrialEnabled {
-                    self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
-                } else {
-                    self?.showDomainSelector(from: navigationController,
-                                             storeName: storeName,
-                                             category: nil,
-                                             sellingStatus: nil,
-                                             countryCode: nil,
-                                             planToPurchase: planToPurchase)
-                }
+                self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
             }
         }
         let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
-            if isFreeTrialEnabled {
-                self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
-            }
+            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
             continueAfterEnteringStoreName(storeName)
         } onClose: { [weak self] in
             self?.showDiscardChangesAlert(flow: .native)
@@ -355,8 +337,7 @@ private extension StoreCreationCoordinator {
 
         alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
             guard let self else { return }
-            let isFreeTrialCreation = self.isFreeTrialCreation && flow == .native
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: isFreeTrialCreation))
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: true))
             self.navigationController.dismiss(animated: true)
         }
 
@@ -427,7 +408,6 @@ private extension StoreCreationCoordinator {
                                   category: StoreCreationCategoryAnswer?,
                                   sellingStatus: StoreCreationSellingStatusAnswer?,
                                   planToPurchase: WPComPlanProduct) {
-        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
@@ -441,16 +421,7 @@ private extension StoreCreationCoordinator {
                                      countryCode: countryCode.rawValue)
                     }()
 
-                    if isFreeTrialEnabled {
-                        self.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: profilerData)
-                    } else {
-                        self.showDomainSelector(from: navigationController,
-                                                storeName: storeName,
-                                                category: category,
-                                                sellingStatus: sellingStatus,
-                                                countryCode: countryCode,
-                                                planToPurchase: planToPurchase)
-                    }
+                    self.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: profilerData)
                 } onSupport: { [weak self] in
                     self?.showSupport(from: navigationController)
                 })
@@ -536,62 +507,6 @@ private extension StoreCreationCoordinator {
                                                                      error: error,
                                                                      flow: .native,
                                                                      isFreeTrial: true))
-        }
-    }
-
-    @MainActor
-    func showDomainSelector(from navigationController: UINavigationController,
-                            storeName: String,
-                            category: StoreCreationCategoryAnswer?,
-                            sellingStatus: StoreCreationSellingStatusAnswer?,
-                            countryCode: SiteAddress.CountryCode?,
-                            planToPurchase: WPComPlanProduct) {
-        let domainSelector = FreeDomainSelectorHostingController(viewModel:
-                .init(title: Localization.domainSelectorTitle,
-                      subtitle: Localization.domainSelectorSubtitle,
-                      initialSearchTerm: storeName,
-                      dataProvider: FreeDomainSelectorDataProvider()),
-                                                                 onDomainSelection: { [weak self] domain in
-            guard let self else { return }
-            await self.createStoreAndContinueToStoreSummary(from: navigationController,
-                                                            name: storeName,
-                                                            category: category,
-                                                            sellingStatus: sellingStatus,
-                                                            countryCode: countryCode,
-                                                            flow: .onboarding(domain: domain.name),
-                                                            planToPurchase: planToPurchase)
-        }, onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        })
-        navigationController.pushViewController(domainSelector, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .domainPicker))
-    }
-
-    @MainActor
-    func createStoreAndContinueToStoreSummary(from navigationController: UINavigationController,
-                                              name: String,
-                                              category: StoreCreationCategoryAnswer?,
-                                              sellingStatus: StoreCreationSellingStatusAnswer?,
-                                              countryCode: SiteAddress.CountryCode?,
-                                              flow: SiteCreationFlow,
-                                              planToPurchase: WPComPlanProduct) async {
-        let result = await createStore(name: name, flow: flow)
-        analytics.track(event: .StoreCreation.siteCreationProfilerData(category: category,
-                                                                       sellingStatus: sellingStatus,
-                                                                       countryCode: countryCode))
-        switch result {
-        case .success(let siteResult):
-            showStoreSummary(from: navigationController,
-                             result: siteResult,
-                             category: category,
-                             countryCode: countryCode,
-                             planToPurchase: planToPurchase)
-        case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
-                                                                     error: error,
-                                                                     flow: .native,
-                                                                     isFreeTrial: false))
-            showStoreCreationErrorAlert(from: navigationController, error: error)
         }
     }
 
@@ -710,7 +625,7 @@ private extension StoreCreationCoordinator {
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
         let approxSecondsToWaitForNetworkRequest = 10.0
-        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
+        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: Constants.jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
         let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
         self.storeCreationProgressViewModel = viewModel
@@ -741,7 +656,7 @@ private extension StoreCreationCoordinator {
         ///
         let waitingTimeStart = Date()
 
-        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: isFreeTrialCreation, storeName: expectedStoreName, stores: stores)
+        let statusChecker = StoreCreationStatusChecker(isFreeTrialCreation: true, storeName: expectedStoreName, stores: stores)
         self.statusChecker = statusChecker
         let site: Site? = await withCheckedContinuation { continuation in
             jetpackSiteSubscription = statusChecker.waitForSiteToBeReady(siteID: siteID)
@@ -789,11 +704,7 @@ private extension StoreCreationCoordinator {
 
         /// Free trial stores should land directly on the dashboard and not show any success view.
         ///
-        if isFreeTrialCreation {
-            continueWithSelectedSite(site: site)
-        } else {
-            showSuccessView(from: navigationController, site: site)
-        }
+        continueWithSelectedSite(site: site)
     }
 
     @MainActor
@@ -844,7 +755,7 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreated(source: source.analyticsValue,
                                                           siteURL: site.url,
                                                           flow: flow,
-                                                          isFreeTrial: isFreeTrialCreation,
+                                                          isFreeTrial: true,
                                                           waitingTime: waitingTime))
     }
 }
@@ -992,6 +903,8 @@ private extension StoreCreationCoordinator {
         enum LocalNotificationScenario {
             static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
         }
+
+        static let jetpackCheckRetryInterval: TimeInterval = 10
     }
 
     /// Error scenarios when purchasing a WPCOM plan.

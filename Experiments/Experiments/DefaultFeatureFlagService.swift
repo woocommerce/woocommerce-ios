@@ -67,8 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productBundles:
             return true
-        case .freeTrial:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:

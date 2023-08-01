@@ -36,7 +36,22 @@ public class LoginFields: NSObject {
     /// the signup flow.
     @objc public var emailAddress = ""
 
-    @objc public var meta = LoginFieldsMeta()
+    var meta = LoginFieldsMeta()
+
+    @objc public var userIsDotCom: Bool {
+        get { meta.userIsDotCom }
+        set { meta.userIsDotCom = newValue }
+    }
+
+    @objc public var requiredMultifactor: Bool {
+        meta.requiredMultifactor
+    }
+
+    @objc public var xmlrpcURL: NSURL? {
+        get { meta.xmlrpcURL }
+        set { meta.xmlrpcURL = newValue }
+    }
+
     var storedCredentials: SafariStoredCredentials?
 
     /// Convenience method for persisting stored credentials.

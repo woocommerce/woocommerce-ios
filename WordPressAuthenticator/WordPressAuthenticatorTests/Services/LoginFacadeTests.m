@@ -48,7 +48,7 @@ describe(@"signInWithLoginFields", ^{
     context(@"for a .com user", ^{
         
         beforeEach(^{
-            loginFields.meta.userIsDotCom = YES;
+            loginFields.userIsDotCom = YES;
         });
         
         it(@"should display a message about 'Connecting to WordPress.com'", ^{
@@ -76,7 +76,7 @@ describe(@"signInWithLoginFields", ^{
                 
                 successStub(authToken);
             }];
-            [[mockLoginFacadeDelegate expect] finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
+            [[mockLoginFacadeDelegate expect] finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
             
             [loginFacade signInWithLoginFields:loginFields];
             
@@ -118,7 +118,7 @@ describe(@"signInWithLoginFields", ^{
     context(@"for a self hosted user", ^{
         
         beforeEach(^{
-            loginFields.meta.userIsDotCom = NO;
+            loginFields.userIsDotCom = NO;
         });
         
         it(@"should display a message about 'Authenticating'", ^{

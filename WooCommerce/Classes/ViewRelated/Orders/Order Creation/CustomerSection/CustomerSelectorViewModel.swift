@@ -17,7 +17,7 @@ final class CustomerSelectorViewModel {
 
     /// Loads the customer list data, a lighter version of the model without all the information
     ///
-    func loadCustomersListData(onCompletion: @escaping (Result<(), Error>) -> Void) {
+    func loadCustomersListData(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         stores.dispatch(CustomerAction.synchronizeLightCustomersData(siteID: siteID,
                                                                                     pageNumber: Constants.firstPageNumber,
                                                                                     pageSize: Constants.pageSize, onCompletion: onCompletion))

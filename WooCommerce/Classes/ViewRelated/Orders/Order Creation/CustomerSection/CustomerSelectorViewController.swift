@@ -8,6 +8,7 @@ import Yosemite
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
     private var searchViewController: UIViewController?
+    private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
@@ -54,8 +55,17 @@ private extension CustomerSelectorViewController {
     func loadCustomersContent() {
         viewModel.loadCustomersListData(onCompletion: { [weak self] result in
             self?.removeGhostContent()
-            self?.addSearchViewController()
-            self?.configureActivityIndicator()
+            switch result {
+            case .success(let thereAreResults):
+                if thereAreResults {
+                    self?.addSearchViewController()
+                    self?.configureActivityIndicator()
+                } else {
+                    self?.displayNoResultsOverlay()
+                }
+            case .failure(_):
+                break
+            }
         })
     }
 
@@ -82,10 +92,10 @@ private extension CustomerSelectorViewController {
 
     @objc func presentNewCustomerDetailsFlow() {
         let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
-                                                            self?.dismiss(animated: true, completion: {
-                                                                self?.dismiss(animated: true)
-                                                            })
-                                                        },
+            self?.dismiss(animated: true, completion: {
+                self?.dismiss(animated: true)
+            })
+        },
                                                         showSearchButton: false,
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)
@@ -102,13 +112,33 @@ private extension CustomerSelectorViewController {
             cellSeparator: .none
         )
 
-        searchViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        addChild(searchViewController)
-        view.addSubview(searchViewController.view)
-        view.pinSubviewToAllEdges(searchViewController.view)
-        searchViewController.didMove(toParent: self)
-
+        displayViewController(searchViewController)
         self.searchViewController = searchViewController
+    }
+
+    func displayNoResultsOverlay() {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        displayViewController(emptyStateViewController)
+        self.emptyStateViewController = emptyStateViewController
+
+        let configuration = EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.emptyStateMessage),
+            image: .emptySearchResultsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.emptyStateActionTitle
+        ) { [weak self] _ in
+            self?.presentNewCustomerDetailsFlow()
+        }
+
+        emptyStateViewController.configure(configuration)
+    }
+
+    func displayViewController(_ viewController: UIViewController) {
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        addChild(viewController)
+        view.addSubview(viewController.view)
+        view.pinSubviewToAllEdges(viewController.view)
+        viewController.didMove(toParent: self)
     }
 
     func onCustomerTapped(_ customer: Customer) {
@@ -141,5 +171,14 @@ private extension CustomerSelectorViewController {
         static let genericAddCustomerError = NSLocalizedString("Failed to fetch the customer data. Please try again.",
                                                                 comment: "Error message in the Add Customer to order screen " +
                                                                 "when getting the customer information")
+        static let emptyStateMessage = NSLocalizedString(
+            "No customers found",
+            comment: "The title on the placeholder overlay when there are no customers on the customers list screen.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Add a new customer by tapping on the button below.",
+            comment: "The details text on the placeholder overlay when there are no customers on the customers list screen.")
+        static let emptyStateActionTitle = NSLocalizedString(
+            "Add Customer",
+            comment: "The action title on the placeholder overlay when there are no customers on the customers list screen.")
     }
 }

@@ -67,6 +67,10 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    var shouldShowCustomerSelectorScreen: Bool {
+        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+    }
+
     /// Indicates whether adding a product to the order via SKU scanning is enabled
     ///
     var isAddProductToOrderViaSKUScannerEnabled: Bool {

@@ -504,8 +504,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     // Navigate to store creation
     func showSiteCreation(in navigationController: UINavigationController) {
-        let isFreeTrialEnabled = featureFlagService.isFeatureFlagEnabled(.freeTrial)
-        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped(isFreeTrial: isFreeTrialEnabled))
+        analytics.track(event: .StoreCreation.loginPrologueCreateSiteTapped(isFreeTrial: true))
 
         let coordinator = LoggedOutStoreCreationCoordinator(source: .prologue,
                                                             navigationController: navigationController)

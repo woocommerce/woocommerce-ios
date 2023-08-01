@@ -68,10 +68,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayBadge
 
-    /// Store creation MVP.
-    ///
-    case storeCreationMVP
-
     /// Store creation milestone 2. https://wp.me/pe5sF9-I3
     ///
     case storeCreationM2
@@ -152,10 +148,6 @@ public enum FeatureFlag: Int {
     ///
     case productBundles
 
-    /// Enables conditional behaviour when a site has a free trial plan.
-    ///
-    case freeTrial
-
     /// Enables manual error handling for site credential login.
     ///
     case manualErrorHandlingForSiteCredentialLogin
@@ -210,9 +202,6 @@ public enum FeatureFlag: Int {
 
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
-
-    /// Enables Free trial survey notificaiton
-    case freeTrialSurvey24hAfterFreeTrialSubscribed
 
     /// Enables the improvements in the customer selection logic when creating an order
     /// 

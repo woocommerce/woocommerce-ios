@@ -31,8 +31,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .storeCreationMVP:
-            return true
         case .storeCreationM2:
             return true
         case .storeCreationM2WithInAppPurchasesEnabled:
@@ -69,8 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productBundles:
             return true
-        case .freeTrial:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -99,10 +95,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ordersWithCouponsM4:
             return true
-        case .freeTrialSurvey24hAfterFreeTrialSubscribed:
-            return true
         case .betterCustomerSelectionInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         default:
             return true
         }

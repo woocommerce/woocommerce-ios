@@ -28,7 +28,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
                 passedSiteID = siteID
                 passedPageNumber = pageNumber
                 passedPageSize = pageSize
-                onCompletion(.success(()))
+                onCompletion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }

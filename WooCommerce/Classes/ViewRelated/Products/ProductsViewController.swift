@@ -184,7 +184,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Free trial banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+    private var freeTrialBannerPresenter: StorePlanBannerPresenter?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -702,7 +702,7 @@ private extension ProductsViewController {
     }
 
     func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+        self.freeTrialBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: view,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)

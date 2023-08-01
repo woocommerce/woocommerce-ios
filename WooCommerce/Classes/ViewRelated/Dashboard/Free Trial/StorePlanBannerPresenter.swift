@@ -3,10 +3,10 @@ import Combine
 import UIKit
 import protocol Experiments.FeatureFlagService
 
-/// Presents or hides the free trial banner at the bottom of the screen.
+/// Presents or hides the store plan info banner at the bottom of the screen.
 /// Internally uses the `storePlanSynchronizer` to know when to present or hide the banner.
 ///
-final class FreeTrialBannerPresenter {
+final class StorePlanBannerPresenter {
     /// View controller used to present any action needed by the free trial banner.
     ///
     private weak var viewController: UIViewController?
@@ -62,7 +62,7 @@ final class FreeTrialBannerPresenter {
     }
 }
 
-private extension FreeTrialBannerPresenter {
+private extension StorePlanBannerPresenter {
 
     /// Observe the store plan and add or remove the banner as appropriate
     ///
@@ -163,7 +163,7 @@ private extension FreeTrialBannerPresenter {
     }
 }
 
-private extension FreeTrialBannerPresenter {
+private extension StorePlanBannerPresenter {
     enum Localization {
         static let learnMore = NSLocalizedString("Learn more", comment: "Title on the button to learn more about the free trial plan.")
         static let upgradeNow = NSLocalizedString("Upgrade Now", comment: "Title on the button to upgrade a free trial plan.")

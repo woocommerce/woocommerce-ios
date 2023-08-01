@@ -129,7 +129,7 @@ final class DashboardViewController: UIViewController {
 
     /// Free trial banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+    private var freeTrialBannerPresenter: StorePlanBannerPresenter?
 
     /// Presenter for the privacy choices banner
     ///
@@ -375,7 +375,7 @@ private extension DashboardViewController {
     }
 
     func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+        self.freeTrialBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: stackView,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)

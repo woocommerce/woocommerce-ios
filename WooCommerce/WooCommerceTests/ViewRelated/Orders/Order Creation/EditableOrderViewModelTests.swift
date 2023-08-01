@@ -1353,7 +1353,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
         let customer = Customer.fake().copy(
             email: "scrambled@scrambled.com",
             firstName: "Johnny",
@@ -1365,16 +1365,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addCustomerAddressToOrder(customer: customer)
 
         // Then
-        XCTAssertFalse(viewModel.customerNavigationScreen == .form)
+        XCTAssertTrue(viewModel.customerNavigationScreen == .form)
     }
 
     func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_no_customer_is_added_then_shows_the_selector() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores,
-                                               featureFlagService: MockFeatureFlagService(isAddProductToOrderViaSKUScannerEnabled: true))
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
         // Then
-        XCTAssertFalse(viewModel.customerNavigationScreen == .selector)
+        XCTAssertTrue(viewModel.customerNavigationScreen == .selector)
     }
 
     func test_resetAddressForm_discards_pending_address_field_changes() {

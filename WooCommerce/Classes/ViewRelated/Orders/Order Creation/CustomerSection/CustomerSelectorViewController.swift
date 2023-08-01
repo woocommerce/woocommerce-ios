@@ -96,10 +96,11 @@ private extension CustomerSelectorViewController {
 
     @objc func presentNewCustomerDetailsFlow() {
         let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
-            self?.dismiss(animated: true, completion: {
-                self?.dismiss(animated: true)
-            })
-        },
+                                                            self?.dismiss(animated: true, completion: { [weak self] in
+                                                                // Dismiss this view too
+                                                                self?.dismiss(animated: true)
+                                                            })
+                                                        },
                                                         showSearchButton: false,
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)

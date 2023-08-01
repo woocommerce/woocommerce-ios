@@ -67,7 +67,7 @@ private extension CustomerSelectorViewController {
                 } else {
                     self.showEmptyState(with: self.emptyStateConfiguration())
                 }
-            case .failure(_):
+            case .failure:
                 self.showEmptyState(with: self.errorStateConfiguration())
             }
         })
@@ -159,9 +159,9 @@ private extension CustomerSelectorViewController {
             self?.activityIndicator.stopAnimating()
 
             switch result {
-            case .success(()):
+            case .success:
                 self?.dismiss(animated: true)
-            case .failure(_):
+            case .failure:
                 self?.showErrorNotice()
             }
         })

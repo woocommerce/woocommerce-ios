@@ -35,6 +35,13 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    /// Encapsulates the type of screen that should be shown when navigating to Customer Details
+    ///
+    enum CustomerNavigationScreen {
+        case form
+        case selector
+    }
+
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
     let flow: Flow
@@ -67,11 +74,19 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
-    var shouldShowCustomerSelectorScreen: Bool {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
-        // If there are no addresses added 
+    /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
+    ///
+    var customerNavigationScreen: CustomerNavigationScreen {
+        let shouldShowSelector = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
+        // If there are no addresses added
         orderSynchronizer.order.billingAddress == nil &&
         orderSynchronizer.order.shippingAddress == nil
+
+        return shouldShowSelector ? .selector : .form
+    }
+
+    var shouldShowSearchButtonInOrderAddressForm: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
     /// Indicates whether adding a product to the order via SKU scanning is enabled

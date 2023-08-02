@@ -1,5 +1,12 @@
 import Foundation
 
+/// The type of filter when searching for customers.
+public enum CustomerSearchFilter: String, Equatable, CaseIterable {
+    case name
+    case username
+    case email
+}
+
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {

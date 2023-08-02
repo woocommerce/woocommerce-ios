@@ -23,9 +23,13 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidSelectSearchResult: ((Customer) -> Void)
 
+    private var filter: CustomerSearchFilter = .name
+
     private let siteID: Int64
 
     private let loadResultsWhenSearchTermIsEmpty: Bool
+
+    private let showSearchFilters: Bool
 
     private let stores: StoresManager
 
@@ -35,12 +39,14 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
+         showSearchFilters: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
+        self.showSearchFilters = showSearchFilters
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -57,6 +63,38 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
         featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
+    }
+
+    func createHeaderView() -> UIView? {
+        guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
+        showSearchFilters else {
+            return nil
+        }
+        let segmentedControl: UISegmentedControl = {
+            let segmentedControl = UISegmentedControl()
+
+            let filters: [CustomerSearchFilter] = [.name, .username, .email]
+            for (index, filter) in filters.enumerated() {
+                segmentedControl.insertSegment(withTitle: filter.title, at: index, animated: false)
+                if filter == self.filter {
+                    segmentedControl.selectedSegmentIndex = index
+                }
+            }
+            segmentedControl.on(.valueChanged) { [weak self] sender in
+                let index = sender.selectedSegmentIndex
+                guard let filter = filters[safe: index] else {
+                    return
+                }
+                self?.showResults(filter: filter)
+            }
+            return segmentedControl
+        }()
+
+        let containerView = UIView(frame: .zero)
+        containerView.addSubview(segmentedControl)
+        segmentedControl.translatesAutoresizingMaskIntoConstraints = false
+        containerView.pinSubviewToAllEdges(segmentedControl, insets: .init(top: 8, left: 16, bottom: 16, right: 16))
+        return containerView
     }
 
     func createResultsController() -> ResultsController<StorageCustomer> {
@@ -167,6 +205,15 @@ private extension CustomerSearchUICommand {
             }
         }
     }
+
+    func showResults(filter: CustomerSearchFilter) {
+        guard filter != self.filter else {
+            return
+        }
+        self.filter = filter
+        resynchronizeModels()
+    }
+
 }
 
 private extension CustomerSearchUICommand {
@@ -184,5 +231,18 @@ private extension CustomerSearchUICommand {
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
                                                                 comment: "Button title for adding customer details manually on the customer search screen")
+    }
+}
+
+extension CustomerSearchFilter {
+    var title: String {
+        switch self {
+        case .name:
+            return NSLocalizedString("Name", comment: "Title of the customer search filter to search by name.")
+        case .username:
+            return NSLocalizedString("Username", comment: "Title of the customer search filter to search for customer that match the username.")
+        case .email:
+            return NSLocalizedString("Email", comment: "Title of the customer search filter to search for customers that match the email.")
+        }
     }
 }

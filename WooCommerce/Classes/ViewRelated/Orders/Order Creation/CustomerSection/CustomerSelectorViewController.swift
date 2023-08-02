@@ -53,22 +53,31 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-            guard let self = self else {
-                return
-            }
+        viewModel.isEligibleForAdvanceSearch(completion: { [weak self] isEligible in
+            if isEligible {
+                self?.viewModel.loadCustomersListData(onCompletion: { [weak self] result in
+                    guard let self = self else {
+                        return
+                    }
 
-            self.removeGhostContent()
-            switch result {
-            case .success(let thereAreResults):
-                if thereAreResults {
-                    self.addSearchViewController()
-                    self.configureActivityIndicator()
-                } else {
-                    self.showEmptyState(with: self.emptyStateConfiguration())
-                }
-            case .failure:
-                self.showEmptyState(with: self.errorStateConfiguration())
+                    self.removeGhostContent()
+                    switch result {
+                    case .success(let thereAreResults):
+                        if thereAreResults {
+                            self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true, showSearchFilters: false)
+                            self.configureActivityIndicator()
+                        } else {
+                            self.showEmptyState(with: self.emptyStateConfiguration())
+                        }
+                    case .failure:
+                        self.showEmptyState(with: self.errorStateConfiguration())
+                    }
+                })
+            } else {
+                self?.removeGhostContent()
+                self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false, showSearchFilters: true)
+                self?.configureActivityIndicator()
+
             }
         })
     }
@@ -109,10 +118,13 @@ private extension CustomerSelectorViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    func addSearchViewController() {
+    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool) {
         let searchViewController = SearchViewController(
             storeID: siteID,
-            command: CustomerSearchUICommand(siteID: siteID, onDidSelectSearchResult: onCustomerTapped),
+            command: CustomerSearchUICommand(siteID: siteID,
+                                             loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
+                                             showSearchFilters: showSearchFilters,
+                                             onDidSelectSearchResult: onCustomerTapped),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .none
         )

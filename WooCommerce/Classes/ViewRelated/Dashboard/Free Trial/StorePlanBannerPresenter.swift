@@ -44,7 +44,6 @@ final class StorePlanBannerPresenter {
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
-        observeSiteInfo()
         observeStorePlan()
         observeConnectivity()
     }
@@ -64,27 +63,13 @@ final class StorePlanBannerPresenter {
 }
 
 private extension StorePlanBannerPresenter {
-    /// Observes the site info to add the expired banner as appropriate
-    ///
-    private func observeSiteInfo() {
-        ServiceLocator.stores.site
-            .sink { [weak self] site in
-                guard let self, let site else { return }
-                if !site.isWordPressComStore, site.wasEcommerceTrial {
-                    // Show plan expired banner for sites with expired WooExpress plans
-                    Task { @MainActor in
-                        await self.addBanner(contentText: Localization.expiredPlan)
-                    }
-                }
-            }
-            .store(in: &subscriptions)
-    }
 
     /// Observe the store plan and add or remove the banner as appropriate
     ///
     private func observeStorePlan() {
-        ServiceLocator.storePlanSynchronizer.$planState
-            .sink { [weak self] planState in
+        ServiceLocator.storePlanSynchronizer.$planState.removeDuplicates()
+            .combineLatest(ServiceLocator.stores.site.removeDuplicates())
+            .sink { [weak self] planState, site in
                 guard let self else { return }
                 switch planState {
                 case .loaded(let plan) where plan.isFreeTrial:
@@ -92,6 +77,11 @@ private extension StorePlanBannerPresenter {
                     let bannerViewModel = FreeTrialBannerViewModel(sitePlan: plan)
                     Task { @MainActor in
                         await self.addBanner(contentText: bannerViewModel.message)
+                    }
+                case .loaded(let plan) where plan.isFreePlan && site?.wasEcommerceTrial == true:
+                    // Show plan expired banner for sites with expired WooExpress plans
+                    Task { @MainActor in
+                        await self.addBanner(contentText: Localization.expiredPlan)
                     }
                 case .loading, .failed:
                     break // `.loading` and `.failed` should not change the banner visibility

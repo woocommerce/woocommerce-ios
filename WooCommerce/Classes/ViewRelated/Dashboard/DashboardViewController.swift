@@ -127,7 +127,7 @@ final class DashboardViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
     private var storePlanBannerPresenter: StorePlanBannerPresenter?
 

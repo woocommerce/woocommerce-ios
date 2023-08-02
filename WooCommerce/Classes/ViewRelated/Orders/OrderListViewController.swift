@@ -121,7 +121,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
     private var storePlanBannerPresenter: StorePlanBannerPresenter?
 

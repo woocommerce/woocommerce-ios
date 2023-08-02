@@ -182,7 +182,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @Published private var dataLoadingError: Error?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
     private var storePlanBannerPresenter: StorePlanBannerPresenter?
 

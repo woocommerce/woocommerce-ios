@@ -71,8 +71,9 @@ final class StorePlanSynchronizer: ObservableObject {
             return
         }
 
-        // If the site is not a WPCom store set the state to `.unavailable`
-        guard site.isWordPressComStore else {
+        // If the site is not a WPCom store and has never run a trial WooExpress plan,
+        // set the state to `.unavailable`
+        guard site.isWordPressComStore || site.wasEcommerceTrial else {
             planState = .unavailable
             return
         }

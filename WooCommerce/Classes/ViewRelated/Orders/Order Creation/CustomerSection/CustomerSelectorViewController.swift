@@ -53,7 +53,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        viewModel.isEligibleForAdvanceSearch(completion: { [weak self] isEligible in
+        viewModel.isEligibleForAdvancedSearch(completion: { [weak self] isEligible in
             if isEligible {
                 self?.viewModel.loadCustomersListData(onCompletion: { [weak self] result in
                     guard let self = self else {

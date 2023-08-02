@@ -15,7 +15,7 @@ final class CustomerSelectorViewModel {
         self.onCustomerSelected = onCustomerSelected
     }
 
-    func isEligibleForAdvanceSearch(completion: @escaping (Bool) -> Void) {
+    func isEligibleForAdvancedSearch(completion: @escaping (Bool) -> Void) {
         // Fetches WC plugin.
         let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
             guard let wcPlugin = wcPlugin, wcPlugin.active else {
@@ -66,6 +66,6 @@ private extension CustomerSelectorViewModel {
         static let pageSize = 25
         static let firstPageNumber = 1
         static let wcPluginName = "WooCommerce"
-        static let wcPluginMinimumVersion = "8.0.0-beta.2"
+        static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

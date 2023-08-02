@@ -196,7 +196,15 @@ private extension CustomerSearchUICommand {
     }
 
     func searchCustomersAction(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        CustomerAction.searchCustomers(siteID: siteID, keyword: keyword) { result in
+        let searchFilter: CustomerSearchFilter
+
+        if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) {
+            searchFilter = showSearchFilters ? filter : .all
+        } else {
+            searchFilter = .name
+        }
+
+        return CustomerAction.searchCustomers(siteID: siteID, keyword: keyword, filter: searchFilter) { result in
             switch result {
             case .success(_):
                 onCompletion?(result.isSuccess)
@@ -237,6 +245,8 @@ private extension CustomerSearchUICommand {
 extension CustomerSearchFilter {
     var title: String {
         switch self {
+        case .all:
+            return "" // Not displayed
         case .name:
             return NSLocalizedString("Name", comment: "Title of the customer search filter to search by name.")
         case .username:

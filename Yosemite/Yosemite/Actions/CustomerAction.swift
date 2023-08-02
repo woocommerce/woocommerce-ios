@@ -2,6 +2,7 @@ import Foundation
 
 /// The type of filter when searching for customers.
 public enum CustomerSearchFilter: String, Equatable, CaseIterable {
+    case all
     case name
     case username
     case email
@@ -25,14 +26,16 @@ public enum CustomerAction: Action {
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///
     ///- `siteID`: The site for which we will perform the search.
-    ///- `keyword`: Keyword to perform the search. Only searches by name.
+    ///- `keyword`: Keyword to perform the search.
+    ///- `filter`: Filter to perform the search.
     ///- `onCompletion`: Invoked when the operation finishes.
     ///     - `result.success([Customer])`:  On success, the Customers found will be loaded in Core Data.
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
         keyword: String,
-        onCompletion: (Result<[Customer], Error>) -> Void)
+        filter: CustomerSearchFilter,
+        onCompletion: (Result<(), Error>) -> Void)
 
     /// Retrieves a single Customer from a site
     ///

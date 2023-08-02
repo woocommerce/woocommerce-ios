@@ -182,7 +182,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @Published private var dataLoadingError: Error?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
     private var storePlanBannerPresenter: StorePlanBannerPresenter?
 
@@ -223,7 +223,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureHiddenScrollView()
         configureToolbar()
         configureSyncingCoordinator()
-        configurestorePlanBannerPresenter()
+        configureStorePlanBannerPresenter()
         registerTableViewCells()
 
         observeBlazeBannerVisibility()
@@ -701,7 +701,7 @@ private extension ProductsViewController {
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 
-    func configurestorePlanBannerPresenter() {
+    func configureStorePlanBannerPresenter() {
         self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: view,
                                                                   siteID: siteID) { [weak self] bannerHeight in

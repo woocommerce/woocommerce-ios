@@ -25,6 +25,8 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private let siteID: Int64
 
+    private let loadResultsWhenSearchTermIsEmpty: Bool
+
     private let stores: StoresManager
 
     private let analytics: Analytics
@@ -32,11 +34,13 @@ final class CustomerSearchUICommand: SearchUICommand {
     private let featureFlagService: FeatureFlagService
 
     init(siteID: Int64,
+         loadResultsWhenSearchTermIsEmpty: Bool = false,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
+        self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
@@ -52,7 +56,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
     }
 
     func createResultsController() -> ResultsController<StorageCustomer> {
@@ -66,6 +70,10 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     func createStarterViewController() -> UIViewController? {
         guard !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
+            guard loadResultsWhenSearchTermIsEmpty else {
+                return createStarterViewControllerForEmptySearch()
+            }
+
             return nil
         }
 
@@ -122,6 +130,22 @@ final class CustomerSearchUICommand: SearchUICommand {
 }
 
 private extension CustomerSearchUICommand {
+    func createStarterViewControllerForEmptySearch() -> UIViewController {
+        let configuration = EmptyStateViewController.Config.withButton(
+            message: .init(string: ""),
+            image: .customerSearchImage,
+            details: Localization.emptyDefaultStateMessage,
+            buttonTitle: Localization.emptyDefaultStateActionTitle
+        ) { [weak self] _ in
+
+        }
+
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        emptyStateViewController.configure(configuration)
+
+        return emptyStateViewController
+    }
+
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
         CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
@@ -156,5 +180,9 @@ private extension CustomerSearchUICommand {
         static let emptySearchResults = NSLocalizedString(
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
+        static let emptyDefaultStateMessage = NSLocalizedString("Search for an existing customer or",
+                                                                comment: "Message to prompt users to search for customers on the customer search screen")
+        static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",
+                                                                comment: "Button title for adding customer details manually on the customer search screen")
     }
 }

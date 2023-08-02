@@ -33,25 +33,31 @@ final class StorePlanBannerPresenter {
 
     private let stores: StoresManager
     private let storePlanSynchronizer: StorePlanSynchronizing
+    private let connectivityObserver: ConnectivityObserver
 
-    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
+    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol
 
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
     init(viewController: UIViewController,
-         containerView: UIView, siteID: Int64,
+         containerView: UIView,
+         siteID: Int64,
          onLayoutUpdated: @escaping (CGFloat) -> Void,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
-         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer) {
+         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+         inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
         self.stores = stores
         self.storePlanSynchronizer = storePlanSynchronizer
+        self.connectivityObserver = connectivityObserver
+        self.inAppPurchasesManager = inAppPurchasesManager
         observeStorePlan()
         observeConnectivity()
     }
@@ -76,7 +82,9 @@ private extension StorePlanBannerPresenter {
     ///
     private func observeStorePlan() {
         storePlanSynchronizer.planState.removeDuplicates()
+            .print("🍑")
             .combineLatest(stores.site.removeDuplicates())
+            .print("🍑🍑")
             .sink { [weak self] planState, site in
                 guard let self else { return }
                 switch planState {
@@ -104,7 +112,7 @@ private extension StorePlanBannerPresenter {
     /// Reload banner visibility when internet is reachable again.
     ///
     private func observeConnectivity() {
-        ServiceLocator.connectivityObserver.statusPublisher.sink { [weak self] status in
+        connectivityObserver.statusPublisher.sink { [weak self] status in
             switch status {
             case .reachable:
                 self?.reloadBannerVisibility()

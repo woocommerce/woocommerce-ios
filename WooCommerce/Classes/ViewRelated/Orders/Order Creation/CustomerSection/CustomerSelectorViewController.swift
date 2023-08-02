@@ -75,7 +75,11 @@ private extension CustomerSelectorViewController {
                 })
             } else {
                 self?.removeGhostContent()
-                self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false, showSearchFilters: true)
+                self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false,
+                                              showSearchFilters: true,
+                                              onAddCustomerDetailsManually: {
+                    self?.presentNewCustomerDetailsFlow()
+                })
                 self?.configureActivityIndicator()
 
             }
@@ -118,12 +122,13 @@ private extension CustomerSelectorViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool) {
+    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool, onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
             command: CustomerSearchUICommand(siteID: siteID,
                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
                                              showSearchFilters: showSearchFilters,
+                                             onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .none

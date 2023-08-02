@@ -23,6 +23,8 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidSelectSearchResult: ((Customer) -> Void)
 
+    var onAddCustomerDetailsManually: (() -> Void)?
+
     private var filter: CustomerSearchFilter = .name
 
     private let siteID: Int64
@@ -43,6 +45,7 @@ final class CustomerSearchUICommand: SearchUICommand {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         onAddCustomerDetailsManually: (() -> Void)? = nil,
          onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
@@ -50,6 +53,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.stores = stores
         self.analytics = analytics
         self.featureFlagService = featureFlagService
+        self.onAddCustomerDetailsManually = onAddCustomerDetailsManually
         self.onDidSelectSearchResult = onDidSelectSearchResult
     }
 
@@ -175,7 +179,7 @@ private extension CustomerSearchUICommand {
             details: Localization.emptyDefaultStateMessage,
             buttonTitle: Localization.emptyDefaultStateActionTitle
         ) { [weak self] _ in
-
+            self?.onAddCustomerDetailsManually?()
         }
 
         let emptyStateViewController = EmptyStateViewController(style: .list)

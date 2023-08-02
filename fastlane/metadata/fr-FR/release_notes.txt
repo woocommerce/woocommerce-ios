@@ -1,1 +1,3 @@
-Une gestion des codes promo plus simple que jamais. Vous pouvez désormais sélectionner plusieurs codes promo lors de la création d’une commande. Il est également possible d’ajouter des remises aux produits lors de la création d’une commande. Activez vos mises à jour pour pouvoir profiter des améliorations et des dernières fonctionnalités de WooCommerce !
+Des nouvelles réjouissantes pour les nouveaux propriétaires de boutiques ! Premièrement, vous pouvez désormais mettre à niveau facilement vers tous les plans disponibles. Deuxièmement, vous pouvez gagner de l’expérience pratique dans la gestion des commandes en créant des commandes de test directement dans l’application !
+
+Mais ce n’est pas tout : la dernière mise à jour apporte également des améliorations à l’IA de description des produits. Essayez-la si vous ne l’avez pas encore fait !

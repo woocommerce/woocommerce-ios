@@ -84,17 +84,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .euShippingNotification:
             return true
         case .sdkLessGoogleSignIn:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shareProductAI:
             return true
         case .freeTrialInAppPurchasesUpgradeM2:
             return true
         case .ordersWithCouponsM4:
             return true
-        case .freeTrialSurvey24hAfterFreeTrialSubscribed:
-            return true
         case .betterCustomerSelectionInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return false
         default:
             return true
         }

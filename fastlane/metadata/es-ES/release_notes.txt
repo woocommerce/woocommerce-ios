@@ -1,1 +1,0 @@
-La gestión de cupones es mucho más sencilla. Ahora, puedes elegir varios cupones al crear un pedido. También tienes la opción de añadir descuentos a los productos al crear un pedido. Sigue con las actualizaciones para disfrutar de las últimas funciones y las mejoras continuas de WooCommerce.

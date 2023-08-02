@@ -1330,6 +1330,25 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.discardOrder()
     }
 
+    func test_addCustomerAddressToOrder_resets_addressFormViewModel_with_new_data() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddress1(),
+            shipping: sampleAddress2()
+        )
+
+        viewModel.addCustomerAddressToOrder(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.email, customer.email)
+    }
+
     func test_resetAddressForm_discards_pending_address_field_changes() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

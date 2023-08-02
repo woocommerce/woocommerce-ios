@@ -17,9 +17,15 @@ struct OrderCustomerSection: View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
             .sheet(isPresented: $showAddressForm) {
                 NavigationView {
-                    EditOrderAddressForm(dismiss: {
-                        showAddressForm.toggle()
-                    }, viewModel: addressFormViewModel)
+                    if viewModel.shouldShowCustomerSelectorScreen {
+                        CustomerSelectorView(siteID: viewModel.siteID) { customer in
+                            viewModel.addCustomerAddressToOrder(customer: customer)
+                        }
+                    } else {
+                        EditOrderAddressForm(dismiss: {
+                            showAddressForm.toggle()
+                        }, viewModel: addressFormViewModel)
+                    }
                 }
                 .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,
                                       didDismiss: addressFormViewModel.userDidCancelFlow)

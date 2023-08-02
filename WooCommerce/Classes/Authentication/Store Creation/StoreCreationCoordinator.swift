@@ -32,7 +32,6 @@ final class StoreCreationCoordinator: Coordinator {
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
     private let localNotificationScheduler: LocalNotificationScheduler
-    private var jetpackCheckRetryInterval: TimeInterval = 10
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
@@ -425,7 +424,7 @@ private extension StoreCreationCoordinator {
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
         let approxSecondsToWaitForNetworkRequest = 10.0
-        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
+        let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: Constants.jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
         let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
         navigationController.isNavigationBarHidden = true
         self.storeCreationProgressViewModel = viewModel
@@ -633,6 +632,8 @@ private extension StoreCreationCoordinator {
         enum LocalNotificationScenario {
             static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
         }
+
+        static let jetpackCheckRetryInterval: TimeInterval = 10
     }
 }
 

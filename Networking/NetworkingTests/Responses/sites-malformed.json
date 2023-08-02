@@ -48,6 +48,10 @@
       "jetpack": false,
       "jetpack_connection": true,
       "was_ecommerce_trial": false,
+      "plan": {
+          "product_id": 1008,
+          "product_slug": "business-bundle"
+      },
       "options": {
         "timezone": "",
         "gmt_offset": -4,

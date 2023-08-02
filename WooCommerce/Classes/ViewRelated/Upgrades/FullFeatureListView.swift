@@ -15,6 +15,7 @@ struct FullFeatureListView: View {
                         .bold()
                         .padding(.top)
                         .padding(.bottom)
+                        .accessibilityAddTraits(.isHeader)
                     ForEach(featureList.essentialFeatures, id: \.self) { feature in
                         Text(feature)
                             .font(.body)
@@ -26,6 +27,8 @@ struct FullFeatureListView: View {
                             Image(systemName: "star.fill")
                                 .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade50))
                                 .font(.footnote)
+                                .accessibilityRemoveTraits([.isImage])
+                                .accessibilityLabel(Localization.performanceOnlyText)
                         }
                     }
                     Divider()
@@ -39,6 +42,7 @@ struct FullFeatureListView: View {
                     .foregroundColor(.withColorStudio(name: .wooCommercePurple, shade: .shade50))
                     .padding(.bottom)
                     .renderedIf(featureList.performanceFeatures.isNotEmpty)
+                    .accessibilityHidden(true)
                 }
             }
             .padding(.horizontal)

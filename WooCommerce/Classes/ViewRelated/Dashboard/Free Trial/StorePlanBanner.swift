@@ -1,12 +1,12 @@
 import SwiftUI
 
-/// Hosting controller for `FreeTrialBanner`.
+/// Hosting controller for `StorePlanBanner`.
 ///
-final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialBanner> {
+final class StorePlanBannerHostingViewController: UIHostingController<StorePlanBanner> {
     /// Designated initializer.
     ///
     init(actionText: String, mainText: String, onLearnMoreTapped: @escaping () -> Void) {
-        super.init(rootView: FreeTrialBanner(actionText: actionText,
+        super.init(rootView: StorePlanBanner(actionText: actionText,
                                              mainText: mainText,
                                              onLearnMoreTapped: onLearnMoreTapped))
     }
@@ -18,9 +18,9 @@ final class FreeTrialBannerHostingViewController: UIHostingController<FreeTrialB
     }
 }
 
-/// Free Trial Banner. To be used inside the Dashboard.
+/// Store Plan Banner. To be used inside the Dashboard.
 ///
-struct FreeTrialBanner: View {
+struct StorePlanBanner: View {
 
     /// Text to be rendered as the banner action button
     ///
@@ -63,7 +63,7 @@ struct FreeTrialBanner: View {
 }
 
 // MARK: Definitions
-extension FreeTrialBanner {
+extension StorePlanBanner {
     enum Layout {
         static let spacing: CGFloat = 6.0
     }
@@ -73,9 +73,9 @@ extension FreeTrialBanner {
     }
 }
 
-struct FreeTrial_Preview: PreviewProvider {
+struct StorePlanBanner_Preview: PreviewProvider {
     static var previews: some View {
-        FreeTrialBanner(actionText: "Upgrade now", mainText: "Your Free trial has ended", onLearnMoreTapped: { })
+        StorePlanBanner(actionText: "Upgrade now", mainText: "Your Free trial has ended", onLearnMoreTapped: { })
             .previewLayout(.sizeThatFits)
     }
 }

@@ -142,7 +142,7 @@ private extension CustomerSelectorViewController {
 
     func errorStateConfiguration() -> EmptyStateViewController.Config {
         EmptyStateViewController.Config.simple(message: .init(string: Localization.genericFetchCustomersError),
-                                               image: .emptySearchResultsImage)
+                                               image: .errorImage)
     }
 
     func displayViewController(_ viewController: UIViewController) {

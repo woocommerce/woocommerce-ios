@@ -77,7 +77,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, commit `1d3bb8030b3aed54c2b24c18fb95f3945ac63f9f`)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `trunk`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -132,7 +132,7 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   Automattic-Tracks-iOS:
-    :commit: 1d3bb8030b3aed54c2b24c18fb95f3945ac63f9f
+    :branch: trunk
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
   WordPressAuthenticator:
     :branch: trunk
@@ -140,7 +140,7 @@ EXTERNAL SOURCES:
 
 CHECKOUT OPTIONS:
   Automattic-Tracks-iOS:
-    :commit: 1d3bb8030b3aed54c2b24c18fb95f3945ac63f9f
+    :commit: aad902bf945e7528a00ba5b9c5640974d58ff2fd
     :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
   WordPressAuthenticator:
     :commit: bfdfde6fcd9a0faf0509db8380aa208e6d093a08
@@ -183,6 +183,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 17343446f03e7f6b12a818bd4c6920cdecb14415
+PODFILE CHECKSUM: 1e30ee7ea7eaa2f5c59e5cc4a272570a13c1d32a
 
 COCOAPODS: 1.12.1

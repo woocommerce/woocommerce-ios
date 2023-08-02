@@ -1,8 +1,11 @@
 import XCTest
+import Combine
 @testable import WooCommerce
 @testable import Yosemite
 
 final class StorePlanSynchronizerTests: XCTestCase {
+
+    var planStateSubscription: AnyCancellable?
 
     // Mocked stores manager
     var stores = MockStoresManager(sessionManager: .testingInstance)
@@ -29,18 +32,56 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        XCTAssertEqual(synchronizer.planState, .notLoaded)
+        waitFor { promise in
+            self.planStateSubscription = synchronizer.planState
+                .sink { state in
+                    XCTAssertEqual(state, .notLoaded)
+                    promise(())
+                }
+        }
     }
 
-    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site() {
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_no_ecommerce_trial() {
         // Given
-        session.defaultSite = .fake().copy(siteID: sampleSiteID)
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, wasEcommerceTrial: false)
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        XCTAssertEqual(synchronizer.planState, .unavailable)
+        waitFor { promise in
+            self.planStateSubscription = synchronizer.planState
+                .sink { state in
+                    XCTAssertEqual(state, .unavailable)
+                    promise(())
+                }
+        }
+    }
+
+    func test_synchronizer_fetches_plan_immediately_for_non_wpcom_site_that_once_was_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        waitFor { promise in
+            self.planStateSubscription = synchronizer.planState
+                .sink { state in
+                    XCTAssertEqual(state, .loaded(samplePlan))
+                    promise(())
+                }
+        }
     }
 
     func test_synchronizer_fetches_plan_immediately_if_there_is_a_wpcom_site() {
@@ -59,7 +100,13 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
+        waitFor { promise in
+            self.planStateSubscription = synchronizer.planState
+                .sink { state in
+                    XCTAssertEqual(state, .loaded(samplePlan))
+                    promise(())
+                }
+        }
     }
 
     func test_synchronizer_reflects_error_state() {
@@ -77,7 +124,13 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        XCTAssertEqual(synchronizer.planState, .failed)
+        waitFor { promise in
+            self.planStateSubscription = synchronizer.planState
+                .sink { state in
+                    XCTAssertEqual(state, .failed)
+                    promise(())
+                }
+        }
     }
 
     // MARK: sixHoursAfterFreeTrialSubscribed
@@ -256,7 +309,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 5) {
-            /// 4 notifications include:
+            /// 5 notifications include:
             /// - 1 day before expiration date
             /// - 1 day after expiration date
             /// - 6 hrs after trial subscription

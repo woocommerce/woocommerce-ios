@@ -515,7 +515,6 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_it_presents_store_creation_flow_when_there_are_no_valid_stores() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting())
 
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
@@ -538,8 +537,7 @@ final class AuthenticationManagerTests: XCTestCase {
         storage.insertSampleSite(readOnlySite: testSite)
 
         let manager = AuthenticationManager(stores: stores,
-                                            storageManager: storage,
-                                            featureFlagService: featureFlagService)
+                                            storageManager: storage)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
@@ -558,7 +556,6 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let sessionManager = SessionManager.makeForTesting()
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -578,7 +575,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let switchStoreUseCase = MockSwitchStoreUseCase()
         let manager = AuthenticationManager(stores: stores,
                                             storageManager: storage,
-                                            featureFlagService: featureFlagService,
                                             switchStoreUseCase: switchStoreUseCase)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
@@ -596,7 +592,6 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_it_does_not_auto_select_store_when_there_are_more_than_one_only_one_valid_stores() throws {
         // Given
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true)
         let sessionManager = SessionManager.makeForTesting()
         let stores = MockStoresManager(sessionManager: sessionManager)
 
@@ -617,7 +612,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let switchStoreUseCase = MockSwitchStoreUseCase()
         let manager = AuthenticationManager(stores: stores,
                                             storageManager: storage,
-                                            featureFlagService: featureFlagService,
                                             switchStoreUseCase: switchStoreUseCase)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)

@@ -581,9 +581,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_valid_store_is_selected_already() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
-                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
-                                                        isStoreCreationM3ProfilerEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM3ProfilerEnabled: true)
 
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -631,9 +629,7 @@ final class AppCoordinatorTests: XCTestCase {
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_no_valid_store_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
-                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
-                                                        isStoreCreationM3ProfilerEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isStoreCreationM3ProfilerEnabled: true)
         // Authenticates the app without selecting a site, so that the store picker is shown.
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil

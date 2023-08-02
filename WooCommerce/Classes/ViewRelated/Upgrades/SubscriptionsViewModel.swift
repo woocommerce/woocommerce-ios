@@ -50,7 +50,7 @@ final class SubscriptionsViewModel: ObservableObject {
 
     /// Shared store plan synchronizer.
     ///
-    private let storePlanSynchronizer: StorePlanSynchronizer
+    private let storePlanSynchronizer: StorePlanSynchronizing
 
     /// Retrieves asynchronously all WPCom plans In-App Purchases products.
     ///
@@ -65,7 +65,7 @@ final class SubscriptionsViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
 
     init(stores: StoresManager = ServiceLocator.stores,
-         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
+         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
@@ -110,7 +110,7 @@ private extension SubscriptionsViewModel {
     /// Observes and reacts to plan changes
     ///
     func observePlan() {
-        storePlanSynchronizer.$planState.sink { [weak self] planState in
+        storePlanSynchronizer.planState.sink { [weak self] planState in
             guard let self else { return }
             switch planState {
             case .loading, .notLoaded:

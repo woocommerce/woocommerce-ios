@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 import Combine
 import UIKit
 import protocol Experiments.FeatureFlagService
@@ -30,6 +31,9 @@ final class StorePlanBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
+    private let stores: StoresManager
+    private let storePlanSynchronizer: StorePlanSynchronizing
+
     private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
 
     /// - Parameters:
@@ -39,11 +43,15 @@ final class StorePlanBannerPresenter {
     init(viewController: UIViewController,
          containerView: UIView, siteID: Int64,
          onLayoutUpdated: @escaping (CGFloat) -> Void,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores,
+         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
+        self.stores = stores
+        self.storePlanSynchronizer = storePlanSynchronizer
         observeStorePlan()
         observeConnectivity()
     }
@@ -51,7 +59,7 @@ final class StorePlanBannerPresenter {
     /// Reloads the site plan and the banner visibility.
     ///
     func reloadBannerVisibility() {
-        ServiceLocator.storePlanSynchronizer.reloadPlan()
+        storePlanSynchronizer.reloadPlan()
     }
 
     /// Bring banner (if visible) to the front. Useful when some content has hidden it.
@@ -67,8 +75,8 @@ private extension StorePlanBannerPresenter {
     /// Observe the store plan and add or remove the banner as appropriate
     ///
     private func observeStorePlan() {
-        ServiceLocator.storePlanSynchronizer.$planState.removeDuplicates()
-            .combineLatest(ServiceLocator.stores.site.removeDuplicates())
+        storePlanSynchronizer.planState.removeDuplicates()
+            .combineLatest(stores.site.removeDuplicates())
             .sink { [weak self] planState, site in
                 guard let self else { return }
                 switch planState {

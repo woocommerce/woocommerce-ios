@@ -539,8 +539,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         let manager = AuthenticationManager(stores: stores,
                                             storageManager: storage,
-                                            featureFlagService: featureFlagService,
-                                            purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+                                            featureFlagService: featureFlagService)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
         let credentials = AuthenticatorCredentials(wpcom: wpcomCredentials, wporg: nil)
@@ -580,7 +579,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager(stores: stores,
                                             storageManager: storage,
                                             featureFlagService: featureFlagService,
-                                            purchasesManager: WebPurchasesForWPComPlans(stores: stores),
                                             switchStoreUseCase: switchStoreUseCase)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)
@@ -620,7 +618,6 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager(stores: stores,
                                             storageManager: storage,
                                             featureFlagService: featureFlagService,
-                                            purchasesManager: WebPurchasesForWPComPlans(stores: stores),
                                             switchStoreUseCase: switchStoreUseCase)
 
         let wpcomCredentials = WordPressComCredentials(authToken: "abc", isJetpackLogin: false, multifactor: false)

@@ -22,19 +22,6 @@ final class StoreCreationCoordinator: Coordinator {
     @Published private var possibleSiteURLsFromStoreCreation: Set<String> = []
     private var possibleSiteURLsFromStoreCreationSubscription: AnyCancellable?
 
-    // MARK: - Store creation M2
-
-    /// This property is kept as a lazy var instead of a dependency in the initializer because `InAppPurchasesForWPComPlansManager` is a @MainActor.
-    /// If it's passed in the initializer, all call sites have to become @MainActor which results in too many changes.
-    @MainActor
-    private lazy var purchasesManager: InAppPurchasesForWPComPlansProtocol = {
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-            return InAppPurchasesForWPComPlansManager(stores: stores)
-        } else {
-            return WebPurchasesForWPComPlans(stores: stores)
-        }
-    }()
-
     private var jetpackSiteSubscription: AnyCancellable?
 
     private let stores: StoresManager
@@ -56,7 +43,6 @@ final class StoreCreationCoordinator: Coordinator {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
@@ -71,82 +57,21 @@ final class StoreCreationCoordinator: Coordinator {
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
-
-        Task { @MainActor in
-            if let purchasesManager {
-                self.purchasesManager = purchasesManager
-            }
-        }
     }
 
     func start() {
-        guard featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
-            return startStoreCreationM1()
-        }
         Task { @MainActor in
-            do {
-                let inProgressView = createIAPEligibilityInProgressView()
-                let storeCreationNavigationController = WooNavigationController(rootViewController: inProgressView)
-                await presentStoreCreation(viewController: storeCreationNavigationController)
-
-                guard await purchasesManager.inAppPurchasesAreSupported() else {
-                    throw PlanPurchaseError.iapNotSupported
-                }
-                let plans = try await purchasesManager.fetchPlans()
-                let expectedPlanIdentifier = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
-                Constants.iapPlanIdentifier: Constants.webPlanIdentifier
-                guard let plan = plans.first,
-                      plan.id == expectedPlanIdentifier else {
-                    throw PlanPurchaseError.noMatchingProduct
-                }
-                guard try await purchasesManager.userIsEntitledToPlan(with: plan.id) == false else {
-                    throw PlanPurchaseError.productNotEligible
-                }
-
-                startStoreCreationM2(from: storeCreationNavigationController, planToPurchase: plan)
-            } catch let error as PlanPurchaseError {
-                let isWebviewFallbackAllowed = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) == false
-                navigationController.dismiss(animated: true) { [weak self] in
-                    guard let self else { return }
-                    if isWebviewFallbackAllowed {
-                        self.startStoreCreationM1()
-                    } else {
-                        self.showIneligibleUI(from: self.navigationController, error: error)
-                    }
-                }
-            } catch {
-                navigationController.dismiss(animated: true) { [weak self] in
-                    guard let self else { return }
-
-                    // Show error alert
-                    self.showStoreCreationDefaultErrorAlert(from: self.navigationController)
-                }
-            }
+            let storeCreationNavigationController = WooNavigationController()
+            startStoreCreation(from: storeCreationNavigationController)
+            await presentStoreCreation(viewController: storeCreationNavigationController)
         }
     }
 }
 
 private extension StoreCreationCoordinator {
-    func startStoreCreationM1() {
-        observeSiteURLsFromStoreCreation()
-
-        let viewModel = StoreCreationWebViewModel { [weak self] result in
-            self?.handleStoreCreationResult(result)
-        }
-        possibleSiteURLsFromStoreCreation = []
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        webViewController.addCloseNavigationBarButton(target: self, action: #selector(handleStoreCreationCloseAction))
-        let webNavigationController = WooNavigationController(rootViewController: webViewController)
-        // Disables interactive dismissal of the store creation modal.
-        webNavigationController.isModalInPresentation = true
-
-        Task { @MainActor in
-            await presentStoreCreation(viewController: webNavigationController)
-        }
-    }
 
     @MainActor
-    func startStoreCreationM2(from navigationController: UINavigationController, planToPurchase: WPComPlanProduct) {
+    func startStoreCreation(from navigationController: UINavigationController) {
         navigationController.navigationBar.prefersLargeTitles = true
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
@@ -158,7 +83,7 @@ private extension StoreCreationCoordinator {
                 /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
                 /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/9326#issuecomment-1490012032
                 ///
-                self?.showCategoryQuestion(from: navigationController, storeName: storeName, planToPurchase: planToPurchase)
+                self?.showCategoryQuestion(from: navigationController, storeName: storeName)
             } else {
                 self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
             }
@@ -200,36 +125,6 @@ private extension StoreCreationCoordinator {
                 }
             }
         }
-    }
-
-    @MainActor
-    func createIAPEligibilityInProgressView() -> UIViewController {
-        InProgressViewController(viewProperties:
-                .init(title: Localization.WaitingForIAPEligibility.title,
-                      message: Localization.WaitingForIAPEligibility.message),
-                                 hidesNavigationBar: true)
-    }
-
-    /// Shows UI when the user is not eligible for store creation.
-    func showIneligibleUI(from navigationController: UINavigationController, error: Error) {
-        let message: String
-        switch error {
-        case PlanPurchaseError.iapNotSupported:
-            message = Localization.IAPIneligibleAlert.notSupportedMessage
-        case PlanPurchaseError.productNotEligible:
-            message = Localization.IAPIneligibleAlert.productNotEligibleMessage
-        default:
-            message = Localization.IAPIneligibleAlert.defaultMessage
-        }
-
-        let alert = UIAlertController(title: nil,
-                                      message: message,
-                                      preferredStyle: .alert)
-        alert.view.tintColor = .text
-
-        alert.addCancelActionWithTitle(Localization.IAPIneligibleAlert.dismissActionTitle) { _ in }
-
-        navigationController.present(alert, animated: true)
     }
 
     /// Shows an alert with default error message
@@ -359,16 +254,15 @@ private extension StoreCreationCoordinator {
 private extension StoreCreationCoordinator {
     @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
-                              storeName: String,
-                              planToPurchase: WPComPlanProduct) {
+                              storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] category in
                     guard let self else { return }
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category)
                 } onSkip: { [weak self] in
                     guard let self else { return }
                     self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil, planToPurchase: planToPurchase)
+                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil)
                 })
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
@@ -377,8 +271,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func showSellingStatusQuestion(from navigationController: UINavigationController,
                                    storeName: String,
-                                   category: StoreCreationCategoryAnswer?,
-                                   planToPurchase: WPComPlanProduct) {
+                                   category: StoreCreationCategoryAnswer?) {
         let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
             guard let self else { return }
             if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
@@ -387,16 +280,14 @@ private extension StoreCreationCoordinator {
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
-                                          sellingStatus: sellingStatus,
-                                          planToPurchase: planToPurchase)
+                                          sellingStatus: sellingStatus)
         } onSkip: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
-                                          sellingStatus: nil,
-                                          planToPurchase: planToPurchase)
+                                          sellingStatus: nil)
         }
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
@@ -406,8 +297,7 @@ private extension StoreCreationCoordinator {
     func showStoreCountryQuestion(from navigationController: UINavigationController,
                                   storeName: String,
                                   category: StoreCreationCategoryAnswer?,
-                                  sellingStatus: StoreCreationSellingStatusAnswer?,
-                                  planToPurchase: WPComPlanProduct) {
+                                  sellingStatus: StoreCreationSellingStatusAnswer?) {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] countryCode in
                     guard let self else { return }
@@ -531,97 +421,6 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
-    func showStoreSummary(from navigationController: UINavigationController,
-                          result: SiteCreationResult,
-                          category: StoreCreationCategoryAnswer?,
-                          countryCode: SiteAddress.CountryCode?,
-                          planToPurchase: WPComPlanProduct) {
-        let viewModel = StoreCreationSummaryViewModel(storeName: result.name,
-                                                      storeSlug: result.siteSlug,
-                                                      categoryName: category?.name,
-                                                      countryCode: countryCode)
-        let storeSummary = StoreCreationSummaryHostingController(viewModel: viewModel) { [weak self] in
-            guard let self else { return }
-            self.showWPCOMPlan(from: navigationController,
-                               planToPurchase: planToPurchase,
-                               siteID: result.siteID,
-                               siteSlug: result.siteSlug,
-                               siteName: result.name)
-        } onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        }
-        navigationController.pushViewController(storeSummary, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeSummary))
-    }
-
-    @MainActor
-    func showWPCOMPlan(from navigationController: UINavigationController,
-                       planToPurchase: WPComPlanProduct,
-                       siteID: Int64,
-                       siteSlug: String,
-                       siteName: String) {
-        let storePlan = StoreCreationPlanHostingController(viewModel: .init(plan: planToPurchase)) { [weak self] in
-            guard let self else { return }
-            await self.purchasePlan(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName, planToPurchase: planToPurchase)
-        } onClose: { [weak self] in
-            guard let self else { return }
-            self.showDiscardChangesAlert(flow: .native)
-        }
-        navigationController.pushViewController(storePlan, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .planPurchase))
-    }
-
-    @MainActor
-    func purchasePlan(from navigationController: UINavigationController,
-                      siteID: Int64,
-                      siteSlug: String,
-                      siteName: String,
-                      planToPurchase: WPComPlanProduct) async {
-        do {
-            let result = try await purchasesManager.purchasePlan(with: planToPurchase.id, for: siteID)
-
-            if featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) {
-                switch result {
-                case .success:
-                    showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
-                default:
-                    return
-                }
-            } else {
-                switch result {
-                case .pending:
-                    showWebCheckout(from: navigationController, siteID: siteID, siteSlug: siteSlug, siteName: siteName)
-                default:
-                    return
-                }
-            }
-        } catch {
-            showPlanPurchaseErrorAlert(from: navigationController, error: error)
-        }
-    }
-
-    @MainActor
-    func showWebCheckout(from navigationController: UINavigationController, siteID: Int64, siteSlug: String, siteName: String) {
-        let checkoutViewModel = WebCheckoutViewModel(siteSlug: siteSlug) { [weak self] in
-            self?.showInProgressViewWhileWaitingForJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: siteName)
-        }
-        let checkoutController = AuthenticatedWebViewController(viewModel: checkoutViewModel)
-        navigationController.pushViewController(checkoutController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .webCheckout))
-    }
-
-    @MainActor
-    func showInProgressViewWhileWaitingForJetpackSite(from navigationController: UINavigationController,
-                                                      siteID: Int64,
-                                                      expectedStoreName: String) {
-        Task { @MainActor in
-            await waitForSiteToBecomeJetpackSite(from: navigationController, siteID: siteID, expectedStoreName: expectedStoreName)
-            showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
-            analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
-        }
-    }
-
-    @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
         let approxSecondsToWaitForNetworkRequest = 10.0
@@ -705,18 +504,6 @@ private extension StoreCreationCoordinator {
         /// Free trial stores should land directly on the dashboard and not show any success view.
         ///
         continueWithSelectedSite(site: site)
-    }
-
-    @MainActor
-    func showPlanPurchaseErrorAlert(from navigationController: UINavigationController, error: Error) {
-        let errorMessage = featureFlagService.isFeatureFlagEnabled(.storeCreationM2WithInAppPurchasesEnabled) ?
-        Localization.PlanPurchaseErrorAlert.defaultErrorMessage: Localization.PlanPurchaseErrorAlert.webPurchaseErrorMessage
-        let alertController = UIAlertController(title: Localization.PlanPurchaseErrorAlert.title,
-                                                message: errorMessage,
-                                                preferredStyle: .alert)
-        alertController.view.tintColor = .text
-        _ = alertController.addCancelActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in }
-        navigationController.present(alertController, animated: true)
     }
 
     @MainActor
@@ -807,43 +594,6 @@ private extension StoreCreationCoordinator {
     }
 
     enum Localization {
-        static var domainSelectorTitle: String {
-            NSLocalizedString("Choose a domain", comment: "Title of the domain selector in the store creation flow.")
-        }
-        static var domainSelectorSubtitle: String {
-            NSLocalizedString(
-                "This is where people will find you on the Internet. You can add another domain later.",
-                comment: "Subtitle of the domain selector in the store creation flow.")
-        }
-
-        enum WaitingForIAPEligibility {
-            static let title = NSLocalizedString(
-                "We are getting ready for your store creation",
-                comment: "Title of the in-progress view when waiting for the in-app purchase status before the store creation flow."
-            )
-            static let message = NSLocalizedString(
-                "Please remain connected.",
-                comment: "Message of the in-progress view when waiting for the in-app purchase status before the store creation flow."
-            )
-        }
-
-        enum IAPIneligibleAlert {
-            static let notSupportedMessage = NSLocalizedString(
-                "We're sorry, but store creation is not currently available in your country in the app.",
-                comment: "Message of the alert when the user cannot create a store because their App Store country is not supported."
-            )
-            static let productNotEligibleMessage = NSLocalizedString(
-                "Sorry, but you can only create one store. Your account is already associated with an active store.",
-                comment: "Message of the alert when the user cannot create a store because they already created one before."
-            )
-            static let defaultMessage = NSLocalizedString(
-                "We're sorry, but store creation is not currently available in the app.",
-                comment: "Message of the alert when the user cannot create a store for some reason."
-            )
-            static let dismissActionTitle = NSLocalizedString("OK",
-                                                             comment: "Button title to cancel the alert when the user cannot create a store.")
-        }
-
         enum DiscardChangesAlert {
             static let title = NSLocalizedString("Do you want to leave?",
                                                  comment: "Title of the alert when the user dismisses the store creation flow.")
@@ -868,23 +618,6 @@ private extension StoreCreationCoordinator {
             )
         }
 
-        enum PlanPurchaseErrorAlert {
-            static let title = NSLocalizedString("Issue purchasing the plan",
-                                                 comment: "Title of the alert when the WPCOM plan cannot be purchased in the store creation flow.")
-            static let defaultErrorMessage = NSLocalizedString(
-                "Please try again and make sure you are signed in to an App Store account eligible for purchase.",
-                comment: "Message of the alert when the WPCOM plan cannot be purchased in the store creation flow."
-            )
-            static let webPurchaseErrorMessage = NSLocalizedString(
-                "Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress.",
-                comment: "Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow."
-            )
-            static let cancelActionTitle = NSLocalizedString(
-                "OK",
-                comment: "Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow."
-            )
-        }
-
         enum WaitingForJetpackSite {
             static let title = NSLocalizedString(
                 "Creating your store",
@@ -895,26 +628,12 @@ private extension StoreCreationCoordinator {
     }
 
     enum Constants {
-        // TODO: 8108 - update the identifier to production value when it's ready
-        static let iapPlanIdentifier = "debug.woocommerce.ecommerce.monthly"
-        static let webPlanIdentifier = "1021"
-
         /// Local notification scenarios during store creation.
         enum LocalNotificationScenario {
             static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
         }
 
         static let jetpackCheckRetryInterval: TimeInterval = 10
-    }
-
-    /// Error scenarios when purchasing a WPCOM plan.
-    enum PlanPurchaseError: Error {
-        /// The user is not eligible for In-App Purchases.
-        case iapNotSupported
-        /// There is no matching product to purchase.
-        case noMatchingProduct
-        /// The user is already entitled to the product, and cannot purchase it anymore.
-        case productNotEligible
     }
 }
 

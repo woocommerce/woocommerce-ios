@@ -41,9 +41,9 @@ final class StorePlanSynchronizerTests: XCTestCase {
         }
     }
 
-    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_no_ecommerce_trial() {
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_without_ecommerce_trial() {
         // Given
-        session.defaultSite = .fake().copy(siteID: sampleSiteID, wasEcommerceTrial: false)
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: false)
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
@@ -82,6 +82,26 @@ final class StorePlanSynchronizerTests: XCTestCase {
                     promise(())
                 }
         }
+    }
+
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
     func test_synchronizer_fetches_plan_immediately_if_there_is_a_wpcom_site() {

@@ -28,12 +28,15 @@ public enum CustomerAction: Action {
     ///- `siteID`: The site for which we will perform the search.
     ///- `keyword`: Keyword to perform the search.
     ///- `filter`: Filter to perform the search.
+    ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request. It will be removed once
+    ///  `betterCustomerSelectionInOrder` is finished for performance reasons.
     ///- `onCompletion`: Invoked when the operation finishes.
-    ///     - `result.success([Customer])`:  On success, the Customers found will be loaded in Core Data.
+    ///     - `result.success()`:  On success.
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
         keyword: String,
+        retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         onCompletion: (Result<(), Error>) -> Void)
 

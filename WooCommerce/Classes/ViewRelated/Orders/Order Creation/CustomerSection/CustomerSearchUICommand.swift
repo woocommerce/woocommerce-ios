@@ -208,9 +208,15 @@ private extension CustomerSearchUICommand {
             searchFilter = .name
         }
 
-        return CustomerAction.searchCustomers(siteID: siteID, keyword: keyword, filter: searchFilter) { result in
+        // Before the betterCustomerSelectionInOrder feature we loaded all customers data from the search. Now we first load a light version of the customers,
+        // and then all their data once when're selected. Once the feature flag is removed we will also remove the option to load light/full data
+        //
+        return CustomerAction.searchCustomers(siteID: siteID,
+                                              keyword: keyword,
+                                              retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
+                                              filter: searchFilter) { result in
             switch result {
-            case .success(_):
+            case .success:
                 onCompletion?(result.isSuccess)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")

@@ -7,7 +7,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
-    private let isStoreCreationM3ProfilerEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
@@ -30,7 +29,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false,
-         isStoreCreationM3ProfilerEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
@@ -52,7 +50,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
-        self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
@@ -83,8 +80,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return shippingLabelsOnboardingM1
         case .loginPrologueOnboarding:
             return isLoginPrologueOnboardingEnabled
-        case .storeCreationM3Profiler:
-            return isStoreCreationM3ProfilerEnabled
         case .domainSettings:
             return isDomainSettingsEnabled
         case .supportRequests:

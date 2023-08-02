@@ -166,7 +166,7 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeBannerVisibility()
-        configurestorePlanBannerPresenter()
+        configureStorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
         Task { @MainActor in
@@ -374,7 +374,7 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
-    func configurestorePlanBannerPresenter() {
+    func configureStorePlanBannerPresenter() {
         self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: stackView,
                                                                   siteID: siteID) { [weak self] bannerHeight in

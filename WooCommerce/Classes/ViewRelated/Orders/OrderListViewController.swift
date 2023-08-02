@@ -168,7 +168,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureViewModel()
         configureSyncingCoordinator()
 
-        configurestorePlanBannerPresenter()
+        configureStorePlanBannerPresenter()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -309,7 +309,7 @@ private extension OrderListViewController {
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
     }
 
-    func configurestorePlanBannerPresenter() {
+    func configureStorePlanBannerPresenter() {
         self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: view,
                                                                   siteID: siteID) { [weak self] bannerHeight in

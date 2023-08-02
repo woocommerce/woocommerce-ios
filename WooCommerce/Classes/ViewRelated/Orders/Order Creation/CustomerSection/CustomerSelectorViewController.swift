@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import WordPressUI
 import UIKit
 import Yosemite
@@ -10,6 +11,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
+    private let addressFormViewModel: CreateOrderAddressFormViewModel
 
     /// Notice presentation handler
     ///
@@ -25,9 +27,11 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
 
     init(siteID: Int64,
+         addressFormViewModel: CreateOrderAddressFormViewModel,
          onCustomerSelected: @escaping (Customer) -> Void) {
         viewModel = CustomerSelectorViewModel(siteID: siteID, onCustomerSelected: onCustomerSelected)
         self.siteID = siteID
+        self.addressFormViewModel = addressFormViewModel
         self.onCustomerSelected = onCustomerSelected
 
         super.init(nibName: nil, bundle: nil)
@@ -76,7 +80,20 @@ private extension CustomerSelectorViewController {
         dismiss(animated: true)
     }
 
-    @objc func presentNewCustomerDetailsFlow() {}
+    @objc func presentNewCustomerDetailsFlow() {
+        let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
+                                                            self?.dismiss(animated: true, completion: { [weak self] in
+                                                                // Dismiss this view too
+                                                                self?.dismiss(animated: true)
+                                                            })
+                                                        },
+                                                        showSearchButton: false,
+                                                        viewModel: addressFormViewModel)
+        let rootViewController = UIHostingController(rootView: editOrderAddressForm)
+        let navigationController = WooNavigationController(rootViewController: rootViewController)
+
+        present(navigationController, animated: true, completion: nil)
+    }
 
     func addSearchViewController() {
         let searchViewController = SearchViewController(

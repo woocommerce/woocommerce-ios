@@ -17,14 +17,17 @@ struct OrderCustomerSection: View {
         OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
             .sheet(isPresented: $showAddressForm) {
                 NavigationView {
-                    if viewModel.shouldShowCustomerSelectorScreen {
-                        CustomerSelectorView(siteID: viewModel.siteID) { customer in
+                    switch viewModel.customerNavigationScreen {
+                    case .form:
+                        EditOrderAddressForm(dismiss: {
+                                                showAddressForm.toggle()
+                                             },
+                                             showSearchButton: viewModel.shouldShowSearchButtonInOrderAddressForm,
+                                             viewModel: addressFormViewModel)
+                    case .selector:
+                        CustomerSelectorView(siteID: viewModel.siteID, addressFormViewModel: addressFormViewModel) { customer in
                             viewModel.addCustomerAddressToOrder(customer: customer)
                         }
-                    } else {
-                        EditOrderAddressForm(dismiss: {
-                            showAddressForm.toggle()
-                        }, viewModel: addressFormViewModel)
                     }
                 }
                 .discardChangesPrompt(canDismiss: !addressFormViewModel.hasPendingChanges,

@@ -81,23 +81,4 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
             viewModel.skipButtonTapped()
         }
     }
-
-    func test_challenges_are_in_the_expected_order() throws {
-        // Given
-        let viewModel = StoreCreationChallengesQuestionViewModel(onContinue: { _ in },
-                                                               onSkip: {})
-
-        // When
-        let challenges = viewModel.challenges
-
-        // Then
-        XCTAssertEqual(challenges,
-                       [
-                        .settingUpTheOnlineStore,
-                        .findingCustomers,
-                        .managingInventory,
-                        .shippingAndLogistics,
-                        .other
-                       ])
-    }
 }

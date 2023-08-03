@@ -32,15 +32,55 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .notLoaded)
     }
 
-    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site() {
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_without_ecommerce_trial() {
         // Given
-        session.defaultSite = .fake().copy(siteID: sampleSiteID)
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: false)
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
         XCTAssertEqual(synchronizer.planState, .unavailable)
+    }
+
+    func test_synchronizer_fetches_plan_immediately_for_non_wpcom_site_that_once_was_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
+    }
+
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
     func test_synchronizer_fetches_plan_immediately_if_there_is_a_wpcom_site() {
@@ -144,86 +184,6 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertFalse(ids.contains(expectedID))
     }
 
-    // MARK: twentyFourHoursAfterFreeTrialSubscribed
-
-    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_scheduled_if_free_trial_subscribed_less_than_24_hrs_ago() throws {
-        // Given
-        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
-        let pushNotesManager = MockPushNotificationsManager()
-        let subscribedDate = Date().addingTimeInterval(-Double.random(in: 0..<86400)) // Subscribed within 24 hrs ago
-        let trialPlan = WPComSitePlan(id: "1052",
-                                      hasDomainCredit: false,
-                                      expiryDate: subscribedDate.addingDays(28),
-                                      subscribedDate: subscribedDate)
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(trialPlan))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
-                // Remote feature flag is enabled.
-                completion(true)
-            }
-        }
-
-        // When
-        _ = StorePlanSynchronizer(stores: stores,
-                                  timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: false))
-        // Then
-        waitUntil(timeout: 3) {
-            pushNotesManager.requestedLocalNotificationsIfNeeded.isNotEmpty
-        }
-        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
-        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
-        XCTAssertTrue(ids.contains(expectedID))
-    }
-
-    func test_twentyFourHoursAfterFreeTrialSubscribed_local_notification_is_not_scheduled_if_free_trial_subscribed_more_than_24_hrs_ago() throws {
-        // Given
-        let timeZone = try XCTUnwrap(TimeZone(secondsFromGMT: 0))
-        let pushNotesManager = MockPushNotificationsManager()
-        let subscribedDate = Date().addingTimeInterval(-86401) // Subscribed more than 24 hrs ago
-        let trialPlan = WPComSitePlan(id: "1052",
-                                      hasDomainCredit: false,
-                                      expiryDate: subscribedDate.addingDays(28),
-                                      subscribedDate: subscribedDate)
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                completion(.success(trialPlan))
-            default:
-                break
-            }
-        }
-        stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
-            switch action {
-            case let .isRemoteFeatureFlagEnabled(_, _, completion):
-                // Remote feature flag is enabled.
-                completion(true)
-            }
-        }
-
-        // When
-        _ = StorePlanSynchronizer(stores: stores,
-                                  timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: false))
-
-        // Then
-        let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
-        let expectedID = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed + "\(sampleSiteID)"
-        XCTAssertFalse(ids.contains(expectedID))
-    }
-
-
     // MARK: freeTrialSurvey24hAfterFreeTrialSubscribed
 
     func test_freeTrialSurvey24hAfterFreeTrialSubscribed_local_notification_is_scheduled_if_free_trial_subscribed_less_than_24_hrs_ago() throws {
@@ -248,8 +208,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
                                   pushNotesManager: pushNotesManager,
-                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                  inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {
@@ -281,8 +240,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         // When
         _ = StorePlanSynchronizer(stores: stores,
                                   timeZone: timeZone,
-                                  pushNotesManager: pushNotesManager,
-                                  featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                  pushNotesManager: pushNotesManager)
 
         // Then
         let ids = pushNotesManager.requestedLocalNotificationsIfNeeded.map(\.scenario.identifier)
@@ -321,8 +279,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores,
                                                  timeZone: timeZone,
                                                  pushNotesManager: pushNotesManager,
-                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true),
-                                                 featureFlagService: MockFeatureFlagService(isFreeTrialSurvey24hAfterFreeTrialSubscribedEnabled: true))
+                                                 inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager(isIAPSupported: true))
 
         // Then
         waitUntil(timeout: 3) {
@@ -339,15 +296,14 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 5) {
-            /// 4 notifications include:
+            /// 5 notifications include:
             /// - 1 day before expiration date
             /// - 1 day after expiration date
             /// - 6 hrs after trial subscription
-            /// - 24 hrs after trial subscription
             /// - Free trial survey 24 hrs after trial subscription
             /// - 3 days after answering "Still exploring" in Free trial survey
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 6
+            pushNotesManager.canceledLocalNotificationScenarios.count == 5
         }
 
         // No local notifications scheduling requested for a non free trial plan

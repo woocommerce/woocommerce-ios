@@ -85,28 +85,36 @@ final class MockPushNotificationsManager: PushNotesManager {
         .init(rawValue: 0)
     }
 
-    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
-        requestedLocalNotifications.append(notification)
-    }
-
-    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) {
-        requestedLocalNotificationsIfNeeded.append(notification)
-        if let trigger {
-            triggersForRequestedLocalNotificationsIfNeeded.append(trigger)
+    func requestLocalNotification(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
+        await MainActor.run {
+            requestedLocalNotifications.append(notification)
         }
     }
 
-    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) {
-        canceledLocalNotificationScenarios.append(scenarios)
-        requestedLocalNotifications.removeAll()
-        requestedLocalNotificationsIfNeeded.removeAll()
-        triggersForRequestedLocalNotificationsIfNeeded.removeAll()
+    func requestLocalNotificationIfNeeded(_ notification: LocalNotification, trigger: UNNotificationTrigger?) async {
+        await MainActor.run {
+            requestedLocalNotificationsIfNeeded.append(notification)
+            if let trigger {
+                triggersForRequestedLocalNotificationsIfNeeded.append(trigger)
+            }
+        }
     }
 
-    func cancelAllNotifications() {
-        requestedLocalNotifications.removeAll()
-        requestedLocalNotificationsIfNeeded.removeAll()
-        triggersForRequestedLocalNotificationsIfNeeded.removeAll()
+    func cancelLocalNotification(scenarios: [LocalNotification.Scenario]) async {
+        await MainActor.run {
+            canceledLocalNotificationScenarios.append(scenarios)
+            requestedLocalNotifications.removeAll()
+            requestedLocalNotificationsIfNeeded.removeAll()
+            triggersForRequestedLocalNotificationsIfNeeded.removeAll()
+        }
+    }
+
+    func cancelAllNotifications() async {
+        await MainActor.run {
+            requestedLocalNotifications.removeAll()
+            requestedLocalNotificationsIfNeeded.removeAll()
+            triggersForRequestedLocalNotificationsIfNeeded.removeAll()
+        }
     }
 }
 

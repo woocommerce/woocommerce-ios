@@ -280,7 +280,7 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
-            var rows: [Row] = []
+            var rows: [Row] = [.shippingZones]
 
             let site = stores.sessionManager.defaultSite
             if site?.isJetpackCPConnected == true ||
@@ -354,9 +354,7 @@ private extension SettingsViewModel {
             guard stores.isAuthenticatedWithoutWPCom == false else {
                 return nil
             }
-            guard appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationMVP)
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2) else {
+            guard appleIDCredentialChecker.hasAppleUserID() else {
                 return nil
             }
             return Section(title: nil,

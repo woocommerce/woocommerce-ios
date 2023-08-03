@@ -1,7 +1,3 @@
-Nous avons effectué quelques mises à jour afin d’améliorer votre expérience d’utilisation de notre application !
+Des nouvelles réjouissantes pour les nouveaux propriétaires de boutiques ! Premièrement, vous pouvez désormais mettre à niveau facilement vers tous les plans disponibles. Deuxièmement, vous pouvez gagner de l’expérience pratique dans la gestion des commandes en créant des commandes de test directement dans l’application !
 
-Tout d’abord, nous avons rendu notre bouton de partage plus convivial. L’icône a été remplacée par du texte pour qu’il soit plus facilement visible.
-Nous avons également corrigé un bug qui empêchait l’ajout de nouvelles notes à une commande. Vous pouvez désormais rédiger des notes sans souci.
-Pour finir, nous avons mis à jour la vue du délai d’attente dans notre processus de création de boutique. Si la vérification du site prend plus de temps que prévu, vous pouvez désormais utiliser l’option « Réessayer ».
-
-Comme toujours, notre objectif est de rendre l’utilisation de l’application plus simple et agréable. Merci de nous faire confiance !
+Mais ce n’est pas tout : la dernière mise à jour apporte également des améliorations à l’IA de description des produits. Essayez-la si vous ne l’avez pas encore fait !

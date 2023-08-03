@@ -1,7 +1,3 @@
-Vi är tillbaka med några nya uppdateringar som kommer att förbättra din appupplevelse.
+Spännande nyheter för butiksägare! Först och främst kan du nu enkelt uppgradera alla tillgängliga paket. Dessutom kan du testa hur det är att hantera beställningar genom att skapa testbeställningar direkt i appen!
 
-Till att börja med har vi gjort delningsknappen mer användarvänlig. För ökad upptäckbarhet visas den nu som text istället för som en ikon.
-Vi har också åtgärdat en irriterande bugg som gjorde det omöjligt att lägga till nya anteckningar till en beställning. Du bör nu kunna lägga till anteckningar utan problem.
-Slutligen har vi även uppdaterat butiksskapandeprocessens timeout-vy. Om webbplatskontrollen tar längre tid än förväntat har du nu möjlighet att avbryta och försöka igen.
-
-Som alltid finns vi här för att göra din appresa smidigare och mer njutbar. Tack för att du fortsätter använda våra tjänster.
+Och det är inte allt – vår senaste uppdatering inkluderar även förbättringar av vårt produktbeskrivnings-AI. Testa det nu om du inte redan gjort det!

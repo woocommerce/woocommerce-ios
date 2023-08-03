@@ -121,9 +121,9 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+    private var storePlanBannerPresenter: StorePlanBannerPresenter?
 
     /// Notice presentation handler
     ///
@@ -168,7 +168,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
         configureViewModel()
         configureSyncingCoordinator()
 
-        configureFreeTrialBannerPresenter()
+        configureStorePlanBannerPresenter()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -309,8 +309,8 @@ private extension OrderListViewController {
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
     }
 
-    func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+    func configureStorePlanBannerPresenter() {
+        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: view,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
@@ -584,7 +584,7 @@ private extension OrderListViewController {
         childController.didMove(toParent: self)
 
         // Make sure the banner is on top of the empty state view
-        freeTrialBannerPresenter?.bringBannerToFront()
+        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func removeEmptyViewController() {

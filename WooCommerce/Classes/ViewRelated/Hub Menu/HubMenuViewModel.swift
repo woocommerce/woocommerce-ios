@@ -249,7 +249,7 @@ final class HubMenuViewModel: ObservableObject {
     /// Observe the current site's plan name and assign it to the `planName` published property.
     ///
     private func observePlanName() {
-        ServiceLocator.storePlanSynchronizer.$planState.map { [weak self] planState in
+        ServiceLocator.storePlanSynchronizer.planStatePublisher.map { [weak self] planState in
             guard let self else { return "" }
             switch planState {
             case .loaded(let plan):

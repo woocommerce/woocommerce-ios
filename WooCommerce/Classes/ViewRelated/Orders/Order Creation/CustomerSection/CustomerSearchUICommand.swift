@@ -136,7 +136,7 @@ private extension CustomerSearchUICommand {
     func searchCustomersAction(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
         CustomerAction.searchCustomers(siteID: siteID, keyword: keyword) { result in
             switch result {
-            case .success(_):
+            case .success:
                 onCompletion?(result.isSuccess)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")

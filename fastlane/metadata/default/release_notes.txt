@@ -1,7 +1,3 @@
-We're back with some new updates to improve your experience with our app!
+Exciting news for new store owners! Firstly, you can now easily upgrade to all available plans. Secondly, gain hands-on experience in managing orders by creating test orders directly within the app!
 
-Firstly, we've made the share button more user-friendly. Instead of an icon, it's now displayed as text for better discoverability.
-We've also fixed a pesky bug that was stopping you from adding new notes to an order. You should now be able to jot down your notes without any issues.
-Lastly, in our store creation process, we've updated the timeout view. If the site check is taking longer than expected, you now have the option to retry.
-
-As always, we're here to make your app journey smoother and more enjoyable. Thanks for sticking with us!
+And that's not all—our latest update also includes improvements to the product description AI. Give it a try if you haven't already!

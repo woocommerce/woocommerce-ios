@@ -182,9 +182,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @Published private var dataLoadingError: Error?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+    private var storePlanBannerPresenter: StorePlanBannerPresenter?
 
     private var subscriptions: Set<AnyCancellable> = []
 
@@ -223,7 +223,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureHiddenScrollView()
         configureToolbar()
         configureSyncingCoordinator()
-        configureFreeTrialBannerPresenter()
+        configureStorePlanBannerPresenter()
         registerTableViewCells()
 
         observeBlazeBannerVisibility()
@@ -701,8 +701,8 @@ private extension ProductsViewController {
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
     }
 
-    func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+    func configureStorePlanBannerPresenter() {
+        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: view,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.tableView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
@@ -1114,7 +1114,7 @@ private extension ProductsViewController {
         emptyStateViewController.configure(config)
 
         // Make sure the banner is on top of the empty state view
-        freeTrialBannerPresenter?.bringBannerToFront()
+        storePlanBannerPresenter?.bringBannerToFront()
     }
 
     func createFilterConfig() ->  EmptyStateViewController.Config {

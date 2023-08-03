@@ -177,12 +177,10 @@ private extension CustomerSelectorViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Add customer details",
-            comment: "Title of the order customer selection screen."
-        )
-
-        static let genericAddCustomerError = NSLocalizedString("Failed to fetch the customer data. Please try again.",
-                                                                comment: "Error message in the Add Customer to order screen " +
-                                                                "when getting the customer information")
+            comment: "Title of the order customer selection screen.")
+        static let genericAddCustomerError = NSLocalizedString(
+            "Failed to fetch the customer data. Please try again.",
+            comment: "Error message in the Add Customer to order screen when getting the customer information")
         static let emptyStateMessage = NSLocalizedString(
             "No customers found",
             comment: "The title on the placeholder overlay when there are no customers on the customers list screen.")
@@ -192,8 +190,8 @@ private extension CustomerSelectorViewController {
         static let emptyStateActionTitle = NSLocalizedString(
             "Add Customer",
             comment: "The action title on the placeholder overlay when there are no customers on the customers list screen.")
-        static let genericFetchCustomersError = NSLocalizedString("Failed to fetch the customers data. Please try again later.",
-                                                                comment: "Error message in the Add Customer to order screen " +
-                                                                "when getting the customers information")
+        static let genericFetchCustomersError = NSLocalizedString(
+            "Failed to fetch the customers data. Please try again later.",
+            comment: "Error message in the Add Customer to order screen when getting the customers information")
     }
 }

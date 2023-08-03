@@ -447,7 +447,6 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
         }
 
-        
         storeCreationProgressViewModel?.markAsComplete()
         trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
 

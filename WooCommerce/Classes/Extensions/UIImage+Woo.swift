@@ -380,7 +380,6 @@ extension UIImage {
         UIImage(named: "woo-customer-search")!
     }
 
-
     /// Error State Image
     ///
     static var errorStateImage: UIImage {

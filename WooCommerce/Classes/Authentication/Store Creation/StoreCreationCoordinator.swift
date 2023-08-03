@@ -244,6 +244,20 @@ private extension StoreCreationCoordinator {
 
 private extension StoreCreationCoordinator {
     @MainActor
+    func showChallengesQuestion(from navigationController: UINavigationController) {
+        let questionController = StoreCreationChallengesQuestionHostingController(viewModel:
+                .init { _ in
+                    // TODO: 10376 - Navigate to features selection and pass the selected challenges
+                } onSkip: { [weak self] in
+                    guard let self else { return }
+                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerChallengesQuestion))
+                    // TODO: 10376 - Navigate to features selection
+                })
+        navigationController.pushViewController(questionController, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))
+    }
+
+    @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:

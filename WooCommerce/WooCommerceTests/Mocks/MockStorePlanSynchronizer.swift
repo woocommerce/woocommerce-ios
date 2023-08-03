@@ -8,7 +8,7 @@ final class MockStorePlanSynchronizer: StorePlanSynchronizing {
         $planState.eraseToAnyPublisher()
     }
 
-    @Publisher private(set) var planState: StorePlanSyncState = .notLoaded
+    @Published private(set) var planState: StorePlanSyncState = .notLoaded
 
     var site: Site?
 

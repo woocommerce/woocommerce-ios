@@ -8,7 +8,7 @@ extension StoreCreationFeaturesQuestionViewModel {
         case flexibleAndSecurePaymentOptions = "flexible-and-secure-payment-options"
         case inPersonPayment = "in-person-payment"
         case abilityToScaleAsBusinessGrows = "ability-to-scale-as-business-grows"
-        case customisationOptionForStoreDesign = "customization-options-for-my-store-design"
+        case customizationOptionForStoreDesign = "customization-options-for-my-store-design"
         case wideRangeOfPluginsAndExtensions = "wide-range-of-plugins-and-extensions"
         case others = "cthers"
     }
@@ -31,7 +31,7 @@ extension StoreCreationFeaturesQuestionViewModel.Feature {
             return NSLocalizedString("In-person payment", comment: "Feature option in the store creation features question.")
         case .abilityToScaleAsBusinessGrows:
             return NSLocalizedString("Ability to scale as my business grows", comment: "Feature option in the store creation features question.")
-        case .customisationOptionForStoreDesign:
+        case .customizationOptionForStoreDesign:
             return NSLocalizedString("Customization options for my store design", comment: "Feature option in the store creation features question.")
         case .wideRangeOfPluginsAndExtensions:
             return NSLocalizedString("Access to a wide range of plugins and extensions", comment: "Feature option in the store creation features question.")

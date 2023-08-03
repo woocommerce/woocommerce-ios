@@ -76,23 +76,10 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
-        let continueAfterEnteringStoreName = { [weak self] storeName in
-            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
-        }
-        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
-            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
-            continueAfterEnteringStoreName(storeName)
-        } onClose: { [weak self] in
-            self?.showDiscardChangesAlert(flow: .native)
-        } onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        }
-        navigationController.pushViewController(storeNameForm, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
-
-        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
-        if let prefillStoreName {
-            continueAfterEnteringStoreName(prefillStoreName)
+        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+            showFreeTrialSummaryView(from: navigationController, storeName: "Test site", profilerData: nil)
+        } else {
+            showStoreNameForm(from: navigationController)
         }
     }
 
@@ -243,6 +230,28 @@ private extension StoreCreationCoordinator {
 // MARK: - Store creation M2
 
 private extension StoreCreationCoordinator {
+    @MainActor
+    func showStoreNameForm(from navigationController: UINavigationController) {
+        let continueAfterEnteringStoreName = { [weak self] storeName in
+            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
+        }
+        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
+            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+            continueAfterEnteringStoreName(storeName)
+        } onClose: { [weak self] in
+            self?.showDiscardChangesAlert(flow: .native)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
+        }
+        navigationController.pushViewController(storeNameForm, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
+        
+        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
+        if let prefillStoreName {
+            continueAfterEnteringStoreName(prefillStoreName)
+        }
+    }
+
     @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {

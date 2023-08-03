@@ -3,13 +3,16 @@ import SwiftUI
 /// `ProductSelectorView` wrapped in a SwiftUI navigation view.
 struct ProductSelectorNavigationView: View {
     private let configuration: ProductSelectorView.Configuration
+    private let source: ProductSelectorView.Source
     @Binding private var isPresented: Bool
     private let viewModel: ProductSelectorViewModel
 
     init(configuration: ProductSelectorView.Configuration,
+         source: ProductSelectorView.Source,
          isPresented: Binding<Bool>,
          viewModel: ProductSelectorViewModel) {
         self.configuration = configuration
+        self.source = source
         self._isPresented = isPresented
         self.viewModel = viewModel
     }
@@ -17,6 +20,7 @@ struct ProductSelectorNavigationView: View {
     var body: some View {
         NavigationView {
             ProductSelectorView(configuration: configuration,
+                                source: source,
                                 isPresented: $isPresented,
                                 viewModel: viewModel)
         }
@@ -33,6 +37,6 @@ struct ProductSelectorNavigationView_Previews: PreviewProvider {
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelectorNavigationView(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorNavigationView(configuration: configuration, source: .orderForm, isPresented: .constant(true), viewModel: viewModel)
     }
 }

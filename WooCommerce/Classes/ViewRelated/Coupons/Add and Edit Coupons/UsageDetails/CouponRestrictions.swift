@@ -155,6 +155,7 @@ struct CouponRestrictions: View {
             .ignoresSafeArea(.container, edges: [.horizontal])
             .sheet(isPresented: $showingExcludeProducts) {
                 ProductSelectorNavigationView(configuration: .excludedProductsForCoupons,
+                                              source: .couponRestrictions,
                                               isPresented: $showingExcludeProducts,
                                               viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {

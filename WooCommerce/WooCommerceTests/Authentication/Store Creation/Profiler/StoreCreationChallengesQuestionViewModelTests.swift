@@ -35,7 +35,7 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedChallenges, [.managingInventory])
     }
 
-    func test_continueButtonTapped_invokes_onContinue_after_selecting_a_challenge() throws {
+    func test_continueButtonTapped_invokes_onContinue_after_selecting_challenges() throws {
         let answer = waitFor { promise in
             // Given
             let viewModel = StoreCreationChallengesQuestionViewModel(onContinue: { answer in
@@ -44,6 +44,8 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
                                                                    onSkip: {})
             // When
             viewModel.didTapChallenge(.shippingAndLogistics)
+            viewModel.didTapChallenge(.managingInventory)
+
             Task { @MainActor in
                 await viewModel.continueButtonTapped()
             }
@@ -51,7 +53,9 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(answer, [.init(name: StoreCreationChallengesQuestionViewModel.Challenge.shippingAndLogistics.name,
-                                     value: "shipping-and-logistics")])
+                                     value: "shipping-and-logistics"),
+                                .init(name: StoreCreationChallengesQuestionViewModel.Challenge.managingInventory.name,
+                                                             value: "managing-inventory")])
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_challenge() throws {

@@ -208,8 +208,9 @@ private extension CustomerSearchUICommand {
             searchFilter = .name
         }
 
-        // Before the betterCustomerSelectionInOrder feature we loaded all customers data from the search. Now we first load a light version of the customers,
-        // and then all their data once when're selected. Once the feature flag is removed we will also remove the option to load light/full data
+        // Before the betterCustomerSelectionInOrder feature we loaded all customers fields from the search. Now we first load a light version of the customers,
+        // and then all their data once when're selected. We will remove the option to choose light/full data together with the betterCustomerSelectionInOrder
+        // and retrieve only light data when searching.
         //
         return CustomerAction.searchCustomers(siteID: siteID,
                                               keyword: keyword,

@@ -2,7 +2,7 @@ import Foundation
 
 extension StoreCreationChallengesQuestionViewModel {
     // TODO: 10386 Align with Android and send these via tracks
-    enum Challenge: String, Equatable {
+    enum Challenge: String, CaseIterable {
         case settingUpTheOnlineStore = "setting-up-the-online-store"
         case findingCustomers = "finding-customers"
         case managingInventory = "managing-inventory"
@@ -11,13 +11,7 @@ extension StoreCreationChallengesQuestionViewModel {
     }
 
     var challenges: [Challenge] {
-        [
-            .settingUpTheOnlineStore,
-            .findingCustomers,
-            .managingInventory,
-            .shippingAndLogistics,
-            .other
-        ]
+        Challenge.allCases
     }
 }
 

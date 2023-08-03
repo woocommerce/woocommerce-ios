@@ -79,7 +79,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
-    private var preflightController: CardPresentPaymentPreflightController?
+    private let preflightController: CardPresentPaymentPreflightControllerProtocol
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -92,6 +92,8 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+         preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
+         analyticsTracker: CollectOrderPaymentAnalytics? = nil
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
@@ -102,10 +104,15 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
-        self.analyticsTracker = CollectOrderPaymentAnalytics(siteID: siteID,
-                                                             analytics: analytics,
-                                                             configuration: configuration,
-                                                             orderDurationRecorder: orderDurationRecorder)
+        self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
+                                                                                                configuration: configuration,
+                                                                                                rootViewController: rootViewController,
+                                                                                                alertsPresenter: alertsPresenter,
+                                                                                                onboardingPresenter: onboardingPresenter)
+        self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
+                                                                                 analytics: analytics,
+                                                                                 configuration: configuration,
+                                                                                 orderDurationRecorder: orderDurationRecorder)
     }
 
     /// Starts the collect payment flow.
@@ -132,13 +139,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             })
         }
 
-        preflightController = CardPresentPaymentPreflightController(siteID: siteID,
-                                                                    discoveryMethod: discoveryMethod,
-                                                                    configuration: configuration,
-                                                                    rootViewController: rootViewController,
-                                                                    alertsPresenter: alertsPresenter,
-                                                                    onboardingPresenter: onboardingPresenter)
-        preflightController?.readerConnection.sink { [weak self] connectionResult in
+        preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             self.analyticsTracker.preflightResultRecieved(connectionResult)
             switch connectionResult {
@@ -174,7 +175,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         .store(in: &cancellables)
 
         Task {
-            await preflightController?.start()
+            await preflightController.start(discoveryMethod: discoveryMethod)
         }
     }
 }

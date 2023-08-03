@@ -91,7 +91,7 @@ final class ServiceLocator {
 
     /// Store WPCom plan synchronizer.
     ///
-    private static var _storePlanSynchronizer: StorePlanSynchronizer = StorePlanSynchronizer()
+    private static var _storePlanSynchronizer: StorePlanSynchronizing = StorePlanSynchronizer()
 
     /// Storage for general app settings
     ///
@@ -240,7 +240,7 @@ final class ServiceLocator {
 
     /// Provides access point to the `StorePlanSynchronizer`.
     ///
-    static var storePlanSynchronizer: StorePlanSynchronizer {
+    static var storePlanSynchronizer: StorePlanSynchronizing {
         _storePlanSynchronizer
     }
 

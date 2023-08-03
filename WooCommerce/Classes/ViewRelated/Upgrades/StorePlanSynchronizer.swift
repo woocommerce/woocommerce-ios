@@ -3,25 +3,45 @@ import Yosemite
 import Combine
 import Experiments
 
+/// Protocol for used to mock `StorePlanSynchronizer`.
+///
+protocol StorePlanSynchronizing {
+    /// Publisher for the current synced plan.
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> { get }
+
+    /// Current synced plan
+    var planState: StorePlanSyncState { get }
+
+    /// Current logged-in site. `Nil` if not logged-in.
+    var site: Site? { get }
+
+    /// Loads the plan from network
+    func reloadPlan()
+}
+
+/// State of the synced store plan.
+///
+enum StorePlanSyncState: Equatable {
+    case notLoaded
+    case loading
+    case loaded(WPComSitePlan)
+    case failed
+    case unavailable
+    case expired
+}
+
 /// Type that fetches and shares a `WPCom` store plan(subscription).
 /// The plan is stored on memory and not on the Storage Layer because this only relates to `WPCom` stores.
 ///
-final class StorePlanSynchronizer: ObservableObject {
-
-    /// Dependency state.
-    ///
-    enum PlanState: Equatable {
-        case notLoaded
-        case loading
-        case loaded(WPComSitePlan)
-        case failed
-        case unavailable
-        case expired
-    }
+final class StorePlanSynchronizer: StorePlanSynchronizing {
 
     /// Current synced plan.
     ///
-    @Published private(set) var planState = PlanState.notLoaded
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> {
+        $planState.eraseToAnyPublisher()
+    }
+
+    @Published private(set) var planState: StorePlanSyncState = .notLoaded
 
     /// Current logged-in site. `Nil` if not logged-in.
     ///

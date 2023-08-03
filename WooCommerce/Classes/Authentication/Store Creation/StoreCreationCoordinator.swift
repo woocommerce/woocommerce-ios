@@ -274,7 +274,12 @@ private extension StoreCreationCoordinator {
                                                          profilerData: profilerData)
             self.handleFreeTrialStoreCreation(from: navigationController, result: result)
         })
-        navigationController.present(summaryViewController, animated: true)
+
+        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+            navigationController.pushViewController(summaryViewController, animated: true)
+        } else {
+            navigationController.present(summaryViewController, animated: true)
+        }
     }
 
     /// This method creates a free trial store async:

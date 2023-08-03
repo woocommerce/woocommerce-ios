@@ -68,10 +68,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayBadge
 
-    /// Store creation milestone 3 - profiler questions
-    ///
-    case storeCreationM3Profiler
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard

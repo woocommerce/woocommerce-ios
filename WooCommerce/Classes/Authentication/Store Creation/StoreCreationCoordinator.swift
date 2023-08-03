@@ -76,17 +76,8 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
-        let isProfilerEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM3Profiler)
         let continueAfterEnteringStoreName = { [weak self] storeName in
-            if isProfilerEnabled {
-                /// `storeCreationM3Profiler` is currently disabled.
-                /// Before enabling it again, make sure the onboarding questions are properly sent on the trial flow around line `343`.
-                /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/9326#issuecomment-1490012032
-                ///
-                self?.showCategoryQuestion(from: navigationController, storeName: storeName)
-            } else {
-                self?.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: nil)
-            }
+            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
         }
         let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
             self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)

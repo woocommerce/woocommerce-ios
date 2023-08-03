@@ -82,7 +82,7 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
         }
     }
 
-    func test_categories_are_in_the_expected_order() throws {
+    func test_challenges_are_in_the_expected_order() throws {
         // Given
         let viewModel = StoreCreationChallengesQuestionViewModel(onContinue: { _ in },
                                                                onSkip: {})

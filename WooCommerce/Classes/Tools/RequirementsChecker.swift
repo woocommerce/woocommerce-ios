@@ -40,6 +40,7 @@ final class RequirementsChecker {
     /// in order to determine if the site is running on an expired plan.
     ///
     func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+        /// When a site plan expires, after 8 days the site is reverted to a simple site.
         guard !site.isSimpleSite else {
             onCompletion?(.success(.expiredWPComPlan))
             return

@@ -3,14 +3,14 @@ import Foundation
 extension StoreCreationFeaturesQuestionViewModel {
     // TODO: 10386 Align with Android and send these via tracks
     enum Feature: String, CaseIterable {
-        case salesAndAnalyticsReports
-        case productManagementAndInventoryTracking
-        case flexibleAndSecurePaymentOptions
-        case inPersonPayment
-        case abilityToScaleAsBusinessGrows
-        case customisationOptionForStoreDesign
-        case wideRangeOfPluginsAndExtensions
-        case others
+        case salesAndAnalyticsReports = "sales-and-analytics-reports"
+        case productManagementAndInventoryTracking = "product-management-and-inventory-tracking"
+        case flexibleAndSecurePaymentOptions = "flexible-and-secure-payment-options"
+        case inPersonPayment = "in-person-payment"
+        case abilityToScaleAsBusinessGrows = "ability-to-scale-as-business-grows"
+        case customisationOptionForStoreDesign = "customization-options-for-my-store-design"
+        case wideRangeOfPluginsAndExtensions = "wide-range-of-plugins-and-extensions"
+        case others = "cthers"
     }
 
     var features: [Feature] {

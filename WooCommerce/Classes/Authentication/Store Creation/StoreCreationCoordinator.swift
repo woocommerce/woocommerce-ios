@@ -460,13 +460,16 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
         }
 
-        storeCreationProgressViewModel?.markAsComplete()
         trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
-
-        /// TODO: if user is still on profiler screen - what should we do?
-        /// Free trial stores should land directly on the dashboard and not show any success view.
-        ///
-        continueWithSelectedSite(site: site)
+        if let storeCreationProgressViewModel {
+            storeCreationProgressViewModel.markAsComplete()
+            /// Free trial stores should land directly on the dashboard and not show any success view.
+            ///
+            continueWithSelectedSite(site: site)
+        } else {
+            /// TODO: if user is still on profiler screen - what should we do?
+        }
+        
     }
 
     @MainActor

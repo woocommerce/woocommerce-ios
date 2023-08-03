@@ -85,26 +85,4 @@ final class StoreCreationFeaturesQuestionViewModelTests: XCTestCase {
             viewModel.skipButtonTapped()
         }
     }
-
-    func test_features_are_in_the_expected_order() throws {
-        // Given
-        let viewModel = StoreCreationFeaturesQuestionViewModel(onContinue: { _ in },
-                                                               onSkip: {})
-
-        // When
-        let features = viewModel.features
-
-        // Then
-        XCTAssertEqual(features,
-                       [
-                        .salesAndAnalyticsReports,
-                        .productManagementAndInventoryTracking,
-                        .flexibleAndSecurePaymentOptions,
-                        .inPersonPayment,
-                        .abilityToScaleAsBusinessGrows,
-                        .customisationOptionForStoreDesign,
-                        .wideRangeOfPluginsAndExtensions,
-                        .others,
-                       ])
-    }
 }

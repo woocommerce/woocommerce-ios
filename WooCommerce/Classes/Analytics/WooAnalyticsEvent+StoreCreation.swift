@@ -190,6 +190,7 @@ extension WooAnalyticsEvent.StoreCreation {
         case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
         case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
         case profilerCountryQuestion = "store_profiler_country"
+        case profilerChallengesQuestion = "store_profiler_challenges"
         case domainPicker = "domain_picker"
         case storeSummary = "store_summary"
         case planPurchase = "plan_purchase"

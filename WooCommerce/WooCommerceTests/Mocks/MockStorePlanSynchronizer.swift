@@ -1,13 +1,14 @@
 import Combine
+import Foundation
 import Yosemite
 @testable import WooCommerce
 
 final class MockStorePlanSynchronizer: StorePlanSynchronizing {
-    var planState: AnyPublisher<StorePlanSyncState, Never> {
-        planStateSubject.eraseToAnyPublisher()
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> {
+        $planState.eraseToAnyPublisher()
     }
 
-    private let planStateSubject = CurrentValueSubject<StorePlanSyncState, Never>(.notLoaded)
+    @Publisher private(set) var planState: StorePlanSyncState = .notLoaded
 
     var site: Site?
 
@@ -16,6 +17,6 @@ final class MockStorePlanSynchronizer: StorePlanSynchronizing {
     }
 
     func setState(_ state: StorePlanSyncState) {
-        planStateSubject.send(state)
+        planState = state
     }
 }

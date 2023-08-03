@@ -110,7 +110,7 @@ private extension SubscriptionsViewModel {
     /// Observes and reacts to plan changes
     ///
     func observePlan() {
-        storePlanSynchronizer.planState.sink { [weak self] planState in
+        storePlanSynchronizer.planStatePublisher.sink { [weak self] planState in
             guard let self else { return }
             switch planState {
             case .loading, .notLoaded:

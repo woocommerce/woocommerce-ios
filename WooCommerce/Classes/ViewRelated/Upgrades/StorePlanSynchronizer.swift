@@ -6,8 +6,11 @@ import Experiments
 /// Protocol for used to mock `StorePlanSynchronizer`.
 ///
 protocol StorePlanSynchronizing {
-    /// Current synced plan.
-    var planState: AnyPublisher<StorePlanSyncState, Never> { get }
+    /// Publisher for the current synced plan.
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> { get }
+
+    /// Current synced plan
+    var planState: StorePlanSyncState { get }
 
     /// Current logged-in site. `Nil` if not logged-in.
     var site: Site? { get }
@@ -34,11 +37,11 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
 
     /// Current synced plan.
     ///
-    var planState: AnyPublisher<StorePlanSyncState, Never> {
-        $planStateValue.eraseToAnyPublisher()
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> {
+        $planState.eraseToAnyPublisher()
     }
 
-    @Published private var planStateValue: StorePlanSyncState = .notLoaded
+    @Published private(set) var planState: StorePlanSyncState = .notLoaded
 
     /// Current logged-in site. `Nil` if not logged-in.
     ///
@@ -84,35 +87,35 @@ final class StorePlanSynchronizer: StorePlanSynchronizing {
     func reloadPlan() {
         // If there is no logged-in site set the state to `.notLoaded`
         guard let site else {
-            planStateValue = .notLoaded
+            planState = .notLoaded
             return
         }
 
         // If the site is not a WPCom store and has never run a trial WooExpress plan,
         // set the state to `.unavailable`
         guard site.isWordPressComStore || site.wasEcommerceTrial else {
-            planStateValue = .unavailable
+            planState = .unavailable
             return
         }
 
         // Do not fetch the plan if the plan it is already being loaded.
-        guard planStateValue != .loading else { return }
+        guard planState != .loading else { return }
 
-        planStateValue = .loading
+        planState = .loading
             let action = PaymentAction.loadSiteCurrentPlan(siteID: site.siteID) { [weak self] result in
             guard let self else { return }
 
             switch result {
             case .success(let plan):
-                self.planStateValue = .loaded(plan)
+                self.planState = .loaded(plan)
                 self.scheduleOrCancelNotificationsIfNeeded(for: plan)
             case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
                 // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
                 // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
                 // don't get any plans marked as `current` in the plans response.
-                self.planStateValue = .expired
+                self.planState = .expired
             case .failure(let error):
-                self.planStateValue = .failed
+                self.planState = .failed
                 DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
             }
         }

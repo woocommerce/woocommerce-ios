@@ -81,10 +81,8 @@ private extension StorePlanBannerPresenter {
     /// Observe the store plan and add or remove the banner as appropriate
     ///
     private func observeStorePlan() {
-        storePlanSynchronizer.planState.removeDuplicates()
-            .print("🍑")
+        storePlanSynchronizer.planStatePublisher.removeDuplicates()
             .combineLatest(stores.site.removeDuplicates())
-            .print("🍑🍑")
             .sink { [weak self] planState, site in
                 guard let self else { return }
                 switch planState {

@@ -1,11 +1,8 @@
 import XCTest
-import Combine
 @testable import WooCommerce
 @testable import Yosemite
 
 final class StorePlanSynchronizerTests: XCTestCase {
-
-    var planStateSubscription: AnyCancellable?
 
     // Mocked stores manager
     var stores = MockStoresManager(sessionManager: .testingInstance)
@@ -32,13 +29,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        waitFor { promise in
-            self.planStateSubscription = synchronizer.planState
-                .sink { state in
-                    XCTAssertEqual(state, .notLoaded)
-                    promise(())
-                }
-        }
+        XCTAssertEqual(synchronizer.planState, .notLoaded)
     }
 
     func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_without_ecommerce_trial() {
@@ -49,13 +40,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        waitFor { promise in
-            self.planStateSubscription = synchronizer.planState
-                .sink { state in
-                    XCTAssertEqual(state, .unavailable)
-                    promise(())
-                }
-        }
+        XCTAssertEqual(synchronizer.planState, .unavailable)
     }
 
     func test_synchronizer_fetches_plan_immediately_for_non_wpcom_site_that_once_was_ecommerce_trial() {
@@ -75,13 +60,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        waitFor { promise in
-            self.planStateSubscription = synchronizer.planState
-                .sink { state in
-                    XCTAssertEqual(state, .loaded(samplePlan))
-                    promise(())
-                }
-        }
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
     func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_ecommerce_trial() {
@@ -120,13 +99,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        waitFor { promise in
-            self.planStateSubscription = synchronizer.planState
-                .sink { state in
-                    XCTAssertEqual(state, .loaded(samplePlan))
-                    promise(())
-                }
-        }
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
     func test_synchronizer_reflects_error_state() {
@@ -144,13 +117,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
-        waitFor { promise in
-            self.planStateSubscription = synchronizer.planState
-                .sink { state in
-                    XCTAssertEqual(state, .failed)
-                    promise(())
-                }
-        }
+        XCTAssertEqual(synchronizer.planState, .failed)
     }
 
     // MARK: sixHoursAfterFreeTrialSubscribed

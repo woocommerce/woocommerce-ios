@@ -129,80 +129,9 @@ private extension StoreCreationCoordinator {
     }
 }
 
-// MARK: - Store creation M1
+// MARK: - Actions
 
 private extension StoreCreationCoordinator {
-    func observeSiteURLsFromStoreCreation() {
-
-        // Timestamp when we start observing times. Needed to track the store creating waiting duration.
-        let waitingTimeStart = Date()
-
-        possibleSiteURLsFromStoreCreationSubscription = $possibleSiteURLsFromStoreCreation
-            .filter { $0.isEmpty == false }
-            .removeDuplicates()
-            // There are usually three URLs in the webview that return a site URL - two with `*.wordpress.com` and the other the final URL.
-            .debounce(for: .seconds(5), scheduler: DispatchQueue.main)
-            .tryAsyncMap { [weak self] possibleSiteURLs -> Site? in
-                // Waits for 5 seconds before syncing sites every time.
-                try await Task.sleep(nanoseconds: 5_000_000_000)
-                return try await self?.syncSites(forSiteThatMatchesPossibleURLs: possibleSiteURLs)
-            }
-            // Retries 10 times with 5 seconds pause in between to wait for the newly created site to be available as a Jetpack site
-            // in the WPCOM `/me/sites` response.
-            .retry(10)
-            .replaceError(with: nil)
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] site in
-                guard let self, let site else { return }
-                self.trackSiteCreatedEvent(site: site, flow: .web, timeAtStart: waitingTimeStart)
-                self.continueWithSelectedSite(site: site)
-            }
-    }
-
-    @objc func handleStoreCreationCloseAction() {
-        showDiscardChangesAlert(flow: .web)
-    }
-
-    func handleStoreCreationResult(_ result: Result<String, Error>) {
-        switch result {
-        case .success(let siteURL):
-            // There could be multiple site URLs from the completion URL in the webview, and only one
-            // of them matches the final site URL from WPCOM `/me/sites` endpoint.
-            possibleSiteURLsFromStoreCreation.insert(siteURL)
-        case .failure(let error):
-            analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue, error: error, flow: .web, isFreeTrial: false))
-            DDLogError("Store creation error: \(error)")
-
-            // Dismiss store creation webview before showing error alert
-            navigationController.dismiss(animated: true) { [weak self] in
-                guard let self else { return }
-
-                // Show error alert
-                self.showStoreCreationDefaultErrorAlert(from: self.navigationController)
-            }
-        }
-    }
-
-    @MainActor
-    func syncSites(forSiteThatMatchesPossibleURLs possibleURLs: Set<String>) async throws -> Site {
-        return try await withCheckedThrowingContinuation { [weak self] continuation in
-            self?.storePickerViewModel.refreshSites(currentlySelectedSiteID: nil) { [weak self] in
-                guard let self else {
-                    return continuation.resume(throwing: StoreCreationCoordinatorError.selfDeallocated)
-                }
-                // The newly created site often has `isJetpackThePluginInstalled=false` initially,
-                // which results in a JCP site.
-                // In this case, we want to retry sites syncing.
-                guard let site = self.storePickerViewModel.site(thatMatchesPossibleURLs: possibleURLs) else {
-                    return continuation.resume(throwing: StoreCreationError.newSiteUnavailable)
-                }
-                guard site.isJetpackConnected && site.isJetpackThePluginInstalled else {
-                    return continuation.resume(throwing: StoreCreationError.newSiteIsNotJetpackSite)
-                }
-                continuation.resume(returning: site)
-            }
-        }
-    }
 
     func continueWithSelectedSite(site: Site) {
         switchStoreUseCase.switchStore(with: site.siteID) { [weak self] siteChanged in

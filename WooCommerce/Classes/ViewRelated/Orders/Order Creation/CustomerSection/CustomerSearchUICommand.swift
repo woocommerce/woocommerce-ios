@@ -11,8 +11,11 @@ final class CustomerSearchUICommand: SearchUICommand {
     typealias ResultsControllerModel = StorageCustomer
 
     var searchBarPlaceholder: String {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) ?
-        Localization.customerSelectorSearchBarPlaceHolder : Localization.searchBarPlaceHolder
+        guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
+            return Localization.searchBarPlaceHolder
+        }
+
+        return showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
     }
 
     var searchBarAccessibilityIdentifier: String = "customer-search-screen-search-field"
@@ -243,6 +246,9 @@ private extension CustomerSearchUICommand {
         static let customerSelectorSearchBarPlaceHolder = NSLocalizedString(
             "Search for customers",
             comment: "Customer Search Placeholder")
+        static let customerFiltersSearchBarPlaceHolder = NSLocalizedString(
+            "Search for customers by",
+            comment: "Customer Search Placeholder when showing filters")
         static let emptySearchResults = NSLocalizedString(
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")

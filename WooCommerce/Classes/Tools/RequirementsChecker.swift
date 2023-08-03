@@ -40,19 +40,14 @@ final class RequirementsChecker {
     /// in order to determine if the site is running on an expired plan.
     ///
     func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+        guard !site.isSimpleSite else {
+            onCompletion?(.success(.expiredWPComPlan))
+            return
+        }
         Task { @MainActor in
             do {
                 let result = try await checkMinimumWooVersion(for: site)
-                guard case .invalidWCVersion = result else {
-                    onCompletion?(.success(result))
-                    return
-                }
-
-                if site.isSimpleSite {
-                    onCompletion?(.success(.expiredWPComPlan))
-                } else {
-                    onCompletion?(.success(.invalidWCVersion))
-                }
+                onCompletion?(.success(result))
             } catch {
                 onCompletion?(.failure(error))
             }

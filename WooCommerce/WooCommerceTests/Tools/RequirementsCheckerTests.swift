@@ -6,7 +6,7 @@ import WordPressUI
 @MainActor
 final class RequirementsCheckerTests: XCTestCase {
 
-    private let freePlan = "free-plan"
+    private let freePlan = "free_plan"
     private var viewController: UINavigationController!
 
     override func setUp() {
@@ -30,17 +30,8 @@ final class RequirementsCheckerTests: XCTestCase {
     func test_checkSiteEligibility_returns_expiredWPComPlan_if_plan_expired() {
         // Given
         let site = Site.fake().copy(siteID: 123, plan: freePlan, wasEcommerceTrial: false)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
         let checker = RequirementsChecker(stores: stores)
-
-        stores.whenReceivingAction(ofType: SettingAction.self) { action in
-            switch action {
-            case .retrieveSiteAPI(_, let completion):
-                completion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
-            default:
-                break
-            }
-        }
 
         // When
         var checkResult: RequirementCheckResult?
@@ -63,7 +54,7 @@ final class RequirementsCheckerTests: XCTestCase {
     func test_checkSiteEligibility_returns_validWCVersion_if_highest_Woo_version_is_3() {
         // Given
         let site = Site.fake().copy(siteID: 123)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
         let checker = RequirementsChecker(stores: stores)
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
@@ -96,7 +87,7 @@ final class RequirementsCheckerTests: XCTestCase {
     func test_checkSiteEligibility_returns_invalidWCVersion_if_highest_Woo_version_is_not_3() {
         // Given
         let site = Site.fake().copy(siteID: 123)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
         let checker = RequirementsChecker(stores: stores)
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
@@ -137,7 +128,7 @@ final class RequirementsCheckerTests: XCTestCase {
     func test_checkSiteEligibility_returns_failure_if_site_setting_check_fails() {
         // Given
         let site = Site.fake().copy(siteID: 123)
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
         let checker = RequirementsChecker(stores: stores)
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
@@ -194,11 +185,10 @@ final class RequirementsCheckerTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
         let checker = RequirementsChecker(stores: stores, baseViewController: viewController)
 
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .loadSiteCurrentPlan(_, let completion):
-                let sitePlan = WPComSitePlan(id: self.freePlan, hasDomainCredit: false)
-                completion(.success(sitePlan))
+            case .retrieveSiteAPI(_, let completion):
+                completion(.success(SiteAPI(siteID: site.siteID, namespaces: [])))
             default:
                 break
             }

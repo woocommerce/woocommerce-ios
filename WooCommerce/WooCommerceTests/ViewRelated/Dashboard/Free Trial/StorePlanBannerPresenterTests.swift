@@ -9,6 +9,8 @@ final class StorePlanBannerPresenterTests: XCTestCase {
     private var planSynchronizer: MockStorePlanSynchronizer!
     private var inAppPurchaseManager: MockInAppPurchasesForWPComPlansManager!
     private var containerView: UIView!
+    // Keep strong reference to the presenter
+    private var presenter: StorePlanBannerPresenter?
 
     override func setUp() {
         planSynchronizer = MockStorePlanSynchronizer()
@@ -28,13 +30,13 @@ final class StorePlanBannerPresenterTests: XCTestCase {
         // Given
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
-        let presenter = StorePlanBannerPresenter(viewController: UIViewController(),
-                                                 containerView: containerView,
-                                                 siteID: siteID,
-                                                 onLayoutUpdated: { _ in },
-                                                 stores: stores,
-                                                 storePlanSynchronizer: planSynchronizer,
-                                                 inAppPurchasesManager: inAppPurchaseManager)
+        presenter = StorePlanBannerPresenter(viewController: UIViewController(),
+                                             containerView: containerView,
+                                             siteID: siteID,
+                                             onLayoutUpdated: { _ in },
+                                             stores: stores,
+                                             storePlanSynchronizer: planSynchronizer,
+                                             inAppPurchasesManager: inAppPurchaseManager)
 
         // When
         let plan = WPComSitePlan(id: "1052", hasDomainCredit: false, expiryDate: Date())
@@ -50,13 +52,13 @@ final class StorePlanBannerPresenterTests: XCTestCase {
         // Given
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: false, wasEcommerceTrial: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
-        let presenter = StorePlanBannerPresenter(viewController: UIViewController(),
-                                                 containerView: containerView,
-                                                 siteID: siteID,
-                                                 onLayoutUpdated: { _ in },
-                                                 stores: stores,
-                                                 storePlanSynchronizer: planSynchronizer,
-                                                 inAppPurchasesManager: inAppPurchaseManager)
+        presenter = StorePlanBannerPresenter(viewController: UIViewController(),
+                                             containerView: containerView,
+                                             siteID: siteID,
+                                             onLayoutUpdated: { _ in },
+                                             stores: stores,
+                                             storePlanSynchronizer: planSynchronizer,
+                                             inAppPurchasesManager: inAppPurchaseManager)
 
         // When
         let plan = WPComSitePlan(id: "1", hasDomainCredit: false)
@@ -72,20 +74,21 @@ final class StorePlanBannerPresenterTests: XCTestCase {
         // Given
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: false, wasEcommerceTrial: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
-        let presenter = StorePlanBannerPresenter(viewController: UIViewController(),
-                                                 containerView: containerView,
-                                                 siteID: siteID,
-                                                 onLayoutUpdated: { _ in },
-                                                 stores: stores,
-                                                 storePlanSynchronizer: planSynchronizer,
-                                                 inAppPurchasesManager: inAppPurchaseManager)
+        presenter = StorePlanBannerPresenter(viewController: UIViewController(),
+                                             containerView: containerView,
+                                             siteID: siteID,
+                                             onLayoutUpdated: { _ in },
+                                             stores: stores,
+                                             storePlanSynchronizer: planSynchronizer,
+                                             inAppPurchasesManager: inAppPurchaseManager)
 
         // When
         let plan = WPComSitePlan(id: "1", hasDomainCredit: false)
         planSynchronizer.setState(.loaded(plan))
 
         // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            guard let self else { return }
             XCTAssertTrue(self.containerView.subviews.isEmpty)
         }
     }
@@ -95,14 +98,14 @@ final class StorePlanBannerPresenterTests: XCTestCase {
         let defaultSite = Site.fake().copy(siteID: siteID, isWordPressComStore: false, wasEcommerceTrial: true)
         let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: defaultSite))
         let connectivityObserver = MockConnectivityObserver()
-        let presenter = StorePlanBannerPresenter(viewController: UIViewController(),
-                                                 containerView: containerView,
-                                                 siteID: siteID,
-                                                 onLayoutUpdated: { _ in },
-                                                 stores: stores,
-                                                 storePlanSynchronizer: planSynchronizer,
-                                                 connectivityObserver: connectivityObserver,
-                                                 inAppPurchasesManager: inAppPurchaseManager)
+        presenter = StorePlanBannerPresenter(viewController: UIViewController(),
+                                             containerView: containerView,
+                                             siteID: siteID,
+                                             onLayoutUpdated: { _ in },
+                                             stores: stores,
+                                             storePlanSynchronizer: planSynchronizer,
+                                             connectivityObserver: connectivityObserver,
+                                             inAppPurchasesManager: inAppPurchaseManager)
 
         // When
         let plan = WPComSitePlan(id: "1", hasDomainCredit: false)

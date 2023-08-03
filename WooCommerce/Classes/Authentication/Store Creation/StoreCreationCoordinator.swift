@@ -72,12 +72,11 @@ private extension StoreCreationCoordinator {
 
     @MainActor
     func startStoreCreation(from navigationController: UINavigationController) {
-        navigationController.navigationBar.prefersLargeTitles = true
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-            showFreeTrialSummaryView(from: navigationController, storeName: "Test site", profilerData: nil)
+            showFreeTrialSummaryView(from: navigationController, storeName: Constants.defaultStoreName, profilerData: nil)
         } else {
             showStoreNameForm(from: navigationController)
         }
@@ -161,6 +160,7 @@ private extension StoreCreationCoordinator {
 private extension StoreCreationCoordinator {
     @MainActor
     func showStoreNameForm(from navigationController: UINavigationController) {
+        navigationController.navigationBar.prefersLargeTitles = true
         let continueAfterEnteringStoreName = { [weak self] storeName in
             self?.showSellingStatusQuestion(from: navigationController, storeName: storeName)
         }
@@ -185,6 +185,7 @@ private extension StoreCreationCoordinator {
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String,
                               sellingStatus: StoreCreationSellingStatusAnswer?) {
+        navigationController.navigationBar.prefersLargeTitles = true
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
                 .init(storeName: storeName) { [weak self] category in
                     guard let self else { return }
@@ -223,7 +224,13 @@ private extension StoreCreationCoordinator {
                                       storeName: storeName,
                                       sellingStatus: nil)
         }
-        navigationController.pushViewController(questionController, animated: true)
+
+        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+            navigationController.isNavigationBarHidden = false
+            navigationController.setViewControllers([questionController], animated: true)
+        } else {
+            navigationController.pushViewController(questionController, animated: true)
+        }
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }
 
@@ -276,6 +283,7 @@ private extension StoreCreationCoordinator {
         })
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+            navigationController.isNavigationBarHidden = true
             navigationController.pushViewController(summaryViewController, animated: true)
         } else {
             navigationController.present(summaryViewController, animated: true)
@@ -589,6 +597,7 @@ private extension StoreCreationCoordinator {
         }
 
         static let jetpackCheckRetryInterval: TimeInterval = 10
+        static let defaultStoreName = ""
     }
 }
 

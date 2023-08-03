@@ -33,6 +33,12 @@ extension UILabel {
         textColor = .text
     }
 
+    func applyBodySubtleStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .body
+        textColor = .textSubtle
+    }
+
     func applySecondaryBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
@@ -91,6 +97,12 @@ extension UILabel {
         adjustsFontForContentSizeCategory = true
         font = .caption1
         textColor = .textSubtle
+    }
+
+    func applyStrongCaption1Style() {
+        adjustsFontForContentSizeCategory = true
+        font = .caption1
+        textColor = .text
     }
 
     func applyCalloutStyle() {

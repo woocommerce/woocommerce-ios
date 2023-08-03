@@ -15,7 +15,7 @@ struct OrderCustomerListView: UIViewControllerRepresentable {
         let viewController = SearchViewController(
             storeID: siteID,
             command: CustomerSearchUICommand(siteID: siteID, onDidSelectSearchResult: onCustomerTapped),
-            cellType: TitleAndSubtitleAndStatusTableViewCell.self,
+            cellType: TitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
         let navigationController = WooNavigationController(rootViewController: viewController)

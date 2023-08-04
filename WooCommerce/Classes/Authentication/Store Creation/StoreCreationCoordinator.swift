@@ -35,6 +35,8 @@ final class StoreCreationCoordinator: Coordinator {
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
+    private var profilerCoordinator: StoreCreationProfilerCoordinator?
+    private var completedSite: Site?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -70,30 +72,32 @@ final class StoreCreationCoordinator: Coordinator {
 
 private extension StoreCreationCoordinator {
 
-    @MainActor
     func startStoreCreation(from navigationController: UINavigationController) {
-        navigationController.navigationBar.prefersLargeTitles = true
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
-        let continueAfterEnteringStoreName = { [weak self] storeName in
-            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
+        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+            navigationController.isNavigationBarHidden = true
+            // TODO: update store name if needed
+            showFreeTrialSummaryView(from: navigationController, storeName: "", profilerData: nil)
+        } else {
+            showStoreNameInput(from: navigationController)
         }
-        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
-            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
-            continueAfterEnteringStoreName(storeName)
-        } onClose: { [weak self] in
-            self?.showDiscardChangesAlert(flow: .native)
-        } onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        }
-        navigationController.pushViewController(storeNameForm, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
+    }
 
-        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
-        if let prefillStoreName {
-            continueAfterEnteringStoreName(prefillStoreName)
+    func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
+        navigationController.isNavigationBarHidden = false
+        let profilerCoordinator = StoreCreationProfilerCoordinator(storeName: storeName, navigationController: navigationController) { [weak self] profilerData in
+            guard let self else { return }
+            // TODO: update profiler data with remote
+            if let site = self.completedSite {
+                self.continueWithSelectedSite(site: site)
+            } else {
+                self.showInProgressView(from: navigationController)
+            }
         }
+        self.profilerCoordinator = profilerCoordinator
+        profilerCoordinator.start()
     }
 
     @MainActor
@@ -168,8 +172,31 @@ private extension StoreCreationCoordinator {
     }
 }
 
-// MARK: - Legacy profiler questions
+// MARK: - Legacy profiler flow
 private extension StoreCreationCoordinator {
+
+    func showStoreNameInput(from navigationController: UINavigationController) {
+        navigationController.navigationBar.prefersLargeTitles = true
+
+        let continueAfterEnteringStoreName = { [weak self] storeName in
+            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
+        }
+        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
+            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
+            continueAfterEnteringStoreName(storeName)
+        } onClose: { [weak self] in
+            self?.showDiscardChangesAlert(flow: .native)
+        } onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
+        }
+        navigationController.pushViewController(storeNameForm, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
+
+        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
+        if let prefillStoreName {
+            continueAfterEnteringStoreName(prefillStoreName)
+        }
+    }
 
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {
@@ -296,10 +323,14 @@ private extension StoreCreationCoordinator {
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
-            // Make sure that nothing is presented on the view controller before showing the loading screen
-            navigationController.presentedViewController?.dismiss(animated: true)
-            // Show a progress view while the free trial store is created.
-            showInProgressView(from: navigationController, viewProperties: .init(title: Localization.WaitingForJetpackSite.title, message: ""))
+            if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
+                showProfilerFlow(storeName: siteResult.name, from: navigationController)
+            } else {
+                // Make sure that nothing is presented on the view controller before showing the loading screen
+                navigationController.presentedViewController?.dismiss(animated: true)
+                // Show a progress view while the free trial store is created.
+                showInProgressView(from: navigationController)
+            }
             // Wait for jetpack to be installed
             DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
             Task { @MainActor in
@@ -340,8 +371,7 @@ private extension StoreCreationCoordinator {
         }
     }
 
-    func showInProgressView(from navigationController: UINavigationController,
-                            viewProperties: InProgressViewProperties) {
+    func showInProgressView(from navigationController: UINavigationController) {
         let approxSecondsToWaitForNetworkRequest = 10.0
         let viewModel = StoreCreationProgressViewModel(estimatedTimePerProgress: Constants.jetpackCheckRetryInterval + approxSecondsToWaitForNetworkRequest)
         let storeCreationProgressView = StoreCreationProgressHostingViewController(viewModel: viewModel)
@@ -397,7 +427,6 @@ private extension StoreCreationCoordinator {
         handleCompletionStatus(siteID: siteID, site: site, waitingTimeStart: waitingTimeStart, expectedStoreName: expectedStoreName)
     }
 
-    @MainActor
     func handleCompletionStatus(siteID: Int64, site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
         cancelLocalNotificationWhenStoreIsReady()
         guard let site else {
@@ -416,15 +445,16 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
         }
 
-        storeCreationProgressViewModel?.markAsComplete()
+        completedSite = site
+        /// Show the dashboard immediately if the progress view is displayed
+        /// or do nothing otherwise
+        if let storeCreationProgressViewModel {
+            storeCreationProgressViewModel.markAsComplete()
+            continueWithSelectedSite(site: site)
+        }
         trackSiteCreatedEvent(site: site, flow: .native, timeAtStart: waitingTimeStart)
-
-        /// Free trial stores should land directly on the dashboard and not show any success view.
-        ///
-        continueWithSelectedSite(site: site)
     }
 
-    @MainActor
     func showSuccessView(from navigationController: UINavigationController, site: Site) {
         guard let url = URL(string: site.url) else {
             return continueWithSelectedSite(site: site)
@@ -439,7 +469,6 @@ private extension StoreCreationCoordinator {
         navigationController.pushViewController(successView, animated: true)
     }
 
-    @MainActor
     func showJetpackSiteTimeoutView(onRetry: @escaping () async -> Void) {
         guard (navigationController.topViewController is StoreCreationTimeoutHostingController) == false else {
             return
@@ -534,14 +563,6 @@ private extension StoreCreationCoordinator {
             static let cancelActionTitle = NSLocalizedString(
                 "OK",
                 comment: "Button title to dismiss the alert when the store cannot be created in the store creation flow."
-            )
-        }
-
-        enum WaitingForJetpackSite {
-            static let title = NSLocalizedString(
-                "Creating your store",
-                comment: "Title of the in-progress view when waiting for the site to become a Jetpack site " +
-                "after WPCOM plan purchase in the store creation flow."
             )
         }
     }

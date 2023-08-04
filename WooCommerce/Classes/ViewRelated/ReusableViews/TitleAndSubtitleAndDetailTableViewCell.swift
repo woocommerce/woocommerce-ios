@@ -17,7 +17,7 @@ final class TitleAndSubtitleAndDetailTableViewCell: UITableViewCell, SearchResul
 
     func configureCell(searchModel: ViewModel) {
         configureCell(viewModel: searchModel)
-        configureLabels()
+        subtitleLabel.applyStrongCaption1Style()
     }
 
     func configureCell(viewModel: ViewModel) {
@@ -47,19 +47,13 @@ extension TitleAndSubtitleAndDetailTableViewCell {
 //
 private extension TitleAndSubtitleAndDetailTableViewCell {
     func setupTitleLabelText(with viewModel: ViewModel) {
-        var title: NSMutableAttributedString
-        if viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty {
-            title = NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
-        } else {
-            title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
-        }
+        var title = viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty ?
+        NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle]) :
+        NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
 
-        let username: NSAttributedString
-        if viewModel.detail.isEmpty {
-            username = NSAttributedString(string: "")
-        } else {
-            username = NSAttributedString(string: " • \(viewModel.detail)", attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
-        }
+        let username = viewModel.detail.isEmpty ?
+        NSAttributedString(string: "") :
+        NSAttributedString(string: " • \(viewModel.detail)", attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
 
         title.append(username)
 
@@ -70,11 +64,5 @@ private extension TitleAndSubtitleAndDetailTableViewCell {
         backgroundColor = .listForeground(modal: false)
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
-    }
-
-    /// Setup: Labels
-    ///
-    func configureLabels() {
-        subtitleLabel.applyStrongCaption1Style()
     }
 }

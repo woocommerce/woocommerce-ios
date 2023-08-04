@@ -7,7 +7,7 @@ import Experiments
 final class CustomerSearchUICommand: SearchUICommand {
 
     typealias Model = Customer
-    typealias CellViewModel = TitleAndSubtitleAndDetailTableViewCell.ViewModel
+    typealias CellViewModel = UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel
     typealias ResultsControllerModel = StorageCustomer
 
     var searchBarPlaceholder: String {
@@ -84,7 +84,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
-    func createCellViewModel(model: Customer) -> TitleAndSubtitleAndDetailTableViewCell.ViewModel {
+    func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
         return CellViewModel(
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",

@@ -37,12 +37,12 @@ private extension StoreCreationProfilerCoordinator {
                 self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
             }
             self.sellingStatus = sellingStatus
-            self.showStoreCountryQuestion()
+            self.showCategoryQuestion()
         } onSkip: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.sellingStatus = nil
-            self.showStoreCountryQuestion()
+            self.showCategoryQuestion()
         }
 
         navigationController.setViewControllers([questionController], animated: true)
@@ -56,12 +56,12 @@ private extension StoreCreationProfilerCoordinator {
                 .init(storeName: storeName) { [weak self] category in
                     guard let self else { return }
                     self.storeCategory = category
-                    self.showSellingStatusQuestion()
+                    self.showStoreCountryQuestion()
                 } onSkip: { [weak self] in
                     guard let self else { return }
                     self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
                     self.storeCategory = nil
-                    self.showSellingStatusQuestion()
+                    self.showStoreCountryQuestion()
                 })
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))

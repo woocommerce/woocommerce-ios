@@ -236,6 +236,14 @@ private extension ProductStore {
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):
+                                    if let productType,
+                                        let error = error as? DotcomError,
+                                        case let .unknown(code, message) = error,
+                                        code == "rest_invalid_param",
+                                        message == "Invalid parameter(s): type",
+                                        ProductType.coreTypes.contains(productType) == false {
+                                        return onCompletion(.success(false))
+                                    }
                                     onCompletion(.failure(error))
                                 case .success(let products):
                                     guard let self = self else {
@@ -1143,4 +1151,8 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
         self.description = description
         self.language = language
     }
+}
+
+private extension ProductType {
+    static let coreTypes: Set<ProductType> = [.simple, .variable, .grouped, .affiliate]
 }

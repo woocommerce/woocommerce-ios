@@ -137,7 +137,7 @@ extension FilterProductListViewModel.ProductListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productStatus)
         case .productType:
-            let options: [ProductType?] = [nil, .simple, .variable, .grouped, .affiliate]
+            let options: [ProductType?] = [nil, .simple, .variable, .grouped, .affiliate, .subscription, .variableSubscription, .bundle, .composite]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productType)

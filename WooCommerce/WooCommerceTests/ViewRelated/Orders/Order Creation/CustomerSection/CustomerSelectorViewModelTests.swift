@@ -33,17 +33,17 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        var result = true
+        var isEligible = true
         waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { isEligible in
-                result = isEligible
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
 
                 expectation.fulfill()
             }
         }
 
         // Then
-        XCTAssertFalse(result)
+        XCTAssertFalse(isEligible)
         XCTAssertEqual(passedParameters?.0, sampleSiteID)
         XCTAssertEqual(passedParameters?.1, "WooCommerce")
     }
@@ -64,17 +64,17 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        var result = false
+        var isEligible = false
         waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { isEligible in
-                result = isEligible
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
 
                 expectation.fulfill()
             }
         }
 
         // Then
-        XCTAssertTrue(result)
+        XCTAssertTrue(isEligible)
     }
 
     func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_then_returns_true() {
@@ -93,17 +93,17 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        var result = false
+        var isEligible = false
         waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { isEligible in
-                result = isEligible
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
 
                 expectation.fulfill()
             }
         }
 
         // Then
-        XCTAssertTrue(result)
+        XCTAssertTrue(isEligible)
     }
 
     func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_but_plugin_is_not_active_then_returns_false() {
@@ -122,17 +122,17 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         }
 
         // When
-        var result = true
+        var isEligible = true
         waitForExpectation { expectation in
-            viewModel.isEligibleForAdvancedSearch() { isEligible in
-                result = isEligible
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
 
                 expectation.fulfill()
             }
         }
 
         // Then
-        XCTAssertFalse(result)
+        XCTAssertFalse(isEligible)
     }
 
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData() {

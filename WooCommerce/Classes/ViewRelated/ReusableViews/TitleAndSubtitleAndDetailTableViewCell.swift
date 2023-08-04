@@ -21,9 +21,9 @@ final class TitleAndSubtitleAndDetailTableViewCell: UITableViewCell, SearchResul
     }
 
     func configureCell(viewModel: ViewModel) {
-        subtitleLabel.text = viewModel.subtitle
         accessibilityLabel = viewModel.accessibilityLabel
         setupTitleLabelText(with: viewModel)
+        setupSubtitleLabelText(with: viewModel)
     }
 }
 
@@ -47,6 +47,16 @@ extension TitleAndSubtitleAndDetailTableViewCell {
 // MARK: - Setup
 //
 private extension TitleAndSubtitleAndDetailTableViewCell {
+    func setupSubtitleLabelText(with viewModel: ViewModel) {
+        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.text])
+
+        if let underlinedText = viewModel.underlinedText {
+            subtitle.underlineSubstring(underlinedText: underlinedText)
+        }
+
+        subtitleLabel.attributedText = subtitle
+    }
+
     func setupTitleLabelText(with viewModel: ViewModel) {
         var titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
         titleAndDetail.append(detailAttributedString(from: viewModel))

@@ -33,12 +33,6 @@ extension UILabel {
         textColor = .text
     }
 
-    func applyBodySubtleStyle() {
-        adjustsFontForContentSizeCategory = true
-        font = .body
-        textColor = .textSubtle
-    }
-
     func applySecondaryBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body

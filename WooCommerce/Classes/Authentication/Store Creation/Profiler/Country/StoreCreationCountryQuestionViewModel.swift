@@ -2,7 +2,6 @@ import Combine
 import Foundation
 
 /// View model for `StoreCreationCountryQuestionView`, an optional profiler question about store country in the store creation flow.
-@MainActor
 final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias CountryCode = SiteAddress.CountryCode
 
@@ -62,6 +61,7 @@ extension StoreCreationCountryQuestionViewModel: RequiredStoreCreationProfilerQu
         $isContinueButtonEnabledValue.eraseToAnyPublisher()
     }
 
+    @MainActor
     func continueButtonTapped() async {
         guard let selectedCountryCode else {
             return

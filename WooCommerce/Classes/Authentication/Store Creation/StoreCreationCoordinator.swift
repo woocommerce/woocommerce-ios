@@ -171,7 +171,6 @@ private extension StoreCreationCoordinator {
 // MARK: - Legacy profiler questions
 private extension StoreCreationCoordinator {
 
-    @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
@@ -187,7 +186,6 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
 
-    @MainActor
     func showSellingStatusQuestion(from navigationController: UINavigationController,
                                    storeName: String,
                                    category: StoreCreationCategoryAnswer?) {
@@ -212,7 +210,6 @@ private extension StoreCreationCoordinator {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }
 
-    @MainActor
     func showStoreCountryQuestion(from navigationController: UINavigationController,
                                   storeName: String,
                                   category: StoreCreationCategoryAnswer?,
@@ -241,7 +238,7 @@ private extension StoreCreationCoordinator {
 
 // MARK: - Store creation
 private extension StoreCreationCoordinator {
-    @MainActor
+
     /// Presents the free trial summary view.
     /// After user confirmation proceeds to create a store with a free trial plan.
     ///
@@ -253,9 +250,11 @@ private extension StoreCreationCoordinator {
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
-            let result = await self.createFreeTrialStore(storeName: storeName,
-                                                         profilerData: profilerData)
-            self.handleFreeTrialStoreCreation(from: navigationController, result: result)
+            Task { @MainActor in
+                let result = await self.createFreeTrialStore(storeName: storeName,
+                                                             profilerData: profilerData)
+                self.handleFreeTrialStoreCreation(from: navigationController, result: result)
+            }
         })
         navigationController.present(summaryViewController, animated: true)
     }
@@ -294,7 +293,6 @@ private extension StoreCreationCoordinator {
 
     /// Handles the result from the async free trial store creation and navigates to the in-progress UI on success or show an alert on failure.
     /// While on the in-progress UI, it waits for Jetpack to be installed on the site.
-    @MainActor
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
@@ -342,7 +340,6 @@ private extension StoreCreationCoordinator {
         }
     }
 
-    @MainActor
     func showInProgressView(from navigationController: UINavigationController,
                             viewProperties: InProgressViewProperties) {
         let approxSecondsToWaitForNetworkRequest = 10.0
@@ -353,7 +350,6 @@ private extension StoreCreationCoordinator {
         navigationController.pushViewController(storeCreationProgressView, animated: true)
     }
 
-    @MainActor
     func showStoreCreationErrorAlert(from viewController: UIViewController, error: SiteCreationError) {
         let message: String = {
             switch error {

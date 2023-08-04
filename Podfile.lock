@@ -6,7 +6,7 @@ PODS:
   - AppAuth/Core (1.6.1)
   - AppAuth/ExternalUserAgent (1.6.1):
     - AppAuth/Core
-  - Automattic-Tracks-iOS (2.2.0):
+  - Automattic-Tracks-iOS (2.3.0):
     - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -28,12 +28,12 @@ PODS:
   - Kingfisher (7.6.2)
   - NSObject-SafeExpectations (0.0.6)
   - "NSURL+IDN (0.4)"
-  - Sentry (8.8.0):
-    - Sentry/Core (= 8.8.0)
-    - SentryPrivate (= 8.8.0)
-  - Sentry/Core (8.8.0):
-    - SentryPrivate (= 8.8.0)
-  - SentryPrivate (8.8.0)
+  - Sentry (8.9.2):
+    - Sentry/Core (= 8.9.2)
+    - SentryPrivate (= 8.9.2)
+  - Sentry/Core (8.9.2):
+    - SentryPrivate (= 8.9.2)
+  - SentryPrivate (8.9.2)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
   - StripeTerminal (2.19.1)
@@ -77,7 +77,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 2.2)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `trunk`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -99,7 +99,6 @@ SPEC REPOS:
   trunk:
     - Alamofire
     - AppAuth
-    - Automattic-Tracks-iOS
     - CocoaLumberjack
     - GoogleSignIn
     - Gridicons
@@ -132,11 +131,17 @@ SPEC REPOS:
     - ZendeskSupportSDK
 
 EXTERNAL SOURCES:
+  Automattic-Tracks-iOS:
+    :branch: trunk
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
   WordPressAuthenticator:
     :branch: trunk
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 CHECKOUT OPTIONS:
+  Automattic-Tracks-iOS:
+    :commit: aad902bf945e7528a00ba5b9c5640974d58ff2fd
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
   WordPressAuthenticator:
     :commit: bfdfde6fcd9a0faf0509db8380aa208e6d093a08
     :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
@@ -144,7 +149,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   AppAuth: e48b432bb4ba88b10cb2bcc50d7f3af21e78b9c2
-  Automattic-Tracks-iOS: a1b020ab02f0e5a39c5d4e6870a498273f286158
+  Automattic-Tracks-iOS: 310a9b65615d03db838fad6e58823effb4f385bf
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   GoogleSignIn: fd381840dbe7c1137aa6dc30849a5c3e070c034a
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
@@ -154,8 +159,8 @@ SPEC CHECKSUMS:
   Kingfisher: 6c5449c6450c5239166510ba04afe374a98afc4f
   NSObject-SafeExpectations: c01c8881cbd97efad6f668286b913cd0b7d62ab5
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
-  Sentry: 927dfb29d18a14d924229a59cc2ad149f43349f2
-  SentryPrivate: 4350d865f898224ab9fa02b37d6ee7fbb623f47e
+  Sentry: 4fe92c018ba6ed61ce1fc652dd1ccac34505a4c6
+  SentryPrivate: b58fc25b3a0ac7e3d4ec229be63d583e3314a47a
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
   StripeTerminal: 93e18a93c6f92e51ceedc5b78ab3075327075a80
@@ -178,6 +183,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 33119766b8581a4e76206f345a770ca2c617f78d
+PODFILE CHECKSUM: 1e30ee7ea7eaa2f5c59e5cc4a272570a13c1d32a
 
 COCOAPODS: 1.12.1

@@ -90,6 +90,9 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     let featureFlagService: FeatureFlagService
 
+    let enableAppHangTracking = false
+    let enableCaptureFailedRequests = false
+
     /// Tracks if the component has been initialized.
     ///
     private var hasBeenInitialized = false

@@ -87,7 +87,10 @@ private extension StoreCreationCoordinator {
 
     func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let profilerCoordinator = StoreCreationProfilerCoordinator(storeName: storeName, navigationController: navigationController) { [weak self] profilerData in
+        let profilerCoordinator = StoreCreationProfilerCoordinator(
+            storeName: storeName,
+            navigationController: navigationController
+        ) { [weak self] profilerData in
             guard let self else { return }
             // TODO: update profiler data with remote
             if let site = self.completedSite {
@@ -277,11 +280,9 @@ private extension StoreCreationCoordinator {
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
-            Task { @MainActor in
-                let result = await self.createFreeTrialStore(storeName: storeName,
-                                                             profilerData: profilerData)
-                self.handleFreeTrialStoreCreation(from: navigationController, result: result)
-            }
+            let result = await self.createFreeTrialStore(storeName: storeName,
+                                                         profilerData: profilerData)
+            self.handleFreeTrialStoreCreation(from: navigationController, result: result)
         })
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {

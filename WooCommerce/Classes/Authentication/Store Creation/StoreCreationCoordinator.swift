@@ -130,7 +130,6 @@ private extension StoreCreationCoordinator {
 }
 
 // MARK: - Actions
-
 private extension StoreCreationCoordinator {
 
     func continueWithSelectedSite(site: Site) {
@@ -169,36 +168,8 @@ private extension StoreCreationCoordinator {
     }
 }
 
-// MARK: - Store creation M2
-
+// MARK: - Legacy profiler questions
 private extension StoreCreationCoordinator {
-    @MainActor
-    func showChallengesQuestion(from navigationController: UINavigationController) {
-        let questionController = StoreCreationChallengesQuestionHostingController(viewModel:
-                .init { _ in
-                    // TODO: 10376 - Navigate to features selection and pass the selected challenges
-                } onSkip: { [weak self] in
-                    guard let self else { return }
-                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerChallengesQuestion))
-                    // TODO: 10376 - Navigate to features selection
-                })
-        navigationController.pushViewController(questionController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))
-    }
-
-    @MainActor
-    func showFeaturesQuestion(from navigationController: UINavigationController) {
-        let questionController = StoreCreationFeaturesQuestionHostingController(viewModel:
-                .init { _ in
-                    // TODO: 10376 - Navigate to [progress view / my store tab] and pass the selected features
-                } onSkip: { [weak self] in
-                    guard let self else { return }
-                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerFeaturesQuestion))
-                    // TODO: 10376 - Navigate to [progress view / my store tab]
-                })
-        navigationController.pushViewController(questionController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerFeaturesQuestion))
-    }
 
     @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
@@ -266,7 +237,10 @@ private extension StoreCreationCoordinator {
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
+}
 
+// MARK: - Store creation
+private extension StoreCreationCoordinator {
     @MainActor
     /// Presents the free trial summary view.
     /// After user confirmation proceeds to create a store with a free trial plan.
@@ -495,6 +469,7 @@ private extension StoreCreationCoordinator {
     }
 }
 
+// MARK: - Local notification
 private extension StoreCreationCoordinator {
     func scheduleLocalNotificationWhenStoreIsReady() {
         let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete,

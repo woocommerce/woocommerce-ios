@@ -10,7 +10,6 @@ struct StoreCreationChallengesAnswer: Equatable {
 }
 
 /// View model for `StoreCreationChallengesQuestionView`, an optional profiler question about challenges in the store creation flow.
-@MainActor
 final class StoreCreationChallengesQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias Answer = StoreCreationChallengesAnswer
 
@@ -33,6 +32,7 @@ final class StoreCreationChallengesQuestionViewModel: StoreCreationProfilerQuest
 }
 
 extension StoreCreationChallengesQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
+    @MainActor
     func continueButtonTapped() async {
         guard selectedChallenges.isNotEmpty else {
             return onSkip()

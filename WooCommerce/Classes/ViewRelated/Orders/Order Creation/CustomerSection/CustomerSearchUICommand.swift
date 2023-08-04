@@ -31,6 +31,8 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private let featureFlagService: FeatureFlagService
 
+    private var searchTerm: String?
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -89,11 +91,13 @@ final class CustomerSearchUICommand: SearchUICommand {
             placeholderTitle: Localization.titleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
-            detail: model.username ?? ""
+            detail: model.username ?? "",
+            underlinedText: searchTerm
         )
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchTerm = keyword
         analytics.track(.orderCreationCustomerSearch)
 
         let action: CustomerAction

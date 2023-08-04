@@ -47,15 +47,15 @@ extension TitleAndSubtitleAndDetailTableViewCell {
 //
 private extension TitleAndSubtitleAndDetailTableViewCell {
     func setupTitleLabelText(with viewModel: ViewModel) {
-        var title = viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty ?
+        let title = viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty ?
         NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle]) :
         NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
 
-        let username = viewModel.detail.isEmpty ?
+        let detail = viewModel.detail.isEmpty ?
         NSAttributedString(string: "") :
         NSAttributedString(string: " • \(viewModel.detail)", attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
 
-        title.append(username)
+        title.append(detail)
 
         titleLabel.attributedText = title
     }

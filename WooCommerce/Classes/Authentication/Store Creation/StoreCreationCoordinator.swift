@@ -282,7 +282,9 @@ private extension StoreCreationCoordinator {
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
             let result = await self.createFreeTrialStore(storeName: storeName,
                                                          profilerData: profilerData)
-            self.handleFreeTrialStoreCreation(from: navigationController, result: result)
+            await MainActor.run {
+                self.handleFreeTrialStoreCreation(from: navigationController, result: result)
+            }
         })
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {

@@ -47,7 +47,7 @@ extension NSMutableAttributedString {
         return false
     }
 
-    /// Underlines the given substring. It does nothing if the given substring cannot be found in the original string.
+    /// Underlines the given substring (case insensitive). It does nothing if the given substring cannot be found in the original string.
     ///
     func underlineSubstring(underlinedText: String) {
         let range = (string as NSString).range(of: underlinedText, options: .caseInsensitive)

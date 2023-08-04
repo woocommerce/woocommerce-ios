@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 14.8
+In this latest update, we're introducing several exciting enhancements to make your app experience even better! You can now filter products based on various new types, including subscription, variable subscription, bundle, and composite. For stores with expired WooExpress plans, upgrading within the app is more convenient than ever. Creating and managing your stores is easier with improved accessibility on the Upgrades screen. Update now to discover all the latest enhancements and improvements! 
+
 ## 14.7
 Exciting news for new store owners! Firstly, you can now easily upgrade to all available plans. Secondly, gain hands-on experience in managing orders by creating test orders directly within the app!
 

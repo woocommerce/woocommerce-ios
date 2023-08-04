@@ -88,7 +88,6 @@ final class CustomerSearchUICommand: SearchUICommand {
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
             placeholderTitle: Localization.titleCellPlaceholder,
             subtitle: model.email,
-            placeholderSubtitle: Localization.subtitleCellPlaceholder,
             accessibilityLabel: "",
             detail: model.username ?? ""
         )
@@ -158,6 +157,5 @@ private extension CustomerSearchUICommand {
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
         static let titleCellPlaceholder = NSLocalizedString("No name", comment: "Placeholder when there's no customer name in the list")
-        static let subtitleCellPlaceholder = NSLocalizedString("No email address", comment: "Placeholder when there's no customer email in the list")
     }
 }

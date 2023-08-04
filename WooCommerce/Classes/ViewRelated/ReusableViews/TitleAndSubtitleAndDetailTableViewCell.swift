@@ -6,8 +6,6 @@ final class TitleAndSubtitleAndDetailTableViewCell: UITableViewCell, SearchResul
     @IBOutlet private var subtitleLabel: UILabel!
     @IBOutlet private var titleLabel: UILabel!
 
-    @IBOutlet weak var detailLabel: UILabel!
-
     static func register(for tableView: UITableView) {
         tableView.registerNib(for: self)
     }
@@ -19,15 +17,13 @@ final class TitleAndSubtitleAndDetailTableViewCell: UITableViewCell, SearchResul
 
     func configureCell(searchModel: ViewModel) {
         configureCell(viewModel: searchModel)
+        configureLabels()
     }
 
     func configureCell(viewModel: ViewModel) {
-        titleLabel.text = viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty ? viewModel.placeholderTitle : viewModel.title
-        subtitleLabel.text = viewModel.subtitle.isEmpty ? viewModel.placeholderSubtitle : viewModel.subtitle
+        subtitleLabel.text = viewModel.subtitle
         accessibilityLabel = viewModel.accessibilityLabel
-        detailLabel.text = viewModel.detail.isEmpty ? "" : " • \(viewModel.detail)"
-
-        configureLabels(with: viewModel)
+        setupTitleLabelText(with: viewModel)
     }
 }
 
@@ -42,7 +38,6 @@ extension TitleAndSubtitleAndDetailTableViewCell {
         let title: String
         let placeholderTitle: String
         let subtitle: String
-        let placeholderSubtitle: String
         let accessibilityLabel: String
         let detail: String
     }
@@ -51,6 +46,26 @@ extension TitleAndSubtitleAndDetailTableViewCell {
 // MARK: - Setup
 //
 private extension TitleAndSubtitleAndDetailTableViewCell {
+    func setupTitleLabelText(with viewModel: ViewModel) {
+        var title: NSMutableAttributedString
+        if viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty {
+            title = NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        } else {
+            title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
+        }
+
+        let username: NSAttributedString
+        if viewModel.detail.isEmpty {
+            username = NSAttributedString(string: "")
+        } else {
+            username = NSAttributedString(string: " • \(viewModel.detail)", attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        }
+
+        title.append(username)
+
+        titleLabel.attributedText = title
+    }
+
     func configureBackground() {
         backgroundColor = .listForeground(modal: false)
         selectedBackgroundView = UIView()
@@ -59,11 +74,7 @@ private extension TitleAndSubtitleAndDetailTableViewCell {
 
     /// Setup: Labels
     ///
-    func configureLabels(with viewModel: ViewModel) {
-        subtitleLabel.text == viewModel.placeholderSubtitle ? subtitleLabel.applyCaption1Style() : subtitleLabel.applyStrongCaption1Style()
-        titleLabel.text == viewModel.placeholderTitle ? titleLabel.applyBodySubtleStyle() : titleLabel.applyBodyStyle()
-        detailLabel.applyBodySubtleStyle()
-
-        titleLabel.sizeToFit()
+    func configureLabels() {
+        subtitleLabel.applyStrongCaption1Style()
     }
 }

@@ -1,5 +1,4 @@
 import AuthenticationServices
-import GoogleSignIn
 import NSURL_IDN
 import UIKit
 import WordPressShared
@@ -127,12 +126,6 @@ import WordPressKit
     @objc public func isWordPressAuthUrl(_ url: URL) -> Bool {
         let expectedPrefix = configuration.wpcomScheme + "://" + Self.magicLinkUrlHostname
         return url.absoluteString.hasPrefix(expectedPrefix)
-    }
-
-    /// Attempts to process the specified URL as a Google Authentication Link. Returns *true* on success.
-    ///
-    @objc public func handleGoogleAuthUrl(_ url: URL, sourceApplication: String?, annotation: Any?) -> Bool {
-        return GIDSignIn.sharedInstance.handle(url)
     }
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.

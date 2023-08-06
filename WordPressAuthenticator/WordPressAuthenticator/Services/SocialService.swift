@@ -1,7 +1,4 @@
-import GoogleSignIn
-
-// MARK: - Social Services Metadata
-//
+/// Social service metadata.
 public enum SocialService {
 
     public struct User {

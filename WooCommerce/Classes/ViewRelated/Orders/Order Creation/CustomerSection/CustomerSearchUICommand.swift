@@ -161,6 +161,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Customer, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
+        analytics.track(.orderCreationCustomerAdded)
         onDidSelectSearchResult(model)
     }
 

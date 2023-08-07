@@ -237,7 +237,7 @@ private extension SubscriptionsViewModel {
             return nil
         }
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MMMM d"
+        dateFormatter.setLocalizedDateFormatFromTemplate("MMMM d")
         return dateFormatter.string(from: planExpiryDate)
     }
 

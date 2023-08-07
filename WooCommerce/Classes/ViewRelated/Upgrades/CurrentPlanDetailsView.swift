@@ -18,11 +18,13 @@ struct CurrentPlanDetailsView: View {
             if let expirationDate = expirationDate {
                 Text(Localization.freeTrialTitle)
                     .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
                 Text(String.localizedStringWithFormat(Localization.freeTrialText, daysLeftText, expirationDate))
                     .font(.footnote)
             } else {
                 Text(Localization.freeTrialHasEndedTitle)
                     .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
                 Text(Localization.freeTrialExpiredText)
                     .font(.footnote)
             }

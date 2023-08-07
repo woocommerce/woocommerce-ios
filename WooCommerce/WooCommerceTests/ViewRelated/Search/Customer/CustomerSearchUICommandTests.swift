@@ -74,6 +74,19 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_search"))
     }
 
+    func test_didSelectSearchResult_then_tracks_orderCreationCustomerAdded_event() {
+        // Given
+        let command = CustomerSearchUICommand(
+            siteID: sampleSiteID,
+            analytics: analytics) { _ in }
+
+        // When
+        command.didSelectSearchResult(model: Customer.fake(), from: UIViewController(), reloadData: {}, updateActionButton: {})
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
+    }
+
     func test_synchronizeModels_when_better_customer_selection_is_enabled_and_keyword_is_empty_then_calls_synchronizeAllLightCustomersDataAction() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -30,7 +30,10 @@ struct StoreCreationProfilerQuestionContainerView: View {
     }
 
     var body: some View {
-        Group {
+        VStack(alignment: .leading, spacing: 0) {
+            ProgressView(value: viewModel.currentQuestion.progress)
+                .progressViewStyle(.linear)
+
             switch viewModel.currentQuestion {
             case .sellingStatus:
                 StoreCreationSellingStatusQuestionContainerView(storeName: viewModel.storeName) { answer in
@@ -64,9 +67,16 @@ struct StoreCreationProfilerQuestionContainerView: View {
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                Button(Localization.cancel) {
-                    viewModel.dismissProfiler()
-                }
+                Button(action: {
+                    viewModel.backtrackOrDismissProfiler()
+                }, label: {
+                    if viewModel.currentQuestion.previousQuestion == nil {
+                        Text(Localization.cancel)
+                    } else {
+                        Image(systemName: "chevron.backward")
+                            .headlineLinkStyle()
+                    }
+                })
             }
         }
     }

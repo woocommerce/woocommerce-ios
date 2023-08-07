@@ -1,12 +1,32 @@
 import Foundation
 import Yosemite
 
-enum StoreCreationProfilerQuestion {
+enum StoreCreationProfilerQuestion: Int {
     case sellingStatus
     case category
     case country
     case challenges
     case features
+
+    /// Progress to display for the profiler flow
+    var progress: Double {
+        switch self {
+        case .sellingStatus:
+            return 0.2
+        case .category:
+            return 0.4
+        case .country:
+            return 0.6
+        case .challenges:
+            return 0.8
+        case .features:
+            return 1
+        }
+    }
+
+    var previousQuestion: StoreCreationProfilerQuestion? {
+        .init(rawValue: self.rawValue - 1)
+    }
 }
 
 /// View model for `StoreCreationProfilerQuestionContainer`.
@@ -69,9 +89,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         handleCompletion()
     }
 
-    func dismissProfiler() {
-        // TODO: show confirm alert if needed
-        completionHandler(nil)
+    func backtrackOrDismissProfiler() {
+        if let previousQuestion = currentQuestion.previousQuestion {
+            currentQuestion = previousQuestion
+        } else {
+            // TODO: show confirm alert if needed
+            completionHandler(nil)
+        }
     }
 
     private func handleCompletion() {

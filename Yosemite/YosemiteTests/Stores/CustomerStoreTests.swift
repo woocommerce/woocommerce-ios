@@ -137,6 +137,8 @@ final class CustomerStoreTests: XCTestCase {
         let result = waitFor { promise in
             let action = CustomerAction.searchCustomers(
                 siteID: self.dummySiteID,
+                pageNumber: 1,
+                pageSize: 25,
                 keyword: self.dummyKeyword,
                 retrieveFullCustomersData: true,
                 filter: .name) { result in
@@ -161,6 +163,8 @@ final class CustomerStoreTests: XCTestCase {
         // When
         let response = waitFor { promise in
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
+                                                        pageNumber: 1,
+                                                        pageSize: 25,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in
@@ -214,6 +218,8 @@ final class CustomerStoreTests: XCTestCase {
         // When
         () = waitFor { promise in
             let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
+                                                        pageNumber: 1,
+                                                        pageSize: 25,
                                                         keyword: self.dummyKeyword,
                                                         retrieveFullCustomersData: true,
                                                         filter: .name) { result in

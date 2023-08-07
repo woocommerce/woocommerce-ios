@@ -47,8 +47,20 @@ public final class CustomerStore: Store {
             return
         }
         switch action {
-        case .searchCustomers(siteID: let siteID, keyword: let keyword, let retrieveFullCustomersData, filter: let filter, onCompletion: let onCompletion):
-            searchCustomers(for: siteID, keyword: keyword, retrieveFullCustomersData: retrieveFullCustomersData, filter: filter, onCompletion: onCompletion)
+        case .searchCustomers(siteID: let siteID,
+                              pageNumber: let pageNumber,
+                              pageSize: let pageSize,
+                              keyword: let keyword,
+                              retrieveFullCustomersData: let retrieveFullCustomersData,
+                              filter: let filter,
+                              onCompletion: let onCompletion):
+            searchCustomers(for: siteID,
+                            pageNumber: pageNumber,
+                            pageSize: pageSize,
+                            keyword: keyword,
+                            retrieveFullCustomersData: retrieveFullCustomersData,
+                            filter: filter,
+                            onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
@@ -67,11 +79,17 @@ public final class CustomerStore: Store {
     ///
     func searchCustomers(
         for siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         onCompletion: @escaping (Result<(), Error>) -> Void) {
-            wcAnalyticsCustomerRemote.searchCustomers(for: siteID, name: keyword, filter: filter.rawValue) { [weak self] result in
+            wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
+                                                      pageNumber: pageNumber,
+                                                      pageSize: pageSize,
+                                                      keyword: keyword,
+                                                      filter: filter.rawValue) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):

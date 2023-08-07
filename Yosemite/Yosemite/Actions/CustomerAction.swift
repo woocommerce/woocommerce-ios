@@ -26,6 +26,8 @@ public enum CustomerAction: Action {
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///
     ///- `siteID`: The site for which we will perform the search.
+    ///- `pageNumber`: The number of the page you want to load.
+    ///- `pageSize`: The size of the page you want to load.
     ///- `keyword`: Keyword to perform the search.
     ///- `filter`: Filter to perform the search.
     ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request. It will be removed once
@@ -35,6 +37,8 @@ public enum CustomerAction: Action {
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
         keyword: String,
         retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,

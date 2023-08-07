@@ -246,6 +246,10 @@ open class AddressFormViewModel: ObservableObject {
     ///
     let stores: StoresManager
 
+    /// Analytics center.
+    ///
+    let analytics: Analytics
+
     /// Whether the Done button in the navigation bar is always enabled.
     ///
     private let isDoneButtonAlwaysEnabled: Bool
@@ -260,7 +264,8 @@ open class AddressFormViewModel: ObservableObject {
          secondaryAddress: Address? = nil,
          isDoneButtonAlwaysEnabled: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
 
         self.originalAddress = address
@@ -276,6 +281,7 @@ open class AddressFormViewModel: ObservableObject {
 
         self.storageManager = storageManager
         self.stores = stores
+        self.analytics = analytics
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in

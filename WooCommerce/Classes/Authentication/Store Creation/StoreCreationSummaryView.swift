@@ -42,8 +42,7 @@ struct StoreCreationSummaryViewModel {
     /// Optional category name from the previous profiler question.
     let categoryName: String?
     /// Country code for the store location.
-    /// `nil` only when the `storeCreationM3Profiler` feature flag is disabled.
-    let countryCode: SiteAddress.CountryCode?
+    let countryCode: SiteAddress.CountryCode
 }
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).
@@ -165,7 +164,7 @@ private extension StoreCreationSummaryView {
 private extension StoreCreationSummaryViewModel {
     /// Text for the store country label.
     var country: String? {
-        countryCode.map { [$0.readableCountry, $0.flagEmoji].compactMap { $0 }.joined(separator: " ") }
+        [countryCode.readableCountry, countryCode.flagEmoji].compactMap { $0 }.joined(separator: " ")
     }
 }
 
@@ -182,7 +181,7 @@ struct StoreCreationSummaryView_Previews: PreviewProvider {
                 .init(storeName: "Fruity shop",
                       storeSlug: "fruityshop.com",
                       categoryName: "Arts and Crafts",
-                      countryCode: nil),
+                      countryCode: .UG),
                                  onContinueToPayment: {},
                                  onSupport: {})
         .preferredColorScheme(.dark)

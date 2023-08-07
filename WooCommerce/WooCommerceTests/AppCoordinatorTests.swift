@@ -581,9 +581,6 @@ final class AppCoordinatorTests: XCTestCase {
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_valid_store_is_selected_already() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
-                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
-                                                        isStoreCreationM3ProfilerEnabled: true)
 
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -600,9 +597,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           stores: stores,
                                           authenticationManager: authenticationManager,
-                                          pushNotesManager: pushNotesManager,
-                                          featureFlagService: featureFlagService,
-                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+                                          pushNotesManager: pushNotesManager)
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
@@ -632,9 +627,6 @@ final class AppCoordinatorTests: XCTestCase {
     func test_store_creation_flow_starts_upon_tapping_oneDayAfterStoreCreationNameWithoutFreeTrial_notification_when_no_valid_store_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
-        let featureFlagService = MockFeatureFlagService(isStoreCreationM2Enabled: true,
-                                                        isStoreCreationM2WithInAppPurchasesEnabled: false,
-                                                        isStoreCreationM3ProfilerEnabled: true)
         // Authenticates the app without selecting a site, so that the store picker is shown.
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = nil
@@ -644,9 +636,7 @@ final class AppCoordinatorTests: XCTestCase {
         let coordinator = makeCoordinator(window: window,
                                           stores: stores,
                                           authenticationManager: authenticationManager,
-                                          pushNotesManager: pushNotesManager,
-                                          featureFlagService: featureFlagService,
-                                          purchasesManager: WebPurchasesForWPComPlans(stores: stores))
+                                          pushNotesManager: pushNotesManager)
 
         let notificationUserInfo = [LocalNotification.UserInfoKey.storeName: "sampleStoreName"]
         let identifier = LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
@@ -683,7 +673,6 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
                          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
@@ -695,7 +684,6 @@ private extension AppCoordinatorTests {
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
-                              purchasesManager: purchasesManager ?? nil,
                               upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
     }
 }

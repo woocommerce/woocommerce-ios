@@ -1330,6 +1330,53 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.discardOrder()
     }
 
+    func test_addCustomerAddressToOrder_resets_addressFormViewModel_with_new_data() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddress1(),
+            shipping: sampleAddress2()
+        )
+
+        viewModel.addCustomerAddressToOrder(customer: customer)
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.email, customer.email)
+    }
+
+    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_a_customer_was_added_then_shows_the_form() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddress1(),
+            shipping: sampleAddress2()
+        )
+
+        viewModel.addCustomerAddressToOrder(customer: customer)
+
+        // Then
+        XCTAssertTrue(viewModel.customerNavigationScreen == .form)
+    }
+
+    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_no_customer_is_added_then_shows_the_selector() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        // Then
+        XCTAssertTrue(viewModel.customerNavigationScreen == .selector)
+    }
+
     func test_resetAddressForm_discards_pending_address_field_changes() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

@@ -19,4 +19,8 @@ WooCommerce היא הפלטפורמה הגמישה ביותר בעולם למס�
 
 דרישות: WooCommerce גרסה 3.5 ומעלה.
 
+ניתן לעיין בתנאי השימוש בכתובת https://wordpress.com/tos/‎
+
+ניתן לעיין בהצהרת הפרטיות בכתובת https://automattic.com/privacy/‎
+
 ניתן לעיין בהודעת הפרטיות למשתמשים מקליפורניה בכתובת https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

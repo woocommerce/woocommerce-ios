@@ -1,1 +1,3 @@
-La gestión de cupones es mucho más sencilla. Ahora, puedes elegir varios cupones al crear un pedido. También tienes la opción de añadir descuentos a los productos al crear un pedido. Sigue con las actualizaciones para disfrutar de las últimas funciones y las mejoras continuas de WooCommerce.
+¡Buenas noticias para los nuevos propietarios de tiendas! En primer lugar, puedes mejorar fácilmente a todos los planes disponibles. En segundo lugar, crea pedidos de prueba directamente desde la aplicación y gana experiencia práctica en gestión de pedidos.
+
+Y eso no es todo: nuestra última actualización también incluye mejoras en la IA de descripción del producto. Pruébalo (si no lo has hecho ya).

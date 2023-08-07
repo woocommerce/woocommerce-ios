@@ -19,4 +19,8 @@ WooCommerce è la piattaforma open-source di eCommerce più personalizzabile al 
 
 Requisiti: WooCommerce v3.5+.
 
+Visualizza i Termini di servizio su https://wordpress.com/tos/
+
+Visualizza la Politica sulla privacy su https://automattic.com/privacy/
+
 Consulta la nota sulla privacy per utenti in California su https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

@@ -84,6 +84,10 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     var dismiss: (() -> Void) = {}
 
+    /// Shows the search button on the navigation bar
+    /// 
+    var showSearchButton = true
+
     /// View Model for the view
     ///
     @ObservedObject private(set) var viewModel: ViewModel
@@ -150,13 +154,17 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                     viewModel.userDidCancelFlow()
                 })
             }
-            ToolbarItem(placement: .automatic) {
-                Button(action: {
-                    showingCustomerSearch = true
-                }, label: {
-                    Image(systemName: "magnifyingglass")
-                })
+
+            ToolbarItemGroup(placement: .automatic) {
+                if showSearchButton {
+                    Button(action: {
+                        showingCustomerSearch = true
+                    }, label: {
+                        Image(systemName: "magnifyingglass")
+                    })
+                }
             }
+
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()
             }

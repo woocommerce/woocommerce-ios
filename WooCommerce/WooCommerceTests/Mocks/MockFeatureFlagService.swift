@@ -7,13 +7,9 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isUpdateOrderOptimisticallyOn: Bool
     private let shippingLabelsOnboardingM1: Bool
     private let isLoginPrologueOnboardingEnabled: Bool
-    private let isStoreCreationM2Enabled: Bool
-    private let isStoreCreationM2WithInAppPurchasesEnabled: Bool
-    private let isStoreCreationM3ProfilerEnabled: Bool
     private let isDomainSettingsEnabled: Bool
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
-    private let isFreeTrial: Bool
     private let jetpackSetupWithApplicationPassword: Bool
     private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
@@ -27,19 +23,16 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let isFreeTrialInAppPurchasesUpgradeM2: Bool
     private let betterCustomerSelectionInOrder: Bool
+    private let optimizeProfilerQuestions: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          shippingLabelsOnboardingM1: Bool = false,
          isLoginPrologueOnboardingEnabled: Bool = false,
-         isStoreCreationM2Enabled: Bool = false,
-         isStoreCreationM2WithInAppPurchasesEnabled: Bool = false,
-         isStoreCreationM3ProfilerEnabled: Bool = false,
          isDomainSettingsEnabled: Bool = false,
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
-         isFreeTrial: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          isTapToPayOnIPhoneMilestone2On: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
@@ -52,19 +45,16 @@ struct MockFeatureFlagService: FeatureFlagService {
          isShareProductAIEnabled: Bool = false,
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
          isFreeTrialInAppPurchasesUpgradeM2: Bool = false,
-         betterCustomerSelectionInOrder: Bool = false) {
+         betterCustomerSelectionInOrder: Bool = false,
+         optimizeProfilerQuestions: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.shippingLabelsOnboardingM1 = shippingLabelsOnboardingM1
         self.isLoginPrologueOnboardingEnabled = isLoginPrologueOnboardingEnabled
-        self.isStoreCreationM2Enabled = isStoreCreationM2Enabled
-        self.isStoreCreationM2WithInAppPurchasesEnabled = isStoreCreationM2WithInAppPurchasesEnabled
-        self.isStoreCreationM3ProfilerEnabled = isStoreCreationM3ProfilerEnabled
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
-        self.isFreeTrial = isFreeTrial
         self.isFreeTrialInAppPurchasesUpgradeM2 = isFreeTrialInAppPurchasesUpgradeM2
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
@@ -78,6 +68,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
+        self.optimizeProfilerQuestions = optimizeProfilerQuestions
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -92,20 +83,12 @@ struct MockFeatureFlagService: FeatureFlagService {
             return shippingLabelsOnboardingM1
         case .loginPrologueOnboarding:
             return isLoginPrologueOnboardingEnabled
-        case .storeCreationM2:
-            return isStoreCreationM2Enabled
-        case .storeCreationM2WithInAppPurchasesEnabled:
-            return isStoreCreationM2WithInAppPurchasesEnabled
-        case .storeCreationM3Profiler:
-            return isStoreCreationM3ProfilerEnabled
         case .domainSettings:
             return isDomainSettingsEnabled
         case .supportRequests:
             return isSupportRequestEnabled
         case .dashboardOnboarding:
             return isDashboardStoreOnboardingEnabled
-        case .freeTrial:
-            return isFreeTrial
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
         case .tapToPayOnIPhoneMilestone2:
@@ -130,6 +113,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isFreeTrialInAppPurchasesUpgradeM2
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
+        case .optimizeProfilerQuestions:
+            return optimizeProfilerQuestions
         default:
             return false
         }

@@ -18,7 +18,6 @@ struct WooPlanCardView: View {
                     Text(upgradePlan.wooPlan.shortName)
                         .font(.title2)
                         .bold()
-                        .accessibilityAddTraits(.isHeader)
 
                     Spacer()
 
@@ -27,8 +26,12 @@ struct WooPlanCardView: View {
                     Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                         .foregroundStyle(isSelected ? Color.withColorStudio(name: .wooCommercePurple, shade: .shade50) : Color(.systemGray4))
                         .font(.system(size: Layout.checkImageSize))
-
                 }
+                .accessibilityElement()
+                .accessibilityLabel(upgradePlan.wooPlan.shortName)
+                .accessibilityAddTraits([.isHeader, .isButton])
+                .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+
                 Text(upgradePlan.wooPlan.planDescription)
                     .font(.subheadline)
             }

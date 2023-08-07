@@ -41,6 +41,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
             siteID: sampleSiteID,
             customerID: 1,
             email: "john.w@email.com",
+            username: "john",
             firstName: "John",
             lastName: "W",
             billing: nil,
@@ -87,7 +88,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1
-            onCompletion(.success(()))
+            onCompletion(.success(true))
         }
 
         // When

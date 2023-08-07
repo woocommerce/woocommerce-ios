@@ -195,6 +195,12 @@ public extension Site {
         /// hence not a Jetpack site.
         siteID == WooConstants.placeholderSiteID
     }
+
+    /// Whether the site has been reverted to a simple site
+    ///
+    var isSimpleSite: Bool {
+        plan == WooConstants.freePlanSlug
+    }
 }
 
 /// Defines all of the Site CodingKeys.

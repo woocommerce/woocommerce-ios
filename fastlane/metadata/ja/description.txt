@@ -19,4 +19,8 @@ WooCommerce は世界で最もカスタマイズ可能なオープンソース�
 
 要件: WooCommerce v3.5以上。
 
+利用規約をご覧ください: https://wordpress.com/tos/
+
+プライバシーポリシーをご覧ください: https://automattic.com/privacy/
+
 カリフォルニア州のユーザーへのプライバシー通知は https://automattic.com/privacy/#california-consumer-privacy-act-ccpa からご確認ください。

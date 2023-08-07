@@ -1,1 +1,3 @@
-Coupon management just became a breeze. You can now select multiple coupons when creating an order. It's also possible to add discounts to products when creating an order. Houd updates aan om te blijven genieten van de voortdurende verbeteringen en nieuwste functies van WooCommerce!
+Leuk nieuws voor nieuwe winkeleigenaren! Allereerst kan je nu eenvoudig upgraden naar alle beschikbare abonnementen. Daarnaast krijg je praktische ervaring met het beheren van je bestellingen doordat je direct in de app proefbestellingen kan aanmaken!
+
+Maar dat is niet alles: onze laatste update bevat ook verbeteringen aan de AI voor productbeschrijvingen. Probeer deze eens als je dat nog niet hebt gedaan!

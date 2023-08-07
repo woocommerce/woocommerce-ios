@@ -19,7 +19,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
 
     let primaryButtonTitle: String
 
-    let isPrimaryButtonHidden: Bool
+    let isPrimaryButtonHidden: Bool = false
 
     let secondaryButtonTitle = Localization.tryAnotherAddress
     let isSecondaryButtonHidden: Bool
@@ -52,12 +52,9 @@ final class NotWPAccountViewModel: ULErrorViewModel {
            source == .wpComSiteAddress {
             isSecondaryButtonHidden = true
             primaryButtonTitle = Localization.restartLogin
-            isPrimaryButtonHidden = false
         } else {
             isSecondaryButtonHidden = false
-
             primaryButtonTitle = Localization.createAnAccount
-            isPrimaryButtonHidden = !featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         }
     }
 

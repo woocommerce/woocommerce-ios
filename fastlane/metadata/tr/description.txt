@@ -1,0 +1,26 @@
+WooCommerce Mobil Uygulaması ile hareket halindeyken işinizi yönetin. Ürün ekleyin, sipariş oluşturun, hızlı ödemeler alın, yeni satışları ve önemli istatistikleri gerçek zamanlı olarak takip edin.
+
+Tek dokunuşla ürün ekleyin ve düzenleyin
+Saniyeler içinde kullanmaya başlayın! Ürünleri doğrudan iPhone veya iPad'inizden oluşturun, gruplayın ve yayımlayın. Yaratıcılığınızı ilham geldiği anda yakalayın; fikirlerinizi anında ürünlere dönüştürün veya daha sonra kullanmak üzere taslak olarak kaydedin.
+
+Anında sipariş oluşturun
+Birkaç ürünü oluşturduktan sonra iş çok basittir. Kataloğunuzdan öğeler seçip, gönderim bilgisini ve müşteri ayrıntılarını girerek, stok durumunuzla eşitlenen bir siparişi hızlı bir şekilde oluşturun.
+
+Şahsen ödemeleri alın
+WooCommerce Şahsen Ödemeler özelliğini ve bir kart okuyucuyu (ABD ve Kanada'da mevcuttur) kullanarak şahsen yapılan fiziksel ödemeleri alın. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir siparişi bulun ve kart okuyucuyu ya da Apple Pay gibi bir dijital cüzdanı kullanarak ödeme alın.
+
+Her satıştan haberdar olun
+Artık aktif olarak satış yaptığınız için hiçbir siparişi veya yorumu kaçırmayın. Gerçek zamanlı uyarıları etkinleştirerek hiçbir şeyi kaçırmayın ve her yeni satışla birlikte duyacağınız o bağımlılık yaratan "yazarkasa" sesine odaklanın!
+
+Satışları ve en çok satan ürünleri takip edin
+Hangi ürünlerin en çok sattığını bir bakışta görün. Haftaya, aya ve yıla göre toplam gelirinizi, sipariş sayısını ve ziyaretçi verilerini takip edin. Bilgi = Güç.
+
+WooCommerce, dünyanın en iyi özelleştirilebilir açık kaynaklı e-ticaret platformudur. İster yeni bir iş kuruyor, ister gerçek mekandaki işinizi çevrimiçi ortama taşıyor veya müşteriler için site geliştiriyor olun, içerik ve ticareti güçlü bir şekilde harmanlayan bir mağaza için WooCommerce'i kullanın.
+
+Gereksinimler: WooCommerce v3.5 ve üzeri.
+
+Şuradan Hizmet Koşullarını görüntüleyin: https://wordpress.com/tos/
+
+Şuradan Gizlilik Politikasını görüntüleyin: https://automattic.com/privacy/
+
+Kaliforniya'daki Kullanıcılar Gizlilik Bildirimi'ni https://automattic.com/privacy/#california-consumer-privacy-act-ccpa adresinden görüntüleyebilirler.

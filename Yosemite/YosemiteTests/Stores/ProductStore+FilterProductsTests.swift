@@ -197,6 +197,77 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productTypeValue: nil,
                                productCategoryValue: String(filterProductCategory.categoryID))
     }
+
+    func test_synchronizeProducts_with_non_core_product_type_network_error_then_it_returns_success_without_next_page() throws {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID,
+                                      thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
+                                                                               message: "Invalid parameter(s): type")))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote,
+                                        generativeContentRemote: MockGenerativeContentRemote())
+        let nonCoreTypes: [ProductType] = [.subscription, .variableSubscription, .bundle, .composite]
+
+        for nonCoreType in nonCoreTypes {
+            // When
+            let result = waitFor { promise in
+                productStore.onAction(ProductAction.synchronizeProducts(siteID: self.sampleSiteID,
+                                                                        pageNumber: self.defaultPageNumber,
+                                                                        pageSize: self.defaultPageSize,
+                                                                        stockStatus: nil,
+                                                                        productStatus: nil,
+                                                                        productType: nonCoreType,
+                                                                        productCategory: nil,
+                                                                        sortOrder: .nameAscending) { result in
+                    promise(result)
+                })
+            }
+
+            // Then
+            XCTAssertTrue(result.isSuccess)
+            let hasNextPage = try XCTUnwrap(result.get())
+            XCTAssertFalse(hasNextPage)
+        }
+    }
+
+    func test_synchronizeProducts_with_core_product_type_network_error_then_it_returns_failure() throws {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID,
+                                      thenReturn: .failure(DotcomError.unknown(code: "rest_invalid_param",
+                                                                               message: "Invalid parameter(s): type")))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: remote,
+                                        generativeContentRemote: MockGenerativeContentRemote())
+        let coreTypes: [ProductType?] = [nil, .simple, .variable, .grouped, .affiliate]
+
+        for coreType in coreTypes {
+            // When
+            let result = waitFor { promise in
+                productStore.onAction(ProductAction.synchronizeProducts(siteID: self.sampleSiteID,
+                                                                        pageNumber: self.defaultPageNumber,
+                                                                        pageSize: self.defaultPageSize,
+                                                                        stockStatus: nil,
+                                                                        productStatus: nil,
+                                                                        productType: coreType,
+                                                                        productCategory: nil,
+                                                                        sortOrder: .nameAscending) { result in
+                    promise(result)
+                })
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            let error = try XCTUnwrap(result.failure)
+            XCTAssertEqual(error as? DotcomError, .unknown(code: "rest_invalid_param",
+                                                           message: "Invalid parameter(s): type"))
+        }
+    }
 }
 
 private extension ProductStore_FilterProductsTests {

@@ -1,5 +1,13 @@
 import Foundation
 
+/// The type of filter when searching for customers.
+public enum CustomerSearchFilter: String, Equatable, CaseIterable {
+    case all
+    case name
+    case username
+    case email
+}
+
 /// Defines the `actions` supported by the `CustomerStore`.
 ///
 public enum CustomerAction: Action {
@@ -7,25 +15,34 @@ public enum CustomerAction: Action {
     /// Note that the synchronized Customer objects only contain the most relevant data (name, email) which makes this action convenient for showing
     /// a Customers preview, e.g. in a list. If you want to retrieve all customers information please use `retrieveCustomer` action.
     ///
-    /// - Parameter onCompletion: called when sync completes.
+    /// - Parameter onCompletion: called when sync completes. Returns true if there are results synced
     ///
     case synchronizeLightCustomersData(
         siteID: Int64,
         pageNumber: Int,
         pageSize: Int,
-        onCompletion: (Result<Void, Error>) -> Void)
+        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Searches for Customers by keyword. Currently, only searches by name.
     ///
     ///- `siteID`: The site for which we will perform the search.
-    ///- `keyword`: Keyword to perform the search. Only searches by name.
+    ///- `pageNumber`: The number of the page you want to load.
+    ///- `pageSize`: The size of the page you want to load.
+    ///- `keyword`: Keyword to perform the search.
+    ///- `filter`: Filter to perform the search.
+    ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request. It will be removed once
+    ///  `betterCustomerSelectionInOrder` is finished for performance reasons.
     ///- `onCompletion`: Invoked when the operation finishes.
-    ///     - `result.success([Customer])`:  On success, the Customers found will be loaded in Core Data.
+    ///     - `result.success()`:  On success.
     ///     - `result.failure(Error)`: Error fetching data
     case searchCustomers(
         siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
         keyword: String,
-        onCompletion: (Result<[Customer], Error>) -> Void)
+        retrieveFullCustomersData: Bool,
+        filter: CustomerSearchFilter,
+        onCompletion: (Result<(), Error>) -> Void)
 
     /// Retrieves a single Customer from a site
     ///

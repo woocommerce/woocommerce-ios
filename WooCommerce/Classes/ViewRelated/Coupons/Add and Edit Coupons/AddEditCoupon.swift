@@ -298,6 +298,7 @@ struct AddEditCoupon: View {
             }
             .sheet(isPresented: $showingSelectProducts) {
                 ProductSelectorNavigationView(configuration: .productsForCoupons,
+                                              source: .couponForm,
                                               isPresented: $showingSelectProducts,
                                               viewModel: viewModel.productSelectorViewModel)
                     .onDisappear {

@@ -7,17 +7,25 @@ public class WCAnalyticsCustomerRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch the customer.
     ///     - name: Name of the customer that will be retrieved
+    ///     - filter: Filter by which the search will be performed. Possible values: all (in WC 8.0.0+), name, username, email
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of customers to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchCustomers(for siteID: Int64, name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        // If there's no search term, we can exit and avoid the HTTP request
-        if name == "" {
-            return
-        }
+    public func searchCustomers(for siteID: Int64,
+                                pageNumber: Int = 1,
+                                pageSize: Int = 25,
+                                keyword: String,
+                                filter: String,
+                                completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.search: keyword,
+            ParameterKey.searchBy: filter
+        ]
 
-        enqueueRequest(with: ["search": name], siteID: siteID, completion: completion)
+        enqueueRequest(with: parameters, siteID: siteID, completion: completion)
     }
 
     /// Loads a paginated list of customers
@@ -67,6 +75,7 @@ private extension WCAnalyticsCustomerRemote {
         static let orderBy     = "orderby"
         static let order       = "order"
         static let search      = "search"
+        static let searchBy    = "searchby"
         static let filterEmpty = "filter_empty"
     }
 }

@@ -1071,10 +1071,10 @@ private extension ProductsViewController {
     }
 
     @objc func filterButtonTapped() {
-        ServiceLocator.analytics.track(.productListViewFilterOptionsTapped)
+        ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
         let viewModel = FilterProductListViewModel(filters: filters, siteID: siteID)
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
-            ServiceLocator.analytics.track(.productFilterListShowProductsButtonTapped, withProperties: ["filters": filters.analyticsDescription])
+            ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))
             self?.filters = filters
         }, onClearAction: {
             ServiceLocator.analytics.track(.productFilterListClearMenuButtonTapped)

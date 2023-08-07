@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+14.9
+-----
+
+
 14.8
 -----
 - [Internal] Native store creation flow with free trial is enabled by default - all code for the old flows have been removed. [https://github.com/woocommerce/woocommerce-ios/pull/10362]
@@ -8,6 +12,7 @@
 - [*] The expired site plan should navigate to IAP for sites with expired WooExpress plans (if eligible for IAP). [https://github.com/woocommerce/woocommerce-ios/pull/10384]
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
+- [*] Product list filter (Products tab and order creation > add products > filter): product types from extensions supported in the app are now available for product filtering - subscription, variable subscription, bundle, and composite. [https://github.com/woocommerce/woocommerce-ios/pull/10382]
  
 14.7
 -----

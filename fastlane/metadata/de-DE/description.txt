@@ -1,0 +1,26 @@
+Verwalte dein Geschäft von unterwegs aus – mit der WooCommerce-Mobil-App. Füge Produkte hinzu, erstelle Bestellungen, empfange schnelle Zahlungen und behalte deine neuen Verkäufe und wichtigsten Statistiken in Echtzeit im Blick.
+
+Füge Produkte hinzu und bearbeite sie mit nur einer Berührung
+Schon in wenigen Sekunden bist du startklar! Erstelle, gruppiere und veröffentliche Produkte direkt über dein iPhone oder iPad. Halte deine Geistesblitze sofort fest – wandle deine Ideen augenblicklich in Produkte um oder speichere sie als Entwürfe für später.
+
+Erstelle Bestellungen im Handumdrehen
+Sobald du einige Produkte erstellt hast, ist es ein Kinderspiel. Wähle Elemente aus deinem Katalog, füge den Versand hinzu und fülle die Kundendetails aus, um schnell eine Bestellung zu erstellen, die sich mit deinem Bestand synchronisiert.
+
+Nimm Zahlungen persönlich entgegen
+Empfange physische Zahlungen mithilfe von WooCommerce In-Person Payments und einem Kartenlesegerät (verfügbar in den USA und Kanada). Beginne mit einer neuen Bestellung oder suche nach einer bestehenden mit ausstehender Zahlung. Empfange die Zahlung dann mithilfe des Kartenlesegeräts oder einer digitalen Wallet, wie z. B. Apple Pay.
+
+Erhalte Benachrichtigungen zu jedem Verkauf
+Jetzt wo du aktiv Verkäufe tätigst, verpasse nie wieder eine Bestellung oder Bewertung. Aktiviere Echtzeitbenachrichtigungen und bleibe so stets auf dem Laufenden. So kannst du dich ganz entspannt auf's Geldverdienen konzentrieren!
+
+Verfolge Verkäufe und Bestseller-Produkte nach
+Erfahre auf einen Blick, welche Produkte besonders erfolgreich sind. Kontrolliere deine Gesamteinnahmen, die Anzahl der Bestellungen und die Besucherdaten pro Woche, Monat und Jahr. Wissen = Macht.
+
+WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Unternehmen eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden entwickelst: WooCommerce bringt Inhalte und Gewerbe optimal zusammen und sorgt für einen leistungsstarken Shop.
+
+Anforderungen: WooCommerce Version 3.5 und höher.
+
+Sieh dir die Geschäftsbedingungen hier an: https://wordpress.com/tos/
+
+Sieh dir die Datenschutzerklärung hier an: https://automattic.com/privacy/
+
+Den Datenschutzhinweis für Benutzer in Kalifornien findest du unter https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

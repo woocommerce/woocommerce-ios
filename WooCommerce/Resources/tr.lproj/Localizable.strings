@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-25 18:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-01 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1615,6 +1615,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "**%1$@** ile karşılaştırma";
+
+/* Third instruction on the test order screen */
+"Complete the payment and await a push notification about the order on your WooCommerce app." = "Ödemeyi tamamlayın ve WooCommerce uygulamanızda siparişle ilgili bir anlık bildirim almayı bekleyin.";
 
 /* Display label for completed order status. */
 "Completed" = "Tamamlandı";
@@ -3432,6 +3435,9 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Yardım Merkezi";
 
+/* Title in Free trail survey screen. */
+"Help us understand your subscription decisions. Your feedback matters." = "Abonelik kararlarınızı anlamamıza yardımcı olun. Geri bildiriminiz bizim için önemli.";
+
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Merhaba! İşte WooCommerce uygulamasını indirebileceğiniz bir bağlantı. Gerçekten çok hoşuma gitti, sizin de seveceğinizi düşündüm.";
 
@@ -3476,11 +3482,23 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Zaten internetten satış yapıyorum";
 
+/* Text for Free trial survey answer. */
+"I am evaluating and comparing your service with others on the market" = "Hizmetinizi değerlendiriyor ve piyasadaki diğer hizmetlerle karşılaştırıyorum";
+
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Satış yapmaya yeni başladım";
 
+/* Text for Free trial survey answer. */
+"I am part of a team, and we need to make the decision collectively." = "Bir ekibin parçasıyım ve kararı toplu olarak almamız gerekiyor.";
+
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Çevrimdışı satış yapıyorum";
+
+/* Text for Free trial survey answer. */
+"I am still exploring and assessing the features and benefits of the app." = "Uygulamanın özelliklerini ve faydalarını araştırmaya ve değerlendirmeye devam ediyorum.";
+
+/* Text for Free trial survey answer. */
+"I find the price of the service to be a significant factor in my decision." = "Hizmetin fiyatını kararımda önemli bir faktör olarak görüyorum.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Şu konuda yardıma ihtiyacım var";
@@ -4649,6 +4667,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Bu dönemde hiç gelir yok";
 
+/* Message on the local notification to remind after three days. */
+"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Acele etmeyin, zamanınızı kullanın! Herhangi bir sorunuz varsa veya yardıma ihtiyacınız varsa, size her zaman yardımcı olmaya hazırız. Keyifli keşifler!";
+
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Henüz bir kargo sınıfı yok";
 
@@ -4939,6 +4960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Diğer";
+
+/* Placeholder text for Free trial survey. */
+"Other (please specify)." = "Diğer (lütfen belirtin).";
 
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Diğer Uzantı \/ Eklenti";
@@ -6030,6 +6054,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Romania" = "Romanya";
 
+/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "WooCommerce işleminizin kusursuz bir müşteri deneyimi sağladığından emin olmak için bir test siparişi gerçekleştirin.";
+
 /* Country option for a site address. */
 "Russia" = "Rusya";
 
@@ -6326,6 +6353,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Kargo şirketinizi ve ücretlerinizi seçin";
 
+/* Second instruction on the test order screen */
+"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Test ürününüzü seçin, sepete ekleyin ve ilgili web mağazasından gerçek bir müşteri olarak ödemeyi tamamlayın.";
+
 /* Caption displayed in the simplified prologue screen */
 "Sell anything, anywhere." = "İstediğiniz yerde istediğinizi satın.";
 
@@ -6489,6 +6519,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Kargo İadesi";
+
+/* Access the store shipping zones. */
+"Shipping Zones" = "Gönderim Bölgeleri";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Kargo şirketi";
@@ -6816,6 +6849,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Start Date label in custom range date picker */
 "Start Date" = "Başlangıç tarihi";
 
+/* Title on the action button on the test order screen */
+"Start Test order" = "Test siparişini başlatın";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Alt sayfada bir indirim türü seçerek Kupon oluşturmaya başlayın";
 
@@ -7070,6 +7106,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Geri ödeme almak için karta dokunun veya kartı yerleştirin";
+
+/* First instruction on the test order screen */
+"Tap the button below to be redirected to your online store via a web browser." = "Web tarayıcısı yoluyla çevrimiçi mağazanıza yeniden yönlendirilmek için aşağıdaki düğmeye dokunun.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7854,11 +7893,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Ödeme Yapmayı Deneyin";
 
+/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Try a Test Order" = "Bir Test Siparişi Deneyin";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "Try a payment" = "Ödeme yapmayı deneyin";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Kendi kartınızı kullanarak ödeme yapmayı deneyin (ve işiniz bittiğinde iade edin.)";
+
+/* Title shown on the test order screen */
+"Try a test order" = "Bir test siparişi deneyin";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
@@ -8359,6 +8404,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Oturum açmak için şifreyi kullanın";
 
+/* Fourth instruction on the test order screen */
+"Use the app to process the refund for the test order." = "Test siparişinin geri ödemesini işlemek için uygulamayı kullanın.";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Kullanıcı Profilleri";
 
@@ -8700,6 +8748,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the store creation profiler question about the store country. */
 "We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "Ödemeleri, teslimatı ve vergileri ayarlamaya bir adım önde başlamak için bu bilgileri kullanacağız.";
+
+/* Message on the local notification to ask for Free trial survey. */
+"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "Karar alma yolculuğunuzu öğrenmeyi amaçlıyoruz. Şu anki durumunuz hakkında bize bilgi verebilir misiniz?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Kuponları cihazınızdan görüntüleyip düzenleyebilmeniz için çalışıyoruz!";
@@ -9289,6 +9340,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification about a newly created store */
 "🎉 Your store is ready!" = "🎉 Mağazanız hazır!";
 
+/* Title of the local notification to ask for Free trial survey. */
+"💡Help Us Understand Your Subscription Decision" = "💡Abonelik Kararınızı Anlamamıza Yardımcı Olun";
+
 /* Title of the local notification suggesting a trial plan subscription. */
 "🛍️ Your store is waiting!" = "🛍️ Mağazanız bekliyor!";
+
+/* Title of the local notification to remind after three days. */
+"🧭 Still Exploring WooCommerce?" = "🧭 WooCommerce'i Keşfetmeye Devam Mı Ediyorsunuz?";
 

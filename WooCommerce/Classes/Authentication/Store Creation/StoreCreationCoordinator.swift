@@ -258,6 +258,20 @@ private extension StoreCreationCoordinator {
     }
 
     @MainActor
+    func showFeaturesQuestion(from navigationController: UINavigationController) {
+        let questionController = StoreCreationFeaturesQuestionHostingController(viewModel:
+                .init { _ in
+                    // TODO: 10376 - Navigate to [progress view / my store tab] and pass the selected features
+                } onSkip: { [weak self] in
+                    guard let self else { return }
+                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerFeaturesQuestion))
+                    // TODO: 10376 - Navigate to [progress view / my store tab]
+                })
+        navigationController.pushViewController(questionController, animated: true)
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerFeaturesQuestion))
+    }
+
+    @MainActor
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:

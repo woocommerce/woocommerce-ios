@@ -32,11 +32,12 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
     func test_WCAnalyticsCustomerRemote_when_calls_searchCustomers_then_returns_parsed_customers_successfully() throws {
         // Given
+        let filter = "all"
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
         let result = waitFor { promise in
-            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName, filter: filter) { result in
                 promise(result)
             }
         }
@@ -44,8 +45,10 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         // Then
         let customers = try XCTUnwrap(result.get())
         let hasSearchParameter = network.queryParameters?.contains(where: { $0 == "search=John" }) ?? false
+        let hasSearchByParameter = network.queryParameters?.contains(where: { $0 == "searchby=\(filter)" }) ?? false
 
         XCTAssertTrue(hasSearchParameter)
+        XCTAssertTrue(hasSearchByParameter)
 
         assertParsedResultsAreCorrect(with: customers)
     }
@@ -87,7 +90,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName, filter: "all") { result in
                 promise(result)
             }
         }
@@ -103,7 +106,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName) { result in
+            self.remote.searchCustomers(for: self.sampleSiteID, name: self.sampleCustomerName, filter: "all") { result in
                 promise(result)
             }
         }

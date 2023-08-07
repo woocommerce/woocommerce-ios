@@ -15,6 +15,20 @@ final class CustomerSelectorViewModel {
         self.onCustomerSelected = onCustomerSelected
     }
 
+    func isEligibleForAdvancedSearch(completion: @escaping (Bool) -> Void) {
+        // Fetches WC plugin.
+        let action = SystemStatusAction.fetchSystemPlugin(siteID: siteID, systemPluginName: Constants.wcPluginName) { wcPlugin in
+            guard let wcPlugin = wcPlugin, wcPlugin.active else {
+                return completion(false)
+            }
+
+            let isCustomerAdvanceSearchSupportedByWCPlugin = VersionHelpers.isVersionSupported(version: wcPlugin.version,
+                                                                               minimumRequired: Constants.wcPluginMinimumVersion)
+            completion(isCustomerAdvanceSearchSupportedByWCPlugin)
+        }
+        stores.dispatch(action)
+    }
+
     /// Loads the customer list data, a lighter version of the model without all the information
     ///
     func loadCustomersListData(onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -51,5 +65,7 @@ private extension CustomerSelectorViewModel {
     enum Constants {
         static let pageSize = 25
         static let firstPageNumber = 1
+        static let wcPluginName = "WooCommerce"
+        static let wcPluginMinimumVersion = "8.0.0-beta.1"
     }
 }

@@ -374,6 +374,12 @@ extension UIImage {
         UIImage(named: "woo-empty-orders")!
     }
 
+    /// An image showing a magnifying glass. This is used to show a default image when searching for customers.
+    ///
+    static var customerSearchImage: UIImage {
+        UIImage(named: "woo-customer-search")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {

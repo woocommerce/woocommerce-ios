@@ -65,32 +65,29 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     }
 
     func titleAttributedString(from viewModel: ViewModel) -> NSAttributedString {
-        var title: NSMutableAttributedString
+        guard viewModel.title.trimmingCharacters(in: .whitespaces).isNotEmpty else {
+            return NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        }
 
-        if viewModel.title.trimmingCharacters(in: .whitespaces).isEmpty {
-            title = NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
-        } else {
-            title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
+        let title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
 
-            if let underlinedText = viewModel.underlinedText {
-                title.underlineSubstring(underlinedText: underlinedText)
-            }
+        if let underlinedText = viewModel.underlinedText {
+            title.underlineSubstring(underlinedText: underlinedText)
         }
 
         return title
     }
 
     func detailAttributedString(from viewModel: ViewModel) -> NSAttributedString {
-        let detail: NSMutableAttributedString
-        if viewModel.detail.isEmpty {
-            detail = NSMutableAttributedString(string: "")
-        } else {
-            let composedDetail = " • \(viewModel.detail)"
-            detail = NSMutableAttributedString(string: composedDetail, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        guard viewModel.detail.isNotEmpty else {
+            return NSAttributedString(string: "")
+        }
 
-            if let underlinedText = viewModel.underlinedText {
-                detail.underlineSubstring(underlinedText: underlinedText)
-            }
+        let composedDetail = " • \(viewModel.detail)"
+        let detail = NSMutableAttributedString(string: composedDetail, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+
+        if let underlinedText = viewModel.underlinedText {
+            detail.underlineSubstring(underlinedText: underlinedText)
         }
 
         return detail

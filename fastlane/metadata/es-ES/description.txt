@@ -1,0 +1,26 @@
+Gestiona tu empresa sobre la marcha con la aplicación móvil de WooCommerce. Añade productos, crea pedidos, acepta pagos rápidos y controla las ventas nuevas y las estadísticas clave en tiempo real.
+
+Añade y edita productos con un solo toque
+¡Empieza en cuestión de segundos! Crea, agrupa y publica productos directamente desde tu iPhone o iPad. Aprovecha tu creatividad al momento: convierte tus ideas en productos al instante o guárdalas como borradores para usarlas más adelante.
+
+Crea pedidos sobre la marcha
+Cuando hayas creado algunos productos, te resultará sencillo. Elige los artículos del catálogo, añade el envío y rellena los datos del cliente para crear rápidamente un pedido que se sincronice con el inventario.
+
+Acepta pagos en persona
+Recibe pagos en persona con WooCommerce In-Person Payments y un lector de tarjetas (disponible en Estados Unidos y Canadá). Inicia un nuevo pedido (o busca uno que ya exista y que esté pendiente de pago) y recibe el pago con el lector de tarjetas o con un monedero digital, como Apple Pay.
+
+Recibe notificaciones de todas las ventas
+Ahora que vendes de manera activa, no te pierdas ningún pedido u opinión. Activa las alertas en tiempo real para estar al día y disfruta del adictivo sonido que produce una nueva venta.
+
+Haz un seguimiento de las ventas y los productos más vendidos
+Consulta los mejores productos de un vistazo. Controla los ingresos generales, el número de pedidos y los datos de los visitantes por semana, mes y año. ¡El conocimiento es poder!
+
+WooCommerce es la plataforma de comercio electrónico de código abierto más personalizable del mundo. Tanto si emprendes un negocio como si realizas la actividad comercial en tiendas físicas en línea o desarrollas sitios para clientes, utiliza WooCommerce para que tu tienda pueda aprovechar la combinación de contenido y comercio.
+
+Requisitos: versión 3.5 o superior de WooCommerce.
+
+Consulta las Condiciones del servicio en https://wordpress.com/tos/
+
+Consulta la Política de privacidad en https://automattic.com/privacy/
+
+Consulta el aviso de privacidad dirigido a los usuarios de California en: https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

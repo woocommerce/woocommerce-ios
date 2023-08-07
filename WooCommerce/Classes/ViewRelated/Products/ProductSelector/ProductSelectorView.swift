@@ -4,8 +4,15 @@ import Yosemite
 /// View showing a list of products to select.
 ///
 struct ProductSelectorView: View {
+    enum Source {
+        case orderForm
+        case couponForm
+        case couponRestrictions
+    }
 
     let configuration: Configuration
+
+    let source: Source
 
     /// Defines whether the view is presented.
     ///
@@ -69,6 +76,7 @@ struct ProductSelectorView: View {
 
                 Button(viewModel.filterButtonTitle) {
                     showingFilters.toggle()
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: source.filterAnalyticsSource))
                 }
                 .buttonStyle(LinkButtonStyle())
                 .fixedSize()
@@ -161,6 +169,8 @@ struct ProductSelectorView: View {
         .sheet(isPresented: $showingFilters) {
             FilterListView(viewModel: viewModel.filterListViewModel) { filters in
                 viewModel.updateFilters(filters)
+                ServiceLocator.analytics.track(event: .ProductListFilter
+                    .productFilterListShowProductsButtonTapped(source: source.filterAnalyticsSource, filters: filters))
             } onClearAction: {
                 // no-op
             } onDismissAction: {
@@ -237,6 +247,19 @@ private extension ProductSelectorView {
     }
 }
 
+private extension ProductSelectorView.Source {
+    var filterAnalyticsSource: WooAnalyticsEvent.ProductListFilter.Source {
+        switch self {
+            case .orderForm:
+                return .orderForm
+            case .couponForm:
+                return .couponForm
+            case .couponRestrictions:
+                return .couponRestrictions
+        }
+    }
+}
+
 struct AddProduct_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = ProductSelectorViewModel(siteID: 123)
@@ -245,6 +268,6 @@ struct AddProduct_Previews: PreviewProvider {
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelectorView(configuration: configuration, isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorView(configuration: configuration, source: .orderForm, isPresented: .constant(true), viewModel: viewModel)
     }
 }

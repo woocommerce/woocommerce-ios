@@ -41,6 +41,7 @@ struct OwnerUpgradesView: View {
             .padding(.horizontal)
             .cornerRadius(Layout.cornerRadius)
             .background(Color(.systemGroupedBackground))
+            .redacted(reason: isLoading ? .placeholder : [])
 
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {

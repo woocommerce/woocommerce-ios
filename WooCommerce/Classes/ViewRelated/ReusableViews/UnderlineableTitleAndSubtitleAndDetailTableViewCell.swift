@@ -16,14 +16,10 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
     }
 
     func configureCell(searchModel: ViewModel) {
-        configureCell(viewModel: searchModel)
+        accessibilityLabel = searchModel.accessibilityLabel
+        setupTitleLabelText(with: searchModel)
+        setupSubtitleLabelText(with: searchModel)
         subtitleLabel.applyStrongCaption1Style()
-    }
-
-    func configureCell(viewModel: ViewModel) {
-        accessibilityLabel = viewModel.accessibilityLabel
-        setupTitleLabelText(with: viewModel)
-        setupSubtitleLabelText(with: viewModel)
     }
 }
 

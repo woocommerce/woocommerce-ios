@@ -95,7 +95,7 @@ final class CustomerStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
-        _ = waitFor { promise in
+        let result = waitFor { promise in
             let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
                 promise(result)
             }
@@ -107,6 +107,13 @@ final class CustomerStoreTests: XCTestCase {
             .map { $0.toReadOnly() }
             .sorted(by: { $0.customerID < $1.customerID })
 
+        guard case .success(let thereAreCustomers) = result else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(thereAreCustomers)
         assertEqual(4, customers.count)
         assertEqual(0, customers[0].customerID)
         assertEqual(1, customers[1].customerID)

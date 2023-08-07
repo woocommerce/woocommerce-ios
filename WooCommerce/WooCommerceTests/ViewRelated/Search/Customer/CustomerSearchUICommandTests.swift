@@ -88,7 +88,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1
-            onCompletion(.success(()))
+            onCompletion(.success(true))
         }
 
         // When

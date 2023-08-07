@@ -18,12 +18,9 @@ public class WCAnalyticsCustomerRemote: Remote {
                                 keyword: String,
                                 filter: String,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.page: String(pageNumber),
-            ParameterKey.perPage: String(pageSize),
-            ParameterKey.search: keyword,
-            ParameterKey.searchBy: filter
-        ]
+        var parameters = coreRequestParameters(from: pageNumber, pageSize: pageSize)
+        parameters[ParameterKey.search] = keyword
+        parameters[ParameterKey.searchBy] = filter
 
         enqueueRequest(with: parameters, siteID: siteID, completion: completion)
     }
@@ -34,18 +31,19 @@ public class WCAnalyticsCustomerRemote: Remote {
                                 pageNumber: Int = 1,
                                 pageSize: Int = 25,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.page: String(pageNumber),
+        enqueueRequest(with: coreRequestParameters(from: pageNumber, pageSize: pageSize), siteID: siteID, completion: completion)
+    }
+}
+
+private extension WCAnalyticsCustomerRemote {
+    func coreRequestParameters(from pageNumber: Int = 1, pageSize: Int = 25) -> [String: Any] {
+        [ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: "name",
             ParameterKey.order: "asc",
-            ParameterKey.filterEmpty: "email",
-        ]
-
-        enqueueRequest(with: parameters, siteID: siteID, completion: completion)
+            ParameterKey.filterEmpty: "email"]
     }
-
-    private func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+    func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let path = "customers"
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,

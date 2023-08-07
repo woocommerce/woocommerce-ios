@@ -54,11 +54,15 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
         let hasSearchByParameter = network.queryParameters?.contains(where: { $0 == "searchby=\(filter)" }) ?? false
         let hasPageNumberParameter = network.queryParameters?.contains(where: { $0 == "page=\(pageNumber)" }) ?? false
         let hasPageSizeParameter = network.queryParameters?.contains(where: { $0 == "per_page=\(pageSize)" }) ?? false
+        let hasOrderByParameter = network.queryParameters?.contains(where: { $0 == "orderby=name" }) ?? false
+        let hasOrderParameter = network.queryParameters?.contains(where: { $0 == "order=asc" }) ?? false
 
         XCTAssertTrue(hasSearchParameter)
         XCTAssertTrue(hasSearchByParameter)
         XCTAssertTrue(hasPageNumberParameter)
         XCTAssertTrue(hasPageSizeParameter)
+        XCTAssertTrue(hasOrderByParameter)
+        XCTAssertTrue(hasOrderParameter)
 
         assertParsedResultsAreCorrect(with: customers)
     }

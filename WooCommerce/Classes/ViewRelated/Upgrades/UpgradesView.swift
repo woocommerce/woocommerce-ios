@@ -85,17 +85,21 @@ struct UpgradesView: View {
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
-                    OwnerUpgradesView(subscriptionsViewModel: subscriptionsViewModel, upgradePlans: [
+                    OwnerUpgradesView(upgradePlans: [
                         .skeletonPlan(frequency: .year, shortName: "Essential"),
                         .skeletonPlan(frequency: .year, shortName: "Performance"),
                         .skeletonPlan(frequency: .month, shortName: "Essential"),
                         .skeletonPlan(frequency: .month, shortName: "Performance")],
                                       isPurchasing: .constant(false),
+                                      expirationDate: .constant(""),
+                                      planDaysLeft: .constant(0),
                                       purchasePlanAction: { _ in }, isLoading: true)
                     .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
-                    OwnerUpgradesView(subscriptionsViewModel: subscriptionsViewModel, upgradePlans: plans,
+                    OwnerUpgradesView(upgradePlans: plans,
                                       isPurchasing: $upgradesViewModel.isPurchasing,
+                                      expirationDate: $subscriptionsViewModel.formattedPlanExpirationDate,
+                                      planDaysLeft: $subscriptionsViewModel.planDaysLeft,
                                       purchasePlanAction: { selectedPlan in
                         Task {
                             await upgradesViewModel.purchasePlan(with: selectedPlan.wpComPlan.id)

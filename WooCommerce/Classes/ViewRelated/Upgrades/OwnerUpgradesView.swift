@@ -3,21 +3,24 @@ import Yosemite
 import WooFoundation
 
 struct OwnerUpgradesView: View {
-    @ObservedObject var subscriptionsViewModel: SubscriptionsViewModel
 
     @State var upgradePlans: [WooWPComPlan]
     @Binding var isPurchasing: Bool
+    @Binding var expirationDate: String?
+    @Binding var planDaysLeft: Int?
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
-    init(subscriptionsViewModel: SubscriptionsViewModel,
-         upgradePlans: [WooWPComPlan],
+    init(upgradePlans: [WooWPComPlan],
          isPurchasing: Binding<Bool>,
+         expirationDate: Binding<String?>,
+         planDaysLeft: Binding<Int?>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
-        self.subscriptionsViewModel = subscriptionsViewModel
         _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = isPurchasing
+        _expirationDate = expirationDate
+        _planDaysLeft = planDaysLeft
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
     }
@@ -31,8 +34,8 @@ struct OwnerUpgradesView: View {
     var body: some View {
         VStack(spacing: 0) {
             VStack {
-                CurrentPlanDetailsView(expirationDate: subscriptionsViewModel.formattedPlanExpirationDate,
-                                       daysLeft: subscriptionsViewModel.planDaysLeft)
+                CurrentPlanDetailsView(expirationDate: expirationDate,
+                                       daysLeft: planDaysLeft)
                 .background(Color(.secondarySystemGroupedBackground))
             }
             .padding(.horizontal)

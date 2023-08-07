@@ -22,11 +22,11 @@ final class SubscriptionsViewModel: ObservableObject {
 
     /// Current store plan details information.
     ///
-    private(set) var planDaysLeft: Int?
+    var planDaysLeft: Int?
 
     /// Current store plan expiration date, formatted as "MMMM d". e.g: "August 11"
     ///
-    private(set) var formattedPlanExpirationDate: String?
+    var formattedPlanExpirationDate: String?
 
     /// Defines if the view should show the Full Plan features.
     ///

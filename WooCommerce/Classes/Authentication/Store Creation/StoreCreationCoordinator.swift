@@ -204,14 +204,15 @@ private extension StoreCreationCoordinator {
     func showCategoryQuestion(from navigationController: UINavigationController,
                               storeName: String) {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
-                .init(storeName: storeName) { [weak self] category in
+                .init(onContinue: { [weak self] category in
                     guard let self else { return }
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category)
-                } onSkip: { [weak self] in
+                }, onSkip: { [weak self] in
                     guard let self else { return }
                     self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
                     self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil)
                 })
+        )
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
@@ -219,7 +220,7 @@ private extension StoreCreationCoordinator {
     func showSellingStatusQuestion(from navigationController: UINavigationController,
                                    storeName: String,
                                    category: StoreCreationCategoryAnswer?) {
-        let questionController = StoreCreationSellingStatusQuestionHostingController { [weak self] sellingStatus in
+        let questionController = StoreCreationSellingStatusQuestionHostingController(onContinue: { [weak self] sellingStatus in
             guard let self else { return }
             if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
                 self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
@@ -228,14 +229,14 @@ private extension StoreCreationCoordinator {
                                           storeName: storeName,
                                           category: category,
                                           sellingStatus: sellingStatus)
-        } onSkip: { [weak self] in
+        }, onSkip: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.showStoreCountryQuestion(from: navigationController,
                                           storeName: storeName,
                                           category: category,
                                           sellingStatus: nil)
-        }
+        })
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }

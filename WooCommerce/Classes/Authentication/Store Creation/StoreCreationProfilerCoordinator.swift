@@ -53,16 +53,17 @@ private extension StoreCreationProfilerCoordinator {
 
     func showCategoryQuestion() {
         let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
-                .init(storeName: storeName) { [weak self] category in
+                .init(onContinue: { [weak self] category in
                     guard let self else { return }
                     self.storeCategory = category
                     self.showStoreCountryQuestion()
-                } onSkip: { [weak self] in
+                }, onSkip: { [weak self] in
                     guard let self else { return }
                     self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
                     self.storeCategory = nil
                     self.showStoreCountryQuestion()
                 })
+        )
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }

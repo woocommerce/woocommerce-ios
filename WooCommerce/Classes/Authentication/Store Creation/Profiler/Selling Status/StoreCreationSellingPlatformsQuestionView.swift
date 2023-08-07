@@ -5,8 +5,8 @@ import SwiftUI
 struct StoreCreationSellingPlatformsQuestionView: View {
     @ObservedObject private var viewModel: StoreCreationSellingPlatformsQuestionViewModel
 
-    init(storeName: String, onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
-        self.viewModel = StoreCreationSellingPlatformsQuestionViewModel(storeName: storeName, onContinue: onContinue)
+    init(onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
+        self.viewModel = StoreCreationSellingPlatformsQuestionViewModel(onContinue: onContinue)
     }
 
     var body: some View {
@@ -31,7 +31,7 @@ struct StoreCreationSellingPlatformsQuestionView: View {
 struct StoreCreationSellingPlatformsQuestionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            StoreCreationSellingPlatformsQuestionView(storeName: "New Year Store", onContinue: { _ in })
+            StoreCreationSellingPlatformsQuestionView(onContinue: { _ in })
         }
     }
 }

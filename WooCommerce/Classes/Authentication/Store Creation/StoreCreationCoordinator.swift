@@ -219,7 +219,7 @@ private extension StoreCreationCoordinator {
     func showSellingStatusQuestion(from navigationController: UINavigationController,
                                    storeName: String,
                                    category: StoreCreationCategoryAnswer?) {
-        let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
+        let questionController = StoreCreationSellingStatusQuestionHostingController { [weak self] sellingStatus in
             guard let self else { return }
             if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
                 self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))

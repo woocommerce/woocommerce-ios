@@ -31,19 +31,19 @@ final class StoreCreationProfilerCoordinator: Coordinator {
 private extension StoreCreationProfilerCoordinator {
 
     func showSellingStatusQuestion() {
-        let questionController = StoreCreationSellingStatusQuestionHostingController(storeName: storeName) { [weak self] sellingStatus in
+        let questionController = StoreCreationSellingStatusQuestionHostingController(onContinue: { [weak self] sellingStatus in
             guard let self else { return }
             if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
                 self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
             }
             self.sellingStatus = sellingStatus
             self.showCategoryQuestion()
-        } onSkip: { [weak self] in
+        }, onSkip: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
             self.sellingStatus = nil
             self.showCategoryQuestion()
-        }
+        })
 
         navigationController.setViewControllers([questionController], animated: true)
         questionController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .cancel, target: self, action: #selector(dismissProfiler))

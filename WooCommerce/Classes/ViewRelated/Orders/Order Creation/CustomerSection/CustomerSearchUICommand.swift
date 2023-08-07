@@ -182,6 +182,7 @@ private extension CustomerSearchUICommand {
             details: Localization.emptyDefaultStateMessage,
             buttonTitle: Localization.emptyDefaultStateActionTitle
         ) { [weak self] _ in
+            self?.analytics.track(.orderCreationCustomerAddManuallyTapped)
             self?.onAddCustomerDetailsManually?()
         }
 

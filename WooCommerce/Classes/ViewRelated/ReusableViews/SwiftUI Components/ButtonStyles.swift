@@ -70,7 +70,7 @@ struct SelectableSecondaryButtonStyle: ButtonStyle {
     let isSelected: Bool
     let labelFont: Font
 
-    init(isSelected: Bool, labelFont: Font = .headline) {
+    init(isSelected: Bool, labelFont: Font = .body) {
         self.isSelected = isSelected
         self.labelFont = labelFont
     }

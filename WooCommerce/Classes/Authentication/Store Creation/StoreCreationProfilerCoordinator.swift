@@ -70,13 +70,14 @@ private extension StoreCreationProfilerCoordinator {
 
     func showStoreCountryQuestion() {
         let questionController = StoreCreationCountryQuestionHostingController(viewModel:
-                .init(storeName: storeName) { [weak self] countryCode in
+                .init(onContinue: { [weak self] countryCode in
                     guard let self else { return }
                     self.storeCountry = countryCode
                     self.showChallengesQuestion()
-                } onSupport: { [weak self] in
+                }, onSupport: { [weak self] in
                     self?.showSupport()
                 })
+        )
         navigationController.pushViewController(questionController, animated: true)
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }

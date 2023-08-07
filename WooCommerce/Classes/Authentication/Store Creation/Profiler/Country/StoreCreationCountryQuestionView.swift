@@ -56,8 +56,7 @@ private extension StoreCreationCountryQuestionView {
 struct StoreCreationCountryQuestionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            StoreCreationCountryQuestionView(viewModel: .init(storeName: "only in 2023",
-                                                              currentLocale: Locale.init(identifier: "en_US"),
+            StoreCreationCountryQuestionView(viewModel: .init(currentLocale: Locale.init(identifier: "en_US"),
                                                               onContinue: { _ in },
                                                               onSupport: {}))
         }

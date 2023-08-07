@@ -30,12 +30,10 @@ struct StoreCreationCountryButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
             StoreCreationCountryButton(countryCode: .US,
-                                       viewModel: .init(storeName: "",
-                                                        onContinue: { _ in },
+                                       viewModel: .init(onContinue: { _ in },
                                                         onSupport: {}))
             StoreCreationCountryButton(countryCode: .UM,
-                                       viewModel: .init(storeName: "",
-                                                        onContinue: { _ in },
+                                       viewModel: .init(onContinue: { _ in },
                                                         onSupport: {}))
         }
     }

@@ -3,14 +3,6 @@ import XCTest
 
 @MainActor
 final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
-    func test_topHeader_is_set_to_store_name() throws {
-        // Given
-        let viewModel = StoreCreationSellingPlatformsQuestionViewModel { _ in }
-
-        // Then
-        XCTAssertEqual(viewModel.topHeader, "store 🌟")
-    }
-
     func test_selecting_a_platform_adds_to_selectedPlatforms() throws {
         // Given
         let viewModel = StoreCreationSellingPlatformsQuestionViewModel { _ in }

@@ -44,20 +44,20 @@ private extension CurrentPlanDetailsView {
     enum Localization {
         static let freeTrialTitle = NSLocalizedString(
             "You're in a free trial",
-            comment: "Title for the Upgrade's summary card, informing the merchant they're on a Free Trial site.")
+            comment: "Title for the Upgrades summary card, informing the merchant they're on a Free Trial site.")
 
         static let freeTrialHasEndedTitle = NSLocalizedString(
             "Your free trial has ended",
-            comment: "Title for the Upgrade's summary card, informing the merchant their Free Trial has ended.")
+            comment: "Title for the Upgrades summary card, informing the merchant their Free Trial has ended.")
 
         static let freeTrialText = NSLocalizedString(
             "Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling.",
-            comment: "Text within the Upgrade's summary card, informing the merchant of how much time they have to upgrade.")
+            comment: "Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade.")
 
         static let freeTrialExpiredText = NSLocalizedString(
             "Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. " +
             "Unlock more features, launch and start selling, and make your ecommerce business a reality.",
-            comment: "Text within the Upgrade's summary card, informing the merchant their Free Trial has expired.")
+            comment: "Text within the Upgrades summary card, informing the merchant their Free Trial has expired.")
 
         static let daysLeftValuePlural = NSLocalizedString(
             "%1ld days", comment: "Value describing the days left on a plan before expiry (plural). " +

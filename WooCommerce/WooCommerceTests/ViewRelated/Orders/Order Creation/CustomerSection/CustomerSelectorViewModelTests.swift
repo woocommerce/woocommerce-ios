@@ -14,6 +14,127 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .testingInstance)
     }
 
+    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_lower_than_minimum_then_calls_action_with_right_parameters_and_return_false() {
+        // Given
+        var passedParameters: (Int64, String)?
+        let returnedVersion = "7.9.9"
+
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(siteID, pluginName, onCompletion):
+                passedParameters = (siteID, pluginName)
+
+                onCompletion(SystemPlugin.fake().copy(version: returnedVersion))
+            default:
+                break
+            }
+        }
+
+        // When
+        var isEligible = true
+        waitForExpectation { expectation in
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
+
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+        XCTAssertEqual(passedParameters?.0, sampleSiteID)
+        XCTAssertEqual(passedParameters?.1, "WooCommerce")
+    }
+
+    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_the_minimum_then_returns_true() {
+        // Given
+        let returnedVersion = "8.0.0-beta.1"
+
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: true))
+            default:
+                break
+            }
+        }
+
+        // When
+        var isEligible = false
+        waitForExpectation { expectation in
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
+
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_then_returns_true() {
+        // Given
+        let returnedVersion = "14.2.5"
+
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: true))
+            default:
+                break
+            }
+        }
+
+        // When
+        var isEligible = false
+        waitForExpectation { expectation in
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
+
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertTrue(isEligible)
+    }
+
+    func test_isEligibleForAdvancedSearch_when_wc_plugin_version_is_higher_than_minimum_but_plugin_is_not_active_then_returns_false() {
+        // Given
+        let returnedVersion = "14.2.5"
+
+        let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
+
+        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .fetchSystemPlugin(_, _, onCompletion):
+                onCompletion(SystemPlugin.fake().copy(version: returnedVersion, active: false))
+            default:
+                break
+            }
+        }
+
+        // When
+        var isEligible = true
+        waitForExpectation { expectation in
+            viewModel.isEligibleForAdvancedSearch() { result in
+                isEligible = result
+
+                expectation.fulfill()
+            }
+        }
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData() {
         // Given
         let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
@@ -28,7 +149,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
                 passedSiteID = siteID
                 passedPageNumber = pageNumber
                 passedPageSize = pageSize
-                onCompletion(.success(()))
+                onCompletion(.success(true))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }

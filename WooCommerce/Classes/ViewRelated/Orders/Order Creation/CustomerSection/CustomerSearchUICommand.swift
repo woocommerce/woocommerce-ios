@@ -216,6 +216,8 @@ private extension CustomerSearchUICommand {
         // and retrieve only light data when searching.
         //
         return CustomerAction.searchCustomers(siteID: siteID,
+                                              pageNumber: pageNumber,
+                                              pageSize: pageSize,
                                               keyword: keyword,
                                               retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
                                               filter: searchFilter) { result in

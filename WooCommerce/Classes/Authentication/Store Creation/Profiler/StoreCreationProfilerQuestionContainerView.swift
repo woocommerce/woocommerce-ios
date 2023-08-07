@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Hosting controller for `StoreCreationProfilerQuestionContainerView`
 final class StoreCreationProfilerQuestionContainerHostingController: UIHostingController<StoreCreationProfilerQuestionContainerView> {
-    init(viewModel: StoreCreationProfilerQuestionContainerViewModel) {
-        super.init(rootView: StoreCreationProfilerQuestionContainerView(viewModel: viewModel))
+    init(viewModel: StoreCreationProfilerQuestionContainerViewModel, onSupport: @escaping () -> Void) {
+        super.init(rootView: StoreCreationProfilerQuestionContainerView(viewModel: viewModel, onSupport: onSupport))
     }
 
     @available(*, unavailable)
@@ -21,28 +21,65 @@ final class StoreCreationProfilerQuestionContainerHostingController: UIHostingCo
 /// Container view for the profiler questions of the store creation flow.
 struct StoreCreationProfilerQuestionContainerView: View {
 
-    private let viewModel: StoreCreationProfilerQuestionContainerViewModel
+    @ObservedObject private var viewModel: StoreCreationProfilerQuestionContainerViewModel
+    private var onSupport: () -> Void
 
-    init(viewModel: StoreCreationProfilerQuestionContainerViewModel) {
+    init(viewModel: StoreCreationProfilerQuestionContainerViewModel, onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onSupport = onSupport
     }
 
     var body: some View {
-        StoreCreationSellingStatusQuestionContainerView(storeName: "") { answer in
-            // TODO
-        } onSkip: {
-            // TODO
+        Group {
+            switch viewModel.currentQuestion {
+            case .sellingStatus:
+                StoreCreationSellingStatusQuestionContainerView(storeName: viewModel.storeName) { answer in
+                    viewModel.saveSellingStatus(answer)
+                } onSkip: {
+                    viewModel.saveSellingStatus(nil)
+                }
+            case .category:
+                StoreCreationCategoryQuestionView(viewModel: .init(storeName: viewModel.storeName, onContinue: { answer in
+                    viewModel.saveCategory(answer)
+                }, onSkip: {
+                    viewModel.saveCategory(nil)
+                }))
+            case .country:
+                StoreCreationCountryQuestionView(viewModel: .init(storeName: viewModel.storeName, onContinue: { answer in
+                    viewModel.saveCountry(answer)
+                }, onSupport: onSupport))
+            case .challenges:
+                StoreCreationChallengesQuestionView(viewModel: .init(onContinue: { answer in
+                    viewModel.saveChallenges(answer)
+                }, onSkip: {
+                    viewModel.saveChallenges([])
+                }))
+            case .features:
+                StoreCreationFeaturesQuestionView(viewModel: .init(onContinue: { answer in
+                    viewModel.saveFeatures(answer)
+                }, onSkip: {
+                    viewModel.saveFeatures([])
+                }))
+            }
         }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
-                // TODO: on dismiss
+                Button(Localization.cancel) {
+                    viewModel.dismissProfiler()
+                }
             }
         }
     }
 }
 
+private extension StoreCreationProfilerQuestionContainerView {
+    enum Localization {
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss the store creation profiler flow")
+    }
+}
+
 struct StoreCreationProfilerQuestionContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test", onCompletion: { _ in }))
+        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test", onCompletion: { _ in }), onSupport: {})
     }
 }

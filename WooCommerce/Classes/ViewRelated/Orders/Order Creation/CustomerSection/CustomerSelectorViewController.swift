@@ -130,7 +130,7 @@ private extension CustomerSelectorViewController {
                                              showSearchFilters: showSearchFilters,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped),
-            cellType: TitleAndSubtitleAndDetailTableViewCell.self,
+            cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
 

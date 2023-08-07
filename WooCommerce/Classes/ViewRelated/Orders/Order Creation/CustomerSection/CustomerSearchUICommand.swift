@@ -7,7 +7,7 @@ import Experiments
 final class CustomerSearchUICommand: SearchUICommand {
 
     typealias Model = Customer
-    typealias CellViewModel = TitleAndSubtitleAndDetailTableViewCell.ViewModel
+    typealias CellViewModel = UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel
     typealias ResultsControllerModel = StorageCustomer
 
     var searchBarPlaceholder: String {
@@ -41,6 +41,8 @@ final class CustomerSearchUICommand: SearchUICommand {
     private let analytics: Analytics
 
     private let featureFlagService: FeatureFlagService
+
+    private var searchTerm: String?
 
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
@@ -135,18 +137,20 @@ final class CustomerSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
-    func createCellViewModel(model: Customer) -> TitleAndSubtitleAndDetailTableViewCell.ViewModel {
+    func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
         return CellViewModel(
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
             placeholderTitle: Localization.titleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
-            detail: model.username ?? ""
+            detail: model.username ?? "",
+            underlinedText: searchTerm
         )
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchTerm = keyword
         analytics.track(.orderCreationCustomerSearch)
 
         let action: CustomerAction

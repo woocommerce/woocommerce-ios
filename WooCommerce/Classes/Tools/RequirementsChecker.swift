@@ -40,20 +40,15 @@ final class RequirementsChecker {
     /// in order to determine if the site is running on an expired plan.
     ///
     func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+        /// When a site plan expires, after 8 days the site is reverted to a simple site.
+        guard !site.isSimpleSite else {
+            onCompletion?(.success(.expiredWPComPlan))
+            return
+        }
         Task { @MainActor in
             do {
                 let result = try await checkMinimumWooVersion(for: site)
-                guard case .invalidWCVersion = result else {
-                    onCompletion?(.success(result))
-                    return
-                }
-
-                let siteExpired = await checkIfWPComSitePlanExpired(for: site.siteID)
-                if siteExpired {
-                    onCompletion?(.success(.expiredWPComPlan))
-                } else {
-                    onCompletion?(.success(.invalidWCVersion))
-                }
+                onCompletion?(.success(result))
             } catch {
                 onCompletion?(.failure(error))
             }
@@ -79,7 +74,7 @@ final class RequirementsChecker {
             case .success(.invalidWCVersion):
                 self?.displayWCVersionAlert()
             case .success(.expiredWPComPlan):
-                self?.displayWPComPlanUpgradeAlert(siteID: site.siteID)
+                self?.displayWPComPlanUpgradeAlert(for: site)
             default:
                 break
             }
@@ -91,26 +86,6 @@ final class RequirementsChecker {
 // MARK: - Private helpers
 //
 private extension RequirementsChecker {
-    @MainActor
-    func checkIfWPComSitePlanExpired(for siteID: Int64) async -> Bool {
-        await withCheckedContinuation { continuation in
-            stores.dispatch(PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
-                switch result {
-                case .success(let plan):
-                    // When a plan expired, the site gets reverted to a simple site with plan ID "1"
-                    continuation.resume(returning: plan.isFreePlan)
-                case .failure(LoadSiteCurrentPlanError.noCurrentPlan):
-                    // Since this is a WPCom store, if it has no plan its plan must have expired or been cancelled.
-                    // Generally, expiry is `.success(plan)` with a plan expiry date in the past, but in some cases, we just
-                    // don't get any plans marked as `current` in the plans response.
-                    continuation.resume(returning: true)
-                case .failure(let error):
-                    continuation.resume(returning: false)
-                    DDLogError("⛔️ Error synchronizing WPCom plan: \(error)")
-                }
-            })
-        }
-    }
 
     /// Display the WC version alert
     ///
@@ -121,18 +96,19 @@ private extension RequirementsChecker {
         baseViewController?.present(fancyAlert, animated: true)
     }
 
-    func displayWPComPlanUpgradeAlert(siteID: Int64) {
+    func displayWPComPlanUpgradeAlert(for site: Site) {
         guard let baseViewController else {
             return
         }
-        UIAlertController.presentExpiredWPComPlanAlert(from: baseViewController) { [weak self] in
-            guard let self else { return }
-            /// Since we cannot tell if the site is eligible for upgrading with IAP,
-            /// it's safer to navigate to the plans page just in case the site is not suitable
-            /// for upgrading WooExpress plans (e.g: expired Business plan).
-            /// Please place IAP here if we have a solution to check the case.
-            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
-            self.baseViewController?.present(controller, animated: true)
+        UIAlertController.presentExpiredWPComPlanAlert(from: baseViewController) {
+            if site.wasEcommerceTrial {
+                /// If site once ran a trial WooExpress plan, attempt show IAP if possible.
+                UpgradesViewPresentationCoordinator().presentUpgrades(for: site.siteID, from: baseViewController)
+            } else {
+                /// If the site never ran a WooExpress plan, show the appropriate plans on the web.
+                let controller = UpgradePlanCoordinatingController(siteID: site.siteID, source: .expiredWPComPlanAlert)
+                baseViewController.present(controller, animated: true)
+            }
         }
     }
 

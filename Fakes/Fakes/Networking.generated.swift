@@ -216,6 +216,7 @@ extension Networking.Customer {
             siteID: .fake(),
             customerID: .fake(),
             email: .fake(),
+            username: .fake(),
             firstName: .fake(),
             lastName: .fake(),
             billing: .fake(),
@@ -1933,7 +1934,8 @@ extension Networking.WCAnalyticsCustomer {
             siteID: .fake(),
             userID: .fake(),
             name: .fake(),
-            email: .fake()
+            email: .fake(),
+            username: .fake()
         )
     }
 }

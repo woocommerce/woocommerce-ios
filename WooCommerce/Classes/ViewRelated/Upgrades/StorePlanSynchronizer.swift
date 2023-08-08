@@ -3,25 +3,45 @@ import Yosemite
 import Combine
 import Experiments
 
+/// Protocol for used to mock `StorePlanSynchronizer`.
+///
+protocol StorePlanSynchronizing {
+    /// Publisher for the current synced plan.
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> { get }
+
+    /// Current synced plan
+    var planState: StorePlanSyncState { get }
+
+    /// Current logged-in site. `Nil` if not logged-in.
+    var site: Site? { get }
+
+    /// Loads the plan from network
+    func reloadPlan()
+}
+
+/// State of the synced store plan.
+///
+enum StorePlanSyncState: Equatable {
+    case notLoaded
+    case loading
+    case loaded(WPComSitePlan)
+    case failed
+    case unavailable
+    case expired
+}
+
 /// Type that fetches and shares a `WPCom` store plan(subscription).
 /// The plan is stored on memory and not on the Storage Layer because this only relates to `WPCom` stores.
 ///
-final class StorePlanSynchronizer: ObservableObject {
-
-    /// Dependency state.
-    ///
-    enum PlanState: Equatable {
-        case notLoaded
-        case loading
-        case loaded(WPComSitePlan)
-        case failed
-        case unavailable
-        case expired
-    }
+final class StorePlanSynchronizer: StorePlanSynchronizing {
 
     /// Current synced plan.
     ///
-    @Published private(set) var planState = PlanState.notLoaded
+    var planStatePublisher: AnyPublisher<StorePlanSyncState, Never> {
+        $planState.eraseToAnyPublisher()
+    }
+
+    @Published private(set) var planState: StorePlanSyncState = .notLoaded
 
     /// Current logged-in site. `Nil` if not logged-in.
     ///
@@ -44,18 +64,15 @@ final class StorePlanSynchronizer: ObservableObject {
     private var subscriptions: Set<AnyCancellable> = []
 
     private let inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol
-    private let featureFlagService: FeatureFlagService
 
     init(stores: StoresManager = ServiceLocator.stores,
          timeZone: TimeZone = .current,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
-         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         inAppPurchaseManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.stores = stores
         self.localNotificationScheduler = .init(pushNotesManager: pushNotesManager, stores: stores)
         self.timeZone = timeZone
         self.inAppPurchaseManager = inAppPurchaseManager
-        self.featureFlagService = featureFlagService
 
         stores.site.sink { [weak self] site in
             guard let self else { return }
@@ -74,8 +91,9 @@ final class StorePlanSynchronizer: ObservableObject {
             return
         }
 
-        // If the site is not a WPCom store set the state to `.unavailable`
-        guard site.isWordPressComStore else {
+        // If the site is not a WPCom store and has never run a trial WooExpress plan,
+        // set the state to `.unavailable`
+        guard site.isWordPressComStore || site.wasEcommerceTrial else {
             planState = .unavailable
             return
         }
@@ -129,22 +147,12 @@ private extension StorePlanSynchronizer {
                                                      subscribedDate: subscribedDate)
             }
 
-            if featureFlagService.isFeatureFlagEnabled(.freeTrialSurvey24hAfterFreeTrialSubscribed) {
-                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                    let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
-                    schedulePostSubscriptionNotification(scenario: scenario,
-                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                         subscribedDate: subscribedDate)
-                }
-            } else { // TODO: 10266 Safely remove
-                // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
-                if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
-                    let scenario = LocalNotification.Scenario.twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID)
-                    schedulePostSubscriptionNotification(scenario: scenario,
-                                                         timeAfterSubscription: Constants.oneDayTimeInterval,
-                                                         subscribedDate: subscribedDate)
-                }
+            // Schedule notification only if the Free trial is subscribed less than 24 hrs ago
+            if Date().timeIntervalSince(subscribedDate) < Constants.oneDayTimeInterval {
+                let scenario = LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID)
+                schedulePostSubscriptionNotification(scenario: scenario,
+                                                     timeAfterSubscription: Constants.oneDayTimeInterval,
+                                                     subscribedDate: subscribedDate)
             }
         }
     }
@@ -162,9 +170,6 @@ private extension StorePlanSynchronizer {
             }
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
-            }
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .twentyFourHoursAfterFreeTrialSubscribed(siteID: siteID))
             }
             group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))

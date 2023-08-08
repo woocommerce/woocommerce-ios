@@ -4,7 +4,7 @@ import Codegen
 /// Represents a Customer entity:
 /// https://woocommerce.github.io/woocommerce-rest-api-docs/#customer-properties
 ///
-public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
+public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The siteID for the customer
     public let siteID: Int64
 
@@ -20,6 +20,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
     /// Customer last name
     public let lastName: String?
 
+    /// Customer username
+    public let username: String?
+
     /// List of billing address data
     public let billing: Address?
 
@@ -31,6 +34,7 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
     public init(siteID: Int64,
                 customerID: Int64,
                 email: String,
+                username: String?,
                 firstName: String?,
                 lastName: String?,
                 billing: Address?,
@@ -38,6 +42,7 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
         self.siteID = siteID
         self.customerID = customerID
         self.email = email
+        self.username = username
         self.firstName = firstName
         self.lastName = lastName
         self.billing = billing
@@ -55,6 +60,7 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
 
         let customerID = try container.decode(Int64.self, forKey: .customerID)
         let email = try container.decode(String.self, forKey: .email)
+        let username = try container.decode(String.self, forKey: .username)
         let firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
         let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
         let billing = try? container.decode(Address.self, forKey: .billing)
@@ -63,6 +69,7 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable {
         self.init(siteID: siteID,
                   customerID: customerID,
                   email: email,
+                  username: username,
                   firstName: firstName,
                   lastName: lastName,
                   billing: billing,
@@ -77,6 +84,7 @@ extension Customer {
     enum CodingKeys: String, CodingKey {
         case customerID =       "id"
         case email
+        case username
         case firstName =        "first_name"
         case lastName =         "last_name"
         case billing

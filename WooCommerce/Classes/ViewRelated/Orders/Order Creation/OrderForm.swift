@@ -299,6 +299,7 @@ private struct ProductsSection: View {
                     }, content: {
                         ProductSelectorNavigationView(
                             configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                            source: .orderForm,
                             isPresented: $showAddProduct,
                             viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                         .onDisappear {

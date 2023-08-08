@@ -24,7 +24,6 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
-    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
     private let upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator
 
     private var storePickerCoordinator: StorePickerCoordinator?
@@ -47,7 +46,6 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
          upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
         self.window = window
         self.tabBarController = {
@@ -65,7 +63,6 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
-        self.purchasesManager = purchasesManager
         self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
@@ -351,7 +348,6 @@ private extension AppCoordinator {
         let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires
         let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
-        let twentyFourHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.twentyFourHoursAfterFreeTrialSubscribed
         let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
         let userInfo = response.notification.request.content.userInfo
@@ -380,12 +376,6 @@ private extension AppCoordinator {
         case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {
-                return
-            }
-            showUpgradesView(siteID: siteID)
-        case let identifier where identifier.hasPrefix(twentyFourHoursAfterFreeTrialSubscribed):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let siteID = Int64(identifier.replacingOccurrences(of: twentyFourHoursAfterFreeTrialSubscribed, with: "")) else {
                 return
             }
             showUpgradesView(siteID: siteID)
@@ -456,7 +446,6 @@ private extension AppCoordinator {
                                                    storageManager: storageManager,
                                                    stores: stores,
                                                    featureFlagService: featureFlagService,
-                                                   purchasesManager: purchasesManager,
                                                    pushNotesManager: pushNotesManager)
         self.storeCreationCoordinator = coordinator
         coordinator.start()

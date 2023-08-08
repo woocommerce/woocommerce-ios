@@ -36,19 +36,19 @@ struct StoreCreationProfilerQuestionContainerView: View {
 
             switch viewModel.currentQuestion {
             case .sellingStatus:
-                StoreCreationSellingStatusQuestionContainerView(storeName: viewModel.storeName) { answer in
+                StoreCreationSellingStatusQuestionContainerView(onContinue: { answer in
                     viewModel.saveSellingStatus(answer)
-                } onSkip: {
+                }, onSkip: {
                     viewModel.saveSellingStatus(nil)
-                }
+                })
             case .category:
-                StoreCreationCategoryQuestionView(viewModel: .init(storeName: viewModel.storeName, onContinue: { answer in
+                StoreCreationCategoryQuestionView(viewModel: .init(onContinue: { answer in
                     viewModel.saveCategory(answer)
                 }, onSkip: {
                     viewModel.saveCategory(nil)
                 }))
             case .country:
-                StoreCreationCountryQuestionView(viewModel: .init(storeName: viewModel.storeName, onContinue: { answer in
+                StoreCreationCountryQuestionView(viewModel: .init(onContinue: { answer in
                     viewModel.saveCountry(answer)
                 }, onSupport: onSupport))
             case .challenges:

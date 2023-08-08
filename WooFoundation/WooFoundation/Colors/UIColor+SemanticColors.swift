@@ -303,7 +303,7 @@ public extension UIColor {
     ///
     static var ghostCellAnimationEndColor: UIColor {
         return UIColor(light: .systemColor(.systemGray6),
-                       dark: .systemColor(.systemGray5))
+                       dark: .systemColor(.systemGray4))
     }
 
     /// Rating star filled color.

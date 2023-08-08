@@ -68,6 +68,17 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
+        case "AU":
+            self.init(
+                countryCode: country,
+                paymentMethods: [.cardPresent],
+                currencies: [.AUD],
+                paymentGateways: [WCPayAccount.gatewayID],
+                supportedReaders: [.wisepad3],
+                supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
+                minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
+                stripeSmallestCurrencyUnitMultiplier: 100
+            )
         default:
             self.init(
                 countryCode: country,

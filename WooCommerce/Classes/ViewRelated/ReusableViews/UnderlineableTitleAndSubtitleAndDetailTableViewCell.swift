@@ -18,7 +18,7 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
     func configureCell(searchModel: ViewModel) {
         accessibilityLabel = searchModel.accessibilityLabel
         setupTitleLabelText(with: searchModel)
-        setupSubtitleLabelText(with: searchModel)
+        subtitleLabel.attributedText = subtitleAttributedString(from: searchModel)
         subtitleLabel.applyStrongCaption1Style()
     }
 }
@@ -33,6 +33,7 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
         var id: String = UUID().uuidString
         let title: String
         let placeholderTitle: String
+        let placeholderSubtitle: String
         let subtitle: String
         let accessibilityLabel: String
         let detail: String
@@ -43,18 +44,22 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
 // MARK: - Setup
 //
 private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
-    func setupSubtitleLabelText(with viewModel: ViewModel) {
-        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.text])
+    func subtitleAttributedString(from viewModel: ViewModel) -> NSAttributedString {
+        guard viewModel.subtitle.trimmingCharacters(in: .whitespaces).isNotEmpty else {
+            return NSMutableAttributedString(string: viewModel.placeholderSubtitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        }
+
+        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
 
         if let underlinedText = viewModel.underlinedText {
             subtitle.underlineSubstring(underlinedText: underlinedText)
         }
 
-        subtitleLabel.attributedText = subtitle
+        return subtitle
     }
 
     func setupTitleLabelText(with viewModel: ViewModel) {
-        var titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
+        let titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
         titleAndDetail.append(detailAttributedString(from: viewModel))
 
         titleLabel.attributedText = titleAndDetail

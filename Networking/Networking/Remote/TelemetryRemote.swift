@@ -11,11 +11,14 @@ public class TelemetryRemote: Remote {
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - versionString: App version to report.
+    ///   - installationDate: App installation date.
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func sendTelemetry(for siteID: Int64, versionString: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    public func sendTelemetry(for siteID: Int64, versionString: String, installationDate: Date, completion: @escaping (Result<Void, Error>) -> Void) {
         let path = "tracker"
-        let parameters = ["platform": "ios", "version": versionString]
+        let parameters = ["platform": "ios",
+                          "version": versionString ,
+                          "installation_date": installationDate.ISO8601Format()] as [String: Any]
         let request = JetpackRequest(wooApiVersion: .wcTelemetry,
                                      method: .post,
                                      siteID: siteID,

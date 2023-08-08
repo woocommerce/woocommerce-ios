@@ -25,7 +25,8 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
         return indicator
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
+    lazy var ghostTableViewController = GhostTableViewController(options:
+                                                                    GhostTableViewOptions(cellClass: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self))
 
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,

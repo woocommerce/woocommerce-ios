@@ -78,6 +78,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
+    var makeSearchBarFirstResponderOnStart: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+    }
+
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
         featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
     }

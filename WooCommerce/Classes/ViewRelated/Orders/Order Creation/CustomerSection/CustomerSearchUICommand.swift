@@ -7,7 +7,7 @@ import Experiments
 final class CustomerSearchUICommand: SearchUICommand {
 
     typealias Model = Customer
-    typealias CellViewModel = TitleAndSubtitleAndStatusTableViewCell.ViewModel
+    typealias CellViewModel = UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel
     typealias ResultsControllerModel = StorageCustomer
 
     var searchBarPlaceholder: String {
@@ -41,6 +41,8 @@ final class CustomerSearchUICommand: SearchUICommand {
     private let analytics: Analytics
 
     private let featureFlagService: FeatureFlagService
+
+    private var searchTerm: String?
 
     init(siteID: Int64,
          loadResultsWhenSearchTermIsEmpty: Bool = false,
@@ -135,18 +137,20 @@ final class CustomerSearchUICommand: SearchUICommand {
         viewController.configure(.simple(message: message, image: .emptySearchResultsImage))
     }
 
-    func createCellViewModel(model: Customer) -> TitleAndSubtitleAndStatusTableViewCell.ViewModel {
+    func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
         return CellViewModel(
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
+            placeholderTitle: Localization.titleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
-            status: "",
-            statusBackgroundColor: .clear
+            detail: model.username ?? "",
+            underlinedText: searchTerm
         )
     }
 
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        searchTerm = keyword
         analytics.track(.orderCreationCustomerSearch)
 
         let action: CustomerAction
@@ -256,6 +260,7 @@ private extension CustomerSearchUICommand {
         static let emptySearchResults = NSLocalizedString(
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
+        static let titleCellPlaceholder = NSLocalizedString("No name", comment: "Placeholder when there's no customer name in the list")
         static let emptyDefaultStateMessage = NSLocalizedString("Search for an existing customer or",
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",

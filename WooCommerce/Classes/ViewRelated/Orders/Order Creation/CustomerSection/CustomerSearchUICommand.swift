@@ -153,7 +153,7 @@ final class CustomerSearchUICommand: SearchUICommand {
             subtitle: model.email,
             accessibilityLabel: "",
             detail: model.username ?? "",
-            underlinedText: searchTerm
+            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
         )
     }
 

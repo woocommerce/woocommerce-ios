@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct CurrentPlanDetailsView: View {
-    @State var planName: String
+    @State var expirationDate: String?
     @State var daysLeft: Int?
 
     private var daysLeftText: String {
@@ -15,19 +15,18 @@ struct CurrentPlanDetailsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.contentSpacing) {
-            HStack {
-                Text(Localization.yourPlanLabel)
+            if let expirationDate = expirationDate {
+                Text(Localization.freeTrialTitle)
+                    .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+                Text(String.localizedStringWithFormat(Localization.freeTrialText, daysLeftText, expirationDate))
                     .font(.footnote)
-                Spacer()
-                Text(planName)
-                    .font(.footnote.bold())
-            }
-            HStack {
-                Text(Localization.daysLeftLabel)
+            } else {
+                Text(Localization.freeTrialHasEndedTitle)
+                    .font(.title2.bold())
+                    .accessibilityAddTraits(.isHeader)
+                Text(Localization.freeTrialExpiredText)
                     .font(.footnote)
-                Spacer()
-                Text(daysLeftText)
-                    .font(.footnote.bold())
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,20 +42,29 @@ private extension CurrentPlanDetailsView {
     }
 
     enum Localization {
-        static let yourPlanLabel = NSLocalizedString(
-            "Your plan", comment: "Label for the text describing which Plan the merchant is currently subscribed to." +
-            "Reads as 'Your Plan: Free Trial'")
+        static let freeTrialTitle = NSLocalizedString(
+            "You're in a free trial",
+            comment: "Title for the Upgrades summary card, informing the merchant they're on a Free Trial site.")
 
-        static let daysLeftLabel = NSLocalizedString(
-            "Days left in plan", comment: "Label for the text describing days left on a Plan to expire." +
-            "Reads as 'Days left in plan: 15 days left'")
+        static let freeTrialHasEndedTitle = NSLocalizedString(
+            "Your free trial has ended",
+            comment: "Title for the Upgrades summary card, informing the merchant their Free Trial has ended.")
+
+        static let freeTrialText = NSLocalizedString(
+            "Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling.",
+            comment: "Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade.")
+
+        static let freeTrialExpiredText = NSLocalizedString(
+            "Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. " +
+            "Unlock more features, launch and start selling, and make your ecommerce business a reality.",
+            comment: "Text within the Upgrades summary card, informing the merchant their Free Trial has expired.")
 
         static let daysLeftValuePlural = NSLocalizedString(
-            "%1ld days left", comment: "Value describing the days left on a plan before expiry (plural). " +
-            "%1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left'")
+            "%1ld days", comment: "Value describing the days left on a plan before expiry (plural). " +
+            "%1ld must be included in the translation, and will be replaced with the count. Reads as '15 days'")
 
         static let daysLeftValueSingular = NSLocalizedString(
-            "%1$ld day left", comment: "Value describing the days left on a plan before expiry (singular). " +
-            "%1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left'")
+            "%1$ld day", comment: "Value describing the days left on a plan before expiry (singular). " +
+            "%1ld must be included in the translation, and will be replaced with the count. Reads as '1 day'")
     }
 }

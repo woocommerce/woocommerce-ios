@@ -29,7 +29,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
-        rootView.dismiss = { [weak self] in
+        rootView.dismiss = { [weak self] _ in
             self?.dismiss(animated: true, completion: nil)
         }
     }
@@ -76,13 +76,18 @@ extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDel
     }
 }
 
+enum EditOrderAddressFormDismissAction {
+    case cancel
+    case done
+}
+
 /// Allows merchant to edit the customer provided address of an order.
 ///
 struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
     /// Set this closure with UIKit dismiss code. Needed because we need access to the UIHostingController `dismiss` method.
     ///
-    var dismiss: (() -> Void) = {}
+    var dismiss: ((EditOrderAddressFormDismissAction) -> Void) = { _ in }
 
     /// Shows the search button on the navigation bar
     /// 
@@ -150,7 +155,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.close, action: {
-                    dismiss()
+                    dismiss(.cancel)
                     viewModel.userDidCancelFlow()
                 })
             }
@@ -192,7 +197,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             Button(Localization.done) {
                 viewModel.saveAddress(onFinish: { success in
                     if success {
-                        dismiss()
+                        dismiss(.done)
                     }
                 })
             }

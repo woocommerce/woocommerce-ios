@@ -164,11 +164,16 @@ final class CustomerSearchUICommand: SearchUICommand {
         let action: CustomerAction
         if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
            keyword.isEmpty {
-            if pageNumber == 1 {
-                onDidStartSyncingAllCustomersFirstPage?()
-            }
+            if syncResultsWhenSearchQueryTurnsEmpty {
+                if pageNumber == 1 {
+                    onDidStartSyncingAllCustomersFirstPage?()
+                }
 
-            action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+                action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            } else {
+                // As we don't have to show anything if the search query is empty, let's reset the customers database
+                action = .deleteAllCustomers(siteID: siteID, onCompletion: { onCompletion?(true) })
+            }
         } else {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }

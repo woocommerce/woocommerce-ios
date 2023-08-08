@@ -479,6 +479,7 @@ private extension AppDelegate {
             // First run after a fresh install
             ServiceLocator.analytics.track(.applicationInstalled,
                                            withProperties: ["after_abtest_setup": true])
+            UserDefaults.standard[.installationDate] = Date()
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
             ServiceLocator.analytics.track(.applicationUpgraded, withProperties: ["previous_version": versionOfLastRun ?? String()])

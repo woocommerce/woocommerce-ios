@@ -488,7 +488,9 @@ private extension DefaultStoresManager {
             guard let self = self else { return }
 
             if isAvailable {
-                self.sendTelemetry(siteID: siteID, telemetryLastReportedTime: telemetryLastReportedTime)
+                self.sendTelemetry(siteID: siteID,
+                                   telemetryLastReportedTime: telemetryLastReportedTime,
+                                   installationDate: self.defaults.object(forKey: .installationDate))
             }
         }
         dispatch(checkAvailabilityAction)
@@ -496,10 +498,11 @@ private extension DefaultStoresManager {
 
     /// Sends telemetry data
     ///
-    func sendTelemetry(siteID: Int64, telemetryLastReportedTime: Date?) {
+    func sendTelemetry(siteID: Int64, telemetryLastReportedTime: Date?, installationDate: Date?) {
         let action = TelemetryAction.sendTelemetry(siteID: siteID,
                                                    versionString: UserAgent.bundleShortVersion,
-                                                   telemetryLastReportedTime: telemetryLastReportedTime) { [weak self] result in
+                                                   telemetryLastReportedTime: telemetryLastReportedTime,
+                                                   installationDate: installationDate) { [weak self] result in
             guard let self = self else { return }
 
             switch result {

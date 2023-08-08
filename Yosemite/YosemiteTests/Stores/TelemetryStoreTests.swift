@@ -5,7 +5,7 @@ import XCTest
 
 /// TelemetryStore Unit Tests
 ///
-class TelemetryStoreTests: XCTestCase {
+final class TelemetryStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -40,7 +40,10 @@ class TelemetryStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: nil) { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID,
+                                                       versionString: "1.2",
+                                                       telemetryLastReportedTime: nil,
+                                                       installationDate: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -57,7 +60,10 @@ class TelemetryStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: time) { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID,
+                                                       versionString: "1.2",
+                                                       telemetryLastReportedTime: time,
+                                                       installationDate: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -74,7 +80,10 @@ class TelemetryStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID, versionString: "1.2", telemetryLastReportedTime: nil) { result in
+            let action = TelemetryAction.sendTelemetry(siteID: self.sampleSiteID,
+                                                       versionString: "1.2",
+                                                       telemetryLastReportedTime: nil,
+                                                       installationDate: nil) { result in
                 promise(result)
             }
             store.onAction(action)

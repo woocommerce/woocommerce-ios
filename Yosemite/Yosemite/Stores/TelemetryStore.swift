@@ -36,10 +36,11 @@ public class TelemetryStore: Store {
 
 private extension TelemetryStore {
 
-    func sendTelemetry(siteID: Int64, versionString: String, telemetryLastReportedTime: Date?, installationDate: Date?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        guard let installationDate else {
-            return onCompletion(.failure(TelemetryError.noInstallationDate))
-        }
+    func sendTelemetry(siteID: Int64,
+                       versionString: String,
+                       telemetryLastReportedTime: Date?,
+                       installationDate: Date?,
+                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let telemetryLastReportedTime = telemetryLastReportedTime,
            Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports {
             // send telemetry for same store only after timeout
@@ -52,5 +53,4 @@ private extension TelemetryStore {
 
 public enum TelemetryError: Error {
     case requestThrottled
-    case noInstallationDate
 }

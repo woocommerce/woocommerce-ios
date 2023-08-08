@@ -90,7 +90,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:
-            return false
+            return true
         case .optimizeProfilerQuestions:
             return false
         default:

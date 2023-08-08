@@ -140,7 +140,7 @@ private extension CustomerSelectorViewController {
                                                      self?.removeGhostContent()
                                                  }
                                              }),
-            cellType: TitleAndSubtitleAndStatusTableViewCell.self,
+            cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
 

@@ -22,7 +22,11 @@ final class SubscriptionsViewModel: ObservableObject {
 
     /// Current store plan details information.
     ///
-    private(set) var planDaysLeft: Int?
+    var planDaysLeft: Int?
+
+    /// Current store plan expiration date, formatted as "MMMM d". e.g: "August 11"
+    ///
+    var formattedPlanExpirationDate: String?
 
     /// Defines if the view should show the Full Plan features.
     ///
@@ -131,6 +135,7 @@ private extension SubscriptionsViewModel {
         planName = getPlanName(from: plan)
         planInfo = getPlanInfo(from: plan)
         planDaysLeft = daysLeft(for: plan)
+        formattedPlanExpirationDate = formattedExpirationDate(for: plan)
         errorNotice = nil
         showLoadingIndicator = false
         shouldShowFreeTrialFeatures = plan.isFreeTrial
@@ -219,6 +224,21 @@ private extension SubscriptionsViewModel {
 
         let duration = Calendar.current.dateComponents([.day], from: subscribedDate, to: expiryDate).day ?? 0
         return duration
+    }
+
+    /// Returns the site plan expiration date formatted as "MMMM d". e.g: "August 11",
+    /// or nil if expired or we can't retrieve the expiration date
+    ///
+    func formattedExpirationDate(for plan: WPComSitePlan) -> String? {
+        guard daysLeft(for: plan) >= 0 else {
+            return nil
+        }
+        guard let planExpiryDate = plan.expiryDate else {
+            return nil
+        }
+        let dateFormatter = DateFormatter()
+        dateFormatter.setLocalizedDateFormatFromTemplate("MMMM d")
+        return dateFormatter.string(from: planExpiryDate)
     }
 
     /// Returns how many days site  plan has left.

@@ -11,7 +11,8 @@ public class TelemetryRemote: Remote {
     /// - Parameters:
     ///   - siteID: Site for which we'll fetch the API settings.
     ///   - versionString: App version to report.
-    ///   - installationDate: App installation date if available. If the date is unavailable (e.g. for earlier app versions), the date parameter is not included.
+    ///   - installationDate: App installation date if available. If the date is unavailable (e.g. for earlier app versions), the date
+    ///     parameter is not included.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func sendTelemetry(for siteID: Int64, versionString: String, installationDate: Date?, completion: @escaping (Result<Void, Error>) -> Void) {

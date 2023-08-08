@@ -29,7 +29,11 @@ public class TelemetryStore: Store {
 
         switch action {
         case .sendTelemetry(let siteID, let versionString, let telemetryLastReportedTime, let installationDate, let onCompletion):
-            sendTelemetry(siteID: siteID, versionString: versionString, telemetryLastReportedTime: telemetryLastReportedTime, installationDate: installationDate, onCompletion: onCompletion)
+            sendTelemetry(siteID: siteID,
+                          versionString: versionString,
+                          telemetryLastReportedTime: telemetryLastReportedTime,
+                          installationDate: installationDate,
+                          onCompletion: onCompletion)
         }
     }
 }

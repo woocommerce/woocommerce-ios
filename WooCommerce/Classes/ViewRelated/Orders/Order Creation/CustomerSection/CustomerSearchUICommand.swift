@@ -26,9 +26,9 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidSelectSearchResult: ((Customer) -> Void)
 
-    var onDidStartSyncingAllCustomers: (() -> Void)?
+    var onDidStartSyncingAllCustomersFirstPage: (() -> Void)?
 
-    var onDidFinishSyncingAllCustomers: (() -> Void)?
+    var onDidFinishSyncingAllCustomersFirstPage: (() -> Void)?
 
     var onAddCustomerDetailsManually: (() -> Void)?
 
@@ -56,8 +56,8 @@ final class CustomerSearchUICommand: SearchUICommand {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onAddCustomerDetailsManually: (() -> Void)? = nil,
          onDidSelectSearchResult: @escaping ((Customer) -> Void),
-         onDidStartSyncingAllCustomers: (() -> Void)? = nil,
-         onDidFinishSyncingAllCustomers: (() -> Void)? = nil) {
+         onDidStartSyncingAllCustomersFirstPage: (() -> Void)? = nil,
+         onDidFinishSyncingAllCustomersFirstPage: (() -> Void)? = nil) {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
@@ -66,8 +66,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.featureFlagService = featureFlagService
         self.onAddCustomerDetailsManually = onAddCustomerDetailsManually
         self.onDidSelectSearchResult = onDidSelectSearchResult
-        self.onDidStartSyncingAllCustomers = onDidStartSyncingAllCustomers
-        self.onDidFinishSyncingAllCustomers = onDidFinishSyncingAllCustomers
+        self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
+        self.onDidFinishSyncingAllCustomersFirstPage = onDidFinishSyncingAllCustomersFirstPage
     }
 
     var hideCancelButton: Bool {
@@ -164,7 +164,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         let action: CustomerAction
         if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
            keyword.isEmpty {
-            onDidStartSyncingAllCustomers?()
+            if pageNumber == 1 {
+                onDidStartSyncingAllCustomersFirstPage?()
+            }
+
             action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         } else {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
@@ -215,7 +218,9 @@ private extension CustomerSearchUICommand {
                 DDLogError("Customer Search Failure \(error)")
             }
 
-            self?.onDidFinishSyncingAllCustomers?()
+            if pageNumber == 1 {
+                self?.onDidFinishSyncingAllCustomersFirstPage?()
+            }
         }
     }
 

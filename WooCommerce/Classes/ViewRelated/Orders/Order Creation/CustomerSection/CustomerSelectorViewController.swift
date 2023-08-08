@@ -131,12 +131,12 @@ private extension CustomerSelectorViewController {
                                              showSearchFilters: showSearchFilters,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
-                                             onDidStartSyncingAllCustomers: {
+                                             onDidStartSyncingAllCustomersFirstPage: {
                                                  Task { @MainActor [weak self] in
                                                      self?.displayGhostContent()
                                                  }
                                              },
-                                             onDidFinishSyncingAllCustomers: {
+                                             onDidFinishSyncingAllCustomersFirstPage: {
                                                  Task { @MainActor [weak self] in
                                                      self?.removeGhostContent()
                                                  }

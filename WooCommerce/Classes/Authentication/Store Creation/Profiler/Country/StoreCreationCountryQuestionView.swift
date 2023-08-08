@@ -35,10 +35,8 @@ struct StoreCreationCountryQuestionView: View {
                     isShowingCountryList = true
                 }, label: {
                     HStack(spacing: 16) {
-                        if let flagEmoji = viewModel.currentCountryCode?.flagEmoji {
-                            Text(flagEmoji)
-                        }
-                        Text(viewModel.currentCountryCode?.readableCountry ?? Localization.selectCountry)
+                        viewModel.selectedCountryCode?.flagEmoji.map(Text.init)
+                        Text(viewModel.selectedCountryCode?.readableCountry ?? Localization.selectCountry)
                             .bodyStyle()
                         Spacer()
                         Image(systemName: "chevron.right")
@@ -62,6 +60,7 @@ struct StoreCreationCountryQuestionView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 32) {
+                    // Search bar
                     HStack {
                         Image(systemName: "magnifyingglass")
                             .secondaryBodyStyle()
@@ -74,18 +73,22 @@ struct StoreCreationCountryQuestionView: View {
                             .foregroundColor(.init(uiColor: .tertiarySystemFill))
                     )
                     if searchText.isNotEmpty {
+                        // Search mode
                         let results = viewModel.countryCodes.filter {
                             $0.readableCountry.contains(searchText)
                         }
                         if results.isNotEmpty {
+                            // Search results
                             StoreCreationCountrySectionView(header: Localization.searchResults.uppercased(),
                                                             countryCodes: results,
                                                             viewModel: viewModel)
                         } else {
+                            // No results
                             Text(Localization.noResults)
                                 .secondaryBodyStyle()
                         }
                     } else {
+                        // Country list in normal mode
                         if let currentCountryCode = viewModel.currentCountryCode {
                             StoreCreationCountrySectionView(header: Localization.currentLocationHeader,
                                                             countryCodes: [currentCountryCode],

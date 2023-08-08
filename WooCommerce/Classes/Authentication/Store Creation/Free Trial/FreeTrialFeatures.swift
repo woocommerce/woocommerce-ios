@@ -36,7 +36,10 @@ private extension FreeTrialFeatures {
         enum Title {
             static let startSellingQuickly = NSLocalizedString("Start selling quickly", comment: "Title of features on the Free Trial Summary screen")
             static let growYourBusiness = NSLocalizedString("Grow your business", comment: "Title of features on the Free Trial Summary screen")
-            static let hassleFreeStoreOwnership = NSLocalizedString("Hassel-free store ownership", comment: "Title of features on the Free Trial Summary screen")
+            static let hassleFreeStoreOwnership = NSLocalizedString(
+                "Hassel-free store ownership",
+                comment: "Title of features on the Free Trial Summary screen"
+            )
         }
         enum Feature {
             static let themes = NSLocalizedString("Premium themes", comment: "Premium Themes title feature on the Free Trial Summary Screen")

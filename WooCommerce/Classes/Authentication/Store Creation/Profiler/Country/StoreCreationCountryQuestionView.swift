@@ -47,7 +47,7 @@ struct StoreCreationCountryQuestionView: View {
 
                 Text(Localization.preselected)
                     .footnoteStyle()
-                    .renderedIf(viewModel.currentCountryCode != nil)
+                    .renderedIf(viewModel.currentCountryCode == viewModel.selectedCountryCode)
             }
         }
         .sheet(isPresented: $isShowingCountryList) {

@@ -30,11 +30,11 @@ struct StoreCreationCountryQuestionView: View {
 
     var body: some View {
         RequiredStoreCreationProfilerQuestionView(viewModel: viewModel) {
-            VStack(alignment: .leading, spacing: 16) {
+            VStack(alignment: .leading, spacing: Layout.mainScreenSpacing) {
                 Button(action: {
                     isShowingCountryList = true
                 }, label: {
-                    HStack(spacing: 16) {
+                    HStack(spacing: Layout.mainScreenFlagSpacing) {
                         viewModel.selectedCountryCode?.flagEmoji.map(Text.init)
                         Text(viewModel.selectedCountryCode?.readableCountry ?? Localization.selectCountry)
                             .bodyStyle()
@@ -59,7 +59,7 @@ struct StoreCreationCountryQuestionView: View {
     var countryList: some View {
         NavigationView {
             ScrollView {
-                VStack(spacing: 32) {
+                VStack(spacing: Layout.listScreenSpacing) {
                     // Search bar
                     HStack {
                         Image(systemName: "magnifyingglass")
@@ -67,9 +67,9 @@ struct StoreCreationCountryQuestionView: View {
                         TextField(Localization.search, text: $searchText)
                             .bodyStyle()
                     }
-                    .padding(8)
+                    .padding(Layout.searchBarPadding)
                     .background(
-                        RoundedRectangle(cornerRadius: 8)
+                        RoundedRectangle(cornerRadius: Layout.searchBarCornerRadius)
                             .foregroundColor(.init(uiColor: .tertiarySystemFill))
                     )
                     if searchText.isNotEmpty {
@@ -99,7 +99,7 @@ struct StoreCreationCountryQuestionView: View {
                                                         viewModel: viewModel)
                     }
                 }
-                .padding(16)
+                .padding(Layout.listScreenPadding)
             }
             .navigationTitle(Localization.selectCountry)
             .navigationBarTitleDisplayMode(.inline)
@@ -120,6 +120,14 @@ struct StoreCreationCountryQuestionView: View {
 }
 
 private extension StoreCreationCountryQuestionView {
+    enum Layout {
+        static let mainScreenSpacing: CGFloat = 12
+        static let mainScreenFlagSpacing: CGFloat = 16
+        static let listScreenSpacing: CGFloat = 32
+        static let listScreenPadding: CGFloat = 16
+        static let searchBarPadding: CGFloat = 8
+        static let searchBarCornerRadius: CGFloat = 8
+    }
     enum Localization {
         static let currentLocationHeader = NSLocalizedString(
             "CURRENT LOCATION",

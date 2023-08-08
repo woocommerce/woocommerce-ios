@@ -30,7 +30,7 @@ struct StoreCreationCountryQuestionView: View {
 
     var body: some View {
         RequiredStoreCreationProfilerQuestionView(viewModel: viewModel) {
-            VStack(alignment: .leading, spacing: 8) {
+            VStack(alignment: .leading, spacing: 16) {
                 Button(action: {
                     isShowingCountryList = true
                 }, label: {
@@ -62,19 +62,28 @@ struct StoreCreationCountryQuestionView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: 32) {
-                    TextField(text: $searchText, prompt: Text(Localization.search)) {
+                    HStack {
                         Image(systemName: "magnifyingglass")
+                            .secondaryBodyStyle()
+                        TextField(Localization.search, text: $searchText)
+                            .bodyStyle()
                     }
+                    .padding(8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 8)
+                            .foregroundColor(.init(uiColor: .tertiarySystemFill))
+                    )
                     if searchText.isNotEmpty {
                         let results = viewModel.countryCodes.filter {
                             $0.readableCountry.contains(searchText)
                         }
                         if results.isNotEmpty {
-                            StoreCreationCountrySectionView(header: Localization.searchResults.capitalized,
+                            StoreCreationCountrySectionView(header: Localization.searchResults.uppercased(),
                                                             countryCodes: results,
                                                             viewModel: viewModel)
                         } else {
                             Text(Localization.noResults)
+                                .secondaryBodyStyle()
                         }
                     } else {
                         if let currentCountryCode = viewModel.currentCountryCode {
@@ -96,6 +105,11 @@ struct StoreCreationCountryQuestionView: View {
                     Button(Localization.cancel) {
                         isShowingCountryList = false
                     }
+                }
+            }
+            .onChange(of: viewModel.selectedCountryCode) { newValue in
+                if newValue != nil {
+                    isShowingCountryList = false
                 }
             }
         }

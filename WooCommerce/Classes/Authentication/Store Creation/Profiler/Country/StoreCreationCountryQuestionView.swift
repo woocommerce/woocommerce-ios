@@ -115,6 +115,9 @@ struct StoreCreationCountryQuestionView: View {
                     isShowingCountryList = false
                 }
             }
+            .onDisappear {
+                searchText = ""
+            }
         }
     }
 }

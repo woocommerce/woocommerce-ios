@@ -97,7 +97,7 @@ private extension StoreCreationCoordinator {
         }), onSupport: { [weak self] in
             self?.showSupport(from: navigationController)
         })
-        navigationController.pushViewController(controller, animated: true)
+        navigationController.setViewControllers([controller], animated: true)
     }
 
     @MainActor

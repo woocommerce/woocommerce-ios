@@ -129,7 +129,17 @@ private extension CustomerSelectorViewController {
                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
                                              showSearchFilters: showSearchFilters,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
-                                             onDidSelectSearchResult: onCustomerTapped),
+                                             onDidSelectSearchResult: onCustomerTapped,
+                                             onDidStartSyncingAllCustomers: {
+                                                 Task { @MainActor [weak self] in
+                                                     self?.displayGhostContent()
+                                                 }
+                                             },
+                                             onDidFinishSyncingAllCustomers: {
+                                                 Task { @MainActor [weak self] in
+                                                     self?.removeGhostContent()
+                                                 }
+                                             }),
             cellType: TitleAndSubtitleAndStatusTableViewCell.self,
             cellSeparator: .none
         )

@@ -35,7 +35,6 @@ final class StoreCreationCoordinator: Coordinator {
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
-    private var profilerCoordinator: StoreCreationProfilerCoordinator?
     private var completedSite: Site?
 
     init(source: Source,
@@ -87,10 +86,7 @@ private extension StoreCreationCoordinator {
 
     func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let profilerCoordinator = StoreCreationProfilerCoordinator(
-            storeName: storeName,
-            navigationController: navigationController
-        ) { [weak self] profilerData in
+        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] _ in
             guard let self else { return }
             // TODO: update profiler data with remote
             if let site = self.completedSite {
@@ -98,9 +94,10 @@ private extension StoreCreationCoordinator {
             } else {
                 self.showInProgressView(from: navigationController)
             }
-        }
-        self.profilerCoordinator = profilerCoordinator
-        profilerCoordinator.start()
+        }), onSupport: { [weak self] in
+            self?.showSupport(from: navigationController)
+        })
+        navigationController.setViewControllers([controller], animated: true)
     }
 
     @MainActor

@@ -160,9 +160,12 @@ private extension IssueRefundViewController {
     }
 
     func configureHeaderView() {
-        selectAllButton.applyLinkButtonStyle()
-        selectAllButton.contentEdgeInsets = .zero
+        let configuration = UIButton.Configuration.plain()
+        selectAllButton.configuration = configuration
+        selectAllButton.configuration?.contentInsets = .zero
+
         selectAllButton.setTitle(Localization.selectAllTitle, for: .normal)
+        selectAllButton.applyLinkButtonStyle()
 
         itemsSelectedLabel.applySecondaryBodyStyle()
         configureHeaderStackView()

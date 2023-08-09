@@ -22,8 +22,6 @@ struct StoreCreationProgressView: View {
 
     var body: some View {
         ZStack {
-            topRightBackgroundImage
-
             GeometryReader { geometry in
                 VStack(alignment: .center, spacing: Layout.contentSpacing) {
                     VStack(spacing: Layout.contentSpacing) {
@@ -43,8 +41,6 @@ struct StoreCreationProgressView: View {
                 }
                 .padding(.horizontal, Layout.horizantalPadding)
             }
-
-            bottomLeftBackgroundImage
         }
         .onAppear() {
             viewModel.onAppear()
@@ -53,18 +49,6 @@ struct StoreCreationProgressView: View {
 }
 
 private extension StoreCreationProgressView {
-    var topRightBackgroundImage: some View {
-        VStack {
-            HStack {
-                Spacer()
-
-                Image(uiImage: .storeCreationProgressViewBackgroundGiftImage)
-            }
-
-            Spacer()
-        }
-        .edgesIgnoringSafeArea(.all)
-    }
 
     var title: some View {
         Text(viewModel.title)
@@ -81,19 +65,6 @@ private extension StoreCreationProgressView {
         // The subtitle is in an `.init` in order to support markdown.
         Text(.init(viewModel.subtitle))
             .bodyStyle()
-    }
-
-    var bottomLeftBackgroundImage: some View {
-        VStack {
-            Spacer()
-
-            HStack {
-                Image(uiImage: .storeCreationProgressViewBackgroundWoman)
-
-                Spacer()
-            }
-        }
-        .edgesIgnoringSafeArea(.all)
     }
 
     enum Layout {

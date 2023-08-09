@@ -19,7 +19,6 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
         accessibilityLabel = searchModel.accessibilityLabel
         setupTitleLabelText(with: searchModel)
         subtitleLabel.attributedText = subtitleAttributedString(from: searchModel)
-        subtitleLabel.applyStrongCaption1Style()
     }
 }
 
@@ -46,10 +45,10 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
 private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     func subtitleAttributedString(from viewModel: ViewModel) -> NSAttributedString {
         guard viewModel.subtitle.trimmingCharacters(in: .whitespaces).isNotEmpty else {
-            return NSMutableAttributedString(string: viewModel.placeholderSubtitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+            return NSMutableAttributedString(string: viewModel.placeholderSubtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.textSubtle])
         }
 
-        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
+        let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.text])
 
         if let underlinedText = viewModel.underlinedText {
             subtitle.underlineSubstring(underlinedText: underlinedText)

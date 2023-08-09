@@ -5,6 +5,10 @@ extension Storage.OrderItem {
     var attributesArray: [Storage.OrderItemAttribute] {
         return attributes?.toArray() ?? []
     }
+
+    private var addOnsArray: [Storage.OrderItemProductAddOn] {
+        return productAddOns?.toArray() ?? []
+    }
 }
 
 // MARK: - Storage.OrderItem: ReadOnlyConvertible
@@ -34,6 +38,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.OrderItem {
         let orderItemTaxes = taxes?.map { $0.toReadOnly() }.sorted(by: { $0.taxID < $1.taxID }) ?? [Yosemite.OrderItemTax]()
         let attributes = attributesArray.map { $0.toReadOnly() }
+        let addOns = addOnsArray.map { $0.toReadOnly() }
 
         return OrderItem(itemID: itemID,
                          name: name ?? "",
@@ -49,6 +54,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          total: total ?? "",
                          totalTax: totalTax ?? "",
                          attributes: attributes,
+                         addOns: addOns,
                          parent: parent?.int64Value)
     }
 }

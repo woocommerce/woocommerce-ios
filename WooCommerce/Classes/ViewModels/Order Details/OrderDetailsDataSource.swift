@@ -814,7 +814,7 @@ private extension OrderDetailsDataSource {
             return URL(string: encodedImageURLString)
         }()
 
-        let addOns = filterAddOns(of: aggregateItem)
+        let addOns = aggregateItem.addOns
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(aggregateItem, in: aggregateOrderItems)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
@@ -1703,7 +1703,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
-        case viewAddOns(addOns: [OrderItemAttribute])
+        case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
     }

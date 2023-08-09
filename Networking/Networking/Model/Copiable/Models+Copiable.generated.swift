@@ -713,6 +713,7 @@ extension Networking.OrderItem {
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
         parent: NullableCopiableProp<Int64> = .copy
     ) -> Networking.OrderItem {
         let itemID = itemID ?? self.itemID
@@ -729,6 +730,7 @@ extension Networking.OrderItem {
         let total = total ?? self.total
         let totalTax = totalTax ?? self.totalTax
         let attributes = attributes ?? self.attributes
+        let addOns = addOns ?? self.addOns
         let parent = parent ?? self.parent
 
         return Networking.OrderItem(
@@ -746,6 +748,7 @@ extension Networking.OrderItem {
             total: total,
             totalTax: totalTax,
             attributes: attributes,
+            addOns: addOns,
             parent: parent
         )
     }
@@ -764,6 +767,24 @@ extension Networking.OrderItemAttribute {
         return Networking.OrderItemAttribute(
             metaID: metaID,
             name: name,
+            value: value
+        )
+    }
+}
+
+extension Networking.OrderItemProductAddOn {
+    public func copy(
+        addOnID: CopiableProp<Int64> = .copy,
+        key: CopiableProp<String> = .copy,
+        value: CopiableProp<String> = .copy
+    ) -> Networking.OrderItemProductAddOn {
+        let addOnID = addOnID ?? self.addOnID
+        let key = key ?? self.key
+        let value = value ?? self.value
+
+        return Networking.OrderItemProductAddOn(
+            addOnID: addOnID,
+            key: key,
             value: value
         )
     }

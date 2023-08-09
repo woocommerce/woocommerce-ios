@@ -26,6 +26,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
 
     public let attributes: [OrderItemAttribute]
 
+    public let addOns: [OrderItemProductAddOn]
+
     /// Item ID of parent `OrderItem`, if any.
     ///
     /// An `OrderItem` can have a parent if, for example, it is a bundled item within a product bundle.
@@ -48,6 +50,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                 total: String,
                 totalTax: String,
                 attributes: [OrderItemAttribute],
+                addOns: [OrderItemProductAddOn],
                 parent: Int64?) {
         self.itemID = itemID
         self.name = name
@@ -63,6 +66,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         self.total = total
         self.totalTax = totalTax
         self.attributes = attributes
+        self.addOns = addOns
         self.parent = parent
     }
 
@@ -104,6 +108,9 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let allAttributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
         attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 
+        let productAddOns = container.failsafeDecodeIfPresent(lossyList: [OrderItemProductAddOnContainer].self,
+                                                              forKey: .attributes).first?.value ?? []
+
         // Product Bundle extension properties:
         // If the order item is part of a product bundle, `bundledBy` is the parent order item (product bundle).
         // If it's not a bundled item, the API returns an empty string for `bundledBy` and the value will be `nil`.
@@ -129,6 +136,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                   total: total,
                   totalTax: totalTax,
                   attributes: attributes,
+                  addOns: productAddOns,
                   parent: bundledBy ?? compositeParent)
     }
 
@@ -190,4 +198,8 @@ extension OrderItem: Comparable {
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
             (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
     }
+}
+
+private struct OrderItemProductAddOnContainer: Decodable {
+    let value: [OrderItemProductAddOn]
 }

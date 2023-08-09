@@ -30,6 +30,7 @@
 		021EAA5625493B3600AA8CCD /* OrderItemAttribute.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */; };
 		022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D122E2436300059692 /* stats_module_disabled_error.json */; };
 		022902D622E2436400059692 /* no_stats_permission_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D322E2436400059692 /* no_stats_permission_error.json */; };
+		022F728F2A7B854D00E351A9 /* OrderItemProductAddOn.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022F728E2A7B854D00E351A9 /* OrderItemProductAddOn.swift */; };
 		023930632918FF5400B2632F /* DomainRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023930622918FF5400B2632F /* DomainRemote.swift */; };
 		0239306B291A96F800B2632F /* DomainRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0239306A291A96F800B2632F /* DomainRemoteTests.swift */; };
 		0239306D291A973F00B2632F /* domain-suggestions.json in Resources */ = {isa = PBXBuildFile; fileRef = 0239306C291A973F00B2632F /* domain-suggestions.json */; };
@@ -987,6 +988,7 @@
 		021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemAttribute.swift; sourceTree = "<group>"; };
 		022902D122E2436300059692 /* stats_module_disabled_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_module_disabled_error.json; sourceTree = "<group>"; };
 		022902D322E2436400059692 /* no_stats_permission_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = no_stats_permission_error.json; sourceTree = "<group>"; };
+		022F728E2A7B854D00E351A9 /* OrderItemProductAddOn.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemProductAddOn.swift; sourceTree = "<group>"; };
 		023930622918FF5400B2632F /* DomainRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemote.swift; sourceTree = "<group>"; };
 		0239306A291A96F800B2632F /* DomainRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DomainRemoteTests.swift; sourceTree = "<group>"; };
 		0239306C291A973F00B2632F /* domain-suggestions.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "domain-suggestions.json"; sourceTree = "<group>"; };
@@ -2385,6 +2387,7 @@
 				CEE9187C29F7D636004B23FF /* OrderGiftCard.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
 				021EAA5525493B3600AA8CCD /* OrderItemAttribute.swift */,
+				022F728E2A7B854D00E351A9 /* OrderItemProductAddOn.swift */,
 				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
 				CC6A1FF4270E042200F6AF4A /* OrderMetaData.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
@@ -3834,6 +3837,7 @@
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
 				CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */,
 				457A574025D1817E000797AD /* ShippingLabelAddressVerification.swift in Sources */,
+				022F728F2A7B854D00E351A9 /* OrderItemProductAddOn.swift in Sources */,
 				74ABA1D1213F22CA00FFAD30 /* TopEarnersStatsRemote.swift in Sources */,
 				DEC51AF127699E7A009F3DF4 /* SystemStatus+Page.swift in Sources */,
 				EE99814E295AA7430074AE68 /* RequestAuthenticator.swift in Sources */,

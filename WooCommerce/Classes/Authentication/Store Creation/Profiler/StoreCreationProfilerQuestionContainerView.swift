@@ -86,7 +86,9 @@ struct StoreCreationProfilerQuestionContainerView: View {
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {
-                    viewModel.backtrackOrDismissProfiler()
+                    withAnimation {
+                        viewModel.backtrackOrDismissProfiler()
+                    }
                 }, label: {
                     if viewModel.currentQuestion.previousQuestion == nil {
                         Text(Localization.cancel)

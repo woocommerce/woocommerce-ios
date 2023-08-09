@@ -2,6 +2,7 @@
 
 14.9
 -----
+- [*] Only show Blaze banner on the My Store and Product List screens if the store has no existing orders. [https://github.com/woocommerce/woocommerce-ios/pull/10438]
 
 
 14.8

@@ -55,4 +55,11 @@ public enum CustomerAction: Action {
         siteID: Int64,
         customerID: Int64,
         onCompletion: (Result<Customer, Error>) -> Void)
+
+
+    /// Deletes all customers for the given site
+    ///
+    ///- `siteID`: The site for which customers should be delete.
+    ///- `onCompletion`: Invoked when the operation finishes.
+    case deleteAllCustomers(siteID: Int64, onCompletion: () -> Void)
 }

@@ -65,6 +65,8 @@ public final class CustomerStore: Store {
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
             synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
+            deleteAllCustomers(from: siteID, onCompletion: onCompletion)
         }
     }
 
@@ -150,6 +152,16 @@ public final class CustomerStore: Store {
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+    }
+
+    func deleteAllCustomers(from siteID: Int64, onCompletion: @escaping () -> Void) {
+        sharedDerivedStorage.perform { [weak self] in
+            self?.sharedDerivedStorage.deleteCustomers(siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: sharedDerivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 

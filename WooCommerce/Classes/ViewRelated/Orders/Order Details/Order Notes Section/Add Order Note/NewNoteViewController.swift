@@ -195,14 +195,6 @@ private extension NewNoteViewController {
             ServiceLocator.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }
-
-    private func refreshTextViewCell() {
-        guard let cell = tableView.firstSubview(ofType: TextViewTableViewCell.self) else {
-            return
-        }
-
-        setupWriteNoteCell(cell)
-    }
 }
 
 // MARK: - UITableViewDataSource Conformance

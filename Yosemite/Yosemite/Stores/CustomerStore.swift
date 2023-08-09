@@ -98,7 +98,7 @@ public final class CustomerStore: Store {
                     } else {
                         self.upsertCustomersAndSave(siteID: siteID,
                                              readOnlyCustomers: customers,
-                                             shouldDeleteExistingCustomers: true,
+                                             shouldDeleteExistingCustomers: pageNumber == 1,
                                              keyword: keyword,
                                              in: self.sharedDerivedStorage,
                                              onCompletion: {

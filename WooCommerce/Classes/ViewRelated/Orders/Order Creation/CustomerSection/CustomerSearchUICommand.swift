@@ -26,6 +26,10 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidSelectSearchResult: ((Customer) -> Void)
 
+    var onDidStartSyncingAllCustomersFirstPage: (() -> Void)?
+
+    var onDidFinishSyncingAllCustomersFirstPage: (() -> Void)?
+
     var onAddCustomerDetailsManually: (() -> Void)?
 
     private var filter: CustomerSearchFilter = .name
@@ -51,7 +55,9 @@ final class CustomerSearchUICommand: SearchUICommand {
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onAddCustomerDetailsManually: (() -> Void)? = nil,
-         onDidSelectSearchResult: @escaping ((Customer) -> Void)) {
+         onDidSelectSearchResult: @escaping ((Customer) -> Void),
+         onDidStartSyncingAllCustomersFirstPage: (() -> Void)? = nil,
+         onDidFinishSyncingAllCustomersFirstPage: (() -> Void)? = nil) {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
@@ -60,6 +66,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.featureFlagService = featureFlagService
         self.onAddCustomerDetailsManually = onAddCustomerDetailsManually
         self.onDidSelectSearchResult = onDidSelectSearchResult
+        self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
+        self.onDidFinishSyncingAllCustomersFirstPage = onDidFinishSyncingAllCustomersFirstPage
     }
 
     var hideCancelButton: Bool {
@@ -156,7 +164,16 @@ final class CustomerSearchUICommand: SearchUICommand {
         let action: CustomerAction
         if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
            keyword.isEmpty {
-            action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            if syncResultsWhenSearchQueryTurnsEmpty {
+                if pageNumber == 1 {
+                    onDidStartSyncingAllCustomersFirstPage?()
+                }
+
+                action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            } else {
+                // As we don't have to show anything if the search query is empty, let's reset the customers database
+                action = .deleteAllCustomers(siteID: siteID, onCompletion: { onCompletion?(true) })
+            }
         } else {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
@@ -198,12 +215,16 @@ private extension CustomerSearchUICommand {
     }
 
     func synchronizeAllLightCustomersDataAction(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+        CustomerAction.synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(_):
                 onCompletion?(result.isSuccess)
             case .failure(let error):
                 DDLogError("Customer Search Failure \(error)")
+            }
+
+            if pageNumber == 1 {
+                self?.onDidFinishSyncingAllCustomersFirstPage?()
             }
         }
     }

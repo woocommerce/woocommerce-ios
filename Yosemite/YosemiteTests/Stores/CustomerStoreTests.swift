@@ -234,4 +234,25 @@ final class CustomerStoreTests: XCTestCase {
             request.path == "customers/0"
         }))
     }
+
+    func test_deleteAllCustomers() {
+        let customer = Customer.fake().copy(siteID: dummySiteID)
+        storageManager.insertSampleCustomer(readOnlyCustomer: customer)
+        let customersBeforeDeleting = viewStorage.allObjects(ofType: Storage.Customer.self, matching: nil, sortedBy: nil)
+
+        XCTAssertEqual(customersBeforeDeleting.count, 1)
+
+        // When
+        () = waitFor { promise in
+            let action = CustomerAction.deleteAllCustomers(siteID: self.dummySiteID) {
+                promise(())
+            }
+
+            self.dispatcher.dispatch(action)
+        }
+
+        let customersAfterDeleting = viewStorage.allObjects(ofType: Storage.Customer.self, matching: nil, sortedBy: nil)
+
+        XCTAssertEqual(customersAfterDeleting.count, 0)
+    }
 }

@@ -90,7 +90,7 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     }
 
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
+        applyDefaultBackgroundStyle()
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
     }

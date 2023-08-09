@@ -7,7 +7,7 @@ import Yosemite
 /// Shows a paginated and searchable list of customers, that can be selected
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
-    private var searchViewController: UIViewController?
+    private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
     private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
@@ -25,7 +25,8 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
         return indicator
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
+    lazy var ghostTableViewController = GhostTableViewController(options:
+                                                                    GhostTableViewOptions(cellClass: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self))
 
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,
@@ -129,7 +130,20 @@ private extension CustomerSelectorViewController {
                                              loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
                                              showSearchFilters: showSearchFilters,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
-                                             onDidSelectSearchResult: onCustomerTapped),
+                                             onDidSelectSearchResult: onCustomerTapped,
+                                             onDidStartSyncingAllCustomersFirstPage: {
+                                                 Task { @MainActor [weak self] in
+                                                     guard let searchTableView = self?.searchViewController?.tableView else {
+                                                         return
+                                                     }
+                                                     self?.displayGhostContent(over: searchTableView)
+                                                 }
+                                             },
+                                             onDidFinishSyncingAllCustomersFirstPage: {
+                                                 Task { @MainActor [weak self] in
+                                                     self?.removeGhostContent()
+                                                 }
+                                             }),
             cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )

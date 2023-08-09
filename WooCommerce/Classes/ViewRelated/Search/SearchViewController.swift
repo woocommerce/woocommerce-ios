@@ -30,7 +30,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// TableView
     ///
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
 
 
     @IBOutlet private weak var bordersView: BordersView!

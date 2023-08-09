@@ -273,7 +273,7 @@ private extension OrderStore {
         }
 
         // If there are no locally stored orders, then check remote.
-        remote.loadAllOrders(for: siteID, pageNumber: 1, pageSize: 1) { result in
+        remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1) { result in
             switch result {
             case .success(let orders):
                 onCompletion(.success(orders.isEmpty == false))

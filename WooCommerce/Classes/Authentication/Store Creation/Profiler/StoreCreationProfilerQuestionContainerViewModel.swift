@@ -1,8 +1,8 @@
 import Foundation
 import Yosemite
 
-enum StoreCreationProfilerQuestion: Int {
-    case sellingStatus
+enum StoreCreationProfilerQuestion: Int, CaseIterable {
+    case sellingStatus = 1
     case category
     case country
     case challenges
@@ -10,18 +10,8 @@ enum StoreCreationProfilerQuestion: Int {
 
     /// Progress to display for the profiler flow
     var progress: Double {
-        switch self {
-        case .sellingStatus:
-            return 0.2
-        case .category:
-            return 0.4
-        case .country:
-            return 0.6
-        case .challenges:
-            return 0.8
-        case .features:
-            return 1
-        }
+        let incrementBy = 1.0 / Double(Self.allCases.count)
+        return Double(self.rawValue) * incrementBy
     }
 
     var previousQuestion: StoreCreationProfilerQuestion? {
@@ -99,7 +89,6 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     }
 
     private func handleCompletion() {
-        // TODO: update profiler data with challenges and features
         let profilerData: SiteProfilerData = {
             let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
             return .init(name: storeName,

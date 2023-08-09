@@ -22,7 +22,7 @@ final class StoreCreationProfilerQuestionContainerHostingController: UIHostingCo
 struct StoreCreationProfilerQuestionContainerView: View {
 
     @ObservedObject private var viewModel: StoreCreationProfilerQuestionContainerViewModel
-    private var onSupport: () -> Void
+    private let onSupport: () -> Void
 
     init(viewModel: StoreCreationProfilerQuestionContainerViewModel, onSupport: @escaping () -> Void) {
         self.viewModel = viewModel
@@ -37,31 +37,49 @@ struct StoreCreationProfilerQuestionContainerView: View {
             switch viewModel.currentQuestion {
             case .sellingStatus:
                 StoreCreationSellingStatusQuestionContainerView(onContinue: { answer in
-                    viewModel.saveSellingStatus(answer)
+                    withAnimation {
+                        viewModel.saveSellingStatus(answer)
+                    }
                 }, onSkip: {
-                    viewModel.saveSellingStatus(nil)
+                    withAnimation {
+                        viewModel.saveSellingStatus(nil)
+                    }
                 })
             case .category:
                 StoreCreationCategoryQuestionView(viewModel: .init(onContinue: { answer in
-                    viewModel.saveCategory(answer)
+                    withAnimation {
+                        viewModel.saveCategory(answer)
+                    }
                 }, onSkip: {
-                    viewModel.saveCategory(nil)
+                    withAnimation {
+                        viewModel.saveCategory(nil)
+                    }
                 }))
             case .country:
                 StoreCreationCountryQuestionView(viewModel: .init(onContinue: { answer in
-                    viewModel.saveCountry(answer)
+                    withAnimation {
+                        viewModel.saveCountry(answer)
+                    }
                 }, onSupport: onSupport))
             case .challenges:
                 StoreCreationChallengesQuestionView(viewModel: .init(onContinue: { answer in
-                    viewModel.saveChallenges(answer)
+                    withAnimation {
+                        viewModel.saveChallenges(answer)
+                    }
                 }, onSkip: {
-                    viewModel.saveChallenges([])
+                    withAnimation {
+                        viewModel.saveChallenges([])
+                    }
                 }))
             case .features:
                 StoreCreationFeaturesQuestionView(viewModel: .init(onContinue: { answer in
-                    viewModel.saveFeatures(answer)
+                    withAnimation {
+                        viewModel.saveFeatures(answer)
+                    }
                 }, onSkip: {
-                    viewModel.saveFeatures([])
+                    withAnimation {
+                        viewModel.saveFeatures([])
+                    }
                 }))
             }
         }

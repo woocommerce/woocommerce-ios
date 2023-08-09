@@ -10,7 +10,6 @@ struct StoreCreationCategoryAnswer: Equatable {
 }
 
 /// View model for `StoreCreationCategoryQuestionView`, an optional profiler question about store category in the store creation flow.
-@MainActor
 final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias Answer = StoreCreationCategoryAnswer
 
@@ -36,6 +35,7 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 }
 
 extension StoreCreationCategoryQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
+    @MainActor
     func continueButtonTapped() async {
         guard let selectedCategory else {
             return onSkip()

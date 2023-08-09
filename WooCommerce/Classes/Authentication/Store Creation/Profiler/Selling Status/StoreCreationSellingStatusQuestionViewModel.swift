@@ -3,7 +3,6 @@ import Foundation
 import struct Yosemite.SiteProfilerData
 
 /// View model for `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status in the store creation flow.
-@MainActor
 final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias SellingStatus = SiteProfilerData.SellingStatus
 
@@ -38,6 +37,7 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
 }
 
 extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
+    @MainActor
     func continueButtonTapped() async {
         guard let selectedStatus else {
             return onSkip()

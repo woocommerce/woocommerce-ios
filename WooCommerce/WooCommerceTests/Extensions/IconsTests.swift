@@ -248,14 +248,6 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.storeCreationPlanImage)
     }
 
-    func test_storeCreationProgressViewBackgroundGiftImage_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgressViewBackgroundGiftImage)
-    }
-
-    func test_storeCreationProgressViewBackgroundWoman_is_not_nil() {
-        XCTAssertNotNil(UIImage.storeCreationProgressViewBackgroundWoman)
-    }
-
     func testStoreImageIsNotNil() {
         XCTAssertNotNil(UIImage.storeImage)
     }

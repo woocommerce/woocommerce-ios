@@ -478,18 +478,6 @@ extension UIImage {
         UIImage(named: "store-creation-plan")!
     }
 
-    /// Store creation progress view background image - Gift
-    ///
-    static var storeCreationProgressViewBackgroundGiftImage: UIImage {
-        UIImage(named: "store-creation-progress-bg-gift")!
-    }
-
-    /// Store creation progress view background image - Woman
-    ///
-    static var storeCreationProgressViewBackgroundWoman: UIImage {
-        UIImage(named: "store-creation-progress-bg-woman")!
-    }
-
     /// Store Image
     ///
     static var storeImage: UIImage {

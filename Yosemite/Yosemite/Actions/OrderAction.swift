@@ -109,4 +109,9 @@ public enum OrderAction: Action {
     /// Returns a publisher that emits inserted orders on the view storage context.
     ///
     case observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void)
+
+    /// Checks if the store already has any orders.
+    /// Returns `false` if the store has no orders.
+    ///
+    case checkIfStoreHasOrders(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 }

@@ -22,7 +22,7 @@ final class StoreCreationProfilerQuestionContainerHostingController: UIHostingCo
 struct StoreCreationProfilerQuestionContainerView: View {
 
     @ObservedObject private var viewModel: StoreCreationProfilerQuestionContainerViewModel
-    private var onSupport: () -> Void
+    private let onSupport: () -> Void
 
     init(viewModel: StoreCreationProfilerQuestionContainerViewModel, onSupport: @escaping () -> Void) {
         self.viewModel = viewModel

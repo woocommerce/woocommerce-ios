@@ -263,7 +263,6 @@ private extension OrderStore {
     }
 
     /// Checks if the store already has any orders.
-    /// Returns `false` if the store has no orders.
     ///
     func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.

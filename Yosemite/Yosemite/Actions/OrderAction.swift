@@ -111,7 +111,6 @@ public enum OrderAction: Action {
     case observeInsertedOrders(siteID: Int64, completion: (AnyPublisher<[Order], Never>) -> Void)
 
     /// Checks if the store already has any orders.
-    /// Returns `false` if the store has no orders.
     ///
     case checkIfStoreHasOrders(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
 }

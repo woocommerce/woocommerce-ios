@@ -5,7 +5,7 @@ import Foundation
 final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias CountryCode = SiteAddress.CountryCode
 
-    let topHeader: String
+    let topHeader: String = Localization.header
 
     let title: String = Localization.title
 
@@ -27,11 +27,9 @@ final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestion
     private let onContinue: (CountryCode) -> Void
     private let onSupport: () -> Void
 
-    init(storeName: String,
-         currentLocale: Locale = .current,
+    init(currentLocale: Locale = .current,
          onContinue: @escaping (CountryCode) -> Void,
          onSupport: @escaping () -> Void) {
-        self.topHeader = storeName
         self.onContinue = onContinue
         self.onSupport = onSupport
 
@@ -82,12 +80,16 @@ extension StoreCreationCountryQuestionViewModel {
 
 private extension StoreCreationCountryQuestionViewModel {
     enum Localization {
+        static let header = NSLocalizedString(
+            "About your store",
+            comment: "Header of the store creation profiler question about the store country."
+        )
         static let title = NSLocalizedString(
-            "Confirm your location",
+            "Where is your business located?",
             comment: "Title of the store creation profiler question about the store country."
         )
         static let subtitle = NSLocalizedString(
-            "We’ll use this information to get a head start on setting up payments, shipping, and taxes.",
+            "We will use this information to set up payments, shipping and taxes.",
             comment: "Subtitle of the store creation profiler question about the store country."
         )
     }

@@ -13,7 +13,7 @@ struct StoreCreationCategoryAnswer: Equatable {
 final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias Answer = StoreCreationCategoryAnswer
 
-    let topHeader: String
+    let topHeader: String = Localization.header
 
     let title: String = Localization.title
 
@@ -25,10 +25,8 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
     private let onContinue: (Answer) -> Void
     private let onSkip: () -> Void
 
-    init(storeName: String,
-         onContinue: @escaping (Answer) -> Void,
+    init(onContinue: @escaping (Answer) -> Void,
          onSkip: @escaping () -> Void) {
-        self.topHeader = storeName
         self.onContinue = onContinue
         self.onSkip = onSkip
     }
@@ -57,8 +55,12 @@ extension StoreCreationCategoryQuestionViewModel {
 
 private extension StoreCreationCategoryQuestionViewModel {
     enum Localization {
+        static let header = NSLocalizedString(
+            "About your store",
+            comment: "Header of the store creation profiler question about the store category."
+        )
         static let title = NSLocalizedString(
-            "What’s your business about?",
+            "What do you plan to sell in your store?",
             comment: "Title of the store creation profiler question about the store category."
         )
         static let subtitle = NSLocalizedString(

@@ -48,8 +48,7 @@ struct StoreCreationCategoryQuestionView: View {
 
 struct StoreCreationCategoryQuestionView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationCategoryQuestionView(viewModel: .init(storeName: "Holiday store",
-                                                           onContinue: { _ in },
+        StoreCreationCategoryQuestionView(viewModel: .init(onContinue: { _ in },
                                                            onSkip: {}))
     }
 }

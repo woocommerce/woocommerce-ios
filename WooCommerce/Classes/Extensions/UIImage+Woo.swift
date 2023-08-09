@@ -490,6 +490,26 @@ extension UIImage {
         UIImage(named: "icon-store-details")!
     }
 
+    /// Store creation progress step 1
+    static var storeCreationProgress1: UIImage {
+        UIImage(named: "store-creation-progress-1")!
+    }
+
+    /// Store creation progress step 2
+    static var storeCreationProgress2: UIImage {
+        UIImage(named: "store-creation-progress-2")!
+    }
+
+    /// Store creation progress step 3
+    static var storeCreationProgress3: UIImage {
+        UIImage(named: "store-creation-progress-3")!
+    }
+
+    /// Store creation progress step 4
+    static var storeCreationProgress4: UIImage {
+        UIImage(named: "store-creation-progress-4")!
+    }
+
     /// Add product image
     ///
     static var addProductImage: UIImage {

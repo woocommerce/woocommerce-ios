@@ -20,6 +20,7 @@
 - [Internal] Shipment tracking is only enabled and synced when the order has non-virtual products.  [https://github.com/woocommerce/woocommerce-ios/pull/10288]
 - [Internal] New default property `was_ecommerce_trial` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10343]
 - [*] Photo -> Product: Reset details from previous image when new image is selected. [https://github.com/woocommerce/woocommerce-ios/pull/10297]
+- [**] You can now see your shipping zone list from Settings. [https://github.com/woocommerce/woocommerce-ios/pull/10258]
 - [*] Order list: Suggest testing orders for stores without any orders. [https://github.com/woocommerce/woocommerce-ios/pull/10346]
 - [*] Local notifications: Show free trial survey after 24h since subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10324, https://github.com/woocommerce/woocommerce-ios/pull/10328]
 - [*] Local notifications: Add a reminder after 3 days if answered "Still Exploring" in Free trial survey. [https://github.com/woocommerce/woocommerce-ios/pull/10331]

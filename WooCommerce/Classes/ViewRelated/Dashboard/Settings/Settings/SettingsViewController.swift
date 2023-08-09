@@ -7,6 +7,7 @@ import Yosemite
 import SwiftUI
 
 import KeychainAccess
+import WooCommerceShared
 import struct Networking.ApplicationPasswordEncoder
 
 protocol SettingsViewPresenter: AnyObject {
@@ -413,25 +414,24 @@ private extension SettingsViewController {
     }
 
     func shippingZonesWasPressed() {
-        // TODO: Bring back when we found a solution for iOS 15.
-//        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-//            return DDLogError("⛔️ Cannot find SiteID to present shipping zones")
-//        }
-//
-//        let tracksProvider = ReactNativeAnalyticsProvider()
-//        let viewController: WCReactNativeViewController = {
-//
-//            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
-//                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
-//                let password = ApplicationPasswordEncoder().encodedPassword() ?? ""
-//                return WCReactNativeViewController(analyticsProvider: tracksProvider, siteUrl: url, appPassword: password)
-//            } else {
-//                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-//                return WCReactNativeViewController(analyticsProvider: tracksProvider, blogID: "\(siteID)", apiToken: token)
-//            }
-//        }()
-//
-//        show(viewController, sender: self)
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return DDLogError("⛔️ Cannot find SiteID to present shipping zones")
+        }
+
+        let tracksProvider = ReactNativeAnalyticsProvider()
+        let viewController: WCReactNativeViewController = {
+
+            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
+                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
+                let password = ApplicationPasswordEncoder().encodedPassword() ?? ""
+                return WCReactNativeViewController(analyticsProvider: tracksProvider, siteUrl: url, appPassword: password)
+            } else {
+                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
+                return WCReactNativeViewController(analyticsProvider: tracksProvider, blogID: "\(siteID)", apiToken: token)
+            }
+        }()
+
+        show(viewController, sender: self)
     }
 
     func privacyWasPressed() {

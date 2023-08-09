@@ -89,7 +89,6 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     }
 
     private func handleCompletion() {
-        // TODO: update profiler data with challenges and features
         let profilerData: SiteProfilerData = {
             let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
             return .init(name: storeName,

@@ -50,7 +50,7 @@ private extension FreeTrialFeatures {
             static let email = NSLocalizedString("Automated customer emails", comment: "Email title feature on the Free Trial Summary Screen")
             static let hosting = NSLocalizedString("Best-in-class hosting", comment: "Hosting title feature on the Free Trial Summary Screen")
             static let backups = NSLocalizedString("Automated site backups", comment: "Site backup title feature on the Free Trial Summary Screen")
-            static let support = NSLocalizedString("24/7 support", comment: "24/7 support title feature on the Free Trial Summary Screen")
+            static let support = NSLocalizedString("24/7 priority support", comment: "24/7 support title feature on the Free Trial Summary Screen")
         }
     }
 }

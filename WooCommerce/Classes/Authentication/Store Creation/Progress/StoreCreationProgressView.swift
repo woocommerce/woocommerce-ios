@@ -25,13 +25,16 @@ struct StoreCreationProgressView: View {
             GeometryReader { geometry in
                 VStack(alignment: .center, spacing: Layout.contentSpacing) {
                     VStack(spacing: Layout.contentSpacing) {
+
                         Spacer()
+
+                        Image(uiImage: viewModel.image)
 
                         title
 
                         progressView
                     }
-                    // Make title and progress view occupy top half of the available space.
+                    // Make the content occupy top half of the available space.
                     // This makes progress view appear at the center when we change the texts.
                     .frame(height: geometry.size.height / 2)
 
@@ -39,7 +42,7 @@ struct StoreCreationProgressView: View {
 
                     Spacer()
                 }
-                .padding(.horizontal, Layout.horizantalPadding)
+                .padding(.horizontal, Layout.horizontalPadding)
             }
         }
         .onAppear() {
@@ -65,11 +68,12 @@ private extension StoreCreationProgressView {
         // The subtitle is in an `.init` in order to support markdown.
         Text(.init(viewModel.subtitle))
             .bodyStyle()
+            .multilineTextAlignment(.center)
     }
 
     enum Layout {
         static let contentSpacing: CGFloat = 24
-        static let horizantalPadding: CGFloat = 40
+        static let horizontalPadding: CGFloat = 40
 
         enum ProgressView {
             static let height: CGFloat = 8
@@ -80,9 +84,7 @@ private extension StoreCreationProgressView {
 struct StoreCreationProgressView_Previews: PreviewProvider {
     static var previews: some View {
         StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(estimatedTimePerProgress: 1))
-        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .buildingFoundations, estimatedTimePerProgress: 1))
-        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .organizingStockRoom, estimatedTimePerProgress: 1))
-        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .applyingFinishingTouches, estimatedTimePerProgress: 1))
+        StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .extendingStoresCapabilities, estimatedTimePerProgress: 1))
         StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .turningOnTheLights, estimatedTimePerProgress: 1))
         StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .openingTheDoors, estimatedTimePerProgress: 1))
         StoreCreationProgressView(viewModel: StoreCreationProgressViewModel(initialProgress: .finished, estimatedTimePerProgress: 1))

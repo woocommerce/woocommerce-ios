@@ -35,7 +35,9 @@ final class StoreCreationCoordinator: Coordinator {
 
     private weak var storeCreationProgressViewModel: StoreCreationProgressViewModel?
     private var statusChecker: StoreCreationStatusChecker?
-    private var completedSite: Site?
+
+    /// Created store with updated information after Jetpack sync completes.
+    private var createdStore: Site?
 
     init(source: Source,
          navigationController: UINavigationController,
@@ -77,7 +79,7 @@ private extension StoreCreationCoordinator {
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
             navigationController.isNavigationBarHidden = true
-            // TODO: update store name if needed
+            // TODO-10374: update store name if needed
             showFreeTrialSummaryView(from: navigationController, storeName: "", profilerData: nil)
         } else {
             showStoreNameInput(from: navigationController)
@@ -89,7 +91,7 @@ private extension StoreCreationCoordinator {
         let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] _ in
             guard let self else { return }
             // TODO: update profiler data with remote
-            if let site = self.completedSite {
+            if let site = self.createdStore {
                 self.continueWithSelectedSite(site: site)
             } else {
                 self.showInProgressView(from: navigationController)
@@ -450,7 +452,7 @@ private extension StoreCreationCoordinator {
             analytics.track(event: .StoreCreation.siteCreationPropertiesOutOfSync())
         }
 
-        completedSite = site
+        createdStore = site
         /// Show the dashboard immediately if the progress view is displayed
         /// or do nothing otherwise
         if let storeCreationProgressViewModel {

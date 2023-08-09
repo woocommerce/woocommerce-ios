@@ -1,9 +1,9 @@
 import Foundation
-import protocol WooCommerceShared.WCRNAnalyticsProvider
+// import protocol WooCommerceShared.WCRNAnalyticsProvider
 
 /// Class that provides an interface to `ReactNative` to log track events using the main app `analyticsProvider`.
 ///
-final class ReactNativeAnalyticsProvider: WCRNAnalyticsProvider {
+final class ReactNativeAnalyticsProvider /*: WCRNAnalyticsProvider*/ {
 
     /// Sends an event using `ServiceLocator.analyticsProvider`.
     ///

@@ -230,6 +230,10 @@ where Cell.SearchModel == Command.CellViewModel {
         return true
     }
 
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+    }
+
     // MARK: - Actions
     //
 

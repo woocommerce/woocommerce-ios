@@ -411,9 +411,7 @@ extension OrderDetailsViewModel {
         case .addOrderNote:
             ServiceLocator.analytics.track(.orderDetailAddNoteButtonTapped)
 
-            let newNoteViewController = NewNoteViewController()
-            newNoteViewController.viewModel = self
-
+            let newNoteViewController = NewNoteViewController(order: order, orderNotes: orderNotes)
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .trackingAdd:

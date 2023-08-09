@@ -6,9 +6,20 @@ class NewNoteViewController: UIViewController {
 
     // MARK: - Properties
 
-    @IBOutlet var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
 
-    var viewModel: OrderDetailsViewModel!
+    var order: Order
+    var orderNotes: [OrderNote]
+
+    init(order: Order, orderNotes: [OrderNote]) {
+        self.order = order
+        self.orderNotes = orderNotes
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private var sections = [Section]()
 
@@ -52,31 +63,31 @@ class NewNoteViewController: UIViewController {
         configureForCommittingNote()
 
         ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
-        ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                       "status": viewModel.order.status.rawValue,
-                                                                       "type": isCustomerNote ? "customer" : "private"])
+        ServiceLocator.analytics.track(.orderNoteAdd,
+                                       withProperties: ["parent_id": order.orderID,
+                                                        "status": order.status.rawValue,
+                                                        "type": isCustomerNote ? "customer" : "private"])
 
-        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
-                                                  orderID: viewModel.order.orderID,
+        let action = OrderNoteAction.addOrderNote(siteID: order.siteID,
+                                                  orderID: order.orderID,
                                                   isCustomerNote: isCustomerNote,
                                                   note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 ServiceLocator.analytics.track(.orderNoteAddFailed, withError: error)
-
+                
                 self?.displayErrorNotice()
                 self?.configureForEditingNote()
                 return
             }
-
-                                                    if let orderNote = orderNote {
-                                                                  self?.viewModel.orderNotes.insert(orderNote, at: 0)
-                                                              }
-
+            
+            if let orderNote = orderNote {                                                      self?.orderNotes.insert(orderNote, at: 0)
+            }
+            
             ServiceLocator.analytics.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
-
+        
         ServiceLocator.stores.dispatch(action)
     }
 }
@@ -106,7 +117,7 @@ private extension NewNoteViewController {
         let writeNoteSectionTitle = NSLocalizedString("WRITE NOTE", comment: "Add a note screen - Write Note section title")
         let writeNoteSection = Section(title: writeNoteSectionTitle, rows: [.writeNote])
         let emailCustomerSection: Section? = {
-            if viewModel.order.billingAddress?.hasEmailAddress == true {
+            if order.billingAddress?.hasEmailAddress == true {
                 return Section(title: nil, rows: [.emailCustomer])
             }
             return nil
@@ -240,7 +251,7 @@ private extension NewNoteViewController {
                 + "It reads: Unable to add note to order #{order number}. "
                 + "Parameters: %1$d - order number"
         )
-        let title = String.localizedStringWithFormat(titleFormat, viewModel.order.orderID)
+        let title = String.localizedStringWithFormat(titleFormat, order.orderID)
 
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -262,7 +273,7 @@ private extension NewNoteViewController {
 
     func configureTitle() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number")
-        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
+        title = String.localizedStringWithFormat(titleFormat, order.number)
     }
 
     func configureDismissButton() {

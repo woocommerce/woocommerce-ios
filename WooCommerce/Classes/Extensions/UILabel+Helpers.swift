@@ -93,12 +93,6 @@ extension UILabel {
         textColor = .textSubtle
     }
 
-    func applyStrongCaption1Style() {
-        adjustsFontForContentSizeCategory = true
-        font = .caption1
-        textColor = .text
-    }
-
     func applyCalloutStyle() {
         adjustsFontForContentSizeCategory = true
         font = .callout

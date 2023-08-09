@@ -78,6 +78,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
+    var makeSearchBarFirstResponderOnStart: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+    }
+
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
         featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
     }
@@ -150,10 +154,11 @@ final class CustomerSearchUICommand: SearchUICommand {
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
             placeholderTitle: Localization.titleCellPlaceholder,
+            placeholderSubtitle: Localization.subtitleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
             detail: model.username ?? "",
-            underlinedText: searchTerm
+            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
         )
     }
 
@@ -282,6 +287,7 @@ private extension CustomerSearchUICommand {
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
         static let titleCellPlaceholder = NSLocalizedString("No name", comment: "Placeholder when there's no customer name in the list")
+        static let subtitleCellPlaceholder = NSLocalizedString("No email address", comment: "Placeholder when there's no customer email in the list")
         static let emptyDefaultStateMessage = NSLocalizedString("Search for an existing customer or",
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",

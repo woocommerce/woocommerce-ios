@@ -33,6 +33,8 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     ///
     var onLoadTrigger: PassthroughSubject<Void, Never> { get }
 
+    /// Define if the view should show a search button to look for the addresses.
+    ///
     var showSearchButton: Bool { get }
 
     /// Define if the view should show placeholders instead of the real elements.
@@ -252,7 +254,6 @@ open class AddressFormViewModel: ObservableObject {
     /// Analytics center.
     ///
     let analytics: Analytics
-
 
     private let featureFlagService: FeatureFlagService
 

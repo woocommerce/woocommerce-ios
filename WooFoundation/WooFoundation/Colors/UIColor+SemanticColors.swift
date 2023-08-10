@@ -299,11 +299,11 @@ public extension UIColor {
         return .systemColor(.systemGray3)
     }
 
-    /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
+    /// Ghost cell animation end color. `Gray-6` (Light Mode) and `Gray-4` (Dark Mode)
     ///
     static var ghostCellAnimationEndColor: UIColor {
         return UIColor(light: .systemColor(.systemGray6),
-                       dark: .systemColor(.systemGray5))
+                       dark: .systemColor(.systemGray4))
     }
 
     /// Rating star filled color.

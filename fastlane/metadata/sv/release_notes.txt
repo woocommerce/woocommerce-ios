@@ -1,1 +1,3 @@
-Det har blivit mycket enklare att hantera rabattkoder. Du kan nu välja flera rabattkoder när du skapar en beställning. Det är också möjligt att lägga till rabattkoder till produkter när du skapar en beställning. Ha uppdateringar på för att fortsätta ta del av WooCommerces kontinuerliga förbättringar och senaste funktioner.
+Spännande nyheter för butiksägare! Först och främst kan du nu enkelt uppgradera alla tillgängliga paket. Dessutom kan du testa hur det är att hantera beställningar genom att skapa testbeställningar direkt i appen!
+
+Och det är inte allt – vår senaste uppdatering inkluderar även förbättringar av vårt produktbeskrivnings-AI. Testa det nu om du inte redan gjort det!

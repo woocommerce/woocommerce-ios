@@ -32,15 +32,55 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .notLoaded)
     }
 
-    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site() {
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_without_ecommerce_trial() {
         // Given
-        session.defaultSite = .fake().copy(siteID: sampleSiteID)
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: false)
 
         // When
         let synchronizer = StorePlanSynchronizer(stores: stores)
 
         // Then
         XCTAssertEqual(synchronizer.planState, .unavailable)
+    }
+
+    func test_synchronizer_fetches_plan_immediately_for_non_wpcom_site_that_once_was_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
+    }
+
+    func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_ecommerce_trial() {
+        // Given
+        session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
+        let samplePlan = WPComSitePlan(hasDomainCredit: false)
+        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
+            switch action {
+            case .loadSiteCurrentPlan(_, let completion):
+                completion(.success(samplePlan))
+            default:
+                break
+            }
+        }
+
+        // When
+        let synchronizer = StorePlanSynchronizer(stores: stores)
+
+        // Then
+        XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
     func test_synchronizer_fetches_plan_immediately_if_there_is_a_wpcom_site() {
@@ -256,7 +296,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
 
         // Then
         waitUntil(timeout: 5) {
-            /// 4 notifications include:
+            /// 5 notifications include:
             /// - 1 day before expiration date
             /// - 1 day after expiration date
             /// - 6 hrs after trial subscription

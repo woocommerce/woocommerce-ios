@@ -218,6 +218,7 @@ extension Networking.Customer {
         let siteID = siteID ?? self.siteID
         let customerID = customerID ?? self.customerID
         let email = email ?? self.email
+        let username = username ?? self.username
         let firstName = firstName ?? self.firstName
         let lastName = lastName ?? self.lastName
         let billing = billing ?? self.billing
@@ -227,6 +228,7 @@ extension Networking.Customer {
             siteID: siteID,
             customerID: customerID,
             email: email,
+            username: username,
             firstName: firstName,
             lastName: lastName,
             billing: billing,
@@ -2418,12 +2420,14 @@ extension Networking.WCAnalyticsCustomer {
         let userID = userID ?? self.userID
         let name = name ?? self.name
         let email = email ?? self.email
+        let username = username ?? self.username
 
         return Networking.WCAnalyticsCustomer(
             siteID: siteID,
             userID: userID,
             name: name,
-            email: email
+            email: email,
+            username: username
         )
     }
 }

@@ -306,7 +306,8 @@ extension DashboardViewModel {
     private func isBlazeBannerVisible() async -> Bool {
         async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
         async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
-        guard (await isSiteEligible, await storeHasPublishedProducts) == (true, true) else {
+        async let storeHasAnyOrders = (try? checkIfStoreHasOrders(siteID: siteID)) ?? false
+        guard await(isSiteEligible, storeHasPublishedProducts, storeHasAnyOrders) == (true, true, false) else {
             return false
         }
         return !userDefaults.hasDismissedBlazeBanner(for: siteID)
@@ -321,6 +322,21 @@ extension DashboardViewModel {
                     continuation.resume(returning: hasProducts)
                 case .failure(let error):
                     DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    @MainActor
+    private func checkIfStoreHasOrders(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error fetching order to show the Blaze banner: \(error)")
                     continuation.resume(throwing: error)
                 }
             }))

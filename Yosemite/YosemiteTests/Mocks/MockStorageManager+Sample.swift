@@ -159,6 +159,16 @@ extension MockStorageManager {
         return newCoupon
     }
 
+    /// Inserts a new (Sample) Customer into the specified context.
+    ///
+    @discardableResult
+    func insertSampleCustomer(readOnlyCustomer: Customer) -> StorageCustomer {
+        let newCustomer = viewStorage.insertNewObject(ofType: StorageCustomer.self)
+        newCustomer.update(with: readOnlyCustomer)
+
+        return newCustomer
+    }
+
     /// Inserts a new (Sample) site into the specified context.
     ///
     @discardableResult

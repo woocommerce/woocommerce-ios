@@ -374,6 +374,12 @@ extension UIImage {
         UIImage(named: "woo-empty-orders")!
     }
 
+    /// An image showing a magnifying glass. This is used to show a default image when searching for customers.
+    ///
+    static var customerSearchImage: UIImage {
+        UIImage(named: "woo-customer-search")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {
@@ -472,18 +478,6 @@ extension UIImage {
         UIImage(named: "store-creation-plan")!
     }
 
-    /// Store creation progress view background image - Gift
-    ///
-    static var storeCreationProgressViewBackgroundGiftImage: UIImage {
-        UIImage(named: "store-creation-progress-bg-gift")!
-    }
-
-    /// Store creation progress view background image - Woman
-    ///
-    static var storeCreationProgressViewBackgroundWoman: UIImage {
-        UIImage(named: "store-creation-progress-bg-woman")!
-    }
-
     /// Store Image
     ///
     static var storeImage: UIImage {
@@ -494,6 +488,26 @@ extension UIImage {
     ///
     static var storeDetailsImage: UIImage {
         UIImage(named: "icon-store-details")!
+    }
+
+    /// Store creation progress step 1
+    static var storeCreationProgress1: UIImage {
+        UIImage(named: "store-creation-progress-1")!
+    }
+
+    /// Store creation progress step 2
+    static var storeCreationProgress2: UIImage {
+        UIImage(named: "store-creation-progress-2")!
+    }
+
+    /// Store creation progress step 3
+    static var storeCreationProgress3: UIImage {
+        UIImage(named: "store-creation-progress-3")!
+    }
+
+    /// Store creation progress step 4
+    static var storeCreationProgress4: UIImage {
+        UIImage(named: "store-creation-progress-4")!
     }
 
     /// Add product image

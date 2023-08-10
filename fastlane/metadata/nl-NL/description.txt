@@ -19,4 +19,8 @@ WooCommerce is 's werelds meest aanpasbare opensource eCommerce-platform. Of je 
 
 Vereisten: WooCommerce v3.5+.
 
+Bekijk de servicevoorwaarden op https://wordpress.com/tos/
+
+Bekijk het privacybeleid op https://automattic.com/privacy/
+
 Bekijk de privacyverklaring voor gebruikers in Californië op https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

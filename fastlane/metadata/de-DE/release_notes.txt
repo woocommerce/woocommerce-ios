@@ -1,1 +1,3 @@
-Das Verwalten von Gutscheinen wird nun kinderleicht. Du kannst jetzt mehrere Gutscheine auswählen, wenn du eine Bestellung erstellst. Es ist auch möglich, Rabatte zu Produkten hinzuzufügen, wenn du eine Bestellung erstellst. Erhalte weiterhin Updates von uns, um von den kontinuierlichen Verbesserungen und den neuesten Funktionen von WooCommerce zu profitieren!
+Aufregende Neuigkeiten für neue Shop-Besitzer! Erstens: Du kannst jetzt ganz einfach ein Upgrade auf einen beliebigen der verfügbaren Tarife durchführen. Zweitens: Durch das Erstellen von Testbestellungen in der App sammelst du praktische Erfahrung im Verwalten von Bestellungen!
+
+Und das ist noch nicht alles: Im Rahmen unseres neuesten Updates haben wir auch die KI für Produktbeschreibungen verbessert. Teste sie doch mal, sofern du es nicht schon getan hast!

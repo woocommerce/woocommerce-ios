@@ -1,4 +1,4 @@
-Verwalte dein Geschäft von unterwegs aus – mit der WooCommerce Mobile App. Füge Produkte hinzu, erstelle Bestellungen, empfange schnelle Zahlungen und behalte deine neuen Verkäufe und wichtigsten Statistiken in Echtzeit im Blick.
+Verwalte dein Geschäft von unterwegs aus – mit der WooCommerce-Mobil-App. Füge Produkte hinzu, erstelle Bestellungen, empfange schnelle Zahlungen und behalte deine neuen Verkäufe und wichtigsten Statistiken in Echtzeit im Blick.
 
 Füge Produkte hinzu und bearbeite sie mit nur einer Berührung
 Schon in wenigen Sekunden bist du startklar! Erstelle, gruppiere und veröffentliche Produkte direkt über dein iPhone oder iPad. Halte deine Geistesblitze sofort fest – wandle deine Ideen augenblicklich in Produkte um oder speichere sie als Entwürfe für später.
@@ -15,8 +15,12 @@ Jetzt wo du aktiv Verkäufe tätigst, verpasse nie wieder eine Bestellung oder B
 Verfolge Verkäufe und Bestseller-Produkte nach
 Erfahre auf einen Blick, welche Produkte besonders erfolgreich sind. Kontrolliere deine Gesamteinnahmen, die Anzahl der Bestellungen und die Besucherdaten pro Woche, Monat und Jahr. Wissen = Macht.
 
-WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Geschäft eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden designst: Mit WooCommerce bietet dein Shop eine attraktive Mischung aus Inhalten und Commerce.
+WooCommerce ist die weltweit anpassbarste Open-Source E-Commerce-Plattform. Ganz gleich, ob du ein Unternehmen eröffnest, einen Onlineauftritt für ein bereits bestehendes Geschäft aufbaust oder Websites für Kunden entwickelst: WooCommerce bringt Inhalte und Gewerbe optimal zusammen und sorgt für einen leistungsstarken Shop.
 
 Anforderungen: WooCommerce Version 3.5 und höher.
+
+Sieh dir die Geschäftsbedingungen hier an: https://wordpress.com/tos/
+
+Sieh dir die Datenschutzerklärung hier an: https://automattic.com/privacy/
 
 Den Datenschutzhinweis für Benutzer in Kalifornien findest du unter https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

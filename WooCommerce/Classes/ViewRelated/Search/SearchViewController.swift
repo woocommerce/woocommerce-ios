@@ -13,6 +13,10 @@ final class SearchViewController<Cell: UITableViewCell & SearchResultCell, Comma
     UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate
 where Cell.SearchModel == Command.CellViewModel {
 
+    @IBOutlet weak var searchBarSafeAreaTrailingSpace: NSLayoutConstraint!
+
+    @IBOutlet weak var searchBarButtonTrailingSpace: NSLayoutConstraint!
+
     /// Dismiss Action
     ///
     @IBOutlet private var cancelButton: UIButton!
@@ -26,7 +30,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// TableView
     ///
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
 
 
     @IBOutlet private weak var bordersView: BordersView!
@@ -140,7 +144,9 @@ where Cell.SearchModel == Command.CellViewModel {
         configureStarterViewController()
         configureSearchResync()
 
-        startListeningToNotifications()
+        if searchUICommand.adjustTableViewBottomInsetWhenKeyboardIsShown {
+            startListeningToKeyboardNotifications()
+        }
 
         transitionToResultsUpdatedState()
         configureSearchFunctionality()
@@ -149,8 +155,13 @@ where Cell.SearchModel == Command.CellViewModel {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        navigationController?.setNavigationBarHidden(true, animated: true)
-        searchBar.becomeFirstResponder()
+        if searchUICommand.hideNavigationBar {
+            navigationController?.setNavigationBarHidden(true, animated: true)
+        }
+
+        if searchUICommand.makeSearchBarFirstResponderOnStart {
+            searchBar.becomeFirstResponder()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -219,6 +230,10 @@ where Cell.SearchModel == Command.CellViewModel {
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 
     // MARK: - Actions
@@ -291,8 +306,20 @@ private extension SearchViewController {
     /// Setup: Cancel Button
     ///
     func configureCancelButton() {
-        cancelButton.applyModalCancelButtonStyle()
-        cancelButton.accessibilityIdentifier = searchUICommand.cancelButtonAccessibilityIdentifier
+        if searchUICommand.hideCancelButton {
+            hideCancelButton()
+        } else {
+            cancelButton.applyModalCancelButtonStyle()
+            cancelButton.accessibilityIdentifier = searchUICommand.cancelButtonAccessibilityIdentifier
+        }
+    }
+
+    func hideCancelButton() {
+        cancelButton.isHidden = true
+
+        searchBarSafeAreaTrailingSpace.priority = UILayoutPriority.defaultHigh
+        searchBarButtonTrailingSpace.priority = UILayoutPriority.defaultLow
+
     }
 
     func configureHeaderView() {
@@ -372,7 +399,7 @@ private extension SearchViewController {
 
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    func startListeningToKeyboardNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 
@@ -584,7 +611,8 @@ private extension SearchViewController {
     /// See `State` for the rules.
     ///
     func transitionToSyncingState() {
-        state = searchQuery.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
+        let notSyncingAnymore = searchQuery.isEmpty && !searchUICommand.syncResultsWhenSearchQueryTurnsEmpty
+        state = notSyncingAnymore ? stateIfSearchKeywordIsEmpty : .syncing
     }
 
     /// Transition to the appropriate `State` after search results were received.

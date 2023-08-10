@@ -311,7 +311,7 @@ final class ProductListViewModelTests: XCTestCase {
 
     // MARK: - Blaze banner
     // swiftlint:disable:next line_length
-    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_site_has_published_products() async throws {
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_true_if_site_is_eligible_for_blaze_and_banner_is_not_dismissed_yet_and_site_has_published_products_and_no_orders() async throws {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let uuid = UUID().uuidString
@@ -328,6 +328,14 @@ final class ProductListViewModelTests: XCTestCase {
             switch action {
             case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(false))
             default:
                 break
             }
@@ -355,6 +363,14 @@ final class ProductListViewModelTests: XCTestCase {
             switch action {
             case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(false))
             default:
                 break
             }
@@ -387,6 +403,14 @@ final class ProductListViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
 
         //  Then
@@ -414,6 +438,49 @@ final class ProductListViewModelTests: XCTestCase {
                 break
             }
         }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(false))
+            default:
+                break
+            }
+        }
+        await viewModel.updateBlazeBannerVisibility()
+
+        //  Then
+        XCTAssertFalse(viewModel.shouldShowBlazeBanner)
+    }
+
+    func test_updateBlazeBannerVisibility_updates_shouldShowBlazeBanner_to_false_if_store_has_existing_orders() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = ProductListViewModel(siteID: sampleSiteID,
+                                             stores: stores,
+                                             userDefaults: userDefaults,
+                                             blazeEligibilityChecker: checker)
+        XCTAssertFalse(viewModel.shouldShowBlazeBanner)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
         await viewModel.updateBlazeBannerVisibility()
 
         //  Then
@@ -434,6 +501,14 @@ final class ProductListViewModelTests: XCTestCase {
             switch action {
             case .checkIfStoreHasProducts(_, _, let onCompletion):
                 onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case .checkIfStoreHasOrders(_, let onCompletion):
+                onCompletion(.success(false))
             default:
                 break
             }

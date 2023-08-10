@@ -35,6 +35,13 @@ final class EditableOrderViewModel: ObservableObject {
         }
     }
 
+    /// Encapsulates the type of screen that should be shown when navigating to Customer Details
+    ///
+    enum CustomerNavigationScreen {
+        case form
+        case selector
+    }
+
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
     let flow: Flow
@@ -65,6 +72,21 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var shouldShowCancelButton: Bool {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
+    }
+
+    /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
+    ///
+    var customerNavigationScreen: CustomerNavigationScreen {
+        let shouldShowSelector = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
+        // If there are no addresses added
+        orderSynchronizer.order.billingAddress == nil &&
+        orderSynchronizer.order.shippingAddress == nil
+
+        return shouldShowSelector ? .selector : .form
+    }
+
+    var shouldShowSearchButtonInOrderAddressForm: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
     /// Indicates whether adding a product to the order via SKU scanning is enabled
@@ -507,10 +529,17 @@ final class EditableOrderViewModel: ObservableObject {
                                                                addressData: .init(billingAddress: orderSynchronizer.order.billingAddress,
                                                                                   shippingAddress: orderSynchronizer.order.shippingAddress),
                                                                onAddressUpdate: { [weak self] updatedAddressData in
-            let input = Self.createAddressesInput(from: updatedAddressData)
+            let input = Self.createAddressesInputIfPossible(billingAddress: updatedAddressData.billingAddress,
+                                                            shippingAddress: updatedAddressData.shippingAddress)
             self?.orderSynchronizer.setAddresses.send(input)
             self?.trackCustomerDetailsAdded()
         })
+    }
+
+    func addCustomerAddressToOrder(customer: Customer) {
+        let input = Self.createAddressesInputIfPossible(billingAddress: customer.billing, shippingAddress: customer.shipping)
+        orderSynchronizer.setAddresses.send(input)
+        resetAddressForm()
     }
 
     /// Updates the order creation draft with the current set customer note.
@@ -1179,13 +1208,14 @@ private extension EditableOrderViewModel {
                                                                         errorDescription: error.localizedDescription))
     }
 
-    /// Creates an `OrderSyncAddressesInput` type from a `NewOrderAddressData` type.
-    /// Expects `billing` and `shipping` addresses to exists together,
+    /// Creates an `OrderSyncAddressesInput` type if the given data exists, otherwise returns nil
     ///
-    static func createAddressesInput(from data: CreateOrderAddressFormViewModel.NewOrderAddressData) -> OrderSyncAddressesInput? {
-        guard let billingAddress = data.billingAddress, let shippingAddress = data.shippingAddress else {
+    static func createAddressesInputIfPossible(billingAddress: Address?, shippingAddress: Address?)  -> OrderSyncAddressesInput? {
+        guard let billingAddress = billingAddress,
+                let shippingAddress = shippingAddress else {
             return nil
         }
+
         return OrderSyncAddressesInput(billing: billingAddress, shipping: shippingAddress)
     }
 

@@ -1,7 +1,7 @@
 Gérez votre entreprise où que vous soyez avec l’application mobile WooCommerce. Ajoutez des produits, créez des commandes, autorisez les paiements rapides et gardez un œil sur les nouvelles ventes et les statistiques clés en temps réel.
 
-Ajoutez et modifiez des produits d'un simple clic
-Lancez-vous en quelques secondes ! Créez, regroupez et publiez des produits directement à partir de votre iPhone ou iPad. Exploitez votre créativité lorsqu’elle vous vient : transformez immédiatement vos idées en produits ou enregistrez-les sous forme de brouillons et revenez-y plus tard.
+Ajouter et modifier des produits en un geste
+Lancez-vous en quelques secondes ! Créez, regroupez et publiez des produits directement à partir de votre iPhone ou iPad. Capturez votre créativité dans l’instant : transformez immédiatement vos idées en produits ou enregistrez-les sous forme de brouillons et revenez-y plus tard.
 
 Créez des commandes à la volée
 C’est un jeu d’enfant dès que vous avez créé quelques produits. Choisissez des articles dans votre catalogue, ajoutez les frais d’expédition, puis remplissez les coordonnées du client pour créer rapidement une commande qui se synchronise avec votre inventaire.
@@ -17,6 +17,10 @@ Affichez en un clin d’œil les produits les plus vendus. Surveillez facilement
 
 WooCommerce est la plateforme de commerce électronique Open-Source la plus personnalisable au monde. Que vous lanciez une activité, basculiez un magasin physique en ligne ou développiez des sites pour vos clients, WooCommerce permet d’obtenir une boutique qui allie puissamment contenu et commerce.
 
-Conditions requises : WooCommerce v3.5+.
+Prérequis : WooCommerce v3.5+.
+
+Consulter les conditions d’utilisation sur https://wordpress.com/tos/
+
+Consulter la politique de confidentialité sur https://automattic.com/privacy/
 
 Consultez l’avis de confidentialité pour les utilisateurs californiens à l’adresse https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

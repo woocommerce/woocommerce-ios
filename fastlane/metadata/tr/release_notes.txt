@@ -1,1 +1,3 @@
-Kupon yönetimi artık çok kolay. Artık bir sipariş oluştururken birden fazla kupon seçebilirsiniz. Ayrıca, sipariş oluştururken ürünlere indirimler de eklenebilir. WooCommerce'in sürekli iyileştirmelerinden ve en yeni özelliklerinden yararlanmak için güncellemelerinizi açık tutun!
+Mağaza sahipleri için heyecan verici haberlerimiz var! İlk olarak, artık tüm mevcut paketlere kolaylıkla yükseltme yapabilirsiniz. İkinci olarak, doğrudan uygulama içinden test siparişleri oluşturarak siparişleri yönetme konusunda uygulamalı deneyim kazanabilirsiniz!
+
+Dahası var! En son güncellememiz, ürün açıklaması yapay zekasında iyileştirmeler de içeriyor. Henüz denemediyseniz deneyin!

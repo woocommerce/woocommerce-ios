@@ -17,7 +17,7 @@ extension Storage.Site: ReadOnlyConvertible {
         loginURL = site.loginURL
         isSiteOwner = site.isSiteOwner
         frameNonce = site.frameNonce
-//        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
+        plan = site.plan
         isJetpackThePluginInstalled = site.isJetpackThePluginInstalled
         isJetpackConnected = site.isJetpackConnected
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)

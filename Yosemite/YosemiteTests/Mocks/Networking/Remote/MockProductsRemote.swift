@@ -33,6 +33,9 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `updateProductImages`
     private var updateProductImagesResultsBySiteID = [ResultKey: Result<Product, Error>]()
 
+    /// The results to return based on the given site ID in `loadAllProducts`
+    private var loadAllProductsResultsBySiteID = [Int64: Result<[Product], Error>]()
+
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
@@ -67,6 +70,12 @@ final class MockProductsRemote {
     func whenUpdatingProductImages(siteID: Int64, productID: Int64, thenReturn result: Result<Product, Error>) {
         let key = ResultKey(siteID: siteID, productIDs: [productID])
         updateProductImagesResultsBySiteID[key] = result
+    }
+
+    /// Set the value passed to the `completion` block if `loadAllProducts()` is called.
+    ///
+    func whenLoadingAllProducts(siteID: Int64, thenReturn result: Result<[Product], Error>) {
+        loadAllProductsResultsBySiteID[siteID] = result
     }
 }
 
@@ -147,7 +156,11 @@ extension MockProductsRemote: ProductsRemoteProtocol {
                          order: ProductsRemote.Order,
                          excludedProductIDs: [Int64],
                          completion: @escaping (Result<[Product], Error>) -> Void) {
-        // no-op
+        if let result = loadAllProductsResultsBySiteID[siteID] {
+            completion(result)
+        } else {
+            XCTFail("\(String(describing: self)) Could not find Result for \(siteID)")
+        }
     }
 
     func searchProducts(for siteID: Int64,

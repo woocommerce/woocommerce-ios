@@ -10,6 +10,28 @@ protocol SearchUICommand {
     /// The placeholder of the search bar.
     var searchBarPlaceholder: String { get }
 
+    /// Hides the cancel button on the search bar right. If it's hidden the search bar fills the hidden button space.
+    ///
+    var hideCancelButton: Bool { get }
+
+    /// Hides the navigation bar.
+    ///
+    var hideNavigationBar: Bool { get }
+
+    /// Makes the search bar first responder on start, focusing on there.
+    ///
+    var makeSearchBarFirstResponderOnStart: Bool { get }
+
+    /// Notifies whether the SearchUICommand triggers a sync when the search query turns empty, e.g. to load the default results.
+    /// This is used to show a loading state when syncing.
+    ///
+    var syncResultsWhenSearchQueryTurnsEmpty: Bool { get }
+
+    /// Return true if you want the table view to adjust its bottom inset when the keyboard is shown, so it's covered partially by it.
+    /// Sometimes we don't need it, as the table view adjust automatically its height thanks to the superview constraits.
+    /// 
+    var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool { get }
+
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
@@ -108,6 +130,26 @@ protocol SearchUICommand {
 
 // MARK: - Default implementation
 extension SearchUICommand {
+    var hideCancelButton: Bool {
+        false
+    }
+
+    var hideNavigationBar: Bool {
+        true
+    }
+
+    var makeSearchBarFirstResponderOnStart: Bool {
+        true
+    }
+
+    var syncResultsWhenSearchQueryTurnsEmpty: Bool {
+        false
+    }
+
+    var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool {
+        true
+    }
+
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {
         // If not implemented, keeps the default cancel UI/UX
     }

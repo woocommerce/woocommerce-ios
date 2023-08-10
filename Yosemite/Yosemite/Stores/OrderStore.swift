@@ -87,6 +87,8 @@ public class OrderStore: Store {
             deleteOrder(siteID: siteID, order: order, deletePermanently: deletePermanently, onCompletion: onCompletion)
         case let .observeInsertedOrders(siteID, completion):
             observeInsertedOrders(siteID: siteID, completion: completion)
+        case let .checkIfStoreHasOrders(siteID, completion):
+            checkIfStoreHasOrders(siteID: siteID, onCompletion: completion)
         }
     }
 }
@@ -256,6 +258,27 @@ private extension OrderStore {
                 }
             case .failure(let error):
                 onCompletion(Date().timeIntervalSince(startTime), error)
+            }
+        }
+    }
+
+    /// Checks if the store already has any orders.
+    ///
+    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+        // Check for locally stored products first.
+        let storage = storageManager.viewStorage
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        if storage.firstObject(ofType: StorageOrder.self, matching: predicate) != nil {
+            return onCompletion(.success(true))
+        }
+
+        // If there are no locally stored orders, then check remote.
+        remote.loadAllOrders(for: siteID, pageNumber: Default.firstPageNumber, pageSize: 1) { result in
+            switch result {
+            case .success(let orders):
+                onCompletion(.success(orders.isEmpty == false))
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
         }
     }

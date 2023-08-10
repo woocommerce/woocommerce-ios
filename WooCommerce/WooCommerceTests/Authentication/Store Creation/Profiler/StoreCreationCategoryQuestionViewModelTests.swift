@@ -5,8 +5,7 @@ import XCTest
 final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
     func test_selectCategory_updates_selectedCategory() throws {
         // Given
-        let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                               onContinue: { _ in },
+        let viewModel = StoreCreationCategoryQuestionViewModel(onContinue: { _ in },
                                                                onSkip: {})
 
         // When
@@ -19,8 +18,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
     func test_continueButtonTapped_invokes_onContinue_after_selecting_a_category() throws {
         let answer = waitFor { promise in
             // Given
-            let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                                   onContinue: { answer in
+            let viewModel = StoreCreationCategoryQuestionViewModel(onContinue: { answer in
                 promise(answer)
             },
                                                                    onSkip: {})
@@ -39,8 +37,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {
         waitFor { promise in
             // Given
-            let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                                   onContinue: { _ in },
+            let viewModel = StoreCreationCategoryQuestionViewModel(onContinue: { _ in },
                                                                    onSkip: {
                 // Then
                 promise(())
@@ -55,8 +52,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
     func test_skipButtonTapped_invokes_onSkip() throws {
         waitFor { promise in
             // Given
-            let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                                   onContinue: { _ in },
+            let viewModel = StoreCreationCategoryQuestionViewModel(onContinue: { _ in },
                                                                    onSkip: {
                 // Then
                 promise(())
@@ -68,8 +64,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
 
     func test_categories_are_in_the_expected_order() throws {
         // Given
-        let viewModel = StoreCreationCategoryQuestionViewModel(storeName: "store",
-                                                               onContinue: { _ in },
+        let viewModel = StoreCreationCategoryQuestionViewModel(onContinue: { _ in },
                                                                onSkip: {})
 
         // When

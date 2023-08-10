@@ -19,4 +19,8 @@ WooCommerce es la plataforma de comercio electrónico de código abierto más pe
 
 Requisitos: versión 3.5 o superior de WooCommerce.
 
+Consulta las Condiciones del servicio en https://wordpress.com/tos/
+
+Consulta la Política de privacidad en https://automattic.com/privacy/
+
 Consulta el aviso de privacidad dirigido a los usuarios de California en: https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

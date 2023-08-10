@@ -31,14 +31,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .storeCreationMVP:
-            return true
-        case .storeCreationM2:
-            return true
-        case .storeCreationM2WithInAppPurchasesEnabled:
-            return false
-        case .storeCreationM3Profiler:
-            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .IPPInAppFeedbackBanner:
@@ -69,8 +61,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productBundles:
             return true
-        case .freeTrial:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
         case .compositeProducts:
@@ -92,7 +82,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .euShippingNotification:
             return true
         case .sdkLessGoogleSignIn:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .shareProductAI:
             return true
         case .freeTrialInAppPurchasesUpgradeM2:
@@ -100,7 +90,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
+        case .optimizeProfilerQuestions:
+            return false
         default:
             return true
         }

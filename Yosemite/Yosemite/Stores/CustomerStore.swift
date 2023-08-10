@@ -47,12 +47,26 @@ public final class CustomerStore: Store {
             return
         }
         switch action {
-        case .searchCustomers(siteID: let siteID, keyword: let keyword, onCompletion: let onCompletion):
-            searchCustomers(for: siteID, keyword: keyword, onCompletion: onCompletion)
+        case .searchCustomers(siteID: let siteID,
+                              pageNumber: let pageNumber,
+                              pageSize: let pageSize,
+                              keyword: let keyword,
+                              retrieveFullCustomersData: let retrieveFullCustomersData,
+                              filter: let filter,
+                              onCompletion: let onCompletion):
+            searchCustomers(for: siteID,
+                            pageNumber: pageNumber,
+                            pageSize: pageSize,
+                            keyword: keyword,
+                            retrieveFullCustomersData: retrieveFullCustomersData,
+                            filter: filter,
+                            onCompletion: onCompletion)
         case .retrieveCustomer(siteID: let siteID, customerID: let customerID, onCompletion: let onCompletion):
             retrieveCustomer(for: siteID, with: customerID, onCompletion: onCompletion)
         case .synchronizeLightCustomersData(siteID: let siteID, pageNumber: let pageNumber, pageSize: let pageSize, onCompletion: let onCompletion):
             synchronizeLightCustomersData(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .deleteAllCustomers(siteID: let siteID, onCompletion: let onCompletion):
+            deleteAllCustomers(from: siteID, onCompletion: onCompletion)
         }
     }
 
@@ -67,13 +81,32 @@ public final class CustomerStore: Store {
     ///
     func searchCustomers(
         for siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
         keyword: String,
-        onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
-            wcAnalyticsCustomerRemote.searchCustomers(for: siteID, name: keyword) { [weak self] result in
+        retrieveFullCustomersData: Bool,
+        filter: CustomerSearchFilter,
+        onCompletion: @escaping (Result<(), Error>) -> Void) {
+            wcAnalyticsCustomerRemote.searchCustomers(for: siteID,
+                                                      pageNumber: pageNumber,
+                                                      pageSize: pageSize,
+                                                      keyword: keyword,
+                                                      filter: filter.rawValue) { [weak self] result in
                 guard let self else { return }
                 switch result {
                 case .success(let customers):
-                    self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
+                    if retrieveFullCustomersData {
+                        self.mapSearchResultsToCustomerObjects(for: siteID, with: keyword, with: customers, onCompletion: onCompletion)
+                    } else {
+                        self.upsertCustomersAndSave(siteID: siteID,
+                                             readOnlyCustomers: customers,
+                                             shouldDeleteExistingCustomers: pageNumber == 1,
+                                             keyword: keyword,
+                                             in: self.sharedDerivedStorage,
+                                             onCompletion: {
+                            onCompletion(.success(()))
+                        })
+                    }
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -105,7 +138,7 @@ public final class CustomerStore: Store {
             }
     }
 
-    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeLightCustomersData(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         wcAnalyticsCustomerRemote.loadCustomers(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
             switch result {
             case .success(let customers):
@@ -114,11 +147,21 @@ public final class CustomerStore: Store {
                                      shouldDeleteExistingCustomers: pageNumber == 1,
                                      in: self.sharedDerivedStorage,
                                      onCompletion: {
-                    onCompletion(.success(()))
+                    onCompletion(.success(!customers.isEmpty))
                 })
             case .failure(let error):
                 onCompletion(.failure(error))
             }
+        }
+    }
+
+    func deleteAllCustomers(from siteID: Int64, onCompletion: @escaping () -> Void) {
+        sharedDerivedStorage.perform { [weak self] in
+            self?.sharedDerivedStorage.deleteCustomers(siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: sharedDerivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
         }
     }
 
@@ -133,7 +176,7 @@ public final class CustomerStore: Store {
     private func mapSearchResultsToCustomerObjects(for siteID: Int64,
                                                    with keyword: String,
                                                    with searchResults: [WCAnalyticsCustomer],
-                                                  onCompletion: @escaping (Result<[Customer], Error>) -> Void) {
+                                                  onCompletion: @escaping (Result<(), Error>) -> Void) {
         var customers = [Customer]()
         let group = DispatchGroup()
         for result in searchResults {
@@ -158,7 +201,7 @@ public final class CustomerStore: Store {
                 keyword: keyword,
                 readOnlyCustomers: customers,
                 onCompletion: {
-                    onCompletion(.success(customers))
+                    onCompletion(.success(()))
                 }
             )
         }
@@ -195,6 +238,7 @@ private extension CustomerStore {
     private func upsertCustomersAndSave(siteID: Int64,
                                  readOnlyCustomers: [StorageCustomerConvertible],
                                  shouldDeleteExistingCustomers: Bool = false,
+                                 keyword: String? = nil,
                                  in storage: StorageType,
                                  onCompletion: @escaping () -> Void) {
         storage.perform { [weak self] in
@@ -203,7 +247,7 @@ private extension CustomerStore {
             }
 
             readOnlyCustomers.forEach {
-                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, in: storage)
+                self?.upsertCustomer(siteID: siteID, readOnlyCustomer: $0, keyword: keyword, in: storage)
             }
         }
 
@@ -214,7 +258,7 @@ private extension CustomerStore {
 
     /// Inserts or updates Customer entities into Storage
     ///
-    private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, in storage: StorageType) {
+    private func upsertCustomer(siteID: Int64, readOnlyCustomer: StorageCustomerConvertible, keyword: String? = nil, in storage: StorageType) {
         let storageCustomer: Storage.Customer = {
             // If the specific customerID for that siteID already exists, return it
             // If doesn't or the user is unregistered (loadingID == 0), insert a new one in Storage
@@ -226,6 +270,16 @@ private extension CustomerStore {
                 return storage.insertNewObject(ofType: Storage.Customer.self)
             }
         }()
+
+        if let keyword = keyword {
+            let storedSearchResult = self.sharedDerivedStorage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
+            self.sharedDerivedStorage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
+
+            storedSearchResult.siteID = siteID
+            storedSearchResult.keyword = keyword
+
+            storedSearchResult.addToCustomers(storageCustomer)
+        }
 
         storageCustomer.update(with: readOnlyCustomer)
     }

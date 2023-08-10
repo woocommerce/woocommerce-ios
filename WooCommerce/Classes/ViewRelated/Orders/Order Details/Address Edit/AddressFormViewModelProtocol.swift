@@ -1,5 +1,6 @@
 import Combine
 import Yosemite
+import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
 
@@ -31,6 +32,8 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     var onLoadTrigger: PassthroughSubject<Void, Never> { get }
+
+    var showSearchButton: Bool { get }
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
@@ -250,6 +253,9 @@ open class AddressFormViewModel: ObservableObject {
     ///
     let analytics: Analytics
 
+
+    private let featureFlagService: FeatureFlagService
+
     /// Whether the Done button in the navigation bar is always enabled.
     ///
     private let isDoneButtonAlwaysEnabled: Bool
@@ -265,6 +271,7 @@ open class AddressFormViewModel: ObservableObject {
          isDoneButtonAlwaysEnabled: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
 
@@ -282,6 +289,8 @@ open class AddressFormViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
+
+        self.featureFlagService = featureFlagService
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
@@ -357,6 +366,10 @@ open class AddressFormViewModel: ObservableObject {
     ///
     var showSecondaryStateFieldAsSelector: Bool {
         secondaryFields.selectedCountry?.states.isNotEmpty ?? false
+    }
+
+    var showSearchButton: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
     /// Creates a view model to be used when selecting a country for primary fields

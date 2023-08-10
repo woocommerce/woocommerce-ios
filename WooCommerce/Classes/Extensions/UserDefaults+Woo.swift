@@ -37,6 +37,9 @@ extension UserDefaults {
 
         // Blaze highlight banner
         case hasDismissedBlazeBanner
+
+        // Store profiler answers
+        case storeProfilerAnswers
     }
 }
 

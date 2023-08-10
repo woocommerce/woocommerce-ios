@@ -10,7 +10,6 @@ struct StoreCreationFeaturesAnswer: Equatable {
 }
 
 /// View model for `StoreCreationFeaturesQuestionView`, an optional profiler question about features in the store creation flow.
-@MainActor
 final class StoreCreationFeaturesQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     typealias Answer = StoreCreationFeaturesAnswer
 
@@ -33,6 +32,7 @@ final class StoreCreationFeaturesQuestionViewModel: StoreCreationProfilerQuestio
 }
 
 extension StoreCreationFeaturesQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
+    @MainActor
     func continueButtonTapped() async {
         guard selectedFeatures.isNotEmpty else {
             return onSkip()

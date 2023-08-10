@@ -18,8 +18,7 @@ final class UnderlineableTitleAndSubtitleAndDetailTableViewCell: UITableViewCell
     func configureCell(searchModel: ViewModel) {
         accessibilityLabel = searchModel.accessibilityLabel
         setupTitleLabelText(with: searchModel)
-        setupSubtitleLabelText(with: searchModel)
-        subtitleLabel.applyStrongCaption1Style()
+        subtitleLabel.attributedText = subtitleAttributedString(from: searchModel)
     }
 }
 
@@ -33,6 +32,7 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
         var id: String = UUID().uuidString
         let title: String
         let placeholderTitle: String
+        let placeholderSubtitle: String
         let subtitle: String
         let accessibilityLabel: String
         let detail: String
@@ -43,29 +43,36 @@ extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
 // MARK: - Setup
 //
 private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
-    func setupSubtitleLabelText(with viewModel: ViewModel) {
+    func subtitleAttributedString(from viewModel: ViewModel) -> NSAttributedString {
+        guard viewModel.subtitle.trimmingCharacters(in: .whitespaces).isNotEmpty else {
+            return NSMutableAttributedString(string: viewModel.placeholderSubtitle,
+                                             attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.textTertiary])
+        }
+
         let subtitle = NSMutableAttributedString(string: viewModel.subtitle, attributes: [.font: UIFont.caption1, .foregroundColor: UIColor.text])
 
         if let underlinedText = viewModel.underlinedText {
             subtitle.underlineSubstring(underlinedText: underlinedText)
         }
 
-        subtitleLabel.attributedText = subtitle
+        return subtitle
     }
 
     func setupTitleLabelText(with viewModel: ViewModel) {
-        var titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
+        let titleAndDetail: NSMutableAttributedString = NSMutableAttributedString(attributedString: titleAttributedString(from: viewModel))
         titleAndDetail.append(detailAttributedString(from: viewModel))
 
         titleLabel.attributedText = titleAndDetail
     }
 
     func titleAttributedString(from viewModel: ViewModel) -> NSAttributedString {
+        let titleFont = UIFont.font(forStyle: .callout, weight: .medium)
+
         guard viewModel.title.trimmingCharacters(in: .whitespaces).isNotEmpty else {
-            return NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+            return NSMutableAttributedString(string: viewModel.placeholderTitle, attributes: [.font: titleFont, .foregroundColor: UIColor.textTertiary])
         }
 
-        let title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: UIFont.body, .foregroundColor: UIColor.text])
+        let title = NSMutableAttributedString(string: viewModel.title, attributes: [.font: titleFont, .foregroundColor: UIColor.text])
 
         if let underlinedText = viewModel.underlinedText {
             title.underlineSubstring(underlinedText: underlinedText)
@@ -75,12 +82,14 @@ private extension UnderlineableTitleAndSubtitleAndDetailTableViewCell {
     }
 
     func detailAttributedString(from viewModel: ViewModel) -> NSAttributedString {
+        let detailFont = UIFont.font(forStyle: .callout, weight: .regular)
+
         guard viewModel.detail.isNotEmpty else {
             return NSAttributedString(string: "")
         }
 
         let composedDetail = " • \(viewModel.detail)"
-        let detail = NSMutableAttributedString(string: composedDetail, attributes: [.font: UIFont.body, .foregroundColor: UIColor.textSubtle])
+        let detail = NSMutableAttributedString(string: composedDetail, attributes: [.font: detailFont, .foregroundColor: UIColor.textSubtle])
 
         if let underlinedText = viewModel.underlinedText {
             detail.underlineSubstring(underlinedText: underlinedText)

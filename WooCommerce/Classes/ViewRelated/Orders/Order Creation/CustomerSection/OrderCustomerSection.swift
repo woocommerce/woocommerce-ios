@@ -19,7 +19,7 @@ struct OrderCustomerSection: View {
                 NavigationView {
                     switch viewModel.customerNavigationScreen {
                     case .form:
-                        EditOrderAddressForm(dismiss: {
+                        EditOrderAddressForm(dismiss: { _ in
                                                 showAddressForm.toggle()
                                              },
                                              showSearchButton: viewModel.shouldShowSearchButtonInOrderAddressForm,

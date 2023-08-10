@@ -18,6 +18,10 @@ protocol SearchUICommand {
     ///
     var hideNavigationBar: Bool { get }
 
+    /// Makes the search bar first responder on start, focusing on there.
+    ///
+    var makeSearchBarFirstResponderOnStart: Bool { get }
+
     /// Notifies whether the SearchUICommand triggers a sync when the search query turns empty, e.g. to load the default results.
     /// This is used to show a loading state when syncing.
     ///
@@ -126,6 +130,10 @@ extension SearchUICommand {
     }
 
     var hideNavigationBar: Bool {
+        true
+    }
+
+    var makeSearchBarFirstResponderOnStart: Bool {
         true
     }
 

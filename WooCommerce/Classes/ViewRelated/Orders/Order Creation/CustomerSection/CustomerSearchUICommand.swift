@@ -26,9 +26,9 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     var onDidSelectSearchResult: ((Customer) -> Void)
 
-    var onDidStartSyncingAllCustomers: (() -> Void)?
+    var onDidStartSyncingAllCustomersFirstPage: (() -> Void)?
 
-    var onDidFinishSyncingAllCustomers: (() -> Void)?
+    var onDidFinishSyncingAllCustomersFirstPage: (() -> Void)?
 
     var onAddCustomerDetailsManually: (() -> Void)?
 
@@ -56,8 +56,8 @@ final class CustomerSearchUICommand: SearchUICommand {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onAddCustomerDetailsManually: (() -> Void)? = nil,
          onDidSelectSearchResult: @escaping ((Customer) -> Void),
-         onDidStartSyncingAllCustomers: (() -> Void)? = nil,
-         onDidFinishSyncingAllCustomers: (() -> Void)? = nil) {
+         onDidStartSyncingAllCustomersFirstPage: (() -> Void)? = nil,
+         onDidFinishSyncingAllCustomersFirstPage: (() -> Void)? = nil) {
         self.siteID = siteID
         self.loadResultsWhenSearchTermIsEmpty = loadResultsWhenSearchTermIsEmpty
         self.showSearchFilters = showSearchFilters
@@ -66,8 +66,8 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.featureFlagService = featureFlagService
         self.onAddCustomerDetailsManually = onAddCustomerDetailsManually
         self.onDidSelectSearchResult = onDidSelectSearchResult
-        self.onDidStartSyncingAllCustomers = onDidStartSyncingAllCustomers
-        self.onDidFinishSyncingAllCustomers = onDidFinishSyncingAllCustomers
+        self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
+        self.onDidFinishSyncingAllCustomersFirstPage = onDidFinishSyncingAllCustomersFirstPage
     }
 
     var hideCancelButton: Bool {
@@ -75,6 +75,10 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     var hideNavigationBar: Bool {
+        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+    }
+
+    var makeSearchBarFirstResponderOnStart: Bool {
         !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
     }
 
@@ -150,10 +154,11 @@ final class CustomerSearchUICommand: SearchUICommand {
             id: "\(model.customerID)",
             title: "\(model.firstName ?? "") \(model.lastName ?? "")",
             placeholderTitle: Localization.titleCellPlaceholder,
+            placeholderSubtitle: Localization.subtitleCellPlaceholder,
             subtitle: model.email,
             accessibilityLabel: "",
             detail: model.username ?? "",
-            underlinedText: searchTerm
+            underlinedText: searchTerm?.count ?? 0 > 1 ? searchTerm : "" // Only underline the search term if it's longer than 1 character
         )
     }
 
@@ -164,8 +169,16 @@ final class CustomerSearchUICommand: SearchUICommand {
         let action: CustomerAction
         if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
            keyword.isEmpty {
-            onDidStartSyncingAllCustomers?()
-            action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            if syncResultsWhenSearchQueryTurnsEmpty {
+                if pageNumber == 1 {
+                    onDidStartSyncingAllCustomersFirstPage?()
+                }
+
+                action = synchronizeAllLightCustomersDataAction(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            } else {
+                // As we don't have to show anything if the search query is empty, let's reset the customers database
+                action = .deleteAllCustomers(siteID: siteID, onCompletion: { onCompletion?(true) })
+            }
         } else {
             action = searchCustomersAction(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
@@ -215,7 +228,9 @@ private extension CustomerSearchUICommand {
                 DDLogError("Customer Search Failure \(error)")
             }
 
-            self?.onDidFinishSyncingAllCustomers?()
+            if pageNumber == 1 {
+                self?.onDidFinishSyncingAllCustomersFirstPage?()
+            }
         }
     }
 
@@ -272,6 +287,7 @@ private extension CustomerSearchUICommand {
             "We're sorry, we couldn't find results for “%@”",
             comment: "Message for empty Customers search results. %@ is a placeholder for the text entered by the user.")
         static let titleCellPlaceholder = NSLocalizedString("No name", comment: "Placeholder when there's no customer name in the list")
+        static let subtitleCellPlaceholder = NSLocalizedString("No email address", comment: "Placeholder when there's no customer email in the list")
         static let emptyDefaultStateMessage = NSLocalizedString("Search for an existing customer or",
                                                                 comment: "Message to prompt users to search for customers on the customer search screen")
         static let emptyDefaultStateActionTitle = NSLocalizedString("Add details manually",

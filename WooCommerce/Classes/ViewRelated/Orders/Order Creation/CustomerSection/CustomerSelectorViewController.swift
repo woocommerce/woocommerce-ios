@@ -7,7 +7,7 @@ import Yosemite
 /// Shows a paginated and searchable list of customers, that can be selected
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
-    private var searchViewController: UIViewController?
+    private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
     private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
@@ -109,10 +109,12 @@ private extension CustomerSelectorViewController {
     }
 
     @objc func presentNewCustomerDetailsFlow() {
-        let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
+        let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] action in
                                                             self?.dismiss(animated: true, completion: { [weak self] in
                                                                 // Dismiss this view too
-                                                                self?.dismiss(animated: true)
+                                                                if action == .done {
+                                                                    self?.dismiss(animated: true)
+                                                                }
                                                             })
                                                         },
                                                         showSearchButton: false,
@@ -131,12 +133,15 @@ private extension CustomerSelectorViewController {
                                              showSearchFilters: showSearchFilters,
                                              onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                              onDidSelectSearchResult: onCustomerTapped,
-                                             onDidStartSyncingAllCustomers: {
+                                             onDidStartSyncingAllCustomersFirstPage: {
                                                  Task { @MainActor [weak self] in
-                                                     self?.displayGhostContent()
+                                                     guard let searchTableView = self?.searchViewController?.tableView else {
+                                                         return
+                                                     }
+                                                     self?.displayGhostContent(over: searchTableView)
                                                  }
                                              },
-                                             onDidFinishSyncingAllCustomers: {
+                                             onDidFinishSyncingAllCustomersFirstPage: {
                                                  Task { @MainActor [weak self] in
                                                      self?.removeGhostContent()
                                                  }

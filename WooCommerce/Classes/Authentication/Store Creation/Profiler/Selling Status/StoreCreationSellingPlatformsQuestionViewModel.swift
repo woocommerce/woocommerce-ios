@@ -30,7 +30,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
         case wordPress
     }
 
-    let topHeader: String
+    let topHeader: String = Localization.header
 
     let title: String = Localization.title
 
@@ -43,9 +43,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
 
-    init(storeName: String,
-         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
-        self.topHeader = storeName
+    init(onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
         self.onContinue = onContinue
     }
 }
@@ -171,6 +169,10 @@ extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
 
 private extension StoreCreationSellingPlatformsQuestionViewModel {
     enum Localization {
+        static let header = NSLocalizedString(
+            "About your store",
+            comment: "Header of the store creation profiler question about the store selling platforms."
+        )
         static let title = NSLocalizedString(
             "In which platform are you currently selling?",
             comment: "Title of the store creation profiler question about the store selling platforms."

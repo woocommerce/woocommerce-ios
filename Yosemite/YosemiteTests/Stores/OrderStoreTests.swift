@@ -185,6 +185,77 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - OrderAction.checkIfStoreHasOrders
+
+    func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() throws {
+        // Given
+        storageManager.insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasOrders = try result.get()
+        XCTAssertTrue(hasOrders)
+    }
+
+    func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasOrders = try result.get()
+        XCTAssertTrue(hasOrders)
+    }
+
+    func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "empty-data-array")
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let hasOrders = try result.get()
+        XCTAssertFalse(hasOrders)
+    }
+
+    func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
 
     // MARK: - OrderAction.searchOrders
 

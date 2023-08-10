@@ -144,7 +144,9 @@ where Cell.SearchModel == Command.CellViewModel {
         configureStarterViewController()
         configureSearchResync()
 
-        startListeningToNotifications()
+        if searchUICommand.adjustTableViewBottomInsetWhenKeyboardIsShown {
+            startListeningToKeyboardNotifications()
+        }
 
         transitionToResultsUpdatedState()
         configureSearchFunctionality()
@@ -397,7 +399,7 @@ private extension SearchViewController {
 
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    func startListeningToKeyboardNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 

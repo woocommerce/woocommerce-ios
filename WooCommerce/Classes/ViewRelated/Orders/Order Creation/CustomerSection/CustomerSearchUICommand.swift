@@ -86,6 +86,10 @@ final class CustomerSearchUICommand: SearchUICommand {
         featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
     }
 
+    var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool {
+        false
+    }
+
     func createHeaderView() -> UIView? {
         guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
         showSearchFilters else {

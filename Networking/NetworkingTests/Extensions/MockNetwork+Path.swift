@@ -21,6 +21,8 @@ extension MockNetwork {
 
         if let dotcomRequest = request as? DotcomRequest {
             return dotcomRequest.parameters
+        } else if let jetpackRequest = request as? JetpackRequest {
+            return jetpackRequest.parameters
         }
 
         let parameters = urlComponents.queryItems

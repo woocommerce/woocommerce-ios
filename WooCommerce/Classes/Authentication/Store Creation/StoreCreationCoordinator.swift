@@ -125,7 +125,7 @@ private extension StoreCreationCoordinator {
     }
 }
 
-// MARK: - Actions
+// MARK: - Actions & Alerts
 private extension StoreCreationCoordinator {
 
     func continueWithSelectedSite(site: Site) {
@@ -137,6 +137,33 @@ private extension StoreCreationCoordinator {
 
             self.navigationController.dismiss(animated: true)
         }
+    }
+
+    func showStoreCreationErrorAlert(from viewController: UIViewController) {
+        let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
+                                                message: Localization.StoreCreationErrorAlert.message,
+                                                preferredStyle: .alert)
+        _ = alertController.addDestructiveActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { [weak self] _ in
+            self?.navigationController.dismiss(animated: true)
+        }
+        _ = alertController.addDefaultActionWithTitle(Localization.StoreCreationErrorAlert.retryAction) { _ in }
+        viewController.present(alertController, animated: true)
+    }
+
+    func showDismissalAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
+        let alert = UIAlertController(title: Localization.DismissalAlert.title,
+                                      message: Localization.DismissalAlert.message,
+                                      preferredStyle: .alert)
+        alert.addDestructiveActionWithTitle(Localization.DismissalAlert.confirmActionTitle) { [weak self] _ in
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: true))
+            self.navigationController.dismiss(animated: true)
+        }
+
+        alert.addCancelActionWithTitle(Localization.DismissalAlert.cancelActionTitle) { _ in }
+
+        // Presents the alert with the presented webview.
+        navigationController.topmostPresentedViewController.present(alert, animated: true)
     }
 
     func showDiscardChangesAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
@@ -267,7 +294,7 @@ private extension StoreCreationCoordinator {
                                   storeName: String,
                                   profilerData: SiteProfilerData?) {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
-            self?.showDiscardChangesAlert(flow: .native)
+            self?.showDismissalAlert(flow: .native)
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
@@ -342,9 +369,7 @@ private extension StoreCreationCoordinator {
             }
 
         case .failure(let error):
-            showStoreCreationErrorAlert(from: navigationController.topmostPresentedViewController, error: error, onDismiss: {
-                navigationController.dismiss(animated: true)
-            })
+            showStoreCreationErrorAlert(from: navigationController.topmostPresentedViewController)
             analytics.track(event: .StoreCreation.siteCreationFailed(source: source.analyticsValue,
                                                                      error: error,
                                                                      flow: .native,
@@ -379,15 +404,6 @@ private extension StoreCreationCoordinator {
         navigationController.isNavigationBarHidden = true
         self.storeCreationProgressViewModel = viewModel
         navigationController.pushViewController(storeCreationProgressView, animated: true)
-    }
-
-    func showStoreCreationErrorAlert(from viewController: UIViewController, error: SiteCreationError, onDismiss: @escaping () -> Void) {
-        let alertController = UIAlertController(title: Localization.StoreCreationErrorAlert.title,
-                                                message: Localization.StoreCreationErrorAlert.message,
-                                                preferredStyle: .alert)
-        _ = alertController.addDestructiveActionWithTitle(Localization.StoreCreationErrorAlert.cancelActionTitle) { _ in onDismiss() }
-        _ = alertController.addDefaultActionWithTitle(Localization.StoreCreationErrorAlert.retryAction) { _ in }
-        viewController.present(alertController, animated: true)
     }
 
     @MainActor
@@ -537,22 +553,47 @@ private extension StoreCreationCoordinator {
     enum Localization {
         enum DiscardChangesAlert {
             static let title = NSLocalizedString("Do you want to leave?",
-                                                 comment: "Title of the alert when the user dismisses the store creation flow.")
+                                                 comment: "Title of the alert when the user dismisses the store creation profiler flow.")
             static let message = NSLocalizedString("You will lose all your store information.",
-                                                   comment: "Message of the alert when the user dismisses the store creation flow.")
+                                                   comment: "Message of the alert when the user dismisses the store creation profiler flow.")
             static let confirmActionTitle = NSLocalizedString("Confirm and leave",
-                                                              comment: "Button title Discard Changes in Discard Changes Action Sheet")
+                                                              comment: "Button to confirm the dismissal of  the store creation profiler flow")
             static let cancelActionTitle = NSLocalizedString("Cancel",
-                                                             comment: "Button title Cancel in Discard Changes Action Sheet")
+                                                             comment: "Button to dismiss the alert on the store creation profiler flow")
+        }
+
+        enum DismissalAlert {
+            static let title = NSLocalizedString(
+                "Ready for setup",
+                comment: "Title of the alert when the user dismisses the store creation flow."
+            )
+            static let message = NSLocalizedString(
+                "If you exit now, you'll be guided to 'Add a Store' as your next step. Continue setup?",
+                comment: "Message of the alert when the user dismisses the store creation flow."
+            )
+            static let confirmActionTitle = NSLocalizedString(
+                "Leave",
+                comment: "Button to dismiss the store creation flow."
+            )
+            static let cancelActionTitle = NSLocalizedString(
+                "Proceed",
+                comment: "Button to dismiss the alert on the store creation flow."
+            )
         }
 
         enum StoreCreationErrorAlert {
-            static let title = NSLocalizedString("Oops! We've hit a snag",
-                                                 comment: "Title of the alert when the store cannot be created in the store creation flow.")
-            static let message = NSLocalizedString("Let's try again in a moment. If the issue persists, please contact support.",
-                                                   comment: "Message of the alert when the store cannot be created due to the domain in the store creation flow.")
-            static let retryAction = NSLocalizedString("Retry",
-                                                       comment: "Message of the alert when the store cannot be created in the store creation flow.")
+            static let title = NSLocalizedString(
+                "Oops! We've hit a snag",
+                comment: "Title of the alert when the store cannot be created in the store creation flow."
+            )
+            static let message = NSLocalizedString(
+                "Let's try again in a moment. If the issue persists, please contact support.",
+                comment: "Message of the alert when the store cannot be created due to the domain in the store creation flow."
+            )
+            static let retryAction = NSLocalizedString(
+                "Retry",
+                comment: "Message of the alert when the store cannot be created in the store creation flow."
+            )
             static let cancelActionTitle = NSLocalizedString(
                 "Cancel",
                 comment: "Button title to dismiss the alert when the store cannot be created in the store creation flow."

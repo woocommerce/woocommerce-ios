@@ -11,10 +11,12 @@ class NewNoteViewController: UIViewController {
     var order: Order
     var orderNotes: [OrderNote]
     var onDidFinishEditing: ((OrderNote) -> Void)?
+    var analytics: Analytics
 
-    init(order: Order, orderNotes: [OrderNote]) {
+    init(order: Order, orderNotes: [OrderNote], analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
         self.orderNotes = orderNotes
+        self.analytics = analytics
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -63,8 +65,8 @@ class NewNoteViewController: UIViewController {
     @objc func addButtonTapped() {
         configureForCommittingNote()
 
-        ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
-        ServiceLocator.analytics.track(.orderNoteAdd,
+        analytics.track(.orderNoteAddButtonTapped)
+        analytics.track(.orderNoteAdd,
                                        withProperties: ["parent_id": order.orderID,
                                                         "status": order.status.rawValue,
                                                         "type": isCustomerNote ? "customer" : "private"])
@@ -75,7 +77,7 @@ class NewNoteViewController: UIViewController {
                                                   note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
-                ServiceLocator.analytics.track(.orderNoteAddFailed, withError: error)
+                self?.analytics.track(.orderNoteAddFailed, withError: error)
                 
                 self?.displayErrorNotice()
                 self?.configureForEditingNote()
@@ -86,7 +88,7 @@ class NewNoteViewController: UIViewController {
                 self?.onDidFinishEditing?(orderNote)
             }
             
-            ServiceLocator.analytics.track(.orderNoteAddSuccess)
+            self?.analytics.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
         
@@ -194,7 +196,7 @@ private extension NewNoteViewController {
             )
 
             let stateValue = newValue ? "on" : "off"
-            ServiceLocator.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
+            self.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }
 }

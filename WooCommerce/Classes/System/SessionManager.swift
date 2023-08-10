@@ -174,6 +174,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.usedProductDescriptionAI] = nil
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
+        defaults[.storeProfilerAnswers] = nil
     }
 
     /// Deletes application password

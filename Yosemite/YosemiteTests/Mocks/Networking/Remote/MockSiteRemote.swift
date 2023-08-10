@@ -10,6 +10,9 @@ final class MockSiteRemote {
     /// The results to return in `launchSite`.
     private var launchSiteResult: Result<Void, Error>?
 
+    /// The results to return in `uploadStoreProfilerAnswers`.
+    private var uploadStoreProfilerAnswersResult: Result<Void, Error>?
+
     /// The results to return in `enableFreeTrial`.
     private var enableFreeTrialResult: Result<Void, Error>?
 
@@ -29,6 +32,11 @@ final class MockSiteRemote {
     /// Returns the value when `enableFreeTrial` is called.
     func whenEnablingFreeTrial(thenReturn result: Result<Void, Error>) {
         enableFreeTrialResult = result
+    }
+
+    /// Returns the value when `uploadStoreProfilerAnswers` is called.
+    func whenUploadingStoreProfilerAnswers(thenReturn result: Result<Void, Error>) {
+        uploadStoreProfilerAnswersResult = result
     }
 
     /// Returns the value when `loadSite` is called.
@@ -59,6 +67,15 @@ extension MockSiteRemote: SiteRemoteProtocol {
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws {
         guard let result = enableFreeTrialResult else {
             XCTFail("Could not find result for enabling a trial.")
+            throw NetworkError.notFound
+        }
+
+        return try result.get()
+    }
+
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: Networking.StoreProfilerAnswers) async throws {
+        guard let result = uploadStoreProfilerAnswersResult else {
+            XCTFail("Could not find result for upload store profiler answers.")
             throw NetworkError.notFound
         }
 

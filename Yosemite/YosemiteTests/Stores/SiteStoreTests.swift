@@ -239,4 +239,41 @@ final class SiteStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
     }
+
+    // MARK: - `uploadStoreProfilerAnswers`
+
+    func test_uploadStoreProfilerAnswers_returns_success_on_success() throws {
+        // Given
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+                                                                                                          category: "clothing_and_accessories",
+                                                                                                          countryCode: "US")) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
+        // Given
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+                                                                                                          category: "clothing_and_accessories",
+                                                                                                          countryCode: "US")) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+    }
 }

@@ -120,6 +120,17 @@ private extension SiteStore {
             }
         }
     }
+
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.uploadStoreProfilerAnswers(siteID: siteID, answers: answers)
+                completion(.success(()))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
 }
 
 private extension SiteStore {

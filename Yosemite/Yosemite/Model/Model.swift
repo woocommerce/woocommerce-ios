@@ -130,6 +130,7 @@ public typealias Post = Networking.Post
 public typealias SitePlugin = Networking.SitePlugin
 public typealias SitePluginStatusEnum = Networking.SitePluginStatusEnum
 public typealias SiteProfilerData = Networking.SiteProfilerData
+public typealias StoreProfilerAnswers = Networking.StoreProfilerAnswers
 public typealias SiteSetting = Networking.SiteSetting
 public typealias SiteSettingGroup = Networking.SiteSettingGroup
 public typealias SiteSummaryStats = Networking.SiteSummaryStats

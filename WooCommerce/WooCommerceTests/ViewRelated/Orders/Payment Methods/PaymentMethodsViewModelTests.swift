@@ -250,6 +250,8 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
+        assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Float64, 12.0)
+        assertEqual(analytics.receivedProperties.first?["currency"] as? String, "USD")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }

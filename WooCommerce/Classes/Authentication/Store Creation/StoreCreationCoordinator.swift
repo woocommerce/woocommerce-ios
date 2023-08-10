@@ -150,22 +150,6 @@ private extension StoreCreationCoordinator {
         viewController.present(alertController, animated: true)
     }
 
-    func showDismissalAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
-        let alert = UIAlertController(title: Localization.DismissalAlert.title,
-                                      message: Localization.DismissalAlert.message,
-                                      preferredStyle: .alert)
-        alert.addDestructiveActionWithTitle(Localization.DismissalAlert.confirmActionTitle) { [weak self] _ in
-            guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: true))
-            self.navigationController.dismiss(animated: true)
-        }
-
-        alert.addCancelActionWithTitle(Localization.DismissalAlert.cancelActionTitle) { _ in }
-
-        // Presents the alert with the presented webview.
-        navigationController.topmostPresentedViewController.present(alert, animated: true)
-    }
-
     func showDiscardChangesAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
         let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
                                       message: Localization.DiscardChangesAlert.message,
@@ -294,7 +278,8 @@ private extension StoreCreationCoordinator {
                                   storeName: String,
                                   profilerData: SiteProfilerData?) {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
-            self?.showDismissalAlert(flow: .native)
+            guard let self else { return }
+            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: .native, isFreeTrial: true))
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
@@ -560,25 +545,6 @@ private extension StoreCreationCoordinator {
                                                               comment: "Button to confirm the dismissal of  the store creation profiler flow")
             static let cancelActionTitle = NSLocalizedString("Cancel",
                                                              comment: "Button to dismiss the alert on the store creation profiler flow")
-        }
-
-        enum DismissalAlert {
-            static let title = NSLocalizedString(
-                "Ready for setup",
-                comment: "Title of the alert when the user dismisses the store creation flow."
-            )
-            static let message = NSLocalizedString(
-                "If you exit now, you'll be guided to 'Add a Store' as your next step. Continue setup?",
-                comment: "Message of the alert when the user dismisses the store creation flow."
-            )
-            static let confirmActionTitle = NSLocalizedString(
-                "Leave",
-                comment: "Button to dismiss the store creation flow."
-            )
-            static let cancelActionTitle = NSLocalizedString(
-                "Proceed",
-                comment: "Button to dismiss the alert on the store creation flow."
-            )
         }
 
         enum StoreCreationErrorAlert {

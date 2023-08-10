@@ -218,7 +218,7 @@ public extension SiteCreationResponse {
 }
 
 /// Answers from the site creation profiler questions.
-public struct StoreProfilerAnswers: Codable {
+public struct StoreProfilerAnswers: Codable, Equatable {
     public let sellingStatus: SellingStatus?
     public let category: String?
     public let countryCode: String

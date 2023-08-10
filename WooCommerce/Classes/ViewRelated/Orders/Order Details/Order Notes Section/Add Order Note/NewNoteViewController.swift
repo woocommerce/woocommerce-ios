@@ -67,9 +67,9 @@ class NewNoteViewController: UIViewController {
 
         analytics.track(.orderNoteAddButtonTapped)
         analytics.track(.orderNoteAdd,
-                                       withProperties: ["parent_id": order.orderID,
-                                                        "status": order.status.rawValue,
-                                                        "type": isCustomerNote ? "customer" : "private"])
+                        withProperties: ["parent_id": order.orderID,
+                                         "status": order.status.rawValue,
+                                         "type": isCustomerNote ? "customer" : "private"])
 
         let action = OrderNoteAction.addOrderNote(siteID: order.siteID,
                                                   orderID: order.orderID,
@@ -78,7 +78,7 @@ class NewNoteViewController: UIViewController {
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 self?.analytics.track(.orderNoteAddFailed, withError: error)
-                
+
                 self?.displayErrorNotice()
                 self?.configureForEditingNote()
                 return
@@ -87,11 +87,11 @@ class NewNoteViewController: UIViewController {
             if let orderNote = orderNote {
                 self?.onDidFinishEditing?(orderNote)
             }
-            
+
             self?.analytics.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
-        
+
         ServiceLocator.stores.dispatch(action)
     }
 }

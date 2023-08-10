@@ -42,6 +42,7 @@ struct FreeTrialSummaryView: View {
                             Image(uiImage: .closeButton)
                                 .foregroundColor(Color(.textSubtle))
                         }
+                        .disabled(isWaitingToContinue)
 
                         Spacer()
 

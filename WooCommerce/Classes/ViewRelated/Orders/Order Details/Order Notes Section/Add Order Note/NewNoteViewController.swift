@@ -10,6 +10,7 @@ class NewNoteViewController: UIViewController {
 
     var order: Order
     var orderNotes: [OrderNote]
+    var onDidFinishEditing: ((OrderNote) -> Void)?
 
     init(order: Order, orderNotes: [OrderNote]) {
         self.order = order
@@ -80,8 +81,9 @@ class NewNoteViewController: UIViewController {
                 self?.configureForEditingNote()
                 return
             }
-            
-            if let orderNote = orderNote {                                                      self?.orderNotes.insert(orderNote, at: 0)
+
+            if let orderNote = orderNote {
+                self?.onDidFinishEditing?(orderNote)
             }
             
             ServiceLocator.analytics.track(.orderNoteAddSuccess)

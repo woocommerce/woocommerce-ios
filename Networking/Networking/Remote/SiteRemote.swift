@@ -21,6 +21,11 @@ public protocol SiteRemoteProtocol {
     /// - Parameter siteID: Remote ID of the site to load.
     /// - Returns: The site that matches the site ID.
     func loadSite(siteID: Int64) async throws -> Site
+
+    /// Update a site title.
+    /// - Parameter title: The new title to be set for the site
+    ///
+    func updateSiteTitle(_ title: String) async throws
 }
 
 /// Site: Remote Endpoints
@@ -109,6 +114,18 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         return try await enqueue(request)
+    }
+
+    public func updateSiteTitle(_ title: String) async throws {
+        let parameters = [
+            Fields.title: title
+        ]
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .post,
+                                        path: Path.siteSettings,
+                                        parameters: parameters,
+                                        availableAsRESTRequest: true)
+        try await enqueue(request)
     }
 }
 
@@ -262,5 +279,10 @@ private extension SiteRemote {
         static func loadSite(siteID: Int64) -> String {
             "sites/\(siteID)"
         }
+
+        static let siteSettings = "settings"
+    }
+    enum Fields {
+        static let title = "title"
     }
 }

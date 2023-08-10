@@ -450,7 +450,6 @@ private extension PaymentMethodsViewModel {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let amountNormalized = currencyFormatter.convertToDecimal(formattedTotal)
 
-
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
                                                                                     amountNormalized: Float64(truncating: amountNormalized ?? 0),

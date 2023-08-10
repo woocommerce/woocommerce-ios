@@ -54,6 +54,8 @@ public final class SiteStore: Store {
             launchSite(siteID: siteID, completion: completion)
         case let .enableFreeTrial(siteID, profilerData, completion):
             enableFreeTrial(siteID: siteID, profilerData: profilerData, completion: completion)
+        case let .uploadStoreProfilerAnswers(siteID, answers, completion):
+            uploadStoreProfilerAnswers(siteID: siteID, answers: answers, completion: completion)
         case let .syncSite(siteID, completion):
             syncSite(siteID: siteID, completion: completion)
         }

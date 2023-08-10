@@ -193,4 +193,61 @@ final class SiteRemoteTests: XCTestCase {
                                                 message: "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades")
         })
     }
+
+
+    // MARK: - `uploadStoreProfilerAnswers`
+
+    func test_uploadStoreProfilerAnswers_with_profiler_data_returns_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "options", filename: "site-upload-profiler-answers-success")
+
+        // When
+        try await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: "wordPress", countryCode: "US"))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_full_profiler_data_sets_all_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: "wordPress", countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+
+        XCTAssertEqual(parameterDictionary["woocommerce_default_country"] as? String, "US")
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertEqual(profilerDictionary["is_store_country_set"] as? Bool, true)
+        XCTAssertEqual(profilerDictionary["business_choice"] as? String, "im_already_selling")
+        XCTAssertEqual(try XCTUnwrap(profilerDictionary["industry"] as? [String]), ["wordPress"])
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_category_data_does_not_contain_industry_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: nil, countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("industry"))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_selling_status_does_not_contain_business_choice_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil, category: "wordPress", countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("business_choice"))
+    }
+
+    func test_uploadStoreProfilerAnswers_returns_DotcomError_on_failure() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "options", filename: "generic_error")
+
+        await assertThrowsError({
+            // When
+            try await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil, category: "wordPress", countryCode: "US"))
+        }, errorAssert: { error in
+            (error as? DotcomError) == .unauthorized
+        })
+    }
 }

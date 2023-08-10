@@ -3,6 +3,7 @@
 14.9
 -----
 - [*] Only show Blaze banner on the My Store and Product List screens if the store has no existing orders. [https://github.com/woocommerce/woocommerce-ios/pull/10438]
+- [**] Order creation: We improved the way the merchants can request, search and select a customer when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10456]
 
 
 14.8

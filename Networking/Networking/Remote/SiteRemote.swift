@@ -17,6 +17,10 @@ public protocol SiteRemoteProtocol {
     ///
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
 
+    /// Uploads store profiler answers
+    ///
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws
+
     /// Loads a site.
     /// - Parameter siteID: Remote ID of the site to load.
     /// - Returns: The site that matches the site ID.
@@ -98,6 +102,31 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             ]
         }
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws {
+        let industry: [String]? = {
+            guard let category = answers.category else {
+                return nil
+            }
+            return [category]
+        }()
+
+        let parameters: [String: Any] = [
+            "woocommerce_default_country": answers.countryCode,
+            "woocommerce_onboarding_profile": [
+                "industry": industry,
+                "is_store_country_set": true,
+                "business_choice": answers.sellingStatus?.rawValue as Any?,
+            ].compactMapValues { $0 }
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAdmin,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.uploadStoreProfilerAnswers,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         return try await enqueue(request)
     }
 
@@ -278,6 +307,7 @@ private extension SiteRemote {
         static func siteLaunch(siteID: Int64) -> String {
             "sites/\(siteID)/launch"
         }
+        static let uploadStoreProfilerAnswers = "options"
 
         ///Path to add enable the free trial on a site.
         ///

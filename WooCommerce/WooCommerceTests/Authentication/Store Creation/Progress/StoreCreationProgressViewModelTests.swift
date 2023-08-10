@@ -66,7 +66,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
 
         // Then
         XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue)
-        XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.buildingFoundations.rawValue)
+        XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
     }
 
     func test_onAppear_increments_progressValue_as_expected_after_calling_incrementProgress() {
@@ -91,8 +91,8 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.buildingFoundations.rawValue)
-        XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.organizingStockRoom.rawValue)
+        XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
+        XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.turningOnTheLights.rawValue)
     }
 
     // MARK: Incrementing to next progress stage
@@ -108,19 +108,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         sut.incrementProgress()
 
         // Then
-        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.buildingFoundations.rawValue)
-
-        // When
-        sut.incrementProgress()
-
-        // Then
-        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.organizingStockRoom.rawValue)
-
-        // When
-        sut.incrementProgress()
-
-        // Then
-        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.applyingFinishingTouches.rawValue)
+        XCTAssertEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
 
         // When
         sut.incrementProgress()

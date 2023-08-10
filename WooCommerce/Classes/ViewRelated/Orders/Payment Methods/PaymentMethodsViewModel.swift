@@ -87,6 +87,8 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     private let featureFlagService: FeatureFlagService
 
+    private let currencySettings: CurrencySettings
+
     /// Stored orders.
     /// We need to fetch this from our storage layer because we are only provide IDs as dependencies
     /// To keep previews/UIs decoupled from our business logic.
@@ -117,6 +119,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let orderDurationRecorder: OrderDurationRecorderProtocol
         let featureFlagService: FeatureFlagService
+        let currencySettings: CurrencySettings
 
         init(presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -125,7 +128,8 @@ final class PaymentMethodsViewModel: ObservableObject {
              analytics: Analytics = ServiceLocator.analytics,
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
              orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -135,6 +139,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.cardPresentPaymentsConfiguration = configuration
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService
+            self.currencySettings = currencySettings
         }
     }
 
@@ -159,6 +164,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         analytics = dependencies.analytics
         cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
         featureFlagService = dependencies.featureFlagService
+        currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
 
         bindStoreCPPState()
@@ -441,8 +447,14 @@ private extension PaymentMethodsViewModel {
     ///
     func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
                             cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
+        let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        let amountNormalized = currencyFormatter.convertToDecimal(formattedTotal)
+
+
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
+                                                                                    amountNormalized: Float64(truncating: amountNormalized ?? 0),
+                                                                                    currency: currencySettings.currencyCode.rawValue,
                                                                                     method: method,
                                                                                     orderID: orderID,
                                                                                     cardReaderType: cardReaderType))

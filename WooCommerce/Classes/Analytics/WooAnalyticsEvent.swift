@@ -1102,6 +1102,8 @@ extension WooAnalyticsEvent {
         private enum Keys {
             static let state = "state"
             static let amount = "amount"
+            static let amountNormalized = "amount_normalized"
+            static let currency = "currency"
             static let paymentMethod = "payment_method"
             static let source = "source"
             static let flow = "flow"
@@ -1111,11 +1113,15 @@ extension WooAnalyticsEvent {
 
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
+                                          amountNormalized: Float64,
+                                          currency: String,
                                           method: PaymentMethod,
                                           orderID: Int64,
                                           cardReaderType: CardReaderType?) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [Keys.flow: flow.rawValue,
                                                                        Keys.amount: amount,
+                                                                       Keys.amountNormalized: amountNormalized,
+                                                                       Keys.currency: currency,
                                                                        Keys.paymentMethod: method.rawValue,
                                                                        Keys.orderID: orderID]
 

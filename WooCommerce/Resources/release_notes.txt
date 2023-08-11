@@ -1,1 +1,4 @@
-In this latest update, we're introducing several exciting enhancements to make your app experience even better! You can now filter products based on various new types, including subscription, variable subscription, bundle, and composite. For stores with expired WooExpress plans, upgrading within the app is more convenient than ever. Creating and managing your stores is easier with improved accessibility on the Upgrades screen. Update now to discover all the latest enhancements and improvements!
+- [*] Only show Blaze banner on the My Store and Product List screens if the store has no existing orders. [https://github.com/woocommerce/woocommerce-ios/pull/10438]
+- [**] Order creation: We improved the way the merchants can request, search and select a customer when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10456]
+
+

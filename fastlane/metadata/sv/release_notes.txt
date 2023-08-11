@@ -1,3 +1,1 @@
-Spännande nyheter för butiksägare! Först och främst kan du nu enkelt uppgradera alla tillgängliga paket. Dessutom kan du testa hur det är att hantera beställningar genom att skapa testbeställningar direkt i appen!
-
-Och det är inte allt – vår senaste uppdatering inkluderar även förbättringar av vårt produktbeskrivnings-AI. Testa det nu om du inte redan gjort det!
+I den här senaste uppdateringen presenterar vi flera spännande förbättringar för att göra din appupplevelse ännu bättre! Nu kan du filtrera produkter baserat på olika nya typer, inklusive prenumeration, variabel prenumeration, paket och komposit. För butiker med utgångna WooExpress-paket är det nu enklare än någonsin att uppgradera inom appen. Det har blivit enklare att skapa och hantera dina butiker med förbättra tillgänglighet på skärmen Uppgraderingar. Uppdatera nu och upptäck alla de senaste förbättringarna!

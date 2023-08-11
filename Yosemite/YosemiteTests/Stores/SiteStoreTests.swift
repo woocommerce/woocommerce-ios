@@ -239,4 +239,41 @@ final class SiteStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure)
         XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
     }
+
+     // MARK: - `updateSiteTitle`
+
+    func test_updateSiteTitle_returns_on_success() {
+        // Given
+        let siteID: Int64 = 123
+        remote.whenUpdatingSiteTitle(thenReturn: .success(()))
+        remote.whenLoadingSite(thenReturn: .success(Site.fake().copy(siteID: siteID)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateSiteTitle_returns_error_on_failure() throws {
+        // Given
+        let siteID: Int64 = 123
+        remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+    }
 }

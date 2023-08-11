@@ -28,6 +28,14 @@ public enum SiteAction: Action {
     ///   - siteID: ID of the site to load.
     ///   - completion: Called when the result of the synced site is available.
     case syncSite(siteID: Int64, completion: (Result<Site, Error>) -> Void)
+
+    /// Updates title for the given site.
+    /// - Parameters:
+    ///   - siteID: ID of the site to update.
+    ///   - title: The title to update
+    ///   - completion: Called when the result of the update is available.
+    ///
+    case updateSiteTitle(siteID: Int64, title: String, completion: (Result<Void, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

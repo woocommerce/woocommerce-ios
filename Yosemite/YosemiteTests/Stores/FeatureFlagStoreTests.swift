@@ -75,7 +75,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         // When
         let isEnabled = waitFor { promise in
             self.store.onAction(FeatureFlagAction
-                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false) { result in
+                .isRemoteFeatureFlagEnabled(.oneDayAfterStoreCreationNameWithoutFreeTrial, defaultValue: false) { result in
                     promise(result)
                 })
         }

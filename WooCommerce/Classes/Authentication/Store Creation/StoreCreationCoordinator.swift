@@ -79,8 +79,8 @@ private extension StoreCreationCoordinator {
 
         if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
             navigationController.isNavigationBarHidden = true
-            // TODO-10374: update store name if needed
-            showFreeTrialSummaryView(from: navigationController, storeName: "", profilerData: nil)
+
+            showFreeTrialSummaryView(from: navigationController, storeName: WooConstants.defaultStoreName, profilerData: nil)
         } else {
             showStoreNameInput(from: navigationController)
         }

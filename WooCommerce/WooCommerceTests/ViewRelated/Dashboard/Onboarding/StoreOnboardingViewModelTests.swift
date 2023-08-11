@@ -12,7 +12,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
-    private let defaultStoreName = "Site Title"
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -161,7 +160,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isNotEmpty)
-        XCTAssertNotNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
+        XCTAssertNotNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
     func test_tasksForDisplay_does_not_contain_launch_store_and_store_title_task_for_non_WPCOM_site() async {
@@ -181,7 +180,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
-        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
+        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
     func test_tasksForDisplay_does_not_contain_launch_store_task_and_store_title_for_WPCOM_site_not_under_free_trial() async {
@@ -201,12 +200,12 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
-        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
+        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
     func test_tasksForDisplay_is_sorted_when_launch_store_and_store_title_tasks_get_manually_added_for_WPCOM_site_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(name: defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true)
+        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -221,7 +220,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .storeTitle),
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .storeName),
                                                               .init(isComplete: false, type: .addFirstProduct),
                                                               .init(isComplete: false, type: .launchStore),
                                                               .init(isComplete: false, type: .customizeDomains)])
@@ -269,7 +268,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store_with_default_name() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(name: defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
@@ -305,7 +304,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        let storeNameTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
+        let storeNameTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
         XCTAssertTrue(storeNameTask.isComplete)
     }
 

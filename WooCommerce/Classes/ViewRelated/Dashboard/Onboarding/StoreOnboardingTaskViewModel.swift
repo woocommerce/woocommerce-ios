@@ -37,7 +37,7 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .getPaidImage
             title = Localization.Payments.title
             subtitle = Localization.Payments.subtitle
-        case .storeTitle:
+        case .storeName:
             icon = .setStoreNameImage
             title = Localization.StoreTitle.title
             subtitle = Localization.StoreTitle.subtitle

@@ -46,7 +46,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.icon, .customizeDomainsImage)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.icon, .getPaidImage)
-            case .storeTitle:
+            case .storeName:
                 XCTAssertEqual(sut.icon, .setStoreNameImage)
             case .unsupported:
                 XCTAssertEqual(sut.icon, .checkCircleImage)
@@ -68,7 +68,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.title)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.Payments.title)
-            case .storeTitle:
+            case .storeName:
                 XCTAssertEqual(sut.title, StoreOnboardingTaskViewModel.Localization.StoreTitle.title)
             case .unsupported:
                 XCTAssertEqual(sut.title, "")
@@ -90,7 +90,7 @@ final class StoreOnboardingTaskViewModelTests: XCTestCase {
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.CustomizeDomains.subtitle)
             case .payments, .woocommercePayments:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.Payments.subtitle)
-            case .storeTitle:
+            case .storeName:
                 XCTAssertEqual(sut.subtitle, StoreOnboardingTaskViewModel.Localization.StoreTitle.subtitle)
             case .unsupported:
                 XCTAssertEqual(sut.subtitle, "")

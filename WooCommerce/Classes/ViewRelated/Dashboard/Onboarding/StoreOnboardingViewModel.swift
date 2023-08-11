@@ -76,7 +76,7 @@ class StoreOnboardingViewModel: ObservableObject {
     }
 
     private var siteHasDefaultTitle: Bool {
-        stores.sessionManager.defaultSite?.name == Constants.defaultStoreName
+        stores.sessionManager.defaultSite?.name == WooConstants.defaultStoreName
     }
 
     /// Emits when there are no tasks available for display after reload.
@@ -150,7 +150,7 @@ private extension StoreOnboardingViewModel {
             var tasks: [StoreOnboardingTask] = []
             if isFreeTrialStore {
                 tasks.append(.init(isComplete: false, type: .launchStore))
-                tasks.append(.init(isComplete: !siteHasDefaultTitle, type: .storeTitle))
+                tasks.append(.init(isComplete: !siteHasDefaultTitle, type: .storeName))
             }
             return tasks
         }()
@@ -264,8 +264,6 @@ private extension StoreOnboardingViewModel {
 private extension StoreOnboardingViewModel {
     enum Constants {
         static let maxNumberOfTasksToDisplayInCollapsedMode = 3
-        // default value set by Core when store creation is requested with an empty store name
-        static let defaultStoreName = "Site Title"
     }
 }
 

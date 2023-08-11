@@ -23,7 +23,7 @@ public extension StoreOnboardingTask {
         case customizeDomains
         case payments
         case woocommercePayments
-        case storeTitle
+        case storeName
         case unsupported(String)
 
         public init(from decoder: Decoder) throws {
@@ -42,8 +42,8 @@ public extension StoreOnboardingTask {
                 self = .payments
             case "woocommerce-payments":
                 self = .woocommercePayments
-            case "store_title":
-                self = .storeTitle
+            case "store_name":
+                self = .storeName
             default:
                 self = .unsupported(id)
             }
@@ -54,7 +54,7 @@ public extension StoreOnboardingTask {
 private extension StoreOnboardingTask.TaskType {
     var sortOrder: Int {
         switch self {
-        case .storeTitle:
+        case .storeName:
             return 0
         case .storeDetails:
             return 1

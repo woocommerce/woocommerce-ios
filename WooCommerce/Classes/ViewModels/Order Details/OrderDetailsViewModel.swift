@@ -410,8 +410,9 @@ extension OrderDetailsViewModel {
 
         case .addOrderNote:
             ServiceLocator.analytics.track(.orderDetailAddNoteButtonTapped)
-            let newNoteViewController = NewNoteViewController(order: order, orderNotes: dataSource.orderNotes)
-            newNoteViewController.onDidFinishEditing = { [weak self] orderNote in
+            let newNoteViewModel = NewNoteViewModel(order: order, orderNotes: dataSource.orderNotes)
+            let newNoteViewController = NewNoteViewController(viewModel: newNoteViewModel)
+            newNoteViewController.viewModel.onDidFinishEditing = { [weak self] orderNote in
                 self?.insertNote(orderNote)
             }
 

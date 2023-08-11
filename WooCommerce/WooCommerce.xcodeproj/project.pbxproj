@@ -1260,6 +1260,7 @@
 		6881CCC42A5EE6BF00AEDE36 /* WooPlanCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */; };
 		6888A2C82A668D650026F5C0 /* FullFeatureListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */; };
 		6888A2CA2A66C42C0026F5C0 /* FullFeatureListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */; };
+		68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */; };
 		68D1BEDB28FFEDC20074A29E /* OrderCustomerListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */; };
 		68D1BEDD2900E4180074A29E /* CustomerSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68D1BEDC2900E4180074A29E /* CustomerSearchUICommand.swift */; };
 		68E6749F2A4DA01C0034BA1E /* WooWPComPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */; };
@@ -3661,6 +3662,7 @@
 		6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanCardView.swift; sourceTree = "<group>"; };
 		6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListView.swift; sourceTree = "<group>"; };
 		6888A2C92A66C42C0026F5C0 /* FullFeatureListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListViewModel.swift; sourceTree = "<group>"; };
+		68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteViewModel.swift; sourceTree = "<group>"; };
 		68D1BEDA28FFEDC20074A29E /* OrderCustomerListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomerListView.swift; sourceTree = "<group>"; };
 		68D1BEDC2900E4180074A29E /* CustomerSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSearchUICommand.swift; sourceTree = "<group>"; };
 		68E6749E2A4DA01C0034BA1E /* WooWPComPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooWPComPlan.swift; sourceTree = "<group>"; };
@@ -9630,6 +9632,7 @@
 			children = (
 				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
 				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
+				68C31B702A8617C500AE5C5A /* NewNoteViewModel.swift */,
 			);
 			path = "Add Order Note";
 			sourceTree = "<group>";
@@ -12220,6 +12223,7 @@
 				AEC12B7A2758D55900845F97 /* OrderStatusList.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				B958640C2A66847B002C4C6E /* CouponListView.swift in Sources */,
+				68C31B712A8617C500AE5C5A /* NewNoteViewModel.swift in Sources */,
 				D41C9F2E26D9A0E900993558 /* WhatsNewViewModel.swift in Sources */,
 				02ECD1E424FF5E0B00735BE5 /* AddProductCoordinator.swift in Sources */,
 				45381B4527341B8A003FEC5F /* DateRangeFilterViewController.swift in Sources */,

@@ -1113,7 +1113,7 @@ extension WooAnalyticsEvent {
 
         static func paymentsFlowCompleted(flow: Flow,
                                           amount: String,
-                                          amountNormalized: Float64,
+                                          amountNormalized: Int,
                                           currency: String,
                                           method: PaymentMethod,
                                           orderID: Int64,

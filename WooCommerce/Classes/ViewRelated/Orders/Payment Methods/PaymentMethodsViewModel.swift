@@ -448,11 +448,15 @@ private extension PaymentMethodsViewModel {
     func trackFlowCompleted(method: WooAnalyticsEvent.PaymentsFlow.PaymentMethod,
                             cardReaderType: WooAnalyticsEvent.PaymentsFlow.CardReaderType?) {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
-        let amountNormalized = currencyFormatter.convertToDecimal(formattedTotal)
+        let amountNormalized = currencyFormatter.convertToDecimal(formattedTotal) ?? 0
+
+        let amountInSmallestUnit = amountNormalized
+            .multiplying(by: NSDecimalNumber(value: currencySettings.currencyCode.smallestCurrencyUnitMultiplier))
+            .intValue
 
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCompleted(flow: flow,
                                                                                     amount: formattedTotal,
-                                                                                    amountNormalized: Float64(truncating: amountNormalized ?? 0),
+                                                                                    amountNormalized: amountInSmallestUnit,
                                                                                     currency: currencySettings.currencyCode.rawValue,
                                                                                     method: method,
                                                                                     orderID: orderID,

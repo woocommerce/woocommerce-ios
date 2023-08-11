@@ -295,15 +295,13 @@ final class StorePlanSynchronizerTests: XCTestCase {
         synchronizer.reloadPlan()
 
         // Then
-        waitUntil(timeout: 5) {
-            /// 5 notifications include:
-            /// - 1 day before expiration date
-            /// - 1 day after expiration date
+        waitUntil(timeout: 3) {
+            /// 3 notifications include:
             /// - 6 hrs after trial subscription
             /// - Free trial survey 24 hrs after trial subscription
             /// - 3 days after answering "Still exploring" in Free trial survey
             /// Update this number based on the number of notifications we support.
-            pushNotesManager.canceledLocalNotificationScenarios.count == 5
+            pushNotesManager.canceledLocalNotificationScenarios.count == 3
         }
 
         // No local notifications scheduling requested for a non free trial plan

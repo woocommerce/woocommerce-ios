@@ -19,6 +19,7 @@ extension UserDefaults {
         case deviceToken
         case errorLoginSiteAddress
         case hasFinishedOnboarding
+        case installationDate
         case userOptedInAnalytics
         case userOptedInCrashLogging = "userOptedInCrashlytics"
         case versionOfLastRun

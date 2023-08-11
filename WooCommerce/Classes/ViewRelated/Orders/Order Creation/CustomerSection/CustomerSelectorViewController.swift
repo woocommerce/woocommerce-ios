@@ -117,7 +117,6 @@ private extension CustomerSelectorViewController {
                                                                 }
                                                             })
                                                         },
-                                                        showSearchButton: false,
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)
         let navigationController = WooNavigationController(rootViewController: rootViewController)

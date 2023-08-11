@@ -28,22 +28,30 @@ public class TelemetryStore: Store {
         }
 
         switch action {
-        case .sendTelemetry(let siteID, let versionString, let telemetryLastReportedTime, let onCompletion):
-            sendTelemetry(siteID: siteID, versionString: versionString, telemetryLastReportedTime: telemetryLastReportedTime, onCompletion: onCompletion)
+        case .sendTelemetry(let siteID, let versionString, let telemetryLastReportedTime, let installationDate, let onCompletion):
+            sendTelemetry(siteID: siteID,
+                          versionString: versionString,
+                          telemetryLastReportedTime: telemetryLastReportedTime,
+                          installationDate: installationDate,
+                          onCompletion: onCompletion)
         }
     }
 }
 
 private extension TelemetryStore {
 
-    func sendTelemetry(siteID: Int64, versionString: String, telemetryLastReportedTime: Date?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func sendTelemetry(siteID: Int64,
+                       versionString: String,
+                       telemetryLastReportedTime: Date?,
+                       installationDate: Date?,
+                       onCompletion: @escaping (Result<Void, Error>) -> Void) {
         if let telemetryLastReportedTime = telemetryLastReportedTime,
            Date().timeIntervalSince(telemetryLastReportedTime) < minimalIntervalBetweenReports {
             // send telemetry for same store only after timeout
             onCompletion(.failure(TelemetryError.requestThrottled))
             return
         }
-        telemetryRemote.sendTelemetry(for: siteID, versionString: versionString, completion: onCompletion)
+        telemetryRemote.sendTelemetry(for: siteID, versionString: versionString, installationDate: installationDate, completion: onCompletion)
     }
 }
 

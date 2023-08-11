@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-03 09:54:22+0000 */
+/* Translation-Revision-Date: 2023-08-10 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -380,8 +380,15 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "復原擱置的購物車項目";
 
+/* Feature option in the store creation features question. */
+"Ability to scale as my business grows" = "能隨著業務增長而擴大";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "關於此應用程式";
+
+/* Top header text of the store creation profiler question about the challenges.
+   Top header text of the store creation profiler question about the features. */
+"About you" = "關於你";
 
 /* No comment provided by engineer. */
 "Accept local payments'" = "接受當地付款方式";
@@ -391,6 +398,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "取得折扣運費。 目前適用於 DHL 和 USPS，未來還會擴及更多服務！";
+
+/* Feature option in the store creation features question. */
+"Access to a wide range of plugins and extensions" = "存取各式各樣的外掛程式和擴充功能";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "帳戶類型";
@@ -567,6 +577,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "新增信用卡";
+
+/* Title of the order customer selection screen. */
+"Add customer details" = "新增顧客詳細資料";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "讓 AI 幫助你迅速新增說明。 立即試用我們的功能！";
@@ -1504,9 +1517,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "選擇最符合你業務定義的類別。";
 
-/* Title of the domain selector in the store creation flow. */
-"Choose a domain" = "選擇網域";
-
 /* Title of the password field on the account creation form. */
 "Choose a password" = "選擇密碼";
 
@@ -1521,6 +1531,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "選擇你的付款服務供應商";
+
+/* Subtitle of the store creation profiler question about the challenges. */
+"Choose your concerns or difficulties below. You can select more than one option." = "請於下方選擇你的疑慮或遭遇的難處。 可以複選。";
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "選擇付款方式";
@@ -1637,6 +1650,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for composite product type. */
 "Composite" = "複合產品";
+
+/* Feature option in the store creation features question. */
+"Comprehensive sales and analytics reports" = "全方位銷售與分析報告";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "已更新設定";
@@ -2132,6 +2148,9 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "顧客需輸入此代碼才能使用優惠券。";
 
+/* Feature option in the store creation features question. */
+"Customization options for my store design" = "可針對商店設計自訂選項";
+
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "自訂你的網域";
 
@@ -2467,6 +2486,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "使用唯一代碼輕鬆識別你的產品";
+
+/* Feature option in the store creation features question. */
+"Easy product management and inventory tracking" = "易於管理商品和追蹤庫存";
 
 /* Option in the store creation selling platforms question. */
 "Ebay" = "eBay";
@@ -2944,6 +2966,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "無法擷取應用程式密碼的授權 URL， 請再試一次。";
 
+/* Error message in the Add Customer to order screen when getting the customer information */
+"Failed to fetch the customer data. Please try again." = "無法擷取顧客資料。 請再試一次。";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "擷取您的收費詳細資訊時失敗。 請再試一次。";
 
@@ -3044,6 +3069,9 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "尋找你的商店地址";
 
+/* Challenge option in the store creation challenges question. */
+"Finding customers" = "尋找顧客";
+
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "在商店管理員中完成設定";
 
@@ -3067,6 +3095,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的商品折扣";
+
+/* Feature option in the store creation features question. */
+"Flexible and secure payment options" = "彈性、安全的付款選項";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "按照螢幕上的指示付款";
@@ -3581,6 +3612,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "應用程式內購買項目";
 
+/* Feature option in the store creation features question. */
+"In-person payment" = "親自收款";
+
 /* Application's Inactive State */
 "Inactive" = "未啟用";
 
@@ -3770,9 +3804,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "核發退款";
-
-/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Issue purchasing the plan" = "購買方案時發生問題";
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "正在核發退款…";
@@ -3991,6 +4022,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "告訴我們可以如何協助";
+
+/* Subtitle of the store creation profiler question about the features. */
+"Let us know what you are looking forward to using in our app." = "你希望我們的應用程式提供哪些功能或體驗？請告訴我們。";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "讓我們瞭解你的想法";
@@ -4255,6 +4289,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "管理你的訂購";
+
+/* Challenge option in the store creation challenges question. */
+"Managing inventory" = "管理庫存";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "手動時差";
@@ -4750,9 +4787,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to dismiss the coupon error notice
    Alert dismissal title
    Button text to confirm that we want to generate all variations
-   Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
-   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -4954,7 +4989,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "原包裝";
 
-/* Generic name of non-default discount types
+/* Challenge option in the store creation challenges question.
+   Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
@@ -4969,6 +5005,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "其他網站";
+
+/* Feature option in the store creation features question. */
+"Others" = "其他";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5297,9 +5336,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "請確認執行的是 WooCommerce 最新版本，並於稍後再試一次。";
 
-/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"Please remain connected." = "請維持連結。";
-
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "請選取包裹";
 
@@ -5308,9 +5344,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "請嘗試其他網域。";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "請再試一次並確認你已登入符合購買條件的 App Store 帳戶。";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "請稍後再試或與我們聯絡，我們將很樂意提供協助！";
@@ -5329,9 +5362,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "請再試一次，或聯絡支援團隊以取得協助";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
-"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "請再試一次，或離開此畫面並再次檢查你的商店 (如果你先前在付款處理過程中離開了結帳畫面)。";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -6243,6 +6273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "搜尋網域";
 
+/* Customer Search Placeholder */
+"Search for customers" = "搜尋顧客";
+
 /* Search Orders */
 "Search orders" = "搜尋訂單";
 
@@ -6408,6 +6441,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "設定你要運送產品的包裹。 我們會儲存該設定，以供未來的訂單使用。";
 
+/* Challenge option in the store creation challenges question. */
+"Setting up the online store" = "架設流程";
+
 /* Settings button in the hub menu
    Settings navigation title
    Title of the hub menu settings button */
@@ -6522,6 +6558,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Access the store shipping zones. */
 "Shipping Zones" = "運送區域";
+
+/* Challenge option in the store creation challenges question. */
+"Shipping and logistics" = "航運與物流";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "貨運業者";
@@ -6725,9 +6764,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "發生錯誤，請稍後再試一次。";
-
-/* Message of the alert when the user cannot create a store because they already created one before. */
-"Sorry, but you can only create one store. Your account is already associated with an active store." = "不好意思，但你只能建立一間商店。 你的帳號已經與啟用中的商店綁定。";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "很抱歉，你的使用者名稱含有無效的字詞 %@。";
@@ -7655,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "這是顧客能夠存取的檔案 URL。 輸入的 URL 應該已編碼。";
 
-/* Subtitle of the domain selector in the store creation flow. */
-"This is where people will find you on the Internet. You can add another domain later." = "這是人們在網際網路上找到你的地方。 你可以稍後新增另一個網域。";
-
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "此商品目前在包裹 %1$d 中：%2$@。 你想移到哪裡？";
 
@@ -8583,9 +8616,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Walmart" = "Walmart";
 
-/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "我們正在準備建立你的商店";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "很抱歉，我們不支援此商店的親自收款功能。";
 
@@ -8695,12 +8725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "我們無法用此 URL 連上 Jetpack 網站。如需協助，請與我們聯絡。";
 
-/* Message of the alert when the user cannot create a store for some reason. */
-"We're sorry, but store creation is not currently available in the app." = "不好意思，但目前尚無法在 App 中使用建立商店的功能。";
-
-/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
-"We're sorry, but store creation is not currently available in your country in the app." = "不好意思，但你所在的國家或地區目前尚無法在 App 中使用建立商店的功能。";
-
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "不好意思，我們找不到任何符合「%@」的訂單";
 
@@ -8755,6 +8779,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "我們一直努力讓你可以在裝置上查看並編輯優惠券！";
 
+/* Title of the store creation profiler question about the challenges. */
+"What challenges you in starting or running an online Store?" = "架設或經營網路商店時，哪些事讓你感到棘手？";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "我該使用什麼電子郵件登入？";
 
@@ -8797,6 +8824,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the store creation profiler question about the store selling status. */
 "Where are you on your commerce journey?" = "你的商務旅程進展到了哪個階段？";
+
+/* Title of the store creation profiler question about the features. */
+"Which features are you most interested in?" = "你最喜歡哪些功能？";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "糟糕，發生了點錯誤，我們無法將你登入。請再試一次！";
@@ -9076,6 +9106,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "你網站的網域名稱";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"Your site plan has ended." = "你的網站方案已結束。";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "已建立你的商店！";

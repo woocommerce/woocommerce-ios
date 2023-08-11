@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-01 09:54:27+0000 */
+/* Translation-Revision-Date: 2023-08-09 12:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -380,8 +380,15 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "استرداد عربة التسوق المهملة";
 
+/* Feature option in the store creation features question. */
+"Ability to scale as my business grows" = "إمكانية التطوير كلما شهدت أعمالي نموًا";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "حول التطبيق";
+
+/* Top header text of the store creation profiler question about the challenges.
+   Top header text of the store creation profiler question about the features. */
+"About you" = "نبذة عنك";
 
 /* No comment provided by engineer. */
 "Accept local payments'" = "قبول المدفوعات المحلية";
@@ -391,6 +398,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "يمكنك الوصول إلى أسعار الشحن المُخفَّضة. متاح حاليًا مع DHL وUSPS والمزيد يتوافر قريبًا!";
+
+/* Feature option in the store creation features question. */
+"Access to a wide range of plugins and extensions" = "الوصول إلى مجموعة كبيرة من الإضافات والامتدادات";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "نوع الحساب";
@@ -567,6 +577,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "إضافة بطاقة ائتمان";
+
+/* Title of the order customer selection screen. */
+"Add customer details" = "إضافة تفاصيل العميل";
 
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "أضف أوصاف في لمح البصر باستخدام الذكاء الاصطناعي. جرّب الميزة التي نطرحها الآن!";
@@ -1504,9 +1517,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "اختر تصنيفًا يُعرّف عملك على أفضل وجه.";
 
-/* Title of the domain selector in the store creation flow. */
-"Choose a domain" = "اختيار نطاق";
-
 /* Title of the password field on the account creation form. */
 "Choose a password" = "اختر كلمة مرور";
 
@@ -1521,6 +1531,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "اختيار مزوِّد الدفع الخاص بك";
+
+/* Subtitle of the store creation profiler question about the challenges. */
+"Choose your concerns or difficulties below. You can select more than one option." = "اختر المخاوف التي تشعر بها أو الصعوبات التي تواجهها أدناه. يمكنك تحديث أكثر من خيار واحد.";
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "اختيار طريقة الدفع الخاصة بك";
@@ -1637,6 +1650,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for composite product type. */
 "Composite" = "مركّب";
+
+/* Feature option in the store creation features question. */
+"Comprehensive sales and analytics reports" = "المبيعات الشاملة وتقارير التحليلات";
 
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "تم تحديث التكوين";
@@ -2132,6 +2148,9 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "يحتاج العملاء إلى إدخال هذا الرمز لاستخدام القسيمة.";
 
+/* Feature option in the store creation features question. */
+"Customization options for my store design" = "خيارات التخصيص الخاصة بتصميم متجري";
+
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "تخصيص نطاقك";
 
@@ -2467,6 +2486,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "حدِّد منتجاتك التي تحتوي على أكواد مميزة بسهولة.";
+
+/* Feature option in the store creation features question. */
+"Easy product management and inventory tracking" = "سهولة إدارة المنتجات وتعقّب المخزون";
 
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
@@ -2944,6 +2966,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "فشل إحضار عنوان URL الخاص بالتخويل بالنسبة إلى كلمات مرور التطبيق. ترجى المحاولة مجددًا.";
 
+/* Error message in the Add Customer to order screen when getting the customer information */
+"Failed to fetch the customer data. Please try again." = "فشل إحضار بيانات العميل. ترجى المحاولة مجددًا.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "فشل إحضار تفاصيل الدفع الخاصة بك. يرجى المحاولة مرة أخرى.";
 
@@ -3044,6 +3069,9 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "العثور على عنوان متجرك";
 
+/* Challenge option in the store creation challenges question. */
+"Finding customers" = "العثور على العملاء";
+
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "إنهاء الإعداد في مسؤول المخزن";
 
@@ -3067,6 +3095,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "خصم ثابت للمنتجات";
+
+/* Feature option in the store creation features question. */
+"Flexible and secure payment options" = "خيارات الدفع المرنة والآمنة";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "اتباع التعليمات على الشاشة للدفع";
@@ -3581,6 +3612,9 @@ which should be translated separately and considered part of this sentence. */
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "عمليات الشراء داخل التطبيق";
 
+/* Feature option in the store creation features question. */
+"In-person payment" = "المدفوعات الشخصية";
+
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
 
@@ -3770,9 +3804,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "نشر مبلغ الاسترداد";
-
-/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Issue purchasing the plan" = "حدثت مشكلة في أثناء شراء الخطة";
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "جارٍ إصدار أمر باسترداد الأموال...";
@@ -3991,6 +4022,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "السماح لنا بمعرفة الكيفية التي يمكننا مساعدتك بها";
+
+/* Subtitle of the store creation profiler question about the features. */
+"Let us know what you are looking forward to using in our app." = "دعنا نعرف ما تتطلع إلى استخدامه في تطبيقنا. ";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "السماح لنا بمعرفة رأيك";
@@ -4255,6 +4289,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "إدارة اشتراكك";
+
+/* Challenge option in the store creation challenges question. */
+"Managing inventory" = "إدارة المخزون";
 
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "تعديلات يدويّة";
@@ -4750,9 +4787,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to dismiss the coupon error notice
    Alert dismissal title
    Button text to confirm that we want to generate all variations
-   Button title to cancel the alert when the user cannot create a store.
    Button title to dismiss the alert when the store cannot be created in the store creation flow.
-   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -4954,7 +4989,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "الحزمة الأصلية";
 
-/* Generic name of non-default discount types
+/* Challenge option in the store creation challenges question.
+   Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
@@ -4969,6 +5005,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "مواقع أخرى";
+
+/* Feature option in the store creation features question. */
+"Others" = "أخرى";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5297,9 +5336,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "يرجى التأكُّد من أنك تستخدم أحدث إصدار من WooCommerce وحاول مرة أخرى لاحقًا.";
 
-/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"Please remain connected." = "يرجى البقاء متصلاً.";
-
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "يرجى تحديد حزمة";
 
@@ -5308,9 +5344,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
 "Please try a different domain." = "ترجى تجربة نطاق مختلف.";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "ترجى المحاولة مجددًا والتأكد من أنك سجّلت الدخول إلى حساب متجر التطبيقات المؤهل لإتمام عملية الشراء.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "يرجى المحاولة مرة أخرى لاحقًا أو تواصل معنا وستسرنا مساعدتك!";
@@ -5329,9 +5362,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "ترجى المحاولة مجددًا أو الاتصال بالدعم للحصول على المساعدة";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
-"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "ترجى المحاولة مجددًا، أو الخروج من الشاشة والتحقق مرة أخرى على متجرك إذا غادرت شاشة السداد سابقًا بينما يكون الدفع قيد التقدم.";
 
 /* Account creation error when an unexpected error occurs.
    Message of the alert when the store cannot be created in the store creation flow.
@@ -6243,6 +6273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "البحث عن نطاق";
 
+/* Customer Search Placeholder */
+"Search for customers" = "البحث عن العملاء";
+
 /* Search Orders */
 "Search orders" = "البحث عن الطلبات";
 
@@ -6408,6 +6441,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "قم بإعداد الحزمة التي ستستخدمها لشحن منتجاتك. سنقوم بحفظها للطلبات المستقبلية.";
 
+/* Challenge option in the store creation challenges question. */
+"Setting up the online store" = "إعداد المتجر على الإنترنت";
+
 /* Settings button in the hub menu
    Settings navigation title
    Title of the hub menu settings button */
@@ -6522,6 +6558,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Access the store shipping zones. */
 "Shipping Zones" = "مناطق الشحن";
+
+/* Challenge option in the store creation challenges question. */
+"Shipping and logistics" = "الشحن والإمداد والتموين";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "شركة نقل مخصصة للشحن";
@@ -6725,9 +6764,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "هناك خطأ ما. ترجى المحاولة مجددًا في وقت لاحق.";
-
-/* Message of the alert when the user cannot create a store because they already created one before. */
-"Sorry, but you can only create one store. Your account is already associated with an active store." = "عذرًا، ولكن يمكنك إنشاء متجر واحد فقط. حساب مرتبط بالفعل بمتجر نشط.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
@@ -7655,9 +7691,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "هذا هو عنوان URL للمنتج الذي سيصل العملاء إليه. ينبغي ترميز عناوين URL التي تم إدخالها بالفعل";
 
-/* Subtitle of the domain selector in the store creation flow. */
-"This is where people will find you on the Internet. You can add another domain later." = "هذا هو المكان الذي سيجدك فيه الأشخاص على الإنترنت. يمكنك إضافة نطاق آخر لاحقًا.";
-
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "هذا العنصر موجود في الحزمة ⁦%1$d⁩: %2$@. أين ترغب في نقله؟";
 
@@ -8583,9 +8616,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Walmart" = "Walmart";
 
-/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "إننا على استعداد لإنشاء متجرك";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "عذرًا، ولكن لا يمكننا دعم المدفوعات الشخصية لهذا المخزن.";
 
@@ -8695,12 +8725,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "لا يمكننا الاتصال بموقع Jetpack على عنوان URL هذا. اتصل بنا لطلب المساعدة.";
 
-/* Message of the alert when the user cannot create a store for some reason. */
-"We're sorry, but store creation is not currently available in the app." = "نشعر بالأسف، ولكن إنشاء المتجر غير متوافر حاليًا في التطبيق.";
-
-/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
-"We're sorry, but store creation is not currently available in your country in the app." = "نشعر بالأسف، ولكن إنشاء المتجر غير متوافر حاليًا في بلدك الذي تم إدخاله في التطبيق.";
-
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "عذرًا، لم نتمكن من العثور على أي طلب يطابق %@";
 
@@ -8755,6 +8779,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "لقد كنا نعمل على إتاحة عرض القسائم وتحريرها من جهازك!";
 
+/* Title of the store creation profiler question about the challenges. */
+"What challenges you in starting or running an online Store?" = "ما التحديات التي تواجهك عند بدء متجر على الإنترنت أو تشغيله؟";
+
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "ما البريد الإلكتروني الذي أستخدمه لتسجيل الدخول؟";
 
@@ -8797,6 +8824,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the store creation profiler question about the store selling status. */
 "Where are you on your commerce journey?" = "أين تتمركز في رحلتك التجارية؟";
+
+/* Title of the store creation profiler question about the features. */
+"Which features are you most interested in?" = "ما الميزات التي تهتم بها أكثر؟";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "عذرًا، حدث خطأ ما وتعذر عليك تسجيل الدخول. يرجى المحاولة مرة أخرى!";
@@ -9076,6 +9106,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "نطاقات موقعك";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"Your site plan has ended." = "انتهت خطة موقعك.";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "تم إنشاء متجرك!";

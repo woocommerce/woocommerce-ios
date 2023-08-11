@@ -54,10 +54,12 @@ public final class SiteStore: Store {
             launchSite(siteID: siteID, completion: completion)
         case let .enableFreeTrial(siteID, profilerData, completion):
             enableFreeTrial(siteID: siteID, profilerData: profilerData, completion: completion)
-        case let .uploadStoreProfilerAnswers(siteID, answers, completion):
-            uploadStoreProfilerAnswers(siteID: siteID, answers: answers, completion: completion)
         case let .syncSite(siteID, completion):
             syncSite(siteID: siteID, completion: completion)
+        case let .updateSiteTitle(siteID, title, completion):
+            updateSiteTitle(siteID: siteID, title: title, completion: completion)
+        case let .uploadStoreProfilerAnswers(siteID, answers, completion):
+            uploadStoreProfilerAnswers(siteID: siteID, answers: answers, completion: completion)
         }
     }
 }
@@ -117,6 +119,20 @@ private extension SiteStore {
                     return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
                 completion(.success(syncedSite))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.updateSiteTitle(siteID: siteID, title: title)
+                // Updates site info in local storage immediately.
+                let site = try await remote.loadSite(siteID: siteID)
+                await upsertStoredSiteInBackground(readOnlySite: site)
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }

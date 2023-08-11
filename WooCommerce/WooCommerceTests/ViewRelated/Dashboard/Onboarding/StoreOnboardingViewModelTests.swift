@@ -11,6 +11,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
+    private let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -144,16 +145,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
         ]))
-
-        let sitePlan = WPComSitePlan(id: self.freeTrialID,
-                                     hasDomainCredit: false,
-                                     expiryDate: Date().addingDays(14))
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -187,35 +183,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasksForDisplay_does_not_contain_launch_store_task_for_WPCOM_site_not_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultSite = .fake().copy(plan: "ecommerce-plan", isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
         ]))
-
-        let sitePlan = WPComSitePlan(hasDomainCredit: false)
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
-
-        let sut = StoreOnboardingViewModel(siteID: 0,
-                                           isExpanded: true,
-                                           stores: stores,
-                                           defaults: defaults)
-        // When
-        await sut.reloadTasks()
-
-        // Then
-        XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
-    }
-
-    func test_tasksForDisplay_does_not_contain_launch_store_task_for_WPCOM_site_when_checking_site_plan_fails() async {
-        // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
-        sessionManager.defaultRoles = [.administrator]
-        mockLoadOnboardingTasks(result: .success([
-            .init(isComplete: false, type: .addFirstProduct),
-        ]))
-
-        mockLoadSiteCurrentPlan(result: .failure(MockError()))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -230,17 +202,12 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasksForDisplay_is_sorted_when_launch_store_task_gets_manually_added_for_WPCOM_site_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .customizeDomains),
         ]))
-
-        let sitePlan = WPComSitePlan(id: self.freeTrialID,
-                                     hasDomainCredit: false,
-                                     expiryDate: Date().addingDays(14))
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -257,14 +224,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_launch_store_task_is_marked_as_complete_for_already_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
         ]))
-
-        let sitePlan = WPComSitePlan(hasDomainCredit: false)
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -280,14 +244,11 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_launch_store_task_is_not_marked_as_complete_for_non_public_store() async throws {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true, isPublic: false)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: false)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore)
         ]))
-
-        let sitePlan = WPComSitePlan(hasDomainCredit: false)
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -303,7 +264,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
@@ -311,9 +272,6 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .woocommercePayments),
         ]))
-
-        let sitePlan = WPComSitePlan(hasDomainCredit: false)
-        mockLoadSiteCurrentPlan(result: .success(sitePlan))
 
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: true,
@@ -627,20 +585,18 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            defaults: defaults,
                                            featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
         let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .storeDetails),
+            .init(isComplete: false, type: .storeTitle),
             .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
-        mockLoadSiteCurrentPlan(result: .failure(MockError()))
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        XCTAssertEqual(sut.tasksForDisplay.count, 4)
         sut.tasksForDisplay.forEach { taskViewModel in
             XCTAssertNil(taskViewModel.badgeText)
         }
@@ -661,18 +617,16 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         let tasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
         mockLoadOnboardingTasks(result: .success(tasks))
-        mockLoadSiteCurrentPlan(result: .failure(MockError()))
 
         // When
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.count == 5)
+        XCTAssertEqual(sut.tasksForDisplay.count, 4)
         sut.tasksForDisplay.forEach { taskViewModel in
             switch taskViewModel.task.type {
             case .addFirstProduct:
@@ -985,15 +939,6 @@ private extension StoreOnboardingViewModelTests {
     func mockLoadOnboardingTasks(result: Result<[StoreOnboardingTask], Error>) {
         stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
             guard case let .loadOnboardingTasks(_, completion) = action else {
-                return XCTFail()
-            }
-            completion(result)
-        }
-    }
-
-    func mockLoadSiteCurrentPlan(result: Result<WPComSitePlan, Error>) {
-        stores.whenReceivingAction(ofType: PaymentAction.self) { action in
-            guard case let .loadSiteCurrentPlan(_, completion) = action else {
                 return XCTFail()
             }
             completion(result)

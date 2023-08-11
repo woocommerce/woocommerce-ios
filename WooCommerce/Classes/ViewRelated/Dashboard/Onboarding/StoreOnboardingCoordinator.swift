@@ -62,7 +62,7 @@ final class StoreOnboardingCoordinator: Coordinator {
         case .payments:
             showPaymentsSetup()
         case .storeName:
-            showStoreTitleSetup()
+            showStoreNameSetup()
         case .unsupported:
             assertionFailure("Unexpected onboarding task: \(task)")
         }
@@ -142,7 +142,7 @@ private extension StoreOnboardingCoordinator {
         coordinator.start()
     }
 
-    func showStoreTitleSetup() {
+    func showStoreNameSetup() {
         // TODO
     }
 }

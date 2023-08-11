@@ -286,8 +286,9 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
-                                                                                                          category: "clothing_and_accessories",
-                                                                                                          countryCode: "US")) { result in
+                                                                                                  sellingPlatforms: "wordpress",
+                                                                                                  category: "clothing_and_accessories",
+                                                                                                  countryCode: "US")) { result in
                 promise(result)
             })
         }
@@ -303,8 +304,9 @@ final class SiteStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
-                                                                                                          category: "clothing_and_accessories",
-                                                                                                          countryCode: "US")) { result in
+                                                                                                  sellingPlatforms: "wordpress",
+                                                                                                  category: "clothing_and_accessories",
+                                                                                                  countryCode: "US")) { result in
                 promise(result)
             })
         }

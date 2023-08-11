@@ -217,12 +217,20 @@ final class SiteRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "options", filename: "site-upload-profiler-answers-success")
 
         // When
-        try await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: "wordPress", countryCode: "US"))
+        try await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                    answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                   sellingPlatforms: "wordpress",
+                                                                   category: "clothing_and_accessories",
+                                                                   countryCode: "US"))
     }
 
     func test_uploadStoreProfilerAnswers_with_full_profiler_data_sets_all_parameters() async throws {
         // When
-        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: "wordPress", countryCode: "US"))
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
 
         // Then
         let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
@@ -231,12 +239,17 @@ final class SiteRemoteTests: XCTestCase {
         let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
         XCTAssertEqual(profilerDictionary["is_store_country_set"] as? Bool, true)
         XCTAssertEqual(profilerDictionary["business_choice"] as? String, "im_already_selling")
-        XCTAssertEqual(try XCTUnwrap(profilerDictionary["industry"] as? [String]), ["wordPress"])
+        XCTAssertEqual(profilerDictionary["selling_platforms"] as? String, "wordpress")
+        XCTAssertEqual(try XCTUnwrap(profilerDictionary["industry"] as? [String]), ["clothing_and_accessories"])
     }
 
     func test_uploadStoreProfilerAnswers_with_nil_category_data_does_not_contain_industry_parameters() async throws {
         // When
-        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: .alreadySelling, category: nil, countryCode: "US"))
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                    sellingPlatforms: nil,
+                                                                    category: nil,
+                                                                    countryCode: "US"))
 
         // Then
         let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
@@ -246,7 +259,11 @@ final class SiteRemoteTests: XCTestCase {
 
     func test_uploadStoreProfilerAnswers_with_nil_selling_status_does_not_contain_business_choice_parameters() async throws {
         // When
-        try? await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil, category: "wordPress", countryCode: "US"))
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
 
         // Then
         let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
@@ -254,13 +271,32 @@ final class SiteRemoteTests: XCTestCase {
         XCTAssertFalse(profilerDictionary.keys.contains("business_choice"))
     }
 
+    func test_uploadStoreProfilerAnswers_with_nil_selling_platforms_does_not_contain_selling_platforms_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: nil,
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("selling_platforms"))
+    }
+
+
     func test_uploadStoreProfilerAnswers_returns_DotcomError_on_failure() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "options", filename: "generic_error")
 
         await assertThrowsError({
             // When
-            try await remote.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil, category: "wordPress", countryCode: "US"))
+            try await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                        answers: .init(sellingStatus: nil,
+                                                                       sellingPlatforms: "wordpress",
+                                                                       category: "clothing_and_accessories",
+                                                                       countryCode: "US"))
         }, errorAssert: { error in
             (error as? DotcomError) == .unauthorized
         })

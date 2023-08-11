@@ -125,7 +125,8 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             "woocommerce_onboarding_profile": [
                 "industry": industry,
                 "is_store_country_set": true,
-                "business_choice": answers.sellingStatus?.rawValue as Any?,
+                "business_choice": answers.sellingStatus?.remoteValue as Any?,
+                "selling_platforms": answers.sellingPlatforms as Any?
             ].compactMapValues { $0 }
         ]
         let request = JetpackRequest(wooApiVersion: .wcAdmin,
@@ -239,26 +240,38 @@ public extension SiteCreationResponse {
 /// Answers from the site creation profiler questions.
 public struct StoreProfilerAnswers: Codable, Equatable {
     public let sellingStatus: SellingStatus?
+    public let sellingPlatforms: String?
     public let category: String?
     public let countryCode: String
 
     /// Selling status options.
     /// Its raw value is the value to be sent to the backend.
     /// https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-admin/client/core-profiler/pages/UserProfile.tsx#L20
-    public enum SellingStatus: String, Codable {
+    public enum SellingStatus: Codable {
         /// Just starting my business.
-        case justStarting = "im_just_starting_my_business"
+        case justStarting
         /// Already selling
-        case alreadySelling = "im_already_selling"
+        case alreadySellingButNotOnline
         /// Setting up a store for a client
-        case settingUpStoreForClient = "im_setting_up_a_store_for_a_client"
+        case alreadySellingOnline
+
+        var remoteValue: String {
+            switch self {
+            case .justStarting:
+                return "im_just_starting_my_business"
+            case .alreadySellingButNotOnline, .alreadySellingOnline:
+                return "im_already_selling"
+            }
+        }
     }
 
     public init(sellingStatus: StoreProfilerAnswers.SellingStatus?,
+                sellingPlatforms: String?,
                 category: String?,
                 countryCode: String) {
-        self.category = category
         self.sellingStatus = sellingStatus
+        self.sellingPlatforms = sellingPlatforms
+        self.category = category
         self.countryCode = countryCode
     }
 }

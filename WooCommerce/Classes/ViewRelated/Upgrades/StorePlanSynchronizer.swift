@@ -160,15 +160,6 @@ private extension StorePlanSynchronizer {
     func cancelFreeTrialExpirationNotifications(siteID: Int64) async {
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
-            }
-            group.addTask { [weak self] in
-                await self?.localNotificationScheduler.cancel(scenario: .oneDayBeforeFreeTrialExpires(
-                    siteID: siteID,
-                    expiryDate: Date() // placeholder date, irrelevant to the notification identifier
-                ))
-            }
-            group.addTask { [weak self] in
                 await self?.localNotificationScheduler.cancel(scenario: .sixHoursAfterFreeTrialSubscribed(siteID: siteID))
             }
             group.addTask { [weak self] in

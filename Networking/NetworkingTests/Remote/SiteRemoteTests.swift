@@ -194,6 +194,21 @@ final class SiteRemoteTests: XCTestCase {
         })
     }
 
+    // MARK: - `updateSiteTitle`
+    func test_updateSiteTitle_returns_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "settings", filename: "site-settings-success")
+
+        // When
+        try await remote.updateSiteTitle(siteID: 123, title: "Test")
+    }
+
+    func test_updateSiteTitle_returns_failure_on_empty_response() async throws {
+        await assertThrowsError({
+            // When
+            _ = try await remote.updateSiteTitle(siteID: 123, title: "Test")
+        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
 
     // MARK: - `uploadStoreProfilerAnswers`
 

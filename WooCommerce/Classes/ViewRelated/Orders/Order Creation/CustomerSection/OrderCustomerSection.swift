@@ -22,7 +22,6 @@ struct OrderCustomerSection: View {
                         EditOrderAddressForm(dismiss: { _ in
                                                 showAddressForm.toggle()
                                              },
-                                             showSearchButton: viewModel.shouldShowSearchButtonInOrderAddressForm,
                                              viewModel: addressFormViewModel)
                     case .selector:
                         CustomerSelectorView(siteID: viewModel.siteID, addressFormViewModel: addressFormViewModel) { customer in

@@ -27,6 +27,11 @@ protocol SearchUICommand {
     ///
     var syncResultsWhenSearchQueryTurnsEmpty: Bool { get }
 
+    /// Return true if you want the table view to adjust its bottom inset when the keyboard is shown, so it's covered partially by it.
+    /// Sometimes we don't need it, as the table view adjust automatically its height thanks to the superview constraits.
+    /// 
+    var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool { get }
+
     /// A closure to resynchronize models if the data source might change (e.g. when the filter changes in products search).
     /// Set externally to enable resyncing the models when needed. Otherwise, an empty closure can be set by default.
     var resynchronizeModels: (() -> Void) { get set }
@@ -139,6 +144,10 @@ extension SearchUICommand {
 
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
         false
+    }
+
+    var adjustTableViewBottomInsetWhenKeyboardIsShown: Bool {
+        true
     }
 
     func configureActionButton(_ button: UIButton, onDismiss: @escaping () -> Void) {

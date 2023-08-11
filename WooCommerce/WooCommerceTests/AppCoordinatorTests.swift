@@ -358,104 +358,6 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Handle local notification response
 
-    func test_SubscriptionsHostingController_is_shown_when_tapping_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_not_available() throws {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager()
-        let featureFlagService = MockFeatureFlagService()
-        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
-        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
-        let coordinator = makeCoordinator(window: window,
-                                          pushNotesManager: pushNotesManager,
-                                          featureFlagService: featureFlagService,
-                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
-        coordinator.start()
-        let siteID: Int64 = 123
-
-        // When
-        let response = try XCTUnwrap(MockNotificationResponse(
-            actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()).identifier)
-        )
-        pushNotesManager.sendLocalNotificationResponse(response)
-
-        // Then
-        waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
-        }
-    }
-
-    func test_UpgradesHostingController_is_shown_when_tapping_oneDayBeforeFreeTrialExpires_notification_if_freeTrialIAP_available() throws {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager()
-        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
-        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
-        let coordinator = makeCoordinator(window: window,
-                                          pushNotesManager: pushNotesManager,
-                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
-        coordinator.start()
-        let siteID: Int64 = 123
-
-        // When
-        let response = try XCTUnwrap(MockNotificationResponse(
-            actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayBeforeFreeTrialExpires(siteID: siteID, expiryDate: Date()).identifier)
-        )
-        pushNotesManager.sendLocalNotificationResponse(response)
-
-        // Then
-        waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
-        }
-    }
-
-    func test_SubscriptionsHostingController_is_shown_when_tapping_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_not_available() throws {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager()
-        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
-        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
-        let coordinator = makeCoordinator(window: window,
-                                          pushNotesManager: pushNotesManager,
-                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
-        coordinator.start()
-        let siteID: Int64 = 123
-
-        // When
-        let response = try XCTUnwrap(MockNotificationResponse(
-            actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
-        )
-        pushNotesManager.sendLocalNotificationResponse(response)
-
-        // Then
-        waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is SubscriptionsHostingController
-        }
-    }
-
-    func test_UpgradesHostingController_is_shown_when_tapping_oneDayAfterFreeTrialExpiresIdentifier_notification_if_freeTrialIAP_available() throws {
-        // Given
-        let pushNotesManager = MockPushNotificationsManager()
-        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
-        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
-        let coordinator = makeCoordinator(window: window,
-                                          pushNotesManager: pushNotesManager,
-                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
-        coordinator.start()
-        let siteID: Int64 = 123
-
-        // When
-        let response = try XCTUnwrap(MockNotificationResponse(
-            actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
-        )
-        pushNotesManager.sendLocalNotificationResponse(response)
-
-        // Then
-        waitUntil {
-            self.window.rootViewController?.topmostPresentedViewController is UpgradesHostingController
-        }
-    }
-
     func test_SubscriptionsHostingController_is_shown_when_tapping_sixHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -542,14 +444,14 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
         let response = try XCTUnwrap(MockNotificationResponse(
             actionIdentifier: UNNotificationDismissActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier)
+            requestIdentifier: LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID).identifier)
         )
         pushNotesManager.sendLocalNotificationResponse(response)
 
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationDismissed.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
     }
 
     func test_local_notification_tap_is_tracked() throws {
@@ -565,7 +467,7 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
         let response = try XCTUnwrap(MockNotificationResponse(
             actionIdentifier: UNNotificationDefaultActionIdentifier,
-            requestIdentifier: LocalNotification.Scenario.oneDayAfterFreeTrialExpires(siteID: siteID).identifier,
+            requestIdentifier: LocalNotification.Scenario.freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID).identifier,
             notificationUserInfo: [LocalNotification.UserInfoKey.isIAPAvailable: true])
         )
         pushNotesManager.sendLocalNotificationResponse(response)
@@ -573,7 +475,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Then
         let indexOfEvent = try XCTUnwrap(analytics.receivedEvents.firstIndex(where: { $0 == WooAnalyticsStat.localNotificationTapped.rawValue }))
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
-        assertEqual(LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires, eventProperties["type"] as? String)
+        assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
         assertEqual(true, eventProperties["is_iap_available"] as? Bool)
     }
 

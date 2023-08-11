@@ -89,10 +89,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     var dismiss: ((EditOrderAddressFormDismissAction) -> Void) = { _ in }
 
-    /// Shows the search button on the navigation bar
-    /// 
-    var showSearchButton = true
-
     /// View Model for the view
     ///
     @ObservedObject private(set) var viewModel: ViewModel
@@ -161,7 +157,7 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             }
 
             ToolbarItemGroup(placement: .automatic) {
-                if showSearchButton {
+                if viewModel.showSearchButton {
                     Button(action: {
                         showingCustomerSearch = true
                     }, label: {

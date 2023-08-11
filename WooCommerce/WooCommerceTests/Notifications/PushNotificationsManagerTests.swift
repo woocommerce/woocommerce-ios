@@ -594,7 +594,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -604,7 +604,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)")
     }
 
     func test_requestLocalNotificationIfNeeded_skips_adding_notification_with_the_same_idenfier() async throws {
@@ -617,7 +617,7 @@ final class PushNotificationsManagerTests: XCTestCase {
             userNotificationsCenter: mockCenter
         ))
         let siteID: Int64 = 123
-        let notification = LocalNotification(scenario: .oneDayAfterFreeTrialExpires(siteID: siteID))
+        let notification = LocalNotification(scenario: .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: siteID))
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: Date().timeIntervalSinceNow + 1, repeats: false)
 
         // When
@@ -628,7 +628,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         let requests = await mockCenter.pendingNotificationRequests()
         assertEqual(1, requests.count)
         let firstRequest = try XCTUnwrap(requests.first)
-        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires + "\(siteID)")
+        assertEqual(firstRequest.identifier, LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed + "\(siteID)")
     }
 
     func test_requestLocalNotification_tracks_local_notification_scheduled() async throws {

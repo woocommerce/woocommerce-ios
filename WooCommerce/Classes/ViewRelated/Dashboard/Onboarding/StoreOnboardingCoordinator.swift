@@ -143,7 +143,11 @@ private extension StoreOnboardingCoordinator {
     }
 
     func showStoreNameSetup() {
-        // TODO
+        let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
+            self?.onTaskCompleted(.storeName)
+        })
+        let controller = StoreNameSetupHostingController(viewModel: viewModel)
+        navigationController.present(controller, animated: true)
     }
 }
 

@@ -2,6 +2,7 @@ import Foundation
 import XCTest
 import Combine
 import Fakes
+import WooFoundation
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -250,8 +251,48 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
         assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
         assertEqual(analytics.receivedProperties.first?["amount"] as? String, "$12.00")
-        assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Float64, 12.0)
+        assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Int, 1200)
         assertEqual(analytics.receivedProperties.first?["currency"] as? String, "USD")
+        assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
+        assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
+    }
+
+    func test_completed_event_is_tracked_after_marking_order_as_paid_with_zero_decimals_currency() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+            case let .updateOrderStatus(_, _, _, onCompletion):
+                onCompletion(nil)
+            case .retrieveOrder:
+                break
+            default:
+                XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let analytics = MockAnalyticsProvider()
+        let currencySettings = CurrencySettings()
+        currencySettings.currencyCode = .JPY
+        let orderID: Int64 = 232
+        let dependencies = Dependencies(stores: stores,
+                                        analytics: WooAnalytics(analyticsProvider: analytics),
+                                        currencySettings: currencySettings)
+        let viewModel = PaymentMethodsViewModel(orderID: orderID,
+                                                formattedTotal: "¥12",
+                                                flow: .simplePayment,
+                                                isTapToPayOnIPhoneEnabled: false,
+                                                dependencies: dependencies)
+
+        // When
+        viewModel.markOrderAsPaid(onSuccess: {})
+
+        // Then
+        assertEqual(analytics.receivedEvents.first, WooAnalyticsStat.paymentsFlowCompleted.rawValue)
+        assertEqual(analytics.receivedProperties.first?["payment_method"] as? String, "cash")
+        assertEqual(analytics.receivedProperties.first?["amount"] as? String, "¥12")
+        assertEqual(analytics.receivedProperties.first?["amount_normalized"] as? Int, 12)
+        assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
         assertEqual(analytics.receivedProperties.first?["flow"] as? String, "simple_payment")
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }

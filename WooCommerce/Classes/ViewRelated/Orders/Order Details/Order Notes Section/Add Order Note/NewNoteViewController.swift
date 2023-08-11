@@ -60,10 +60,8 @@ class NewNoteViewController: UIViewController {
     @objc func addButtonTapped() {
         configureForCommittingNote()
 
-        viewModel.track(.orderNoteAddButtonTapped)
-        viewModel.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.orderID,
-                                                        "status": viewModel.orderStatus,
-                                                        "type": isCustomerNote ? "customer" : "private"])
+        viewModel.trackOrderNoteAddButtonTapped()
+        viewModel.trackOrderNoteAdd(isCustomerNote)
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
                                                   orderID: viewModel.orderID,
@@ -190,7 +188,7 @@ private extension NewNoteViewController {
             )
 
             let stateValue = newValue ? "on" : "off"
-            self.viewModel.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
+            self.viewModel.trackOrderNoteEmailCustomerToggled(stateValue)
         }
     }
 }

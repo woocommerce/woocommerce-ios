@@ -16,6 +16,9 @@ final class MockSiteRemote {
     /// The results to return in `loadSite`.
     private var loadSiteResult: Result<Site, Error>?
 
+    /// The result to return in `updateSiteTitle`
+    private var updateSiteTitleResult: Result<Void, Error>?
+
     /// Returns the value when `createSite` is called.
     func whenCreatingSite(thenReturn result: Result<SiteCreationResponse, Error>) {
         createSiteResult = result
@@ -34,6 +37,10 @@ final class MockSiteRemote {
     /// Returns the value when `loadSite` is called.
     func whenLoadingSite(thenReturn result: Result<Site, Error>) {
         loadSiteResult = result
+    }
+
+    func whenUpdatingSiteTitle(thenReturn result: Result<Void, Error>) {
+        updateSiteTitleResult = result
     }
 }
 
@@ -71,6 +78,14 @@ extension MockSiteRemote: SiteRemoteProtocol {
             throw NetworkError.notFound
         }
 
+        return try result.get()
+    }
+
+    func updateSiteTitle(siteID: Int64, title: String) async throws {
+        guard let result = updateSiteTitleResult else {
+            XCTFail("Could not find result for updating site title")
+            throw NetworkError.notFound
+        }
         return try result.get()
     }
 }

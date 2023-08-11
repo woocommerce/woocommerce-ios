@@ -14,7 +14,10 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                                             stores: stores,
                                                             userDefaults: userDefaults)
 
-        let answer = StoreProfilerAnswers(sellingStatus: .alreadySelling, category: "health_and_beauty", countryCode: "US")
+        let answer = StoreProfilerAnswers(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: "wordpress",
+                                          category: "health_and_beauty",
+                                          countryCode: "US")
         let answerEncoded = try JSONEncoder().encode(answer)
 
         // When
@@ -36,7 +39,10 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                                             userDefaults: userDefaults)
         var uploadedAnswer: StoreProfilerAnswers?
 
-        let answer = StoreProfilerAnswers(sellingStatus: .alreadySelling, category: "health_and_beauty", countryCode: "US")
+        let answer = StoreProfilerAnswers(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: "wordpress",
+                                          category: "health_and_beauty",
+                                          countryCode: "US")
         sut.storeAnswers(answer)
 
         // When
@@ -63,7 +69,10 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                                             stores: stores,
                                                             userDefaults: userDefaults)
 
-        let answer = StoreProfilerAnswers(sellingStatus: .alreadySelling, category: "health_and_beauty", countryCode: "US")
+        let answer = StoreProfilerAnswers(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: "wordpress",
+                                          category: "health_and_beauty",
+                                          countryCode: "US")
         sut.storeAnswers(answer)
 
         // When
@@ -90,7 +99,10 @@ final class StoreCreationProfilerUploadAnswersUseCaseTests: XCTestCase {
                                                                 userDefaults: userDefaults)
         var uploadedAnswer: StoreProfilerAnswers?
 
-        let answer = StoreProfilerAnswers(sellingStatus: .alreadySelling, category: "health_and_beauty", countryCode: "US")
+        let answer = StoreProfilerAnswers(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: "wordpress",
+                                          category: "health_and_beauty",
+                                          countryCode: "US")
         usecase.storeAnswers(answer)
 
         // When

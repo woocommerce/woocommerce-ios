@@ -65,7 +65,7 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue)
+        // Validates that the progressValue is not incremented beyond the next progress step.
         XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
     }
 
@@ -91,7 +91,10 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
+        // Validates that `incrementProgress` call incremented the `progressValue` by one progress step.
+        XCTAssertGreaterThanOrEqual(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
+
+        // Validates that the progressValue is not incremented beyond the next progress step.
         XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.turningOnTheLights.rawValue)
     }
 

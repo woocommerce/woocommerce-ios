@@ -61,6 +61,8 @@ final class StoreOnboardingCoordinator: Coordinator {
             showWCPaySetup()
         case .payments:
             showPaymentsSetup()
+        case .storeTitle:
+            showStoreTitleSetup()
         case .unsupported:
             assertionFailure("Unexpected onboarding task: \(task)")
         }
@@ -138,6 +140,10 @@ private extension StoreOnboardingCoordinator {
          })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
+    }
+
+    func showStoreTitleSetup() {
+        // TODO
     }
 }
 

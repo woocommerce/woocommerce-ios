@@ -68,6 +68,13 @@ class StoreOnboardingViewModel: ObservableObject {
 
     private let waitingTimeTracker: AppStartupWaitingTimeTracker
 
+    private var isFreeTrialStore: Bool {
+        guard let site = stores.sessionManager.defaultSite else {
+            return false
+        }
+        return site.isFreeTrialSite
+    }
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -134,17 +141,23 @@ class StoreOnboardingViewModel: ObservableObject {
 private extension StoreOnboardingViewModel {
     @MainActor
     func loadTasks() async throws -> [StoreOnboardingTaskViewModel] {
-        async let shouldManuallyAppendLaunchStoreTask = isFreeTrialPlan
+
+        let localTasks: [StoreOnboardingTask] = {
+            var tasks: [StoreOnboardingTask] = []
+            if isFreeTrialStore {
+                tasks.append(.init(isComplete: false, type: .launchStore))
+                if stores.sessionManager.defaultSite?.name == Constants.defaultStoreName {
+                    tasks.append(.init(isComplete: false, type: .storeTitle))
+                }
+            }
+            return tasks
+        }()
+
         let tasksFromServer: [StoreOnboardingTask] = try await fetchTasks()
 
-        if await shouldManuallyAppendLaunchStoreTask {
-            return (tasksFromServer + [.init(isComplete: false, type: .launchStore)])
-                .sorted()
-                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
-        } else {
-            return tasksFromServer
-                .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
-        }
+        return (tasksFromServer + localTasks)
+            .sorted()
+            .map { .init(task: $0, badgeText: badgeText(task: $0.type)) }
     }
 
     func badgeText(task: StoreOnboardingTask.TaskType) -> String? {
@@ -241,29 +254,6 @@ private extension StoreOnboardingViewModel {
         })
     }
 
-    @MainActor
-    var isFreeTrialPlan: Bool {
-        get async {
-            // Only fetch free trial information if the site is a WPCom site.
-            guard stores.sessionManager.defaultSite?.isWordPressComStore == true else {
-                return false
-            }
-
-            return await withCheckedContinuation({ continuation in
-                let action = PaymentAction.loadSiteCurrentPlan(siteID: siteID) { result in
-                    switch result {
-                    case .success(let plan):
-                        return continuation.resume(returning: plan.isFreeTrial)
-                    case .failure(let error):
-                        DDLogError("⛔️ Error fetching the current site's plan information: \(error)")
-                        return continuation.resume(returning: false)
-                    }
-                }
-                stores.dispatch(action)
-            })
-        }
-    }
-
     func hasPendingTasks(_ tasks: [StoreOnboardingTaskViewModel]) -> Bool {
         tasks.contains(where: { $0.isComplete == false })
     }
@@ -272,6 +262,8 @@ private extension StoreOnboardingViewModel {
 private extension StoreOnboardingViewModel {
     enum Constants {
         static let maxNumberOfTasksToDisplayInCollapsedMode = 3
+        // default value set by Core when store creation is requested with an empty store name
+        static let defaultStoreName = "Site Title"
     }
 }
 

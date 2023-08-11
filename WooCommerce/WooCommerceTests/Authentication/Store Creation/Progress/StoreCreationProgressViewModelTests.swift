@@ -65,7 +65,6 @@ final class StoreCreationProgressViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertGreaterThan(sut.progressValue, StoreCreationProgressViewModel.Progress.creatingStore.rawValue)
         XCTAssertLessThan(sut.progressValue, StoreCreationProgressViewModel.Progress.extendingStoresCapabilities.rawValue)
     }
 

@@ -125,7 +125,8 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             "woocommerce_onboarding_profile": [
                 "industry": industry,
                 "is_store_country_set": true,
-                "business_choice": answers.sellingStatus?.rawValue as Any?,
+                "business_choice": answers.sellingStatus?.remoteValue as Any?,
+                "selling_platforms": answers.sellingPlatforms as Any?
             ].compactMapValues { $0 }
         ]
         let request = JetpackRequest(wooApiVersion: .wcAdmin,

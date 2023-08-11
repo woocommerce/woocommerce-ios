@@ -143,7 +143,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
-    func test_tasksForDisplay_contains_launch_store_and_store_title_task_for_WPCOM_site_under_free_trial() async {
+    func test_tasksForDisplay_contains_launch_store_and_store_name_task_for_WPCOM_site_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -163,7 +163,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNotNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
-    func test_tasksForDisplay_does_not_contain_launch_store_and_store_title_task_for_non_WPCOM_site() async {
+    func test_tasksForDisplay_does_not_contain_launch_store_and_store_name_task_for_non_WPCOM_site() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
         sessionManager.defaultRoles = [.administrator]
@@ -183,7 +183,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
-    func test_tasksForDisplay_does_not_contain_launch_store_task_and_store_title_for_WPCOM_site_not_under_free_trial() async {
+    func test_tasksForDisplay_does_not_contain_launch_store_task_and_store_name_for_WPCOM_site_not_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: "ecommerce-plan", isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -203,7 +203,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeName }))
     }
 
-    func test_tasksForDisplay_is_sorted_when_launch_store_and_store_title_tasks_get_manually_added_for_WPCOM_site_under_free_trial() async {
+    func test_tasksForDisplay_is_sorted_when_launch_store_and_store_name_tasks_get_manually_added_for_WPCOM_site_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(name: WooConstants.defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -288,7 +288,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.isComplete}).isEmpty)
     }
 
-    func test_store_title_task_is_marked_as_complete_for_free_trial_site_with_custom_name() async throws {
+    func test_store_name_task_is_marked_as_complete_for_free_trial_site_with_custom_name() async throws {
         // Given
         sessionManager.defaultSite = .fake().copy(name: "Test", plan: freeTrialPlanSlug, isWordPressComStore: true)
         mockLoadOnboardingTasks(result: .success([

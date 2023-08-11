@@ -75,6 +75,10 @@ class StoreOnboardingViewModel: ObservableObject {
         return site.isFreeTrialSite
     }
 
+    private var siteHasDefaultTitle: Bool {
+        stores.sessionManager.defaultSite?.name == Constants.defaultStoreName
+    }
+
     /// Emits when there are no tasks available for display after reload.
     /// i.e. When (request failed && No previously loaded local data available)
     ///
@@ -146,9 +150,7 @@ private extension StoreOnboardingViewModel {
             var tasks: [StoreOnboardingTask] = []
             if isFreeTrialStore {
                 tasks.append(.init(isComplete: false, type: .launchStore))
-                if stores.sessionManager.defaultSite?.name == Constants.defaultStoreName {
-                    tasks.append(.init(isComplete: false, type: .storeTitle))
-                }
+                tasks.append(.init(isComplete: !siteHasDefaultTitle, type: .storeTitle))
             }
             return tasks
         }()

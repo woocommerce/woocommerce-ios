@@ -12,6 +12,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
+    private let defaultStoreName = "Site Title"
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -143,7 +144,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
     }
 
-    func test_tasksForDisplay_contains_launch_store_task_for_WPCOM_site_under_free_trial() async {
+    func test_tasksForDisplay_contains_launch_store_and_store_title_task_for_WPCOM_site_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -160,9 +161,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isNotEmpty)
+        XCTAssertNotNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
     }
 
-    func test_tasksForDisplay_does_not_contain_launch_store_task_for_non_WPCOM_site() async {
+    func test_tasksForDisplay_does_not_contain_launch_store_and_store_title_task_for_non_WPCOM_site() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: false)
         sessionManager.defaultRoles = [.administrator]
@@ -179,9 +181,10 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
+        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
     }
 
-    func test_tasksForDisplay_does_not_contain_launch_store_task_for_WPCOM_site_not_under_free_trial() async {
+    func test_tasksForDisplay_does_not_contain_launch_store_task_and_store_title_for_WPCOM_site_not_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(plan: "ecommerce-plan", isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
@@ -198,11 +201,12 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.type == .launchStore}).isEmpty)
+        XCTAssertNil(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
     }
 
-    func test_tasksForDisplay_is_sorted_when_launch_store_task_gets_manually_added_for_WPCOM_site_under_free_trial() async {
+    func test_tasksForDisplay_is_sorted_when_launch_store_and_store_title_tasks_get_manually_added_for_WPCOM_site_under_free_trial() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true)
+        sessionManager.defaultSite = .fake().copy(name: defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true)
         sessionManager.defaultRoles = [.administrator]
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -217,7 +221,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .addFirstProduct),
+        XCTAssertEqual(sut.tasksForDisplay.map({ $0.task }), [.init(isComplete: false, type: .storeTitle),
+                                                              .init(isComplete: false, type: .addFirstProduct),
                                                               .init(isComplete: false, type: .launchStore),
                                                               .init(isComplete: false, type: .customizeDomains)])
     }
@@ -262,9 +267,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertFalse(launchStoreTask.isComplete)
     }
 
-    func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store() async {
+    func test_tasks_other_than_launchStore_type_are_not_marked_as_complete_for_already_public_store_with_default_name() async {
         // Given
-        sessionManager.defaultSite = .fake().copy(plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
+        sessionManager.defaultSite = .fake().copy(name: defaultStoreName, plan: freeTrialPlanSlug, isWordPressComStore: true, isPublic: true)
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
@@ -282,6 +287,26 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(sut.tasksForDisplay.filter({ $0.task.isComplete}).isEmpty)
+    }
+
+    func test_store_title_task_is_marked_as_complete_for_free_trial_site_with_custom_name() async throws {
+        // Given
+        sessionManager.defaultSite = .fake().copy(name: "Test", plan: freeTrialPlanSlug, isWordPressComStore: true)
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore)
+        ]))
+
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: true,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        let storeNameTask = try XCTUnwrap(sut.tasksForDisplay.first(where: { $0.task.type == .storeTitle }))
+        XCTAssertTrue(storeNameTask.isComplete)
     }
 
     // MARK: - shouldShowViewAllButton
@@ -554,6 +579,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     func test_it_sends_network_request_when_completedAllStoreOnboardingTasks_is_nil() async {
         // Given
         let tasks: [StoreOnboardingTask] = [
+            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
@@ -571,7 +597,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertTrue(sut.tasksForDisplay.count == 4)
+        XCTAssertTrue(sut.tasksForDisplay.count == 5)
     }
 
     @MainActor
@@ -585,8 +611,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
                                            defaults: defaults,
                                            featureFlagService: MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: false))
         let tasks: [StoreOnboardingTask] = [
-            .init(isComplete: false, type: .storeTitle),
+            .init(isComplete: false, type: .storeDetails),
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains),
             .init(isComplete: false, type: .payments)
         ]
@@ -596,7 +623,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         await sut.reloadTasks()
 
         // Then
-        XCTAssertEqual(sut.tasksForDisplay.count, 4)
+        XCTAssertEqual(sut.tasksForDisplay.count, 5)
         sut.tasksForDisplay.forEach { taskViewModel in
             XCTAssertNil(taskViewModel.badgeText)
         }

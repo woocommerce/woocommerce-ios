@@ -77,13 +77,9 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
-        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-            navigationController.isNavigationBarHidden = true
-            // TODO-10374: update store name if needed
-            showFreeTrialSummaryView(from: navigationController, storeName: "", profilerData: nil)
-        } else {
-            showStoreNameInput(from: navigationController)
-        }
+        navigationController.isNavigationBarHidden = true
+        // TODO-10374: update store name if needed
+        showFreeTrialSummaryView(from: navigationController, storeName: "")
     }
 
     func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
@@ -275,26 +271,20 @@ private extension StoreCreationCoordinator {
     /// After user confirmation proceeds to create a store with a free trial plan.
     ///
     func showFreeTrialSummaryView(from navigationController: UINavigationController,
-                                  storeName: String,
-                                  profilerData: SiteProfilerData?) {
+                                  storeName: String) {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: .native, isFreeTrial: true))
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
-            let result = await self.createFreeTrialStore(storeName: storeName,
-                                                         profilerData: profilerData)
+            let result = await self.createFreeTrialStore(storeName: storeName)
             await MainActor.run {
                 self.handleFreeTrialStoreCreation(from: navigationController, result: result)
             }
         })
 
-        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-            navigationController.pushViewController(summaryViewController, animated: true)
-        } else {
-            navigationController.present(summaryViewController, animated: true)
-        }
+        navigationController.pushViewController(summaryViewController, animated: true)
     }
 
     /// This method creates a free trial store async:
@@ -303,21 +293,17 @@ private extension StoreCreationCoordinator {
     /// - Schedule a local notification to notify the user when the site is ready
     ///
     @MainActor
-    func createFreeTrialStore(storeName: String, profilerData: SiteProfilerData?) async -> Result<SiteCreationResult, SiteCreationError> {
+    func createFreeTrialStore(storeName: String) async -> Result<SiteCreationResult, SiteCreationError> {
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
-        if let profilerData {
-            analytics.track(event: .StoreCreation.siteCreationProfilerData(profilerData))
-        }
 
         switch createStoreResult {
         case .success(let siteResult):
 
             // Enable Free trial on site
-            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID, profilerData: profilerData)
+            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
             switch freeTrialResult {
             case .success:
-                cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
                 scheduleLocalNotificationWhenStoreIsReady()
                 return .success(siteResult)
             case .failure(let error):
@@ -334,14 +320,8 @@ private extension StoreCreationCoordinator {
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
-            if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-                showProfilerFlow(storeName: siteResult.name, from: navigationController)
-            } else {
-                // Make sure that nothing is presented on the view controller before showing the loading screen
-                navigationController.presentedViewController?.dismiss(animated: true)
-                // Show a progress view while the free trial store is created.
-                showInProgressView(from: navigationController)
-            }
+            showProfilerFlow(storeName: siteResult.name, siteID: siteResult.siteID, from: navigationController)
+
             // Wait for jetpack to be installed
             DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
             Task { @MainActor in

@@ -9,9 +9,15 @@ final class StoreNameSetupViewModel: ObservableObject {
     @Published private(set) var isSavingInProgress = false
     @Published private(set) var errorMessage: String?
 
+    /// Whether the Save button should be enabled
+    var shouldEnableSaving: Bool {
+        name.isNotEmpty && name != initialStoreName
+    }
+
     private let siteID: Int64
     private let stores: StoresManager
     private let onNameSaved: () -> Void
+    private let initialStoreName: String
 
     init(siteID: Int64,
          name: String,
@@ -19,6 +25,7 @@ final class StoreNameSetupViewModel: ObservableObject {
          onNameSaved: @escaping () -> Void) {
         self.siteID = siteID
         self.name = name
+        self.initialStoreName = name
         self.stores = stores
         self.onNameSaved = onNameSaved
     }

@@ -57,7 +57,6 @@ struct StoreNameSetupView: View {
                     Button(Localization.cancel) {
                         onDismiss()
                     }
-                    .disabled(viewModel.isSavingInProgress)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     if viewModel.isSavingInProgress {
@@ -68,6 +67,7 @@ struct StoreNameSetupView: View {
                                 onDismiss()
                             }
                         }
+                        .disabled(viewModel.shouldEnableSaving == false)
                     }
                 }
             }

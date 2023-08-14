@@ -76,6 +76,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
     }
 
     func test_errorMessage_is_updated_upon_saving_store_name_failure() async {
+        // Given
         let viewModel = StoreNameSetupViewModel(siteID: 123, name: "Test", stores: stores, onNameSaved: {})
         mockStoreNameUpdate(result: .failure(NSError(domain: "Test", code: 1)))
         XCTAssertNil(viewModel.errorMessage)
@@ -86,6 +87,21 @@ final class StoreNameSetupViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(viewModel.errorMessage)
+    }
+
+    func test_default_store_name_is_updated_upon_saving_store_name_completes() async {
+        // Given
+        let originalSite = Site.fake().copy(siteID: 123, name: "Test")
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: originalSite))
+        let viewModel = StoreNameSetupViewModel(siteID: originalSite.siteID, name: originalSite.name, stores: stores, onNameSaved: {})
+        mockStoreNameUpdate(result: .success(Site.fake().copy(siteID: 123, name: "Miffy")))
+
+        // When
+        viewModel.name = "Miffy"
+        await viewModel.saveName()
+
+        // Then
+        XCTAssertEqual(stores.sessionManager.defaultSite?.name, "Miffy")
     }
 }
 

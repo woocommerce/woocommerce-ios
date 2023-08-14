@@ -123,14 +123,14 @@ private extension SiteStore {
         }
     }
 
-    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Site, Error>) -> Void) {
         Task { @MainActor in
             do {
                 try await remote.updateSiteTitle(siteID: siteID, title: title)
                 // Updates site info in local storage immediately.
                 let site = try await remote.loadSite(siteID: siteID)
                 await upsertStoredSiteInBackground(readOnlySite: site)
-                completion(.success(()))
+                completion(.success(site))
             } catch {
                 completion(.failure(error))
             }

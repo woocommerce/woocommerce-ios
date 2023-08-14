@@ -37,7 +37,8 @@ final class StoreNameSetupViewModel: ObservableObject {
             guard let self else { return }
             self.isSavingInProgress = false
             switch result {
-            case .success(()):
+            case .success(let site):
+                self.stores.updateDefaultStore(site)
                 onCompletion()
             case .failure(let error):
                 errorMessage = error.localizedDescription

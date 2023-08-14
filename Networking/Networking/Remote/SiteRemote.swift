@@ -260,38 +260,6 @@ public struct StoreProfilerAnswers: Codable, Equatable {
     }
 }
 
-public struct SiteProfilerData {
-    public let name: String
-    public let category: String?
-    public let sellingStatus: SellingStatus?
-    public let sellingPlatforms: String?
-    public let countryCode: String
-
-    /// Selling status options.
-    /// Its raw value is the value to be sent to the backend.
-    /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
-    public enum SellingStatus: String {
-        /// Just starting my business.
-        case justStarting = "no"
-        /// Already selling, but not online.
-        case alreadySellingButNotOnline = "brick-mortar"
-        /// Already selling online.
-        case alreadySellingOnline = "other"
-    }
-
-    public init(name: String,
-                category: String?,
-                sellingStatus: SiteProfilerData.SellingStatus?,
-                sellingPlatforms: String?,
-                countryCode: String) {
-        self.name = name
-        self.category = category
-        self.sellingStatus = sellingStatus
-        self.sellingPlatforms = sellingPlatforms
-        self.countryCode = countryCode
-    }
-}
-
 /// Site Blaze status response.
 private struct BlazeStatusResponse: Decodable {
     let isApproved: Bool

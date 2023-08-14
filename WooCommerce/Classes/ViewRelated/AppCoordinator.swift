@@ -422,7 +422,8 @@ private extension AppCoordinator {
             navigationController.topViewController is StoreCreationCategoryQuestionHostingController ||
             navigationController.topViewController is StoreCreationSellingStatusQuestionHostingController ||
             navigationController.topViewController is StoreCreationCountryQuestionHostingController ||
-            navigationController.topViewController is FreeTrialSummaryHostingController {
+            navigationController.topViewController is FreeTrialSummaryHostingController ||
+            navigationController.topViewController is StoreCreationProfilerQuestionContainerHostingController {
             return
         }
 

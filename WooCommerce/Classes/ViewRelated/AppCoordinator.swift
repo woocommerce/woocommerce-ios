@@ -370,13 +370,6 @@ private extension AppCoordinator {
                 return
             }
             showFreeTrialSurvey()
-        case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
-            let storeNameKey = LocalNotification.UserInfoKey.storeName
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let storeName = response.notification.request.content.userInfo.string(forKey: storeNameKey) else {
-                return
-            }
-            startStoreCreationFlow(storeName: storeName)
         default:
             // TODO: 9665 - handle actions on other local notifications
             break
@@ -406,36 +399,6 @@ private extension AppCoordinator {
             }
             self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
-    }
-
-    func startStoreCreationFlow(storeName: String) {
-        guard stores.isAuthenticated else {
-            return
-        }
-
-        guard let navigationController = getNavigationController() else {
-            return
-        }
-
-        // Do nothing if any one of the store creation screens is being presented already.
-        if navigationController.topViewController is StoreNameFormHostingController ||
-            navigationController.topViewController is StoreCreationCategoryQuestionHostingController ||
-            navigationController.topViewController is StoreCreationSellingStatusQuestionHostingController ||
-            navigationController.topViewController is StoreCreationCountryQuestionHostingController ||
-            navigationController.topViewController is FreeTrialSummaryHostingController ||
-            navigationController.topViewController is StoreCreationProfilerQuestionContainerHostingController {
-            return
-        }
-
-        let coordinator = StoreCreationCoordinator(source: .storePicker,
-                                                   navigationController: navigationController,
-                                                   prefillStoreName: storeName,
-                                                   storageManager: storageManager,
-                                                   stores: stores,
-                                                   featureFlagService: featureFlagService,
-                                                   pushNotesManager: pushNotesManager)
-        self.storeCreationCoordinator = coordinator
-        coordinator.start()
     }
 
     func getNavigationController() -> UINavigationController? {

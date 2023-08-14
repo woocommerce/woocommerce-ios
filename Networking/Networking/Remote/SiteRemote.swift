@@ -119,15 +119,16 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             }
             return [category]
         }()
+        let onboarding: [String: Any] = [
+            "industry": industry,
+            "is_store_country_set": true,
+            "business_choice": answers.sellingStatus?.remoteValue,
+            "selling_platforms": answers.sellingPlatforms
+        ].compactMapValues { $0 }
 
         let parameters: [String: Any] = [
             "woocommerce_default_country": answers.countryCode,
-            "woocommerce_onboarding_profile": [
-                "industry": industry,
-                "is_store_country_set": true,
-                "business_choice": answers.sellingStatus?.remoteValue as Any?,
-                "selling_platforms": answers.sellingPlatforms as Any?
-            ].compactMapValues { $0 }
+            "woocommerce_onboarding_profile": onboarding
         ]
         let request = JetpackRequest(wooApiVersion: .wcAdmin,
                                      method: .post,
@@ -250,15 +251,16 @@ public struct StoreProfilerAnswers: Codable, Equatable {
     public enum SellingStatus: Codable {
         /// Just starting my business.
         case justStarting
-        /// Already selling
+        /// Already selling but not online
         case alreadySellingButNotOnline
-        /// Setting up a store for a client
+        /// Already selling online
         case alreadySellingOnline
 
         public var remoteValue: String {
             switch self {
             case .justStarting:
                 return "im_just_starting_my_business"
+                // Sending same value because the core profiler endpoint doesn't have these options.
             case .alreadySellingButNotOnline, .alreadySellingOnline:
                 return "im_already_selling"
             }

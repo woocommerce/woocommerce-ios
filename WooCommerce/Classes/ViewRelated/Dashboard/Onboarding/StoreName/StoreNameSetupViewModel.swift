@@ -30,20 +30,35 @@ final class StoreNameSetupViewModel: ObservableObject {
         self.onNameSaved = onNameSaved
     }
 
-    func saveName() {
+    @MainActor
+    func saveName() async {
         errorMessage = nil
         isSavingInProgress = true
-        stores.dispatch(SiteAction.updateSiteTitle(siteID: siteID, title: name, completion: { [weak self] result in
-            guard let self else { return }
-            self.isSavingInProgress = false
-            switch result {
-            case .success(let site):
-                self.stores.updateDefaultStore(site)
-                self.onNameSaved()
-            case .failure(let error):
-                self.errorMessage = error.localizedDescription
-                DDLogError("⛔️ Error saving store name: \(error)")
-            }
-        }))
+        do {
+            let updatedSite = try await updateStoreName(name)
+            // saves default store info to display the new store name on the My Store screen immediately.
+            stores.updateDefaultStore(updatedSite)
+            onNameSaved()
+        } catch {
+            errorMessage = error.localizedDescription
+            DDLogError("⛔️ Error saving store name: \(error)")
+        }
+        isSavingInProgress = false
+    }
+}
+
+private extension StoreNameSetupViewModel {
+    @MainActor
+    func updateStoreName(_ name: String) async throws -> Site {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SiteAction.updateSiteTitle(siteID: siteID, title: name, completion: { result in
+                switch result {
+                case .success(let site):
+                    continuation.resume(returning: site)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
     }
 }

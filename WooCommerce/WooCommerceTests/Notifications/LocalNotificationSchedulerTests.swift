@@ -109,8 +109,6 @@ extension LocalNotification.Scenario: Equatable {
         switch (lhs, rhs) {
         case (.storeCreationComplete, .storeCreationComplete):
             return true
-        case let (.oneDayAfterStoreCreationNameWithoutFreeTrial(lhsStoreName), .oneDayAfterStoreCreationNameWithoutFreeTrial(rhsStoreName)):
-            return lhsStoreName == rhsStoreName
         default:
             return false
         }

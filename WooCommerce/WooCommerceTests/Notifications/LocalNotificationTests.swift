@@ -19,27 +19,6 @@ final class LocalNotificationTests: XCTestCase {
         assertEqual(expectedBody, notification.body)
     }
 
-    func test_oneDayAfterStoreCreationNameWithoutFreeTrial_scenario_returns_correct_notification_contents() throws {
-        // Given
-        let storeName = "BunnyLand"
-        let scenario = LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName)
-        let testName = "Miffy"
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
-
-        // When
-        let notification = LocalNotification(scenario: scenario, stores: stores)
-
-        // Then
-        assertEqual(LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title, notification.title)
-        XCTAssertNil(notification.actions)
-        let expectedBody = String.localizedStringWithFormat(
-            LocalNotification.Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.body,
-            testName,
-            storeName
-        )
-        assertEqual(expectedBody, notification.body)
-    }
-
     func test_sixHoursAfterFreeTrialSubscribed_scenario_returns_correct_notification_contents() throws {
         // Given
         let scenario = LocalNotification.Scenario.sixHoursAfterFreeTrialSubscribed(siteID: 123)

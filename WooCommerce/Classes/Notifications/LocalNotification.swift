@@ -19,7 +19,6 @@ struct LocalNotification {
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
     enum Scenario {
         case storeCreationComplete
-        case oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: String)
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
         case threeDaysAfterStillExploring(siteID: Int64)
@@ -28,8 +27,6 @@ struct LocalNotification {
             switch self {
             case .storeCreationComplete:
                 return "store_creation_complete"
-            case .oneDayAfterStoreCreationNameWithoutFreeTrial:
-                return Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial
             case let .sixHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
@@ -45,7 +42,6 @@ struct LocalNotification {
                 static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
                 static let threeDaysAfterStillExploring = "three_days_after_still_exploring"
             }
-            static let oneDayAfterStoreCreationNameWithoutFreeTrial = "one_day_after_store_creation_name_without_free_trial"
         }
 
         /// Helper method to remove postfix from notification identifiers if needed.
@@ -108,14 +104,6 @@ extension LocalNotification {
             title = Localization.StoreCreationComplete.title
             body = String.localizedStringWithFormat(Localization.StoreCreationComplete.body, name)
 
-        case .oneDayAfterStoreCreationNameWithoutFreeTrial(let storeName):
-            title = Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.title
-            body = String.localizedStringWithFormat(
-                Localization.OneDayAfterStoreCreationNameWithoutFreeTrial.body,
-                name,
-                storeName
-            )
-
         case .sixHoursAfterFreeTrialSubscribed:
             title = Localization.SixHoursAfterFreeTrialSubscribed.title
             body = Localization.SixHoursAfterFreeTrialSubscribed.body
@@ -150,19 +138,6 @@ extension LocalNotification {
                 "all in one place. Ready to explore?",
                 comment: "Message on the local notification about a newly created store." +
                 "The placeholder is the name of the user."
-            )
-        }
-
-        enum OneDayAfterStoreCreationNameWithoutFreeTrial {
-            static let title = NSLocalizedString(
-                "🛍️ Your store is waiting!",
-                comment: "Title of the local notification suggesting a trial plan subscription."
-            )
-            static let body = NSLocalizedString(
-                "Hi %1$@, %2$@ is ready for you! Start your 14-day free trial " +
-                "of Woo Express right in just one click to start your online business.",
-                comment: "Message on the local notification suggesting a trial plan subscription." +
-                "The placeholders are the name of the user and the store name."
             )
         }
 

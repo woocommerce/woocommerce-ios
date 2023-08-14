@@ -145,6 +145,7 @@ private extension StoreOnboardingCoordinator {
     func showStoreNameSetup() {
         let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
             self?.onTaskCompleted(.storeName)
+            self?.navigationController.presentedViewController?.dismiss(animated: true)
         })
         let controller = StoreNameSetupHostingController(viewModel: viewModel)
         navigationController.present(controller, animated: true)

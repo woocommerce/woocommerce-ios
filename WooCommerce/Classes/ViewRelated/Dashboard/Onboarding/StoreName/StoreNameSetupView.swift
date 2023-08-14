@@ -68,9 +68,7 @@ struct StoreNameSetupView: View {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.save) {
-                            viewModel.saveName {
-                                onDismiss()
-                            }
+                            viewModel.saveName()
                         }
                         .disabled(viewModel.shouldEnableSaving == false)
                     }

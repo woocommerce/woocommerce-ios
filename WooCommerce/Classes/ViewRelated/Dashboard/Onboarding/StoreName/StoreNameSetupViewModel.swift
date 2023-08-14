@@ -30,7 +30,7 @@ final class StoreNameSetupViewModel: ObservableObject {
         self.onNameSaved = onNameSaved
     }
 
-    func saveName(onCompletion: @escaping () -> Void) {
+    func saveName() {
         errorMessage = nil
         isSavingInProgress = true
         stores.dispatch(SiteAction.updateSiteTitle(siteID: siteID, title: name, completion: { [weak self] result in
@@ -40,7 +40,6 @@ final class StoreNameSetupViewModel: ObservableObject {
             case .success(let site):
                 self.stores.updateDefaultStore(site)
                 self.onNameSaved()
-                onCompletion()
             case .failure(let error):
                 errorMessage = error.localizedDescription
                 DDLogError("⛔️ Error saving store name: \(error)")

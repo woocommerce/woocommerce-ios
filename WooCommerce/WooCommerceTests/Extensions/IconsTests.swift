@@ -292,6 +292,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.getPaidImage)
     }
 
+    func test_setStoreNameImage_is_not_nil() {
+        XCTAssertNotNil(UIImage.setStoreNameImage)
+    }
+
     func test_storeSummaryImage_is_not_nil() {
         XCTAssertNotNil(UIImage.storeSummaryImage)
     }

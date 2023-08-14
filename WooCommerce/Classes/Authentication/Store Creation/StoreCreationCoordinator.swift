@@ -78,8 +78,8 @@ private extension StoreCreationCoordinator {
         navigationController.isModalInPresentation = true
 
         navigationController.isNavigationBarHidden = true
-        // TODO-10374: update store name if needed
-        showFreeTrialSummaryView(from: navigationController, storeName: "")
+
+        showFreeTrialSummaryView(from: navigationController, storeName: WooConstants.defaultStoreName)
     }
 
     func showProfilerFlow(storeName: String, siteID: Int64, from navigationController: UINavigationController) {

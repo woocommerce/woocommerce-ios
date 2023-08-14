@@ -49,7 +49,9 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     func saveSellingStatus(_ answer: StoreCreationSellingStatusAnswer?) {
         if answer == nil {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
-        } else if answer?.sellingStatus == .alreadySellingOnline && answer?.sellingPlatforms?.isEmpty == true {
+        } else if let answer,
+                    answer.sellingStatus == .alreadySellingOnline,
+                    answer.sellingPlatforms?.isEmpty == true {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
         }
 
@@ -94,7 +96,6 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         if let previousQuestion = currentQuestion.previousQuestion {
             currentQuestion = previousQuestion
         } else {
-            // TODO: show confirm alert if needed
             completionHandler(nil)
         }
     }

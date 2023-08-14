@@ -15,7 +15,7 @@ public protocol SiteRemoteProtocol {
 
     /// Enables a free trial plan for a site.
     ///
-    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
+    func enableFreeTrial(siteID: Int64) async throws
 
     /// Uploads store profiler answers
     ///
@@ -88,27 +88,9 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
         return try await enqueue(request)
     }
 
-    public func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws {
+    public func enableFreeTrial(siteID: Int64) async throws {
         let path = Path.enableFreeTrial(siteID: siteID)
-        let parameters: [String: Any]? = profilerData.map { profilerData in
-            [
-                "wpcom_woocommerce_onboarding": [
-                    "blogname": profilerData.name,
-                    "woocommerce_default_country": profilerData.countryCode,
-                    "woocommerce_onboarding_profile": [
-                        "industry": [
-                            [
-                                "slug": profilerData.category
-                            ].compactMapValues { $0 }
-                        ],
-                        "is_store_country_set": true,
-                        "selling_venues": profilerData.sellingStatus?.rawValue as Any?,
-                        "other_platform": profilerData.sellingPlatforms as Any?
-                    ].compactMapValues { $0 }
-                ] as [String: Any]
-            ]
-        }
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path)
         return try await enqueue(request)
     }
 

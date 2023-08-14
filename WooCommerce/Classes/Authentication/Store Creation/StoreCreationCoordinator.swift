@@ -82,11 +82,17 @@ private extension StoreCreationCoordinator {
         showFreeTrialSummaryView(from: navigationController, storeName: "")
     }
 
-    func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
+    func showProfilerFlow(storeName: String, siteID: Int64, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] _ in
+        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] answers in
             guard let self else { return }
             // TODO: update profiler data with remote
+            if let answers {
+                self.analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
+
+                let usecase = StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
+                usecase.storeAnswers(answers)
+            }
             if let site = self.createdStore {
                 self.continueWithSelectedSite(site: site)
             } else {

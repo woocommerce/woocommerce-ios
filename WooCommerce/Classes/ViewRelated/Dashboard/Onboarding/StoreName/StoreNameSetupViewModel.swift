@@ -39,6 +39,7 @@ final class StoreNameSetupViewModel: ObservableObject {
             switch result {
             case .success(let site):
                 self.stores.updateDefaultStore(site)
+                self.onNameSaved()
                 onCompletion()
             case .failure(let error):
                 errorMessage = error.localizedDescription

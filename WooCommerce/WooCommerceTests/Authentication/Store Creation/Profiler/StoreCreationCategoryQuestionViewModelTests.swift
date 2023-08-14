@@ -31,7 +31,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(answer, .init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.name,
-                                     value: "fashion-apparel-accessories"))
+                                     value: "clothing_and_accessories"))
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {

@@ -6,6 +6,9 @@ final class StoreNameSetupHostingController: UIHostingController<StoreNameSetupV
 
     init(viewModel: StoreNameSetupViewModel) {
         super.init(rootView: StoreNameSetupView(viewModel: viewModel))
+        rootView.onDismiss = { [weak self] in
+            self?.dismiss(animated: true)
+        }
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -18,6 +21,9 @@ final class StoreNameSetupHostingController: UIHostingController<StoreNameSetupV
 struct StoreNameSetupView: View {
 
     @ObservedObject private var viewModel: StoreNameSetupViewModel
+
+    /// Triggered when the cancel button is tapped
+    var onDismiss: () -> Void = {}
 
     init(viewModel: StoreNameSetupViewModel) {
         self.viewModel = viewModel

@@ -41,7 +41,7 @@ final class StoreNameSetupViewModel: ObservableObject {
                 self.stores.updateDefaultStore(site)
                 self.onNameSaved()
             case .failure(let error):
-                errorMessage = error.localizedDescription
+                self.errorMessage = error.localizedDescription
                 DDLogError("⛔️ Error saving store name: \(error)")
             }
         }))

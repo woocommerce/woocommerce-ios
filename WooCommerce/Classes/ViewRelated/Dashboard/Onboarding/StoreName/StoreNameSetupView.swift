@@ -50,6 +50,11 @@ struct StoreNameSetupView: View {
                 .padding(.horizontal, Layout.textFieldHorizontalMargin)
                 .padding(.vertical, Layout.textFieldVerticalMargin)
 
+                if let message = viewModel.errorMessage {
+                    Text(message)
+                        .errorStyle()
+                }
+
                 Spacer()
             }
             .toolbar {

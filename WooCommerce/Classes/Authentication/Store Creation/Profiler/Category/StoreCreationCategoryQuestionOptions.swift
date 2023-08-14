@@ -3,9 +3,7 @@ import Foundation
 extension StoreCreationCategoryQuestionViewModel {
     /// Industry options for a WooCommerce store. The raw value is the value that is sent to the submission API.
     /// The sources of truth are at:
-    /// - Stripe industries: https://support.stripe.com/questions/setting-an-industry-group-when-creating-a-stripe-account
-    /// - WC industry options: `https://github.com/woocommerce/woocommerce/blob/
-    ///   07a2f83f53352bc9c24f929b7dd787c95e91f4aa/plugins/woocommerce/src/Internal/Admin/Onboarding/OnboardingIndustries.php#L28-L69`
+    /// - WC industry options: `https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-admin/client/core-profiler/pages/BusinessInfo.tsx#L32`
     enum Category: String, Equatable {
         case fashionApparelAccessories = "fashion-apparel-accessories"
         case healthBeauty = "health-beauty"

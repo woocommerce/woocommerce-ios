@@ -152,6 +152,19 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
     // MARK: - Analytics
 
+    func test_onAppear_tracks_site_creation_event_for_selling_status_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.onAppear()
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_commerce_journey")
+    }
+
     func test_saveSellingStatus_tracks_skip_event_for_selling_status_question() throws {
         // Given
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
@@ -178,6 +191,19 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_ecommerce_platforms")
     }
 
+    func test_saveSellingStatus_tracks_site_creation_event_for_category_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveSellingStatus(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: nil))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_industries")
+    }
+
     func test_saveCategory_tracks_skip_event_for_category_question() throws {
         // Given
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
@@ -191,6 +217,33 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_industries")
     }
 
+    func test_saveCategory_tracks_site_creation_event_for_country_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveCategory(nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_country")
+    }
+
+
+    func test_saveCountry_tracks_site_creation_event_for_country_features() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveCountry(.AD)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_challenges")
+    }
+
     func test_saveChallenges_tracks_skip_event_for_challenges_questions() throws {
         // Given
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
@@ -202,6 +255,19 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_challenges")
+    }
+
+    func test_saveChallenges_tracks_site_creation_event_for_features_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveChallenges([])
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_step" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_features")
     }
 
     func test_saveFeatures_tracks_skip_event_for_challenges_questions() throws {

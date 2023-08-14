@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v14.8-whats-new"
+msgctxt "v14.9-whats-new"
 msgid ""
-"In this latest update, we're introducing several exciting enhancements to make your app experience even better! You can now filter products based on various new types, including subscription, variable subscription, bundle, and composite. For stores with expired WooExpress plans, upgrading within the app is more convenient than ever. Creating and managing your stores is easier with improved accessibility on the Upgrades screen. Update now to discover all the latest enhancements and improvements!\n"
+"Exciting news about order creation! We've improved the way you can request, search and select a customer when creating an order. Enjoy!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

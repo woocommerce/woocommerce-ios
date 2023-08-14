@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-10 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-11 08:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -6442,7 +6442,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "設定你要運送產品的包裹。 我們會儲存該設定，以供未來的訂單使用。";
 
 /* Challenge option in the store creation challenges question. */
-"Setting up the online store" = "架設流程";
+"Setting up the online store" = "架設網路商店";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -6560,7 +6560,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Shipping Zones" = "運送區域";
 
 /* Challenge option in the store creation challenges question. */
-"Shipping and logistics" = "航運與物流";
+"Shipping and logistics" = "運輸與物流";
 
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "貨運業者";

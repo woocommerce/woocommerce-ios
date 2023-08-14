@@ -410,9 +410,11 @@ extension OrderDetailsViewModel {
 
         case .addOrderNote:
             ServiceLocator.analytics.track(.orderDetailAddNoteButtonTapped)
-
-            let newNoteViewController = NewNoteViewController()
-            newNoteViewController.viewModel = self
+            let newNoteViewModel = NewNoteViewModel(order: order, orderNotes: dataSource.orderNotes)
+            let newNoteViewController = NewNoteViewController(viewModel: newNoteViewModel)
+            newNoteViewController.viewModel.onDidFinishEditing = { [weak self] orderNote in
+                self?.insertNote(orderNote)
+            }
 
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             viewController.present(navController, animated: true, completion: nil)
@@ -740,6 +742,12 @@ extension OrderDetailsViewModel {
         let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, matching: predicate, sortedBy: [])
         try? resultsController.performFetch()
         return !resultsController.isEmpty
+    }
+
+    /// Inserts a new note at the top of the collection of existing notes
+    ///
+    private func insertNote(_ orderNote: OrderNote) {
+        orderNotes.insert(orderNote, at: 0)
     }
 }
 

@@ -35,7 +35,7 @@ public enum SiteAction: Action {
     ///   - title: The title to update
     ///   - completion: Called when the result of the update is available.
     ///
-    case updateSiteTitle(siteID: Int64, title: String, completion: (Result<Void, Error>) -> Void)
+    case updateSiteTitle(siteID: Int64, title: String, completion: (Result<Site, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

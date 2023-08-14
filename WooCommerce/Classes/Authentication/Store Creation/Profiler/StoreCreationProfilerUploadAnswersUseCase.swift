@@ -7,6 +7,10 @@ protocol StoreCreationProfilerUploadAnswersUseCaseProtocol {
     func uploadAnswers() async
 }
 
+/// Uploads the answers from the store creation profiler questions
+/// - Stores the answers locally. (We do this becase we want to wait until the new store is created and fully connected with Jetpack tunnel.(
+/// - Uploads the answers when requested.
+/// - Clears the stored answers upon successful upload. 
 struct StoreCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol {
     private let siteID: Int64
     private let stores: StoresManager

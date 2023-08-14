@@ -51,7 +51,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
         } else if let answer,
                     answer.sellingStatus == .alreadySellingOnline,
-                    answer.sellingPlatforms?.isEmpty == true {
+                  answer.sellingPlatforms == nil || answer.sellingPlatforms?.isEmpty == true {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
         }
 

@@ -6,9 +6,18 @@ class NewNoteViewController: UIViewController {
 
     // MARK: - Properties
 
-    @IBOutlet var tableView: UITableView!
+    @IBOutlet weak var tableView: UITableView!
 
-    var viewModel: OrderDetailsViewModel!
+    var viewModel: NewNoteViewModel
+
+    init(viewModel: NewNoteViewModel) {
+        self.viewModel = viewModel
+        super.init(nibName: type(of: self).nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     private var sections = [Section]()
 
@@ -51,29 +60,27 @@ class NewNoteViewController: UIViewController {
     @objc func addButtonTapped() {
         configureForCommittingNote()
 
-        ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
-        ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                       "status": viewModel.order.status.rawValue,
-                                                                       "type": isCustomerNote ? "customer" : "private"])
+        viewModel.trackOrderNoteAddButtonTapped()
+        viewModel.trackOrderNoteAdd(isCustomerNote)
 
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
-                                                  orderID: viewModel.order.orderID,
+                                                  orderID: viewModel.orderID,
                                                   isCustomerNote: isCustomerNote,
                                                   note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
-                ServiceLocator.analytics.track(.orderNoteAddFailed, withError: error)
+                self?.viewModel.track(.orderNoteAddFailed, withError: error)
 
                 self?.displayErrorNotice()
                 self?.configureForEditingNote()
                 return
             }
 
-                                                    if let orderNote = orderNote {
-                                                                  self?.viewModel.orderNotes.insert(orderNote, at: 0)
-                                                              }
+            if let orderNote = orderNote {
+                self?.viewModel.onDidFinishEditing?(orderNote)
+            }
 
-            ServiceLocator.analytics.track(.orderNoteAddSuccess)
+            self?.viewModel.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
 
@@ -181,16 +188,8 @@ private extension NewNoteViewController {
             )
 
             let stateValue = newValue ? "on" : "off"
-            ServiceLocator.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
+            self.viewModel.trackOrderNoteEmailCustomerToggled(stateValue)
         }
-    }
-
-    private func refreshTextViewCell() {
-        guard let cell = tableView.firstSubview(ofType: TextViewTableViewCell.self) else {
-            return
-        }
-
-        setupWriteNoteCell(cell)
     }
 }
 
@@ -240,7 +239,7 @@ private extension NewNoteViewController {
                 + "It reads: Unable to add note to order #{order number}. "
                 + "Parameters: %1$d - order number"
         )
-        let title = String.localizedStringWithFormat(titleFormat, viewModel.order.orderID)
+        let title = String.localizedStringWithFormat(titleFormat, viewModel.orderID)
 
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: nil, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -262,7 +261,7 @@ private extension NewNoteViewController {
 
     func configureTitle() {
         let titleFormat = NSLocalizedString("Order #%1$@", comment: "Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number")
-        title = String.localizedStringWithFormat(titleFormat, viewModel.order.number)
+        title = String.localizedStringWithFormat(titleFormat, viewModel.orderNumber)
     }
 
     func configureDismissButton() {

@@ -119,15 +119,16 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             }
             return [category]
         }()
+        let onboarding: [String: Any] = [
+            "industry": industry,
+            "is_store_country_set": true,
+            "business_choice": answers.sellingStatus?.remoteValue,
+            "selling_platforms": answers.sellingPlatforms
+        ].compactMapValues { $0 }
 
         let parameters: [String: Any] = [
             "woocommerce_default_country": answers.countryCode,
-            "woocommerce_onboarding_profile": [
-                "industry": industry,
-                "is_store_country_set": true,
-                "business_choice": answers.sellingStatus?.remoteValue as Any?,
-                "selling_platforms": answers.sellingPlatforms as Any?
-            ].compactMapValues { $0 }
+            "woocommerce_onboarding_profile": onboarding
         ]
         let request = JetpackRequest(wooApiVersion: .wcAdmin,
                                      method: .post,

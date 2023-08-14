@@ -44,7 +44,11 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     func saveSellingStatus(_ answer: StoreCreationSellingStatusAnswer?) {
         if answer == nil {
-            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
+            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
+        } else if let answer,
+                    answer.sellingStatus == .alreadySellingOnline,
+                    answer.sellingPlatforms == nil {
+            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
         }
         sellingStatus = answer
         currentQuestion = .category

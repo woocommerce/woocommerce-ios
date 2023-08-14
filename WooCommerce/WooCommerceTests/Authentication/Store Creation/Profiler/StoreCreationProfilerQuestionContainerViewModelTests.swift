@@ -4,6 +4,21 @@ import XCTest
 
 final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analyticsProvider = nil
+        analytics = nil
+        super.tearDown()
+    }
+
     // MARK: - Saving answers
 
     func test_saveSellingStatus_updates_currentQuestion_to_category() {
@@ -137,4 +152,69 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics
+
+    func test_saveSellingStatus_tracks_skip_event_for_selling_status_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveSellingStatus(nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_commerce_journey")
+    }
+
+    func test_saveSellingStatus_tracks_skip_event_for_selling_platform_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveSellingStatus(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: nil))
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_ecommerce_platforms")
+    }
+
+    func test_saveCategory_tracks_skip_event_for_category_question() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveCategory(nil)
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_industries")
+    }
+
+    func test_saveChallenges_tracks_skip_event_for_challenges_questions() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveChallenges([])
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_challenges")
+    }
+
+    func test_saveFeatures_tracks_skip_event_for_challenges_questions() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveFeatures([])
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_question_skipped" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_features")
+    }
 }

@@ -83,6 +83,9 @@ struct StoreCreationProfilerQuestionContainerView: View {
                 }))
             }
         }
+        .onAppear() {
+            viewModel.onAppear()
+        }
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {

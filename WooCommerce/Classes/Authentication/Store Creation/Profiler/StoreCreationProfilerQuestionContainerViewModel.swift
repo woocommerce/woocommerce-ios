@@ -42,12 +42,20 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         self.completionHandler = onCompletion
     }
 
+    func onAppear() {
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
+    }
+
     func saveSellingStatus(_ answer: StoreCreationSellingStatusAnswer?) {
         if answer == nil {
-            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
+            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
+        } else if answer?.sellingStatus == .alreadySellingOnline && answer?.sellingPlatforms?.isEmpty == true {
+            analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
         }
+
         sellingStatus = answer
         currentQuestion = .category
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
 
     func saveCategory(_ answer: StoreCreationCategoryAnswer?) {
@@ -56,11 +64,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
         storeCategory = answer
         currentQuestion = .country
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
     func saveCountry(_ answer: SiteAddress.CountryCode) {
         storeCountry = answer
         currentQuestion = .challenges
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))
     }
 
     func saveChallenges(_ answer: [StoreCreationChallengesAnswer]) {
@@ -69,6 +79,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
         challenges = answer
         currentQuestion = .features
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerFeaturesQuestion))
     }
 
     func saveFeatures(_ answer: [StoreCreationFeaturesAnswer]) {

@@ -87,12 +87,12 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         if let previousQuestion = currentQuestion.previousQuestion {
             currentQuestion = previousQuestion
         } else {
-            // TODO: show confirm alert if needed
             completionHandler(nil)
         }
     }
 
     private func handleCompletion() {
+        // TODO-10374: add Tracks for the profiler data
         let profilerData: SiteProfilerData = {
             let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
             return .init(name: storeName,

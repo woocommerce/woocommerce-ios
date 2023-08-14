@@ -354,7 +354,7 @@ private extension SiteRemote {
         }
 
         static func siteSettings(siteID: Int64) -> String {
-            "site/\(siteID)/settings"
+            "sites/\(siteID)/settings"
         }
     }
     enum Fields {

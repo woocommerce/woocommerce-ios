@@ -34,7 +34,6 @@ final class StoreOnboardingCoordinator: Coordinator {
     }
 
     /// Navigates to the fullscreen store onboarding view.
-    @MainActor
     func start() {
         let onboardingNavigationController = UINavigationController()
         let onboardingViewController = StoreOnboardingViewHostingController(viewModel: .init(siteID: site.siteID,
@@ -48,7 +47,6 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     /// Navigates to complete an onboarding task.
     /// - Parameter task: the task to complete.
-    @MainActor
     func start(task: StoreOnboardingTask) {
         switch task.type {
         case .storeDetails:
@@ -63,6 +61,8 @@ final class StoreOnboardingCoordinator: Coordinator {
             showWCPaySetup()
         case .payments:
             showPaymentsSetup()
+        case .storeName:
+            showStoreNameSetup()
         case .unsupported:
             assertionFailure("Unexpected onboarding task: \(task)")
         }
@@ -70,7 +70,6 @@ final class StoreOnboardingCoordinator: Coordinator {
 }
 
 private extension StoreOnboardingCoordinator {
-    @MainActor
     func showStoreDetails() {
         let coordinator = StoreOnboardingStoreDetailsCoordinator(site: site,
                                                                  navigationController: navigationController,
@@ -81,7 +80,6 @@ private extension StoreOnboardingCoordinator {
         coordinator.start()
     }
 
-    @MainActor
     func addProduct() {
         let coordinator = AddProductCoordinator(siteID: site.siteID,
                                                 source: .storeOnboarding,
@@ -95,7 +93,6 @@ private extension StoreOnboardingCoordinator {
         coordinator.start()
     }
 
-    @MainActor
     func showCustomDomains() {
         let coordinator = DomainSettingsCoordinator(source: .dashboardOnboarding,
                                                     site: site,
@@ -104,10 +101,11 @@ private extension StoreOnboardingCoordinator {
             self?.onTaskCompleted(.customizeDomains)
         })
         self.domainSettingsCoordinator = coordinator
-        coordinator.start()
+        Task { @MainActor in
+            coordinator.start()
+        }
     }
 
-    @MainActor
     func launchStore(task: StoreOnboardingTask) {
         let coordinator = StoreOnboardingLaunchStoreCoordinator(site: site,
                                                                 isLaunched: task.isComplete,
@@ -122,7 +120,6 @@ private extension StoreOnboardingCoordinator {
         coordinator.start()
     }
 
-    @MainActor
     func showWCPaySetup() {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay,
                                                                   site: site,
@@ -134,7 +131,6 @@ private extension StoreOnboardingCoordinator {
         coordinator.start()
     }
 
-    @MainActor
     func showPaymentsSetup() {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments,
                                                                   site: site,
@@ -144,6 +140,15 @@ private extension StoreOnboardingCoordinator {
          })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
+    }
+
+    func showStoreNameSetup() {
+        let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
+            self?.onTaskCompleted(.storeName)
+            self?.navigationController.presentedViewController?.dismiss(animated: true)
+        })
+        let controller = StoreNameSetupHostingController(viewModel: viewModel)
+        navigationController.present(controller, animated: true)
     }
 }
 

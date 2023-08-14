@@ -47,8 +47,6 @@ struct StoreNameSetupView: View {
                 .padding(Layout.textFieldPadding)
                 .background(Color(uiColor: .systemBackground))
                 .cornerRadius(Layout.textFieldCornerRadius)
-                .padding(.horizontal, Layout.textFieldHorizontalMargin)
-                .padding(.vertical, Layout.textFieldVerticalMargin)
 
                 if let message = viewModel.errorMessage {
                     Text(message)
@@ -57,6 +55,8 @@ struct StoreNameSetupView: View {
 
                 Spacer()
             }
+            .padding(.horizontal, Layout.textFieldHorizontalMargin)
+            .padding(.top, Layout.textFieldVerticalMargin)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {

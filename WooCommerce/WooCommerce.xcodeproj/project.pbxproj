@@ -2083,6 +2083,7 @@
 		DE36E0982A8634FF00B98496 /* StoreNameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */; };
 		DE36E09A2A86351100B98496 /* StoreNameSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */; };
 		DE36E09C2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */; };
+		DE36E09E2A8A2C6A00B98496 /* StoreCreationProfilerQuestionContainerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E09D2A8A2C6A00B98496 /* StoreCreationProfilerQuestionContainerViewModelTests.swift */; };
 		DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE37517B28DC5FC6000163CB /* Authenticator.swift */; };
 		DE3877E0283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */; };
 		DE3877E2283CCBC20075D87E /* BottomSheetListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */; };
@@ -4528,6 +4529,7 @@
 		DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupView.swift; sourceTree = "<group>"; };
 		DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModel.swift; sourceTree = "<group>"; };
 		DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModelTests.swift; sourceTree = "<group>"; };
+		DE36E09D2A8A2C6A00B98496 /* StoreCreationProfilerQuestionContainerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreCreationProfilerQuestionContainerViewModelTests.swift; sourceTree = "<group>"; };
 		DE37517B28DC5FC6000163CB /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountTypeBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelector.swift; sourceTree = "<group>"; };
@@ -4933,6 +4935,7 @@
 				022F2FA9295E8241003A0A46 /* StoreCreationCountryQuestionViewModelTests.swift */,
 				EED028692A7B640300C5DE03 /* StoreCreationChallengesQuestionViewModelTests.swift */,
 				EE6A7BAE2A7B811700D9A028 /* StoreCreationFeaturesQuestionViewModelTests.swift */,
+				DE36E09D2A8A2C6A00B98496 /* StoreCreationProfilerQuestionContainerViewModelTests.swift */,
 			);
 			path = Profiler;
 			sourceTree = "<group>";
@@ -13583,6 +13586,7 @@
 				029A9C672535873000BECEC5 /* AppCoordinatorTests.swift in Sources */,
 				573A960524F4374B0091F3A5 /* TopBannerViewMirror.swift in Sources */,
 				DEBAB70D2A7A6F1100743185 /* MockStorePlanSynchronizer.swift in Sources */,
+				DE36E09E2A8A2C6A00B98496 /* StoreCreationProfilerQuestionContainerViewModelTests.swift in Sources */,
 				77423F17251CF77E0016A083 /* ProductDownloadListViewModelTests.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				DE126D0D26CA4A0C007F901D /* ShippingLabelCustomsFormItemDetailsViewModelTests.swift in Sources */,

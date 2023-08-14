@@ -6,7 +6,7 @@ extension Storage.OrderItem {
         return attributes?.toArray() ?? []
     }
 
-    private var addOnsArray: [Storage.OrderItemProductAddOn] {
+    var addOnsArray: [Storage.OrderItemProductAddOn] {
         return productAddOns?.toArray() ?? []
     }
 }

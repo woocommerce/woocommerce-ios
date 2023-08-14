@@ -183,21 +183,11 @@ extension ReviewOrderViewModel {
         products.first(where: { $0.productID == item.productID })
     }
 
-    /// Filter addons for an order item
-    ///
-    func filterAddons(for item: AggregateOrderItem) -> [OrderItemAttribute] {
-        let product = filterProduct(for: item)
-        guard let product = product, showAddOns else {
-            return []
-        }
-        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
-    }
-
     /// Product Details cell view model for an order item
     ///
     func productDetailsCellViewModel(for item: AggregateOrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
-        let addOns = filterAddons(for: item)
+        let addOns = item.addOns
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(item, in: aggregateOrderItems)
         return ProductDetailsCellViewModel(aggregateItem: item,
                                            currency: order.currency,

@@ -438,6 +438,17 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
         XCTAssertEqual(order.items.first?.sku, "123")
     }
+
+    func test_addons_are_parsed_correctly() throws {
+        let order = try XCTUnwrap(mapLoadOrderWithLintItemAddOnsResponse())
+
+        let lineItems = order.items
+        XCTAssertEqual(lineItems.count, 1)
+
+        let lineItem = try XCTUnwrap(lineItems.first)
+
+        XCTAssertEqual(lineItem.addOns, [.init(addOnID: 0, key: "As a Gift", value: "No")])
+    }
 }
 
 
@@ -489,6 +500,10 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithLineItemAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-line-item-attributes")
+    }
+
+    func mapLoadOrderWithLintItemAddOnsResponse() -> Order? {
+        mapOrder(from: "order-with-subscription-renewal")
     }
 
     /// Returns the Order output upon receiving `order-with-faulty-attributes`

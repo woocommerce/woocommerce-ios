@@ -225,6 +225,7 @@ private extension ProductDetailsCellViewModelTests {
                   total: total,
                   totalTax: "",
                   attributes: attributes,
+                  addOns: [],
                   parent: nil)
     }
 
@@ -245,6 +246,7 @@ private extension ProductDetailsCellViewModelTests {
                            total: total,
                            imageURL: imageURL,
                            attributes: attributes,
+                           addOns: [],
                            parent: parent)
     }
 

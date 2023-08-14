@@ -1,5 +1,5 @@
 import enum Yosemite.CreateAccountError
-import struct Yosemite.SiteProfilerData
+import struct Yosemite.StoreProfilerAnswers
 
 extension WooAnalyticsEvent {
     enum StoreCreation {
@@ -92,7 +92,7 @@ extension WooAnalyticsEvent {
         }
 
         /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
-        static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
+        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers) -> WooAnalyticsEvent {
             let properties = [
                 Key.category: profilerData.category,
                 Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
@@ -215,15 +215,8 @@ private extension CreateAccountError {
     }
 }
 
-private extension SiteProfilerData.SellingStatus {
+private extension StoreProfilerAnswers.SellingStatus {
     var analyticsValue: String {
-        switch self {
-        case .justStarting:
-            return "im_just_starting_my_business"
-        case .alreadySellingButNotOnline:
-            return "im_already_selling_but_not_online"
-        case .alreadySellingOnline:
-            return "im_already_selling_online"
-        }
+        remoteValue
     }
 }

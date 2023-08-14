@@ -250,15 +250,16 @@ public struct StoreProfilerAnswers {
     public enum SellingStatus {
         /// Just starting my business.
         case justStarting
-        /// Already selling
+        /// Already selling but not online
         case alreadySellingButNotOnline
-        /// Setting up a store for a client
+        /// Already selling online
         case alreadySellingOnline
 
         var remoteValue: String {
             switch self {
             case .justStarting:
                 return "im_just_starting_my_business"
+                // Sending same value because the core profiler endpoint doesn't have these options.
             case .alreadySellingButNotOnline, .alreadySellingOnline:
                 return "im_already_selling"
             }

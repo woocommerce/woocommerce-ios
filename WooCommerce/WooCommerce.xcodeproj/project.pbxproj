@@ -2081,6 +2081,7 @@
 		DE34771327F174C8009CA300 /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34771227F174C8009CA300 /* StatusView.swift */; };
 		DE36E0982A8634FF00B98496 /* StoreNameSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */; };
 		DE36E09A2A86351100B98496 /* StoreNameSetupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */; };
+		DE36E09C2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */; };
 		DE37517C28DC5FC6000163CB /* Authenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE37517B28DC5FC6000163CB /* Authenticator.swift */; };
 		DE3877E0283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */; };
 		DE3877E2283CCBC20075D87E /* BottomSheetListSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */; };
@@ -4524,6 +4525,7 @@
 		DE34771227F174C8009CA300 /* StatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusView.swift; sourceTree = "<group>"; };
 		DE36E0972A8634FF00B98496 /* StoreNameSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupView.swift; sourceTree = "<group>"; };
 		DE36E0992A86351100B98496 /* StoreNameSetupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModel.swift; sourceTree = "<group>"; };
+		DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreNameSetupViewModelTests.swift; sourceTree = "<group>"; };
 		DE37517B28DC5FC6000163CB /* Authenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authenticator.swift; sourceTree = "<group>"; };
 		DE3877DF283B68CF0075D87E /* DiscountTypeBottomSheetListSelectorCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountTypeBottomSheetListSelectorCommand.swift; sourceTree = "<group>"; };
 		DE3877E1283CCBC20075D87E /* BottomSheetListSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomSheetListSelector.swift; sourceTree = "<group>"; };
@@ -10649,6 +10651,7 @@
 				EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */,
 				EEB4E2D729B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift */,
 				027EB57729C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift */,
+				DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -13466,6 +13469,7 @@
 				02BC5AA624D27F8900C43326 /* ProductVariationFormViewModel+ChangesTests.swift in Sources */,
 				03A6C18428B52B1500AADF23 /* InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests.swift in Sources */,
 				DE279BAD26E9CBEA002BA963 /* ShippingLabelPackagesFormViewModelTests.swift in Sources */,
+				DE36E09C2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift in Sources */,
 				57C2F6E624C27B3100131012 /* SwitchStoreNoticePresenterTests.swift in Sources */,
 				020BE77123B4A4C6007FE54C /* AztecHorizontalRulerFormatBarCommandTests.swift in Sources */,
 				B5C6CE612190D28E00515926 /* NSAttributedStringHelperTests.swift in Sources */,

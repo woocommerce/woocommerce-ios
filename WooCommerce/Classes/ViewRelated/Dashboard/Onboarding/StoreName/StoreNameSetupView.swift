@@ -55,12 +55,17 @@ struct StoreNameSetupView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
-                        // TODO
+                        onDismiss()
                     }
+                    .disabled(viewModel.isSavingInProgress)
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.save) {
-                        // TODO
+                    if viewModel.isSavingInProgress {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else {
+                        Button(Localization.save) {
+                            viewModel.saveName()
+                        }
                     }
                 }
             }

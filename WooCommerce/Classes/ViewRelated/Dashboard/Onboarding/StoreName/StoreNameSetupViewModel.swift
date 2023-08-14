@@ -6,6 +6,7 @@ import Yosemite
 final class StoreNameSetupViewModel: ObservableObject {
 
     @Published var name: String
+    @Published private(set) var isSavingInProgress = false
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -19,5 +20,9 @@ final class StoreNameSetupViewModel: ObservableObject {
         self.name = name
         self.stores = stores
         self.onNameSaved = onNameSaved
+    }
+
+    func saveName() {
+        
     }
 }

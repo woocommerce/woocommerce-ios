@@ -374,9 +374,9 @@ private extension StoreCreationCoordinator {
     /// Enables a free trial on a recently created store.
     ///
     @MainActor
-    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async -> Result<Void, Error> {
+    func enableFreeTrial(siteID: Int64) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: profilerData) { result in
+            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: nil) { result in
                 continuation.resume(returning: result)
             })
         }

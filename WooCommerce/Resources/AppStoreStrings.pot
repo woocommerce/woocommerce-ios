@@ -63,7 +63,7 @@ msgstr ""
 
 msgctxt "v14.9-whats-new"
 msgid ""
-"Exciting news about order creation! We've improved the way you can request, search and select a customer when creating an order. Enjoy!\n"
+"We've enhanced the order creation process to provide a more streamlined experience. The process of selecting a customer when creating an order has been improved based on your valuable feedback. Your input drives our continuous improvements. Thank you!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

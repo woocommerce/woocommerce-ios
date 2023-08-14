@@ -170,6 +170,7 @@ private extension StoreCreationCoordinator {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: .native, isFreeTrial: true))
+            self.navigationController.dismiss(animated: true)
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())

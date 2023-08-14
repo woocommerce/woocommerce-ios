@@ -36,6 +36,10 @@ public enum SiteAction: Action {
     ///   - completion: Called when the result of the update is available.
     ///
     case updateSiteTitle(siteID: Int64, title: String, completion: (Result<Site, Error>) -> Void)
+
+    /// Upload store profiler answers
+    ///
+    case uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: (Result<Void, Error>) -> Void)
 }
 
 /// The result of site creation including necessary site information.

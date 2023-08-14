@@ -17,6 +17,10 @@ public protocol SiteRemoteProtocol {
     ///
     func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws
 
+    /// Uploads store profiler answers
+    ///
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws
+
     /// Loads a site.
     /// - Parameter siteID: Remote ID of the site to load.
     /// - Returns: The site that matches the site ID.
@@ -105,6 +109,33 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
             ]
         }
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        return try await enqueue(request)
+    }
+
+    public func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws {
+        let industry: [String]? = {
+            guard let category = answers.category else {
+                return nil
+            }
+            return [category]
+        }()
+        let onboarding: [String: Any] = [
+            "industry": industry,
+            "is_store_country_set": true,
+            "business_choice": answers.sellingStatus?.remoteValue,
+            "selling_platforms": answers.sellingPlatforms
+        ].compactMapValues { $0 }
+
+        let parameters: [String: Any] = [
+            "woocommerce_default_country": answers.countryCode,
+            "woocommerce_onboarding_profile": onboarding
+        ]
+        let request = JetpackRequest(wooApiVersion: .wcAdmin,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: Path.uploadStoreProfilerAnswers,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
         return try await enqueue(request)
     }
 
@@ -208,6 +239,45 @@ public extension SiteCreationResponse {
 }
 
 /// Answers from the site creation profiler questions.
+public struct StoreProfilerAnswers {
+    public let sellingStatus: SellingStatus?
+    public let sellingPlatforms: String?
+    public let category: String?
+    public let countryCode: String
+
+    /// Selling status options.
+    /// Its raw value is the value to be sent to the backend.
+    /// https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-admin/client/core-profiler/pages/UserProfile.tsx#L20
+    public enum SellingStatus {
+        /// Just starting my business.
+        case justStarting
+        /// Already selling but not online
+        case alreadySellingButNotOnline
+        /// Already selling online
+        case alreadySellingOnline
+
+        var remoteValue: String {
+            switch self {
+            case .justStarting:
+                return "im_just_starting_my_business"
+                // Sending same value because the core profiler endpoint doesn't have these options.
+            case .alreadySellingButNotOnline, .alreadySellingOnline:
+                return "im_already_selling"
+            }
+        }
+    }
+
+    public init(sellingStatus: StoreProfilerAnswers.SellingStatus?,
+                sellingPlatforms: String?,
+                category: String?,
+                countryCode: String) {
+        self.sellingStatus = sellingStatus
+        self.sellingPlatforms = sellingPlatforms
+        self.category = category
+        self.countryCode = countryCode
+    }
+}
+
 public struct SiteProfilerData {
     public let name: String
     public let category: String?
@@ -271,6 +341,7 @@ private extension SiteRemote {
         static func siteLaunch(siteID: Int64) -> String {
             "sites/\(siteID)/launch"
         }
+        static let uploadStoreProfilerAnswers = "options"
 
         ///Path to add enable the free trial on a site.
         ///

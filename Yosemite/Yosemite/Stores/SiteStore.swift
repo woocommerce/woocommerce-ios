@@ -58,6 +58,8 @@ public final class SiteStore: Store {
             syncSite(siteID: siteID, completion: completion)
         case let .updateSiteTitle(siteID, title, completion):
             updateSiteTitle(siteID: siteID, title: title, completion: completion)
+        case let .uploadStoreProfilerAnswers(siteID, answers, completion):
+            uploadStoreProfilerAnswers(siteID: siteID, answers: answers, completion: completion)
         }
     }
 }
@@ -131,6 +133,17 @@ private extension SiteStore {
                 let site = try await remote.loadSite(siteID: siteID)
                 await upsertStoredSiteInBackground(readOnlySite: site)
                 completion(.success(site))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.uploadStoreProfilerAnswers(siteID: siteID, answers: answers)
+                completion(.success(()))
             } catch {
                 completion(.failure(error))
             }

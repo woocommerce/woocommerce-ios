@@ -383,6 +383,7 @@ private extension StoreCreationCoordinator {
         }
     }
 
+    // TODO: 10385 - Remove oneDayAfterStoreCreationNameWithoutFreeTrial completely as it is no longer in use
     func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
         let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
                                                    stores: stores,

@@ -886,6 +886,20 @@ final class DashboardViewModelTests: XCTestCase {
         XCTAssertTrue(siteVisitStatsResult.isSuccess)
         XCTAssertTrue(siteSummaryStatsResult.isSuccess)
     }
+
+    // MARK: Profiler answers
+    func test_uploadProfilerAnswers_triggers_uploadAnswers() async throws {
+        // Given
+        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
+        let viewModel = DashboardViewModel(siteID: sampleSiteID,
+                                           storeCreationProfilerUploadAnswersUseCase: usecase)
+
+        // When
+        await viewModel.uploadProfilerAnswers()
+
+        //  Then
+        XCTAssertTrue(usecase.uploadAnswersCalled)
+    }
 }
 
 private extension DashboardViewModelTests {

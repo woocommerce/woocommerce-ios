@@ -69,7 +69,7 @@ struct AuthenticationFormFieldView: View {
                         showsSecureInput.toggle()
                     }) {
                         Image(systemName: showsSecureInput ? "eye.slash" : "eye")
-                            .accentColor(Color(.textSubtle))
+                            .tint(Color(.textSubtle))
                             .frame(width: Layout.secureFieldRevealButtonDimension * scale,
                                    height: Layout.secureFieldRevealButtonDimension * scale)
                             .padding(.leading, Layout.secureFieldRevealButtonHorizontalPadding)

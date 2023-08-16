@@ -41,9 +41,9 @@ final class CustomerSearchUICommandTests: XCTestCase {
             siteID: sampleSiteID,
             customerID: 1,
             email: "john.w@email.com",
-            username: "john",
             firstName: "John",
             lastName: "W",
+            username: "john",
             billing: nil,
             shipping: nil
         )

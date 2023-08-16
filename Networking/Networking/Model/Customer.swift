@@ -34,9 +34,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
     public init(siteID: Int64,
                 customerID: Int64,
                 email: String,
-                username: String?,
                 firstName: String?,
                 lastName: String?,
+                username: String?,
                 billing: Address?,
                 shipping: Address?) {
         self.siteID = siteID
@@ -69,9 +69,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
         self.init(siteID: siteID,
                   customerID: customerID,
                   email: email,
-                  username: username,
-                  firstName: firstName,
-                  lastName: lastName,
+                  firstName: username,
+                  lastName: firstName,
+                  username: lastName,
                   billing: billing,
                   shipping: shipping
         )

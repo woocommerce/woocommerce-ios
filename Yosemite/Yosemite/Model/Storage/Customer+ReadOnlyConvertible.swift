@@ -93,9 +93,9 @@ extension Storage.Customer: ReadOnlyConvertible {
             siteID: siteID,
             customerID: customerID,
             email: email ?? "",
-            username: username ?? "",
             firstName: firstName ?? "",
             lastName: lastName ?? "",
+            username: username ?? "",
             billing: createReadOnlyBillingAddress(),
             shipping: createReadOnlyShippingAddress()
         )

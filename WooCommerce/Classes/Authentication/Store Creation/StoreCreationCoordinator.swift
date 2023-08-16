@@ -87,8 +87,6 @@ private extension StoreCreationCoordinator {
         let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] answers in
             guard let self else { return }
             if let answers {
-                self.analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
-
                 let usecase = StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
                 usecase.storeAnswers(answers)
             }

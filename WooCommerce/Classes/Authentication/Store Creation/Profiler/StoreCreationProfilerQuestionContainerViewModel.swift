@@ -109,6 +109,10 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
                                         category: storeCategory?.value,
                                         countryCode: storeCountry.rawValue)
         }()
+
+        analytics.track(event: .StoreCreation.siteCreationProfilerData(answers,
+                                                                       challenges: challenges,
+                                                                       features: features))
         completionHandler(answers)
     }
 }

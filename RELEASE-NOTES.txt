@@ -2,6 +2,7 @@
 
 15.0
 -----
+- [*] The store name can now be updated from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/10485]
 
 
 14.9

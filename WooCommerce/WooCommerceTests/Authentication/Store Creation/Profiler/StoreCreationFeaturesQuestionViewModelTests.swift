@@ -46,9 +46,7 @@ final class StoreCreationFeaturesQuestionViewModelTests: XCTestCase {
             viewModel.didTapFeature(.productManagementAndInventoryTracking)
             viewModel.didTapFeature(.abilityToScaleAsBusinessGrows)
 
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -67,9 +65,7 @@ final class StoreCreationFeaturesQuestionViewModelTests: XCTestCase {
                 promise(())
             })
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 

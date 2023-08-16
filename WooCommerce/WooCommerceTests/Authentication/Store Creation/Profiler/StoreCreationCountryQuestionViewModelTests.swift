@@ -97,9 +97,7 @@ final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
 
             // When
             viewModel.selectCountry(.JP)
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 
@@ -110,9 +108,7 @@ final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
             XCTFail("Should not be invoked without selecting a country.")
         } onSupport: {}
         // When
-        Task { @MainActor in
-            await viewModel.continueButtonTapped()
-        }
+        viewModel.continueButtonTapped()
     }
 
     func test_supportButtonTapped_invokes_onSupport() throws {

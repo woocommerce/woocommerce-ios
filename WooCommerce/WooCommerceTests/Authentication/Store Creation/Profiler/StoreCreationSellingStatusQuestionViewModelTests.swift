@@ -37,9 +37,7 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
             } onSkip: {}
             // When
             viewModel.selectStatus(.alreadySellingButNotOnline)
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -54,9 +52,7 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
 
         // When
         viewModel.selectStatus(.alreadySellingOnline)
-        Task { @MainActor in
-            await viewModel.continueButtonTapped()
-        }
+        viewModel.continueButtonTapped()
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {
@@ -67,9 +63,7 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
                 promise(())
             }
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 

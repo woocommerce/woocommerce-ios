@@ -24,9 +24,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
                                                                    onSkip: {})
             // When
             viewModel.selectCategory(.clothingAccessories)
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -43,9 +41,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
                 promise(())
             })
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 

@@ -1,7 +1,6 @@
 import WordPressKit
 
-@objc
-class LoginFieldsMeta: NSObject {
+class LoginFieldsMeta {
 
     /// Indicates where the Magic Link Email was sent from.
     ///
@@ -9,37 +8,39 @@ class LoginFieldsMeta: NSObject {
 
     /// Indicates whether a self-hosted user is attempting to log in to Jetpack
     ///
-    @objc var jetpackLogin = false
+    var jetpackLogin: Bool
 
     /// Indicates whether a user is logging in via the wpcom flow or a self-hosted flow.  Used by the
     /// the LoginFacade in its branching logic.
     /// This is a good candidate to refactor out and call the proper login method directly.
     ///
-    @objc var userIsDotCom = true
+    var userIsDotCom: Bool
 
     /// Indicates a wpcom account created via social sign up that requires either a magic link, or a social log in option.
     /// If a user signed up via social sign up and subsequently reset their password this field will be false.
     ///
-    @objc var passwordless = false
+    var passwordless: Bool
 
     /// Should point to the site's xmlrpc.php for a self-hosted log in.  Should be the value returned via XML-RPC discovery.
     ///
-    @objc var xmlrpcURL: NSURL?
+    var xmlrpcURL: NSURL?
 
     /// Meta data about a site. This information is fetched and then displayed on the login epilogue.
     ///
     var siteInfo: WordPressComSiteInfo?
 
-    /// Flags whether a 2fa challenge had to be satisfied before a log in could be complete.
+    /// Flags whether a 2FA challenge had to be satisfied before a log in could be complete.
     /// Included in analytics after a successful login.
     ///
-    @objc var requiredMultifactor = false // A 2fa prompt was needed.
+    /// A `false` value means that a 2FA prompt was needed.
+    ///
+    var requiredMultifactor: Bool
 
     /// Identifies a social login and the service used.
     ///
     var socialService: SocialServiceName?
 
-    @objc var socialServiceIDToken: String?
+    var socialServiceIDToken: String?
 
     var socialUser: SocialUser?
 

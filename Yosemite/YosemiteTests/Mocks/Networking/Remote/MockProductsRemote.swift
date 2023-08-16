@@ -224,4 +224,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void) {
         // no-op
     }
+
+    func loadNumberOfProducts(siteID: Int64) async throws -> Int64 {
+        // no-op
+        return 0
+    }
 }

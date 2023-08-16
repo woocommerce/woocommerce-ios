@@ -9,10 +9,10 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
                                                                onSkip: {})
 
         // When
-        viewModel.selectCategory(.fashionApparelAccessories)
+        viewModel.selectCategory(.clothingAccessories)
 
         // Then
-        XCTAssertEqual(viewModel.selectedCategory, .fashionApparelAccessories)
+        XCTAssertEqual(viewModel.selectedCategory, .clothingAccessories)
     }
 
     func test_continueButtonTapped_invokes_onContinue_after_selecting_a_category() throws {
@@ -23,15 +23,15 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
             },
                                                                    onSkip: {})
             // When
-            viewModel.selectCategory(.fashionApparelAccessories)
+            viewModel.selectCategory(.clothingAccessories)
             Task { @MainActor in
                 await viewModel.continueButtonTapped()
             }
         }
 
         // Then
-        XCTAssertEqual(answer, .init(name: StoreCreationCategoryQuestionViewModel.Category.fashionApparelAccessories.name,
-                                     value: "fashion-apparel-accessories"))
+        XCTAssertEqual(answer, .init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.name,
+                                     value: "clothing_and_accessories"))
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {
@@ -72,7 +72,7 @@ final class StoreCreationCategoryQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(categories,
-                       [.fashionApparelAccessories,
+                       [.clothingAccessories,
                         .healthBeauty,
                         .foodDrink,
                         .homeFurnitureGarden,

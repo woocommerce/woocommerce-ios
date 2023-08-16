@@ -207,11 +207,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
-                                                                                            category: nil,
-                                                                                            sellingStatus: nil,
-                                                                                            sellingPlatforms: nil,
-                                                                                            countryCode: "US")) { result in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
                 promise(result)
             })
         }
@@ -226,11 +222,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
-                                                                                            category: nil,
-                                                                                            sellingStatus: nil,
-                                                                                            sellingPlatforms: nil,
-                                                                                            countryCode: "US")) { result in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
                 promise(result)
             })
         }

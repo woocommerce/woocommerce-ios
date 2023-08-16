@@ -28,7 +28,6 @@ public class FeatureFlagRemote: Remote, FeatureFlagRemoteProtocol {
 
 public enum RemoteFeatureFlag: Decodable {
     case storeCreationCompleteNotification
-    case oneDayAfterStoreCreationNameWithoutFreeTrial
     case blaze
     case hardcodedPlanUpgradeDetailsMilestone1AreAccurate
 
@@ -36,8 +35,6 @@ public enum RemoteFeatureFlag: Decodable {
         switch rawValue {
         case "woo_notification_store_creation_ready":
             self = .storeCreationCompleteNotification
-        case "woo_notification_nudge_free_trial_after_1d":
-            self = .oneDayAfterStoreCreationNameWithoutFreeTrial
         case "woo_blaze":
             self = .blaze
         case "woo_hardcoded_plan_upgrade_details_milestone_1_are_accurate":

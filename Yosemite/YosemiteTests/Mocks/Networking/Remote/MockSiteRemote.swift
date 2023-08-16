@@ -71,7 +71,7 @@ extension MockSiteRemote: SiteRemoteProtocol {
         return try result.get()
     }
 
-    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async throws {
+    func enableFreeTrial(siteID: Int64) async throws {
         guard let result = enableFreeTrialResult else {
             XCTFail("Could not find result for enabling a trial.")
             throw NetworkError.notFound

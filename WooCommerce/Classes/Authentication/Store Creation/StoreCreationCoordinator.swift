@@ -252,7 +252,7 @@ private extension StoreCreationCoordinator {
     @MainActor
     func enableFreeTrial(siteID: Int64) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: nil) { result in
+            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID) { result in
                 continuation.resume(returning: result)
             })
         }
@@ -381,28 +381,6 @@ private extension StoreCreationCoordinator {
     func cancelLocalNotificationWhenStoreIsReady() {
         Task {
             await localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
-        }
-    }
-
-    // TODO: 10385 - Remove oneDayAfterStoreCreationNameWithoutFreeTrial completely as it is no longer in use
-    func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
-        let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
-                                                   stores: stores,
-                                                   userInfo: [LocalNotification.UserInfoKey.storeName: storeName])
-
-        cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
-        Task {
-            await localNotificationScheduler.schedule(notification: notification,
-                                                      // Notify after 24 hours
-                                                      trigger: UNTimeIntervalNotificationTrigger(timeInterval: 24 * 60 * 60,
-                                                                                                 repeats: false),
-                                                      remoteFeatureFlag: .oneDayAfterStoreCreationNameWithoutFreeTrial)
-        }
-    }
-
-    func cancelLocalNotificationToSubscribeFreeTrial(storeName: String) {
-        Task {
-            await localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName))
         }
     }
 }

@@ -1,5 +1,3 @@
-import WordPressKit
-
 // MARK: - WordPressAuthenticator Delegate Protocol
 //
 public protocol WordPressAuthenticatorDelegate: AnyObject {
@@ -68,7 +66,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     func presentSignupEpilogue(
         in navigationController: UINavigationController,
         for credentials: AuthenticatorCredentials,
-        socialService: SocialServiceName?
+        socialUser: SocialUser?
     )
 
     /// Presents the Support Interface from a given ViewController.

@@ -10,7 +10,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var allowWPComLogin: Bool = true
 
     private(set) var presentSignupEpilogueCalled = false
-    private(set) var socialService: SocialServiceName?
+    private(set) var socialUser: SocialUser?
 
     func createdWordPressComAccount(username: String, authToken: String) {
         // no-op
@@ -35,10 +35,10 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     func presentSignupEpilogue(
         in navigationController: UINavigationController,
         for credentials: AuthenticatorCredentials,
-        socialService: SocialServiceName?
+        socialUser: SocialUser?
     ) {
         presentSignupEpilogueCalled = true
-        self.socialService = socialService
+        self.socialUser = socialUser
     }
 
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, lastStep: AuthenticatorAnalyticsTracker.Step, lastFlow: AuthenticatorAnalyticsTracker.Flow) {

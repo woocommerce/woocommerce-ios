@@ -33,7 +33,7 @@ class AppleAuthenticatorTests: XCTestCase {
 
         sut.showSignupEpilogue(for: AuthenticatorCredentials())
 
-        let service = try XCTUnwrap(delegateSpy.socialService)
+        let service = try XCTUnwrap(delegateSpy.socialUser?.service)
         guard case .apple = service else {
             return XCTFail("Expected Apple social service, got \(service) instead")
         }
@@ -67,7 +67,7 @@ class AppleAuthenticatorTests: XCTestCase {
         // make sense? Not so sure. How can we callback from Sign In with Apple without the
         // matching social service?
         XCTAssertTrue(delegateSpy.presentSignupEpilogueCalled)
-        XCTAssertNil(delegateSpy.socialService)
+        XCTAssertNil(delegateSpy.socialUser)
     }
 }
 

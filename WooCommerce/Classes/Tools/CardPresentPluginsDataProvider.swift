@@ -94,13 +94,12 @@ struct CardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol {
             return nil
         }
         return storageManager.viewStorage
-            .loadSystemPlugins(siteID: siteID)
-            .first(where: { $0.fileNameWithoutExtension == configuration.fileNameWithoutExtension })?
-            .toReadOnly()
+            .loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+            .first(where: { $0.fileNameWithoutExtension == configuration.fileNameWithoutExtension })
     }
 }
 
-private extension Storage.SystemPlugin {
+extension Yosemite.SystemPlugin {
     var fileNameWithoutExtension: String {
         ((plugin as NSString).lastPathComponent as NSString).deletingPathExtension
     }

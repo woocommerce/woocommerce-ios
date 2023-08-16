@@ -80,13 +80,17 @@ extension WooAnalyticsEvent {
                               properties: [Key.step: step.rawValue])
         }
 
-        /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
-        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers) -> WooAnalyticsEvent {
-            let properties = [
+        /// Tracked when completing the last profiler question during the store creation flow
+        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers,
+                                             challenges: [StoreCreationChallengesAnswer],
+                                             features: [StoreCreationFeaturesAnswer]) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.category: profilerData.category,
                 Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
                 Key.sellingPlatforms: profilerData.sellingPlatforms,
-                Key.countryCode: profilerData.countryCode
+                Key.countryCode: profilerData.countryCode,
+                Key.challenges: challenges.map { $0.value }.joined(separator: ","),
+                Key.features: features.map { $0.value }.joined(separator: ",")
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }

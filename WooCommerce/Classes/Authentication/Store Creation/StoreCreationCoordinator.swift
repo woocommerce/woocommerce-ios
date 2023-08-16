@@ -86,7 +86,6 @@ private extension StoreCreationCoordinator {
         navigationController.isNavigationBarHidden = false
         let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] answers in
             guard let self else { return }
-            // TODO: 10385 Upload profiler answers from `DashboardViewModel`
             if let answers {
                 self.analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
 

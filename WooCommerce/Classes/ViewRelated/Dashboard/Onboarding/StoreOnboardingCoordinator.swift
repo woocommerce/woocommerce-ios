@@ -21,6 +21,12 @@ final class StoreOnboardingCoordinator: Coordinator {
     private let reloadTasks: () -> Void
     private let onUpgradePlan: (() -> Void)?
 
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
+        noticePresenter.presentingViewController = navigationController
+        return noticePresenter
+    }()
+
     init(navigationController: UINavigationController,
          site: Site,
          onTaskCompleted: @escaping (_ task: TaskType) -> Void,
@@ -145,10 +151,18 @@ private extension StoreOnboardingCoordinator {
     func showStoreNameSetup() {
         let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
             self?.onTaskCompleted(.storeName)
-            self?.navigationController.presentedViewController?.dismiss(animated: true)
+            self?.navigationController.presentedViewController?.dismiss(animated: true) { [weak self] in
+                self?.showStoreNameNotice()
+            }
         })
         let controller = StoreNameSetupHostingController(viewModel: viewModel)
         navigationController.present(controller, animated: true)
+    }
+
+    func showStoreNameNotice() {
+        let notice = Notice(title: Localization.StoreNameNotice.title,
+                            subtitle: Localization.StoreNameNotice.subtitle)
+        noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -158,5 +172,20 @@ private extension StoreOnboardingCoordinator {
     func showPlanView() {
         let subscriptionController = SubscriptionsHostingController(siteID: site.siteID)
         navigationController.show(subscriptionController, sender: self)
+    }
+}
+
+private extension StoreOnboardingCoordinator {
+    enum Localization {
+        enum StoreNameNotice {
+            static let title = NSLocalizedString(
+                "Store Name Set!",
+                comment: "Title on the notice presented when the store name is updated"
+            )
+            static let subtitle = NSLocalizedString(
+                "To change again, visit Store Settings.",
+                comment: "Subtitle on the notice presented when the store name is updated"
+            )
+        }
     }
 }

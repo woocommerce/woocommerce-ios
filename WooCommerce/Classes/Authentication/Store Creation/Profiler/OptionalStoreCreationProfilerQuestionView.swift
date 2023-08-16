@@ -12,7 +12,6 @@ protocol OptionalStoreCreationProfilerQuestionViewModel {
 struct OptionalStoreCreationProfilerQuestionView<QuestionContent: View>: View {
     private let viewModel: StoreCreationProfilerQuestionViewModel & OptionalStoreCreationProfilerQuestionViewModel
     @ViewBuilder private let questionContent: () -> QuestionContent
-    @State private var isWaitingForCompletion: Bool = false
 
     init(viewModel: StoreCreationProfilerQuestionViewModel & OptionalStoreCreationProfilerQuestionViewModel,
          @ViewBuilder questionContent: @escaping () -> QuestionContent) {
@@ -30,13 +29,9 @@ struct OptionalStoreCreationProfilerQuestionView<QuestionContent: View>: View {
                     .frame(height: Layout.dividerHeight)
                     .foregroundColor(Color(.separator))
                 Button(Localization.continueButtonTitle) {
-                    Task { @MainActor in
-                        isWaitingForCompletion = true
-                        await viewModel.continueButtonTapped()
-                        isWaitingForCompletion = false
-                    }
+                    viewModel.continueButtonTapped()
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForCompletion))
+                .buttonStyle(PrimaryButtonStyle())
                 .padding(Layout.defaultPadding)
             }
             .background(Color(.systemBackground))

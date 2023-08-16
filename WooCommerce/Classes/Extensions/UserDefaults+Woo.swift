@@ -29,6 +29,7 @@ extension UserDefaults {
         case completedAllStoreOnboardingTasks
         case shouldHideStoreOnboardingTaskList
         case storePhoneNumber
+        case siteIDsWithSnapshotTracked
         case hasSavedPrivacyBannerSettings
         case usedProductDescriptionAI
 

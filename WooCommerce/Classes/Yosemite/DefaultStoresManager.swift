@@ -424,19 +424,46 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the order statuses, if possible.
     ///
-    func retrieveOrderStatus(with siteID: Int64) {
+    @MainActor
+    func retrieveOrderStatus(with siteID: Int64) async -> [OrderStatus]? {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
-            return
+            return nil
         }
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
-            }
+        return await withCheckedContinuation { continuation in
+            dispatch(OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+                switch result {
+                    case let .success(statuses):
+                        continuation.resume(returning: statuses)
+                    case let .failure(error):
+                        DDLogError("⛔️ Could not successfully fetch order statuses for siteID \(siteID): \(error)")
+                        continuation.resume(returning: nil)
+                }
+            })
+        }
+    }
+
+    /// Synchronizes the order statuses, if possible.
+    ///
+    @MainActor
+    func retrieveNumberOfProducts(siteID: Int64) async -> Int64? {
+        guard siteID != 0 else {
+            // Just return if the siteID == 0 so we are not making extra requests
+            return nil
         }
 
-        dispatch(action)
+        return await withCheckedContinuation { continuation in
+            dispatch(ProductAction.fetchNumberOfProducts(siteID: siteID) { result in
+                switch result {
+                    case let .success(numberOfProducts):
+                        continuation.resume(returning: numberOfProducts)
+                    case let .failure(error):
+                        DDLogError("⛔️ Could not successfully fetch number of products for siteID \(siteID): \(error)")
+                        continuation.resume(returning: nil)
+                }
+            })
+        }
     }
 
     /// Synchronizes all add-ons groups(global add-ons).
@@ -456,13 +483,19 @@ private extension DefaultStoresManager {
 
     /// Synchronizes all system plugins for the store with specified ID
     ///
-    func synchronizeSystemPlugins(siteID: Int64) {
-        let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
-            if let error = result.failure {
-                DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
-            }
+    @MainActor
+    func synchronizeSystemPlugins(siteID: Int64) async -> [SystemPlugin]? {
+        await withCheckedContinuation { continuation in
+            dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+                switch result {
+                    case let .success(plugins):
+                        continuation.resume(returning: plugins)
+                    case let .failure(error):
+                        DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
+                        continuation.resume(returning: nil)
+                }
+            })
         }
-        dispatch(action)
     }
 
     /// Synchronizes all site plugins for the store with specified ID
@@ -537,13 +570,24 @@ private extension DefaultStoresManager {
             ServiceLocator.selectedSiteSettings.refresh()
             ServiceLocator.shippingSettingsService.update(siteID: siteID)
         }
-        retrieveOrderStatus(with: siteID)
         synchronizePaymentGateways(siteID: siteID)
         synchronizeAddOnsGroups(siteID: siteID)
-        synchronizeSystemPlugins(siteID: siteID)
         synchronizeSitePlugins(siteID: siteID)
 
         sendTelemetryIfNeeded(siteID: siteID)
+
+        Task { @MainActor in
+            guard let orderStatuses = await retrieveOrderStatus(with: siteID),
+                  let numberOfProducts = await retrieveNumberOfProducts(siteID: siteID),
+                  let systemPlugins = await synchronizeSystemPlugins(siteID: siteID) else {
+                return
+            }
+            let snapshotTracker = SiteSnapshotTracker(siteID: siteID,
+                                                      orderStatuses: orderStatuses,
+                                                      numberOfProducts: numberOfProducts,
+                                                      systemPlugins: systemPlugins)
+            snapshotTracker.trackIfNeeded()
+        }
     }
 
     /// Load the site with the specified URL into the session if possible.

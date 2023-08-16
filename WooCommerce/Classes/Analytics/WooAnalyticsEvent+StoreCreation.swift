@@ -74,19 +74,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationManageStoreTapped, properties: [:])
         }
 
-        /// Tracked when completing the last profiler question during the store creation flow.
-        static func siteCreationProfilerData(category: StoreCreationCategoryAnswer?,
-                                             sellingStatus: StoreCreationSellingStatusAnswer?,
-                                             countryCode: SiteAddress.CountryCode?) -> WooAnalyticsEvent {
-            let properties = [
-                Key.category: category?.value,
-                Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
-                Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
-                Key.countryCode: countryCode?.rawValue
-            ].compactMapValues({ $0 })
-            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
-        }
-
         /// Tracked when the user skips a profiler question in the store creation flow.
         static func siteCreationProfilerQuestionSkipped(step: Step) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationProfilerQuestionSkipped,

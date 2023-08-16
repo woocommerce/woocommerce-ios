@@ -18,6 +18,8 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
             static let newSiteID = "new_site_id"
             static let initialDomain = "initial_domain"
+            static let challenges = "challenges"
+            static let features = "features"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.

@@ -241,7 +241,6 @@ class DefaultStoresManager: StoresManager {
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         restoreSessionSiteIfPossible()
-        // duplicate??
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)

@@ -130,6 +130,8 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductDetails(siteID, scannedTexts, completion):
             generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
+        case let .fetchNumberOfProducts(siteID, completion):
+            fetchNumberOfProducts(siteID: siteID, completion: completion)
         }
     }
 }
@@ -635,6 +637,17 @@ private extension ProductStore {
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchNumberOfProducts(siteID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let numberOfProducts = try await remote.loadNumberOfProducts(siteID: siteID)
+                completion(.success(numberOfProducts))
             } catch {
                 completion(.failure(error))
             }

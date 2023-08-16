@@ -14,14 +14,14 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
     /// The email address for the customer
     public let email: String
 
+    /// Customer username
+    public let username: String?
+
     /// Customer first name
     public let firstName: String?
 
     /// Customer last name
     public let lastName: String?
-
-    /// Customer username
-    public let username: String?
 
     /// List of billing address data
     public let billing: Address?
@@ -34,9 +34,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
     public init(siteID: Int64,
                 customerID: Int64,
                 email: String,
+                username: String?,
                 firstName: String?,
                 lastName: String?,
-                username: String?,
                 billing: Address?,
                 shipping: Address?) {
         self.siteID = siteID
@@ -69,9 +69,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
         self.init(siteID: siteID,
                   customerID: customerID,
                   email: email,
+                  username: username,
                   firstName: firstName,
                   lastName: lastName,
-                  username: username,
                   billing: billing,
                   shipping: shipping
         )

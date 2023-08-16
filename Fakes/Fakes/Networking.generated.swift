@@ -216,9 +216,9 @@ extension Networking.Customer {
             siteID: .fake(),
             customerID: .fake(),
             email: .fake(),
+            username: .fake(),
             firstName: .fake(),
             lastName: .fake(),
-            username: .fake(),
             billing: .fake(),
             shipping: .fake()
         )

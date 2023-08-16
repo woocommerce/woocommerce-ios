@@ -210,18 +210,18 @@ extension Networking.Customer {
         siteID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
         email: CopiableProp<String> = .copy,
+        username: NullableCopiableProp<String> = .copy,
         firstName: NullableCopiableProp<String> = .copy,
         lastName: NullableCopiableProp<String> = .copy,
-        username: NullableCopiableProp<String> = .copy,
         billing: NullableCopiableProp<Address> = .copy,
         shipping: NullableCopiableProp<Address> = .copy
     ) -> Networking.Customer {
         let siteID = siteID ?? self.siteID
         let customerID = customerID ?? self.customerID
         let email = email ?? self.email
+        let username = username ?? self.username
         let firstName = firstName ?? self.firstName
         let lastName = lastName ?? self.lastName
-        let username = username ?? self.username
         let billing = billing ?? self.billing
         let shipping = shipping ?? self.shipping
 
@@ -229,9 +229,9 @@ extension Networking.Customer {
             siteID: siteID,
             customerID: customerID,
             email: email,
+            username: username,
             firstName: firstName,
             lastName: lastName,
-            username: username,
             billing: billing,
             shipping: shipping
         )

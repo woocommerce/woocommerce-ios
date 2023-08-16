@@ -71,7 +71,7 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         XCTAssertEqual(eventProperties["woocommerce-payments"] as? String, "installed_and_activated")
         XCTAssertEqual(eventProperties["woocommerce-gateway-stripe"] as? String, "not_installed")
         XCTAssertEqual(eventProperties["woocommerce-square"] as? String, "not_installed")
-        XCTAssertEqual(eventProperties["woocommerce-gateway-paypal-express-checkout"] as? String, "installed_and_not_activated")
+        XCTAssertEqual(eventProperties["woocommerce-paypal-payments"] as? String, "installed_and_not_activated")
     }
 
     func test_event_is_not_tracked_when_the_site_snapshot_has_been_tracked() throws {

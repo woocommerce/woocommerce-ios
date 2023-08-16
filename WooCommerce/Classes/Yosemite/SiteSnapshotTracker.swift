@@ -68,7 +68,7 @@ private struct PaymentGatewaySnapshot {
         case wcPay = "woocommerce-payments"
         case stripe = "woocommerce-gateway-stripe"
         case square = "woocommerce-square"
-        case payPal = "woocommerce-gateway-paypal-express-checkout"
+        case payPal = "woocommerce-paypal-payments"
     }
 
     private let plugins: [SystemPlugin]

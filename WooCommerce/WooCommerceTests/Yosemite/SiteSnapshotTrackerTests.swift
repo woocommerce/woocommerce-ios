@@ -43,11 +43,11 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         let orderStatuses: [OrderStatus] = [.fake().copy(total: 6), .fake().copy(total: 109)]
         let systemPlugins: [SystemPlugin] = [
             // Paypal plugin is installed but not active.
-            .fake().copy(plugin: "woocommerce-gateway-paypal-express-checkout/woocommerce-gateway-paypal-express-checkout.php",
-                        active: false),
+            .fake().copy(plugin: "woocommerce-paypal-payments/woocommerce-paypal-payments.php",
+                         active: false),
             // Plugin with a similar prefix as the WCPay plugin.
             .fake().copy(plugin: "woocommerce-payments-dev-tools-trunk/woocommerce-payments-dev-tools.php",
-                        active: false),
+                         active: false),
             // WCPay plugin is active.
             .fake().copy(plugin: "woocommerce-payments/woocommerce-payments.php", active: true),
             // The other payment plugins are not installed.

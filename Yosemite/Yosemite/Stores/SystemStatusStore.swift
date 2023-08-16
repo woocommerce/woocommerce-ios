@@ -40,12 +40,15 @@ public final class SystemStatusStore: Store {
 // MARK: - Network request
 //
 private extension SystemStatusStore {
-    func synchronizeSystemPlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSystemPlugins(siteID: Int64, completionHandler: @escaping (Result<[SystemPlugin], Error>) -> Void) {
         remote.loadSystemPlugins(for: siteID) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let systemPlugins):
-                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemPlugins: systemPlugins, completionHandler: completionHandler)
+                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemPlugins: systemPlugins) { [weak self]_ in
+                    guard let self else { return }
+                    completionHandler(.success(self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }))
+                }
             case .failure(let error):
                 completionHandler(.failure(error))
             }

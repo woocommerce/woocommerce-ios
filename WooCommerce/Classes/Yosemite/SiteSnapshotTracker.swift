@@ -76,7 +76,7 @@ private struct PaymentGatewaySnapshot {
     }
 
     func status(of plugin: Plugin) -> Status {
-        guard let systemPlugin = plugins.first(where: { $0.plugin.hasPrefix(plugin.rawValue) }) else {
+        guard let systemPlugin = plugins.first(where: { $0.plugin.hasPrefix("\(plugin.rawValue)/") }) else {
             return .notInstalled
         }
         return systemPlugin.active ? .active: .installed

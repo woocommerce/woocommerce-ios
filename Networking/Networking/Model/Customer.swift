@@ -69,9 +69,9 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
         self.init(siteID: siteID,
                   customerID: customerID,
                   email: email,
-                  firstName: username,
-                  lastName: firstName,
-                  username: lastName,
+                  firstName: firstName,
+                  lastName: lastName,
+                  username: username,
                   billing: billing,
                   shipping: shipping
         )

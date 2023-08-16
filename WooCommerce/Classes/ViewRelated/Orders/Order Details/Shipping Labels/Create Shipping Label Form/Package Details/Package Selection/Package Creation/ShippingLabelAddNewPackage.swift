@@ -71,7 +71,7 @@ struct ShippingLabelAddNewPackage: View {
                     }, label: {
                         if isSyncing {
                             ActivityIndicator(isAnimating: .constant(true), style: .medium)
-                                .accentColor(Color(.navigationBarLoadingIndicator))
+                                .tint(Color(.navigationBarLoadingIndicator))
                         } else {
                             Text(Localization.doneButton)
                         }

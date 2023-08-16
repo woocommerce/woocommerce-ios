@@ -5,7 +5,7 @@ import SwiftUI
 /// The question is not skippable.
 protocol RequiredStoreCreationProfilerQuestionViewModel {
     /// Called when the continue button is tapped.
-    func continueButtonTapped() async
+    func continueButtonTapped()
 
     /// Called when the Help & Support button is tapped.
     func supportButtonTapped()

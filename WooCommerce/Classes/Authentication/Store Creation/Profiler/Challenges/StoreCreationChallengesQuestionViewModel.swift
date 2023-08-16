@@ -32,8 +32,8 @@ final class StoreCreationChallengesQuestionViewModel: StoreCreationProfilerQuest
 }
 
 extension StoreCreationChallengesQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    @MainActor
-    func continueButtonTapped() async {
+
+    func continueButtonTapped() {
         guard selectedChallenges.isNotEmpty else {
             return onSkip()
         }

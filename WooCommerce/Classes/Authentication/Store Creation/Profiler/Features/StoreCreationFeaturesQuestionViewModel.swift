@@ -32,8 +32,7 @@ final class StoreCreationFeaturesQuestionViewModel: StoreCreationProfilerQuestio
 }
 
 extension StoreCreationFeaturesQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    @MainActor
-    func continueButtonTapped() async {
+    func continueButtonTapped() {
         guard selectedFeatures.isNotEmpty else {
             return onSkip()
         }

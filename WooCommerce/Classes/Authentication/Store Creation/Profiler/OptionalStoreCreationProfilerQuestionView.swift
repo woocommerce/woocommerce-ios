@@ -3,7 +3,7 @@ import SwiftUI
 /// Handles the navigation actions in an optional profiler question view during store creation.
 /// The question is skippable.
 protocol OptionalStoreCreationProfilerQuestionViewModel {
-    func continueButtonTapped() async
+    func continueButtonTapped()
     func skipButtonTapped()
 }
 
@@ -71,7 +71,7 @@ private struct StoreCreationQuestionPreviewViewModel: StoreCreationProfilerQuest
     let title: String = "Which of these best describes you?"
     let subtitle: String = "Choose a category that defines your business the best."
 
-    func continueButtonTapped() async {}
+    func continueButtonTapped() {}
     func skipButtonTapped() {}
 }
 

@@ -35,8 +35,7 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
 }
 
 extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    @MainActor
-    func continueButtonTapped() async {
+    func continueButtonTapped() {
         guard let selectedStatus else {
             return onSkip()
         }
@@ -44,7 +43,6 @@ extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProf
             // Handled in `StoreCreationSellingPlatformsQuestionViewModel`.
             return
         }
-        // TODO: submission API.
         onContinue(.init(sellingStatus: selectedStatus, sellingPlatforms: nil))
     }
 

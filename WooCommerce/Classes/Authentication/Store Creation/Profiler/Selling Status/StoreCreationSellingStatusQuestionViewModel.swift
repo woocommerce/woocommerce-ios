@@ -1,10 +1,10 @@
 import Combine
 import Foundation
-import struct Yosemite.SiteProfilerData
+import struct Yosemite.StoreProfilerAnswers
 
 /// View model for `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status in the store creation flow.
 final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    typealias SellingStatus = SiteProfilerData.SellingStatus
+    typealias SellingStatus = StoreProfilerAnswers.SellingStatus
 
     let topHeader: String = Localization.header
 

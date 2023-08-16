@@ -77,20 +77,22 @@ private extension StoreCreationCoordinator {
         // Disables interactive dismissal of the store creation modal.
         navigationController.isModalInPresentation = true
 
-        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-            navigationController.isNavigationBarHidden = true
+        navigationController.isNavigationBarHidden = true
 
-            showFreeTrialSummaryView(from: navigationController, storeName: WooConstants.defaultStoreName, profilerData: nil)
-        } else {
-            showStoreNameInput(from: navigationController)
-        }
+        showFreeTrialSummaryView(from: navigationController, storeName: WooConstants.defaultStoreName)
     }
 
-    func showProfilerFlow(storeName: String, from navigationController: UINavigationController) {
+    func showProfilerFlow(storeName: String, siteID: Int64, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] _ in
+        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] answers in
             guard let self else { return }
-            // TODO: update profiler data with remote
+            // TODO: 10385 Upload profiler answers from `DashboardViewModel`
+            if let answers {
+                self.analytics.track(event: .StoreCreation.siteCreationProfilerData(answers))
+
+                let usecase = StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
+                usecase.storeAnswers(answers)
+            }
             if let site = self.createdStore {
                 self.continueWithSelectedSite(site: site)
             } else {
@@ -150,121 +152,10 @@ private extension StoreCreationCoordinator {
         viewController.present(alertController, animated: true)
     }
 
-    func showDiscardChangesAlert(flow: WooAnalyticsEvent.StoreCreation.Flow) {
-        let alert = UIAlertController(title: Localization.DiscardChangesAlert.title,
-                                      message: Localization.DiscardChangesAlert.message,
-                                      preferredStyle: .alert)
-        alert.view.tintColor = .text
-
-        alert.addDestructiveActionWithTitle(Localization.DiscardChangesAlert.confirmActionTitle) { [weak self] _ in
-            guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: flow, isFreeTrial: true))
-            self.navigationController.dismiss(animated: true)
-        }
-
-        alert.addCancelActionWithTitle(Localization.DiscardChangesAlert.cancelActionTitle) { _ in }
-
-        // Presents the alert with the presented webview.
-        navigationController.topmostPresentedViewController.present(alert, animated: true)
-    }
-
     func showSupport(from navigationController: UINavigationController) {
         let sourceTag = "origin:store-creation"
         let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
         supportForm.show(from: navigationController)
-    }
-}
-
-// MARK: - Legacy profiler flow
-private extension StoreCreationCoordinator {
-
-    func showStoreNameInput(from navigationController: UINavigationController) {
-        navigationController.navigationBar.prefersLargeTitles = true
-
-        let continueAfterEnteringStoreName = { [weak self] storeName in
-            self?.showCategoryQuestion(from: navigationController, storeName: storeName)
-        }
-        let storeNameForm = StoreNameFormHostingController(prefillStoreName: prefillStoreName) { [weak self] storeName in
-            self?.scheduleLocalNotificationToSubscribeFreeTrial(storeName: storeName)
-            continueAfterEnteringStoreName(storeName)
-        } onClose: { [weak self] in
-            self?.showDiscardChangesAlert(flow: .native)
-        } onSupport: { [weak self] in
-            self?.showSupport(from: navigationController)
-        }
-        navigationController.pushViewController(storeNameForm, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .storeName))
-
-        // Navigate to profiler question screen when store name is prefilled upon launching app from local notification
-        if let prefillStoreName {
-            continueAfterEnteringStoreName(prefillStoreName)
-        }
-    }
-
-    func showCategoryQuestion(from navigationController: UINavigationController,
-                              storeName: String) {
-        let questionController = StoreCreationCategoryQuestionHostingController(viewModel:
-                .init(onContinue: { [weak self] category in
-                    guard let self else { return }
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: category)
-                }, onSkip: { [weak self] in
-                    guard let self else { return }
-                    self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerCategoryQuestion))
-                    self.showSellingStatusQuestion(from: navigationController, storeName: storeName, category: nil)
-                })
-        )
-        navigationController.pushViewController(questionController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
-    }
-
-    func showSellingStatusQuestion(from navigationController: UINavigationController,
-                                   storeName: String,
-                                   category: StoreCreationCategoryAnswer?) {
-        let questionController = StoreCreationSellingStatusQuestionHostingController(onContinue: { [weak self] sellingStatus in
-            guard let self else { return }
-            if sellingStatus?.sellingStatus == .alreadySellingOnline && sellingStatus?.sellingPlatforms?.isEmpty == true {
-                self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
-            }
-            self.showStoreCountryQuestion(from: navigationController,
-                                          storeName: storeName,
-                                          category: category,
-                                          sellingStatus: sellingStatus)
-        }, onSkip: { [weak self] in
-            guard let self else { return }
-            self.analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
-            self.showStoreCountryQuestion(from: navigationController,
-                                          storeName: storeName,
-                                          category: category,
-                                          sellingStatus: nil)
-        })
-        navigationController.pushViewController(questionController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
-    }
-
-    func showStoreCountryQuestion(from navigationController: UINavigationController,
-                                  storeName: String,
-                                  category: StoreCreationCategoryAnswer?,
-                                  sellingStatus: StoreCreationSellingStatusAnswer?) {
-        let questionController = StoreCreationCountryQuestionHostingController(viewModel:
-                .init(onContinue: { [weak self] countryCode in
-                    guard let self else { return }
-
-                    let profilerData: SiteProfilerData = {
-                        let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
-                        return .init(name: storeName,
-                                     category: category?.value,
-                                     sellingStatus: sellingStatus?.sellingStatus,
-                                     sellingPlatforms: sellingPlatforms,
-                                     countryCode: countryCode.rawValue)
-                    }()
-
-                    self.showFreeTrialSummaryView(from: navigationController, storeName: storeName, profilerData: profilerData)
-                }, onSupport: { [weak self] in
-                    self?.showSupport(from: navigationController)
-                })
-        )
-        navigationController.pushViewController(questionController, animated: true)
-        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 }
 
@@ -275,26 +166,21 @@ private extension StoreCreationCoordinator {
     /// After user confirmation proceeds to create a store with a free trial plan.
     ///
     func showFreeTrialSummaryView(from navigationController: UINavigationController,
-                                  storeName: String,
-                                  profilerData: SiteProfilerData?) {
+                                  storeName: String) {
         let summaryViewController = FreeTrialSummaryHostingController(onClose: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationDismissed(source: self.source.analyticsValue, flow: .native, isFreeTrial: true))
+            self.navigationController.dismiss(animated: true)
         }, onContinue: { [weak self] in
             guard let self else { return }
             self.analytics.track(event: .StoreCreation.siteCreationTryForFreeTapped())
-            let result = await self.createFreeTrialStore(storeName: storeName,
-                                                         profilerData: profilerData)
+            let result = await self.createFreeTrialStore(storeName: storeName)
             await MainActor.run {
                 self.handleFreeTrialStoreCreation(from: navigationController, result: result)
             }
         })
 
-        if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-            navigationController.pushViewController(summaryViewController, animated: true)
-        } else {
-            navigationController.present(summaryViewController, animated: true)
-        }
+        navigationController.pushViewController(summaryViewController, animated: true)
     }
 
     /// This method creates a free trial store async:
@@ -303,21 +189,17 @@ private extension StoreCreationCoordinator {
     /// - Schedule a local notification to notify the user when the site is ready
     ///
     @MainActor
-    func createFreeTrialStore(storeName: String, profilerData: SiteProfilerData?) async -> Result<SiteCreationResult, SiteCreationError> {
+    func createFreeTrialStore(storeName: String) async -> Result<SiteCreationResult, SiteCreationError> {
         // Create store site
         let createStoreResult = await createStore(name: storeName, flow: .wooexpress)
-        if let profilerData {
-            analytics.track(event: .StoreCreation.siteCreationProfilerData(profilerData))
-        }
 
         switch createStoreResult {
         case .success(let siteResult):
 
             // Enable Free trial on site
-            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID, profilerData: profilerData)
+            let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
             switch freeTrialResult {
             case .success:
-                cancelLocalNotificationToSubscribeFreeTrial(storeName: storeName)
                 scheduleLocalNotificationWhenStoreIsReady()
                 return .success(siteResult)
             case .failure(let error):
@@ -334,14 +216,8 @@ private extension StoreCreationCoordinator {
     func handleFreeTrialStoreCreation(from navigationController: UINavigationController, result: Result<SiteCreationResult, SiteCreationError>) {
         switch result {
         case .success(let siteResult):
-            if featureFlagService.isFeatureFlagEnabled(.optimizeProfilerQuestions) {
-                showProfilerFlow(storeName: siteResult.name, from: navigationController)
-            } else {
-                // Make sure that nothing is presented on the view controller before showing the loading screen
-                navigationController.presentedViewController?.dismiss(animated: true)
-                // Show a progress view while the free trial store is created.
-                showInProgressView(from: navigationController)
-            }
+            showProfilerFlow(storeName: siteResult.name, siteID: siteResult.siteID, from: navigationController)
+
             // Wait for jetpack to be installed
             DDLogInfo("🟢 Free trial enabled on site. Waiting for jetpack to be installed...")
             Task { @MainActor in
@@ -374,9 +250,9 @@ private extension StoreCreationCoordinator {
     /// Enables a free trial on a recently created store.
     ///
     @MainActor
-    func enableFreeTrial(siteID: Int64, profilerData: SiteProfilerData?) async -> Result<Void, Error> {
+    func enableFreeTrial(siteID: Int64) async -> Result<Void, Error> {
         await withCheckedContinuation { continuation in
-            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: profilerData) { result in
+            stores.dispatch(SiteAction.enableFreeTrial(siteID: siteID, profilerData: nil) { result in
                 continuation.resume(returning: result)
             })
         }
@@ -508,6 +384,7 @@ private extension StoreCreationCoordinator {
         }
     }
 
+    // TODO: 10385 - Remove oneDayAfterStoreCreationNameWithoutFreeTrial completely as it is no longer in use
     func scheduleLocalNotificationToSubscribeFreeTrial(storeName: String) {
         let notification = LocalNotification(scenario: LocalNotification.Scenario.oneDayAfterStoreCreationNameWithoutFreeTrial(storeName: storeName),
                                                    stores: stores,

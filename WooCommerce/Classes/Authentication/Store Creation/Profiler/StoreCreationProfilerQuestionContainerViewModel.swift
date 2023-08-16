@@ -24,7 +24,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     let storeName: String
     private let analytics: Analytics
-    private let completionHandler: (SiteProfilerData?) -> Void
+    private let completionHandler: (StoreProfilerAnswers?) -> Void
 
     private var storeCategory: StoreCreationCategoryAnswer?
     private var sellingStatus: StoreCreationSellingStatusAnswer?
@@ -36,10 +36,14 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     init(storeName: String,
          analytics: Analytics = ServiceLocator.analytics,
-         onCompletion: @escaping (SiteProfilerData?) -> Void) {
+         onCompletion: @escaping (StoreProfilerAnswers?) -> Void) {
         self.storeName = storeName
         self.analytics = analytics
         self.completionHandler = onCompletion
+    }
+
+    func onAppear() {
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerSellingStatusQuestion))
     }
 
     func saveSellingStatus(_ answer: StoreCreationSellingStatusAnswer?) {
@@ -47,11 +51,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingStatusQuestion))
         } else if let answer,
                     answer.sellingStatus == .alreadySellingOnline,
-                    answer.sellingPlatforms == nil {
+                  answer.sellingPlatforms == nil || answer.sellingPlatforms?.isEmpty == true {
             analytics.track(event: .StoreCreation.siteCreationProfilerQuestionSkipped(step: .profilerSellingPlatformsQuestion))
         }
+
         sellingStatus = answer
         currentQuestion = .category
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCategoryQuestion))
     }
 
     func saveCategory(_ answer: StoreCreationCategoryAnswer?) {
@@ -60,11 +66,13 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
         storeCategory = answer
         currentQuestion = .country
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
     func saveCountry(_ answer: SiteAddress.CountryCode) {
         storeCountry = answer
         currentQuestion = .challenges
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))
     }
 
     func saveChallenges(_ answer: [StoreCreationChallengesAnswer]) {
@@ -73,6 +81,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         }
         challenges = answer
         currentQuestion = .features
+        analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerFeaturesQuestion))
     }
 
     func saveFeatures(_ answer: [StoreCreationFeaturesAnswer]) {
@@ -92,15 +101,14 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
     }
 
     private func handleCompletion() {
-        // TODO-10374: add Tracks for the profiler data
-        let profilerData: SiteProfilerData = {
+        let answers: StoreProfilerAnswers = {
             let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
-            return .init(name: storeName,
-                         category: storeCategory?.value,
-                         sellingStatus: sellingStatus?.sellingStatus,
-                         sellingPlatforms: sellingPlatforms,
-                         countryCode: storeCountry.rawValue)
+            let sellingStatus = sellingStatus?.sellingStatus
+            return StoreProfilerAnswers(sellingStatus: sellingStatus,
+                                        sellingPlatforms: sellingPlatforms,
+                                        category: storeCategory?.value,
+                                        countryCode: storeCountry.rawValue)
         }()
-        completionHandler(profilerData)
+        completionHandler(answers)
     }
 }

@@ -522,7 +522,7 @@ final class AppCoordinatorTests: XCTestCase {
         let tabBarNavigationController = try XCTUnwrap(tabBarController.selectedViewController as? UINavigationController)
         waitUntil {
             let storeCreationNavigationController = tabBarNavigationController.topmostPresentedViewController as? WooNavigationController
-            return storeCreationNavigationController?.topViewController is StoreCreationCategoryQuestionHostingController
+            return storeCreationNavigationController?.topViewController is FreeTrialSummaryHostingController
         }
     }
 
@@ -560,7 +560,7 @@ final class AppCoordinatorTests: XCTestCase {
         let storePickerNavigationController = try XCTUnwrap(window.rootViewController?.presentedViewController as? UINavigationController)
         waitUntil {
             let storeCreationNavigationController = storePickerNavigationController.topmostPresentedViewController as? WooNavigationController
-            return storeCreationNavigationController?.topViewController is StoreCreationCategoryQuestionHostingController
+            return storeCreationNavigationController?.topViewController is FreeTrialSummaryHostingController
         }
     }
 }

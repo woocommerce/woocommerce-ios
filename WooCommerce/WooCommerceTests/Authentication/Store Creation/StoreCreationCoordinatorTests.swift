@@ -39,7 +39,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
         }
     }
 
@@ -56,7 +56,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
         }
     }
 }

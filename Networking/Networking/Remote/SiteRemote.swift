@@ -256,7 +256,7 @@ public struct StoreProfilerAnswers: Codable, Equatable {
         /// Already selling online
         case alreadySellingOnline
 
-        var remoteValue: String {
+        public var remoteValue: String {
             switch self {
             case .justStarting:
                 return "im_just_starting_my_business"

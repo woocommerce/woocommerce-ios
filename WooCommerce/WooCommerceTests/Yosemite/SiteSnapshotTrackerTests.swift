@@ -88,4 +88,19 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)
     }
+
+    func test_UserDefaults_siteIDsWithSnapshotTracked_is_updated_with_siteID_when_the_site_snapshot_has_not_been_tracked() throws {
+        // Given
+        XCTAssertNil(userDefaults[.siteIDsWithSnapshotTracked])
+
+        let tracker = SiteSnapshotTracker(siteID: 7,
+                                          analytics: analytics,
+                                          userDefaults: userDefaults)
+
+        // When
+        tracker.trackIfNeeded(orderStatuses: [], numberOfProducts: 8, systemPlugins: [])
+
+        // Then
+        XCTAssertEqual(userDefaults[.siteIDsWithSnapshotTracked], [7])
+    }
 }

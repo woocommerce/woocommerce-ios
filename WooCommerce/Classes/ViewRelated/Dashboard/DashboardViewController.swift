@@ -186,6 +186,10 @@ final class DashboardViewController: UIViewController {
         super.viewDidAppear(animated)
         updateHeaderVisibility(animated: false)
         observeNavigationBarHeightForHeaderVisibility()
+
+        Task {
+            await viewModel.uploadProfilerAnswers()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

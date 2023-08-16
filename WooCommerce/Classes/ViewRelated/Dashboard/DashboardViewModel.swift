@@ -39,6 +39,7 @@ final class DashboardViewModel {
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -54,7 +55,8 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -64,7 +66,14 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
+        self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         setupObserverForShowOnboarding()
+    }
+
+    /// Uploads the answers from the store creation profiler flow
+    ///
+    func uploadProfilerAnswers() async {
+        await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
     /// Reloads store onboarding tasks

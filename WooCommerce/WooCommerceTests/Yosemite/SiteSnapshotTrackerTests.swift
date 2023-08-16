@@ -13,6 +13,31 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
     }
 
+    // MARK: - `needsTracking`
+
+    func test_needsTracking_is_true_when_the_site_snapshot_has_not_been_tracked() throws {
+        // Given
+        let tracker = SiteSnapshotTracker(siteID: 7,
+                                          analytics: analytics,
+                                          userDefaults: userDefaults)
+
+        // The
+        XCTAssertTrue(tracker.needsTracking())
+    }
+
+    func test_needsTracking_is_false_when_the_site_snapshot_has_been_tracked() throws {
+        // Given
+        userDefaults.set([7], forKey: .siteIDsWithSnapshotTracked)
+        let tracker = SiteSnapshotTracker(siteID: 7,
+                                          analytics: analytics,
+                                          userDefaults: userDefaults)
+
+        // Then
+        XCTAssertFalse(tracker.needsTracking())
+    }
+
+    // MARK: - `trackIfNeeded`
+
     func test_event_is_tracked_when_the_site_snapshot_has_not_been_tracked() throws {
         // Given
         let orderStatuses: [OrderStatus] = [.fake().copy(total: 6), .fake().copy(total: 109)]
@@ -28,14 +53,13 @@ final class SiteSnapshotTrackerTests: XCTestCase {
             // The other payment plugins are not installed.
         ]
         let tracker = SiteSnapshotTracker(siteID: 7,
-                                          orderStatuses: orderStatuses,
-                                          numberOfProducts: 98,
-                                          systemPlugins: systemPlugins,
                                           analytics: analytics,
                                           userDefaults: userDefaults)
 
         // When
-        tracker.trackIfNeeded()
+        tracker.trackIfNeeded(orderStatuses: orderStatuses,
+                              numberOfProducts: 98,
+                              systemPlugins: systemPlugins)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 1)
@@ -55,14 +79,11 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         userDefaults.set([7], forKey: .siteIDsWithSnapshotTracked)
 
         let tracker = SiteSnapshotTracker(siteID: 7,
-                                          orderStatuses: [],
-                                          numberOfProducts: 98,
-                                          systemPlugins: [],
                                           analytics: analytics,
                                           userDefaults: userDefaults)
 
         // When
-        tracker.trackIfNeeded()
+        tracker.trackIfNeeded(orderStatuses: [], numberOfProducts: 8, systemPlugins: [])
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)

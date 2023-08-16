@@ -241,6 +241,7 @@ class DefaultStoresManager: StoresManager {
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         restoreSessionSiteIfPossible()
+        // duplicate??
         ServiceLocator.pushNotesManager.reloadBadgeCount()
 
         NotificationCenter.default.post(name: .StoresManagerDidUpdateDefaultSite, object: nil)
@@ -444,7 +445,7 @@ private extension DefaultStoresManager {
         }
     }
 
-    /// Synchronizes the order statuses, if possible.
+    /// Synchronizes the number of products for site snapshot tracking.
     ///
     @MainActor
     func retrieveNumberOfProducts(siteID: Int64) async -> Int64? {
@@ -577,16 +578,24 @@ private extension DefaultStoresManager {
         sendTelemetryIfNeeded(siteID: siteID)
 
         Task { @MainActor in
-            guard let orderStatuses = await retrieveOrderStatus(with: siteID),
-                  let numberOfProducts = await retrieveNumberOfProducts(siteID: siteID),
-                  let systemPlugins = await synchronizeSystemPlugins(siteID: siteID) else {
+            // Order statuses and system plugins syncing are required outside of snapshot tracking.
+            async let orderStatuses = retrieveOrderStatus(with: siteID)
+            async let systemPlugins = synchronizeSystemPlugins(siteID: siteID)
+
+            let snapshotTracker = SiteSnapshotTracker(siteID: siteID)
+            guard let orderStatuses = await orderStatuses, let systemPlugins = await systemPlugins else {
                 return
             }
-            let snapshotTracker = SiteSnapshotTracker(siteID: siteID,
-                                                      orderStatuses: orderStatuses,
-                                                      numberOfProducts: numberOfProducts,
-                                                      systemPlugins: systemPlugins)
-            snapshotTracker.trackIfNeeded()
+            guard snapshotTracker.needsTracking() else {
+                return
+            }
+            // Only fetches number of products when snapshot tracking is needed.
+            guard let numberOfProducts = await retrieveNumberOfProducts(siteID: siteID) else {
+                return
+            }
+            snapshotTracker.trackIfNeeded(orderStatuses: orderStatuses,
+                                          numberOfProducts: numberOfProducts,
+                                          systemPlugins: systemPlugins)
         }
     }
 

@@ -33,8 +33,7 @@ final class StoreCreationCategoryQuestionViewModel: StoreCreationProfilerQuestio
 }
 
 extension StoreCreationCategoryQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    @MainActor
-    func continueButtonTapped() async {
+    func continueButtonTapped() {
         guard let selectedCategory else {
             return onSkip()
         }

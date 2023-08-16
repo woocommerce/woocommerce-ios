@@ -59,8 +59,7 @@ extension StoreCreationCountryQuestionViewModel: RequiredStoreCreationProfilerQu
         $isContinueButtonEnabledValue.eraseToAnyPublisher()
     }
 
-    @MainActor
-    func continueButtonTapped() async {
+    func continueButtonTapped() {
         guard let selectedCountryCode else {
             return
         }

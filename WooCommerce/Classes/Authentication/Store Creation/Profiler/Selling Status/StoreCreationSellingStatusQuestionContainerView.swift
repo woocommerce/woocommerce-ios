@@ -9,24 +9,6 @@ struct StoreCreationSellingStatusAnswer: Equatable {
     let sellingPlatforms: Set<StoreCreationSellingPlatformsQuestionViewModel.Platform>?
 }
 
-/// Hosting controller that wraps the `StoreCreationSellingStatusQuestionContainerView`.
-final class StoreCreationSellingStatusQuestionHostingController: UIHostingController<StoreCreationSellingStatusQuestionContainerView> {
-    init(onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void, onSkip: @escaping () -> Void) {
-        super.init(rootView: StoreCreationSellingStatusQuestionContainerView(onContinue: onContinue, onSkip: onSkip))
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        configureTransparentNavigationBar()
-    }
-}
-
 /// Displays the selling status question initially. If the user chooses the "I'm already selling online" option, the selling
 /// platforms question is shown.
 struct StoreCreationSellingStatusQuestionContainerView: View {

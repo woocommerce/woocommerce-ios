@@ -49,8 +49,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 }
 
 extension StoreCreationSellingPlatformsQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    func continueButtonTapped() async {
-        // TODO: submission API.
+    func continueButtonTapped() {
         onContinue(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: selectedPlatforms))
     }
 

@@ -46,9 +46,7 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
             viewModel.didTapChallenge(.shippingAndLogistics)
             viewModel.didTapChallenge(.managingInventory)
 
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -67,9 +65,7 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
                 promise(())
             })
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 

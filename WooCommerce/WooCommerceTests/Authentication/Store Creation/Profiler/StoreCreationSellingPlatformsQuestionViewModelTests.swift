@@ -49,9 +49,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
             // When
             viewModel.selectPlatform(.wordPress)
             viewModel.selectPlatform(.amazon)
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -65,9 +63,7 @@ final class StoreCreationSellingPlatformsQuestionViewModelTests: XCTestCase {
                 promise(answer)
             }
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then

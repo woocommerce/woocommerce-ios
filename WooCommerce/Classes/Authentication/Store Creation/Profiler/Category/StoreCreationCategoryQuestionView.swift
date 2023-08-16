@@ -1,23 +1,5 @@
 import SwiftUI
 
-/// Hosting controller that wraps the `StoreCreationCategoryQuestionView`.
-final class StoreCreationCategoryQuestionHostingController: UIHostingController<StoreCreationCategoryQuestionView> {
-    init(viewModel: StoreCreationCategoryQuestionViewModel) {
-        super.init(rootView: StoreCreationCategoryQuestionView(viewModel: viewModel))
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        configureTransparentNavigationBar()
-    }
-}
-
 /// Shows the store category question in the store creation flow.
 struct StoreCreationCategoryQuestionView: View {
     @ObservedObject private var viewModel: StoreCreationCategoryQuestionViewModel

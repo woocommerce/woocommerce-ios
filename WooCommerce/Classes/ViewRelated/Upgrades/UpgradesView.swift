@@ -185,10 +185,7 @@ private extension WooWPComPlan {
                              name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
                              shortName: "Skeleton",
                              planFrequency: frequency,
-                             planDescription: "A skeleton plan to show (redacted) while we're loading",
-                             headerImageFileName: "express-essential-header",
-                             headerImageCardColor: .withColorStudio(name: .orange, shade: .shade5),
-                             planFeatureGroups: []),
+                             planDescription: "A skeleton plan to show (redacted) while we're loading"),
             hardcodedPlanDataIsValid: true)
     }
 

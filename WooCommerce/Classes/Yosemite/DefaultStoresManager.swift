@@ -581,20 +581,7 @@ private extension DefaultStoresManager {
             async let orderStatuses = retrieveOrderStatus(with: siteID)
             async let systemPlugins = synchronizeSystemPlugins(siteID: siteID)
 
-            let snapshotTracker = SiteSnapshotTracker(siteID: siteID)
-            guard let orderStatuses = await orderStatuses, let systemPlugins = await systemPlugins else {
-                return
-            }
-            guard snapshotTracker.needsTracking() else {
-                return
-            }
-            // Only fetches number of products when snapshot tracking is needed.
-            guard let numberOfProducts = await retrieveNumberOfProducts(siteID: siteID) else {
-                return
-            }
-            snapshotTracker.trackIfNeeded(orderStatuses: orderStatuses,
-                                          numberOfProducts: numberOfProducts,
-                                          systemPlugins: systemPlugins)
+            trackSnapshotIfNeeded(siteID: siteID, orderStatuses: await orderStatuses, systemPlugins: await systemPlugins)
         }
     }
 
@@ -675,6 +662,25 @@ private extension DefaultStoresManager {
 
         // Reload widgets UI
         WidgetCenter.shared.reloadAllTimelines()
+    }
+
+    func trackSnapshotIfNeeded(siteID: Int64, orderStatuses: [OrderStatus]?, systemPlugins: [SystemPlugin]?) {
+        Task { @MainActor in
+            let snapshotTracker = SiteSnapshotTracker(siteID: siteID)
+            guard let orderStatuses, let systemPlugins else {
+                return
+            }
+            guard snapshotTracker.needsTracking() else {
+                return
+            }
+            // Only fetches number of products when snapshot tracking is needed.
+            guard let numberOfProducts = await retrieveNumberOfProducts(siteID: siteID) else {
+                return
+            }
+            snapshotTracker.trackIfNeeded(orderStatuses: orderStatuses,
+                                          numberOfProducts: numberOfProducts,
+                                          systemPlugins: systemPlugins)
+        }
     }
 }
 

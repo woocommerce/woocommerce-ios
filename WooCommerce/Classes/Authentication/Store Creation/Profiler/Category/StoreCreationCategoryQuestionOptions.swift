@@ -3,7 +3,9 @@ import Foundation
 extension StoreCreationCategoryQuestionViewModel {
     /// Industry options for a WooCommerce store. The raw value is the value that is sent to the submission API.
     /// The sources of truth are at:
-    /// - WC industry options: `https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-admin/client/core-profiler/pages/BusinessInfo.tsx#L32`
+    /// - WC industry options:
+    // swiftlint:disable:next line_length
+    /// `https://github.com/woocommerce/woocommerce/blob/462c690d613e1f5af3be9459b2aac8409a4587dc/plugins/woocommerce-admin/client/core-profiler/pages/BusinessInfo.tsx#L32`
     enum Category: String, Equatable {
         case clothingAccessories = "clothing_and_accessories"
         case healthBeauty = "health_and_beauty"

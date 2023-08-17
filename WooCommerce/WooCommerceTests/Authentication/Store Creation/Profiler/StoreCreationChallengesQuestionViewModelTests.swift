@@ -51,9 +51,9 @@ final class StoreCreationChallengesQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(answer, [.init(name: StoreCreationChallengesQuestionViewModel.Challenge.shippingAndLogistics.name,
-                                     value: "shipping-and-logistics"),
+                                     value: "shipping_and_logistics"),
                                 .init(name: StoreCreationChallengesQuestionViewModel.Challenge.managingInventory.name,
-                                                             value: "managing-inventory")])
+                                                             value: "managing_inventory")])
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_challenge() throws {

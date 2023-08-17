@@ -282,4 +282,34 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["step"] as? String, "store_profiler_features")
     }
+
+    func test_profiler_data_is_tracked_onCompletion() throws {
+        // Given
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test", analytics: analytics, onCompletion: { _ in })
+
+        // When
+        viewModel.saveSellingStatus(.init(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: [StoreCreationSellingPlatformsQuestionViewModel.Platform.bigCartel]))
+        viewModel.saveCategory(.init(name: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.name,
+                                     value: StoreCreationCategoryQuestionViewModel.Category.clothingAccessories.rawValue))
+        viewModel.saveCountry(.US)
+        viewModel.saveChallenges([.init(name: StoreCreationChallengesQuestionViewModel.Challenge.findingCustomers.name,
+                                        value: StoreCreationChallengesQuestionViewModel.Challenge.findingCustomers.rawValue),
+                                  .init(name: StoreCreationChallengesQuestionViewModel.Challenge.shippingAndLogistics.name,
+                                        value: StoreCreationChallengesQuestionViewModel.Challenge.shippingAndLogistics.rawValue)])
+        viewModel.saveFeatures([.init(name: StoreCreationFeaturesQuestionViewModel.Feature.productManagementAndInventoryTracking.name,
+                                      value: StoreCreationFeaturesQuestionViewModel.Feature.productManagementAndInventoryTracking.rawValue),
+                                .init(name: StoreCreationFeaturesQuestionViewModel.Feature.abilityToScaleAsBusinessGrows.name,
+                                      value: StoreCreationFeaturesQuestionViewModel.Feature.abilityToScaleAsBusinessGrows.rawValue)])
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "site_creation_profiler_data" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["industry_slug"] as? String, "clothing_and_accessories")
+        XCTAssertEqual(eventProperties["user_commerce_journey"] as? String, "im_already_selling")
+        XCTAssertEqual(eventProperties["ecommerce_platforms"] as? String, "big_cartel")
+        XCTAssertEqual(eventProperties["country_code"] as? String, "US")
+        XCTAssertEqual(eventProperties["challenges"] as? String, "finding_customers,shipping_and_logistics")
+        XCTAssertEqual(eventProperties["features"] as? String, "product_management_and_inventory,scale_as_business_grows")
+    }
 }

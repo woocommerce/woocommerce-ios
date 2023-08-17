@@ -51,9 +51,9 @@ final class StoreCreationFeaturesQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(answer, [.init(name: StoreCreationFeaturesQuestionViewModel.Feature.productManagementAndInventoryTracking.name,
-                                      value: "product-management-and-inventory-tracking"),
+                                      value: "product_management_and_inventory"),
                                 .init(name: StoreCreationFeaturesQuestionViewModel.Feature.abilityToScaleAsBusinessGrows.name,
-                                                              value: "ability-to-scale-as-business-grows")])
+                                                              value: "scale_as_business_grows")])
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_feature() throws {

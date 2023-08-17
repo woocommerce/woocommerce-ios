@@ -1,12 +1,11 @@
 import Foundation
 
 extension StoreCreationChallengesQuestionViewModel {
-    // TODO: 10386 Align with Android and send these via tracks
     enum Challenge: String, CaseIterable {
-        case settingUpTheOnlineStore = "setting-up-the-online-store"
-        case findingCustomers = "finding-customers"
-        case managingInventory = "managing-inventory"
-        case shippingAndLogistics = "shipping-and-logistics"
+        case settingUpTheOnlineStore = "setting_up_online_store"
+        case findingCustomers = "finding_customers"
+        case managingInventory = "managing_inventory"
+        case shippingAndLogistics = "shipping_and_logistics"
         case other = "other"
     }
 

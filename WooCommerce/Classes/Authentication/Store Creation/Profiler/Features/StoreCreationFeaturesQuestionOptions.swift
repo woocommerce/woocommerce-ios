@@ -1,16 +1,15 @@
 import Foundation
 
 extension StoreCreationFeaturesQuestionViewModel {
-    // TODO: 10386 Align with Android and send these via tracks
     enum Feature: String, CaseIterable {
-        case salesAndAnalyticsReports = "sales-and-analytics-reports"
-        case productManagementAndInventoryTracking = "product-management-and-inventory-tracking"
-        case flexibleAndSecurePaymentOptions = "flexible-and-secure-payment-options"
-        case inPersonPayment = "in-person-payment"
-        case abilityToScaleAsBusinessGrows = "ability-to-scale-as-business-grows"
-        case customizationOptionForStoreDesign = "customization-options-for-my-store-design"
-        case wideRangeOfPluginsAndExtensions = "wide-range-of-plugins-and-extensions"
-        case others = "cthers"
+        case salesAndAnalyticsReports = "sales_and_analytics"
+        case productManagementAndInventoryTracking = "product_management_and_inventory"
+        case flexibleAndSecurePaymentOptions = "payment_options"
+        case inPersonPayment = "in_person_payments"
+        case abilityToScaleAsBusinessGrows = "scale_as_business_grows"
+        case customizationOptionForStoreDesign = "customization_options_for_store_design"
+        case wideRangeOfPluginsAndExtensions = "access_plugin_and_extensions"
+        case other = "other"
     }
 
     var features: [Feature] {
@@ -35,8 +34,8 @@ extension StoreCreationFeaturesQuestionViewModel.Feature {
             return NSLocalizedString("Customization options for my store design", comment: "Feature option in the store creation features question.")
         case .wideRangeOfPluginsAndExtensions:
             return NSLocalizedString("Access to a wide range of plugins and extensions", comment: "Feature option in the store creation features question.")
-        case .others:
-            return NSLocalizedString("Others", comment: "Feature option in the store creation features question.")
+        case .other:
+            return NSLocalizedString("Other", comment: "Feature option in the store creation features question.")
         }
     }
 }

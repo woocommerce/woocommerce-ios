@@ -193,8 +193,4 @@ public enum FeatureFlag: Int {
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
-
-    /// Enables the optimize profiler questions flow pecCkj-SO-p2
-    ///
-    case optimizeProfilerQuestions
 }

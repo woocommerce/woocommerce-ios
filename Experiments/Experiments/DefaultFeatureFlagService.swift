@@ -91,8 +91,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .betterCustomerSelectionInOrder:
             return true
-        case .optimizeProfilerQuestions:
-            return false
         default:
             return true
         }

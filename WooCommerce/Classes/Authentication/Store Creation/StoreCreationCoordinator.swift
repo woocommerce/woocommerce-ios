@@ -27,7 +27,6 @@ final class StoreCreationCoordinator: Coordinator {
     private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
-    private let prefillStoreName: String?
     private let storePickerViewModel: StorePickerViewModel
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
     private let featureFlagService: FeatureFlagService
@@ -41,7 +40,6 @@ final class StoreCreationCoordinator: Coordinator {
 
     init(source: Source,
          navigationController: UINavigationController,
-         prefillStoreName: String? = nil,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -49,7 +47,6 @@ final class StoreCreationCoordinator: Coordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager) {
         self.source = source
         self.navigationController = navigationController
-        self.prefillStoreName = prefillStoreName
         // Passing the `standard` configuration to include sites without WooCommerce (`isWooCommerceActive = false`).
         self.storePickerViewModel = .init(configuration: .standard,
                                           stores: stores,

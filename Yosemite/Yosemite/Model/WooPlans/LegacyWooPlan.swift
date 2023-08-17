@@ -1,46 +1,102 @@
 import Foundation
-import SwiftUI
 
-public struct LegacyWooPlan: Decodable {
+public struct LegacyWooPlan: Decodable, Identifiable {
     public let id: String
     public let name: String
     public let shortName: String
     public let planFrequency: PlanFrequency
     public let planDescription: String
+    public let planFeatures: [String]
 
     public init(id: String,
                 name: String,
                 shortName: String,
                 planFrequency: PlanFrequency,
-                planDescription: String) {
+                planDescription: String,
+                planFeatures: [String]) {
         self.id = id
         self.name = name
         self.shortName = shortName
         self.planFrequency = planFrequency
         self.planDescription = planDescription
+        self.planFeatures = planFeatures
+    }
+
+    public var isEssential: Bool {
+        Self.isEssential(id)
+    }
+
+    public static func isEssential(_ plan: String) -> Bool {
+        let essentialMonthly = AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue
+        let essentialYearly = AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue
+
+        if plan == essentialMonthly || plan == essentialYearly {
+            return true
+        } else {
+            return false
+        }
     }
 
     public static func loadM2HardcodedPlans() -> [LegacyWooPlan] {
         [LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
-                 name: Localization.essentialPlanName(frequency: .month),
-                shortName: Localization.essentialPlanShortName,
-                planFrequency: .month,
-                planDescription: Localization.essentialPlanDescription),
-        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
-                name: Localization.essentialPlanName(frequency: .year),
-                shortName: Localization.essentialPlanShortName,
-                planFrequency: .year,
-                planDescription: Localization.essentialPlanDescription),
-        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
-                name: Localization.performancePlanName(frequency: .month),
-                shortName: Localization.performancePlanShortName,
-                planFrequency: .month,
-                planDescription: Localization.performancePlanDescription),
-        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
-                name: Localization.performancePlanName(frequency: .year),
-                shortName: Localization.performancePlanShortName,
-                planFrequency: .year,
-                planDescription: Localization.performancePlanDescription)]
+                       name: Localization.essentialPlanName(frequency: .month),
+                       shortName: Localization.essentialPlanShortName,
+                       planFrequency: .month,
+                       planDescription: Localization.essentialPlanDescription,
+                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue)),
+         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
+                       name: Localization.essentialPlanName(frequency: .year),
+                       shortName: Localization.essentialPlanShortName,
+                       planFrequency: .year,
+                       planDescription: Localization.essentialPlanDescription,
+                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue)),
+         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
+                       name: Localization.performancePlanName(frequency: .month),
+                       shortName: Localization.performancePlanShortName,
+                       planFrequency: .month,
+                       planDescription: Localization.performancePlanDescription,
+                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue)),
+         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
+                       name: Localization.performancePlanName(frequency: .year),
+                       shortName: Localization.performancePlanShortName,
+                       planFrequency: .year,
+                       planDescription: Localization.performancePlanDescription,
+                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue))]
+    }
+
+    private static func loadHardcodedPlanFeatures(_ planID: String) -> [String] {
+        if isEssential(planID) {
+            return [
+                Localization.freeCustomDomainFeatureText,
+                Localization.supportFeatureText,
+                Localization.unlimitedAdminsFeatureText,
+                Localization.unlimitedProductsFeatureText,
+                Localization.premiumThemesFeatureText,
+                Localization.internationalSalesFeatureText,
+                Localization.autoSalesTaxFeatureText,
+                Localization.autoBackupsFeatureText,
+                Localization.integratedShipmentFeatureText,
+                Localization.analyticsDashboardFeatureText,
+                Localization.giftVouchersFeatureText,
+                Localization.emailMarketingFeatureText,
+                Localization.marketplaceSyncFeatureText,
+                Localization.advancedSEOFeatureText,
+            ]
+        } else {
+            return [
+                Localization.stockNotificationsFeatureText,
+                Localization.marketingAutomationFeatureText,
+                Localization.emailTriggersFeatureText,
+                Localization.cartAbandonmentEmailsFeatureText,
+                Localization.referralProgramsFeatureText,
+                Localization.birthdayEmailsFeatureText,
+                Localization.loyaltyProgramsFeatureText,
+                Localization.bulkDiscountsFeatureText,
+                Localization.addOnsFeatureText,
+                Localization.assembledProductsFeatureText,
+                Localization.orderQuantityFeatureText
+            ]
+        }
     }
 
     public init(from decoder: Decoder) throws {
@@ -51,6 +107,7 @@ public struct LegacyWooPlan: Decodable {
         shortName = try container.decode(String.self, forKey: .planShortName)
         planFrequency = try container.decode(PlanFrequency.self, forKey: .planFrequency)
         planDescription = try container.decode(String.self, forKey: .planDescription)
+        planFeatures = try container.decode([String].self, forKey: .planFeatures)
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -59,6 +116,7 @@ public struct LegacyWooPlan: Decodable {
         case planShortName = "plan_short_name"
         case planFrequency = "plan_frequency"
         case planDescription = "plan_description"
+        case planFeatures = "plan_features"
     }
 
     public enum PlanFrequency: String, Decodable, Identifiable, CaseIterable {
@@ -134,5 +192,106 @@ private extension LegacyWooPlan {
         static let performancePlanDescription = NSLocalizedString(
             "Accelerate your growth with advanced features.",
             comment: "Description of the plan on a screen showing the Woo Express Performance plan upgrade benefits")
+
+        /// Plan features
+        static let freeCustomDomainFeatureText = NSLocalizedString(
+            "Free custom domain for 1 year",
+            comment: "Description of one of the Essential plan features")
+
+        static let supportFeatureText = NSLocalizedString(
+            "Support via live chat and email",
+            comment: "Description of one of the Essential plan features")
+
+        static let unlimitedAdminsFeatureText = NSLocalizedString(
+            "Unlimited admin accounts",
+            comment: "Description of one of the Essential plan features")
+
+        static let unlimitedProductsFeatureText = NSLocalizedString(
+            "Create unlimited products",
+            comment: "Description of one of the Essential plan features")
+
+        static let premiumThemesFeatureText = NSLocalizedString(
+            "Premium themes",
+            comment: "Description of one of the Essential plan features")
+
+        static let internationalSalesFeatureText = NSLocalizedString(
+            "Sell internationally",
+            comment: "Description of one of the Essential plan features")
+
+        static let autoSalesTaxFeatureText = NSLocalizedString(
+            "Automatic sales tax",
+            comment: "Description of one of the Essential plan features")
+
+        static let autoBackupsFeatureText = NSLocalizedString(
+            "Automated backups and security scans",
+            comment: "Description of one of the Essential plan features")
+
+        static let integratedShipmentFeatureText = NSLocalizedString(
+            "Integrated shipment tracking",
+            comment: "Description of one of the Essential plan features")
+
+        static let analyticsDashboardFeatureText = NSLocalizedString(
+            "Analytics dashboard",
+            comment: "Description of one of the Essential plan features")
+
+        static let giftVouchersFeatureText = NSLocalizedString(
+            "Sell and accept e-gift vouchers",
+            comment: "Description of one of the Essential plan features")
+
+        static let emailMarketingFeatureText = NSLocalizedString(
+            "Email marketing built-in",
+            comment: "Description of one of the Essential plan features")
+
+        static let marketplaceSyncFeatureText = NSLocalizedString(
+            "Marketplace sync and social media integrations",
+            comment: "Description of one of the Essential plan features")
+
+        static let advancedSEOFeatureText = NSLocalizedString(
+            "Advanced SEO tools",
+            comment: "Description of one of the Essential plan features")
+
+        static let stockNotificationsFeatureText = NSLocalizedString(
+            "Back in stock notifications",
+            comment: "Description of one of the Performance plan features")
+
+        static let marketingAutomationFeatureText = NSLocalizedString(
+            "Marketing automation",
+            comment: "Description of one of the Performance plan features")
+
+        static let emailTriggersFeatureText = NSLocalizedString(
+            "Automated email triggers",
+            comment: "Description of one of the Performance plan features")
+
+        static let cartAbandonmentEmailsFeatureText = NSLocalizedString(
+            "Cart abandonment emails",
+            comment: "Description of one of the Performance plan features")
+
+        static let referralProgramsFeatureText = NSLocalizedString(
+            "Referral programs",
+            comment: "Description of one of the Performance plan features")
+
+        static let birthdayEmailsFeatureText = NSLocalizedString(
+            "Customer birthday emails",
+            comment: "Description of one of the Performance plan features")
+
+        static let loyaltyProgramsFeatureText = NSLocalizedString(
+            "Loyalty points programs",
+            comment: "Description of one of the Performance plan features")
+
+        static let bulkDiscountsFeatureText = NSLocalizedString(
+            "Offer bulk discounts",
+            comment: "Description of one of the Performance plan features")
+
+        static let addOnsFeatureText = NSLocalizedString(
+            "Recommend add-ons",
+            comment: "Description of one of the Performance plan features")
+
+        static let assembledProductsFeatureText = NSLocalizedString(
+            "Assembled products and kits",
+            comment: "Description of one of the Performance plan features")
+
+        static let orderQuantityFeatureText = NSLocalizedString(
+            "Minimum/maximum order quantity",
+            comment: "Description of one of the Performance plan features")
     }
 }

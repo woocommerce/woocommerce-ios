@@ -182,10 +182,11 @@ private extension WooWPComPlan {
         return WooWPComPlan(
             wpComPlan: planProduct,
             wooPlan: LegacyWooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
-                             name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
-                             shortName: "Skeleton",
-                             planFrequency: frequency,
-                             planDescription: "A skeleton plan to show (redacted) while we're loading"),
+                                   name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
+                                   shortName: "Skeleton",
+                                   planFrequency: frequency,
+                                   planDescription: "A skeleton plan to show (redacted) while we're loading",
+                                   planFeatures: []),
             hardcodedPlanDataIsValid: true)
     }
 

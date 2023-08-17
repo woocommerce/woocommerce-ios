@@ -16,13 +16,8 @@ final class UpgradesViewPresentationCoordinator {
     func presentUpgrades(for siteID: Int64, from viewController: UIViewController) {
         Task { @MainActor in
             if await inAppPurchaseManager.inAppPurchasesAreSupported() {
-                if featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM2) {
-                    let upgradesController = UpgradesHostingController(siteID: siteID)
-                    viewController.present(upgradesController, animated: true)
-                } else {
-                    let legacyUpgradesController = LegacyUpgradesHostingController(siteID: siteID)
-                    viewController.present(legacyUpgradesController, animated: true)
-                }
+                let upgradesController = UpgradesHostingController(siteID: siteID)
+                viewController.present(upgradesController, animated: true)
             } else {
                 let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
                 viewController.present(subscriptionsController, animated: true)

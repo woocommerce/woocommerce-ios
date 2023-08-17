@@ -85,8 +85,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shareProductAI:
             return true
-        case .freeTrialInAppPurchasesUpgradeM2:
-            return true
         case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:

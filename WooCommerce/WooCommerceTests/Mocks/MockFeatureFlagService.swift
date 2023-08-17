@@ -21,7 +21,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let isJustInTimeMessagesOnDashboardEnabled: Bool
-    private let isFreeTrialInAppPurchasesUpgradeM2: Bool
     private let betterCustomerSelectionInOrder: Bool
 
     init(isInboxOn: Bool = false,
@@ -43,7 +42,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
-         isFreeTrialInAppPurchasesUpgradeM2: Bool = false,
          betterCustomerSelectionInOrder: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
@@ -53,7 +51,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isDomainSettingsEnabled = isDomainSettingsEnabled
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
-        self.isFreeTrialInAppPurchasesUpgradeM2 = isFreeTrialInAppPurchasesUpgradeM2
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
@@ -106,8 +103,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isShareProductAIEnabled
         case .justInTimeMessagesOnDashboard:
             return isJustInTimeMessagesOnDashboardEnabled
-        case .freeTrialInAppPurchasesUpgradeM2:
-            return isFreeTrialInAppPurchasesUpgradeM2
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         default:

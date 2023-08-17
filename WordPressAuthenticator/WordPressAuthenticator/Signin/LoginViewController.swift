@@ -301,8 +301,9 @@ extension LoginViewController {
 
         // FIXME: Tests this
         let appleConnectParameters: [String: AnyObject]? = {
-            guard let user = loginFields.meta.socialUser else { return nil }
-            guard case .apple = user.service else { return nil }
+            guard let user = loginFields.meta.socialUser, case .apple = user.service else {
+                return nil
+            }
 
             return AccountServiceRemoteREST.appleSignInParameters(
                 email: user.email,

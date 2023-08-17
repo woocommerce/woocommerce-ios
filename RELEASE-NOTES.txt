@@ -3,7 +3,7 @@
 15.0
 -----
 - [*] The store name can now be updated from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/10485]
-
+- [**] The store creation flow has been optimized to start store creation immediately and show profiler questions afterward. [https://github.com/woocommerce/woocommerce-ios/pull/10473, https://github.com/woocommerce/woocommerce-ios/pull/10466]
 
 14.9
 -----

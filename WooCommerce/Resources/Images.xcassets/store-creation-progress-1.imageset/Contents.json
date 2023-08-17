@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "loading1-light&dark.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

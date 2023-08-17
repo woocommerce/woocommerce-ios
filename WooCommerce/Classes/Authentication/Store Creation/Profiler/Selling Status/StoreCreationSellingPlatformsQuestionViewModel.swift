@@ -8,17 +8,18 @@ import Foundation
 @MainActor
 final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
     /// Other online platforms that the user might be selling. Source of truth:
-    /// https://github.com/Automattic/woocommerce.com/blob/trunk/themes/woo/start/config/options.json
+    // swiftlint:disable:next line_length
+    /// https://github.com/woocommerce/woocommerce/blob/462c690d613e1f5af3be9459b2aac8409a4587dc/plugins/woocommerce-admin/client/core-profiler/pages/UserProfile.tsx#L53
     enum Platform: String, CaseIterable {
-        case adobe = "adobe-commerce"
+        case adobe = "adobe_commerce"
         case amazon
-        case bigCartel = "big-cartel"
-        case bigCommerce = "big-commerce"
+        case bigCartel = "big_cartel"
+        case bigCommerce = "big_commerce"
         case eBay = "ebay"
         case ecwid
         case etsy
-        case facebookMarketplace = "facebook-marketplace"
-        case googleShopping = "google-shopping"
+        case facebookMarketplace = "facebook_marketplace"
+        case googleShopping = "google_shopping"
         case magento
         case pinterest
         case shopify
@@ -30,7 +31,7 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
         case wordPress
     }
 
-    let topHeader: String
+    let topHeader: String = Localization.header
 
     let title: String = Localization.title
 
@@ -43,16 +44,13 @@ final class StoreCreationSellingPlatformsQuestionViewModel: StoreCreationProfile
 
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
 
-    init(storeName: String,
-         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
-        self.topHeader = storeName
+    init(onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void) {
         self.onContinue = onContinue
     }
 }
 
 extension StoreCreationSellingPlatformsQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    func continueButtonTapped() async {
-        // TODO: submission API.
+    func continueButtonTapped() {
         onContinue(.init(sellingStatus: .alreadySellingOnline, sellingPlatforms: selectedPlatforms))
     }
 
@@ -171,6 +169,10 @@ extension StoreCreationSellingPlatformsQuestionViewModel.Platform {
 
 private extension StoreCreationSellingPlatformsQuestionViewModel {
     enum Localization {
+        static let header = NSLocalizedString(
+            "About your store",
+            comment: "Header of the store creation profiler question about the store selling platforms."
+        )
         static let title = NSLocalizedString(
             "In which platform are you currently selling?",
             comment: "Title of the store creation profiler question about the store selling platforms."

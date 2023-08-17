@@ -55,19 +55,25 @@ struct SubscriptionsView: View {
                 Text(viewModel.planInfo)
             })
 
-            VStack(alignment: .leading) {
+            VStack(alignment: .leading, spacing: Layout.sectionsSpacing) {
                 Text(Localization.experienceFeatures)
                     .bold()
                     .headlineStyle()
 
                 ForEach(viewModel.freeTrialFeatures, id: \.title) { feature in
-                    HStack {
-                        Image(uiImage: feature.icon)
-                            .foregroundColor(Color(uiColor: .accent))
-
+                    VStack(alignment: .leading, spacing: Layout.featureSpacing) {
                         Text(feature.title)
                             .foregroundColor(Color(.text))
-                            .calloutStyle()
+                            .font(.subheadline.weight(.semibold))
+                        ForEach(feature.contents, id: \.self) { text in
+                            HStack {
+                                Image(systemName: "checkmark")
+                                    .foregroundColor(Color(uiColor: .accent))
+                                Text(text)
+                                    .foregroundColor(Color(.text))
+                                    .font(.subheadline)
+                            }
+                        }
                     }
                     .listRowSeparator(.hidden)
                 }
@@ -95,6 +101,10 @@ struct SubscriptionsView: View {
 
 // Definitions
 private extension SubscriptionsView {
+    enum Layout {
+        static let featureSpacing = 12.0
+        static let sectionsSpacing = 24.0
+    }
     enum Localization {
         static let title = NSLocalizedString("Subscriptions", comment: "Title for the Subscriptions / Upgrades view")
         static let subscriptionStatus = NSLocalizedString("Subscription Status", comment: "Title for the plan section on the subscriptions view. Uppercased")

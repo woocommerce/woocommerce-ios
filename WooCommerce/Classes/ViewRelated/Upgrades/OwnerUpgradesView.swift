@@ -3,17 +3,24 @@ import Yosemite
 import WooFoundation
 
 struct OwnerUpgradesView: View {
+
     @State var upgradePlans: [WooWPComPlan]
     @Binding var isPurchasing: Bool
+    @Binding var expirationDate: String?
+    @Binding var planDaysLeft: Int?
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
     init(upgradePlans: [WooWPComPlan],
          isPurchasing: Binding<Bool>,
+         expirationDate: Binding<String?>,
+         planDaysLeft: Binding<Int?>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
         _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = isPurchasing
+        _expirationDate = expirationDate
+        _planDaysLeft = planDaysLeft
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
     }
@@ -26,6 +33,16 @@ struct OwnerUpgradesView: View {
 
     var body: some View {
         VStack(spacing: 0) {
+            VStack {
+                CurrentPlanDetailsView(expirationDate: expirationDate,
+                                       daysLeft: planDaysLeft)
+                .background(Color(.secondarySystemGroupedBackground))
+            }
+            .padding(.horizontal)
+            .cornerRadius(Layout.cornerRadius)
+            .background(Color(.systemGroupedBackground))
+            .redacted(reason: isLoading ? .placeholder : [])
+
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {
                     Text($0.paymentFrequencyLocalizedString)
@@ -87,6 +104,13 @@ struct OwnerUpgradesView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+private extension OwnerUpgradesView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 8.0
     }
 }
 

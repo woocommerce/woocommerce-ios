@@ -207,11 +207,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
-                                                                                            category: nil,
-                                                                                            sellingStatus: nil,
-                                                                                            sellingPlatforms: nil,
-                                                                                            countryCode: "US")) { result in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
                 promise(result)
             })
         }
@@ -226,11 +222,83 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134, profilerData: .init(name: "",
-                                                                                            category: nil,
-                                                                                            sellingStatus: nil,
-                                                                                            sellingPlatforms: nil,
-                                                                                            countryCode: "US")) { result in
+            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+    }
+
+     // MARK: - `updateSiteTitle`
+
+    func test_updateSiteTitle_returns_on_success() {
+        // Given
+        let siteID: Int64 = 123
+        remote.whenUpdatingSiteTitle(thenReturn: .success(()))
+        remote.whenLoadingSite(thenReturn: .success(Site.fake().copy(siteID: siteID)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_updateSiteTitle_returns_error_on_failure() throws {
+        // Given
+        let siteID: Int64 = 123
+        remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertFalse(result.isSuccess)
+        let error = try XCTUnwrap(result.failure)
+        XCTAssertEqual(error as? DotcomError, .unknown(code: "error", message: nil))
+    }
+
+    // MARK: - `uploadStoreProfilerAnswers`
+
+    func test_uploadStoreProfilerAnswers_returns_success_on_success() throws {
+        // Given
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+                                                                                                  sellingPlatforms: "wordpress",
+                                                                                                  category: "clothing_and_accessories",
+                                                                                                  countryCode: "US")) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
+        // Given
+        remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil)))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+                                                                                                  sellingPlatforms: "wordpress",
+                                                                                                  category: "clothing_and_accessories",
+                                                                                                  countryCode: "US")) { result in
                 promise(result)
             })
         }

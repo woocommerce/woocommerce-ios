@@ -170,7 +170,6 @@ final class StorePickerViewController: UIViewController {
     private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let isStoreCreationEnabled: Bool
 
     init(configuration: StorePickerConfiguration,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
@@ -181,7 +180,6 @@ final class StorePickerViewController: UIViewController {
         self.stores = stores
         self.featureFlagService = featureFlagService
         self.viewModel = StorePickerViewModel(configuration: configuration)
-        self.isStoreCreationEnabled = featureFlagService.isFeatureFlagEnabled(.storeCreationM2)
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -340,8 +338,7 @@ private extension StorePickerViewController {
                 }
                 return false
             }()
-            return (appleIDCredentialChecker.hasAppleUserID()
-                    || featureFlagService.isFeatureFlagEnabled(.storeCreationM2)) && hasEmptyStores
+            return appleIDCredentialChecker.hasAppleUserID() && hasEmptyStores
         }()
         if isCloseAccountButtonVisible {
             let closeAccountAction = UIAlertAction(title: Localization.ActionMenu.closeAccount, style: .destructive) { [weak self] _ in
@@ -539,18 +536,18 @@ private extension StorePickerViewController {
     ///
     func displaySiteWCRequirementWarningIfNeeded(site: Site) {
         updateActionButtonAndTableState(animating: true, enabled: false)
-//        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
-//            switch result {
-//            case .success(.validWCVersion):
-                updateUIForValidSite()
-//            case .success(.invalidWCVersion):
-//                self?.updateUIForInvalidSite(named: site.name)
-//            case .success(.expiredWPComPlan):
-//                self?.updateUIForExpiredWPComPlan(siteID: site.siteID)
-//            case .failure:
-//                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
-//            }
-//        }
+        requirementsChecker.checkSiteEligibility(for: site) { [weak self] result in
+            switch result {
+            case .success(.validWCVersion):
+                self?.updateUIForValidSite()
+            case .success(.invalidWCVersion):
+                self?.updateUIForInvalidSite(named: site.name)
+            case .success(.expiredWPComPlan):
+                self?.updateUIForExpiredWPComPlan(site: site)
+            case .failure:
+                self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
+            }
+        }
     }
 
     /// Update the UI upon receiving a response for a valid WC site
@@ -574,9 +571,9 @@ private extension StorePickerViewController {
 
     /// Update the UI upon receiving a response for an invalid WC site
     ///
-    func updateUIForExpiredWPComPlan(siteID: Int64) {
+    func updateUIForExpiredWPComPlan(site: Site) {
         updateActionButtonAndTableState(animating: false, enabled: false)
-        displayExpiredWPComPlanAlert(siteID: siteID)
+        displayExpiredWPComPlanAlert(site: site)
     }
 
     /// Update the UI upon receiving an error or empty response instead of site info
@@ -639,15 +636,17 @@ private extension StorePickerViewController {
         present(fancyAlert, animated: true)
     }
 
-    func displayExpiredWPComPlanAlert(siteID: Int64) {
+    func displayExpiredWPComPlanAlert(site: Site) {
         UIAlertController.presentExpiredWPComPlanAlert(from: self) { [weak self] in
             guard let self else { return }
-            /// Since we cannot tell if the site is eligible for upgrading with IAP,
-            /// it's safer to navigate to the plans page just in case the site is not suitable
-            /// for upgrading WooExpress plans (e.g: expired Business plan).
-            /// Please place IAP here if we have a solution to check the case.
-            let controller = UpgradePlanCoordinatingController(siteID: siteID, source: .expiredWPComPlanAlert)
-            self.topmostPresentedViewController.present(controller, animated: true)
+            if site.wasEcommerceTrial {
+                /// If site once ran a trial WooExpress plan, attempt show IAP if possible.
+                UpgradesViewPresentationCoordinator().presentUpgrades(for: site.siteID, from: self.topmostPresentedViewController)
+            } else {
+                /// If the site never ran a WooExpress plan, show the appropriate plans on the web.
+                let controller = UpgradePlanCoordinatingController(siteID: site.siteID, source: .expiredWPComPlanAlert)
+                self.topmostPresentedViewController.present(controller, animated: true)
+            }
         }
     }
 }
@@ -684,13 +683,8 @@ private extension StorePickerViewController {
     /// or the add store action sheet for simplified login.
     ///
     @IBAction private func addStoreWasPressed() {
-        if featureFlagService.isFeatureFlagEnabled(.storeCreationM2) {
-            ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
-            presentAddStoreActionSheet(from: addStoreButton)
-        } else {
-            ServiceLocator.analytics.track(.sitePickerConnectExistingStoreTapped)
-            presentSiteDiscovery()
-        }
+        ServiceLocator.analytics.track(.sitePickerAddStoreTapped)
+        presentAddStoreActionSheet(from: addStoreButton)
     }
 
     /// Proceeds with the Logout Flow.

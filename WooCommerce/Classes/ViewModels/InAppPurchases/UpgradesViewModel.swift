@@ -14,7 +14,7 @@ final class UpgradesViewModel: ObservableObject {
 
     private let inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol
     private let siteID: Int64
-    private let storePlanSynchronizer: StorePlanSynchronizer
+    private let storePlanSynchronizer: StorePlanSynchronizing
     private let stores: StoresManager
     private let localPlans: [LegacyWooPlan] = LegacyWooPlan.loadM2HardcodedPlans()
     private let analytics: Analytics
@@ -28,7 +28,7 @@ final class UpgradesViewModel: ObservableObject {
 
     init(siteID: Int64,
          inAppPurchasesPlanManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager(),
-         storePlanSynchronizer: StorePlanSynchronizer = ServiceLocator.storePlanSynchronizer,
+         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID

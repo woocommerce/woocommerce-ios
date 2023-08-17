@@ -30,7 +30,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// TableView
     ///
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet var tableView: UITableView!
 
 
     @IBOutlet private weak var bordersView: BordersView!
@@ -144,7 +144,9 @@ where Cell.SearchModel == Command.CellViewModel {
         configureStarterViewController()
         configureSearchResync()
 
-        startListeningToNotifications()
+        if searchUICommand.adjustTableViewBottomInsetWhenKeyboardIsShown {
+            startListeningToKeyboardNotifications()
+        }
 
         transitionToResultsUpdatedState()
         configureSearchFunctionality()
@@ -157,7 +159,9 @@ where Cell.SearchModel == Command.CellViewModel {
             navigationController?.setNavigationBarHidden(true, animated: true)
         }
 
-        searchBar.becomeFirstResponder()
+        if searchUICommand.makeSearchBarFirstResponderOnStart {
+            searchBar.becomeFirstResponder()
+        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -226,6 +230,10 @@ where Cell.SearchModel == Command.CellViewModel {
 
     func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
         return true
+    }
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
     }
 
     // MARK: - Actions
@@ -391,7 +399,7 @@ private extension SearchViewController {
 
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    func startListeningToKeyboardNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
 

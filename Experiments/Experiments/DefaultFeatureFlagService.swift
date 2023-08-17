@@ -31,12 +31,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .inAppPurchases:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .storeCreationM2:
-            return true
-        case .storeCreationM2WithInAppPurchasesEnabled:
-            return false
-        case .storeCreationM3Profiler:
-            return true
         case .justInTimeMessagesOnDashboard:
             return true
         case .IPPInAppFeedbackBanner:
@@ -96,6 +90,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .betterCustomerSelectionInOrder:
+            return true
+        case .optimizeProfilerQuestions:
             return false
         default:
             return true

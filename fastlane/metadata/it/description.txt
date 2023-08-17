@@ -1,0 +1,26 @@
+Gestisci la tua attività mentre sei in movimento con l'app per dispositivi mobili WooCommerce. Aggiungi i prodotti, crea ordini, ricevi pagamenti rapidi e tieni d'occhio le nuove offerte e le statistiche chiave in tempo reale.
+
+Aggiungi e modifica i prodotti con un tocco
+Inizia a lavorare in pochi secondi. Crea, raggruppa e pubblica i prodotti direttamente dal tuo iPhone o dal tuo iPad. Conquista la tua creatività nel momento in cui ti coglie: trasforma subito le tue idee in prodotti o salvale come bozze per un secondo momento.
+
+Crea ordini in movimento
+Una volta che hai creato alcuni prodotti, è semplice. Scegli gli elementi dal tuo catalogo, aggiungi la spedizione e, quindi, inserisci i dati del cliente per creare rapidamente un ordine che si sincronizzi con l'inventario.
+
+Ricevi i pagamenti di persona
+Ricevi pagamenti fisici usando WooCommerce In-Person Payments e un lettore di carte (disponibile negli Stati Uniti e in Canada). Inizia un nuovo ordine o trovane uno esistente che abbia il pagamento in sospeso e ricevi il pagamento usando il lettore di carte o un portafoglio digitale, come Apple Pay.
+
+Ricevi notifiche di ogni vendita
+Ora che vendi attivamente, non perdere mai un ordine o una recensione. Tieniti aggiornato attivando gli avvisi in tempo reale e ascolta il "din din" proveniente da ogni nuova vendita, che dà assuefazione.
+
+Tieni traccia delle vendite e dei prodotti di successo
+Visualizza in un solo colpo d'occhio quali prodotti stanno vendendo di più. Tieni sotto controllo il fatturato generale, il conteggio degli ordini e i dati dei visitatori per settimana, mese e anno. Conoscenza = forza.
+
+WooCommerce è la piattaforma open-source di eCommerce più personalizzabile al mondo. Sia che tu stia avviando un'attività, vendendo in un negozio online e avendo anche punti vendita reali o sviluppando siti per i clienti, utilizza WooCommerce per avere un negozio che unisce in modo potente contenuto e affari.
+
+Requisiti: WooCommerce v3.5+.
+
+Visualizza i Termini di servizio su https://wordpress.com/tos/
+
+Visualizza la Politica sulla privacy su https://automattic.com/privacy/
+
+Consulta la nota sulla privacy per utenti in California su https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

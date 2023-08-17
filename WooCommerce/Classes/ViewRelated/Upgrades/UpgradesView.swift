@@ -80,9 +80,6 @@ struct UpgradesView: View {
                     UpgradeTopBarView(dismiss: {
                         dismiss()
                     })
-
-                    CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
-                                           daysLeft: subscriptionsViewModel.planDaysLeft)
                 }
                 .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
@@ -94,11 +91,15 @@ struct UpgradesView: View {
                         .skeletonPlan(frequency: .month, shortName: "Essential"),
                         .skeletonPlan(frequency: .month, shortName: "Performance")],
                                       isPurchasing: .constant(false),
+                                      expirationDate: .constant(""),
+                                      planDaysLeft: .constant(0),
                                       purchasePlanAction: { _ in }, isLoading: true)
-                        .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
+                    .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
                     OwnerUpgradesView(upgradePlans: plans,
                                       isPurchasing: $upgradesViewModel.isPurchasing,
+                                      expirationDate: $subscriptionsViewModel.formattedPlanExpirationDate,
+                                      planDaysLeft: $subscriptionsViewModel.planDaysLeft,
                                       purchasePlanAction: { selectedPlan in
                         Task {
                             await upgradesViewModel.purchasePlan(with: selectedPlan.wpComPlan.id)
@@ -148,6 +149,7 @@ struct UpgradesView: View {
                 }
             }
             .navigationBarHidden(true)
+            .background(Color(.systemGroupedBackground))
         }
         // TODO: when we remove iOS 15 support, use NavigationStack instead.
         // This is required to avoid a column layout on iPad, which looks strange.

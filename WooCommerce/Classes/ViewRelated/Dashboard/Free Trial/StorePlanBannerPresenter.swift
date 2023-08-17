@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 import Combine
 import UIKit
 import protocol Experiments.FeatureFlagService
@@ -30,20 +31,33 @@ final class StorePlanBannerPresenter {
     ///
     private var subscriptions: Set<AnyCancellable> = []
 
-    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()
+    private let stores: StoresManager
+    private let storePlanSynchronizer: StorePlanSynchronizing
+    private let connectivityObserver: ConnectivityObserver
+
+    private var inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol
 
     /// - Parameters:
     ///   - viewController: View controller used to present any action needed by the free trial banner.
     ///   - containerView: View that will contain the banner.
     ///   - onLayoutUpdated: Closure invoked when the banner is added or removed.
     init(viewController: UIViewController,
-         containerView: UIView, siteID: Int64,
+         containerView: UIView,
+         siteID: Int64,
          onLayoutUpdated: @escaping (CGFloat) -> Void,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         stores: StoresManager = ServiceLocator.stores,
+         storePlanSynchronizer: StorePlanSynchronizing = ServiceLocator.storePlanSynchronizer,
+         connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+         inAppPurchasesManager: InAppPurchasesForWPComPlansProtocol = InAppPurchasesForWPComPlansManager()) {
         self.viewController = viewController
         self.containerView = containerView
         self.siteID = siteID
         self.onLayoutUpdated = onLayoutUpdated
+        self.stores = stores
+        self.storePlanSynchronizer = storePlanSynchronizer
+        self.connectivityObserver = connectivityObserver
+        self.inAppPurchasesManager = inAppPurchasesManager
         observeStorePlan()
         observeConnectivity()
     }
@@ -51,7 +65,7 @@ final class StorePlanBannerPresenter {
     /// Reloads the site plan and the banner visibility.
     ///
     func reloadBannerVisibility() {
-        ServiceLocator.storePlanSynchronizer.reloadPlan()
+        storePlanSynchronizer.reloadPlan()
     }
 
     /// Bring banner (if visible) to the front. Useful when some content has hidden it.
@@ -67,8 +81,8 @@ private extension StorePlanBannerPresenter {
     /// Observe the store plan and add or remove the banner as appropriate
     ///
     private func observeStorePlan() {
-        ServiceLocator.storePlanSynchronizer.$planState.removeDuplicates()
-            .combineLatest(ServiceLocator.stores.site.removeDuplicates())
+        storePlanSynchronizer.planStatePublisher.removeDuplicates()
+            .combineLatest(stores.site.removeDuplicates())
             .sink { [weak self] planState, site in
                 guard let self else { return }
                 switch planState {
@@ -96,7 +110,7 @@ private extension StorePlanBannerPresenter {
     /// Reload banner visibility when internet is reachable again.
     ///
     private func observeConnectivity() {
-        ServiceLocator.connectivityObserver.statusPublisher.sink { [weak self] status in
+        connectivityObserver.statusPublisher.sink { [weak self] status in
             switch status {
             case .reachable:
                 self?.reloadBannerVisibility()

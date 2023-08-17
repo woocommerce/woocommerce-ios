@@ -95,7 +95,7 @@ final class CustomerStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
         // When
-        _ = waitFor { promise in
+        let result = waitFor { promise in
             let action = CustomerAction.synchronizeLightCustomersData(siteID: self.dummySiteID, pageNumber: 1, pageSize: 2) { result in
                 promise(result)
             }
@@ -107,6 +107,13 @@ final class CustomerStoreTests: XCTestCase {
             .map { $0.toReadOnly() }
             .sorted(by: { $0.customerID < $1.customerID })
 
+        guard case .success(let thereAreCustomers) = result else {
+            XCTFail()
+
+            return
+        }
+
+        XCTAssertTrue(thereAreCustomers)
         assertEqual(4, customers.count)
         assertEqual(0, customers[0].customerID)
         assertEqual(1, customers[1].customerID)
@@ -121,36 +128,20 @@ final class CustomerStoreTests: XCTestCase {
         assertEqual("Doe", customers[3].lastName)
     }
 
-    func test_searchCustomers_when_three_results_found_then_returns_an_array_with_three_customer_entities() throws {
-        // Given
-        network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
-        network.simulateResponse(requestUrlSuffix: "customers/1", filename: "customer")
-        network.simulateResponse(requestUrlSuffix: "customers/2", filename: "customer")
-        network.simulateResponse(requestUrlSuffix: "customers/3", filename: "customer")
-
-        // When
-        let response: Result<[Networking.Customer], Error> = waitFor { promise in
-            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
-                promise(result)
-            }
-            self.dispatcher.dispatch(action)
-        }
-
-        // Then
-        let customers = try response.get()
-        XCTAssertEqual(customers.count, 3)
-    }
-
     func test_searchCustomers_returns_Error_upon_failure() {
         // Given
         let expectedError = NetworkError.notFound
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
-        let result: Result<[Networking.Customer], Error> = waitFor { promise in
+        let result = waitFor { promise in
             let action = CustomerAction.searchCustomers(
                 siteID: self.dummySiteID,
-                keyword: self.dummyKeyword) { result in
+                pageNumber: 1,
+                pageSize: 25,
+                keyword: self.dummyKeyword,
+                retrieveFullCustomersData: true,
+                filter: .name) { result in
                     promise(result)
                 }
             self.store.onAction(action)
@@ -170,8 +161,13 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 0)
 
         // When
-        let response: Result<[Networking.Customer], Error> = waitFor { promise in
-            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
+        let response = waitFor { promise in
+            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
+                                                        pageNumber: 1,
+                                                        pageSize: 25,
+                                                        keyword: self.dummyKeyword,
+                                                        retrieveFullCustomersData: true,
+                                                        filter: .name) { result in
                 promise(result)
             }
             self.dispatcher.dispatch(action)
@@ -221,7 +217,12 @@ final class CustomerStoreTests: XCTestCase {
 
         // When
         () = waitFor { promise in
-            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID, keyword: self.dummyKeyword) { result in
+            let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
+                                                        pageNumber: 1,
+                                                        pageSize: 25,
+                                                        keyword: self.dummyKeyword,
+                                                        retrieveFullCustomersData: true,
+                                                        filter: .name) { result in
                 promise(())
             }
             self.dispatcher.dispatch(action)
@@ -232,5 +233,26 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertFalse(requests.contains(where: { request in
             request.path == "customers/0"
         }))
+    }
+
+    func test_deleteAllCustomers() {
+        let customer = Customer.fake().copy(siteID: dummySiteID)
+        storageManager.insertSampleCustomer(readOnlyCustomer: customer)
+        let customersBeforeDeleting = viewStorage.allObjects(ofType: Storage.Customer.self, matching: nil, sortedBy: nil)
+
+        XCTAssertEqual(customersBeforeDeleting.count, 1)
+
+        // When
+        () = waitFor { promise in
+            let action = CustomerAction.deleteAllCustomers(siteID: self.dummySiteID) {
+                promise(())
+            }
+
+            self.dispatcher.dispatch(action)
+        }
+
+        let customersAfterDeleting = viewStorage.allObjects(ofType: Storage.Customer.self, matching: nil, sortedBy: nil)
+
+        XCTAssertEqual(customersAfterDeleting.count, 0)
     }
 }

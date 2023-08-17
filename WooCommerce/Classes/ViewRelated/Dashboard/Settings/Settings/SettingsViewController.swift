@@ -154,6 +154,8 @@ private extension SettingsViewController {
             configureStoreSetupList(cell: cell)
         case let cell as BasicTableViewCell where row == .shippingZones:
             configureShippingZones(cell: cell)
+        case let cell as BasicTableViewCell where row == .storeName:
+            configureStoreName(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -233,6 +235,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.shippingZones
+    }
+
+    func configureStoreName(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.storeName
     }
 
     func configurePrivacy(cell: BasicTableViewCell) {
@@ -434,6 +442,17 @@ private extension SettingsViewController {
         show(viewController, sender: self)
     }
 
+    func storeNameWasPressed() {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        let controller = StoreNameSetupHostingController(viewModel: viewModel)
+        present(controller, animated: true)
+    }
+
     func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: PrivacySettingsViewController.self) else {
@@ -624,6 +643,8 @@ extension SettingsViewController: UITableViewDelegate {
             installJetpackWasPressed()
         case .shippingZones:
             shippingZonesWasPressed()
+        case .storeName:
+            storeNameWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -701,6 +722,7 @@ extension SettingsViewController {
         case installJetpack
         case storeSetupList
         case shippingZones
+        case storeName
 
         // Help & Feedback
         case support
@@ -769,6 +791,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .whatsNew:
                 return BasicTableViewCell.self
+            case .storeName:
+                return BasicTableViewCell.self
             }
         }
 
@@ -834,6 +858,11 @@ private extension SettingsViewController {
         static let shippingZones = NSLocalizedString(
             "Shipping Zones",
             comment: "Access the store shipping zones."
+        )
+
+        static let storeName = NSLocalizedString(
+            "Store Name",
+            comment: "Navigates to the Store name setup screen"
         )
 
         static let privacySettings = NSLocalizedString(

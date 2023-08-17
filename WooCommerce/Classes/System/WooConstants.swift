@@ -69,6 +69,10 @@ enum WooConstants {
     /// Placeholder store ID to be used when the user logs in with site credentials
     ///
     static let placeholderStoreID: Int64 = -1
+
+    /// Default store name when creating a site with free trial
+    ///
+    static let defaultStoreName = "Store Name"
 }
 
 // MARK: URLs

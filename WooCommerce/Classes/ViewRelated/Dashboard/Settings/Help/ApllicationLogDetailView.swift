@@ -65,7 +65,7 @@ struct ApplicationLogDetailView: View {
                     Image(systemName: "chevron.down.circle.fill")
                         .resizable()
                         .frame(width: 32, height: 32)
-                        .accentColor(Color(.accent))
+                        .tint(Color(.accent))
                 })
                 .padding()
                 .transition(.move(edge: .bottom))

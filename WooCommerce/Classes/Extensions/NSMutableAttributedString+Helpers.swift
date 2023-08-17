@@ -1,4 +1,5 @@
 import Foundation
+import UIKit
 
 
 /// NSMutableAttributedString: Helper Methods
@@ -44,5 +45,17 @@ extension NSMutableAttributedString {
             return true
         }
         return false
+    }
+
+    /// Underlines the given substring (case insensitive). It does nothing if the given substring cannot be found in the original string.
+    ///
+    func underlineSubstring(underlinedText: String) {
+        let range = (string as NSString).range(of: underlinedText, options: .caseInsensitive)
+        if range.location != NSNotFound {
+            addAttribute(.underlineStyle,
+                               value: NSUnderlineStyle.single.rawValue,
+                               range: range)
+        }
+
     }
 }

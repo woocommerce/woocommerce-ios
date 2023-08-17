@@ -39,6 +39,7 @@ final class DashboardViewModel {
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
 
     var siteURLToShare: URL? {
         if let site = stores.sessionManager.defaultSite,
@@ -54,7 +55,8 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
@@ -64,7 +66,14 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
+        self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         setupObserverForShowOnboarding()
+    }
+
+    /// Uploads the answers from the store creation profiler flow
+    ///
+    func uploadProfilerAnswers() async {
+        await storeCreationProfilerUploadAnswersUseCase.uploadAnswers()
     }
 
     /// Reloads store onboarding tasks
@@ -306,7 +315,8 @@ extension DashboardViewModel {
     private func isBlazeBannerVisible() async -> Bool {
         async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
         async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
-        guard (await isSiteEligible, await storeHasPublishedProducts) == (true, true) else {
+        async let storeHasAnyOrders = (try? checkIfStoreHasOrders(siteID: siteID)) ?? false
+        guard await(isSiteEligible, storeHasPublishedProducts, storeHasAnyOrders) == (true, true, false) else {
             return false
         }
         return !userDefaults.hasDismissedBlazeBanner(for: siteID)
@@ -321,6 +331,21 @@ extension DashboardViewModel {
                     continuation.resume(returning: hasProducts)
                 case .failure(let error):
                     DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+
+    @MainActor
+    private func checkIfStoreHasOrders(siteID: Int64) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: siteID, onCompletion: { result in
+                switch result {
+                case .success(let hasOrders):
+                    continuation.resume(returning: hasOrders)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error fetching order to show the Blaze banner: \(error)")
                     continuation.resume(throwing: error)
                 }
             }))

@@ -5,7 +5,7 @@ import XCTest
 final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
     func test_selecting_non_alreadySellingOnline_updates_selectedStatus_and_not_isAlreadySellingOnline() throws {
         // Given
-        let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in } onSkip: {}
+        let viewModel = StoreCreationSellingStatusQuestionViewModel { _ in } onSkip: {}
         XCTAssertFalse(viewModel.isAlreadySellingOnline)
 
         // When
@@ -18,7 +18,7 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
 
     func test_selecting_alreadySellingOnline_updates_selectedStatus_and_isAlreadySellingOnline() throws {
         // Given
-        let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in } onSkip: {}
+        let viewModel = StoreCreationSellingStatusQuestionViewModel { _ in } onSkip: {}
         XCTAssertFalse(viewModel.isAlreadySellingOnline)
 
         // When
@@ -32,14 +32,12 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
     func test_continueButtonTapped_invokes_onContinue_after_selecting_a_non_alreadySellingOnline_status() throws {
         let answer = waitFor { promise in
             // Given
-            let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { answer in
+            let viewModel = StoreCreationSellingStatusQuestionViewModel { answer in
                 promise(answer)
             } onSkip: {}
             // When
             viewModel.selectStatus(.alreadySellingButNotOnline)
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
 
         // Then
@@ -48,35 +46,31 @@ final class StoreCreationSellingStatusQuestionViewModelTests: XCTestCase {
 
     func test_continueButtonTapped_does_not_invoke_onContinue_after_selecting_alreadySellingOnline_status() throws {
         // Given
-        let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in
+        let viewModel = StoreCreationSellingStatusQuestionViewModel { _ in
             XCTFail("onContinue should not be invoked after selecting alreadySellingOnline status.")
         } onSkip: {}
 
         // When
         viewModel.selectStatus(.alreadySellingOnline)
-        Task { @MainActor in
-            await viewModel.continueButtonTapped()
-        }
+        viewModel.continueButtonTapped()
     }
 
     func test_continueButtonTapped_invokes_onSkip_without_selecting_a_category() throws {
         waitFor { promise in
             // Given
-            let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in } onSkip: {
+            let viewModel = StoreCreationSellingStatusQuestionViewModel { _ in } onSkip: {
                 // Then
                 promise(())
             }
             // When
-            Task { @MainActor in
-                await viewModel.continueButtonTapped()
-            }
+            viewModel.continueButtonTapped()
         }
     }
 
     func test_skipButtonTapped_invokes_onSkip() throws {
         waitFor { promise in
             // Given
-            let viewModel = StoreCreationSellingStatusQuestionViewModel(storeName: "store") { _ in } onSkip: {
+            let viewModel = StoreCreationSellingStatusQuestionViewModel { _ in } onSkip: {
                 // Then
                 promise(())
             }

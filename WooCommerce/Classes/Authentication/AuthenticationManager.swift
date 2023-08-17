@@ -63,9 +63,6 @@ class AuthenticationManager: Authentication {
     private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
 
     /// Injected for unit test purposes
-    private let purchasesManager: InAppPurchasesForWPComPlansProtocol?
-
-    /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
     init(stores: StoresManager = ServiceLocator.stores,
@@ -73,14 +70,12 @@ class AuthenticationManager: Authentication {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
-         purchasesManager: InAppPurchasesForWPComPlansProtocol? = nil,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
-        self.purchasesManager = purchasesManager
         self.switchStoreUseCase = switchStoreUseCase
     }
 
@@ -534,8 +529,7 @@ private extension AuthenticationManager {
             // not have any existing stores
             let coordinator = StoreCreationCoordinator(source: .loggedOut(source: storeCreationSource),
                                                        navigationController: navigationController,
-                                                       featureFlagService: featureFlagService,
-                                                       purchasesManager: purchasesManager)
+                                                       featureFlagService: featureFlagService)
             self.storeCreationCoordinator = coordinator
             coordinator.start()
             return

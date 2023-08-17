@@ -1,11 +1,25 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.0
+-----
+- [*] The store name can now be updated from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/10485]
+
+
+14.9
+-----
+- [*] Only show Blaze banner on the My Store and Product List screens if the store has no existing orders. [https://github.com/woocommerce/woocommerce-ios/pull/10438]
+- [**] Order creation: We improved the way the merchants can request, search and select a customer when creating an order. [https://github.com/woocommerce/woocommerce-ios/pull/10456]
+
+
 14.8
 -----
+- [Internal] Native store creation flow with free trial is enabled by default - all code for the old flows have been removed. [https://github.com/woocommerce/woocommerce-ios/pull/10362]
 - [*] Store creation: Improvements to the Upgrades screen accessibility [https://github.com/woocommerce/woocommerce-ios/pull/10363]
 - [*] Stores with expired WooExpress plans can now be upgraded within the app (if eligible for IAP) via a new banner. [https://github.com/woocommerce/woocommerce-ios/pull/10369]
+- [*] The expired site plan should navigate to IAP for sites with expired WooExpress plans (if eligible for IAP). [https://github.com/woocommerce/woocommerce-ios/pull/10384]
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
+- [*] Product list filter (Products tab and order creation > add products > filter): product types from extensions supported in the app are now available for product filtering - subscription, variable subscription, bundle, and composite. [https://github.com/woocommerce/woocommerce-ios/pull/10382]
  
 14.7
 -----

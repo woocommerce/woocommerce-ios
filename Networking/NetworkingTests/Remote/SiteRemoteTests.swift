@@ -116,65 +116,7 @@ final class SiteRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "ecommerce-trial/add/ecommerce-trial-bundle-monthly", filename: "site-enable-trial-success")
 
         // When
-        try await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
-                                                                          category: nil,
-                                                                          sellingStatus: .alreadySellingOnline,
-                                                                          sellingPlatforms: "wordPress",
-                                                                          countryCode: "US"))
-    }
-
-    func test_enableFreeTrial_with_full_profiler_data_sets_all_parameters() async throws {
-        // When
-        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
-                                                                           category: "other",
-                                                                           sellingStatus: .alreadySellingOnline,
-                                                                           sellingPlatforms: "wordPress",
-                                                                           countryCode: "US"))
-
-        // Then
-        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
-        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
-        XCTAssertEqual(onboardingDictionary["blogname"] as? String, "Woo shop")
-        XCTAssertEqual(onboardingDictionary["woocommerce_default_country"] as? String, "US")
-        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
-        XCTAssertEqual(profilerDictionary["is_store_country_set"] as? Bool, true)
-        XCTAssertEqual(profilerDictionary["selling_venues"] as? String, "other")
-        XCTAssertEqual(profilerDictionary["other_platform"] as? String, "wordPress")
-        let profilerIndustryDictionary = try XCTUnwrap(profilerDictionary["industry"] as? [[String: String]])
-        XCTAssertEqual(profilerIndustryDictionary, [["slug": "other"]])
-    }
-
-    func test_enableFreeTrial_with_nil_industry_data_does_not_contain_industry_parameters() async throws {
-        // When
-        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
-                                                                           // Industry (category) data is nil.
-                                                                           category: nil,
-                                                                           sellingStatus: .alreadySellingOnline,
-                                                                           sellingPlatforms: "wordPress",
-                                                                           countryCode: "US"))
-
-        // Then
-        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
-        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
-        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
-        let profilerIndustryDictionary = try XCTUnwrap(profilerDictionary["industry"] as? [[String: String]])
-        XCTAssertEqual(profilerIndustryDictionary, [[:]])
-    }
-
-    func test_enableFreeTrial_with_nil_selling_status_does_not_contain_selling_status_parameters() async throws {
-        // When
-        try? await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
-                                                                           category: nil,
-                                                                           sellingStatus: nil,
-                                                                           sellingPlatforms: nil,
-                                                                           countryCode: "US"))
-
-        // Then
-        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
-        let onboardingDictionary = try XCTUnwrap(parameterDictionary["wpcom_woocommerce_onboarding"] as? [String: Any])
-        let profilerDictionary = try XCTUnwrap(onboardingDictionary["woocommerce_onboarding_profile"] as? [String: Any])
-        XCTAssertFalse(profilerDictionary.keys.contains("selling_venues"))
-        XCTAssertFalse(profilerDictionary.keys.contains("other_platform"))
+        try await remote.enableFreeTrial(siteID: 134)
     }
 
     func test_enableFreeTrial_returns_DotcomError_failure_on_already_upgraded_error() async throws {
@@ -183,14 +125,118 @@ final class SiteRemoteTests: XCTestCase {
 
         await assertThrowsError({
             // When
-            try await remote.enableFreeTrial(siteID: 134, profilerData: .init(name: "Woo shop",
-                                                                              category: nil,
-                                                                              sellingStatus: .alreadySellingOnline,
-                                                                              sellingPlatforms: "wordPress",
-                                                                              countryCode: "US"))
+            try await remote.enableFreeTrial(siteID: 134)
         }, errorAssert: { error in
             (error as? DotcomError) == .unknown(code: "no-upgrades-permitted",
                                                 message: "You cannot add WordPress.com eCommerce Trial when you already have paid upgrades")
+        })
+    }
+
+    // MARK: - `updateSiteTitle`
+    func test_updateSiteTitle_returns_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "settings", filename: "site-settings-success")
+
+        // When
+        try await remote.updateSiteTitle(siteID: 123, title: "Test")
+    }
+
+    func test_updateSiteTitle_returns_failure_on_empty_response() async throws {
+        await assertThrowsError({
+            // When
+            _ = try await remote.updateSiteTitle(siteID: 123, title: "Test")
+        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+    }
+
+    // MARK: - `uploadStoreProfilerAnswers`
+
+    func test_uploadStoreProfilerAnswers_with_profiler_data_returns_on_success() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "options", filename: "site-upload-profiler-answers-success")
+
+        // When
+        try await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                    answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                   sellingPlatforms: "wordpress",
+                                                                   category: "clothing_and_accessories",
+                                                                   countryCode: "US"))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_full_profiler_data_sets_all_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+
+        XCTAssertEqual(parameterDictionary["woocommerce_default_country"] as? String, "US")
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertEqual(profilerDictionary["is_store_country_set"] as? Bool, true)
+        XCTAssertEqual(profilerDictionary["business_choice"] as? String, "im_already_selling")
+        XCTAssertEqual(profilerDictionary["selling_platforms"] as? String, "wordpress")
+        XCTAssertEqual(try XCTUnwrap(profilerDictionary["industry"] as? [String]), ["clothing_and_accessories"])
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_category_data_does_not_contain_industry_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: .alreadySellingOnline,
+                                                                    sellingPlatforms: nil,
+                                                                    category: nil,
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("industry"))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_selling_status_does_not_contain_business_choice_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("business_choice"))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_selling_platforms_does_not_contain_selling_platforms_parameters() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: nil,
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(profilerDictionary.keys.contains("selling_platforms"))
+    }
+
+
+    func test_uploadStoreProfilerAnswers_returns_DotcomError_on_failure() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "options", filename: "generic_error")
+
+        await assertThrowsError({
+            // When
+            try await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                        answers: .init(sellingStatus: nil,
+                                                                       sellingPlatforms: "wordpress",
+                                                                       category: "clothing_and_accessories",
+                                                                       countryCode: "US"))
+        }, errorAssert: { error in
+            (error as? DotcomError) == .unauthorized
         })
     }
 }

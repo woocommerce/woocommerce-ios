@@ -1,5 +1,5 @@
 import enum Yosemite.CreateAccountError
-import struct Yosemite.SiteProfilerData
+import struct Yosemite.StoreProfilerAnswers
 
 extension WooAnalyticsEvent {
     enum StoreCreation {
@@ -18,6 +18,8 @@ extension WooAnalyticsEvent {
             static let waitingTime = "waiting_time"
             static let newSiteID = "new_site_id"
             static let initialDomain = "initial_domain"
+            static let challenges = "challenges"
+            static let features = "features"
         }
 
         /// Tracked when the user taps on the CTA in store picker (logged in to WPCOM) to create a store.
@@ -72,32 +74,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationManageStoreTapped, properties: [:])
         }
 
-        /// Tracked when completing the last profiler question during the store creation flow.
-        static func siteCreationProfilerData(category: StoreCreationCategoryAnswer?,
-                                             sellingStatus: StoreCreationSellingStatusAnswer?,
-                                             countryCode: SiteAddress.CountryCode?) -> WooAnalyticsEvent {
-            let properties = [
-                Key.category: category?.value,
-                Key.sellingStatus: sellingStatus?.sellingStatus.analyticsValue,
-                Key.sellingPlatforms: sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ","),
-                Key.countryCode: countryCode?.rawValue
-            ].compactMapValues({ $0 })
-            return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
-        }
-
         /// Tracked when the user skips a profiler question in the store creation flow.
         static func siteCreationProfilerQuestionSkipped(step: Step) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreationProfilerQuestionSkipped,
                               properties: [Key.step: step.rawValue])
         }
 
-        /// Tracked when completing the last profiler question during the store creation flow when free trials are enabled.
-        static func siteCreationProfilerData(_ profilerData: SiteProfilerData) -> WooAnalyticsEvent {
-            let properties = [
+        /// Tracked when completing the last profiler question during the store creation flow
+        static func siteCreationProfilerData(_ profilerData: StoreProfilerAnswers,
+                                             challenges: [StoreCreationChallengesAnswer],
+                                             features: [StoreCreationFeaturesAnswer]) -> WooAnalyticsEvent {
+            let properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.category: profilerData.category,
                 Key.sellingStatus: profilerData.sellingStatus?.analyticsValue,
                 Key.sellingPlatforms: profilerData.sellingPlatforms,
-                Key.countryCode: profilerData.countryCode
+                Key.countryCode: profilerData.countryCode,
+                Key.challenges: challenges.map { $0.value }.joined(separator: ","),
+                Key.features: features.map { $0.value }.joined(separator: ",")
             ].compactMapValues({ $0 })
             return WooAnalyticsEvent(statName: .siteCreationProfilerData, properties: properties)
         }
@@ -185,11 +178,12 @@ extension WooAnalyticsEvent.StoreCreation {
 
     /// Steps of the native store creation flow.
     enum Step: String {
-        case storeName = "store_name"
         case profilerCategoryQuestion = "store_profiler_industries"
         case profilerSellingStatusQuestion = "store_profiler_commerce_journey"
         case profilerSellingPlatformsQuestion = "store_profiler_ecommerce_platforms"
         case profilerCountryQuestion = "store_profiler_country"
+        case profilerChallengesQuestion = "store_profiler_challenges"
+        case profilerFeaturesQuestion = "store_profiler_features"
         case domainPicker = "domain_picker"
         case storeSummary = "store_summary"
         case planPurchase = "plan_purchase"
@@ -213,15 +207,8 @@ private extension CreateAccountError {
     }
 }
 
-private extension SiteProfilerData.SellingStatus {
+private extension StoreProfilerAnswers.SellingStatus {
     var analyticsValue: String {
-        switch self {
-        case .justStarting:
-            return "im_just_starting_my_business"
-        case .alreadySellingButNotOnline:
-            return "im_already_selling_but_not_online"
-        case .alreadySellingOnline:
-            return "im_already_selling_online"
-        }
+        remoteValue
     }
 }

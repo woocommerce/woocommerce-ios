@@ -90,6 +90,7 @@ private extension StoreCreationCoordinator {
             if let site = self.createdStore {
                 self.continueWithSelectedSite(site: site)
             } else {
+                self.analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
                 self.showInProgressView(from: navigationController)
             }
         }), onSupport: { [weak self] in
@@ -220,7 +221,6 @@ private extension StoreCreationCoordinator {
                     siteID: siteResult.siteID,
                     domainName: siteResult.siteSlug
                 ))
-                analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
             }
 
         case .failure(let error):

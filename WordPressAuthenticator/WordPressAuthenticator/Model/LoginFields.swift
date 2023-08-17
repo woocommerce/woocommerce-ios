@@ -111,6 +111,20 @@ extension LoginFields {
     }
 }
 
+extension LoginFields {
+
+    var parametersForSignInWithApple: [String: AnyObject]? {
+        guard let user = meta.socialUser, case .apple = user.service else {
+            return nil
+        }
+
+        return AccountServiceRemoteREST.appleSignInParameters(
+            email: user.email,
+            fullName: user.fullName
+        )
+    }
+}
+
 /// A helper class for storing safari saved password information.
 ///
 class SafariStoredCredentials {

@@ -1,6 +1,6 @@
 import Foundation
 
-public struct LegacyWooPlan: Decodable, Identifiable {
+public struct WooPlan: Decodable, Identifiable {
     public let id: String
     public let name: String
     public let shortName: String
@@ -37,31 +37,31 @@ public struct LegacyWooPlan: Decodable, Identifiable {
         }
     }
 
-    public static func loadM2HardcodedPlans() -> [LegacyWooPlan] {
-        [LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
-                       name: Localization.essentialPlanName(frequency: .month),
-                       shortName: Localization.essentialPlanShortName,
-                       planFrequency: .month,
-                       planDescription: Localization.essentialPlanDescription,
-                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue)),
-         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
-                       name: Localization.essentialPlanName(frequency: .year),
-                       shortName: Localization.essentialPlanShortName,
-                       planFrequency: .year,
-                       planDescription: Localization.essentialPlanDescription,
-                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue)),
-         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
-                       name: Localization.performancePlanName(frequency: .month),
-                       shortName: Localization.performancePlanShortName,
-                       planFrequency: .month,
-                       planDescription: Localization.performancePlanDescription,
-                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue)),
-         LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
-                       name: Localization.performancePlanName(frequency: .year),
-                       shortName: Localization.performancePlanShortName,
-                       planFrequency: .year,
-                       planDescription: Localization.performancePlanDescription,
-                       planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue))]
+    public static func loadM2HardcodedPlans() -> [WooPlan] {
+        [WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
+                 name: Localization.essentialPlanName(frequency: .month),
+                 shortName: Localization.essentialPlanShortName,
+                 planFrequency: .month,
+                 planDescription: Localization.essentialPlanDescription,
+                 planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue)),
+         WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue,
+                 name: Localization.essentialPlanName(frequency: .year),
+                 shortName: Localization.essentialPlanShortName,
+                 planFrequency: .year,
+                 planDescription: Localization.essentialPlanDescription,
+                 planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.essentialYearly.rawValue)),
+         WooPlan(id: AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue,
+                 name: Localization.performancePlanName(frequency: .month),
+                 shortName: Localization.performancePlanShortName,
+                 planFrequency: .month,
+                 planDescription: Localization.performancePlanDescription,
+                 planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceMonthly.rawValue)),
+         WooPlan(id: AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue,
+                 name: Localization.performancePlanName(frequency: .year),
+                 shortName: Localization.performancePlanShortName,
+                 planFrequency: .year,
+                 planDescription: Localization.performancePlanDescription,
+                 planFeatures: loadHardcodedPlanFeatures(AvailableInAppPurchasesWPComPlans.performanceYearly.rawValue))]
     }
 
     private static func loadHardcodedPlanFeatures(_ planID: String) -> [String] {
@@ -162,7 +162,7 @@ public enum AvailableInAppPurchasesWPComPlans: String {
     case performanceYearly = "woocommerce.express.performance.yearly"
 }
 
-private extension LegacyWooPlan {
+private extension WooPlan {
     enum Localization {
         static let essentialPlanNameFormat = NSLocalizedString(
             "Woo Express Essential %1$@",

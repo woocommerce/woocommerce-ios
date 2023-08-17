@@ -175,18 +175,18 @@ private extension UpgradesView {
 }
 
 private extension WooWPComPlan {
-    static func skeletonPlan(frequency: LegacyWooPlan.PlanFrequency, shortName: String) -> WooWPComPlan {
+    static func skeletonPlan(frequency: WooPlan.PlanFrequency, shortName: String) -> WooWPComPlan {
         let planProduct = SkeletonWPComPlanProduct(displayName: "\(frequency.localizedPlanName) \(shortName) Plan",
                                                    id: "skeleton.wpcom.plan.product.monthly",
                                                    price: "$100")
         return WooWPComPlan(
             wpComPlan: planProduct,
-            wooPlan: LegacyWooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
-                                   name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
-                                   shortName: "Skeleton",
-                                   planFrequency: frequency,
-                                   planDescription: "A skeleton plan to show (redacted) while we're loading",
-                                   planFeatures: []),
+            wooPlan: WooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
+                             name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
+                             shortName: "Skeleton",
+                             planFrequency: frequency,
+                             planDescription: "A skeleton plan to show (redacted) while we're loading",
+                             planFeatures: []),
             hardcodedPlanDataIsValid: true)
     }
 

@@ -20,14 +20,6 @@ public struct LegacyWooPlan: Decodable {
         self.planDescription = planDescription
     }
 
-    public static func loadHardcodedPlan() -> LegacyWooPlan {
-        LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
-                name: Localization.essentialPlanName(frequency: .month),
-                shortName: Localization.essentialPlanShortName,
-                planFrequency: .month,
-                planDescription: Localization.essentialPlanDescription)
-    }
-
     public static func loadM2HardcodedPlans() -> [LegacyWooPlan] {
         [LegacyWooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
                  name: Localization.essentialPlanName(frequency: .month),

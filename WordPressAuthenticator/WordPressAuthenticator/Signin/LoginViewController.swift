@@ -299,22 +299,10 @@ extension LoginViewController {
             return
         }
 
-        // FIXME: Tests this
-        let appleConnectParameters: [String: AnyObject]? = {
-            guard let user = loginFields.meta.socialUser, case .apple = user.service else {
-                return nil
-            }
-
-            return AccountServiceRemoteREST.appleSignInParameters(
-                email: user.email,
-                fullName: user.fullName
-            )
-        }()
-
         linkSocialService(serviceName: serviceName,
                           serviceToken: serviceToken,
                           wpcomAuthToken: wpcomAuthToken,
-                          appleConnectParameters: appleConnectParameters)
+                          appleConnectParameters: loginFields.parametersForSignInWithApple)
     }
 
     /// Links the current WordPress Account to a Social Service.

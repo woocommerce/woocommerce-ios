@@ -15,25 +15,39 @@ public struct WooPlan: Identifiable {
         }
     }
 
+    static func isYearly(_ planID: String) -> Bool {
+        guard let plan = AvailableInAppPurchasesWPComPlans(rawValue: planID) else {
+            return false
+        }
+
+        switch plan {
+        case .essentialYearly, .performanceYearly:
+            return true
+        case .essentialMonthly, .performanceMonthly:
+            return false
+        }
+    }
+
     public static func loadHardcodedPlan(_ selectedPlanID: String) -> WooPlan {
         if isEssential(selectedPlanID) {
+            var planFeatures = isYearly(selectedPlanID) ? [Localization.freeCustomDomainFeatureText] : []
+            planFeatures += [
+                Localization.supportFeatureText,
+                Localization.unlimitedAdminsFeatureText,
+                Localization.unlimitedProductsFeatureText,
+                Localization.premiumThemesFeatureText,
+                Localization.internationalSalesFeatureText,
+                Localization.autoSalesTaxFeatureText,
+                Localization.autoBackupsFeatureText,
+                Localization.integratedShipmentFeatureText,
+                Localization.analyticsDashboardFeatureText,
+                Localization.giftVouchersFeatureText,
+                Localization.emailMarketingFeatureText,
+                Localization.marketplaceSyncFeatureText,
+                Localization.advancedSEOFeatureText,
+            ]
             return WooPlan(id: selectedPlanID,
-                           planFeatures: [
-                            Localization.freeCustomDomainFeatureText,
-                            Localization.supportFeatureText,
-                            Localization.unlimitedAdminsFeatureText,
-                            Localization.unlimitedProductsFeatureText,
-                            Localization.premiumThemesFeatureText,
-                            Localization.internationalSalesFeatureText,
-                            Localization.autoSalesTaxFeatureText,
-                            Localization.autoBackupsFeatureText,
-                            Localization.integratedShipmentFeatureText,
-                            Localization.analyticsDashboardFeatureText,
-                            Localization.giftVouchersFeatureText,
-                            Localization.emailMarketingFeatureText,
-                            Localization.marketplaceSyncFeatureText,
-                            Localization.advancedSEOFeatureText,
-                           ])
+                           planFeatures: planFeatures)
         } else {
             return WooPlan(id: selectedPlanID,
                            planFeatures: [

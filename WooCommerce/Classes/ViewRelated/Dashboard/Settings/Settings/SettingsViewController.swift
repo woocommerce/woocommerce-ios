@@ -317,9 +317,11 @@ private extension SettingsViewController {
 //
 private extension SettingsViewController {
     func accountSettingsWasPressed() {
-        // TODO:
-//        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-//        closeAccountCoordinator.start()
+        let controller = AccountSettingsHostingController(onCloseAccount: { [weak self] in
+            ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
+            self?.closeAccountCoordinator.start()
+        })
+        navigationController?.show(controller, sender: nil)
     }
 
     func closeAccount() async throws {

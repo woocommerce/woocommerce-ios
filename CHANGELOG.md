@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.0
+We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.
+
 ## 14.9
 We've enhanced the order creation process to provide a more streamlined experience. The process of selecting a customer when creating an order has been improved based on your valuable feedback. Your input drives our continuous improvements. Thank you!
 

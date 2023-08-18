@@ -8,15 +8,6 @@ enum UpgradeViewState: Equatable {
     case prePurchaseError(PrePurchaseError)
     case purchaseUpgradeError(PurchaseUpgradeError)
 
-    var shouldShowPlanDetailsView: Bool {
-        switch self {
-        case .loading, .loaded, .prePurchaseError:
-            return true
-        default:
-            return false
-        }
-    }
-
     var analyticsStep: WooAnalyticsEvent.InAppPurchases.Step? {
         switch self {
         case .loading:

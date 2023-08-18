@@ -232,7 +232,7 @@ private extension LegacyCollectOrderPaymentUseCaseTests {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
             case .synchronizeSystemPlugins(_, let completion):
-                completion(.success(()))
+                completion(.success([]))
             default:
                 break
             }

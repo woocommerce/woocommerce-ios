@@ -210,6 +210,7 @@ extension Networking.Customer {
         siteID: CopiableProp<Int64> = .copy,
         customerID: CopiableProp<Int64> = .copy,
         email: CopiableProp<String> = .copy,
+        username: NullableCopiableProp<String> = .copy,
         firstName: NullableCopiableProp<String> = .copy,
         lastName: NullableCopiableProp<String> = .copy,
         billing: NullableCopiableProp<Address> = .copy,
@@ -884,6 +885,27 @@ extension Networking.OrderStatsV4Totals {
             grossRevenue: grossRevenue,
             netRevenue: netRevenue,
             averageOrderValue: averageOrderValue
+        )
+    }
+}
+
+extension Networking.OrderStatus {
+    public func copy(
+        name: NullableCopiableProp<String> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        slug: CopiableProp<String> = .copy,
+        total: CopiableProp<Int> = .copy
+    ) -> Networking.OrderStatus {
+        let name = name ?? self.name
+        let siteID = siteID ?? self.siteID
+        let slug = slug ?? self.slug
+        let total = total ?? self.total
+
+        return Networking.OrderStatus(
+            name: name,
+            siteID: siteID,
+            slug: slug,
+            total: total
         )
     }
 }
@@ -2414,7 +2436,8 @@ extension Networking.WCAnalyticsCustomer {
         siteID: CopiableProp<Int64> = .copy,
         userID: CopiableProp<Int64> = .copy,
         name: NullableCopiableProp<String> = .copy,
-        email: NullableCopiableProp<String> = .copy
+        email: NullableCopiableProp<String> = .copy,
+        username: NullableCopiableProp<String> = .copy
     ) -> Networking.WCAnalyticsCustomer {
         let siteID = siteID ?? self.siteID
         let userID = userID ?? self.userID

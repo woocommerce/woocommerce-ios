@@ -41,11 +41,10 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
-            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+        let result = waitFor { promise in
+            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
                 promise(result)
-            }
-            store.onAction(action)
+            })
         }
 
         // Then
@@ -65,11 +64,10 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
-            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+        let result = waitFor { promise in
+            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
                 promise(result)
-            }
-            store.onAction(action)
+            })
         }
 
         // Then

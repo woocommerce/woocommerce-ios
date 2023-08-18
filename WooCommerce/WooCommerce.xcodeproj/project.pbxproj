@@ -2126,6 +2126,8 @@
 		DE66C56F2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */; };
 		DE67D46726B98FD000EFE8DB /* Publisher+WithLatestFrom.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */; };
 		DE67D46926BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */; };
+		DE68979F2A8F7C9C00154588 /* AccountSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68979E2A8F7C9C00154588 /* AccountSettingsView.swift */; };
+		DE6897A12A8F7D0600154588 /* AccountSettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6897A02A8F7D0600154588 /* AccountSettingsViewModel.swift */; };
 		DE68B81F26F86B1700C86CFB /* OfflineBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68B81E26F86B1700C86CFB /* OfflineBannerView.swift */; };
 		DE68B84326FAF17A00C86CFB /* DefaultConnectivityObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE68B84226FAF17A00C86CFB /* DefaultConnectivityObserver.swift */; };
 		DE6906DB27D5F69900735E3B /* OrderDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = DE6906DA27D5F69900735E3B /* OrderDetailsViewController.xib */; };
@@ -4576,6 +4578,8 @@
 		DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordDisabledViewModelTests.swift; sourceTree = "<group>"; };
 		DE67D46626B98FD000EFE8DB /* Publisher+WithLatestFrom.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFrom.swift"; sourceTree = "<group>"; };
 		DE67D46826BAA82600EFE8DB /* Publisher+WithLatestFromTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+WithLatestFromTests.swift"; sourceTree = "<group>"; };
+		DE68979E2A8F7C9C00154588 /* AccountSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsView.swift; sourceTree = "<group>"; };
+		DE6897A02A8F7D0600154588 /* AccountSettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountSettingsViewModel.swift; sourceTree = "<group>"; };
 		DE68B81E26F86B1700C86CFB /* OfflineBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflineBannerView.swift; sourceTree = "<group>"; };
 		DE68B84226FAF17A00C86CFB /* DefaultConnectivityObserver.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DefaultConnectivityObserver.swift; sourceTree = "<group>"; };
 		DE6906DA27D5F69900735E3B /* OrderDetailsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderDetailsViewController.xib; sourceTree = "<group>"; };
@@ -9779,6 +9783,7 @@
 		CE85FD5820F7A59E0080B73E /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				DE68979D2A8F7C8C00154588 /* AccountSettings */,
 				02ACD2592852E11700EC928E /* CloseAccountCoordinator.swift */,
 				0239305F2918F35600B2632F /* Domains */,
 				BAF1B3B32736595A00BA11DC /* Settings */,
@@ -10388,6 +10393,15 @@
 				B9B7E2E529FBF96100F9CED1 /* ProductSelectorViewModelTracker.swift */,
 			);
 			path = ProductSelector;
+			sourceTree = "<group>";
+		};
+		DE68979D2A8F7C8C00154588 /* AccountSettings */ = {
+			isa = PBXGroup;
+			children = (
+				DE68979E2A8F7C9C00154588 /* AccountSettingsView.swift */,
+				DE6897A02A8F7D0600154588 /* AccountSettingsViewModel.swift */,
+			);
+			path = AccountSettings;
 			sourceTree = "<group>";
 		};
 		DE69C54B27BB7163000BB888 /* UsageDetails */ = {
@@ -11807,6 +11821,7 @@
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
 				265284022624937600F91BA1 /* AddOnCrossreferenceUseCase.swift in Sources */,
 				02F3A6842A618CD7004CD2E8 /* WordPressMediaLibraryImagePickerCoordinator.swift in Sources */,
+				DE6897A12A8F7D0600154588 /* AccountSettingsViewModel.swift in Sources */,
 				026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
@@ -12967,6 +12982,7 @@
 				4572641927F1EB27004E1F95 /* AddEditCouponViewModel.swift in Sources */,
 				31E6F21F26B3577800227E6F /* LegacyCardReaderConnectionController.swift in Sources */,
 				CE13681729FBD94300EBF43C /* QuantityRulesViewModel.swift in Sources */,
+				DE68979F2A8F7C9C00154588 /* AccountSettingsView.swift in Sources */,
 				02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */,
 				03FBDAF2263EE47C00ACE257 /* CouponListViewModel.swift in Sources */,
 				028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */,

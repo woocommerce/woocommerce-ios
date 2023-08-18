@@ -370,9 +370,6 @@ which should be translated separately and considered part of this sentence. */
    Top header text of the store creation profiler question about the features. */
 "About you" = "About you";
 
-/* Header label on the top of the store name form in the store creation flow. */
-"ABOUT YOUR STORE" = "ABOUT YOUR STORE";
-
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
    Header of the store creation profiler question about the store selling platforms.
@@ -393,6 +390,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Account connected";
+
+/* My Store > Settings > Account Settings section
+   Navigates to the Account Settings screen
+   Title of the Account Settings screen */
+"Account Settings" = "Account Settings";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Account Type";
@@ -1318,6 +1320,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
+   Button to dismiss the store name screen
    Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1345,7 +1348,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
@@ -1497,9 +1499,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cayman Islands" = "Cayman Islands";
 
-/* Industry option in the store creation category question. */
-"CBD and other hemp-derived products" = "CBD and other hemp-derived products";
-
 /* Country option for a site address. */
 "Central African Republic" = "Central African Republic";
 
@@ -1628,7 +1627,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button to close the WordPress.com account on the store picker. */
 "Close account" = "Close account";
 
-/* Close Account button title to close the user's WordPress.com account */
+/* Button to close account on the Account Settings screen */
 "Close Account" = "Close Account";
 
 /* Title of the Close Account in-progress view. */
@@ -1851,7 +1850,6 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
-   Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain.
    Title of the submit button on the account creation form. */
@@ -2201,6 +2199,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Customize your domain";
 
+/* Subtitle of the store onboarding task to update store title */
+"Customizing your store name can also help your store search engine optimization." = "Customizing your store name can also help your store search engine optimization.";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "Customs";
@@ -2455,9 +2456,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "Don’t know how to print from your mobile device?";
-
-/* Subtitle label on the store name form in the store creation flow. */
-"Don’t worry you can always change it later." = "Don’t worry you can always change it later.";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom Error: [%1$@] %2$@";
@@ -2823,6 +2821,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "Enter your store credentials for %@.";
+
+/* Placeholder for the text field on the store name screen */
+"Enter your store name" = "Enter your store name";
 
 /* Label for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter your WordPress.com password" = "Enter your WordPress.com password";
@@ -3524,9 +3525,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too.";
-
-/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
-"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business.";
 
 /* Message on the local notification about a newly created store.The placeholder is the name of the user. */
 "Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?";
@@ -4599,6 +4597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "Name missing";
 
+/* Title of the store onboarding task to update store title */
+"Name your store" = "Name your store";
+
 /* Country option for a site address. */
 "Namibia" = "Namibia";
 
@@ -5091,6 +5092,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Original packaging" = "Original packaging";
 
 /* Challenge option in the store creation challenges question.
+   Feature option in the store creation features question.
    Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
@@ -5106,9 +5108,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Other Sites";
-
-/* Feature option in the store creation features question. */
-"Others" = "Others";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -6280,6 +6279,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
    Button title that save the price selection for bulk variation update
+   Button to save the name in the store name screen
    Title for the 'Save' button in the privacy banner */
 "Save" = "Save";
 
@@ -7083,8 +7083,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Store management title feature on the Free Trial Summary Screen */
 "Store management tools" = "Store management tools";
 
-/* Text field prompt on the store name form in the store creation flow. */
+/* Title for the store name screen */
 "Store name" = "Store name";
+
+/* Navigates to the Store name setup screen */
+"Store Name" = "Store Name";
+
+/* Title on the notice presented when the store name is updated */
+"Store Name Set!" = "Store Name Set!";
 
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "Store Preview";
@@ -7942,6 +7948,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first";
 
+/* Subtitle on the notice presented when the store name is updated */
+"To change again, visit Store Settings." = "To change again, visit Store Settings.";
+
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "To close this account now, contact our support team.";
 
@@ -8198,8 +8207,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
-/* Placeholder of the search text field on the domain selector.
-   Text field placeholder on the store name form in the store creation flow. */
+/* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "Type a name for your store";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
@@ -9013,9 +9021,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "What’s New in WooCommerce";
 
-/* Title label on the store name form in the store creation flow. */
-"What’s your store name?" = "What’s your store name?";
-
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices.";
 
@@ -9400,9 +9405,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡Help Us Understand Your Subscription Decision";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"🛍️ Your store is waiting!" = "🛍️ Your store is waiting!";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Still Exploring WooCommerce?";

@@ -342,7 +342,7 @@ private extension SettingsViewModel {
             #endif
             return Section(title: Localization.otherTitle,
                            rows: rows,
-                           footerHeight: CGFloat.leastNonzeroMagnitude)
+                           footerHeight: UITableView.automaticDimension)
         }()
 
         // Account Settings

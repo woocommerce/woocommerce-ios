@@ -115,7 +115,6 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let featureFlagService: FeatureFlagService
-    private let appleIDCredentialChecker: AppleIDCredentialCheckerProtocol
     private let defaults: UserDefaults
     private let analytics: Analytics
 
@@ -126,13 +125,11 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          defaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
-        self.appleIDCredentialChecker = appleIDCredentialChecker
         self.defaults = defaults
         self.analytics = analytics
 
@@ -345,20 +342,17 @@ private extension SettingsViewModel {
             #endif
             return Section(title: Localization.otherTitle,
                            rows: rows,
-                           footerHeight: CGFloat.leastNonzeroMagnitude)
+                           footerHeight: UITableView.automaticDimension)
         }()
 
-        // Close account
-        let closeAccountSection: Section? = {
-            // Do not show the Close Account CTA when authenticated with application password
+        // Account Settings
+        let accountSettingsSection: Section? = {
+            // Do not show the Account Settings option when authenticated with application password
             guard stores.isAuthenticatedWithoutWPCom == false else {
                 return nil
             }
-            guard appleIDCredentialChecker.hasAppleUserID() else {
-                return nil
-            }
-            return Section(title: nil,
-                           rows: [.closeAccount],
+            return Section(title: Localization.accountSettings,
+                           rows: [.accountSettings],
                            footerHeight: CGFloat.leastNonzeroMagnitude)
         }()
 
@@ -375,7 +369,7 @@ private extension SettingsViewModel {
             appSettingsSection,
             aboutTheAppSection,
             otherSection,
-            closeAccountSection,
+            accountSettingsSection,
             logoutSection
         ]
         .compactMap { $0 }
@@ -471,6 +465,11 @@ private extension SettingsViewModel {
         static let otherTitle = NSLocalizedString(
             "Other",
             comment: "My Store > Settings > Other app section"
+        ).uppercased()
+
+        static let accountSettings = NSLocalizedString(
+            "Account Settings",
+            comment: "My Store > Settings > Account Settings section"
         ).uppercased()
     }
 }

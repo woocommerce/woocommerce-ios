@@ -27,8 +27,8 @@ struct AccountSettingsView: View {
                     .padding(.vertical, Layout.buttonHorizontalPadding)
             }
             .frame(maxWidth: .infinity)
-            .cornerRadius(Layout.buttonCornerRadius)
             .background(Color(.systemBackground))
+            .cornerRadius(Layout.buttonCornerRadius)
             .padding(.horizontal, Layout.contentHorizontalMargin)
             .padding(.top, Layout.contentTopMargin)
 

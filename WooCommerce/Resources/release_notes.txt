@@ -1,4 +1,1 @@
-- [*] The store name can now be updated from the Settings screen. [https://github.com/woocommerce/woocommerce-ios/pull/10485]
-- [**] The store creation flow has been optimized to start store creation immediately and show profiler questions afterward. [https://github.com/woocommerce/woocommerce-ios/pull/10473, https://github.com/woocommerce/woocommerce-ios/pull/10466]
-- [*] Settings: Close Account option is moved to a new section Account Settings and is now available for all WPCom users. [https://github.com/woocommerce/woocommerce-ios/pull/10502]
-
+We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.

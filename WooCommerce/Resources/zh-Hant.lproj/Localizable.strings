@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-17 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-18 16:38:28+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -160,7 +160,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$d\/%2$d completed" = "已完成 %1$d\/%2$d 個";
 
 /* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
-"%1$ld day" = "%1$l 天";
+"%1$ld day" = "%1$ld 天";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */

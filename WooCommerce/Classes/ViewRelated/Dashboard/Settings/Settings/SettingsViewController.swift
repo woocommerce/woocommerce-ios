@@ -289,8 +289,6 @@ private extension SettingsViewController {
     func configureAccountSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .default
-        cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = .error
         cell.textLabel?.text = Localization.accountSettings
     }
 

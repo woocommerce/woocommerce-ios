@@ -25,8 +25,8 @@ struct OwnerUpgradesView: View {
         _isLoading = .init(initialValue: isLoading)
     }
 
-    @State private var paymentFrequency: LegacyWooPlan.PlanFrequency = .year
-    private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.year, .month]
+    @State private var paymentFrequency: LegacyWooPlan.PlanFrequency = .month
+    private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.month, .year]
 
     @State var selectedPlan: WooWPComPlan? = nil
     @State private var showingFullFeatureList = false

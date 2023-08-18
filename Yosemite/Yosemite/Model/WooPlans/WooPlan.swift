@@ -37,6 +37,19 @@ public struct WooPlan: Decodable, Identifiable {
         }
     }
 
+    static func isYearly(_ planID: String) -> Bool {
+        guard let plan = AvailableInAppPurchasesWPComPlans(rawValue: planID) else {
+            return false
+        }
+
+        switch plan {
+        case .essentialYearly, .performanceYearly:
+            return true
+        case .essentialMonthly, .performanceMonthly:
+            return false
+        }
+    }
+
     public static func loadM2HardcodedPlans() -> [WooPlan] {
         [WooPlan(id: AvailableInAppPurchasesWPComPlans.essentialMonthly.rawValue,
                  name: Localization.essentialPlanName(frequency: .month),
@@ -66,8 +79,8 @@ public struct WooPlan: Decodable, Identifiable {
 
     private static func loadHardcodedPlanFeatures(_ planID: String) -> [String] {
         if isEssential(planID) {
-            return [
-                Localization.freeCustomDomainFeatureText,
+            var planFeatures = isYearly(planID) ? [Localization.freeCustomDomainFeatureText] : []
+            planFeatures += [
                 Localization.supportFeatureText,
                 Localization.unlimitedAdminsFeatureText,
                 Localization.unlimitedProductsFeatureText,
@@ -82,6 +95,7 @@ public struct WooPlan: Decodable, Identifiable {
                 Localization.marketplaceSyncFeatureText,
                 Localization.advancedSEOFeatureText,
             ]
+            return planFeatures
         } else {
             return [
                 Localization.stockNotificationsFeatureText,

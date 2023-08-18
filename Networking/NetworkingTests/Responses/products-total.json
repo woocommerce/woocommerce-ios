@@ -1,0 +1,29 @@
+{
+    "data": [
+        {
+            "slug": "external",
+            "name": "External/Affiliate product",
+            "total": 4
+        },
+        {
+            "slug": "grouped",
+            "name": "Grouped product",
+            "total": 10
+        },
+        {
+            "slug": "simple",
+            "name": "Simple product",
+            "total": 96
+        },
+        {
+            "slug": "subscription",
+            "name": "Simple subscription",
+            "total": 1
+        },
+        {
+            "slug": "variable",
+            "name": "Variable product",
+            "total": 13
+        }
+    ]
+}

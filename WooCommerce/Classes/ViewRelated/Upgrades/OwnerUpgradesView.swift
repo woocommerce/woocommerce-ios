@@ -25,8 +25,8 @@ struct OwnerUpgradesView: View {
         _isLoading = .init(initialValue: isLoading)
     }
 
-    @State private var paymentFrequency: WooPlan.PlanFrequency = .year
-    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.year, .month]
+    @State private var paymentFrequency: WooPlan.PlanFrequency = .month
+    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.month, .year]
 
     @State var selectedPlan: WooWPComPlan? = nil
     @State private var showingFullFeatureList = false
@@ -42,6 +42,7 @@ struct OwnerUpgradesView: View {
             .cornerRadius(Layout.cornerRadius)
             .background(Color(.systemGroupedBackground))
             .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
 
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {

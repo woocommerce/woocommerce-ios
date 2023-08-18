@@ -21,8 +21,6 @@ final class SettingsViewModelTests: XCTestCase {
 
     private var sessionManager: SessionManager!
 
-    private var appleIDCredentialChecker: AppleIDCredentialCheckerProtocol!
-
     private var analyticsProvider: MockAnalyticsProvider!
 
     private var analytics: WooAnalytics!
@@ -34,13 +32,11 @@ final class SettingsViewModelTests: XCTestCase {
         stores = MockStoresManager(sessionManager: sessionManager)
         let uuid = UUID().uuidString
         defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
-        appleIDCredentialChecker = nil
         storageManager = nil
         stores = nil
         sessionManager = nil
@@ -52,7 +48,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_sections_is_not_empty_after_view_did_load() {
         // Given
-        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, appleIDCredentialChecker: appleIDCredentialChecker)
+        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
@@ -67,8 +63,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
-            storageManager: storageManager,
-            appleIDCredentialChecker: appleIDCredentialChecker)
+            storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
@@ -83,8 +78,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
-            storageManager: storageManager,
-            appleIDCredentialChecker: appleIDCredentialChecker)
+            storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
@@ -95,7 +89,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_refresh_view_content_method_is_invoked_after_view_did_load() {
         // Given
-        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, appleIDCredentialChecker: appleIDCredentialChecker)
+        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager)
         let presenter = MockSettingsPresenter()
         viewModel.presenter = presenter
 
@@ -108,7 +102,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     func test_refresh_view_content_method_is_invoked_after_dismissing_store_picker() {
         // Given
-        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager, appleIDCredentialChecker: appleIDCredentialChecker)
+        let viewModel = SettingsViewModel(stores: stores, storageManager: storageManager)
         let presenter = MockSettingsPresenter()
         viewModel.presenter = presenter
 
@@ -134,8 +128,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultSite = site
         let viewModel = SettingsViewModel(
             stores: stores,
-            storageManager: storageManager,
-            appleIDCredentialChecker: appleIDCredentialChecker)
+            storageManager: storageManager)
 
         viewModel.onViewDidLoad()
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
@@ -149,50 +142,34 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.installJetpack) })
     }
 
-    // MARK: - `closeAccount` row visibility
+    // MARK: - `accountSettings` row visibility
 
-    func test_closeAccount_section_is_shown_when_user_apple_id_exists() {
+    func test_accountSettings_section_is_shown_when_authenticated_with_wpcom() {
         // Given
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
+        let stores = DefaultStoresManager(sessionManager: sessionManager)
         let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.accountSettings) })
     }
 
-    func test_closeAccount_section_is_hidden_when_apple_id_does_not_exist() {
+    func test_accountSettings_section_is_hidden_when_authenticated_without_wpcom() {
         // Given
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
-        let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
-
-        // When
-        viewModel.onViewDidLoad()
-
-        // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
-    }
-
-    func test_closeAccount_section_is_hidden_when_authenticated_without_wpcom() {
-        // Given
-        let appleIDCredentialChecker = MockAppleIDCredentialChecker(hasAppleUserID: false)
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
         let stores = DefaultStoresManager(sessionManager: sessionManager)
         let viewModel = SettingsViewModel(stores: stores,
-                                          storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          storageManager: storageManager)
 
         // When
         viewModel.onViewDidLoad()
 
         // Then
-        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.closeAccount) })
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.accountSettings) })
     }
 
     func test_domain_is_hidden_when_domainSettings_feature_is_disabled() {
@@ -201,8 +178,7 @@ final class SettingsViewModelTests: XCTestCase {
         stores.updateDefaultStore(.fake().copy(isWordPressComStore: true))
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          featureFlagService: featureFlagService)
 
         // When
         viewModel.onViewDidLoad()
@@ -218,8 +194,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultRoles = [.administrator]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          featureFlagService: featureFlagService)
 
         // When
         viewModel.onViewDidLoad()
@@ -235,8 +210,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultRoles = [.shopManager]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          featureFlagService: featureFlagService)
 
         // When
         viewModel.onViewDidLoad()
@@ -252,8 +226,7 @@ final class SettingsViewModelTests: XCTestCase {
         sessionManager.defaultRoles = [.administrator]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker)
+                                          featureFlagService: featureFlagService)
 
         // When
         viewModel.onViewDidLoad()
@@ -271,7 +244,6 @@ final class SettingsViewModelTests: XCTestCase {
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -288,7 +260,6 @@ final class SettingsViewModelTests: XCTestCase {
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -305,7 +276,6 @@ final class SettingsViewModelTests: XCTestCase {
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
                                           featureFlagService: featureFlagService,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -321,7 +291,6 @@ final class SettingsViewModelTests: XCTestCase {
         // Given
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -335,7 +304,6 @@ final class SettingsViewModelTests: XCTestCase {
         // Given
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -352,7 +320,6 @@ final class SettingsViewModelTests: XCTestCase {
         defaults[UserDefaults.Key.shouldHideStoreOnboardingTaskList] = nil
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults)
 
         // When
@@ -380,7 +347,6 @@ final class SettingsViewModelTests: XCTestCase {
         ]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults,
                                           analytics: analytics)
 
@@ -414,7 +380,6 @@ final class SettingsViewModelTests: XCTestCase {
         ]
         let viewModel = SettingsViewModel(stores: stores,
                                           storageManager: storageManager,
-                                          appleIDCredentialChecker: appleIDCredentialChecker,
                                           defaults: defaults,
                                           analytics: analytics)
 

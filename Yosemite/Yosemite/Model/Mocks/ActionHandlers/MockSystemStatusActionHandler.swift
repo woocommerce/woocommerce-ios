@@ -17,14 +17,14 @@ struct MockSystemStatusActionHandler: MockActionHandler {
         }
     }
 
-    private func synchronizeSystemPlugins(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    private func synchronizeSystemPlugins(siteID: Int64, onCompletion: @escaping (Result<[SystemPlugin], Error>) -> Void) {
         let systemPlugins = objectGraph.systemPlugins(for: siteID)
 
         save(mocks: systemPlugins, as: StorageSystemPlugin.self) { error in
             if let error = error {
                 onCompletion(.failure(error))
             } else {
-                onCompletion(.success(()))
+                onCompletion(.success([]))
             }
         }
     }

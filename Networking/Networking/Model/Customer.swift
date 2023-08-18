@@ -14,14 +14,14 @@ public struct Customer: Codable, GeneratedCopiable, GeneratedFakeable, Equatable
     /// The email address for the customer
     public let email: String
 
+    /// Customer username
+    public let username: String?
+
     /// Customer first name
     public let firstName: String?
 
     /// Customer last name
     public let lastName: String?
-
-    /// Customer username
-    public let username: String?
 
     /// List of billing address data
     public let billing: Address?

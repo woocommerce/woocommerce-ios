@@ -76,7 +76,6 @@ struct UpgradesView: View {
                         dismiss()
                     })
                 }
-                .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:

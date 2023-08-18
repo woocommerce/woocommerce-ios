@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 @testable import Networking
 
@@ -680,6 +681,32 @@ final class ProductsRemoteTests: XCTestCase {
         // Then
         let productID = try XCTUnwrap(result.get())
         XCTAssertEqual(productID, 3946)
+    }
+
+    // MARK: - `loadNumberOfProducts`
+
+    func test_loadNumberOfProducts_returns_sum_of_all_product_types() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "reports/products/totals", filename: "products-total")
+
+        // When
+        let numberOfProducts = try await remote.loadNumberOfProducts(siteID: 7)
+
+        // Then
+        XCTAssertEqual(numberOfProducts, 124)
+    }
+
+    func test_loadNumberOfProducts_relays_networking_error() async throws {
+        // Given
+        let remote = ProductsRemote(network: network)
+
+        // When
+        await assertThrowsError({ _ = try await remote.loadNumberOfProducts(siteID: 7) },
+                                errorAssert: {
+            // Then
+            $0 as? NetworkError == .notFound
+        })
     }
 }
 

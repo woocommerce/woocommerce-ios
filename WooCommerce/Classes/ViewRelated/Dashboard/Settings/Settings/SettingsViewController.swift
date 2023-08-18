@@ -287,7 +287,7 @@ private extension SettingsViewController {
     }
 
     func configureAccountSettings(cell: BasicTableViewCell) {
-        cell.accessoryType = .none
+        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.accountSettings
     }

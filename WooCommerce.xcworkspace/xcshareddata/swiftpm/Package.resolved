@@ -105,8 +105,8 @@
         "repositoryURL": "https://github.com/woocommerce/woocommerce-shared.git",
         "state": {
           "branch": null,
-          "revision": "03d9c94279361e0b002055b9fff3f75ca51ed33e",
-          "version": "0.5.0"
+          "revision": "b68d4c71a2a2b7ba1af2e683f04dffe563fc6194",
+          "version": "0.6.0"
         }
       },
       {

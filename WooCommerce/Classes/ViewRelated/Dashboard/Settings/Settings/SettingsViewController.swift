@@ -172,8 +172,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
-        case let cell as BasicTableViewCell where row == .closeAccount:
-            configureCloseAccount(cell: cell)
+        case let cell as BasicTableViewCell where row == .accountSettings:
+            configureAccountSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -286,12 +286,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
-    func configureCloseAccount(cell: BasicTableViewCell) {
+    func configureAccountSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
-        cell.textLabel?.text = Localization.closeAccount
+        cell.textLabel?.text = Localization.accountSettings
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -318,9 +318,10 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func closeAccountWasPressed() {
-        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-        closeAccountCoordinator.start()
+    func accountSettingsWasPressed() {
+        // TODO:
+//        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
+//        closeAccountCoordinator.start()
     }
 
     func closeAccount() async throws {
@@ -659,8 +660,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
-        case .closeAccount:
-            closeAccountWasPressed()
+        case .accountSettings:
+            accountSettingsWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -740,8 +741,8 @@ extension SettingsViewController {
         case deviceSettings
         case wormholy
 
-        // Account deletion
-        case closeAccount
+        // Account settings
+        case accountSettings
 
         // Logout
         case logout
@@ -775,7 +776,7 @@ extension SettingsViewController {
                 return SwitchTableViewCell.self
             case .shippingZones:
                 return BasicTableViewCell.self
-            case .logout, .closeAccount:
+            case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self
@@ -900,9 +901,9 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
-        static let closeAccount = NSLocalizedString(
-            "Close Account",
-            comment: "Close Account button title to close the user's WordPress.com account"
+        static let accountSettings = NSLocalizedString(
+            "Account Settings",
+            comment: "Navigates to the Account Settings screen"
         )
 
         static let logout = NSLocalizedString(

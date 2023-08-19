@@ -19,4 +19,8 @@ WooCommerce is the world’s most customizable open-source eCommerce platform. W
 
 Requirements: WooCommerce v3.5+.
 
+View the Terms of Service at https://wordpress.com/tos/
+
+View the Privacy Policy at https://automattic.com/privacy/
+
 View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v14.9-whats-new"
+msgctxt "v15.0-whats-new"
 msgid ""
-"We've enhanced the order creation process to provide a more streamlined experience. The process of selecting a customer when creating an order has been improved based on your valuable feedback. Your input drives our continuous improvements. Thank you!\n"
+"We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

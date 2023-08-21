@@ -214,7 +214,7 @@ private extension GoogleAuthenticator {
         loginFields.emailAddress = email
         loginFields.username = email
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.googleUser = SocialService.User(email: email, fullName: fullName)
+        loginFields.meta.socialUser = SocialUser(email: email, fullName: fullName, service: .google)
 
         guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.

@@ -36,7 +36,22 @@ public class LoginFields: NSObject {
     /// the signup flow.
     @objc public var emailAddress = ""
 
-    @objc public var meta = LoginFieldsMeta()
+    var meta = LoginFieldsMeta()
+
+    @objc public var userIsDotCom: Bool {
+        get { meta.userIsDotCom }
+        set { meta.userIsDotCom = newValue }
+    }
+
+    @objc public var requiredMultifactor: Bool {
+        meta.requiredMultifactor
+    }
+
+    @objc public var xmlrpcURL: NSURL? {
+        get { meta.xmlrpcURL }
+        set { meta.xmlrpcURL = newValue }
+    }
+
     var storedCredentials: SafariStoredCredentials?
 
     /// Convenience method for persisting stored credentials.
@@ -96,6 +111,20 @@ extension LoginFields {
     }
 }
 
+extension LoginFields {
+
+    var parametersForSignInWithApple: [String: AnyObject]? {
+        guard let user = meta.socialUser, case .apple = user.service else {
+            return nil
+        }
+
+        return AccountServiceRemoteREST.appleSignInParameters(
+            email: user.email,
+            fullName: user.fullName
+        )
+    }
+}
+
 /// A helper class for storing safari saved password information.
 ///
 class SafariStoredCredentials {
@@ -108,90 +137,4 @@ class SafariStoredCredentials {
 enum EmailMagicLinkSource: Int {
     case login = 1
     case signup = 2
-}
-
-@objc
-public class LoginFieldsMeta: NSObject {
-
-    /// Indicates where the Magic Link Email was sent from.
-    ///
-    var emailMagicLinkSource: EmailMagicLinkSource?
-
-    /// Indicates whether a self-hosted user is attempting to log in to Jetpack
-    ///
-    @objc public var jetpackLogin = false
-
-    /// Indicates whether a user is logging in via the wpcom flow or a self-hosted flow.  Used by the
-    /// the LoginFacade in its branching logic.
-    /// This is a good candidate to refactor out and call the proper login method directly.
-    ///
-    @objc public var userIsDotCom = true
-
-    /// Indicates a wpcom account created via social sign up that requires either a magic link, or a social log in option.
-    /// If a user signed up via social sign up and subsequently reset their password this field will be false.
-    ///
-    @objc public var passwordless = false
-
-    /// Should point to the site's xmlrpc.php for a self-hosted log in.  Should be the value returned via XML-RPC discovery.
-    ///
-    @objc public var xmlrpcURL: NSURL?
-
-    /// Meta data about a site. This information is fetched and then displayed on the login epilogue.
-    ///
-    var siteInfo: WordPressComSiteInfo?
-
-    /// Flags whether a 2fa challenge had to be satisfied before a log in could be complete.
-    /// Included in analytics after a successful login.
-    ///
-    @objc public var requiredMultifactor = false // A 2fa prompt was needed.
-
-    /// Identifies a social login and the service used.
-    ///
-    var socialService: SocialServiceName?
-
-    @objc public var socialServiceIDToken: String?
-
-    var googleUser: SocialService.User?
-
-    var appleUser: SocialService.User?
-
-    init(emailMagicLinkSource: EmailMagicLinkSource? = nil,
-         jetpackLogin: Bool = false,
-         userIsDotCom: Bool = true,
-         passwordless: Bool = false,
-         xmlrpcURL: NSURL? = nil,
-         siteInfo: WordPressComSiteInfo? = nil,
-         requiredMultifactor: Bool = false,
-         socialService: SocialServiceName? = nil,
-         socialServiceIDToken: String? = nil,
-         googleUser: SocialService.User? = nil,
-         appleUser: SocialService.User? = nil) {
-        self.emailMagicLinkSource = emailMagicLinkSource
-        self.jetpackLogin = jetpackLogin
-        self.userIsDotCom = userIsDotCom
-        self.passwordless = passwordless
-        self.xmlrpcURL = xmlrpcURL
-        self.siteInfo = siteInfo
-        self.requiredMultifactor = requiredMultifactor
-        self.socialService = socialService
-        self.socialServiceIDToken = socialServiceIDToken
-        self.googleUser = googleUser
-        self.appleUser = appleUser
-    }
-}
-
-extension LoginFieldsMeta {
-    func copy() -> LoginFieldsMeta {
-        .init(emailMagicLinkSource: emailMagicLinkSource,
-              jetpackLogin: jetpackLogin,
-              userIsDotCom: userIsDotCom,
-              passwordless: passwordless,
-              xmlrpcURL: xmlrpcURL,
-              siteInfo: siteInfo,
-              requiredMultifactor: requiredMultifactor,
-              socialService: socialService,
-              socialServiceIDToken: socialServiceIDToken,
-              googleUser: googleUser,
-              appleUser: appleUser)
-    }
 }

@@ -131,11 +131,11 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
             fatalError()
         }
 
-        let service: SocialService? = loginFields.meta.googleUser.map {
-            SocialService.google(user: $0)
-        }
-
-        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+        authenticationDelegate.presentSignupEpilogue(
+            in: navigationController,
+            for: credentials,
+            socialUser: loginFields.meta.socialUser
+        )
     }
 
     func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
@@ -299,17 +299,10 @@ extension LoginViewController {
             return
         }
 
-        let appleConnectParameters: [String: AnyObject]? = {
-            if let appleUser = loginFields.meta.appleUser {
-                return AccountServiceRemoteREST.appleSignInParameters(email: appleUser.email, fullName: appleUser.fullName)
-            }
-            return nil
-        }()
-
         linkSocialService(serviceName: serviceName,
                           serviceToken: serviceToken,
                           wpcomAuthToken: wpcomAuthToken,
-                          appleConnectParameters: appleConnectParameters)
+                          appleConnectParameters: loginFields.parametersForSignInWithApple)
     }
 
     /// Links the current WordPress Account to a Social Service.

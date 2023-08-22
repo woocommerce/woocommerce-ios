@@ -309,7 +309,8 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
                 ParameterKey.packages: try packages.map { try $0.toDictionary() },
-                ParameterKey.emailReceipt: emailCustomerReceipt
+                ParameterKey.emailReceipt: emailCustomerReceipt,
+                ParameterKey.source: "wc-ios"
             ]
             let path = "\(Path.shippingLabels)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,
@@ -374,6 +375,7 @@ private extension ShippingLabelRemote {
         static let emailReceipts = "email_receipts"
         static let emailReceipt = "email_receipt"
         static let async = "async"
+        static let source = "source"
     }
 }
 

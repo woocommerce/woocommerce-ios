@@ -486,6 +486,22 @@ final class ShippingLabelRemoteTests: XCTestCase {
         XCTAssertNotNil(result.failure)
     }
 
+    func test_purchaseShippingLabel_request_contains_source_parameter() throws {
+        // Given
+        let remote = ShippingLabelRemote(network: network)
+
+        // When
+        remote.purchaseShippingLabel(siteID: self.sampleSiteID,
+                                     orderID: self.sampleOrderID,
+                                     originAddress: ShippingLabelAddress.fake(),
+                                     destinationAddress: ShippingLabelAddress.fake(),
+                                     packages: [ShippingLabelPackagePurchase.fake()],
+                                     emailCustomerReceipt: true) { _ in }
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["source"] as? String, "wc-ios")
+    }
+
     func test_checkLabelStatus_parses_success_response() throws {
         // Given
         let sampleLabelID: Int64 = 4321

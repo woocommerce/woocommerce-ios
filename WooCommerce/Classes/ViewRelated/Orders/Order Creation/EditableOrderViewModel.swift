@@ -718,6 +718,7 @@ extension EditableOrderViewModel {
         let shouldShowDiscountTotal: Bool
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
+        let shouldShowTaxExtraInformation: Bool
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -744,6 +745,7 @@ extension EditableOrderViewModel {
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
+             shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
@@ -771,6 +773,7 @@ extension EditableOrderViewModel {
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
+            self.shouldShowTaxExtraInformation = shouldShowTaxExtraInformation
             self.couponLineViewModels = couponLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
@@ -1091,6 +1094,7 @@ private extension EditableOrderViewModel {
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
+                                            shouldShowTaxExtraInformation: featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,

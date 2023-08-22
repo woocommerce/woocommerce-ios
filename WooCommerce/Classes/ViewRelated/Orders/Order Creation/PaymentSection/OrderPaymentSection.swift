@@ -105,7 +105,11 @@ struct OrderPaymentSection: View {
                     }
                 }
 
-            TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+            if viewModel.shouldShowTaxExtraInformation {
+                TitleSubtitleAndValuesRow(title: Localization.taxesTotal, titleValue: viewModel.taxesTotal, subtitle: "test", subtitleValue: "10%")
+            } else {
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+            }
 
             TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
                 .renderedIf(viewModel.shouldShowDiscountTotal)

@@ -1,0 +1,1 @@
+Daha hızlı bir deneyim sağlamak için sipariş oluşturma sürecini geliştirdik. Sipariş oluştururken müşteri seçme işlemi, değerli geri bildirimlerinize dayanarak iyileştirildi. Sağladığınız bilgiler, sürekli iyileştirmelerimize yön veriyor. Teşekkür ederiz!

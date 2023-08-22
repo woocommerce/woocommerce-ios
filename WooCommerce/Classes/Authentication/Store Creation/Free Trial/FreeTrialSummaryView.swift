@@ -42,6 +42,7 @@ struct FreeTrialSummaryView: View {
                             Image(uiImage: .closeButton)
                                 .foregroundColor(Color(.textSubtle))
                         }
+                        .disabled(isWaitingToContinue)
 
                         Spacer()
 
@@ -69,15 +70,21 @@ struct FreeTrialSummaryView: View {
                         .padding(.bottom, Layout.titleSpacing)
 
                     ForEach(FreeTrialFeatures.features, id: \.title) { feature in
-                        HStack {
-                            Image(uiImage: feature.icon)
-                                .foregroundColor(Color(uiColor: .accent))
-
+                        VStack(alignment: .leading, spacing: Layout.featureSpacing) {
                             Text(feature.title)
                                 .foregroundColor(Color(.text))
-                                .calloutStyle()
+                                .font(.subheadline.weight(.semibold))
+                            ForEach(feature.contents, id: \.self) { text in
+                                HStack {
+                                    Image(systemName: "checkmark")
+                                        .foregroundColor(Color(uiColor: .accent))
+                                    Text(text)
+                                        .foregroundColor(Color(.text))
+                                        .font(.subheadline)
+                                }
+                            }
                         }
-                        .padding(.bottom, Layout.featureSpacing)
+                        .padding(.bottom, Layout.sectionsSpacing)
                     }
 
                     // WPCom logo
@@ -131,7 +138,7 @@ private extension FreeTrialSummaryView {
     }
 
     enum Layout {
-        static let featureSpacing = 18.0
+        static let featureSpacing = 12.0
         static let titleSpacing = 16.0
         static let sectionsSpacing = 32.0
         static let infoTrailingMargin = 8.0

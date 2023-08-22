@@ -32,11 +32,7 @@ final class FeatureFlagRemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(featureFlags, [
-            .storeCreationCompleteNotification: false,
-            .oneDayAfterStoreCreationNameWithoutFreeTrial: false,
-            .oneDayBeforeFreeTrialExpiresNotification: false,
-            .oneDayAfterFreeTrialExpiresNotification: false,
-            .twentyFourHoursAfterFreeTrialSubscribed: false
+            .storeCreationCompleteNotification: false
         ])
     }
 

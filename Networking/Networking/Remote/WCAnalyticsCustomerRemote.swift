@@ -7,17 +7,22 @@ public class WCAnalyticsCustomerRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch the customer.
     ///     - name: Name of the customer that will be retrieved
+    ///     - filter: Filter by which the search will be performed. Possible values: all (in WC 8.0.0+), name, username, email
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of customers to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchCustomers(for siteID: Int64, name: String, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        // If there's no search term, we can exit and avoid the HTTP request
-        if name == "" {
-            return
-        }
+    public func searchCustomers(for siteID: Int64,
+                                pageNumber: Int = 1,
+                                pageSize: Int = 25,
+                                keyword: String,
+                                filter: String,
+                                completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+        var parameters = coreRequestParameters(from: pageNumber, pageSize: pageSize)
+        parameters[ParameterKey.search] = keyword
+        parameters[ParameterKey.searchBy] = filter
 
-        enqueueRequest(with: ["search": name], siteID: siteID, completion: completion)
+        enqueueRequest(with: parameters, siteID: siteID, completion: completion)
     }
 
     /// Loads a paginated list of customers
@@ -26,18 +31,19 @@ public class WCAnalyticsCustomerRemote: Remote {
                                 pageNumber: Int = 1,
                                 pageSize: Int = 25,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        let parameters = [
-            ParameterKey.page: String(pageNumber),
+        enqueueRequest(with: coreRequestParameters(from: pageNumber, pageSize: pageSize), siteID: siteID, completion: completion)
+    }
+}
+
+private extension WCAnalyticsCustomerRemote {
+    func coreRequestParameters(from pageNumber: Int = 1, pageSize: Int = 25) -> [String: Any] {
+        [ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: "name",
             ParameterKey.order: "asc",
-            ParameterKey.filterEmpty: "email",
-        ]
-
-        enqueueRequest(with: parameters, siteID: siteID, completion: completion)
+            ParameterKey.filterEmpty: "email"]
     }
-
-    private func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+    func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let path = "customers"
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,
@@ -67,6 +73,7 @@ private extension WCAnalyticsCustomerRemote {
         static let orderBy     = "orderby"
         static let order       = "order"
         static let search      = "search"
+        static let searchBy    = "searchby"
         static let filterEmpty = "filter_empty"
     }
 }

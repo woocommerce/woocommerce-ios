@@ -3,29 +3,47 @@ import Yosemite
 import WooFoundation
 
 struct OwnerUpgradesView: View {
+
     @State var upgradePlans: [WooWPComPlan]
     @Binding var isPurchasing: Bool
+    @Binding var expirationDate: String?
+    @Binding var planDaysLeft: Int?
     let purchasePlanAction: (WooWPComPlan) -> Void
     @State var isLoading: Bool
 
     init(upgradePlans: [WooWPComPlan],
          isPurchasing: Binding<Bool>,
+         expirationDate: Binding<String?>,
+         planDaysLeft: Binding<Int?>,
          purchasePlanAction: @escaping ((WooWPComPlan) -> Void),
          isLoading: Bool = false) {
         _upgradePlans = .init(initialValue: upgradePlans)
         _isPurchasing = isPurchasing
+        _expirationDate = expirationDate
+        _planDaysLeft = planDaysLeft
         self.purchasePlanAction = purchasePlanAction
         _isLoading = .init(initialValue: isLoading)
     }
 
-    @State private var paymentFrequency: LegacyWooPlan.PlanFrequency = .year
-    private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.year, .month]
+    @State private var paymentFrequency: WooPlan.PlanFrequency = .month
+    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.month, .year]
 
     @State var selectedPlan: WooWPComPlan? = nil
     @State private var showingFullFeatureList = false
 
     var body: some View {
         VStack(spacing: 0) {
+            VStack {
+                CurrentPlanDetailsView(expirationDate: expirationDate,
+                                       daysLeft: planDaysLeft)
+                .background(Color(.secondarySystemGroupedBackground))
+            }
+            .padding(.horizontal)
+            .cornerRadius(Layout.cornerRadius)
+            .background(Color(.systemGroupedBackground))
+            .redacted(reason: isLoading ? .placeholder : [])
+            .shimmering(active: isLoading)
+
             Picker(selection: $paymentFrequency, label: EmptyView()) {
                 ForEach(paymentFrequencies) {
                     Text($0.paymentFrequencyLocalizedString)
@@ -87,6 +105,13 @@ struct OwnerUpgradesView: View {
             }
             .padding()
         }
+        .background(Color(.systemGroupedBackground))
+    }
+}
+
+private extension OwnerUpgradesView {
+    enum Layout {
+        static let cornerRadius: CGFloat = 8.0
     }
 }
 
@@ -115,7 +140,7 @@ private extension OwnerUpgradesView {
     }
 }
 
-private extension LegacyWooPlan.PlanFrequency {
+private extension WooPlan.PlanFrequency {
     var paymentFrequencyLocalizedString: String {
         switch self {
         case .month:

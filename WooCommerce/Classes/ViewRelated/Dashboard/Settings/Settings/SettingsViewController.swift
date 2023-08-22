@@ -154,6 +154,8 @@ private extension SettingsViewController {
             configureStoreSetupList(cell: cell)
         case let cell as BasicTableViewCell where row == .shippingZones:
             configureShippingZones(cell: cell)
+        case let cell as BasicTableViewCell where row == .storeName:
+            configureStoreName(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .betaFeatures:
@@ -170,8 +172,8 @@ private extension SettingsViewController {
             configureAppSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .wormholy:
             configureWormholy(cell: cell)
-        case let cell as BasicTableViewCell where row == .closeAccount:
-            configureCloseAccount(cell: cell)
+        case let cell as BasicTableViewCell where row == .accountSettings:
+            configureAccountSettings(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -235,6 +237,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.shippingZones
     }
 
+    func configureStoreName(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.storeName
+    }
+
     func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -278,12 +286,10 @@ private extension SettingsViewController {
         cell.textLabel?.text = Localization.whatsNew
     }
 
-    func configureCloseAccount(cell: BasicTableViewCell) {
-        cell.accessoryType = .none
+    func configureAccountSettings(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = .error
-        cell.textLabel?.text = Localization.closeAccount
+        cell.textLabel?.text = Localization.accountSettings
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -310,9 +316,12 @@ private extension SettingsViewController {
 // MARK: - Actions
 //
 private extension SettingsViewController {
-    func closeAccountWasPressed() {
-        ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
-        closeAccountCoordinator.start()
+    func accountSettingsWasPressed() {
+        let controller = AccountSettingsHostingController(onCloseAccount: { [weak self] in
+            ServiceLocator.analytics.track(event: .closeAccountTapped(source: .settings))
+            self?.closeAccountCoordinator.start()
+        })
+        navigationController?.show(controller, sender: nil)
     }
 
     func closeAccount() async throws {
@@ -432,6 +441,17 @@ private extension SettingsViewController {
         }()
 
         show(viewController, sender: self)
+    }
+
+    func storeNameWasPressed() {
+        guard let site = stores.sessionManager.defaultSite else {
+            return
+        }
+        let viewModel = StoreNameSetupViewModel(siteID: site.siteID, name: site.name, onNameSaved: { [weak self] in
+            self?.dismiss(animated: true)
+        })
+        let controller = StoreNameSetupHostingController(viewModel: viewModel)
+        present(controller, animated: true)
     }
 
     func privacyWasPressed() {
@@ -624,6 +644,8 @@ extension SettingsViewController: UITableViewDelegate {
             installJetpackWasPressed()
         case .shippingZones:
             shippingZonesWasPressed()
+        case .storeName:
+            storeNameWasPressed()
         case .privacy:
             privacyWasPressed()
         case .betaFeatures:
@@ -638,8 +660,8 @@ extension SettingsViewController: UITableViewDelegate {
             wormholyWasPressed()
         case .whatsNew:
             whatsNewWasPressed()
-        case .closeAccount:
-            closeAccountWasPressed()
+        case .accountSettings:
+            accountSettingsWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -701,6 +723,7 @@ extension SettingsViewController {
         case installJetpack
         case storeSetupList
         case shippingZones
+        case storeName
 
         // Help & Feedback
         case support
@@ -718,8 +741,8 @@ extension SettingsViewController {
         case deviceSettings
         case wormholy
 
-        // Account deletion
-        case closeAccount
+        // Account settings
+        case accountSettings
 
         // Logout
         case logout
@@ -753,7 +776,7 @@ extension SettingsViewController {
                 return SwitchTableViewCell.self
             case .shippingZones:
                 return BasicTableViewCell.self
-            case .logout, .closeAccount:
+            case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy:
                 return BasicTableViewCell.self
@@ -768,6 +791,8 @@ extension SettingsViewController {
             case .wormholy:
                 return BasicTableViewCell.self
             case .whatsNew:
+                return BasicTableViewCell.self
+            case .storeName:
                 return BasicTableViewCell.self
             }
         }
@@ -836,6 +861,11 @@ private extension SettingsViewController {
             comment: "Access the store shipping zones."
         )
 
+        static let storeName = NSLocalizedString(
+            "Store Name",
+            comment: "Navigates to the Store name setup screen"
+        )
+
         static let privacySettings = NSLocalizedString(
             "Privacy Settings",
             comment: "Navigates to Privacy Settings screen"
@@ -871,9 +901,9 @@ private extension SettingsViewController {
             comment: "Navigates to screen containing the latest WooCommerce Features"
         )
 
-        static let closeAccount = NSLocalizedString(
-            "Close Account",
-            comment: "Close Account button title to close the user's WordPress.com account"
+        static let accountSettings = NSLocalizedString(
+            "Account Settings",
+            comment: "Navigates to the Account Settings screen"
         )
 
         static let logout = NSLocalizedString(

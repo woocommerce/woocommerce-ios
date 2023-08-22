@@ -56,7 +56,7 @@ struct RangedDatePicker: View {
 
                     DatePicker("", selection: $startDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
-                        .accentColor(Color(.brand))
+                        .tint(Color(.brand))
                         .padding(.horizontal, Layout.calendarPadding)
 
                     // End Picker
@@ -68,7 +68,7 @@ struct RangedDatePicker: View {
 
                     DatePicker("", selection: $endDate, in: ...Date(), displayedComponents: [.date])
                         .datePickerStyle(.graphical)
-                        .accentColor(Color(.brand))
+                        .tint(Color(.brand))
                         .padding(.horizontal, Layout.calendarPadding)
                 }
                 .padding()

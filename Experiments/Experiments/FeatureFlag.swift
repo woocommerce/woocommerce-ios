@@ -68,10 +68,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayBadge
 
-    /// Store creation milestone 3 - profiler questions
-    ///
-    case storeCreationM3Profiler
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard
@@ -187,14 +183,14 @@ public enum FeatureFlag: Int {
     ///
     case shareProductAI
 
-    /// Shows multiple plans in the IAP Upgrade view
-    ///
-    case freeTrialInAppPurchasesUpgradeM2
-
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
 
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
+
+    /// Enables the improvements related to taxes in the order flows
+    /// 
+    case manualTaxesInOrder
 }

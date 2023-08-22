@@ -130,6 +130,8 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductDetails(siteID, scannedTexts, completion):
             generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
+        case let .fetchNumberOfProducts(siteID, completion):
+            fetchNumberOfProducts(siteID: siteID, completion: completion)
         }
     }
 }
@@ -236,6 +238,14 @@ private extension ProductStore {
                                excludedProductIDs: excludedProductIDs) { [weak self] result in
                                 switch result {
                                 case .failure(let error):
+                                    if let productType,
+                                        let error = error as? DotcomError,
+                                        case let .unknown(code, message) = error,
+                                        code == "rest_invalid_param",
+                                        message == "Invalid parameter(s): type",
+                                        ProductType.coreTypes.contains(productType) == false {
+                                        return onCompletion(.success(false))
+                                    }
                                     onCompletion(.failure(error))
                                 case .success(let products):
                                     guard let self = self else {
@@ -627,6 +637,17 @@ private extension ProductStore {
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    func fetchNumberOfProducts(siteID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let numberOfProducts = try await remote.loadNumberOfProducts(siteID: siteID)
+                completion(.success(numberOfProducts))
             } catch {
                 completion(.failure(error))
             }
@@ -1143,4 +1164,8 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
         self.description = description
         self.language = language
     }
+}
+
+private extension ProductType {
+    static let coreTypes: Set<ProductType> = [.simple, .variable, .grouped, .affiliate]
 }

@@ -5,7 +5,7 @@ import SwiftUI
 /// The question is not skippable.
 protocol RequiredStoreCreationProfilerQuestionViewModel {
     /// Called when the continue button is tapped.
-    func continueButtonTapped() async
+    func continueButtonTapped()
 
     /// Called when the Help & Support button is tapped.
     func supportButtonTapped()
@@ -18,7 +18,6 @@ protocol RequiredStoreCreationProfilerQuestionViewModel {
 struct RequiredStoreCreationProfilerQuestionView<QuestionContent: View>: View {
     private let viewModel: StoreCreationProfilerQuestionViewModel & RequiredStoreCreationProfilerQuestionViewModel
     @ViewBuilder private let questionContent: () -> QuestionContent
-    @State private var isWaitingForCompletion: Bool = false
     @State private var isContinueButtonEnabled: Bool = false
 
     init(viewModel: StoreCreationProfilerQuestionViewModel & RequiredStoreCreationProfilerQuestionViewModel,
@@ -37,13 +36,9 @@ struct RequiredStoreCreationProfilerQuestionView<QuestionContent: View>: View {
                     .frame(height: Layout.dividerHeight)
                     .foregroundColor(Color(.separator))
                 Button(Localization.continueButtonTitle) {
-                    Task { @MainActor in
-                        isWaitingForCompletion = true
-                        await viewModel.continueButtonTapped()
-                        isWaitingForCompletion = false
-                    }
+                    viewModel.continueButtonTapped()
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWaitingForCompletion))
+                .buttonStyle(PrimaryButtonStyle())
                 .disabled(!isContinueButtonEnabled)
                 .padding(Layout.defaultPadding)
             }
@@ -84,7 +79,7 @@ private final class StoreCreationQuestionPreviewViewModel: StoreCreationProfiler
     var isContinueButtonEnabled: AnyPublisher<Bool, Never> {
         $isContinueButtonEnabledValue.eraseToAnyPublisher()
     }
-    func continueButtonTapped() async {}
+    func continueButtonTapped() {}
     func supportButtonTapped() {}
 }
 

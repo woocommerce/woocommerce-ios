@@ -145,4 +145,8 @@ public enum ProductAction: Action {
     /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image.
     ///
     case generateProductDetails(siteID: Int64, scannedTexts: [String], completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
+
+    /// Fetches the total number of products in the site given the site ID.
+    ///
+    case fetchNumberOfProducts(siteID: Int64, completion: (Result<Int64, Error>) -> Void)
 }

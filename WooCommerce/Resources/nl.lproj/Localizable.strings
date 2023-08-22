@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-28 17:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-17 18:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -108,9 +108,6 @@ which should be translated separately and considered part of this sentence. */
 /* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
 "%1$@, %2$@" = "%1$@, %2$@";
 
-/* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
-"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@, we hebben je winkel even stilgezet, maar je kan doorgaan door het abonnement te kiezen dat het beste bij je past.";
-
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
@@ -162,8 +159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "%1$d\/%2$d voltooid";
 
-/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "%1$ld dag resterend";
+/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
+"%1$ld day" = "%1$ld dag";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -173,8 +170,8 @@ which should be translated separately and considered part of this sentence. */
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld variaties";
 
-/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left' */
-"%1ld days left" = "%1ld dagen resterend";
+/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days' */
+"%1ld days" = "%1ld dagen";
 
 /* 1 Item */
 "%@ Item" = "%@ artikel";
@@ -253,19 +250,13 @@ which should be translated separately and considered part of this sentence. */
 "(No Title)" = "(Geen titel)";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, all from the app. Keep your inventory up to date effortlessly." = "**#Voeg producten toe en bewerk ze met een enkele tik:** Voeg nieuwe producten toe, werk gegevens bij, upload afbeeldingen en beheer alle variaties, en dat allemaal in de app. Houd je inventaris moeiteloos up-to-date moeiteloos.";
+"**#Manage and create orders:**\nSearch, update, or create new orders instantly. Simplify your order process." = "**#Maak bestellingen aan en beheer ze:**\nNieuwe bestellingen direct zoeken, bijwerken of aanmaken. Vereenvoudig je bestelproces.";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Get notified of every sale:** Never miss a beat with instant sale notifications. Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity." = "**#Ontvang een melding over elke aankoop:** Je mist nooit meer iets met de directe verkoopmeldingen. Ontvang een waarschuwing over elke nieuwe verkoop, zodat je je successen kan vieren en je op de hoogte blijft van de activiteit in je winkel.";
+"**#Take payments in person:**\nEnhance sales with in-person payments. Secure card transactions with our or compatible readers." = "**#Ontvang betalingen in hoogsteigen persoon:**\nVerhoog de omzet met fysieke betalingen. Veilige pinpastransacties met onze of compatibele kaartlezers.";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. Create new orders on the fly for in-store or phone purchases. Simplify your order management process." = "**#Maak bestellingen aan en beheer ze:** Handel bestellingen eenvoudig af. Scrol door de bestelstatussen, zoek ze of wijzig ze. Maak ter plekke nieuwe bestellingen aan voor aankopen in de winkel of via de telefoon. Vereenvoudig je beheerproces voor bestellingen.";
-
-/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Take payments in person:** Expand your sales opportunities by accepting payments in person. Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments." = "**#Ontvang betalingen in hoogsteigen persoon:** Breid je verkoopmogelijkheden uit door fysieke betalingen te accepteren. Gebruik de app om creditcardtransacties veilig te verwerken of koppel een compatibele kaartlezer voor nog eenvoudigere fysieke betalingen.";
-
-/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Track sales and popular products:** Stay updated on your store's real-time performance. Identify your top-selling products and make informed decisions for maximum profitability." = "**#Volg verkoopcijfers en populaire producten:** Blijf op de hoogte van de realtime prestaties van je winkel. Identificeer wat je bestverkopende producten zijn en maak weloverwogen beslissingen voor maximale winstgevendheid.";
+"**#Track sales and popular products:**\nStay on top of real-time sales and popular products to boost your store's profitability." = "**#Volg verkoopcijfers en populaire producten:**\nBlijf in realtime op de hoogte van verkopen en populaire producten om de winstgevendheid van je winkel te stimuleren.";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Zorg dat AirPrint is ingeschakeld** in je printerinstellingen. Je moet deze instelling mogelijk configureren op de printer zelf.\n\nBekijk de bij de printer meegeleverde documentatie voor meer informatie.";
@@ -304,7 +295,7 @@ which should be translated separately and considered part of this sentence. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Alleen beschikbaar in de VS. Voor andere landen is een aanvullende extensie vereist.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
-"24\/7 support" = "24\/7 ondersteuning";
+"24\/7 priority support" = "24\/7 ondersteuning met prioriteit";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -380,8 +371,21 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Verlaten winkelwagen herstellen";
 
+/* Feature option in the store creation features question. */
+"Ability to scale as my business grows" = "Mogelijkheid om te schalen terwijl mijn bedrijf groeit";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Over de app";
+
+/* Top header text of the store creation profiler question about the challenges.
+   Top header text of the store creation profiler question about the features. */
+"About you" = "Over jou";
+
+/* Header of the store creation profiler question about the store category.
+   Header of the store creation profiler question about the store country.
+   Header of the store creation profiler question about the store selling platforms.
+   Header of the store creation profiler question about the store selling status. */
+"About your store" = "Over je winkel";
 
 /* No comment provided by engineer. */
 "Accept local payments'" = "Accepteer plaatselijke betalingen";
@@ -391,6 +395,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Profiteer van korting op verzendkosten. Momenteel beschikbaar met DHL en USPS, binnenkort meer pakketdiensten beschikbaar!";
+
+/* Feature option in the store creation features question. */
+"Access to a wide range of plugins and extensions" = "Toegang tot een groot aantal plugins en extensies";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Type account";
@@ -438,6 +445,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
+
+/* The action title on the placeholder overlay when there are no customers on the customers list screen. */
+"Add Customer" = "Klant toevoegen";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Klantgegevens toevoegen";
@@ -523,6 +533,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Een nieuwe creditcard toevoegen";
 
+/* The details text on the placeholder overlay when there are no customers on the customers list screen. */
+"Add a new customer by tapping on the button below." = "Voeg een nieuwe klant toe door op de knop hieronder te drukken.";
+
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Een opmerking toevoegen";
@@ -568,8 +581,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Creditcard toevoegen";
 
+/* Title of the order customer selection screen. */
+"Add customer details" = "Klantgegevens toevoegen";
+
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Voeg in mum van tijd beschrijvingen toe met behulp van AI. Bekijk deze functie vandaag nog!";
+
+/* Button title for adding customer details manually on the customer search screen */
+"Add details manually" = "Details handmatig toevoegen";
 
 /* Text for the button to add a discount to a product during order creation */
 "Add discount" = "Korting toevoegen";
@@ -745,6 +764,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
 
+/* Title text in the store creation loading screen */
+"Almost there! Your store is taking shape" = "Bijna klaar! Je winkel begint vorm te krijgen";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "Je kunt ook het wachtwoord voor dit account invoeren.";
 
@@ -894,9 +916,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "Deze coupon toepassen op";
 
-/* Title text in the store creation loading screen */
-"Applying the finishing touches" = "De laatste hand leggen";
-
 /* Approve a comment */
 "Approve" = "Goedkeuren";
 
@@ -978,17 +997,20 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "Authenticatie vereist voor host: %@";
 
-/* Auto updates & backups title feature on the Free Trial Summary Screen */
-"Auto updates & backups" = "Automatische updates & back-ups";
-
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatisch beheerd op deze site";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "Geautomatiseerde back-ups en snel herstellen";
 
+/* Email title feature on the Free Trial Summary Screen */
+"Automated customer emails" = "Geautomatiseerde mails naar klanten";
+
 /* No comment provided by engineer. */
 "Automated sales taxes" = "Geautomatiseerde omzetbelasting";
+
+/* Site backup title feature on the Free Trial Summary Screen */
+"Automated site backups" = "Automatische site back-ups";
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Verkoop automatisch beginnen en beëindigen";
@@ -1074,6 +1096,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bermuda" = "Bermuda";
 
+/* Hosting title feature on the Free Trial Summary Screen */
+"Best-in-class hosting" = "De beste hosting";
+
 /* Country option for a site address. */
 "Bhutan" = "Bhutan";
 
@@ -1158,8 +1183,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Breid je catalogus uit door toe te voegen wat je wilt verkopen.";
 
-/* Title text in the store creation loading screen */
-"Building the foundations" = "De basis leggen";
+/* SEO title feature on the Free Trial Summary Screen */
+"Built-in SEO" = "Ingebouwde SEO";
 
 /* Country option for a site address. */
 "Bulgaria" = "Bulgarije";
@@ -1273,6 +1298,7 @@ which should be translated separately and considered part of this sentence. */
    Button title that closes the action sheet in product variations
    Button title that closes the presented screen
    Button title to cancel opening device settings in an alert
+   Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
@@ -1281,6 +1307,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1288,8 +1315,10 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the site credential login screen
+   Button to dismiss the store creation profiler flow
    Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1362,9 +1391,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Kan pakket niet toevoegen";
-
-/* Title of the alert when the store cannot be created in the store creation flow. */
-"Cannot create store" = "Kan de winkel niet aanmaken";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Kan product niet dupliceren";
@@ -1504,9 +1530,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "Kies een categorie die je winkel het beste weergeeft.";
 
-/* Title of the domain selector in the store creation flow. */
-"Choose a domain" = "Kies een domein";
-
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Kies een wachtwoord";
 
@@ -1521,6 +1544,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Kies je betaalprovider";
+
+/* Subtitle of the store creation profiler question about the challenges. */
+"Choose your concerns or difficulties below. You can select more than one option." = "Kies je zorgen of problemen hieronder. Je kan meer dan één optie kiezen.";
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Kies je betaalmethode";
@@ -1583,6 +1609,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "Cocoseilanden";
 
+/* Code-free title feature on the Free Trial Summary Screen */
+"Code-free design and editing" = "Ontwerpen en bewerken zonder coderen";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Ingevouwen";
 
@@ -1616,6 +1645,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "Vergeleken met **%1$@**";
 
+/* Third instruction on the test order screen */
+"Complete the payment and await a push notification about the order on your WooCommerce app." = "Voltooi de betaling en wacht op een pushbericht over de bestelling in je WooCommerce-app.";
+
 /* Display label for completed order status. */
 "Completed" = "Voltooid";
 
@@ -1635,6 +1667,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for composite product type. */
 "Composite" = "Samengesteld product";
 
+/* Feature option in the store creation features question. */
+"Comprehensive sales and analytics reports" = "Uitgebreide verkoop- en analyserapporten";
+
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configuratie bijgewerkt";
 
@@ -1650,11 +1685,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Betaalmethode bevestigen";
 
-/* Button title Discard Changes in Discard Changes Action Sheet */
+/* Button to confirm the dismissal of  the store creation profiler flow */
 "Confirm and leave" = "Bevestigen en verlaten";
-
-/* Title of the store creation profiler question about the store country. */
-"Confirm your location" = "Bevestig je locatie";
 
 /* Country option for a site address. */
 "Congo (Brazzaville)" = "Congo-Brazzaville";
@@ -2017,12 +2049,6 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Variaties worden aangemaakt...";
 
-/* Title text in the store creation loading screen */
-"Creating Your Store! It'll be just a few minutes" = "We zijn je winkel aan het aanmaken! Het duurt maar een paar minuten";
-
-/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
-"Creating your store" = "Je winkel aanmaken";
-
 /* Credit card payment method for shipping label. */
 "Credit card" = "Creditcard";
 
@@ -2129,6 +2155,9 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "Klanten moeten deze code invoeren om de coupon te gebruiken.";
 
+/* Feature option in the store creation features question. */
+"Customization options for my store design" = "Aanpassingsopties voor mijn winkelontwerp";
+
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Je domein aanpassen";
 
@@ -2174,9 +2203,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Datum: Oudste naar nieuwste";
-
-/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
-"Days left in plan" = "Dagen resterend van abonnement";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Standaard";
@@ -2311,7 +2337,7 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "Wil je verbinding maken met %1$@-lezer?";
 
-/* Title of the alert when the user dismisses the store creation flow. */
+/* Title of the alert when the user dismisses the store creation profiler flow. */
 "Do you want to leave?" = "Wil je deze pagina verlaten?";
 
 /* Body of the alert when a user is moving a product to the trash */
@@ -2335,6 +2361,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Heb je geen account? _Aanmelden_";
+
+/* Text within the Upgrades summary card, informing the merchant their Free Trial has expired. */
+"Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. Unlock more features, launch and start selling, and make your ecommerce business a reality." = "Verlies al je harde werk niet! Upgrade naar een betaald abonnement om aan je winkel te blijven werken. Ontgrendel meer functies, lanceer je site en begin met verkopen, en wek jouw webwinkel tot leven.";
 
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -2465,11 +2494,13 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identificeer je producten eenvoudig met unieke codes";
 
+/* Feature option in the store creation features question. */
+"Easy product management and inventory tracking" = "Eenvoudig productbeheer en bijhouden van de voorraad";
+
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
-/* Ecommerce reports title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "Ecommerce-rapporten";
 
 /* Country option for a site address. */
@@ -2548,6 +2579,7 @@ which should be translated separately and considered part of this sentence. */
    Email button title
    Text field email in Edit Address Form
    Title of Email accessibility action, opens a compose view
+   Title of the customer search filter to search for customers that match the email.
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "E-mail";
 
@@ -2559,9 +2591,6 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
 "Email address" = "E-mailadres";
-
-/* Email marketing title feature on the Free Trial Summary Screen */
-"Email marketing" = "E-mailmarketing";
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "E-mailbericht aan klant";
@@ -2917,6 +2946,9 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Bekijk hoe je de verkoop van je winkel kunt verhogen";
 
+/* Title text in the store creation loading screen */
+"Extending store's capabilities" = "Winkelmogelijkheden uitbreiden";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Extern product";
 
@@ -2941,6 +2973,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "Fout bij ophalen autorisatie-URL voor applicatiewachtwoorden. Probeer het opnieuw.";
 
+/* Error message in the Add Customer to order screen when getting the customer information */
+"Failed to fetch the customer data. Please try again." = "Kan de klantgegevens niet ophalen. Probeer het opnieuw.";
+
+/* Error message in the Add Customer to order screen when getting the customers information */
+"Failed to fetch the customers data. Please try again later." = "Kan de klantgegevens niet ophalen. Probeer het later opnieuw.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Er is een fout opgetreden bij het ophalen van de gegevens van het bedrag. Probeer het nog eens.";
 
@@ -2958,9 +2996,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "Faeröer";
-
-/* Fast to launch title feature on the Free Trial Summary Screen */
-"Fast to launch" = "Snelle lancering";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -3041,6 +3076,9 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Zoek het adres van je winkel";
 
+/* Challenge option in the store creation challenges question. */
+"Finding customers" = "Klanten vinden";
+
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Configuratie voltooien in winkelbeheer";
 
@@ -3064,6 +3102,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Vaste productkorting";
+
+/* Feature option in the store creation features question. */
+"Flexible and secure payment options" = "Flexibele en veilige betalingsopties";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "Volg de instructies op het scherm om te betalen";
@@ -3316,6 +3357,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Gegroepeerde producten";
 
+/* Title of features on the Free Trial Summary screen */
+"Grow your business" = "Laat je bedrijf groeien";
+
 /* Country option for a site address. */
 "Guadeloupe" = "Guadeloupe";
 
@@ -3359,6 +3403,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Haiti" = "Haïti";
+
+/* Title of features on the Free Trial Summary screen */
+"Hassel-free store ownership" = "Moeiteloze winkeleigendom";
 
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Host je winkel met een aangepaste URL.";
@@ -3432,6 +3479,9 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Help Center";
 
+/* Title in Free trail survey screen. */
+"Help us understand your subscription decisions. Your feedback matters." = "Help ons begrijpen wat jouw beslissingen omtrent abonnementen beïnvloed. Jouw feedback is belangrijk.";
+
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Hallo! Alsjeblieft, een downloadlink voor de WooCommerce-app. Ik vind hem geweldig en ik dacht, jij vast ook.";
 
@@ -3476,11 +3526,23 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Ik verkoop al online";
 
+/* Text for Free trial survey answer. */
+"I am evaluating and comparing your service with others on the market" = "Ik beoordeel jullie service door deze te vergelijken met vergelijkbare producten op de markt.";
+
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Ik ben net begonnen met verkopen";
 
+/* Text for Free trial survey answer. */
+"I am part of a team, and we need to make the decision collectively." = "Ik ben onderdeel van een team en we nemen de beslissing samen.";
+
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Ik verkoop online";
+
+/* Text for Free trial survey answer. */
+"I am still exploring and assessing the features and benefits of the app." = "Ik ben nog bezig met alle functies en voordelen van de app te ontdekken en te beoordelen.";
+
+/* Text for Free trial survey answer. */
+"I find the price of the service to be a significant factor in my decision." = "Ik vind de prijs van de service een doorslaggevende factor bij mijn beslissing.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Ik heb hulp nodig met";
@@ -3562,6 +3624,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "In-app aankopen";
+
+/* Feature option in the store creation features question. */
+"In-person payment" = "Fysieke betalingen";
 
 /* Application's Inactive State */
 "Inactive" = "Inactief";
@@ -3752,9 +3817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Restitueren";
-
-/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Issue purchasing the plan" = "Probleem bij het kopen van het abonnement";
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Terugbetalen";
@@ -3974,11 +4036,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Laat ons weten hoe we je kunnen helpen";
 
+/* Subtitle of the store creation profiler question about the features. */
+"Let us know what you are looking forward to using in our app." = "Laat ons weten wat je graag wil gebruiken in onze app.";
+
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "Laat ons weten wat je ervan vindt";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"Let us know where you are in your commerce journey so that we can tailor your Woo experience for you." = "Vertel ons waar je je bevindt in het commercetraject, zodat we je Woo-ervaring helemaal op jou kunnen laten aansluiten.";
+
 /* Message info on the support screen. */
 "Let us know your site address (URL) and tell us as much as you can about the problem," = "Vertel ons je siteadres (URL) en zoveel mogelijk over het probleem,";
+
+/* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
+"Let's try again in a moment. If the issue persists, please contact support." = "Probeer het later opnieuw. Neem contact op met het ondersteunend personeel als het probleem nog niet is opgelost.";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Brief (8,5 x 11 inch)";
@@ -4238,6 +4309,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Beheer je abonnement";
 
+/* Challenge option in the store creation challenges question. */
+"Managing inventory" = "Voorraad beheren";
+
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Handmatige offsets";
 
@@ -4433,8 +4507,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Meerdere winkels";
 
-/* Multiple payment options title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Meerdere betaalopties";
 
 /* Title of the 'My Store' tab - used for spotlight indexing on iOS.
@@ -4451,7 +4524,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
-   Title for the name field on the Shipping Line Details screen during order creation */
+   Title for the name field on the Shipping Line Details screen during order creation
+   Title of the customer search filter to search by name. */
 "Name" = "Naam";
 
 /* Error showed in Shipping Label Address Validation for the name field */
@@ -4560,6 +4634,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Geen beperkingen";
 
+/* Text displayed when no countries are found upon filtering the country list in store creation profiler. */
+"No Results" = "Geen resultaten";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Geen activiteiten deze periode";
 
@@ -4589,8 +4666,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "Geen huidige periode beschikbaar";
 
+/* The title on the placeholder overlay when there are no customers on the customers list screen. */
+"No customers found" = "Geen klanten gevonden";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Geen gegevens beschikbaar";
+
+/* Placeholder when there's no customer email in the list */
+"No email address" = "Geen e-mailadres";
 
 /* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Onbeperkt";
@@ -4612,6 +4695,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description when no minimum quantity is set in quantity rules. */
 "No minimum" = "Geen minimum";
+
+/* Placeholder when there's no customer name in the list */
+"No name" = "Geen naam";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "Maak je geen zorgen om een stempelboekje";
@@ -4648,6 +4734,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Geen omzet deze periode";
+
+/* Message on the local notification to remind after three days. */
+"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Geen haast, neem je tijd! Als je nog vragen hebt of anderszins hulp nodig hebt, staan we altijd voor je klaar. Veel plezier op deze ontdekkingstocht!";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Nog geen verzendingsklassen";
@@ -4729,9 +4818,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to dismiss the coupon error notice
    Alert dismissal title
    Button text to confirm that we want to generate all variations
-   Button title to cancel the alert when the user cannot create a store.
-   Button title to dismiss the alert when the store cannot be created in the store creation flow.
-   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -4794,6 +4880,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods.\" = \"Alleen de site-eigenaar kan de betalingsmethoden voor verzendlabels beheren. Neem contact op met %1$@ (%2$@) om betalingsmethoden te beheren.";
+
+/* Title of the alert when the store cannot be created in the store creation flow. */
+"Oops! We've hit a snag" = "Oeps! Er is een fout opgetreden";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Oeps, er zijn onverwachte fouten opgetreden.";
@@ -4921,9 +5010,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organiseer je producten in gerelateerde groepen";
 
-/* Title text in the store creation loading screen */
-"Organizing the stock room" = "De voorraadkamer opruimen";
-
 /* Title for the Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country" = "Land van herkomst";
 
@@ -4933,18 +5019,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Oorspronkelijke verpakking";
 
-/* Generic name of non-default discount types
+/* Challenge option in the store creation challenges question.
+   Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Overige";
 
+/* Placeholder text for Free trial survey. */
+"Other (please specify)." = "Overig (graag nader omschrijven).";
+
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Andere extensie \/ plugin";
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Andere sites";
+
+/* Feature option in the store creation features question. */
+"Others" = "Anderen";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5273,20 +5366,11 @@ This part is the link to the website, and forms part of a longer sentence which 
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Zorg ervoor dat je de laatste versie van WooCommerce gebruikt en probeer het opnieuw.";
 
-/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"Please remain connected." = "Verbreek de verbinding niet.";
-
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Selecteer een pakket";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
 "Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Meld je op dit apparaat aan bij iCloud om Tap to Pay on iPhone te gebruiken";
-
-/* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
-"Please try a different domain." = "Probeer een ander domein.";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Probeer het opnieuw en zorg ervoor dat je bent ingelogd bij een App Store-account dat in aanmerking komt voor aankoop.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Probeer het later opnieuw of neem contact met ons op zodat wij je kunnen helpen.";
@@ -5306,11 +5390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Probeer het nog eens of neem contact met ons op voor ondersteuning";
 
-/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
-"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Probeer het opnieuw of sluit dit venster en ga terug naar je winkel als je het afrekenvenster hebt verlaten tijdens het betalen.";
-
 /* Account creation error when an unexpected error occurs.
-   Message of the alert when the store cannot be created in the store creation flow.
    The message of the alert when there is an error uploading an image */
 "Please try again." = "Probeer het nog eens.";
 
@@ -5974,6 +6054,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
+   Message of the alert when the store cannot be created in the store creation flow.
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
@@ -6029,6 +6110,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Romania" = "Roemenië";
+
+/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Voer een proefbestelling uit om je ervan te verzekeren dat jouw WooCommerce-proces een naadloze klantervaring levert.";
 
 /* Country option for a site address. */
 "Russia" = "Rusland";
@@ -6189,6 +6273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Verkoop inplannen";
 
+/* Placeholder in the country search field in store creation profiler. */
+"Search" = "Zoeken";
+
 /* Placeholder text on the search bar on the category list */
 "Search Categories" = "Categorieën doorzoeken";
 
@@ -6216,12 +6303,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "Zoek naar een domein";
 
+/* Message to prompt users to search for customers on the customer search screen */
+"Search for an existing customer or" = "Een bestaande klant zoeken op";
+
+/* Customer Search Placeholder */
+"Search for customers" = "Klanten zoeken";
+
+/* Customer Search Placeholder when showing filters */
+"Search for customers by" = "Klanten zoeken op";
+
 /* Search Orders */
 "Search orders" = "Bestellingen doorzoeken";
 
 /* Products Search Placeholder
    Search Products */
 "Search products" = "Zoeken naar producten";
+
+/* Header of the search results in the store creation country question. */
+"Search results" = "Zoekresultaten";
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Alleen zoekresultaten";
@@ -6296,6 +6395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Select Categories screen */
 "Select categories" = "Categorieën selecteren";
 
+/* Button to open the list of country to select for store creation profiler */
+"Select country" = "Land selecteren";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Selecteer einddatum";
 
@@ -6325,6 +6427,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Selecteer je bezorgservice en tarieven";
+
+/* Second instruction on the test order screen */
+"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Selecteer jouw testproduct, voeg deze toe aan de winkelwagen en voltooi het afrekenscherm in die webwinkel als een echte klant.";
 
 /* Caption displayed in the simplified prologue screen */
 "Sell anything, anywhere." = "Alles verkopen, overal.";
@@ -6377,6 +6482,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configureer het pakket dat je gaat gebruiken voor de verzending van je producten. We slaan het dan op voor toekomstige bestellingen.";
+
+/* Challenge option in the store creation challenges question. */
+"Setting up the online store" = "De webwinkel opzetten";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -6490,6 +6598,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Verzendkostenvergoeding";
 
+/* Access the store shipping zones. */
+"Shipping Zones" = "Verzendzones";
+
+/* Challenge option in the store creation challenges question. */
+"Shipping and logistics" = "Verzending en logistiek";
+
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Bezorgservice";
 
@@ -6508,8 +6622,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "Verzendlabel aangeschaft!";
 
-/* Shipping labels title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "Verzendlabels";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -6626,9 +6739,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Site-abonnement verlopen";
 
-/* Site security title feature on the Free Trial Summary Screen */
-"Site security" = "Sitebeveiliging";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6692,9 +6802,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "Er ging iets fout, probeer het later nog eens.";
-
-/* Message of the alert when the user cannot create a store because they already created one before. */
-"Sorry, but you can only create one store. Your account is already associated with an active store." = "Je kunt slechts één winkel aanmaken. Je account is al gekoppeld aan een actieve winkel.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, je gebruikersnaam bevat een onjuiste zin%@.";
@@ -6816,11 +6923,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Start Date label in custom range date picker */
 "Start Date" = "Startdatum";
 
+/* Title on the action button on the test order screen */
+"Start Test order" = "Proefbestelling starten";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Om een coupon aan te maken, begin je door in een sheet onderaan het type korting te kiezen";
 
 /* Subtitle of the store onboarding task to add the first product. */
 "Start selling by adding products or services to your store." = "Begin met verkopen door producten of diensten aan je winkel toe te voegen.";
+
+/* Title of features on the Free Trial Summary screen */
+"Start selling quickly" = "Begin snel met verkopen";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Begin vandaag te verkopen door het eerste product aan de winkel toe te voegen.";
@@ -6880,6 +6993,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the webview for Store details task from onboarding. */
 "Store details" = "Winkelgegevens";
 
+/* Store management title feature on the Free Trial Summary Screen */
+"Store management tools" = "Tools voor winkelbeheer";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "Winkelnaam";
 
@@ -6928,9 +7044,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Abonnementen en cadeaubonnen";
-
-/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
-"Subscriptions & product kits" = "Abonnementproducten";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7070,6 +7183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tik of voer een kaart in om terug te betalen";
+
+/* First instruction on the test order screen */
+"Tap the button below to be redirected to your online store via a web browser." = "Druk op de knop hieronder om doorgestuurd te worden naar jouw webwinkel via een webbrowser.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7616,9 +7732,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Dit is de URL van het bestand die klanten tot hun beschikking zullen hebben. Ingevoerde URL's zouden al versleuteld moeten zijn.";
 
-/* Subtitle of the domain selector in the store creation flow. */
-"This is where people will find you on the Internet. You can add another domain later." = "Dit is de plek waar mensen je online kunnen vinden. Je kunt later een ander domein toevoegen.";
-
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Dit artikel staat momenteel in pakket %1$d: %2$@. Waar wil je het naar verplaatsen?";
 
@@ -7714,9 +7827,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Om door te gaan met dit account moet je eerst inloggen met je wachtwoord van WordPress.com. Je wordt hier slechts eenmaal om gevraagd.";
-
-/* Subtitle of the store creation profiler question about the store selling status. */
-"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "Om alles een beetje te versnellen, zullen we je WooCommerce-ervaring aanpassen aan de hand van je antwoord.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Om deze app te gebruiken voor %@, moet de Jetpack-plugin geïnstalleerd en gekoppeld zijn aan je winkel.";
@@ -7854,11 +7964,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Probeer een betaling";
 
+/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Try a Test Order" = "Probeer een proefbestelling";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "Try a payment" = "Probeer een betaling";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Probeer te betalen met je eigen betaalpas (en stort de betaling terug wanneer je klaar bent.)";
+
+/* Title shown on the test order screen */
+"Try a test order" = "Probeer een proefbestelling";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
@@ -8191,8 +8307,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Unlimited admin accounts" = "Onbeperkte beheerdersaccounts";
 
-/* Title of eCommerce plan feature on the store creation plan screen.
-   Unlimited products title feature on the Free Trial Summary Screen */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Unlimited products" = "Onbeperkte producten";
 
 /* Back button title when the product doesn't have a name */
@@ -8359,12 +8474,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Gebruik je wachtwoord om je aan te melden";
 
+/* Fourth instruction on the test order screen */
+"Use the app to process the refund for the test order." = "Gebruik de app om de restitutie voor de proefbestelling te verwerken.";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Gebruikersprofielen";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder
    Placeholder for the username textfield.
+   Title of the customer search filter to search for customer that match the username.
    Title of the email field on the site credential login screen
    Username placeholder */
 "Username" = "Gebruikersnaam";
@@ -8535,9 +8654,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Walmart" = "Walmart";
 
-/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "We zijn klaar om je winkel aan te maken";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "We kunnen helaas fysieke betalingen niet voor deze winkel ondersteunen.";
 
@@ -8635,6 +8751,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "We konden je op dit moment geen e-mail sturen. Probeer het later nogmaals.";
 
+/* Subtitle of the store creation profiler question about the store country. */
+"We will use this information to set up payments, shipping and taxes." = "We gebruiken deze gegevens om betalingen, verzending en belasting in te stellen.";
+
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "We sturen je een e-mail met een magische link waarmee je onmiddellijk kunt inloggen, zonder wachtwoord. Nooit meer moeite doen!";
 
@@ -8646,12 +8765,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "We kunnen geen verbinding maken met de Jetpack-site via die URL. Neem contact op voor hulp.";
-
-/* Message of the alert when the user cannot create a store for some reason. */
-"We're sorry, but store creation is not currently available in the app." = "Het aanmaken van winkels is momenteel helaas niet beschikbaar in de app.";
-
-/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
-"We're sorry, but store creation is not currently available in your country in the app." = "Het aanmaken van winkels is in jouw land momenteel helaas niet beschikbaar in de app.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "Helaas kunnen we geen bestellingen vinden die overeenkomen met %@";
@@ -8698,11 +8811,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "We gebruiken deze gegevens om alvast te beginnen met het instellen van betalingen, verzendingen en belastingen.";
 
-/* Subtitle of the store creation profiler question about the store country. */
-"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "We gebruiken deze gegevens om alvast te beginnen met het instellen van betalingen, verzending en belasting.";
+/* Message on the local notification to ask for Free trial survey. */
+"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "We willen graag weten hoe jij tot een beslissing komt. Kan je ons vertellen over je huidige status?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "We hebben hard gewerkt zodat jij coupons vanuit je apparaat kunt bekijken en bewerken!";
+
+/* Label about preselected country in the store creation country question. */
+"We’ve preselected your location. Please change it here if it's incorrect." = "We hebben je locatie alvast geselecteerd. Verander je locatie hier als deze niet klopt.";
+
+/* Title of the store creation profiler question about the challenges. */
+"What challenges you in starting or running an online Store?" = "Wat vind je lastig bij het starten of beheren van een webwinkel?";
+
+/* Title of the store creation profiler question about the store category. */
+"What do you plan to sell in your store?" = "Wat wil je gaan verkopen in je winkel?";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Welke e-mail moet ik gebruiken om me aan te melden?";
@@ -8732,9 +8854,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "Nieuw in WooCommerce";
 
-/* Title of the store creation profiler question about the store category. */
-"What’s your business about?" = "Waar staat je bedrijf voor?";
-
 /* Title label on the store name form in the store creation flow. */
 "What’s your store name?" = "Wat is de naam van je winkel?";
 
@@ -8744,8 +8863,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The EU notice banner content describing why some countries require special customs description */
 "When shipping to countries that follow European Union (EU) customs rules, you must provide a clear, specific description of every item. Otherwise, shipments may be delayed or interrupted at customs." = "Bij en verzending naar landen waarin douanewetgeving van de Europese Unie (EU) geldt, moet je een duidelijke, specifieke beschrijving van elk artikel opgeven. Anders kunnen verzendingen vertraging oplopen of stil komen staan bij de douane.";
 
+/* Title of the store creation profiler question about the store country. */
+"Where is your business located?" = "Waar is jouw bedrijf gevestigd?";
+
+/* Title of the store creation profiler question about the features. */
+"Which features are you most interested in?" = "In welke functies ben je het meest geïnteresseerd?";
+
 /* Title of the store creation profiler question about the store selling status. */
-"Where are you on your commerce journey?" = "Hoe vordert je reis omtrent handelen?";
+"Which one of these best describes you?" = "Wat beschrijft jou het beste?";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Oeps, er ging iets mis en we konden je niet inloggen. Probeer nogmaals.";
@@ -8952,13 +9077,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Het lijkt erop dat je een mobiele plugin van DudaMobile hebt geïnstalleerd die voorkomt dat de app zich kan verbinden met je blog";
 
 /* Subtitle text in the store creation loading screen */
-"You will be notified once the store is ready! Sit back, relax, and let us work our magic while sharing helpful tips. 🔮" = "Je krijgt een melding wanneer je winkel klaarstaat! Leun achterover, ontspan en laat ons het werk doen terwijl we wat handige tips met je delen. 🔮";
+"You will be notified once the store is ready!\nSit back, relax, and let us work our magic while sharing helpful tips. 🔮" = "Je krijgt een melding wanneer je winkel klaarstaat! Leun achterover, ontspan en laat ons het werk doen terwijl we wat handige tips met je delen. 🔮";
 
-/* Message of the alert when the user dismisses the store creation flow. */
+/* Message of the alert when the user dismisses the store creation profiler flow. */
 "You will lose all your store information." = "Je raakt al je winkelgegevens kwijt.";
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Je kunt fysieke betalingen aannemen zodra we je account hebben gecontroleerd.";
+
+/* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
+"You're in a free trial" = "Je gebruikt een gratis proefversie";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Je bent niet geautoriseerd om het account te sluiten.";
@@ -8978,11 +9106,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "Jouw gratis winkeladres";
 
+/* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
+"Your free trial has ended" = "Je gratis proefversie is beëindigd";
+
 /* Info details for an expired free trial */
 "Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "Je gratis proefversie is geëindigd en je hebt nu beperkt toegang tot alle functies. Abonneer je nu op een Woo Express-abonnement.";
 
-/* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
-"Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "Je gratis proefabonnement op Woo Express loopt morgen af (%1$@). Dit is het moment om in je toekomst te investeren: kies een abonnement en bereid je voor om door te groeien.";
+/* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
+"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "Je gratis proefversie loopt af over %1$@. Upgrade naar een abonnement vóór %2$@ om nieuwe functies te ontgrendelen en te beginnen met verkopen.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Je iPhone kan als kaartlezer worden gebruikt. Je kan ook met een externe kaartlezer verbinden via bluetooth.";
@@ -9001,9 +9132,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Je telefoon is binnenkort klaar om betalingen te ontvangen...";
-
-/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your plan" = "Jouw abonnement";
 
 /* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
 "Your purchase is complete and you're on the %1$@ plan." = "Je aanschaf is voltooid en je hebt nu het %1$@-abonnement.";
@@ -9025,6 +9153,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "Je sitedomeinen";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"Your site plan has ended." = "Je site-abonnement is beëindigd.";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Je winkel is gemaakt!";
@@ -9262,14 +9393,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Åland";
 
-/* Title of the local notification to remind the user of expiring free trial plan. */
-"⏰ Time’s running out on your free trial!" = "⏰ De tijd raakt op voor je gratis proefabonnement!";
-
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ AI-contentgenerator beschikbaar.";
-
-/* Title of the local notification to remind the user of the expired free trial plan. */
-"🌟 Keep your business going with our plan!" = "🌟 Houd je bedrijf draaiende met ons abonnement!";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Blijf aan de slag!";
@@ -9289,6 +9414,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification about a newly created store */
 "🎉 Your store is ready!" = "🎉 Je winkel is klaar!";
 
+/* Title of the local notification to ask for Free trial survey. */
+"💡Help Us Understand Your Subscription Decision" = "💡Help ons begrijpen wat jouw beslissingen omtrent abonnementen beïnvloed";
+
 /* Title of the local notification suggesting a trial plan subscription. */
 "🛍️ Your store is waiting!" = "🛍️ Je winkel wacht op je!";
+
+/* Title of the local notification to remind after three days. */
+"🧭 Still Exploring WooCommerce?" = "🧭 Nog bezig met WooCommerce ontdekken?";
 

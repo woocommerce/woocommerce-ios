@@ -550,7 +550,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
         }
     }
 

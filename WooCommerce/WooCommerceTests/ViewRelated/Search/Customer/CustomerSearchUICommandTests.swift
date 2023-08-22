@@ -41,6 +41,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
             siteID: sampleSiteID,
             customerID: 1,
             email: "john.w@email.com",
+            username: "john",
             firstName: "John",
             lastName: "W",
             billing: nil,
@@ -73,11 +74,25 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_search"))
     }
 
-    func test_synchronizeModels_when_better_customer_selection_is_enabled_and_keyword_is_empty_then_calls_synchronizeAllLightCustomersDataAction() {
+    func test_didSelectSearchResult_then_tracks_orderCreationCustomerAdded_event() {
+        // Given
+        let command = CustomerSearchUICommand(
+            siteID: sampleSiteID,
+            analytics: analytics) { _ in }
+
+        // When
+        command.didSelectSearchResult(model: Customer.fake(), from: UIViewController(), reloadData: {}, updateActionButton: {})
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
+    }
+
+    func test_synchronizeModels_when_and_keyword_is_empty_and_loadResultsWhenSearchTermIsEmpty_is_true_then_calls_synchronizeAllLightCustomersDataAction() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         // Given
         let command = CustomerSearchUICommand(siteID: sampleSiteID,
+                                              loadResultsWhenSearchTermIsEmpty: true,
                                               stores: stores,
                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true)) { _ in }
 
@@ -87,7 +102,36 @@ final class CustomerSearchUICommandTests: XCTestCase {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1
-            onCompletion(.success(()))
+            onCompletion(.success(true))
+        }
+
+        // When
+        waitFor { promise in
+            command.synchronizeModels(siteID: self.sampleSiteID, keyword: "", pageNumber: 1, pageSize: 10) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(invocationCount, 1)
+    }
+
+    func test_synchronizeModels_when_and_keyword_is_empty_and_loadResultsWhenSearchTermIsEmpty_is_false_then_calls_deleteAllCustomers() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        // Given
+        let command = CustomerSearchUICommand(siteID: sampleSiteID,
+                                              loadResultsWhenSearchTermIsEmpty: false,
+                                              stores: stores,
+                                              featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true)) { _ in }
+
+        var invocationCount = 0
+        stores.whenReceivingAction(ofType: CustomerAction.self) { action in
+            guard case let .deleteAllCustomers(_, onCompletion) = action else {
+                return XCTFail("Unexpected action: \(action)")
+            }
+            invocationCount += 1
+            onCompletion()
         }
 
         // When

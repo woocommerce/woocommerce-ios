@@ -17,7 +17,7 @@ Affichez en un clin d’œil les produits les plus vendus. Surveillez facilement
 
 WooCommerce est la plateforme de commerce électronique Open-Source la plus personnalisable au monde. Que vous lanciez une activité, basculiez un magasin physique en ligne ou développiez des sites pour vos clients, WooCommerce permet d’obtenir une boutique qui allie puissamment contenu et commerce.
 
-Conditions requises : WooCommerce v3.5+.
+Prérequis : WooCommerce v3.5+.
 
 Consulter les conditions d’utilisation sur https://wordpress.com/tos/
 

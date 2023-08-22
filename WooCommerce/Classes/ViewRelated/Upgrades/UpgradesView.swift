@@ -16,13 +16,8 @@ final class UpgradesViewPresentationCoordinator {
     func presentUpgrades(for siteID: Int64, from viewController: UIViewController) {
         Task { @MainActor in
             if await inAppPurchaseManager.inAppPurchasesAreSupported() {
-                if featureFlagService.isFeatureFlagEnabled(.freeTrialInAppPurchasesUpgradeM2) {
-                    let upgradesController = UpgradesHostingController(siteID: siteID)
-                    viewController.present(upgradesController, animated: true)
-                } else {
-                    let legacyUpgradesController = LegacyUpgradesHostingController(siteID: siteID)
-                    viewController.present(legacyUpgradesController, animated: true)
-                }
+                let upgradesController = UpgradesHostingController(siteID: siteID)
+                viewController.present(upgradesController, animated: true)
             } else {
                 let subscriptionsController = SubscriptionsHostingController(siteID: siteID)
                 viewController.present(subscriptionsController, animated: true)
@@ -80,11 +75,7 @@ struct UpgradesView: View {
                     UpgradeTopBarView(dismiss: {
                         dismiss()
                     })
-
-                    CurrentPlanDetailsView(planName: subscriptionsViewModel.planName,
-                                           daysLeft: subscriptionsViewModel.planDaysLeft)
                 }
-                .renderedIf(upgradesViewModel.upgradeViewState.shouldShowPlanDetailsView)
 
                 switch upgradesViewModel.upgradeViewState {
                 case .loading:
@@ -94,11 +85,15 @@ struct UpgradesView: View {
                         .skeletonPlan(frequency: .month, shortName: "Essential"),
                         .skeletonPlan(frequency: .month, shortName: "Performance")],
                                       isPurchasing: .constant(false),
+                                      expirationDate: .constant(""),
+                                      planDaysLeft: .constant(0),
                                       purchasePlanAction: { _ in }, isLoading: true)
-                        .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
+                    .accessibilityLabel(Localization.plansLoadingAccessibilityLabel)
                 case .loaded(let plans):
                     OwnerUpgradesView(upgradePlans: plans,
                                       isPurchasing: $upgradesViewModel.isPurchasing,
+                                      expirationDate: $subscriptionsViewModel.formattedPlanExpirationDate,
+                                      planDaysLeft: $subscriptionsViewModel.planDaysLeft,
                                       purchasePlanAction: { selectedPlan in
                         Task {
                             await upgradesViewModel.purchasePlan(with: selectedPlan.wpComPlan.id)
@@ -148,6 +143,7 @@ struct UpgradesView: View {
                 }
             }
             .navigationBarHidden(true)
+            .background(Color(.systemGroupedBackground))
         }
         // TODO: when we remove iOS 15 support, use NavigationStack instead.
         // This is required to avoid a column layout on iPad, which looks strange.
@@ -178,20 +174,18 @@ private extension UpgradesView {
 }
 
 private extension WooWPComPlan {
-    static func skeletonPlan(frequency: LegacyWooPlan.PlanFrequency, shortName: String) -> WooWPComPlan {
+    static func skeletonPlan(frequency: WooPlan.PlanFrequency, shortName: String) -> WooWPComPlan {
         let planProduct = SkeletonWPComPlanProduct(displayName: "\(frequency.localizedPlanName) \(shortName) Plan",
                                                    id: "skeleton.wpcom.plan.product.monthly",
                                                    price: "$100")
         return WooWPComPlan(
             wpComPlan: planProduct,
-            wooPlan: LegacyWooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
+            wooPlan: WooPlan(id: "skeleton.plan.\(shortName).\(frequency.rawValue)",
                              name: "Skeleton \(shortName) Plan \(frequency.localizedPlanName)",
                              shortName: "Skeleton",
                              planFrequency: frequency,
                              planDescription: "A skeleton plan to show (redacted) while we're loading",
-                             headerImageFileName: "express-essential-header",
-                             headerImageCardColor: .withColorStudio(name: .orange, shade: .shade5),
-                             planFeatureGroups: []),
+                             planFeatures: []),
             hardcodedPlanDataIsValid: true)
     }
 

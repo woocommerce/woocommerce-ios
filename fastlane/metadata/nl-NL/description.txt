@@ -1,0 +1,26 @@
+Beheer je bedrijf onderweg met de mobiele WooCommerce-app. Voeg producten toe, maak bestellingen aan, neem snel betalingen aan en heb zicht op nieuwe aankopen en belangrijke statistieken in real-time.
+
+Voeg producten toe en bewerk ze met slechts een tik
+Ga binnen enkele seconden al aan de slag. Maak producten aan, en groepeer en publiceer ze rechtstreeks vanaf je iPhone of iPad. Maak meteen werk van nieuwe ingevingen en zet ze direct om in producten, of sla de producten op als concept voor later.
+
+Maak overal en altijd bestellingen aan
+Heb je je product aangemaakt? Kies dan simpelweg het artikel uit je catalogus, voeg de verzending toe, vul ten slotte de klantgegevens in en je hebt razendsnel een bestelling die met je inventaris synchroniseert.
+
+Ontvang betalingen in hoogsteigen persoon.
+Neem fysieke betalingen aan met WooCommerce Fysieke betalingen en een kaartlezer (beschikbaar in de VS en Canada). Begin een nieuwe bestelling of selecteer een bestelling met een openstaande betaling en neem de betaling aan met de kaartlezer of een digitale portemonnee, zoals Apple Pay.
+
+Ontvang een melding van elke aankoop
+Nu je aan de slag bent gegaan met verkopen, wil je nooit meer een bestelling of een beoordeling missen. Blijf op de hoogte; schakel realtime meldingen in en wacht op dat verslavende 'katsjing!' bij elke aankoop!
+
+Volg verkoopcijfers en bestverkopende producten
+Bekijk in één oogopslag welke producten het beste verkopen. Check je totale winst, aantal bestellingen en bezoekersgegevens per week, maand en jaar. Kennis is macht.
+
+WooCommerce is 's werelds meest aanpasbare opensource eCommerce-platform. Of je nu een bedrijf start, een fysieke winkel online wil starten of sites voor klanten wil ontwikkelen: gebruik WooCommerce voor een winkel waarin content en handel gecombineerd worden.
+
+Vereisten: WooCommerce v3.5+.
+
+Bekijk de servicevoorwaarden op https://wordpress.com/tos/
+
+Bekijk het privacybeleid op https://automattic.com/privacy/
+
+Bekijk de privacyverklaring voor gebruikers in Californië op https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.

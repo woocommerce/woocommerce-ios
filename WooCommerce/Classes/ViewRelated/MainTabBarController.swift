@@ -93,7 +93,6 @@ final class MainTabBarController: UITabBarController {
     private let productsNavigationController = WooTabNavigationController()
     private let reviewsNavigationController = WooTabNavigationController()
     private let hubMenuNavigationController = WooTabNavigationController()
-    private var reviewsTabCoordinator: ReviewsCoordinator?
     private var hubMenuTabCoordinator: HubMenuCoordinator?
 
     private var cancellableSiteID: AnyCancellable?
@@ -211,7 +210,6 @@ final class MainTabBarController: UITabBarController {
         viewControllers?.compactMap { $0 as? UINavigationController }.forEach { navigationController in
             navigationController.viewControllers = []
         }
-        reviewsTabCoordinator = nil
         hubMenuTabCoordinator = nil
     }
 }
@@ -362,9 +360,6 @@ extension MainTabBarController {
     }
 
     /// Presents the order details if the `note` is for an order push notification.
-    ///
-    /// For Product Review notifications, that is now handled by `ReviewsCoordinator`. This method
-    /// should also be moved to a similar `Coordinator` in the future too.
     ///
     private static func presentNotificationDetails(for note: Note) {
         switch note.kind {
@@ -568,13 +563,6 @@ private extension MainTabBarController {
 
     func createProductsViewController(siteID: Int64) -> UIViewController {
         ProductsViewController(siteID: siteID)
-    }
-
-    func createReviewsTabCoordinator() -> ReviewsCoordinator {
-        ReviewsCoordinator(navigationController: reviewsNavigationController,
-                           willPresentReviewDetailsFromPushNotification: { [weak self] in
-            self?.navigateTo(.reviews)
-        })
     }
 
     func createHubMenuTabCoordinator() -> HubMenuCoordinator {

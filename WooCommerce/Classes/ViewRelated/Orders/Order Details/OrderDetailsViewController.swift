@@ -75,9 +75,6 @@ final class OrderDetailsViewController: UIViewController {
         configureViewModel()
         updateTopBannerView()
         trackGiftCardsShown()
-
-        // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
-        reloadTableViewSectionsAndData()
     }
 
     override func viewWillAppear(_ animated: Bool) {

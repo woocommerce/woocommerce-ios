@@ -2365,6 +2365,44 @@ final class ProductStoreTests: XCTestCase {
         let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
     }
+
+    // MARK: - `fetchNumberOfProducts`
+
+    func test_fetchNumberOfProducts_returns_products_total_on_success() throws {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .success(62))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchNumberOfProducts(siteID: self.sampleSiteID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let numberOfProducts = try XCTUnwrap(result.get())
+        XCTAssertEqual(numberOfProducts, 62)
+    }
+
+    func test_fetchNumberOfProducts_returns_error_on_failure() throws {
+        // Given
+        let remote = MockProductsRemote()
+        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.fetchNumberOfProducts(siteID: self.sampleSiteID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
 }
 
 // MARK: - Private Helpers

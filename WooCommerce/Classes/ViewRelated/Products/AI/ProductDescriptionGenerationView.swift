@@ -36,18 +36,23 @@ struct ProductDescriptionGenerationView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.defaultSpacing) {
 
-                Text(Localization.title)
-                    .headlineStyle()
+                VStack(alignment: .leading, spacing: Layout.titleAndProductNameSpacing) {
+                    Text(Localization.title)
+                        .headlineStyle()
+                    Text(viewModel.name)
+                        .subheadlineStyle()
+                        .renderedIf(viewModel.isProductNameEditable == false)
+                }
 
                 nameTextField
-                    .disabled(viewModel.isProductNameEditable == false)
                     .padding(Layout.productNamePadding)
                     .overlay(
                         RoundedRectangle(cornerRadius: Layout.cornerRadius)
                             .stroke(Color(viewModel.missingName ? .error :
-                                          focusedField == .name ? .accent : .divider))
+                                            focusedField == .name ? .accent : .divider))
                     )
                     .focused($focusedField, equals: .name)
+                    .renderedIf(viewModel.isProductNameEditable)
 
                 // Since there is no placeholder support in `TextEditor`, a workaround is to
                 // use a ZStack with an optional `Text` on top that passes through the gestures.
@@ -183,6 +188,7 @@ private extension ProductDescriptionGenerationView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let defaultSpacing: CGFloat = 16
+        static let titleAndProductNameSpacing: CGFloat = 3
         static let minimuNameEditorSize: CGFloat = 30
         static let minimuEditorSize: CGFloat = 76
         static let cornerRadius: CGFloat = 8

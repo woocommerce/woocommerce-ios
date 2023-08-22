@@ -26,6 +26,7 @@ public enum WooAnalyticsStat: String {
     case applicationOpened = "application_opened"
     case applicationClosed = "application_closed"
     case applicationOpenedWaitingTimeLoaded = "application_opened_waiting_time_loaded"
+    case applicationSiteSnapshot = "application_store_snapshot"
 
     // MARK: Authentication Events
     //
@@ -383,6 +384,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationFailed = "order_creation_failed"
     case orderCreationCustomerAdded = "order_creation_customer_added"
     case orderCreationCustomerSearch = "order_creation_customer_search"
+    case orderCreationCustomerAddManuallyTapped = "order_creation_customer_add_manually_tapped"
     case orderCreationProductSelectorItemSelected = "order_creation_product_selector_item_selected"
     case orderCreationProductSelectorItemUnselected = "order_creation_product_selector_item_unselected"
     case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"

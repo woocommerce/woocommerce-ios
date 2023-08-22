@@ -345,8 +345,6 @@ private extension AppCoordinator {
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         let identifier = response.notification.request.identifier
-        let oneDayBeforeFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayBeforeFreeTrialExpires
-        let oneDayAfterFreeTrialExpiresIdentifier = LocalNotification.Scenario.Identifier.Prefix.oneDayAfterFreeTrialExpires
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
@@ -361,18 +359,6 @@ private extension AppCoordinator {
                                                                           userInfo: userInfo))
 
         switch identifier {
-        case let identifier where identifier.hasPrefix(oneDayBeforeFreeTrialExpiresIdentifier):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let siteID = Int64(identifier.replacingOccurrences(of: oneDayBeforeFreeTrialExpiresIdentifier, with: "")) else {
-                return
-            }
-            showUpgradesView(siteID: siteID)
-        case let identifier where identifier.hasPrefix(oneDayAfterFreeTrialExpiresIdentifier):
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let siteID = Int64(identifier.replacingOccurrences(of: oneDayAfterFreeTrialExpiresIdentifier, with: "")) else {
-                return
-            }
-            showUpgradesView(siteID: siteID)
         case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {
@@ -384,13 +370,6 @@ private extension AppCoordinator {
                 return
             }
             showFreeTrialSurvey()
-        case LocalNotification.Scenario.Identifier.oneDayAfterStoreCreationNameWithoutFreeTrial:
-            let storeNameKey = LocalNotification.UserInfoKey.storeName
-            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
-                  let storeName = response.notification.request.content.userInfo.string(forKey: storeNameKey) else {
-                return
-            }
-            startStoreCreationFlow(storeName: storeName)
         default:
             // TODO: 9665 - handle actions on other local notifications
             break
@@ -420,35 +399,6 @@ private extension AppCoordinator {
             }
             self.upgradesViewPresentationCoordinator.presentUpgrades(for: siteID, from: topViewController)
         }
-    }
-
-    func startStoreCreationFlow(storeName: String) {
-        guard stores.isAuthenticated else {
-            return
-        }
-
-        guard let navigationController = getNavigationController() else {
-            return
-        }
-
-        // Do nothing if any one of the store creation screens is being presented already.
-        if navigationController.topViewController is StoreNameFormHostingController ||
-            navigationController.topViewController is StoreCreationCategoryQuestionHostingController ||
-            navigationController.topViewController is StoreCreationSellingStatusQuestionHostingController ||
-            navigationController.topViewController is StoreCreationCountryQuestionHostingController ||
-            navigationController.topViewController is FreeTrialSummaryHostingController {
-            return
-        }
-
-        let coordinator = StoreCreationCoordinator(source: .storePicker,
-                                                   navigationController: navigationController,
-                                                   prefillStoreName: storeName,
-                                                   storageManager: storageManager,
-                                                   stores: stores,
-                                                   featureFlagService: featureFlagService,
-                                                   pushNotesManager: pushNotesManager)
-        self.storeCreationCoordinator = coordinator
-        coordinator.start()
     }
 
     func getNavigationController() -> UINavigationController? {

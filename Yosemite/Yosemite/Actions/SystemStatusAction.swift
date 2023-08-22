@@ -6,7 +6,7 @@ public enum SystemStatusAction: Action {
 
     /// Synchronize all system plugins for a site given its ID
     ///
-    case synchronizeSystemPlugins(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+    case synchronizeSystemPlugins(siteID: Int64, onCompletion: (Result<[SystemPlugin], Error>) -> Void)
 
     /// Fetch an specific systemPlugin by siteID and name
     ///

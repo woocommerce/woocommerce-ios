@@ -35,6 +35,7 @@ extension Storage.Customer: ReadOnlyConvertible {
         email = customer.email
         firstName = customer.firstName
         lastName = customer.lastName
+        username = customer.username
 
         billingFirstName = customer.billing?.firstName
         billingLastName = customer.billing?.lastName
@@ -67,6 +68,7 @@ extension Storage.Customer: ReadOnlyConvertible {
         customerID = customer.userID
         siteID = customer.siteID
         email = customer.email
+        username = customer.username
 
         if let nameComponents = customer.name?.components(separatedBy: " ") {
             // Handle case when there is a middle name: it goes to first name
@@ -91,6 +93,7 @@ extension Storage.Customer: ReadOnlyConvertible {
             siteID: siteID,
             customerID: customerID,
             email: email ?? "",
+            username: username ?? "",
             firstName: firstName ?? "",
             lastName: lastName ?? "",
             billing: createReadOnlyBillingAddress(),

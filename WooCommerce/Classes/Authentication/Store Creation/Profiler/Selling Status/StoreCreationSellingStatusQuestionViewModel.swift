@@ -1,13 +1,12 @@
 import Combine
 import Foundation
-import struct Yosemite.SiteProfilerData
+import struct Yosemite.StoreProfilerAnswers
 
 /// View model for `StoreCreationSellingStatusQuestionView`, an optional profiler question about store selling status in the store creation flow.
-@MainActor
 final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    typealias SellingStatus = SiteProfilerData.SellingStatus
+    typealias SellingStatus = StoreProfilerAnswers.SellingStatus
 
-    let topHeader: String
+    let topHeader: String = Localization.header
 
     let title: String = Localization.title
 
@@ -24,10 +23,8 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
     private let onContinue: (StoreCreationSellingStatusAnswer?) -> Void
     private let onSkip: () -> Void
 
-    init(storeName: String,
-         onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
+    init(onContinue: @escaping (StoreCreationSellingStatusAnswer?) -> Void,
          onSkip: @escaping () -> Void) {
-        self.topHeader = storeName
         self.onContinue = onContinue
         self.onSkip = onSkip
 
@@ -38,7 +35,7 @@ final class StoreCreationSellingStatusQuestionViewModel: StoreCreationProfilerQu
 }
 
 extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProfilerQuestionViewModel {
-    func continueButtonTapped() async {
+    func continueButtonTapped() {
         guard let selectedStatus else {
             return onSkip()
         }
@@ -46,7 +43,6 @@ extension StoreCreationSellingStatusQuestionViewModel: OptionalStoreCreationProf
             // Handled in `StoreCreationSellingPlatformsQuestionViewModel`.
             return
         }
-        // TODO: submission API.
         onContinue(.init(sellingStatus: selectedStatus, sellingPlatforms: nil))
     }
 
@@ -86,12 +82,16 @@ extension StoreCreationSellingStatusQuestionViewModel.SellingStatus {
 
 private extension StoreCreationSellingStatusQuestionViewModel {
     enum Localization {
+        static let header = NSLocalizedString(
+            "About your store",
+            comment: "Header of the store creation profiler question about the store selling status."
+        )
         static let title = NSLocalizedString(
-            "Where are you on your commerce journey?",
+            "Which one of these best describes you?",
             comment: "Title of the store creation profiler question about the store selling status."
         )
         static let subtitle = NSLocalizedString(
-            "To speed things up, we’ll tailor your WooCommerce experience for you based on your response.",
+            "Let us know where you are in your commerce journey so that we can tailor your Woo experience for you.",
             comment: "Subtitle of the store creation profiler question about the store selling status."
         )
     }

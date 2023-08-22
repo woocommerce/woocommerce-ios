@@ -29,7 +29,7 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
                 promise(result)
             }
         }
@@ -47,7 +47,7 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
                 promise(result)
             }
         }
@@ -65,7 +65,7 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
                 promise(result)
             }
         }
@@ -82,12 +82,48 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2") { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(result.isFailure)
+    }
+
+    // MARK: - `installation_date` parameter
+
+    func test_sendTelemetry_includes_installation_date_parameter_in_ISO8601_format() throws {
+        // Given
+        let remote = TelemetryRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "tracker", filename: "null-data")
+        // Tuesday, August 8, 2023 3:49:57 AM
+        let installationDate = Date(timeIntervalSince1970: 1691466597)
+
+        // When
+        waitFor { promise in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: installationDate) { result in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(network.queryParametersDictionary?["installation_date"] as? String, "2023-08-08T03:49:57Z")
+    }
+
+    func test_sendTelemetry_does_not_include_installation_date_parameter_when_installationDate_is_nil() throws {
+        // Given
+        let remote = TelemetryRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "tracker", filename: "null-data")
+
+        // When
+        waitFor { promise in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertNil(network.queryParametersDictionary?["installation_date"])
     }
 }

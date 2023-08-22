@@ -23,7 +23,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_StoreNameFormHostingController_is_presented_upon_start() throws {
+    func test_FreeTrialSummaryHostingController_is_presented_upon_start() throws {
         // Given
         let coordinator = StoreCreationCoordinator(source: .storePicker,
                                                    navigationController: navigationController)
@@ -39,11 +39,11 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
         }
     }
 
-    func test_StoreNameFormHostingController_is_presented_when_navigationController_is_showing_another_view() throws {
+    func test_FreeTrialSummaryHostingController_is_presented_when_navigationController_is_showing_another_view() throws {
         // Given
         navigationController.show(.init(), sender: nil)
         let coordinator = StoreCreationCoordinator(source: .loggedOut(source: .loginEmailError),
@@ -56,7 +56,7 @@ final class StoreCreationCoordinatorTests: XCTestCase {
 
         // Then
         waitUntil {
-            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is StoreNameFormHostingController
+            (self.navigationController.presentedViewController as? UINavigationController)?.topViewController is FreeTrialSummaryHostingController
         }
     }
 }

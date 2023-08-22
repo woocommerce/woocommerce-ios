@@ -127,9 +127,9 @@ final class DashboardViewController: UIViewController {
     private var subscriptions = Set<AnyCancellable>()
     private var navbarObserverSubscription: AnyCancellable?
 
-    /// Free trial banner presentation handler.
+    /// Store plan banner presentation handler.
     ///
-    private var freeTrialBannerPresenter: FreeTrialBannerPresenter?
+    private var storePlanBannerPresenter: StorePlanBannerPresenter?
 
     /// Presenter for the privacy choices banner
     ///
@@ -166,7 +166,7 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeBannerVisibility()
-        configureFreeTrialBannerPresenter()
+        configureStorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
         Task { @MainActor in
@@ -179,13 +179,17 @@ final class DashboardViewController: UIViewController {
         // Reset title to prevent it from being empty right after login
         configureTitle()
 
-        freeTrialBannerPresenter?.reloadBannerVisibility()
+        storePlanBannerPresenter?.reloadBannerVisibility()
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         updateHeaderVisibility(animated: false)
         observeNavigationBarHeightForHeaderVisibility()
+
+        Task {
+            await viewModel.uploadProfilerAnswers()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -374,8 +378,8 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(stackView)
     }
 
-    func configureFreeTrialBannerPresenter() {
-        self.freeTrialBannerPresenter =  FreeTrialBannerPresenter(viewController: self,
+    func configureStorePlanBannerPresenter() {
+        self.storePlanBannerPresenter =  StorePlanBannerPresenter(viewController: self,
                                                                   containerView: stackView,
                                                                   siteID: siteID) { [weak self] bannerHeight in
             self?.containerView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: bannerHeight, right: 0)
@@ -750,7 +754,7 @@ private extension DashboardViewController {
                                                                      site: site,
                                                                      onUpgradePlan: { [weak self] in
             guard let self else { return }
-            self.freeTrialBannerPresenter?.reloadBannerVisibility()
+            self.storePlanBannerPresenter?.reloadBannerVisibility()
         },
                                                                      shareFeedbackAction: { [weak self] in
             // Present survey

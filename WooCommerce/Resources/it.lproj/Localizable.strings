@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-07-25 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-18 06:46:39+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -108,9 +108,6 @@ which should be translated separately and considered part of this sentence. */
 /* Combined rule for a coupon. Reads like: 2 Products, 1 Category */
 "%1$@, %2$@" = "%1$@, %2$@";
 
-/* Message on the local notification to remind the user of the expired free trial plan.The placeholder is the name of the user. */
-"%1$@, we have paused your store, but you can continue by picking a plan that suits you best." = "%1$@, abbiamo messo in pausa il negozio, ma puoi continuare scegliendo il piano più adatto a te.";
-
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
@@ -162,8 +159,8 @@ which should be translated separately and considered part of this sentence. */
 /* Shows how many tasks are completed in the store setup process.%1$d represents the tasks completed. %2$d represents the total number of tasks.This text is displayed when the store setup task list is presented in collapsed mode in the dashboard screen. */
 "%1$d\/%2$d completed" = "%1$d\/%2$d completato";
 
-/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day left' */
-"%1$ld day left" = "%1$ld giorno rimasto";
+/* Value describing the days left on a plan before expiry (singular). %1ld must be included in the translation, and will be replaced with the count. Reads as '1 day' */
+"%1$ld day" = "%1$ld giorno";
 
 /* Format for the variations detail row in singular form. Reads, `1 variation`
    Label about one product variation shown on Products tab. Reads, `1 variation` */
@@ -173,8 +170,8 @@ which should be translated separately and considered part of this sentence. */
    Label about number of variations shown on Products tab. Reads, `2 variations` */
 "%1$ld variations" = "%1$ld varianti";
 
-/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days left' */
-"%1ld days left" = "%1ld giorni rimanenti";
+/* Value describing the days left on a plan before expiry (plural). %1ld must be included in the translation, and will be replaced with the count. Reads as '15 days' */
+"%1ld days" = "%1ld giorni";
 
 /* 1 Item */
 "%@ Item" = "%@ elemento";
@@ -253,19 +250,13 @@ which should be translated separately and considered part of this sentence. */
 "(No Title)" = "(senza titolo)";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Add and edit products with a touch:** Add new products, update details, upload images, and manage variations, all from the app. Keep your inventory up to date effortlessly." = "**#Aggiungi e modifica i prodotti con un tocco:** aggiungi nuovi prodotti, aggiorna i dettagli, carica le immagini e gestisci le varianti, tutto dall'app. Mantieni aggiornato il tuo inventario senza sforzi.";
+"**#Manage and create orders:**\nSearch, update, or create new orders instantly. Simplify your order process." = "**#Gestisci e crea ordini:**\nCerca, aggiorna o crea nuovi ordini istantaneamente. Semplifica l'elaborazione degli ordini.";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Get notified of every sale:** Never miss a beat with instant sale notifications. Receive alerts for each new sale, allowing you to celebrate your success and stay on top of your store's activity." = "**#Ricevi una notifica per ogni vendita:** non perdere mai nessuna occasione grazie alle notifiche di vendita istantanee. Ricevi avvisi per ogni nuova vendita, così potrai celebrare il tuo successo e ricevere aggiornamenti sull'attività del negozio.";
+"**#Take payments in person:**\nEnhance sales with in-person payments. Secure card transactions with our or compatible readers." = "**#Ricevi i pagamenti di persona:**\nMigliora le vendite con i pagamenti di persona. Proteggi le transazioni con le carte grazie ai nostri lettori o ai lettori compatibili.";
 
 /* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Manage and create orders:** Handle orders with ease. Scroll, search, and change order status. Create new orders on the fly for in-store or phone purchases. Simplify your order management process." = "**#Gestisci e crea ordini:** gestisci gli ordini con facilità. Scorri, cerca e modifica lo stato dell'ordine. Crea nuovi ordini in tempo reale per acquisti in negozio o telefonici. Semplifica il processo di gestione degli ordini.";
-
-/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Take payments in person:** Expand your sales opportunities by accepting payments in person. Use the app to securely process credit card transactions or even connect with compatible card readers for convenient in-person payments." = "**#Accetta pagamenti di persona:** espandi le tue opportunità di vendita accettando pagamenti di persona. Usa l'app per elaborare in modo sicuro le transazioni con carta di credito o persino connetterti ai lettori di carte compatibili per comodi pagamenti di persona.";
-
-/* Subtitle text in the store creation loading screen. The text in ** marks is bolded. */
-"**#Track sales and popular products:** Stay updated on your store's real-time performance. Identify your top-selling products and make informed decisions for maximum profitability." = "**#Traccia le vendite e i prodotti popolari:** resta aggiornato sulle prestazioni in tempo reale del negozio. Identifica i prodotti più venduti e prendi decisioni informate per la massima redditività.";
+"**#Track sales and popular products:**\nStay on top of real-time sales and popular products to boost your store's profitability." = "**#Tieni traccia delle vendite e dei prodotti popolari:**\nConosci in tempo reale le vendite e i prodotti popolari per aumentare la redditività del tuo negozio.";
 
 /* Step 2 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
 "**Ensure AirPrint is enabled** in your printer settings. You may need to configure this setting on the printer itself.\n\nSee the documentation that came with your printer for details." = "**Assicurati che AirPrint sia abilitato** nelle impostazioni della stampante. Potresti dover configurare queste impostazioni sulla stampante stessa.\n\nConsulta la documentazione fornita con la stampante per i dettagli.";
@@ -304,7 +295,7 @@ which should be translated separately and considered part of this sentence. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Disponibile solo negli Stati Uniti: per gli altri Paesi sarà necessaria un'estensione aggiuntiva.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
-"24\/7 support" = "Supporto 24\/7";
+"24\/7 priority support" = "Supporto prioritario 24\/7";
 
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
@@ -380,8 +371,21 @@ which should be translated separately and considered part of this sentence. */
 /* No comment provided by engineer. */
 "Abandoned cart recovery" = "Recupero del carrello abbandonato";
 
+/* Feature option in the store creation features question. */
+"Ability to scale as my business grows" = "Capacità di ridimensionamento man mano che l'attività cresce";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Info sull'app";
+
+/* Top header text of the store creation profiler question about the challenges.
+   Top header text of the store creation profiler question about the features. */
+"About you" = "Chi sei";
+
+/* Header of the store creation profiler question about the store category.
+   Header of the store creation profiler question about the store country.
+   Header of the store creation profiler question about the store selling platforms.
+   Header of the store creation profiler question about the store selling status. */
+"About your store" = "Informazioni sul tuo negozio";
 
 /* No comment provided by engineer. */
 "Accept local payments'" = "Accetta pagamenti locali";
@@ -391,6 +395,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "Access discounted shipping rates. Currently available with DHL and USPS, with more to come soon!" = "Accedi a tariffe di spedizione scontate. Attualmente disponibile con DHL e USPS, con altri in arrivo!";
+
+/* Feature option in the store creation features question. */
+"Access to a wide range of plugins and extensions" = "Accedi a una vasta gamma di plugin ed estensioni";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "Tipo di account";
@@ -438,6 +445,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Aggiungi categoria";
+
+/* The action title on the placeholder overlay when there are no customers on the customers list screen. */
+"Add Customer" = "Aggiungi il cliente";
 
 /* Title text of the button that adds customer data when creating a new order */
 "Add Customer Details" = "Aggiungi dettagli del cliente";
@@ -523,6 +533,9 @@ which should be translated separately and considered part of this sentence. */
 /* Placeholder in Shipping Label form for the Payment Method row. */
 "Add a new credit card" = "Aggiungi una nuova carta di credito";
 
+/* The details text on the placeholder overlay when there are no customers on the customers list screen. */
+"Add a new customer by tapping on the button below." = "Aggiungi un nuovo cliente toccando il pulsante di seguito.";
+
 /* Accessibility label for the 'Add a note' button
    Button text for adding a new order note */
 "Add a note" = "Aggiungi una nota";
@@ -568,8 +581,14 @@ which should be translated separately and considered part of this sentence. */
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Aggiungi carta di credito";
 
+/* Title of the order customer selection screen. */
+"Add customer details" = "Aggiungi dettagli del cliente";
+
 /* Message of the product description AI local announcement. */
 "Add descriptions in a snap with AI. Try our feature today!" = "Aggiungi descrizioni in un attimo con l'IA. Prova la nostra funzionalità oggi stesso.";
+
+/* Button title for adding customer details manually on the customer search screen */
+"Add details manually" = "Aggiungi dettagli manualmente";
 
 /* Text for the button to add a discount to a product during order creation */
 "Add discount" = "Aggiungi lo sconto";
@@ -745,6 +764,9 @@ which should be translated separately and considered part of this sentence. */
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "CI siamo quasi! Inserisci il codice di verifica dalla tua app di autenticazione.";
 
+/* Title text in the store creation loading screen */
+"Almost there! Your store is taking shape" = "Ci sei quasi! Il tuo negozio sta prendendo forma";
+
 /* Instruction text to explain to help users type their password instead of using magic link login option. */
 "Alternatively, you may enter the password for this account." = "In alternativa, puoi inserire la password per questo account.";
 
@@ -894,9 +916,6 @@ which should be translated separately and considered part of this sentence. */
 /* Header of the section for applying a coupon to specific products or categories in the view for adding or editing a coupon's product and category restrictions. */
 "Apply this coupon to" = "Applica questo codice promozionale a";
 
-/* Title text in the store creation loading screen */
-"Applying the finishing touches" = "Applicazione degli ultimi ritocchi";
-
 /* Approve a comment */
 "Approve" = "Approva";
 
@@ -978,17 +997,20 @@ which should be translated separately and considered part of this sentence. */
 /* Popup title to ask for user credentials. */
 "Authentication required for host: %@" = "&Egrave; richiesta l'autenticazione per l'host: %@";
 
-/* Auto updates & backups title feature on the Free Trial Summary Screen */
-"Auto updates & backups" = "Backup e aggiornamenti automatici";
-
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Auto-gestito su questo sito";
 
 /* No comment provided by engineer. */
 "Automated backup + quick restore" = "Backup automatici + ripristini rapidi";
 
+/* Email title feature on the Free Trial Summary Screen */
+"Automated customer emails" = "E-mail ai clienti automatizzate";
+
 /* No comment provided by engineer. */
 "Automated sales taxes" = "Imposte sulle vendite automatiche";
+
+/* Site backup title feature on the Free Trial Summary Screen */
+"Automated site backups" = "Backup del sito automatizzati";
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Avvio e termine automatici di una vendita";
@@ -1074,6 +1096,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Bermuda" = "Bermuda";
 
+/* Hosting title feature on the Free Trial Summary Screen */
+"Best-in-class hosting" = "Hosting ottimale";
+
 /* Country option for a site address. */
 "Bhutan" = "Bhutan";
 
@@ -1158,8 +1183,8 @@ which should be translated separately and considered part of this sentence. */
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Realizza il tuo catalogo aggiungendo ciò che desideri vendere.";
 
-/* Title text in the store creation loading screen */
-"Building the foundations" = "Costruire le fondamenta";
+/* SEO title feature on the Free Trial Summary Screen */
+"Built-in SEO" = "SEO integrata";
 
 /* Country option for a site address. */
 "Bulgaria" = "Bulgaria";
@@ -1273,6 +1298,7 @@ which should be translated separately and considered part of this sentence. */
    Button title that closes the action sheet in product variations
    Button title that closes the presented screen
    Button title to cancel opening device settings in an alert
+   Button title to dismiss the alert when the store cannot be created in the store creation flow.
    Button title. Tapping it cancels the login flow.
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
@@ -1281,6 +1307,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to postal code problems. This also cancels searching.
@@ -1288,8 +1315,10 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the alert presented whenan update fails because the reader is low on battery.
    Button to dismiss the alert presented while the reader is being prepared.
+   Button to dismiss the country search view in the store creation profiler
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the site credential login screen
+   Button to dismiss the store creation profiler flow
    Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1362,9 +1391,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Impossibile aggiungere il pacchetto";
-
-/* Title of the alert when the store cannot be created in the store creation flow. */
-"Cannot create store" = "Impossibile creare il negozio";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Impossibile duplicare il prodotto";
@@ -1504,9 +1530,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the store creation profiler question about the store category. */
 "Choose a category that defines your business the best." = "Scegli una categoria che definisce al meglio la tua attività.";
 
-/* Title of the domain selector in the store creation flow. */
-"Choose a domain" = "Scegli un dominio";
-
 /* Title of the password field on the account creation form. */
 "Choose a password" = "Scegli una password";
 
@@ -1521,6 +1544,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the screen to select the preferred provider for In-Person Payments */
 "Choose your Payment Provider" = "Scegli il tuo fornitore dei pagamenti";
+
+/* Subtitle of the store creation profiler question about the challenges. */
+"Choose your concerns or difficulties below. You can select more than one option." = "Seleziona di seguito le tue preoccupazioni o difficoltà. Puoi selezionare più di una opzione.";
 
 /* Heading text on the select payment method screen */
 "Choose your payment method" = "Scegli il tuo metodo di pagamento";
@@ -1583,6 +1609,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cocos (Keeling) Islands" = "Isole Cocos (Keeling)";
 
+/* Code-free title feature on the Free Trial Summary Screen */
+"Code-free design and editing" = "Progettazione e modifica senza codice";
+
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Ridotto";
 
@@ -1616,6 +1645,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle describing the previous analytics period under comparison. E.g. Compared to Oct 1 - 22, 2022 */
 "Compared to **%1$@**" = "Confrontato con **%1$@**";
 
+/* Third instruction on the test order screen */
+"Complete the payment and await a push notification about the order on your WooCommerce app." = "Completa il pagamento e attendi una notifica push sull'ordine sulla tua app WooCommerce.";
+
 /* Display label for completed order status. */
 "Completed" = "Operazione completata";
 
@@ -1635,6 +1667,9 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for composite product type. */
 "Composite" = "Insieme";
 
+/* Feature option in the store creation features question. */
+"Comprehensive sales and analytics reports" = "Report di analisi e vendite completi";
+
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Configurazione aggiornata";
 
@@ -1650,11 +1685,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button to confirm the preferred provider for In-Person Payments */
 "Confirm Payment Method" = "Conferma metodo di pagamento";
 
-/* Button title Discard Changes in Discard Changes Action Sheet */
+/* Button to confirm the dismissal of  the store creation profiler flow */
 "Confirm and leave" = "Conferma ed esci";
-
-/* Title of the store creation profiler question about the store country. */
-"Confirm your location" = "Conferma la tua posizione";
 
 /* Country option for a site address. */
 "Congo (Brazzaville)" = "Congo (Brazzaville)";
@@ -2017,12 +2049,6 @@ which should be translated separately and considered part of this sentence. */
 /* Blocking indicator text when creating multiple variations remotely. */
 "Creating Variations..." = "Creazione della variante in corso...";
 
-/* Title text in the store creation loading screen */
-"Creating Your Store! It'll be just a few minutes" = "La creazione del tuo negozio è in corso. Sono necessari solo alcuni minuti";
-
-/* Title of the in-progress view when waiting for the site to become a Jetpack site after WPCOM plan purchase in the store creation flow. */
-"Creating your store" = "Creazione del tuo negozio in corso";
-
 /* Credit card payment method for shipping label. */
 "Credit card" = "Carta di credito";
 
@@ -2129,6 +2155,9 @@ which should be translated separately and considered part of this sentence. */
 /* The footer of the text field coupon code in the view for adding or editing a coupon. */
 "Customers need to enter this code to use the coupon." = "I clienti hanno bisogno di inserire questo codice per usare il codice promozionale.";
 
+/* Feature option in the store creation features question. */
+"Customization options for my store design" = "Opzioni di personalizzazione per il design del negozio";
+
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "Personalizza il tuo dominio";
 
@@ -2174,9 +2203,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action sheet option to sort products from the oldest to the newest */
 "Date: Oldest to Newest" = "Data: dal più vecchio al più recente";
-
-/* Label for the text describing days left on a Plan to expire.Reads as 'Days left in plan: 15 days left' */
-"Days left in plan" = "Giorni rimanenti nel piano";
 
 /* Description of the default paragraph formatting style in the editor. */
 "Default" = "Predefinito";
@@ -2311,7 +2337,7 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays the name of a found card reader */
 "Do you want to connect to reader %1$@?" = "Vuoi connetterti al lettore %1$@?";
 
-/* Title of the alert when the user dismisses the store creation flow. */
+/* Title of the alert when the user dismisses the store creation profiler flow. */
 "Do you want to leave?" = "Desideri uscire?";
 
 /* Body of the alert when a user is moving a product to the trash */
@@ -2335,6 +2361,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
+
+/* Text within the Upgrades summary card, informing the merchant their Free Trial has expired. */
+"Don't lose all that hard work! Upgrade to a paid plan to continue working on your store. Unlock more features, launch and start selling, and make your ecommerce business a reality." = "Non perdere tutto quel duro lavoro! Esegui l'aggiornamento a un piano a pagamento per continuare a lavorare sul tuo negozio. Sblocca più funzionalità, inizia a vendere e rendi la tua attività di eCommerce una realtà.";
 
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
@@ -2465,11 +2494,13 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for editing SKU. */
 "Easily identify your products with unique codes" = "Identifica facilmente i tuoi prodotti con codici univoci";
 
+/* Feature option in the store creation features question. */
+"Easy product management and inventory tracking" = "Facile gestione dei prodotti e tracciabilità dell'inventario";
+
 /* Option in the store creation selling platforms question. */
 "Ebay" = "Ebay";
 
-/* Ecommerce reports title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Ecommerce reports" = "Rapporti di eCommerce";
 
 /* Country option for a site address. */
@@ -2548,6 +2579,7 @@ which should be translated separately and considered part of this sentence. */
    Email button title
    Text field email in Edit Address Form
    Title of Email accessibility action, opens a compose view
+   Title of the customer search filter to search for customers that match the email.
    Title text of the row that holds the provided email when creating a simple payment */
 "Email" = "E-mail";
 
@@ -2559,9 +2591,6 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the email address textfield.
    Placeholder of the email field on the account creation form. */
 "Email address" = "Indirizzo e-mail";
-
-/* Email marketing title feature on the Free Trial Summary Screen */
-"Email marketing" = "Marketing tramite e-mail";
 
 /* Label for yes/no switch - emailing the note to customer. */
 "Email note to customer" = "Nota e-mail al cliente";
@@ -2917,6 +2946,9 @@ which should be translated separately and considered part of this sentence. */
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Scopri come puoi aumentare le vendite del tuo negozio";
 
+/* Title text in the store creation loading screen */
+"Extending store's capabilities" = "Estensione delle capacità del negozio";
+
 /* Action sheet option when the user wants to change the Product type to external product */
 "External product" = "Prodotto esterno";
 
@@ -2941,6 +2973,12 @@ which should be translated separately and considered part of this sentence. */
 /* Error message displayed when failed to fetch application password authorization URL during login */
 "Failed to fetch the authorization URL for application passwords. Please try again." = "Impossibile recuperare l'URL di autorizzazione per le password dell'applicazione. Riprova.";
 
+/* Error message in the Add Customer to order screen when getting the customer information */
+"Failed to fetch the customer data. Please try again." = "Impossibile recuperare i dati del cliente. Riprova.";
+
+/* Error message in the Add Customer to order screen when getting the customers information */
+"Failed to fetch the customers data. Please try again later." = "Impossibile recuperare i dati del cliente. Riprova più tardi.";
+
 /* Error message on the Issue Refund screen when fetching the charge details failed */
 "Failed to fetch your charge details. Please try again." = "Recupero dei dettagli dell'addebito non riuscito. Riprova.";
 
@@ -2958,9 +2996,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Faroe Islands" = "Isole Faroe";
-
-/* Fast to launch title feature on the Free Trial Summary Screen */
-"Fast to launch" = "Veloce da lanciare";
 
 /* Option to select the Fastmail app when logging in with magic links */
 "Fastmail" = "Fastmail";
@@ -3041,6 +3076,9 @@ which should be translated separately and considered part of this sentence. */
 /* The hint button's title text to help users find their store address. */
 "Find your store address" = "Trova l'indirizzo del tuo negozio";
 
+/* Challenge option in the store creation challenges question. */
+"Finding customers" = "Ricerca dei clienti";
+
 /* Button to set up an in-person payments plugin after activating it */
 "Finish Setup in Store Admin" = "Completa la configurazione nella pagina di amministrazione del negozio";
 
@@ -3064,6 +3102,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Sconto fisso sul prodotto";
+
+/* Feature option in the store creation features question. */
+"Flexible and secure payment options" = "Opzioni di pagamento flessibili e sicure";
 
 /* Label asking users to follow the on-screen Tap to Pay on iPhone instructions. Presented when a payment is going to be collected using Tap to Pay on iPhone, which results in an Apple-provided screen being shown with instructions for payment. */
 "Follow the on-screen instructions to pay" = "Segui le istruzioni sulla schermata per pagare";
@@ -3316,6 +3357,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title for editing grouped products row on Product main screen for a grouped product */
 "Grouped products" = "Prodotti raggruppati";
 
+/* Title of features on the Free Trial Summary screen */
+"Grow your business" = "Fai crescere la tua attività";
+
 /* Country option for a site address. */
 "Guadeloupe" = "Guadalupa";
 
@@ -3359,6 +3403,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Haiti" = "Haiti";
+
+/* Title of features on the Free Trial Summary screen */
+"Hassel-free store ownership" = "Proprietà del negozio senza problemi";
 
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Un URL personalizzato per ospitare il tuo negozio";
@@ -3432,6 +3479,9 @@ which should be translated separately and considered part of this sentence. */
 /* Browse our help documentation website title */
 "Help Center" = "Centro assistenza";
 
+/* Title in Free trail survey screen. */
+"Help us understand your subscription decisions. Your feedback matters." = "Aiutaci a capire le tue decisioni relative all'abbonamento. Il tuo feedback è importante.";
+
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "Ciao! Ecco un link da cui scaricare l'app WooCommerce. Mi sto davvero divertendo e penso possa farlo anche tu.";
 
@@ -3476,11 +3526,23 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling status question. */
 "I am already selling online" = "Sto già vendendo online";
 
+/* Text for Free trial survey answer. */
+"I am evaluating and comparing your service with others on the market" = "Sto valutando e confrontando il tuo servizio con altri sul mercato.";
+
 /* Option in the store creation selling status question. */
 "I am just starting to sell" = "Ho appena iniziato a vendere";
 
+/* Text for Free trial survey answer. */
+"I am part of a team, and we need to make the decision collectively." = "Faccio parte di una team e la decisione va presa insieme a tutti i membri.";
+
 /* Option in the store creation selling status question. */
 "I am selling offline" = "Sto vendendo offline";
+
+/* Text for Free trial survey answer. */
+"I am still exploring and assessing the features and benefits of the app." = "Sto ancora esplorando e valutando le funzionalità e i vantaggi dell'app.";
+
+/* Text for Free trial survey answer. */
+"I find the price of the service to be a significant factor in my decision." = "Trovo che il prezzo del servizio sia un fattore significativo nella mia decisione.";
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Ho bisogno di aiuto con";
@@ -3562,6 +3624,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Acquisti in-app";
+
+/* Feature option in the store creation features question. */
+"In-person payment" = "Pagamento di persona";
 
 /* Application's Inactive State */
 "Inactive" = "Inattivo";
@@ -3752,9 +3817,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the button that starts a new refund process */
 "Issue Refund" = "Emetti rimborso";
-
-/* Title of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Issue purchasing the plan" = "Problema con l'acquisto del piano";
 
 /* Text of the screen that is displayed while the refund is being created. */
 "Issuing Refund..." = "Emissione del rimborso...";
@@ -3974,11 +4036,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Dicci come possiamo aiutarti";
 
+/* Subtitle of the store creation profiler question about the features. */
+"Let us know what you are looking forward to using in our app." = "Facci sapere quali funzionalità non vedi l'ora di utilizzare nella nostra app.";
+
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know what you think" = "Facci sapere cosa pensi";
 
+/* Subtitle of the store creation profiler question about the store selling status. */
+"Let us know where you are in your commerce journey so that we can tailor your Woo experience for you." = "Facci sapere a che punto sei del tuo viaggio nel mondo del commercio in modo che possiamo personalizzare la tua esperienza Woo per te.";
+
 /* Message info on the support screen. */
 "Let us know your site address (URL) and tell us as much as you can about the problem," = "Comunicaci l'indirizzo del tuo sito (URL) e fornisci il maggior numero di informazioni sul problema,";
+
+/* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
+"Let's try again in a moment. If the issue persists, please contact support." = "Proviamo di nuovo a breve. Se il problema persiste, contatta il supporto.";
 
 /* Title of letter paper size option for printing a shipping label */
 "Letter (8.5 x 11 in)" = "Lettera (8,5 x 11 mm)";
@@ -4238,6 +4309,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of one of the hub menu options */
 "Manage your subscription" = "Gestisci il tuo abbonamento";
 
+/* Challenge option in the store creation challenges question. */
+"Managing inventory" = "Gestione dell'inventario";
+
 /* Section name for manual offsets in time zone selector */
 "Manual Offsets" = "Offset manuale";
 
@@ -4433,8 +4507,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Più negozi";
 
-/* Multiple payment options title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Opzioni di pagamento multiple";
 
 /* Title of the 'My Store' tab - used for spotlight indexing on iOS.
@@ -4451,7 +4524,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
-   Title for the name field on the Shipping Line Details screen during order creation */
+   Title for the name field on the Shipping Line Details screen during order creation
+   Title of the customer search filter to search by name. */
 "Name" = "Nome";
 
 /* Error showed in Shipping Label Address Validation for the name field */
@@ -4560,6 +4634,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Nessuna restrizione";
 
+/* Text displayed when no countries are found upon filtering the country list in store creation profiler. */
+"No Results" = "Nessun risultato";
+
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nessuna attività per questo periodo";
 
@@ -4589,8 +4666,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* A error message when it's not possible to acquirethe Analytics Hub current selection range */
 "No current period available" = "Nessun periodo corrente disponibile";
 
+/* The title on the placeholder overlay when there are no customers on the customers list screen. */
+"No customers found" = "Nessun cliente trovato";
+
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Nessun dato disponibile";
+
+/* Placeholder when there's no customer email in the list */
+"No email address" = "Nessun indirizzo e-mail";
 
 /* Placeholder of the cell text field in Download expiration */
 "No expiration" = "Nessuna scadenza";
@@ -4612,6 +4695,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description when no minimum quantity is set in quantity rules. */
 "No minimum" = "Nessun minimo";
+
+/* Placeholder when there's no customer name in the list */
+"No name" = "Nessun nome";
 
 /* Subtitle of one of the elements in the CTA View for installing WCShip extension */
 "No need to wonder where that stampbook went" = "Non dovrai metterti alla ricerca di un francobollo";
@@ -4648,6 +4734,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Nessuna entrata per questo periodo";
+
+/* Message on the local notification to remind after three days. */
+"No rush, take your time! If you have any questions or need assistance, we're always here to help. Happy exploring!" = "Nessuna fretta, prenditi il tuo tempo. Se hai domande o nel caso in cui necessiti assistenza, siamo qui per aiutarti. Buona esplorazione.";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
 "No shipping classes yet" = "Ancora nessuna classe di spedizione";
@@ -4729,9 +4818,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to dismiss the coupon error notice
    Alert dismissal title
    Button text to confirm that we want to generate all variations
-   Button title to cancel the alert when the user cannot create a store.
-   Button title to dismiss the alert when the store cannot be created in the store creation flow.
-   Button title to dismiss the alert when the WPCOM plan cannot be purchased in the store creation flow.
    Button title. An acknowledgement of the message displayed in a prompt.
    Button to dismiss the error alert on the site credential login screen
    Dismiss button on the alert when there is an error creating a new product category
@@ -4794,6 +4880,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the banner notice on the Payment Method screen when user does not have permission to change the payment method. %1$@ is a placeholder for the store owner's name. %2$@ is a placeholder for the store owner's username. */
 "Only the site owner can manage the shipping label payment methods. Please contact %1$@ (%2$@) to manage payment methods." = "Solo il proprietario del sito può gestire i metodi di pagamento dell'etichetta di spedizione. Contatta %1$@ (%2$@) per gestire i metodi di pagamento.";
+
+/* Title of the alert when the store cannot be created in the store creation flow. */
+"Oops! We've hit a snag" = "Ops! Si è verificato un problema";
 
 /* Message of the alert when the site cannot be launched from store onboarding > launch store screen. */
 "Oops, some unexpected errors happened." = "Ops, si sono verificati alcuni errori imprevisti.";
@@ -4921,9 +5010,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the product form bottom sheet action for editing categories. */
 "Organise your products into related groups" = "Organizza i tuoi prodotti in gruppi correlati";
 
-/* Title text in the store creation loading screen */
-"Organizing the stock room" = "Organizzare il magazzino";
-
 /* Title for the Origin Country row in Customs screen of Shipping Label flow */
 "Origin Country" = "Paese di origine";
 
@@ -4933,18 +5019,25 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for detail of package shipped in original packaging on Package Details screen in Shipping Labels flow. */
 "Original packaging" = "Pacchetto originale";
 
-/* Generic name of non-default discount types
+/* Challenge option in the store creation challenges question.
+   Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
    Restriction type Other for contents declared in the customs form for Shipping Label flow
    Type Other of content to be declared for the customs form in Shipping Label flow */
 "Other" = "Altro";
 
+/* Placeholder text for Free trial survey. */
+"Other (please specify)." = "Altro (specifica).";
+
 /* Title of the Other Plugin support area option */
 "Other Extension \/ Plugin" = "Altra estensione\/plugin";
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "Altri siti";
+
+/* Feature option in the store creation features question. */
+"Others" = "Altro";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -5273,20 +5366,11 @@ This part is the link to the website, and forms part of a longer sentence which 
    Recovery suggestion when we fail to update an address when creating or editing an order */
 "Please make sure you are running the latest version of WooCommerce and try again later." = "Assicurati di disporre della versione più recente di WooCommerce e prova più tardi.";
 
-/* Message of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"Please remain connected." = "Rimani connesso.";
-
 /* Error message when no package is selected on Shipping Label Package Details screen */
 "Please select a package" = "Seleziona un pacchetto";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device is not signed in to iCloud. */
 "Please sign in to iCloud on this device to use Tap to Pay on iPhone" = "Accedi ad iCloud su questo dispositivo per utilizzare Tocca per pagare su iPhone";
-
-/* Message of the alert when the store cannot be created due to the domain in the store creation flow. */
-"Please try a different domain." = "Prova un altro dominio.";
-
-/* Message of the alert when the WPCOM plan cannot be purchased in the store creation flow. */
-"Please try again and make sure you are signed in to an App Store account eligible for purchase." = "Riprova e assicurati di aver effettuato l'accesso a un account App Store idoneo per l'acquisto.";
 
 /* The info of the Error Loading Data banner */
 "Please try again later or reach out to us and we'll be happy to assist you!" = "Riprova più tardi o contattaci per ricevere assistenza.";
@@ -5306,11 +5390,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle message displayed when the merchant already has one store upgraded under the same Apple ID. */
 "Please try again, or contact support for assistance" = "Prova di nuovo o contatta il supporto per ricevere assistenza";
 
-/* Message of the alert when the WPCOM plan cannot be purchased in a webview in the store creation flow. */
-"Please try again, or exit the screen and check back on your store if you previously left the checkout screen while payment is in progress." = "Prova di nuovo o esci dalla schermata e riprova sul negozio, se in precedenza hai lasciato la schermata di pagamento mentre il pagamento era in corso.";
-
 /* Account creation error when an unexpected error occurs.
-   Message of the alert when the store cannot be created in the store creation flow.
    The message of the alert when there is an error uploading an image */
 "Please try again." = "Riprova.";
 
@@ -5974,6 +6054,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
    Button to retry when there was a network error checking In-Person Payments requirements
+   Message of the alert when the store cannot be created in the store creation flow.
    Retry Action
    Retry action for an error notice
    Retry Action on error displayed when the attempt to enable a Pay in Person checkout payment option fails
@@ -6029,6 +6110,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Romania" = "Romania";
+
+/* Message shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Run a test order to ensure your WooCommerce process delivers a seamless customer experience." = "Esegui un ordine di prova per assicurarti che il processo WooCommerce offra un'esperienza cliente fluida.";
 
 /* Country option for a site address. */
 "Russia" = "Russia";
@@ -6189,6 +6273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programma vendita";
 
+/* Placeholder in the country search field in store creation profiler. */
+"Search" = "Cerca";
+
 /* Placeholder text on the search bar on the category list */
 "Search Categories" = "Cerca categorie";
 
@@ -6216,12 +6303,24 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button on the domain settings screen to search for a domain. */
 "Search for a Domain" = "Cerca un dominio";
 
+/* Message to prompt users to search for customers on the customer search screen */
+"Search for an existing customer or" = "Cerca un cliente esistente o";
+
+/* Customer Search Placeholder */
+"Search for customers" = "Cerca clienti";
+
+/* Customer Search Placeholder when showing filters */
+"Search for customers by" = "Cerca clienti per";
+
 /* Search Orders */
 "Search orders" = "Cerca ordini";
 
 /* Products Search Placeholder
    Search Products */
 "Search products" = "Cerca prodotti";
+
+/* Header of the search results in the store creation country question. */
+"Search results" = "Risultati della ricerca";
 
 /* Display label for the product's catalog visibility */
 "Search results only" = "Soltanto risultati della ricerca";
@@ -6296,6 +6395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the Select Categories screen */
 "Select categories" = "Seleziona categorie.";
 
+/* Button to open the list of country to select for store creation profiler */
+"Select country" = "Seleziona il Paese";
+
 /* Placeholder value of the cell in Product Price Settings > Schedule sale to a certain date */
 "Select end date" = "Seleziona la data di fine";
 
@@ -6325,6 +6427,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Carrier and Rates row. */
 "Select your shipping carrier and rates" = "Seleziona corriere e tariffe di spedizione";
+
+/* Second instruction on the test order screen */
+"Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Seleziona il tuo prodotto di prova, aggiungilo al carrello e completa il pagamento su quel negozio web come un vero cliente.";
 
 /* Caption displayed in the simplified prologue screen */
 "Sell anything, anywhere." = "Vendi qualsiasi cosa, ovunque.";
@@ -6377,6 +6482,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text on Add New Custom Package screen in Shipping Label flow
    Header text on Add New Service Package screen in Shipping Label flow */
 "Set up the package you'll be using to ship your products. We'll save it for future orders." = "Configura il pacchetto che utilizzerai per spedire i tuoi prodotti. Lo salveremo per ordini futuri.";
+
+/* Challenge option in the store creation challenges question. */
+"Setting up the online store" = "Configurazione del negozio online";
 
 /* Settings button in the hub menu
    Settings navigation title
@@ -6490,6 +6598,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Rimborso spedizione";
 
+/* Access the store shipping zones. */
+"Shipping Zones" = "Zone di spedizione";
+
+/* Challenge option in the store creation challenges question. */
+"Shipping and logistics" = "Spedizione e logistica";
+
 /* Add / Edit shipping carrier. Title of cell presenting name */
 "Shipping carrier" = "Corriere della spedizione";
 
@@ -6508,8 +6622,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header text when printing a newly purchased shipping label */
 "Shipping label purchased!" = "Etichetta di spedizione acquistata.";
 
-/* Shipping labels title feature on the Free Trial Summary Screen
-   Title of eCommerce plan feature on the store creation plan screen. */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Shipping labels" = "Etichette di spedizione";
 
 /* Header text when printing multiple newly purchased shipping labels */
@@ -6626,9 +6739,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Piano del sito scaduto";
 
-/* Site security title feature on the Free Trial Summary Screen */
-"Site security" = "Sicurezza del sito";
-
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
    The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
@@ -6692,9 +6802,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
 "Something went wrong, please try again later." = "Si è verificato un problema. Riprova più tardi.";
-
-/* Message of the alert when the user cannot create a store because they already created one before. */
-"Sorry, but you can only create one store. Your account is already associated with an active store." = "Spiacenti, ma puoi creare solo un negozio. Il tuo account è già associato a un negozio attivo.";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Il tuo nome utente contiene una parola non valida%@.";
@@ -6816,11 +6923,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Start Date label in custom range date picker */
 "Start Date" = "Data di Inizio";
 
+/* Title on the action button on the test order screen */
+"Start Test order" = "Inizia l'ordine di prova";
+
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Inizia la creazione di un codice promozionale selezionando il tipo di sconto in un foglio inferiore";
 
 /* Subtitle of the store onboarding task to add the first product. */
 "Start selling by adding products or services to your store." = "Inizia a vendere aggiungendo prodotti o servizi al tuo negozio.";
+
+/* Title of features on the Free Trial Summary screen */
+"Start selling quickly" = "Iniziare a vendere rapidamente";
 
 /* The details on the placeholder overlay when there are no products on the Products tab */
 "Start selling today by adding your first product to the store." = "Inizia a vendere oggi aggiungendo il tuo primo prodotto al negozio.";
@@ -6880,6 +6993,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the webview for Store details task from onboarding. */
 "Store details" = "Dettagli negozio";
 
+/* Store management title feature on the Free Trial Summary Screen */
+"Store management tools" = "Strumenti di gestione del negozio";
+
 /* Text field prompt on the store name form in the store creation flow. */
 "Store name" = "Nome del negozio";
 
@@ -6928,9 +7044,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Subscriptions & giftcards" = "Abbonamenti e giftcard";
-
-/* Subscriptions & product kits title feature on the Free Trial Summary Screen */
-"Subscriptions & product kits" = "Kit di prodotti e abbonamenti";
 
 /* Create Shipping Label form -> Subtotal label
    Line description for 'Subtotal' cart total on the receipt. The subtotal of the products purchased before discounts.
@@ -7070,6 +7183,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label asking users to present a card. Presented to users when an in-person refund is going to be executed */
 "Tap or insert card to refund" = "Tocca o inserisci la carta per effettuare il rimborso";
+
+/* First instruction on the test order screen */
+"Tap the button below to be redirected to your online store via a web browser." = "Tocca il pulsante sottostante per essere reindirizzato al tuo negozio online tramite un browser web.";
 
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
@@ -7616,9 +7732,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footer text for Downloadable File URL */
 "This is the url of the file which customers will get accessed to. URLs entered should already be encoded." = "Questo è l'URL del file a cui i clienti avranno accesso. Gli URL inseriti dovrebbero essere già codificati.";
 
-/* Subtitle of the domain selector in the store creation flow. */
-"This is where people will find you on the Internet. You can add another domain later." = "Ecco dove gli utenti ti troveranno su Internet. Puoi aggiungere un altro dominio successivamente.";
-
 /* Message in action sheet when an order item is about to be moved on Package Details screen of Shipping Label flow.The package name reads like: Package 1: Custom Envelope. */
 "This item is currently in Package %1$d: %2$@. Where would you like to move it?" = "Questo elemento si trova al momento nel pacchetto %1$d: %2$@. Dove vorresti spostarlo?";
 
@@ -7714,9 +7827,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Sign in instructions asking user to enter WordPress.com password to proceed with sign in using Apple process */
 "To proceed with this account, please first log in with your WordPress.com password. This will only be asked once." = "Per procedere con questo account, accedi prima con la tua password di WordPress.com. Sarà chiesta una volta sola.";
-
-/* Subtitle of the store creation profiler question about the store selling status. */
-"To speed things up, we’ll tailor your WooCommerce experience for you based on your response." = "Per accelerare le cose, personalizzeremo la tua esperienza WooCommerce per te in base alla tua risposta.";
 
 /* Message explaining that Jetpack needs to be installed for a particular site. Reads like 'To use this ap for awebsite.com you'll need to have... */
 "To use this app for %@ you'll need to have the Jetpack plugin installed and connected on your store." = "Per usare quest'app per %@, dovrai disporre del plugin Jetpack installato e connesso al tuo negozio.";
@@ -7854,11 +7964,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Prova un pagamento";
 
+/* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
+"Try a Test Order" = "Prova un ordine di prova";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "Try a payment" = "Prova un pagamento";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Prova un pagamento utilizzando la tua carta (e rimborsalo quando hai finito).";
+
+/* Title shown on the test order screen */
+"Try a test order" = "Prova un ordine di prova";
 
 /* Action to resync on the placeholder overlay when there is issue syncing site plugins
    Button to dismiss the alert presented when connecting to a specific reader fails. This allows the search to continue.
@@ -8191,8 +8307,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Unlimited admin accounts" = "Account amministratore illimitati";
 
-/* Title of eCommerce plan feature on the store creation plan screen.
-   Unlimited products title feature on the Free Trial Summary Screen */
+/* Title of eCommerce plan feature on the store creation plan screen. */
 "Unlimited products" = "Prodotti illimitati";
 
 /* Back button title when the product doesn't have a name */
@@ -8359,12 +8474,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Usa la password per accedere";
 
+/* Fourth instruction on the test order screen */
+"Use the app to process the refund for the test order." = "Usa l'app per elaborare il rimborso per l'ordine di prova.";
+
 /* Title of user profiles as part of Jetpack benefits. */
 "User Profiles" = "Profili utente";
 
 /* Accessibility label for the username text field in the self-hosted login page.
    Login dialog username placeholder
    Placeholder for the username textfield.
+   Title of the customer search filter to search for customer that match the username.
    Title of the email field on the site credential login screen
    Username placeholder */
 "Username" = "Nome utente";
@@ -8535,9 +8654,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Walmart" = "Walmart";
 
-/* Title of the in-progress view when waiting for the in-app purchase status before the store creation flow. */
-"We are getting ready for your store creation" = "Ci stiamo preparando alla creazione del tuo negozio";
-
 /* Error message when the merchant's payment account has been rejected */
 "We are sorry but we can't support In-Person Payments for this store." = "Siamo spiacenti, ma non possiamo supportare Pagamenti di persona per questo negozio.";
 
@@ -8635,6 +8751,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Al momento non siamo stati in grado di inviarti un'e-mail. Riprova più tardi.";
 
+/* Subtitle of the store creation profiler question about the store country. */
+"We will use this information to set up payments, shipping and taxes." = "Utilizzeremo queste informazioni per impostare pagamenti, spedizioni e imposte.";
+
 /* Instructional text for the magic link login flow. */
 "We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!" = "Ti invieremo per e-mail un link per accedere subito, senza password. Non ci sarà più bisogno di digitare la password!";
 
@@ -8646,12 +8765,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when having trouble connecting to a Jetpack site. */
 "We're not able to connect to the Jetpack site at that URL.  Contact us for assistance." = "Impossibile connettere il sito Jetpack associato a questo URL. Contattaci per assistenza.";
-
-/* Message of the alert when the user cannot create a store for some reason. */
-"We're sorry, but store creation is not currently available in the app." = "Siamo spiacenti, ma la creazione del negozio non è attualmente disponibile nell'app.";
-
-/* Message of the alert when the user cannot create a store because their App Store country is not supported. */
-"We're sorry, but store creation is not currently available in your country in the app." = "Siamo spiacenti, ma la creazione del negozio non è attualmente disponibile nel tuo paese nell'app.";
 
 /* Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user. */
 "We're sorry, we couldn't find any order that match %@" = "Siamo spiacenti, non siamo riusciti a trovare alcun ordine che corrisponda a %@.";
@@ -8698,11 +8811,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Store details task to add details about the store. */
 "We’ll use the info to get a head start on your shipping, tax, and payments settings." = "Useremo le informazioni per ottenere un vantaggio nelle impostazioni di spedizione, tasse e pagamenti.";
 
-/* Subtitle of the store creation profiler question about the store country. */
-"We’ll use this information to get a head start on setting up payments, shipping, and taxes." = "Utilizzeremo queste informazioni per ottenere un vantaggio nell'impostazione di pagamenti, spedizioni e imposte.";
+/* Message on the local notification to ask for Free trial survey. */
+"We’re interested in your decision-making journey. Could you please tell us about your current status?" = "Siamo interessati al tuo percorso decisionale. Potresti parlarci del tuo stato attuale?";
 
 /* Content of the feedback banner on the coupon list screen */
 "We’ve been working on making it possible to view and edit coupons from your device!" = "Abbiamo lavorato per rendere possibile la visualizzazione e la modifica dei coupon dal tuo dispositivo!";
+
+/* Label about preselected country in the store creation country question. */
+"We’ve preselected your location. Please change it here if it's incorrect." = "Abbiamo preselezionato la tua posizione. Cambiala qui se non è corretta.";
+
+/* Title of the store creation profiler question about the challenges. */
+"What challenges you in starting or running an online Store?" = "Cosa ti stimola ad avviare o gestire un negozio online?";
+
+/* Title of the store creation profiler question about the store category. */
+"What do you plan to sell in your store?" = "Cosa pensi di vendere nel tuo negozio?";
 
 /* Title of alert informing users of what email they can use to sign in.Presented when users attempt to log in with an email that does not match a WP.com account */
 "What email do I use to sign in?" = "Quale e-mail uso per accedere?";
@@ -8732,9 +8854,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "Novità in WooCommerce";
 
-/* Title of the store creation profiler question about the store category. */
-"What’s your business about?" = "Di cosa si occupa il tuo business?";
-
 /* Title label on the store name form in the store creation flow. */
 "What’s your store name?" = "Qual è il nome del tuo negozio?";
 
@@ -8744,8 +8863,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The EU notice banner content describing why some countries require special customs description */
 "When shipping to countries that follow European Union (EU) customs rules, you must provide a clear, specific description of every item. Otherwise, shipments may be delayed or interrupted at customs." = "Quando spedisci in Paesi che seguono le norme doganali dell'Unione Europea (UE), devi fornire una descrizione chiara e specifica per ogni elemento. In caso contrario, le spedizioni potrebbero subire dei ritardi o essere fermate alla dogana.";
 
+/* Title of the store creation profiler question about the store country. */
+"Where is your business located?" = "Dove si trova la tua attività?";
+
+/* Title of the store creation profiler question about the features. */
+"Which features are you most interested in?" = "Quali sono le funzionalità che ti interessano di più?";
+
 /* Title of the store creation profiler question about the store selling status. */
-"Where are you on your commerce journey?" = "In che punto ti trovi del tuo viaggio nel commercio?";
+"Which one of these best describes you?" = "Quale di queste domande ti descrive meglio?";
 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Qualche cosa è andato storto e non siamo riusciti ad autenticarti. Riprova!";
@@ -8952,13 +9077,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Sembra che tu abbia installato un plugin per mobile di DudaMobile che impedisce all'applicazione di stabilire una connessione con il tuo blog";
 
 /* Subtitle text in the store creation loading screen */
-"You will be notified once the store is ready! Sit back, relax, and let us work our magic while sharing helpful tips. 🔮" = "Riceverai una notifica quando il negozio sarà pronto. Siediti, rilassati e lasciaci fare una magia condividendo suggerimenti utili. 🔮";
+"You will be notified once the store is ready!\nSit back, relax, and let us work our magic while sharing helpful tips. 🔮" = "Riceverai una notifica quando il negozio sarà pronto. Siediti, rilassati e lasciaci fare una magia condividendo suggerimenti utili. 🔮";
 
-/* Message of the alert when the user dismisses the store creation flow. */
+/* Message of the alert when the user dismisses the store creation profiler flow. */
 "You will lose all your store information." = "Perderai tutte le informazioni del negozio.";
 
 /* Error message when the merchant's payment account is under review */
 "You'll be able to accept In-Person Payments as soon as we finish reviewing your account." = "Potrai accettare Pagamenti di persona non appena avremo terminato la revisione del tuo account.";
+
+/* Title for the Upgrades summary card, informing the merchant they're on a Free Trial site. */
+"You're in a free trial" = "Sei in un periodo di prova gratuito";
 
 /* Error message displayed when unable to close user account due to being unauthorized. */
 "You're not authorized to close the account." = "Non sei autorizzato a chiudere l'account.";
@@ -8978,11 +9106,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the free domain view. */
 "Your free store address" = "L'indirizzo del tuo negozio gratuito";
 
+/* Title for the Upgrades summary card, informing the merchant their Free Trial has ended. */
+"Your free trial has ended" = "La tua prova gratuita è terminata";
+
 /* Info details for an expired free trial */
 "Your free trial has ended and you have limited access to all the features. Subscribe to a Woo Express Plan now." = "La tua prova gratuita è terminata e hai accesso limitato a tutte le funzionalità. Abbonati ora al piano Woo Express Plan.";
 
-/* Message on the local notification to remind the user of the expiring free trial plan.The placeholder is the expiry date of the trial plan. */
-"Your free trial of Woo Express ends tomorrow (%1$@). Now’s the time to own your future – pick a plan and get ready to grow." = "La tua prova gratuita di Woo Express termina domani (%1$@). Ora è il momento di pensare al tuo futuro: scegli un piano e preparati a crescere.";
+/* Text within the Upgrades summary card, informing the merchant of how much time they have to upgrade. */
+"Your free trial will end in %@. Upgrade to a plan by %@ to unlock new features and start selling." = "Il periodo di prova terminerà tra %1$@. Esegui l'aggiornamento del piano entro il giorno %2$@ per accedere alle nuove funzionalità e iniziare a vendere.";
 
 /* The description on the alert shown when connecting a card reader, asking the user to choose a reader type. Only shown when supported on their device. */
 "Your iPhone can be used as a card reader, or you can connect to an external reader via Bluetooth." = "Il tuo iPhone può essere usato come lettore di carte o puoi connettere un lettore esterno tramite Bluetooth.";
@@ -9001,9 +9132,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Dialog message that displays when a configuration update just finished installing */
 "Your phone will be ready to collect payments in a moment..." = "Il telefono sarà pronto per riscuotere i pagamenti in un attimo...";
-
-/* Label for the text describing which Plan the merchant is currently subscribed to.Reads as 'Your Plan: Free Trial' */
-"Your plan" = "Il tuo piano";
 
 /* Additional text shown when a plan upgrade has been successfully purchased. %1$@ is replaced by the plan name, and should be included in the translated string. */
 "Your purchase is complete and you're on the %1$@ plan." = "L'acquisto è completo e ora disponi del piano %1$@.";
@@ -9025,6 +9153,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header text of the site's domain list in domain settings. */
 "Your site domains" = "I tuoi domini dei siti";
+
+/* Title on the banner when the site's WooExpress plan has expired */
+"Your site plan has ended." = "Il piano del sito è terminato.";
 
 /* Title of the store creation success screen. */
 "Your store has been created!" = "Il tuo negozio è stato creato!";
@@ -9262,14 +9393,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Åland Islands" = "Isole Åland";
 
-/* Title of the local notification to remind the user of expiring free trial plan. */
-"⏰ Time’s running out on your free trial!" = "⏰ Il periodo della prova gratuita sta per scadere.";
-
 /* Badge of the store onboarding task to add the first product when the store is eligible for Jetpack AI. */
 "✨ AI content generator available." = "✨ Generatore di contenuti IA disponibile.";
-
-/* Title of the local notification to remind the user of the expired free trial plan. */
-"🌟 Keep your business going with our plan!" = "🌟 Mantieni attiva la tua attività con il nostro piano.";
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Fai crescere il tuo business!";
@@ -9289,6 +9414,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification about a newly created store */
 "🎉 Your store is ready!" = "🎉 Il tuo negozio è pronto.";
 
+/* Title of the local notification to ask for Free trial survey. */
+"💡Help Us Understand Your Subscription Decision" = "💡Aiutaci a capire la tua decisione relativa all'abbonamento";
+
 /* Title of the local notification suggesting a trial plan subscription. */
 "🛍️ Your store is waiting!" = "🛍️ Il tuo negozio attende.";
+
+/* Title of the local notification to remind after three days. */
+"🧭 Still Exploring WooCommerce?" = "🧭 Stai ancora esplorando WooCommerce?";
 

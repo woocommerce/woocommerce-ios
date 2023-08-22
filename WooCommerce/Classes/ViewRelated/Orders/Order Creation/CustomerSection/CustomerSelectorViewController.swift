@@ -7,7 +7,8 @@ import Yosemite
 /// Shows a paginated and searchable list of customers, that can be selected
 ///
 final class CustomerSelectorViewController: UIViewController, GhostableViewController {
-    private var searchViewController: UIViewController?
+    private var searchViewController: SearchViewController<UnderlineableTitleAndSubtitleAndDetailTableViewCell, CustomerSearchUICommand>?
+    private var emptyStateViewController: UIViewController?
     private let siteID: Int64
     private let onCustomerSelected: (Customer) -> Void
     private let viewModel: CustomerSelectorViewModel
@@ -24,7 +25,8 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
         return indicator
     }()
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(cellClass: TitleAndSubtitleAndStatusTableViewCell.self))
+    lazy var ghostTableViewController = GhostTableViewController(options:
+                                                                    GhostTableViewOptions(cellClass: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self))
 
     init(siteID: Int64,
          addressFormViewModel: CreateOrderAddressFormViewModel,
@@ -52,10 +54,36 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
 private extension CustomerSelectorViewController {
     func loadCustomersContent() {
-        viewModel.loadCustomersListData(onCompletion: { [weak self] result in
-            self?.removeGhostContent()
-            self?.addSearchViewController()
-            self?.configureActivityIndicator()
+        viewModel.isEligibleForAdvancedSearch(completion: { [weak self] isEligible in
+            if isEligible {
+                self?.viewModel.loadCustomersListData(onCompletion: { [weak self] result in
+                    guard let self = self else {
+                        return
+                    }
+
+                    self.removeGhostContent()
+                    switch result {
+                    case .success(let thereAreResults):
+                        if thereAreResults {
+                            self.addSearchViewController(loadResultsWhenSearchTermIsEmpty: true, showSearchFilters: false)
+                            self.configureActivityIndicator()
+                        } else {
+                            self.showEmptyState(with: self.emptyStateConfiguration())
+                        }
+                    case .failure:
+                        self.showEmptyState(with: self.errorStateConfiguration())
+                    }
+                })
+            } else {
+                self?.removeGhostContent()
+                self?.addSearchViewController(loadResultsWhenSearchTermIsEmpty: false,
+                                              showSearchFilters: true,
+                                              onAddCustomerDetailsManually: {
+                    self?.presentNewCustomerDetailsFlow()
+                })
+                self?.configureActivityIndicator()
+
+            }
         })
     }
 
@@ -81,13 +109,14 @@ private extension CustomerSelectorViewController {
     }
 
     @objc func presentNewCustomerDetailsFlow() {
-        let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] in
+        let editOrderAddressForm = EditOrderAddressForm(dismiss: { [weak self] action in
                                                             self?.dismiss(animated: true, completion: { [weak self] in
                                                                 // Dismiss this view too
-                                                                self?.dismiss(animated: true)
+                                                                if action == .done {
+                                                                    self?.dismiss(animated: true)
+                                                                }
                                                             })
                                                         },
-                                                        showSearchButton: false,
                                                         viewModel: addressFormViewModel)
         let rootViewController = UIHostingController(rootView: editOrderAddressForm)
         let navigationController = WooNavigationController(rootViewController: rootViewController)
@@ -95,21 +124,65 @@ private extension CustomerSelectorViewController {
         present(navigationController, animated: true, completion: nil)
     }
 
-    func addSearchViewController() {
+    func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool, showSearchFilters: Bool, onAddCustomerDetailsManually: (() -> Void)? = nil) {
         let searchViewController = SearchViewController(
             storeID: siteID,
-            command: CustomerSearchUICommand(siteID: siteID, onDidSelectSearchResult: onCustomerTapped),
-            cellType: TitleAndSubtitleAndStatusTableViewCell.self,
+            command: CustomerSearchUICommand(siteID: siteID,
+                                             loadResultsWhenSearchTermIsEmpty: loadResultsWhenSearchTermIsEmpty,
+                                             showSearchFilters: showSearchFilters,
+                                             onAddCustomerDetailsManually: onAddCustomerDetailsManually,
+                                             onDidSelectSearchResult: onCustomerTapped,
+                                             onDidStartSyncingAllCustomersFirstPage: {
+                                                 Task { @MainActor [weak self] in
+                                                     guard let searchTableView = self?.searchViewController?.tableView else {
+                                                         return
+                                                     }
+                                                     self?.displayGhostContent(over: searchTableView)
+                                                 }
+                                             },
+                                             onDidFinishSyncingAllCustomersFirstPage: {
+                                                 Task { @MainActor [weak self] in
+                                                     self?.removeGhostContent()
+                                                 }
+                                             }),
+            cellType: UnderlineableTitleAndSubtitleAndDetailTableViewCell.self,
             cellSeparator: .none
         )
 
-        searchViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        addChild(searchViewController)
-        view.addSubview(searchViewController.view)
-        view.pinSubviewToAllEdges(searchViewController.view)
-        searchViewController.didMove(toParent: self)
-
+        displayViewController(searchViewController)
         self.searchViewController = searchViewController
+    }
+
+    func showEmptyState(with configuration: EmptyStateViewController.Config) {
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        displayViewController(emptyStateViewController)
+        self.emptyStateViewController = emptyStateViewController
+
+        emptyStateViewController.configure(configuration)
+    }
+
+    func emptyStateConfiguration() -> EmptyStateViewController.Config {
+        EmptyStateViewController.Config.withButton(
+            message: .init(string: Localization.emptyStateMessage),
+            image: .emptySearchResultsImage,
+            details: Localization.emptyStateDetails,
+            buttonTitle: Localization.emptyStateActionTitle
+        ) { [weak self] _ in
+            self?.presentNewCustomerDetailsFlow()
+        }
+    }
+
+    func errorStateConfiguration() -> EmptyStateViewController.Config {
+        EmptyStateViewController.Config.simple(message: .init(string: Localization.genericFetchCustomersError),
+                                               image: .errorImage)
+    }
+
+    func displayViewController(_ viewController: UIViewController) {
+        viewController.view.translatesAutoresizingMaskIntoConstraints = false
+        addChild(viewController)
+        view.addSubview(viewController.view)
+        view.pinSubviewToAllEdges(viewController.view)
+        viewController.didMove(toParent: self)
     }
 
     func onCustomerTapped(_ customer: Customer) {
@@ -136,11 +209,21 @@ private extension CustomerSelectorViewController {
     enum Localization {
         static let title = NSLocalizedString(
             "Add customer details",
-            comment: "Title of the order customer selection screen."
-        )
-
+            comment: "Title of the order customer selection screen.")
         static let genericAddCustomerError = NSLocalizedString(
             "Failed to fetch the customer data. Please try again.",
             comment: "Error message in the Add Customer to order screen when getting the customer information")
+        static let emptyStateMessage = NSLocalizedString(
+            "No customers found",
+            comment: "The title on the placeholder overlay when there are no customers on the customers list screen.")
+        static let emptyStateDetails = NSLocalizedString(
+            "Add a new customer by tapping on the button below.",
+            comment: "The details text on the placeholder overlay when there are no customers on the customers list screen.")
+        static let emptyStateActionTitle = NSLocalizedString(
+            "Add Customer",
+            comment: "The action title on the placeholder overlay when there are no customers on the customers list screen.")
+        static let genericFetchCustomersError = NSLocalizedString(
+            "Failed to fetch the customers data. Please try again later.",
+            comment: "Error message in the Add Customer to order screen when getting the customers information")
     }
 }

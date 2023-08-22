@@ -48,6 +48,7 @@ public protocol ProductsRemoteProtocol {
                         productStatus: ProductStatus?,
                         completion: @escaping (Result<[Int64], Error>) -> Void)
     func createTemplateProduct(for siteID: Int64, template: ProductsRemote.TemplateType, completion: @escaping (Result<Int64, Error>) -> Void)
+    func loadNumberOfProducts(siteID: Int64) async throws -> Int64
 }
 
 extension ProductsRemoteProtocol {
@@ -397,6 +398,13 @@ public final class ProductsRemote: Remote, ProductsRemoteProtocol {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func loadNumberOfProducts(siteID: Int64) async throws -> Int64 {
+        let path = Path.productsTotal
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, availableAsRESTRequest: true)
+        let mapper = ProductsTotalMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
 }
 
 
@@ -432,6 +440,7 @@ public extension ProductsRemote {
     private enum Path {
         static let products   = "products"
         static let templateProducts   = "onboarding/tasks/create_product_from_template"
+        static let productsTotal = "reports/products/totals"
     }
 
     private enum ParameterKey {

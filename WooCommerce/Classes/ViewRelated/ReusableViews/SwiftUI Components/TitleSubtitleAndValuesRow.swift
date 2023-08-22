@@ -44,5 +44,6 @@ struct TitleSubtitleAndValuesRow: View {
 extension TitleSubtitleAndValuesRow {
     enum Constants {
         static let spacing: CGFloat = 20
+        static let verticalPadding: CGFloat = 4
     }
 }

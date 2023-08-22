@@ -274,7 +274,6 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let viewModel = PaymentMethodsViewModel(orderID: orderID,
                                                 formattedTotal: "¥12",
                                                 flow: .simplePayment,
-                                                isTapToPayOnIPhoneEnabled: false,
                                                 dependencies: dependencies)
 
         // When

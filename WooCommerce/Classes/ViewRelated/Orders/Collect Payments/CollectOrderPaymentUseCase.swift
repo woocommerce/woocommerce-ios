@@ -18,7 +18,12 @@ protocol CollectOrderPaymentProtocol {
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onFailure: Closure invoked when there is an error in the flow
-    func collectPayment(using: CardReaderDiscoveryMethod, onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+    /// - Parameter onPaymentCompletion: Closure invoked after any payment completes, but while the user can still continue with the flow in some way
+    func collectPayment(using: CardReaderDiscoveryMethod,
+                        onFailure: @escaping (Error) -> Void,
+                        onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
+                        onCompleted: @escaping () -> Void)
 }
 
 /// Use case to collect payments from an order.
@@ -51,7 +56,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private let stores: StoresManager
 
-    private let analyticsTracker: CollectOrderPaymentAnalytics
+    private let analyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     /// View Controller used to present alerts.
     ///
@@ -92,22 +97,23 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          stores: StoresManager = ServiceLocator.stores,
          paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
+         alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
          preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
-         analyticsTracker: CollectOrderPaymentAnalytics? = nil
+         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
-        self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.configuration = configuration
         self.stores = stores
         self.paymentCaptureCelebration = paymentCaptureCelebration
         self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
                                                                                                 configuration: configuration,
                                                                                                 rootViewController: rootViewController,
-                                                                                                alertsPresenter: alertsPresenter,
+                                                                                                alertsPresenter: self.alertsPresenter,
                                                                                                 onboardingPresenter: onboardingPresenter)
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
                                                                                  analytics: analytics,
@@ -129,9 +135,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
-                        onFailure: @escaping (Error) -> (),
-                        onCancel: @escaping () -> (),
-                        onCompleted: @escaping () -> ()) {
+                        onFailure: @escaping (Error) -> Void,
+                        onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
+                        onCompleted: @escaping () -> Void) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: {
@@ -164,6 +171,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                  alertProvider: paymentAlertProvider,
                                                  onCompleted: onCompleted)
                     }
+                    onPaymentCompletion()
                 })
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)
@@ -537,7 +545,7 @@ private extension CollectOrderPaymentUseCase {
 }
 
 extension CollectOrderPaymentUseCase {
-    enum NotValidAmountError: Error, LocalizedError {
+    enum NotValidAmountError: Error, LocalizedError, Equatable {
         case belowMinimumAmount(amount: String)
         case other
 

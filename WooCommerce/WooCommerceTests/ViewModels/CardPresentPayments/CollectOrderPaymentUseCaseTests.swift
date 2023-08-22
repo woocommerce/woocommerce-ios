@@ -12,10 +12,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
-    private var alerts: MockOrderDetailsPaymentAlerts!
+    private var alertsPresenter: MockCardPresentPaymentAlertsPresenter!
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
-    private var mockAnalyticsTracker: MockCardPaymentAnalyticsTracker!
+    private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
     private var useCase: CollectOrderPaymentUseCase!
 
     override func setUp() {
@@ -24,10 +24,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         stores.reset()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        mockAnalyticsTracker = MockCardPaymentAnalyticsTracker()
+        mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
 
-        alerts = MockOrderDetailsPaymentAlerts() // Update to CardPresentPaymentAlertsPresenting
+        alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
         useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
                                              order: .fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5"),
@@ -36,19 +36,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              onboardingPresenter: onboardingPresenter,
                                              configuration: Mocks.configuration,
                                              stores: stores,
-                                             paymentCaptureCelebration: MockPaymentCaptureCelebration(),
+                                             paymentCaptureCelebration: MockPaymentCaptureCelebration(), alertsPresenter: alertsPresenter,
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker,
                                              analytics: analytics)
-    }
-
-    override func tearDown() {
-        useCase = nil
-        alerts = nil
-        analytics = nil
-        analyticsProvider = nil
-        stores = nil
-        super.tearDown()
     }
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
@@ -56,86 +47,38 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEmpty(stores.receivedActions)
 
         // When
-//        mockCardPresentPaymentActions()
-//        throw XCTSkip("Until we mock preflight, nothing will trigger `onCancel` yet in tests")
-
         let _: Void = waitFor { promise in
             self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {
                 promise(())
-            }, onCompleted: {})
+            }, onPaymentCompletion: {}, onCompleted: {})
             self.mockPreflightController.cancelConnection(readerModel: Mocks.cardReaderModel, gatewayID: Mocks.paymentGatewayAccount, source: .foundReader)
         }
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_canceled"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssertTrue(mockAnalyticsTracker.didCallTrackPaymentCancelation)
+        assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
-    func test_collectPayment_processing_completion_tracks_collectInteracPaymentSuccess_event_when_payment_method_is_interac() throws {
+    func test_collectPayment_processing_completion_tracks_payment_success_event() throws {
         // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
         mockSuccessfulCardPresentPaymentActions(intent: intent)
 
         // When
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` in tests")
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onCompleted: {
+            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
-            })
+            }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_interac_collect_payment_success"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
-    }
-
-    func test_collectPayment_processing_completion_does_not_track_collectInteracPaymentSuccess_event_when_payment_method_is_not_interac() throws {
-        // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
-
-        // When
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
-        waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onCompleted: {
-                promise(())
-            })
-        }
-
-        // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains("card_interac_collect_payment_success"))
-    }
-
-    // MARK: Success alert actions
-    func test_emailing_receipt_from_collectPayment_success_alert_tracks_receiptEmailTapped_event() throws {
-        // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
-
-        // When
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
-        waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onCompleted: {
-                promise(())
-            })
-        }
-        alerts.emailReceiptFromSuccessAlert?()
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "receipt_email_tapped"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssert(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
+        assertEqual(interacPaymentMethod, mockAnalyticsTracker.spyTrackSuccessfulPaymentCapturedPaymentData?.paymentMethod)
     }
 
     // MARK: - Failure cases
-
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let useCase = CollectOrderPaymentUseCase(siteID: 122,
@@ -146,34 +89,28 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  configuration: Mocks.configuration,
                                                  stores: stores,
                                                  paymentCaptureCelebration: MockPaymentCaptureCelebration(),
+                                                 alertsPresenter: alertsPresenter,
+                                                 analyticsTracker: mockAnalyticsTracker,
                                                  analytics: analytics)
 
         // When
-        // Mocks card reader connection success since the minimum amount is only checked after reader connection success.
-        mockCardPresentPaymentActions()
-        var result: Error? = nil
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
-        let _: Void = waitFor { [weak self] promise in
+        waitFor { [weak self] promise in
             useCase.collectPayment(
                 using: .bluetoothScan,
-                onFailure: { error in
-                    result = error
+                onFailure: { _ in
+                    promise(())
                 },
                 onCancel: {},
-                onCompleted: {
-                    promise(())
-                })
-            // Dismisses error to complete the payment flow for `onCollect` to be triggered.
-            self?.alerts.dismissErrorCompletion?()
+                onPaymentCompletion: {},
+                onCompleted: {})
+            let errorAlert = self?.alertsPresenter.spyPresentedAlertViewModels.last(where: { $0 is CardPresentModalNonRetryableError })
+            errorAlert?.didTapPrimaryButton(in: nil)
         }
 
         // Then
-        XCTAssertNotNil(result as? CollectOrderPaymentUseCase.NotValidAmountError)
-
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "card_present_collect_payment_failed"}))
-        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(eventProperties["country"] as? String, "US")
-        XCTAssertEqual(eventProperties["plugin_slug"] as? String, Mocks.paymentGatewayAccount)
+        XCTAssert(mockAnalyticsTracker.didCallTrackPaymentFailure)
+        let receivedError = try XCTUnwrap(mockAnalyticsTracker.spyTrackPaymentFailureError as? CollectOrderPaymentUseCase.NotValidAmountError)
+        assertEqual(CollectOrderPaymentUseCase.NotValidAmountError.belowMinimumAmount(amount: "$0.50"), receivedError)
     }
 
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
@@ -190,9 +127,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // When
         throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onCompleted: {
+            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
-            })
+            }, onCompleted: {})
         }
 
         // Then
@@ -215,9 +152,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // When
         throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
         waitFor { promise in
-            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onCompleted: {
+            self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
-            })
+            }, onCompleted: {})
         }
 
         // Then

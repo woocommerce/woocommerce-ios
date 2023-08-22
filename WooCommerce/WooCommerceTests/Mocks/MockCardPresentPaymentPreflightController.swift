@@ -17,6 +17,10 @@ final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflig
 
     // Mock scenarios
     func cancelConnection(readerModel: String?, gatewayID: String?, source: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
-        readerConnectionSubject.send(.canceled(source, .fake(gatewayID: gatewayID)))
+        readerConnectionSubject.send(.canceled(source, .fake().copy(gatewayID: gatewayID)))
+    }
+
+    func completeConnection(reader: CardReader, gatewayID: String?) {
+        readerConnectionSubject.send(.completed(reader, .fake().copy(gatewayID: gatewayID)))
     }
 }

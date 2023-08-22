@@ -42,7 +42,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_out_presents_authentication() throws {
         // Given
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -93,7 +93,7 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.wporgCredentials)
         sessionManager.defaultStoreID = nil
 
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -108,7 +108,7 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         sessionManager.defaultStoreID = nil
 
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -264,7 +264,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = 134
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager)
+        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -281,12 +281,10 @@ final class AppCoordinatorTests: XCTestCase {
         stores.deauthenticate()
         sessionManager.defaultStoreID = 134
         let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
-        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
                                              authenticationManager: authenticationManager,
-                                             loggedOutAppSettings: loggedOutAppSettings,
-                                             featureFlagService: featureFlagService)
+                                             loggedOutAppSettings: loggedOutAppSettings)
 
         // When
         appCoordinator.start()
@@ -301,32 +299,10 @@ final class AppCoordinatorTests: XCTestCase {
         stores.deauthenticate()
         sessionManager.defaultStoreID = 134
         let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: true)
-        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true)
         let appCoordinator = makeCoordinator(window: window,
                                              stores: stores,
                                              authenticationManager: authenticationManager,
-                                             loggedOutAppSettings: loggedOutAppSettings,
-                                             featureFlagService: featureFlagService)
-
-        // When
-        appCoordinator.start()
-
-        // Then
-        assertThat(window.rootViewController, isAnInstanceOf: LoginNavigationController.self)
-        XCTAssertNil(window.rootViewController?.presentedViewController)
-    }
-
-    func test_starting_app_logged_out_does_not_present_onboarding_when_feature_flag_is_disabled() throws {
-        // Given
-        stores.deauthenticate()
-        sessionManager.defaultStoreID = 134
-        let loggedOutAppSettings = MockLoggedOutAppSettings(hasFinishedOnboarding: false)
-        let featureFlagService = MockFeatureFlagService(isLoginPrologueOnboardingEnabled: false)
-        let appCoordinator = makeCoordinator(window: window,
-                                             stores: stores,
-                                             authenticationManager: authenticationManager,
-                                             loggedOutAppSettings: loggedOutAppSettings,
-                                             featureFlagService: featureFlagService)
+                                             loggedOutAppSettings: loggedOutAppSettings)
 
         // When
         appCoordinator.start()
@@ -346,8 +322,7 @@ final class AppCoordinatorTests: XCTestCase {
                                              stores: stores,
                                              authenticationManager: authenticationManager,
                                              analytics: WooAnalytics(analyticsProvider: analytics),
-                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false),
-                                             featureFlagService: MockFeatureFlagService(isLoginPrologueOnboardingEnabled: true))
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
 
         // When
         appCoordinator.start()
@@ -412,6 +387,7 @@ final class AppCoordinatorTests: XCTestCase {
         let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: true)
         let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
         let coordinator = makeCoordinator(window: window,
+                                          loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true),
                                           pushNotesManager: pushNotesManager,
                                           upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
         coordinator.start()

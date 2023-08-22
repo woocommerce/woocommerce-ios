@@ -8,9 +8,8 @@ struct TitleSubtitleAndValuesRow: View {
     let subtitleValue: String
 
     var body: some View {
-        VStack(alignment: .leading,
-               spacing: 8) {
-            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
+        VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.horizontalSpacing) {
                 Text(title)
                     .bodyStyle()
                     .multilineTextAlignment(.leading)
@@ -21,10 +20,9 @@ struct TitleSubtitleAndValuesRow: View {
                     .bodyStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.vertical, Constants.verticalPadding)
             }
 
-            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.spacing) {
+            AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.horizontalSpacing) {
                 Text(subtitle)
                     .footnoteStyle()
                     .multilineTextAlignment(.leading)
@@ -35,15 +33,15 @@ struct TitleSubtitleAndValuesRow: View {
                     .footnoteStyle()
                     .multilineTextAlignment(.trailing)
                     .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.vertical, Constants.verticalPadding)
             }
-        }.padding([.leading, .trailing], 16)
+        }.padding(Constants.defaultPadding)
     }
 }
 
 extension TitleSubtitleAndValuesRow {
     enum Constants {
-        static let spacing: CGFloat = 20
-        static let verticalPadding: CGFloat = 4
+        static let horizontalSpacing: CGFloat = 20
+        static let verticalSpacing: CGFloat = 4
+        static let defaultPadding: CGFloat = 16
     }
 }

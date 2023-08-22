@@ -201,8 +201,7 @@ private extension AppCoordinator {
             return false
         }
 
-        guard featureFlagService.isFeatureFlagEnabled(.loginPrologueOnboarding),
-              loggedOutAppSettings.hasFinishedOnboarding == false else {
+        guard loggedOutAppSettings.hasFinishedOnboarding == false else {
             return false
         }
         return true

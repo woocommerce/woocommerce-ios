@@ -34,10 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case consolidatedCardReaderManuals
 
-    /// Onboarding experiment on the login prologue screen
-    ///
-    case loginPrologueOnboarding
-
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding

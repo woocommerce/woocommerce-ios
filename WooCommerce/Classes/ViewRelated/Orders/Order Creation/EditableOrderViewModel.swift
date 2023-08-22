@@ -713,6 +713,7 @@ extension EditableOrderViewModel {
         let taxesTotal: String
 
         let couponLineViewModels: [CouponLineViewModel]
+        let taxLineViewModels: [TaxLineViewModel]
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -747,6 +748,7 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
+             taxLineViewModels: [TaxLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
              shouldShowDiscountTotal: Bool = false,
@@ -775,6 +777,7 @@ extension EditableOrderViewModel {
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.shouldShowTaxExtraInformation = shouldShowTaxExtraInformation
             self.couponLineViewModels = couponLineViewModels
+            self.taxLineViewModels = taxLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
@@ -1096,6 +1099,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             shouldShowTaxExtraInformation: featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
+                                            taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
@@ -1385,6 +1389,17 @@ private extension EditableOrderViewModel {
                                                                        siteID: siteID,
                                                                        didSelectSave: saveCouponLine))
 
+        }
+    }
+
+    /// Tax Line view models
+    /// - Parameter taxLines: order's coupon lines
+    /// - Returns: View models for the tax lines
+    ///
+    func taxLineViewModels(from taxLines: [OrderTaxLine]) -> [TaxLineViewModel] {
+        taxLines.map { TaxLineViewModel(label: $0.label,
+                                        ratePercent: "\($0.ratePercent)%",
+                                        totalTax: currencyFormatter.formatAmount($0.totalTax) ?? "0.00")
         }
     }
 

@@ -520,9 +520,6 @@ private extension PushNotificationsManager {
 
 private extension PushNotificationsManager {
     func presentDetails(for notification: PushNotification) {
-        // Handling the product review notifications (`.comment`) has been moved to
-        // `ReviewsCoordinator`. All other push notification handling should be in a coordinator
-        // in the future too.
         if notification.kind != .comment {
             configuration.application.presentNotificationDetails(for: Int64(notification.noteID))
         }

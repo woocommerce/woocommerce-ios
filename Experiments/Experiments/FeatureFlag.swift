@@ -193,4 +193,8 @@ public enum FeatureFlag: Int {
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
+
+    /// Enables the improvements related to taxes in the order flows
+    /// 
+    case manualTaxesInOrder
 }

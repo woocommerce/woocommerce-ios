@@ -255,32 +255,6 @@ extension UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
-    /// Woo Express Upgrade Plan images
-    ///
-    static var expressPlansHomepage: UIImage {
-        return UIImage(named: "express-plans-homepage")!
-    }
-
-    static var expressPlansCardPaymentWebpage: UIImage {
-        return UIImage(named: "express-plans-card-payment-webpage")!
-    }
-
-    static var expressPlansTwoProductWebpages: UIImage {
-        return UIImage(named: "express-plans-two-product-webpages")!
-    }
-
-    static var expressPlansDesignColorsTypography: UIImage {
-        return UIImage(named: "express-plans-design-colors-typography")!
-    }
-
-    static var expressPlansWebpageInEnvelope: UIImage {
-        return UIImage(named: "express-plans-webpage-in-envelope")!
-    }
-
-    static var expressPlansShippingManifest: UIImage {
-        return UIImage(named: "express-plans-shipping-manifest")!
-    }
-
     /// Customize Icon
     ///
     static var customizeImage: UIImage {

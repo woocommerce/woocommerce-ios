@@ -183,10 +183,6 @@ public enum FeatureFlag: Int {
     ///
     case shareProductAI
 
-    /// Shows multiple plans in the IAP Upgrade view
-    ///
-    case freeTrialInAppPurchasesUpgradeM2
-
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
 

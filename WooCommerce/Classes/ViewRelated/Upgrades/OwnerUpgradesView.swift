@@ -25,8 +25,8 @@ struct OwnerUpgradesView: View {
         _isLoading = .init(initialValue: isLoading)
     }
 
-    @State private var paymentFrequency: LegacyWooPlan.PlanFrequency = .month
-    private var paymentFrequencies: [LegacyWooPlan.PlanFrequency] = [.month, .year]
+    @State private var paymentFrequency: WooPlan.PlanFrequency = .month
+    private var paymentFrequencies: [WooPlan.PlanFrequency] = [.month, .year]
 
     @State var selectedPlan: WooWPComPlan? = nil
     @State private var showingFullFeatureList = false
@@ -140,7 +140,7 @@ private extension OwnerUpgradesView {
     }
 }
 
-private extension LegacyWooPlan.PlanFrequency {
+private extension WooPlan.PlanFrequency {
     var paymentFrequencyLocalizedString: String {
         switch self {
         case .month:

@@ -42,7 +42,10 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_starting_app_logged_out_presents_authentication() throws {
         // Given
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -93,7 +96,10 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.wporgCredentials)
         sessionManager.defaultStoreID = nil
 
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -108,7 +114,10 @@ final class AppCoordinatorTests: XCTestCase {
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
         sessionManager.defaultStoreID = nil
 
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()
@@ -264,7 +273,10 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         sessionManager.defaultStoreID = 134
-        let appCoordinator = makeCoordinator(window: window, stores: stores, authenticationManager: authenticationManager, loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
 
         // When
         appCoordinator.start()

@@ -6,7 +6,7 @@ import struct Networking.Settings
 extension WordPressAuthenticator {
     static func initializeWithCustomConfigs(dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
                                             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = featureFlagService.isFeatureFlagEnabled(.loginMagicLinkEmphasisM2)
+        let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
         let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,

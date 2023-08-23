@@ -572,6 +572,46 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    func test_retrieveTaxBasedOnSetting_returns_correct_setting() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/tax/woocommerce_tax_based_on", filename: "setting-tax-based-on-shipping-success")
+
+        // When
+        let result: Result<TaxBasedOnSetting, Error> = waitFor { promise in
+            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        let taxBasedOnSetting = try XCTUnwrap(result.get())
+        XCTAssertEqual(taxBasedOnSetting, .customerShippingAddress)
+    }
+
+    func test_retrieveTaxBasedOnSetting_returns_error_when_it_cannot_be_parsed() throws {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "settings/tax/woocommerce_tax_based_on", filename: "setting-tax-based-on-parse-error")
+
+        // When
+        let result: Result<TaxBasedOnSetting, Error> = waitFor { promise in
+            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(error as? SettingError, .parseError)
+    }
+
     func test_retrieveCouponSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")

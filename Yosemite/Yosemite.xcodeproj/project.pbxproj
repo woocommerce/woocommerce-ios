@@ -331,6 +331,7 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
 		B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */; };
 		B9AECD402850FE4600E78584 /* Order+CardPresentPayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */; };
@@ -788,6 +789,7 @@
 		B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
+		B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxBasedOnSetting.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
 		B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityAction.swift; sourceTree = "<group>"; };
 		B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPayment.swift"; sourceTree = "<group>"; };
@@ -1012,6 +1014,7 @@
 				E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */,
 				03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */,
 				E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */,
+				B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -2222,6 +2225,7 @@
 				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				247CE86C25832D5800F9D9D1 /* MockShipmentActionHandler.swift in Sources */,
 				D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */,
+				B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */,
 				CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
 				247CE87A258332B400F9D9D1 /* MockNotificationActionHandler.swift in Sources */,

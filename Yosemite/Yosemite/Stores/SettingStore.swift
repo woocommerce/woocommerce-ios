@@ -48,6 +48,8 @@ public class SettingStore: Store {
             retrieveAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
         case let .enableAnalyticsSetting(siteID, onCompletion):
             enableAnalyticsSetting(siteID: siteID, onCompletion: onCompletion)
+        case let .retrieveTaxBasedOnSetting(siteID: siteID, onCompletion: onCompletion):
+            retrieveTaxBasedOnSetting(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -162,6 +164,27 @@ private extension SettingStore {
             }
         }
     }
+
+    /// Retrieves the used address to calculate the tax
+    ///
+    func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let setting):
+                self.upsertStoredAdvancedSettingsInBackground(siteID: siteID, readOnlySiteSettings: [setting]) {
+                    guard let taxBasedOnSetting = TaxBasedOnSetting(backendValue: setting.value) else {
+                        onCompletion(.failure(SettingError.parseError))
+                        return
+                    }
+
+                    onCompletion(.success(taxBasedOnSetting))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -258,9 +281,25 @@ extension SettingStore {
     private enum SettingKeys {
         static let coupons = "woocommerce_enable_coupons"
         static let analytics = "woocommerce_analytics_enabled"
+        static let taxBasedOn = "woocommerce_tax_based_on"
     }
 
     private enum SettingValue {
         static let yes = "yes"
+    }
+}
+
+extension TaxBasedOnSetting {
+    init?(backendValue: String) {
+        switch backendValue {
+        case "shipping":
+            self = .customerShippingAddress
+        case "billing":
+            self = .customerBillingAddress
+        case "base":
+            self = .shopBaseAddress
+        default:
+            return nil
+        }
     }
 }

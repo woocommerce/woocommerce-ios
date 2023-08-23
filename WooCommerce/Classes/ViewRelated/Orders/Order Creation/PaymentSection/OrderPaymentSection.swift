@@ -106,7 +106,9 @@ struct OrderPaymentSection: View {
                 }
 
             if viewModel.shouldShowTaxExtraInformation {
-                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+                OrderTaxesTitleAndValueRow(title: Localization.taxesTotal,
+                                           suffix: viewModel.taxBasedOnSetting.isNotEmpty ? "(\(viewModel.taxBasedOnSetting))" : "",
+                                           value: viewModel.taxesTotal)
 
                 ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
                     FootnoteAndValueRow(footnote: viewModel.title,

@@ -2,18 +2,18 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
-final class LegacyPaymentCaptureOrchestratorTests: XCTestCase {
+final class PaymentCaptureOrchestratorTests: XCTestCase {
 
     private var stores: MockStoresManager!
-    private var sut: LegacyPaymentCaptureOrchestrator!
+    private var sut: PaymentCaptureOrchestrator!
     private let sampleSiteID: Int64 = 1234
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
-        sut = LegacyPaymentCaptureOrchestrator(stores: stores,
-                                               paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
-                                               celebration: MockPaymentCaptureCelebration())
+        sut = PaymentCaptureOrchestrator(stores: stores,
+                                         paymentReceiptEmailParameterDeterminer: MockReceiptEmailParameterDeterminer(),
+                                         celebration: MockPaymentCaptureCelebration())
     }
 
     override func tearDown() {
@@ -46,6 +46,7 @@ final class LegacyPaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
                 onDisplayMessage: { _ in },
@@ -81,6 +82,7 @@ final class LegacyPaymentCaptureOrchestratorTests: XCTestCase {
                 paymentGatewayAccount: account,
                 paymentMethodTypes: ["card_present"],
                 stripeSmallestCurrencyUnitMultiplier: 100,
+                onPreparingReader: {},
                 onWaitingForInput: { _ in },
                 onProcessingMessage: {},
                 onDisplayMessage: { _ in },

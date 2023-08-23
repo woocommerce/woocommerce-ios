@@ -68,6 +68,7 @@ private extension EnhancedCouponListViewController {
         let couponListViewController = CouponListViewController(siteID: siteID,
                                                             showFeedbackBannerIfAppropriate: true,
                                                             emptyStateActionTitle: Localization.createCouponAction,
+                                                            onDataLoaded: configureNavigationBarItems,
                                                             emptyStateAction: displayCouponTypeBottomSheet,
                                                             onCouponSelected: showDetails)
 

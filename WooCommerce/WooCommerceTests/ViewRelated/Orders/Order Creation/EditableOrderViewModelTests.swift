@@ -1870,6 +1870,54 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem.variationID, variationID)
         XCTAssertEqual(orderItem.quantity, 1)
     }
+
+    func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() {
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores)
+
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Customer billing address", comment: ""))
+    }
+
+    func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.shopBaseAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores)
+
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Shop base address", comment: ""))
+    }
+
+    func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerShippingAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores)
+
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Customer shipping address", comment: ""))
+    }
 }
 
 private extension MockStorageManager {

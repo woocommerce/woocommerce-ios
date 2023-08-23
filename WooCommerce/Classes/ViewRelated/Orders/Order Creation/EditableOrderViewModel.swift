@@ -1397,9 +1397,8 @@ private extension EditableOrderViewModel {
     /// - Returns: View models for the tax lines
     ///
     func taxLineViewModels(from taxLines: [OrderTaxLine]) -> [TaxLineViewModel] {
-        taxLines.map { TaxLineViewModel(label: $0.label,
-                                        ratePercent: "\($0.ratePercent)%",
-                                        totalTax: currencyFormatter.formatAmount($0.totalTax) ?? "0.00")
+        taxLines.map { TaxLineViewModel(title: "\($0.label) • \($0.rateCode) (\($0.ratePercent)%)",
+                                        value: currencyFormatter.formatAmount($0.totalTax) ?? "0.00")
         }
     }
 

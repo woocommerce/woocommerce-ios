@@ -106,11 +106,11 @@ struct OrderPaymentSection: View {
                 }
 
             if viewModel.shouldShowTaxExtraInformation {
-                ForEach(viewModel.taxLineViewModels, id: \.label) { viewModel in
-                    TitleSubtitleAndValuesRow(title: Localization.taxesTotal,
-                                              titleValue: viewModel.totalTax,
-                                              subtitle: viewModel.label,
-                                              subtitleValue: viewModel.ratePercent)
+                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+
+                ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
+                    FootnoteAndValueRow(footnote: viewModel.title,
+                                        value: viewModel.value)
                 }
             } else {
                 TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))

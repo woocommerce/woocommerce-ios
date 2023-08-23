@@ -165,7 +165,7 @@ private extension SettingStore {
         }
     }
 
-    /// Retrieves the setting for whether WC Analytics are enabled for the specified store
+    /// Retrieves the used address to calculate the tax
     ///
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
         siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
@@ -177,7 +177,6 @@ private extension SettingStore {
                         onCompletion(.failure(SettingError.parseError))
                         return
                     }
-
 
                     onCompletion(.success(taxBasedOnSetting))
                 }

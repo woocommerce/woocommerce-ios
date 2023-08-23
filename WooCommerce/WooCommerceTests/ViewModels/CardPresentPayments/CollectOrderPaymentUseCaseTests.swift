@@ -32,7 +32,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              onboardingPresenter: onboardingPresenter,
                                              configuration: Mocks.configuration,
                                              stores: stores,
-                                             paymentCaptureCelebration: MockPaymentCaptureCelebration(), alertsPresenter: alertsPresenter,
+                                             alertsPresenter: alertsPresenter,
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker)
     }
@@ -83,7 +83,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  onboardingPresenter: onboardingPresenter,
                                                  configuration: Mocks.configuration,
                                                  stores: stores,
-                                                 paymentCaptureCelebration: MockPaymentCaptureCelebration(),
                                                  alertsPresenter: alertsPresenter,
                                                  analyticsTracker: mockAnalyticsTracker)
 

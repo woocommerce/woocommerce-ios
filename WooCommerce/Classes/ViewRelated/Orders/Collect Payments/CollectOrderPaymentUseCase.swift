@@ -76,10 +76,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private let configuration: CardPresentPaymentsConfiguration
 
-    /// Celebration UX when the payment is captured successfully.
-    private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
-
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
+    private let paymentOrchestrator: PaymentCaptureOrchestrator
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
@@ -95,7 +92,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         paymentOrchestrator: PaymentCaptureOrchestrator = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
          preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
@@ -108,7 +105,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.configuration = configuration
         self.stores = stores
-        self.paymentCaptureCelebration = paymentCaptureCelebration
+        self.paymentOrchestrator = paymentOrchestrator
         self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
                                                                                                 configuration: configuration,
                                                                                                 rootViewController: rootViewController,

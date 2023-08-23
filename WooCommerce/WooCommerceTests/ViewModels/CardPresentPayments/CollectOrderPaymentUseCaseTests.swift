@@ -125,11 +125,11 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // When
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
         waitFor { promise in
             self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
 
         // Then
@@ -150,11 +150,11 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // When
-        throw XCTSkip("Until we mock preflight, nothing will trigger `onCompleted` yet in tests")
         waitFor { promise in
             self.useCase.collectPayment(using: .bluetoothScan, onFailure: { _ in }, onCancel: {}, onPaymentCompletion: {
                 promise(())
             }, onCompleted: {})
+            self.mockPreflightController.completeConnection(reader: MockCardReader.wisePad3(), gatewayID: Mocks.paymentGatewayAccount)
         }
 
         // Then

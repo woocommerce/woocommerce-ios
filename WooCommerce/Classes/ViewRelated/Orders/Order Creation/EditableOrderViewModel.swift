@@ -151,6 +151,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
+    /// Defines the tax based on setting to be displayed together with the Taxes title.
+    /// 
+    @Published private(set) var taxBasedOnSetting: String = ""
+
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
@@ -364,6 +368,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
+        retrieveTaxBasedOnSetting()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -714,6 +719,7 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let taxLineViewModels: [TaxLineViewModel]
+        let taxBasedOnSetting: String
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -748,6 +754,7 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
+             taxBasedOnSetting: String = "",
              taxLineViewModels: [TaxLineViewModel] = [],
              couponCode: String = "",
              discountTotal: String = "",
@@ -777,6 +784,7 @@ extension EditableOrderViewModel {
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.shouldShowTaxExtraInformation = shouldShowTaxExtraInformation
             self.couponLineViewModels = couponLineViewModels
+            self.taxBasedOnSetting = taxBasedOnSetting
             self.taxLineViewModels = taxLineViewModels
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
@@ -1064,8 +1072,8 @@ private extension EditableOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest3(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators)
-            .map { [weak self] order, state, showNonEditableIndicators in
+        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators, $taxBasedOnSetting)
+            .map { [weak self] order, state, showNonEditableIndicators, taxBasedOnSetting in
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -1099,6 +1107,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             shouldShowTaxExtraInformation: featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
+                                            taxBasedOnSetting: taxBasedOnSetting,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
@@ -1154,7 +1163,16 @@ private extension EditableOrderViewModel {
             .assign(to: &$multipleLinesMessage)
     }
 
+    func retrieveTaxBasedOnSetting() {
+        stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
+                                                                onCompletion: { [weak self] result in
+                                                                    guard case let .success(setting) = result else {
+                                                                        return
+                                                                    }
 
+                                                                    self?.taxBasedOnSetting = setting.displayString
+                                                                }))
+    }
 
     /// Tracks when customer details have been added
     ///
@@ -1637,6 +1655,22 @@ private extension EditableOrderViewModel {
                                                    comment: "The singular coupon summary. Reads like: Coupon (code1)")
             static let plural = NSLocalizedString("Coupons (%1$@)",
                                                    comment: "The plural coupon summary. Reads like: Coupon (code1, code2)")
+        }
+    }
+}
+
+extension TaxBasedOnSetting {
+    var displayString: String {
+        switch self {
+        case .customerBillingAddress:
+            return NSLocalizedString("Customer billing address",
+                                     comment: "The string to show on order taxes when they are calculated based on the billing address")
+        case .customerShippingAddress:
+            return NSLocalizedString("Customer shipping address",
+                                     comment: "The string to show on order taxes when they are calculated based on the shipping address")
+        case .shopBaseAddress:
+            return NSLocalizedString("Shop base address",
+                                     comment: "The string to show on order taxes when they are calculated based on the shop base address")
         }
     }
 }

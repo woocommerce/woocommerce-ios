@@ -10,8 +10,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private let defaultOrderID: Int64 = 322
 
     private var stores: MockStoresManager!
-    private var analyticsProvider: MockAnalyticsProvider!
-    private var analytics: WooAnalytics!
     private var alertsPresenter: MockCardPresentPaymentAlertsPresenter!
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
@@ -22,8 +20,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         stores.reset()
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
 
@@ -38,8 +34,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              stores: stores,
                                              paymentCaptureCelebration: MockPaymentCaptureCelebration(), alertsPresenter: alertsPresenter,
                                              preflightController: mockPreflightController,
-                                             analyticsTracker: mockAnalyticsTracker,
-                                             analytics: analytics)
+                                             analyticsTracker: mockAnalyticsTracker)
     }
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
@@ -90,8 +85,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  stores: stores,
                                                  paymentCaptureCelebration: MockPaymentCaptureCelebration(),
                                                  alertsPresenter: alertsPresenter,
-                                                 analyticsTracker: mockAnalyticsTracker,
-                                                 analytics: analytics)
+                                                 analyticsTracker: mockAnalyticsTracker)
 
         // When
         waitFor { [weak self] promise in

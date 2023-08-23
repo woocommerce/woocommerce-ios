@@ -99,8 +99,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
          preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
-         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
@@ -116,7 +115,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                                                                 alertsPresenter: self.alertsPresenter,
                                                                                                 onboardingPresenter: onboardingPresenter)
         self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
-                                                                                 analytics: analytics,
+                                                                                 analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
     }

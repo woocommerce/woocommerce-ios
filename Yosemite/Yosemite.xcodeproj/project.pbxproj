@@ -121,8 +121,7 @@
 		031C1EAE27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */; };
 		031C1EB027B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */; };
 		031FD8A026FC970400B315C7 /* RosettaTestingHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */; };
-		0331A7072A38BA0F001D2C2C /* WooPlanFeatureGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */; };
-		0331A7092A38CF08001D2C2C /* LegacyWooPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7082A38CF08001D2C2C /* LegacyWooPlan.swift */; };
+		0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0331A7082A38CF08001D2C2C /* WooPlan.swift */; };
 		0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */; };
 		0391C13D29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */; };
 		03EB998C2906F1D300F06A39 /* JustInTimeMessageAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */; };
@@ -241,7 +240,6 @@
 		578CE7972475FD8200492EBF /* MockProductReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 578CE7962475FD8200492EBF /* MockProductReview.swift */; };
 		57DFCC7925003C4000251E0C /* FetchResultSnapshotsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */; };
 		681D952B28E0F62B00C4039E /* CustomerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 681D952A28E0F62B00C4039E /* CustomerAction.swift */; };
-		682507D62A5FFD090072C1D8 /* WooPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = 682507D52A5FFD090072C1D8 /* WooPlan.swift */; };
 		6889089F28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */; };
 		689D11D52891B9A400F6A83F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 689D11D42891B9A400F6A83F /* WooFoundation.framework */; };
 		68BD37B528DB2E9800C2A517 /* CustomerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BD37B428DB2E9800C2A517 /* CustomerStore.swift */; };
@@ -333,6 +331,7 @@
 		B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */; };
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
+		B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
 		B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */; };
 		B9AECD402850FE4600E78584 /* Order+CardPresentPayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */; };
@@ -576,8 +575,7 @@
 		031C1EAD27B1877000298699 /* WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPresentPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031C1EAF27B1879C00298699 /* WCPayCardPaymentDetails+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardPaymentDetails+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		031FD89F26FC970300B315C7 /* RosettaTestingHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RosettaTestingHelper.swift; sourceTree = "<group>"; };
-		0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanFeatureGroup.swift; sourceTree = "<group>"; };
-		0331A7082A38CF08001D2C2C /* LegacyWooPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyWooPlan.swift; sourceTree = "<group>"; };
+		0331A7082A38CF08001D2C2C /* WooPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlan.swift; sourceTree = "<group>"; };
 		0366EADE29082B3100B51755 /* JustInTimeMessageStore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageStore.swift; sourceTree = "<group>"; };
 		0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStoreTests.swift; sourceTree = "<group>"; };
 		03EB998B2906F1D300F06A39 /* JustInTimeMessageAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessageAction.swift; sourceTree = "<group>"; };
@@ -692,7 +690,6 @@
 		57DFCC7825003C4000251E0C /* FetchResultSnapshotsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchResultSnapshotsProvider.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		681D952A28E0F62B00C4039E /* CustomerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerAction.swift; sourceTree = "<group>"; };
-		682507D52A5FFD090072C1D8 /* WooPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlan.swift; sourceTree = "<group>"; };
 		6889089E28F7B8540081A07E /* Customer+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Customer+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		689D11D42891B9A400F6A83F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		68BD37B428DB2E9800C2A517 /* CustomerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerStore.swift; sourceTree = "<group>"; };
@@ -792,6 +789,7 @@
 		B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Account+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
+		B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxBasedOnSetting.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
 		B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityAction.swift; sourceTree = "<group>"; };
 		B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPayment.swift"; sourceTree = "<group>"; };
@@ -1016,6 +1014,7 @@
 				E138D4F9269EE5BD006EA5C6 /* CardPresentPaymentsOnboardingState.swift */,
 				03F3AFE628097D6400E328BE /* CardPresentPaymentsPlugin.swift */,
 				E109876B284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift */,
+				B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */,
 			);
 			path = Enums;
 			sourceTree = "<group>";
@@ -1090,9 +1089,7 @@
 		0331A7032A38B9D7001D2C2C /* WooPlans */ = {
 			isa = PBXGroup;
 			children = (
-				0331A7062A38BA0F001D2C2C /* WooPlanFeatureGroup.swift */,
-				0331A7082A38CF08001D2C2C /* LegacyWooPlan.swift */,
-				682507D52A5FFD090072C1D8 /* WooPlan.swift */,
+				0331A7082A38CF08001D2C2C /* WooPlan.swift */,
 			);
 			path = WooPlans;
 			sourceTree = "<group>";
@@ -2116,7 +2113,7 @@
 				DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */,
 				0271E1662509CF0100633F7A /* AnyError.swift in Sources */,
 				45ED6096257E7472007B4AC6 /* ProductAttributeStore.swift in Sources */,
-				0331A7092A38CF08001D2C2C /* LegacyWooPlan.swift in Sources */,
+				0331A7092A38CF08001D2C2C /* WooPlan.swift in Sources */,
 				077F39E026A5A6F500ABEADC /* SystemStatusStore.swift in Sources */,
 				DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */,
 				02FF054D23D983F30058E6E7 /* MediaFileManager.swift in Sources */,
@@ -2177,7 +2174,6 @@
 				247CE8342582F20100F9D9D1 /* MockAppSettingsActionHandler.swift in Sources */,
 				025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */,
 				0366EADF29082B3100B51755 /* JustInTimeMessageStore.swift in Sources */,
-				0331A7072A38BA0F001D2C2C /* WooPlanFeatureGroup.swift in Sources */,
 				74937508224985BB007D85D1 /* ProductDimensions+ReadOnlyConvertible.swift in Sources */,
 				CC2C036C262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift in Sources */,
 				45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */,
@@ -2229,7 +2225,7 @@
 				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				247CE86C25832D5800F9D9D1 /* MockShipmentActionHandler.swift in Sources */,
 				D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */,
-				682507D62A5FFD090072C1D8 /* WooPlan.swift in Sources */,
+				B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */,
 				CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
 				247CE87A258332B400F9D9D1 /* MockNotificationActionHandler.swift in Sources */,

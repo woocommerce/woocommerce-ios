@@ -16,7 +16,7 @@ final class UpgradesViewModel: ObservableObject {
     private let siteID: Int64
     private let storePlanSynchronizer: StorePlanSynchronizing
     private let stores: StoresManager
-    private let localPlans: [LegacyWooPlan] = LegacyWooPlan.loadM2HardcodedPlans()
+    private let localPlans: [WooPlan] = WooPlan.loadM2HardcodedPlans()
     private let analytics: Analytics
 
     private let notificationCenter: NotificationCenter = NotificationCenter.default

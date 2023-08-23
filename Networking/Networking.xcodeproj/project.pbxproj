@@ -573,6 +573,8 @@
 		B5C6FCD620A3768900A4F8E4 /* order.json in Resources */ = {isa = PBXBuildFile; fileRef = B5C6FCD520A3768900A4F8E4 /* order.json */; };
 		B5DAEFF02180DD5A0002356A /* NotificationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */; };
 		B918DDF12A3C960000E74DE5 /* products-sku-search-variation.json in Resources */ = {isa = PBXBuildFile; fileRef = B918DDF02A3C960000E74DE5 /* products-sku-search-variation.json */; };
+		B93E032C2A96112A009CA9C1 /* setting-tax-based-on-shipping-success.json in Resources */ = {isa = PBXBuildFile; fileRef = B93E032B2A96112A009CA9C1 /* setting-tax-based-on-shipping-success.json */; };
+		B93E032E2A9613CB009CA9C1 /* setting-tax-based-on-parse-error.json in Resources */ = {isa = PBXBuildFile; fileRef = B93E032D2A9613CA009CA9C1 /* setting-tax-based-on-parse-error.json */; };
 		B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */; };
 		B9CB14DE2A42DE60005912C2 /* products-sku-search-non-purchasable.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */; };
 		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
@@ -1536,6 +1538,8 @@
 		B5C6FCD520A3768900A4F8E4 /* order.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = order.json; sourceTree = "<group>"; };
 		B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsRemote.swift; sourceTree = "<group>"; };
 		B918DDF02A3C960000E74DE5 /* products-sku-search-variation.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search-variation.json"; sourceTree = "<group>"; };
+		B93E032B2A96112A009CA9C1 /* setting-tax-based-on-shipping-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-tax-based-on-shipping-success.json"; sourceTree = "<group>"; };
+		B93E032D2A9613CA009CA9C1 /* setting-tax-based-on-parse-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-tax-based-on-parse-error.json"; sourceTree = "<group>"; };
 		B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefundMetaData.swift; sourceTree = "<group>"; };
 		B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search-non-purchasable.json"; sourceTree = "<group>"; };
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
@@ -2704,6 +2708,8 @@
 				D88D5A40230BC5DA007B6E01 /* reviews-all.json */,
 				57BE08D72409B63700F6DCED /* reviews-missing-avatar-urls.json */,
 				D88D5A42230BC668007B6E01 /* reviews-single.json */,
+				B93E032B2A96112A009CA9C1 /* setting-tax-based-on-shipping-success.json */,
+				B93E032D2A9613CA009CA9C1 /* setting-tax-based-on-parse-error.json */,
 				DE74F29B27E0A1D00002FE59 /* setting-coupon.json */,
 				DE74F29F27E3137F0002FE59 /* setting-analytics.json */,
 				74046E20217A73D0007DD7BF /* settings-general.json */,
@@ -3464,6 +3470,7 @@
 				DE66C5632977CBC700DAA978 /* shipping-label-eligibility-failure-without-data.json in Resources */,
 				DE42F96F296BC9A700D514C2 /* countries-without-data.json in Resources */,
 				EECB7EE8286555180028C888 /* media-update-product-id.json in Resources */,
+				B93E032E2A9613CB009CA9C1 /* setting-tax-based-on-parse-error.json in Resources */,
 				D88D5A43230BC668007B6E01 /* reviews-single.json in Resources */,
 				DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */,
 				02DD6492248A3EC00082523E /* product-external.json in Resources */,
@@ -3542,6 +3549,7 @@
 				D865CE6B278CA266002C8520 /* stripe-payment-intent-error.json in Resources */,
 				CCB2CAA82620ABCC00285CA0 /* shipping-label-create-package-error.json in Resources */,
 				0286981A29ED324900853B88 /* generative-text-failure.json in Resources */,
+				B93E032C2A96112A009CA9C1 /* setting-tax-based-on-shipping-success.json in Resources */,
 				021D741C2987B1550035687E /* checkout-doman-cart-with-domain-credit-success.json in Resources */,
 				B57B1E6C21C94C9F0046E764 /* timeout_error.json in Resources */,
 				0313651B28AE60E000EEE571 /* payment-gateway-cod.json in Resources */,

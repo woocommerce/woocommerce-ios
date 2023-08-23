@@ -1,6 +1,9 @@
 import Foundation
 import Networking
 
+public enum SettingError: Error {
+    case parseError
+}
 
 /// SettingAction: Defines all of the Actions supported by the SettingStore.
 ///
@@ -33,4 +36,8 @@ public enum SettingAction: Action {
     /// Enables WC Analytics for the specified store
     ///
     case enableAnalyticsSetting(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Retrieves the information on what are the taxes based on (shop, billing, or shipping address)
+    ///
+    case retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: (Result<TaxBasedOnSetting, Error>) -> Void)
 }

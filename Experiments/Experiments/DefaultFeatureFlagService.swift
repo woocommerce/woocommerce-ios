@@ -21,10 +21,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .loginPrologueOnboarding:
-            return true
-        case .loginMagicLinkEmphasisM2:
-            return true
         case .promptToEnableCodInIppOnboarding:
             return true
         case .searchProductsBySKU:
@@ -84,8 +80,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .sdkLessGoogleSignIn:
             return true
         case .shareProductAI:
-            return true
-        case .freeTrialInAppPurchasesUpgradeM2:
             return true
         case .ordersWithCouponsM4:
             return true

@@ -1097,7 +1097,7 @@ private extension EditableOrderViewModel {
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
-                                            shouldShowTaxExtraInformation: featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
+                                            shouldShowTaxExtraInformation: self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             couponCode: order.coupons.first?.code ?? "",

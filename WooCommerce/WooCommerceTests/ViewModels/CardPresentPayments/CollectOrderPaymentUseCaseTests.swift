@@ -14,7 +14,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
-    private var paymentOrchestrator: PaymentCaptureOrchestrator!
+    private var mockPaymentOrchestrator: PaymentCaptureOrchestrator!
     private var useCase: CollectOrderPaymentUseCase!
 
     override func setUp() {
@@ -23,7 +23,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         stores.reset()
         mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: MockPaymentCaptureCelebration())
+        mockPaymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: MockPaymentCaptureCelebration())
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
         useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
@@ -33,7 +33,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              onboardingPresenter: onboardingPresenter,
                                              configuration: Mocks.configuration,
                                              stores: stores,
-                                             paymentOrchestrator: paymentOrchestrator,
+                                             paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker)
@@ -85,7 +85,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  onboardingPresenter: onboardingPresenter,
                                                  configuration: Mocks.configuration,
                                                  stores: stores,
-                                                 paymentOrchestrator: paymentOrchestrator,
+                                                 paymentOrchestrator: mockPaymentOrchestrator,
                                                  alertsPresenter: alertsPresenter,
                                                  analyticsTracker: mockAnalyticsTracker)
 

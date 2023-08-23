@@ -639,6 +639,7 @@
 		03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */; };
 		03D7985C2A94EC7700809B0E /* MockCollectOrderPaymentAnalyticsTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7985B2A94EC7700809B0E /* MockCollectOrderPaymentAnalyticsTracker.swift */; };
 		03D7985E2A950A7B00809B0E /* MockCardPresentPaymentAlertsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7985D2A950A7B00809B0E /* MockCardPresentPaymentAlertsPresenter.swift */; };
+		03D798602A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D7985F2A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift */; };
 		03E471BE29388787001A58AD /* BuiltInCardReaderConnectionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */; };
 		03E471C0293A158D001A58AD /* CardReaderConnectionAlertsProviding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */; };
 		03E471C2293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03E471C1293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift */; };
@@ -3071,6 +3072,7 @@
 		03CF78D027C3DBC000523706 /* WCPayCardBrand+IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WCPayCardBrand+IconsTests.swift"; sourceTree = "<group>"; };
 		03D7985B2A94EC7700809B0E /* MockCollectOrderPaymentAnalyticsTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCollectOrderPaymentAnalyticsTracker.swift; sourceTree = "<group>"; };
 		03D7985D2A950A7B00809B0E /* MockCardPresentPaymentAlertsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentAlertsPresenter.swift; sourceTree = "<group>"; };
+		03D7985F2A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentCaptureOrchestrator.swift; sourceTree = "<group>"; };
 		03E471BD29388787001A58AD /* BuiltInCardReaderConnectionController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BuiltInCardReaderConnectionController.swift; sourceTree = "<group>"; };
 		03E471BF293A158C001A58AD /* CardReaderConnectionAlertsProviding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CardReaderConnectionAlertsProviding.swift; sourceTree = "<group>"; };
 		03E471C1293A1F6B001A58AD /* BluetoothReaderConnectionAlertsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothReaderConnectionAlertsProvider.swift; sourceTree = "<group>"; };
@@ -7809,6 +7811,7 @@
 				EE8DCA7F28BF964700F23B23 /* MockAuthentication.swift */,
 				AEB4DB98290AE8F300AE4340 /* MockCookieJar.swift */,
 				02660503293D8D24004084EA /* PaymentCaptureCelebration.swift */,
+				03D7985F2A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift */,
 				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
 				DE4D23B329B58C5A003A4B5D /* MockWordPressComAccountService.swift */,
 				0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */,
@@ -13329,6 +13332,7 @@
 				CC77488E2719A07D0043CDD7 /* ShippingLabelAddressTopBannerFactoryTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */,
+				03D798602A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift in Sources */,
 				77307809251EA07100178696 /* ProductDownloadSettingsViewModelTests.swift in Sources */,
 				02EA6BFC2435EC3500FFF90A /* MockImageDownloader.swift in Sources */,
 				CCE785C829C1E8280003977F /* BundledProductsListViewModelTests.swift in Sources */,

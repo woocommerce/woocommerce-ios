@@ -3,6 +3,13 @@ import Foundation
 import Yosemite
 
 final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
+    var mockCollectPaymentHandler: ((_ onPreparingReader: () -> Void,
+                                     _ onWaitingForInput: (Yosemite.CardReaderInput) -> Void,
+                                     _ onProcessingMessage: () -> Void,
+                                     _ onDisplayMessage: (String) -> Void,
+                                     _ onProcessingCompletion: (Yosemite.PaymentIntent) -> Void,
+                                     _ onCompletion: (Result<WooCommerce.CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
+
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
@@ -14,16 +21,23 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentMethodTypes: [String],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
                         onPreparingReader: () -> Void,
-                        onWaitingForInput: @escaping (Yosemite.CardReaderInput) -> Void,
+                        onWaitingForInput: @escaping (CardReaderInput) -> Void,
                         onProcessingMessage: @escaping () -> Void,
                         onDisplayMessage: @escaping (String) -> Void,
-                        onProcessingCompletion: @escaping (Yosemite.PaymentIntent) -> Void,
-                        onCompletion: @escaping (Result<WooCommerce.CardPresentCapturedPaymentData, Error>) -> Void) {
+                        onProcessingCompletion: @escaping (PaymentIntent) -> Void,
+                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
         spyDidCallCollectPayment = true
         spyCollectPaymentOrder = order
         spyCollectPaymentGatewayAccount = paymentGatewayAccount
         spyCollectPaymentMethodTypes = paymentMethodTypes
         spyCollectPaymentStripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+
+        mockCollectPaymentHandler?(onPreparingReader,
+                                   onWaitingForInput,
+                                   onProcessingMessage,
+                                   onDisplayMessage,
+                                   onProcessingCompletion,
+                                   onCompletion)
     }
 
     var spyDidCallCancelPayment = false

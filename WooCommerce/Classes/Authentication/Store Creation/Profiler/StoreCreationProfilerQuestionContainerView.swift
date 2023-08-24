@@ -113,6 +113,9 @@ private extension StoreCreationProfilerQuestionContainerView {
 
 struct StoreCreationProfilerQuestionContainerView_Previews: PreviewProvider {
     static var previews: some View {
-        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test", onCompletion: { _ in }), onSupport: {})
+        StoreCreationProfilerQuestionContainerView(viewModel: .init(storeName: "Test",
+                                                                    onCompletion: { },
+                                                                    uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: 123)),
+                                                   onSupport: {})
     }
 }

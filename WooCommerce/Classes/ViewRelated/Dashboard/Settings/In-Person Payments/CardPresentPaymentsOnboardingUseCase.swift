@@ -485,6 +485,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func accountStatusAllowedForCardPresentPayments(account: PaymentGatewayAccount) -> Bool {
         account.wcpayStatus == .complete ||
+        account.wcpayStatus == .enabled ||
         account.wcpayStatus == .restrictedSoon
     }
 

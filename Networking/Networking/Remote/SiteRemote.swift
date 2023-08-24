@@ -95,23 +95,27 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
     }
 
     public func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers) async throws {
-        let industry: [String]? = {
-            guard let category = answers.category else {
-                return nil
-            }
-            return [category]
-        }()
-        let onboarding: [String: Any] = [
-            "industry": industry,
-            "is_store_country_set": true,
-            "business_choice": answers.sellingStatus?.remoteValue,
-            "selling_platforms": answers.sellingPlatforms
-        ].compactMapValues { $0 }
+        let parameters: [String: Any] = {
+            let industry: [String]? = {
+                guard let category = answers.category else {
+                    return nil
+                }
+                return [category]
+            }()
+            let onboarding: [String: Any?] = [
+                "industry": industry,
+                "is_store_country_set": answers.countryCode != nil,
+                "business_choice": answers.sellingStatus?.remoteValue,
+                "selling_platforms": answers.sellingPlatforms
+            ]
 
-        let parameters: [String: Any] = [
-            "woocommerce_default_country": answers.countryCode,
-            "woocommerce_onboarding_profile": onboarding
-        ]
+            let params: [String: Any?] = [
+                "woocommerce_onboarding_profile": onboarding.compactMapValues { $0 },
+                "woocommerce_default_country": answers.countryCode
+            ]
+            return params.compactMapValues { $0 }
+        }()
+
         let request = JetpackRequest(wooApiVersion: .wcAdmin,
                                      method: .post,
                                      siteID: siteID,
@@ -225,7 +229,7 @@ public struct StoreProfilerAnswers: Codable, Equatable {
     public let sellingStatus: SellingStatus?
     public let sellingPlatforms: String?
     public let category: String?
-    public let countryCode: String
+    public let countryCode: String?
 
     /// Selling status options.
     /// Its raw value is the value to be sent to the backend.
@@ -252,7 +256,7 @@ public struct StoreProfilerAnswers: Codable, Equatable {
     public init(sellingStatus: StoreProfilerAnswers.SellingStatus?,
                 sellingPlatforms: String?,
                 category: String?,
-                countryCode: String) {
+                countryCode: String?) {
         self.sellingStatus = sellingStatus
         self.sellingPlatforms = sellingPlatforms
         self.category = category

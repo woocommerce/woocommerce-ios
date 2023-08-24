@@ -4,9 +4,9 @@ import struct Yosemite.StoreProfilerAnswers
 import Foundation
 
 class MockStoreCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol {
-    var storeAnswersCalled = false
+    var storedAnswers: StoreProfilerAnswers?
     func storeAnswers(_ data: StoreProfilerAnswers) {
-        storeAnswersCalled = true
+        storedAnswers = data
     }
 
     var uploadAnswersCalled = false

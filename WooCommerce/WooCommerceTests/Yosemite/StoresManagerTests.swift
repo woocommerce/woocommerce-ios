@@ -128,7 +128,10 @@ final class StoresManagerTests: XCTestCase {
         cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
             isLoggedInValues.append(isLoggedIn)
         }
-        let appCoordinator = AppCoordinator(window: UIWindow(frame: .zero), stores: manager, authenticationManager: mockAuthenticationManager)
+        let appCoordinator = AppCoordinator(window: UIWindow(frame: .zero),
+                                            stores: manager,
+                                            authenticationManager: mockAuthenticationManager,
+                                            loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
         appCoordinator.start()
 
         // Action

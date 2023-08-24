@@ -34,14 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case consolidatedCardReaderManuals
 
-    /// Onboarding experiment on the login prologue screen
-    ///
-    case loginPrologueOnboarding
-
-    /// Whether to show the magic link as a secondary button instead of a table view cell on the password screen
-    ///
-    case loginMagicLinkEmphasisM2
-
     /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
     ///
     case promptToEnableCodInIppOnboarding
@@ -182,10 +174,6 @@ public enum FeatureFlag: Int {
     /// Enables generating share product content using AI
     ///
     case shareProductAI
-
-    /// Shows multiple plans in the IAP Upgrade view
-    ///
-    case freeTrialInAppPurchasesUpgradeM2
 
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4

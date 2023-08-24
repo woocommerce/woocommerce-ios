@@ -1105,7 +1105,7 @@ private extension EditableOrderViewModel {
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
-                                            shouldShowTaxExtraInformation: featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
+                                            shouldShowTaxExtraInformation: self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
@@ -1415,7 +1415,7 @@ private extension EditableOrderViewModel {
     /// - Returns: View models for the tax lines
     ///
     func taxLineViewModels(from taxLines: [OrderTaxLine]) -> [TaxLineViewModel] {
-        taxLines.map { TaxLineViewModel(title: "\($0.label) • \($0.rateCode) (\($0.ratePercent)%)",
+        taxLines.map { TaxLineViewModel(title: "\($0.label) • \($0.ratePercent.percentFormatted() ?? "")",
                                         value: currencyFormatter.formatAmount($0.totalTax) ?? "0.00")
         }
     }

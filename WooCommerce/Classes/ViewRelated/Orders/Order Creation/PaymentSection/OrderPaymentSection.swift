@@ -113,7 +113,7 @@ struct OrderPaymentSection: View {
                                         value: viewModel.value)
                 }
             } else {
-                TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+                TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))
             }
 
             TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
@@ -179,7 +179,8 @@ private extension OrderPaymentSection {
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
-        static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +

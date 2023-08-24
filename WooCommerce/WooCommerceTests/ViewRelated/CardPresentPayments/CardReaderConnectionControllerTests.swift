@@ -5,11 +5,11 @@ import Yosemite
 @testable import WooCommerce
 
 final class CardReaderConnectionControllerTests: XCTestCase {
+    // TODO: Work out why these tests fail on CI, but pass locally, then re-enable these in the test plan https://github.com/woocommerce/woocommerce-ios/issues/10536
+
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
-
-    private let sampleGatewayID: String = "MOCKGATEWAY"
 
     private var storageManager: MockStorageManager!
     private var analyticsProvider: MockAnalyticsProvider!

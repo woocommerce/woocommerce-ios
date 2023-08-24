@@ -45,8 +45,23 @@ public extension Double {
 
         return abbreviatedString(for: num, shouldHideDecimalsForIntegerAbbreviatedValue: shouldHideDecimalsForIntegerAbbreviatedValue)
     }
-}
 
+    /// Formats the percent based on given the locale
+    ///
+    /// - locale: The locale to use to format the percent. The default value is the current locale.
+    ///
+    /// - Returns: The formatted percent, or nil if it couldn't be formatted
+    ///
+    func percentFormatted(locale: Locale = Locale.current) -> String? {
+        let number = (self / 100) as NSNumber
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .percent
+        numberFormatter.maximumFractionDigits = 2
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.locale = locale
+        return numberFormatter.string(from: number)
+    }
+}
 
 // MARK: - Private helpers
 //

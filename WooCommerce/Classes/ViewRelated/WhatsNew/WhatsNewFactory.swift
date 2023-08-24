@@ -32,6 +32,9 @@ struct WhatsNewFactory {
            let imageData = try? Data(contentsOf: imageURL),
            let image = UIImage(data: imageData) {
             icon = .base64(image)
+        } else if let lightUrl = URL(string: feature.icons?.first(where: { $0.iconType == "light" })?.iconUrl ?? "") {
+            let darkUrl = URL(string: feature.icons?.first(where: { $0.iconType == "dark" })?.iconUrl ?? "")
+            icon = .adaptiveRemote(universal: lightUrl, dark: darkUrl)
         } else if let url = URL(string: feature.iconUrl) {
             icon = .remote(url)
         }

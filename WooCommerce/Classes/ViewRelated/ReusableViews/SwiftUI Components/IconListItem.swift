@@ -13,6 +13,9 @@ struct IconListItem: View {
         /// Icon that comes from an URL
         case remote(URL)
 
+        /// Adaptive (light/dark mode) remote image, with URLs for one or more parts
+        case adaptiveRemote(universal: URL, dark: URL?)
+
         /// Return an Image for base64 or a FKImage in case of a remote one
         @ViewBuilder
         func getImage() -> some View {
@@ -23,6 +26,19 @@ struct IconListItem: View {
             case .remote(let url):
                 KFImage(url)
                     .resizable()
+            case .adaptiveRemote(let universal, let dark):
+                AdaptiveAsyncImage(lightUrl: universal, darkUrl: dark, scale: 3) { imagePhase in
+                    switch imagePhase {
+                    case .success(let image):
+                        image.scaledToFit()
+                    case .empty:
+                        Image(systemName: "list.bullet.circle.fill").redacted(reason: .placeholder)
+                    case .failure:
+                        EmptyView()
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
             }
         }
     }

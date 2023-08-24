@@ -166,7 +166,7 @@ struct OrderPaymentSection: View {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
-            if viewModel.taxLineViewModels.isNotEmpty {
+            if viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting.isNotEmpty {
                 taxBasedOnLine
             }
         }

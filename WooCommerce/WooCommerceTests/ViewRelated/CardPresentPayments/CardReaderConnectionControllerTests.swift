@@ -88,7 +88,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
-        let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
@@ -305,7 +304,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
-        let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
 
@@ -474,11 +472,9 @@ final class CardReaderConnectionControllerTests: XCTestCase {
 
     func test_cancelling_connection_calls_completion_with_success_and_canceled() throws {
         // Given
-        let unknownReader = MockCardReader.bbposChipper2XBT()
-
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
-            discoveredReaders: [unknownReader],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
             sessionManager: SessionManager.testingInstance,
             storageManager: storageManager
         )
@@ -500,7 +496,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         )
 
         // When
-        let connectionResult: CardReaderConnectionResult = waitFor { promise in
+        let connectionResult: CardReaderConnectionResult = waitFor(timeout: 6.0) { promise in
             controller.searchAndConnect() { result in
                 if case .success(let connectionResult) = result {
                     promise(connectionResult)

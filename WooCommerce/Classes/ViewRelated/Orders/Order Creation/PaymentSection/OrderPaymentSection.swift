@@ -105,7 +105,11 @@ struct OrderPaymentSection: View {
                     }
                 }
 
-            TitleAndValueRow(title: Localization.taxesTotal, value: .content(viewModel.taxesTotal))
+            if viewModel.shouldShowTaxExtraInformation {
+                taxesSection
+            } else {
+                TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))
+            }
 
             TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
                 .renderedIf(viewModel.shouldShowDiscountTotal)
@@ -157,6 +161,47 @@ struct OrderPaymentSection: View {
         .accessibilityIdentifier("add-coupon-button")
         .disabled(viewModel.shouldDisableAddingCoupons)
     }
+
+    @ViewBuilder private var taxesSection: some View {
+        VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
+            taxSectionTitle
+            taxLines
+        }
+        .padding(Constants.sectionPadding)
+    }
+
+    @ViewBuilder private var taxSectionTitle: some View {
+        AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
+            Text(Localization.taxesTotal)
+                .bodyStyle()
+                .multilineTextAlignment(.leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Text(viewModel.taxesTotal)
+                .bodyStyle()
+                .multilineTextAlignment(.trailing)
+                .frame(width: nil, alignment: .trailing)
+        }
+    }
+
+    @ViewBuilder private var taxLines: some View {
+        ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
+            HStack {
+                AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
+                    Text(viewModel.title)
+                        .font(.footnote)
+                        .fontWeight(.semibold)
+                        .multilineTextAlignment(.leading)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Text(viewModel.value)
+                        .footnoteStyle()
+                        .multilineTextAlignment(.trailing)
+                        .frame(width: nil, alignment: .trailing)
+                }
+            }
+        }
+    }
 }
 
 // MARK: Constants
@@ -170,7 +215,8 @@ private extension OrderPaymentSection {
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
-        static let taxesTotal = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
+        static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
@@ -179,6 +225,12 @@ private extension OrderPaymentSection {
                                                                comment: "Confirm message for navigating to coupons when creating a new order")
         static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm button title for navigating to coupons when creating a new order")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
+    }
+
+    enum Constants {
+        static let taxesSectionVerticalSpacing: CGFloat = 8
+        static let taxesAdaptativeStacksSpacing: CGFloat = 4
+        static let sectionPadding: CGFloat = 16
     }
 }
 

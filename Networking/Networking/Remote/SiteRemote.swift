@@ -109,12 +109,10 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
                 "selling_platforms": answers.sellingPlatforms
             ]
 
-            var params: [String: Any?] = [
-                "woocommerce_onboarding_profile": onboarding.compactMapValues { $0 }
+            let params: [String: Any?] = [
+                "woocommerce_onboarding_profile": onboarding.compactMapValues { $0 },
+                "woocommerce_default_country": answers.countryCode
             ]
-            if let countryCode = answers.countryCode {
-                params["woocommerce_default_country"] = countryCode
-            }
             return params.compactMapValues { $0 }
         }()
 

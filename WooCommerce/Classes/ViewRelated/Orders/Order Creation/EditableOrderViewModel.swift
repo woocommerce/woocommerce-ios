@@ -1663,13 +1663,13 @@ extension TaxBasedOnSetting {
     var displayString: String {
         switch self {
         case .customerBillingAddress:
-            return NSLocalizedString("Customer billing address",
+            return NSLocalizedString("Calculated on billing address",
                                      comment: "The string to show on order taxes when they are calculated based on the billing address")
         case .customerShippingAddress:
-            return NSLocalizedString("Customer shipping address",
+            return NSLocalizedString("Calculated on shipping address",
                                      comment: "The string to show on order taxes when they are calculated based on the shipping address")
         case .shopBaseAddress:
-            return NSLocalizedString("Shop base address",
+            return NSLocalizedString("Calculated on shop base address",
                                      comment: "The string to show on order taxes when they are calculated based on the shop base address")
         }
     }

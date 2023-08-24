@@ -8,7 +8,8 @@ struct FootnoteAndValueRow: View {
         HStack {
             AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.horizontalSpacing) {
                 Text(footnote)
-                    .footnoteStyle()
+                    .font(.footnote)
+                    .fontWeight(.semibold)
                     .multilineTextAlignment(.leading)
                     .frame(maxWidth: .infinity, alignment: .leading)
 

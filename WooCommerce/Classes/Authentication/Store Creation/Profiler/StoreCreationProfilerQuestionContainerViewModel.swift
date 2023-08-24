@@ -24,22 +24,46 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
 
     let storeName: String
     private let analytics: Analytics
-    private let completionHandler: (StoreProfilerAnswers?) -> Void
+    private let completionHandler: () -> Void
 
-    private var storeCategory: StoreCreationCategoryAnswer?
-    private var sellingStatus: StoreCreationSellingStatusAnswer?
-    private var storeCountry: SiteAddress.CountryCode = .US
+    private var storeCategory: StoreCreationCategoryAnswer? {
+        didSet {
+            storeAnswers()
+        }
+    }
+    private var sellingStatus: StoreCreationSellingStatusAnswer? {
+        didSet {
+            storeAnswers()
+        }
+    }
+    private var storeCountry: SiteAddress.CountryCode = .US {
+        didSet {
+            storeAnswers()
+        }
+    }
     private var challenges: [StoreCreationChallengesAnswer] = []
     private var features: [StoreCreationFeaturesAnswer] = []
+    private let uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
+
+    private var answers: StoreProfilerAnswers {
+        let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
+        let sellingStatus = sellingStatus?.sellingStatus
+        return StoreProfilerAnswers(sellingStatus: sellingStatus,
+                                    sellingPlatforms: sellingPlatforms,
+                                    category: storeCategory?.value,
+                                    countryCode: storeCountry.rawValue)
+    }
 
     @Published private(set) var currentQuestion: StoreCreationProfilerQuestion = .sellingStatus
 
     init(storeName: String,
          analytics: Analytics = ServiceLocator.analytics,
-         onCompletion: @escaping (StoreProfilerAnswers?) -> Void) {
+         onCompletion: @escaping () -> Void,
+         uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol) {
         self.storeName = storeName
         self.analytics = analytics
         self.completionHandler = onCompletion
+        self.uploadAnswersUseCase = uploadAnswersUseCase
     }
 
     func onAppear() {
@@ -96,23 +120,20 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         if let previousQuestion = currentQuestion.previousQuestion {
             currentQuestion = previousQuestion
         } else {
-            completionHandler(nil)
+            completionHandler()
         }
     }
+}
 
-    private func handleCompletion() {
-        let answers: StoreProfilerAnswers = {
-            let sellingPlatforms = sellingStatus?.sellingPlatforms?.map { $0.rawValue }.sorted().joined(separator: ",")
-            let sellingStatus = sellingStatus?.sellingStatus
-            return StoreProfilerAnswers(sellingStatus: sellingStatus,
-                                        sellingPlatforms: sellingPlatforms,
-                                        category: storeCategory?.value,
-                                        countryCode: storeCountry.rawValue)
-        }()
-
+private extension StoreCreationProfilerQuestionContainerViewModel {
+    func handleCompletion() {
         analytics.track(event: .StoreCreation.siteCreationProfilerData(answers,
                                                                        challenges: challenges,
                                                                        features: features))
-        completionHandler(answers)
+        completionHandler()
+    }
+
+    func storeAnswers() {
+        uploadAnswersUseCase.storeAnswers(answers)
     }
 }

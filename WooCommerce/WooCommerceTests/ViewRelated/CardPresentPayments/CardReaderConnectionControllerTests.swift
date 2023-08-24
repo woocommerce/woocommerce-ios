@@ -5,7 +5,8 @@ import Yosemite
 @testable import WooCommerce
 
 final class CardReaderConnectionControllerTests: XCTestCase {
-    // TODO: Work out why these tests fail on CI, but pass locally, then re-enable these in the test plan https://github.com/woocommerce/woocommerce-ios/issues/10536
+    // TODO: Work out why these tests fail on CI, but pass locally, then re-enable these in the test plan
+    // https://github.com/woocommerce/woocommerce-ios/issues/10536
 
     /// Dummy Site ID
     ///

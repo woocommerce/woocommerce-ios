@@ -35,6 +35,22 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentQuestion, .category)
     }
 
+    func test_saveSellingStatus_saves_answer() throws {
+        // Given
+        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: usecase)
+        // When
+        viewModel.saveSellingStatus(.init(sellingStatus: .alreadySellingOnline,
+                                          sellingPlatforms: [.bigCartel, .bigCommerce]))
+
+        // Then
+        let data = try XCTUnwrap(usecase.storedAnswers)
+        XCTAssertEqual(data.sellingStatus, .alreadySellingOnline)
+        XCTAssertEqual(data.sellingPlatforms, "big_cartel,big_commerce")
+    }
+
     func test_saveCategory_updates_currentQuestion_to_country() {
         // Given
         let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
@@ -45,6 +61,23 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.currentQuestion, .country)
+    }
+
+    func test_saveCategory_saves_answer() throws {
+        // Given
+        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: usecase)
+
+        // When
+        viewModel.saveCategory(.init(name: StoreCreationCategoryQuestionViewModel.Category.foodDrink.name,
+                                     value: StoreCreationCategoryQuestionViewModel.Category.foodDrink.rawValue))
+
+
+        // Then
+        let data = try XCTUnwrap(usecase.storedAnswers)
+        XCTAssertEqual(data.category, StoreCreationCategoryQuestionViewModel.Category.foodDrink.rawValue)
     }
 
     func test_saveCountry_updates_currentQuestion_to_challenges() {
@@ -58,6 +91,21 @@ final class StoreCreationProfilerQuestionContainerViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.currentQuestion, .challenges)
+    }
+
+    func test_saveCountry_saves_answer() throws {
+        // Given
+        let usecase = MockStoreCreationProfilerUploadAnswersUseCase()
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: "Test",
+                                                                        onCompletion: {},
+                                                                        uploadAnswersUseCase: usecase)
+        // When
+        viewModel.saveCountry(.AG)
+
+
+        // Then
+        let data = try XCTUnwrap(usecase.storedAnswers)
+        XCTAssertEqual(data.countryCode, "AG")
     }
 
     func test_saveFeatures_triggers_onCompletion() throws {

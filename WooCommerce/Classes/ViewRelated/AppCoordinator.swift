@@ -345,6 +345,7 @@ private extension AppCoordinator {
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         let identifier = response.notification.request.identifier
+        let storeCreationComplete = LocalNotification.Scenario.Identifier.Prefix.storeCreationComplete
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
@@ -359,6 +360,12 @@ private extension AppCoordinator {
                                                                           userInfo: userInfo))
 
         switch identifier {
+        case let identifier where identifier.hasPrefix(storeCreationComplete):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: storeCreationComplete, with: "")) else {
+                return
+            }
+            switchStoreUseCase.switchStore(with: siteID) { _ in }
         case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {

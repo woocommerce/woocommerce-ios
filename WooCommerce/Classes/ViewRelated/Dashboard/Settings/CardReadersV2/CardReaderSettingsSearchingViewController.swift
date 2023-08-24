@@ -104,9 +104,10 @@ private extension CardReaderSettingsSearchingViewController {
 //
 private extension CardReaderSettingsSearchingViewController {
     func searchAndConnect() {
-        connectionController?.searchAndConnect() { _ in
+        connectionController?.searchAndConnect() { [weak self] _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`
+            self?.alertsPresenter.dismiss()
         }
     }
 }

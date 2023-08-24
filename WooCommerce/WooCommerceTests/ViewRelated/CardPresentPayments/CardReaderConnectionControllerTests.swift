@@ -469,6 +469,47 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         }
         assertEqual(.searchingForReader, source)
     }
+
+    func test_cancelling_connection_calls_completion_with_success_and_canceled() throws {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+        ServiceLocator.setStores(mockStoresManager)
+        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
+        let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundReader)
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            knownReaderProvider: mockKnownReaderProvider,
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: mockAlerts,
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics)
+        )
+
+        // When
+        let connectionResult: CardReaderConnectionResult = waitFor(timeout: 6.0) { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        guard case .canceled(let source) = connectionResult else {
+            return XCTFail("Expected connection to be canceled")
+        }
+        assertEqual(.foundReader, source)
+    }
 }
 
 private extension CardReaderConnectionControllerTests {

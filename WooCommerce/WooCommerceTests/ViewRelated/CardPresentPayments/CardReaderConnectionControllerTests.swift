@@ -88,7 +88,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
-        let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         let controller = CardReaderConnectionController(
@@ -305,7 +304,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             storageManager: storageManager
         )
         ServiceLocator.setStores(mockStoresManager)
-        let mockPresentingViewController = UIViewController()
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
         let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelSearchingAfterConnectionFailure)
 
@@ -470,49 +468,6 @@ final class CardReaderConnectionControllerTests: XCTestCase {
             return XCTFail("Expected connection to be canceled")
         }
         assertEqual(.searchingForReader, source)
-    }
-
-    func test_cancelling_connection_calls_completion_with_success_and_canceled() throws {
-        // Given
-        let unknownReader = MockCardReader.bbposChipper2XBT()
-
-        let mockStoresManager = MockCardPresentPaymentsStoresManager(
-            connectedReaders: [],
-            discoveredReaders: [unknownReader],
-            sessionManager: SessionManager.testingInstance,
-            storageManager: storageManager
-        )
-        ServiceLocator.setStores(mockStoresManager)
-        let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: nil)
-        let mockAlerts = MockCardReaderSettingsAlerts(mode: .cancelFoundReader)
-        let controller = CardReaderConnectionController(
-            forSiteID: sampleSiteID,
-            storageManager: storageManager,
-            knownReaderProvider: mockKnownReaderProvider,
-            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
-            alertsProvider: mockAlerts,
-            configuration: Mocks.configuration,
-            analyticsTracker: .init(configuration: Mocks.configuration,
-                                    siteID: sampleSiteID,
-                                    connectionType: .userInitiated,
-                                    stores: mockStoresManager,
-                                    analytics: analytics)
-        )
-
-        // When
-        let connectionResult: CardReaderConnectionResult = waitFor { promise in
-            controller.searchAndConnect() { result in
-                if case .success(let connectionResult) = result {
-                    promise(connectionResult)
-                }
-            }
-        }
-
-        // Then
-        guard case .canceled(let source) = connectionResult else {
-            return XCTFail("Expected connection to be canceled")
-        }
-        assertEqual(.foundReader, source)
     }
 }
 

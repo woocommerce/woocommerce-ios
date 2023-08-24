@@ -2,7 +2,6 @@ import Foundation
 @testable import WooCommerce
 import Yosemite
 import Combine
-import Fakes
 
 final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {

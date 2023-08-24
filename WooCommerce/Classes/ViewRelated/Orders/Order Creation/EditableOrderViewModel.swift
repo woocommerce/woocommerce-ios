@@ -151,7 +151,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Defines if the non editable indicators (banners, locks, fields) should be shown.
     @Published private(set) var shouldShowNonEditableIndicators: Bool = false
 
-    /// Defines the tax based on setting to be displayed together with the Taxes title.
+    /// Defines the tax based on setting to be displayed in the Taxes section.
     /// 
     @Published private(set) var taxBasedOnSetting: String = ""
 

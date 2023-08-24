@@ -909,6 +909,26 @@ private extension OrderListViewController {
     }
 }
 
+// MARK: - Total completed order count
+//
+private extension OrderListViewController {
+    @MainActor
+    func retrieveTotalCompletedOrderCount(siteID: Int64) async -> Int? {
+        await withCheckedContinuation { continuation in
+            let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { result in
+                switch result {
+                case let .success(statuses):
+                    continuation.resume(returning: statuses.first { $0.status == .completed }?.total)
+                case let .failure(error):
+                    DDLogError("⛔️ Could not successfully fetch number of completed orders for siteID \(siteID): \(error)")
+                    continuation.resume(returning: nil)
+                }
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+}
+
 // MARK: - Constants
 //
 private extension OrderListViewController {

@@ -36,7 +36,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             storeAnswers()
         }
     }
-    private var storeCountry: SiteAddress.CountryCode = .US {
+    private var storeCountry: SiteAddress.CountryCode? {
         didSet {
             storeAnswers()
         }
@@ -51,7 +51,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         return StoreProfilerAnswers(sellingStatus: sellingStatus,
                                     sellingPlatforms: sellingPlatforms,
                                     category: storeCategory?.value,
-                                    countryCode: storeCountry.rawValue)
+                                    countryCode: storeCountry?.rawValue)
     }
 
     @Published private(set) var currentQuestion: StoreCreationProfilerQuestion = .sellingStatus

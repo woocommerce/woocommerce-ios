@@ -177,12 +177,14 @@ struct OrderPaymentSection: View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
             Text(Localization.taxesTotal)
                 .bodyStyle()
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Image(systemName: "questionmark.circle")
+                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+            Spacer()
 
             Text(viewModel.taxesTotal)
                 .bodyStyle()
-                .multilineTextAlignment(.trailing)
                 .frame(width: nil, alignment: .trailing)
         }
     }

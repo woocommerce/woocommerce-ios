@@ -81,19 +81,19 @@ private extension StoreCreationCoordinator {
 
     func showProfilerFlow(storeName: String, siteID: Int64, from navigationController: UINavigationController) {
         navigationController.isNavigationBarHidden = false
-        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: .init(storeName: storeName, onCompletion: { [weak self] answers in
+        let viewModel = StoreCreationProfilerQuestionContainerViewModel(storeName: storeName,
+                                                                        onCompletion: { [weak self] in
             guard let self else { return }
-            if let answers {
-                let usecase = StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
-                usecase.storeAnswers(answers)
-            }
             if let site = self.createdStore {
                 self.continueWithSelectedSite(site: site)
             } else {
                 self.analytics.track(event: .StoreCreation.siteCreationStep(step: .storeInstallation))
                 self.showInProgressView(from: navigationController)
             }
-        }), onSupport: { [weak self] in
+        },
+                                                                        uploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCase(siteID: siteID))
+        let controller = StoreCreationProfilerQuestionContainerHostingController(viewModel: viewModel,
+                                                                                 onSupport: { [weak self] in
             self?.showSupport(from: navigationController)
         })
         navigationController.setViewControllers([controller], animated: true)

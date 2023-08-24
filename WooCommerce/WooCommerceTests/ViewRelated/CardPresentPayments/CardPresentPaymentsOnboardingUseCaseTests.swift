@@ -859,6 +859,42 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
     }
 
+    func test_onboarding_returns_complete_when_account_status_is_enabled_using_wcpay_plugin() {
+        // Given
+        let accountStatus: WCPayAccountStatusEnum = .enabled
+
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: WCPayAccount.self, status: accountStatus)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .wcPay, available: [.wcPay])))
+    }
+
+    func test_onboarding_returns_complete_when_account_status_is_enabled_using_stripe_plugin() {
+        // Given
+        let accountStatus: WCPayAccountStatusEnum = .enabled
+
+        setupCountry(country: .us)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: accountStatus)
+
+        // When
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let state = useCase.state
+
+        // Then
+        XCTAssertEqual(state, .completed(plugin: CardPresentPaymentsPluginState(preferred: .stripe, available: [.stripe])))
+    }
+
     func test_onboarding_returns_overdue_requirements_when_account_is_restricted_with_overdue_requirements_for_wcpay_plugin() {
         // Given
         setupCountry(country: .us)

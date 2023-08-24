@@ -223,6 +223,59 @@ final class SiteRemoteTests: XCTestCase {
         XCTAssertFalse(profilerDictionary.keys.contains("selling_platforms"))
     }
 
+    func test_uploadStoreProfilerAnswers_with_valid_country_sets_is_store_country_set_parameter_as_true() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertTrue(try XCTUnwrap(profilerDictionary["is_store_country_set"] as? Bool))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_country_sets_is_store_country_set_parameter_as_false() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: nil))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        let profilerDictionary = try XCTUnwrap(parameterDictionary["woocommerce_onboarding_profile"] as? [String: Any])
+        XCTAssertFalse(try XCTUnwrap(profilerDictionary["is_store_country_set"] as? Bool))
+    }
+
+    func test_uploadStoreProfilerAnswers_with_valid_country_has_woocommerce_default_country_value() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: "US"))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(try XCTUnwrap(parameterDictionary["woocommerce_default_country"] as? String), "US")
+    }
+
+    func test_uploadStoreProfilerAnswers_with_nil_country_sets_has_woocommerce_default_country_as_nil() async throws {
+        // When
+        try? await remote.uploadStoreProfilerAnswers(siteID: 134,
+                                                     answers: .init(sellingStatus: nil,
+                                                                    sellingPlatforms: "wordpress",
+                                                                    category: "clothing_and_accessories",
+                                                                    countryCode: nil))
+
+        // Then
+        let parameterDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertNil(parameterDictionary["woocommerce_default_country"])
+    }
 
     func test_uploadStoreProfilerAnswers_returns_DotcomError_on_failure() async throws {
         // Given

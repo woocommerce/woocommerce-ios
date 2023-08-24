@@ -4,6 +4,11 @@ public enum CardPresentPaymentOnboardingState: Equatable {
     ///
     case loading
 
+    /// All the requirements are temporarily met and the feature is ready to use.
+    /// While the account is in good standing, additional information might be required if a payment volume threshold is reached
+    ///
+    case enabled
+
     /// All the requirements are met and the feature is ready to use
     ///
     case completed(plugin: CardPresentPaymentsPluginState)
@@ -80,6 +85,8 @@ extension CardPresentPaymentOnboardingState {
         switch self {
         case .loading:
             return "loading"
+        case .enabled:
+            return "enabled"
         case .completed:
             return "completed"
         case .selectPlugin:

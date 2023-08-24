@@ -18,15 +18,15 @@ struct LocalNotification {
     /// The scenario for the local notification.
     /// Its raw value is used for the identifier of a local notification and also the event property for analytics.
     enum Scenario {
-        case storeCreationComplete
+        case storeCreationComplete(siteID: Int64)
         case sixHoursAfterFreeTrialSubscribed(siteID: Int64)
         case freeTrialSurvey24hAfterFreeTrialSubscribed(siteID: Int64)
         case threeDaysAfterStillExploring(siteID: Int64)
 
         var identifier: String {
             switch self {
-            case .storeCreationComplete:
-                return "store_creation_complete"
+            case let .storeCreationComplete(siteID):
+                return Identifier.Prefix.storeCreationComplete + "\(siteID)"
             case let .sixHoursAfterFreeTrialSubscribed(siteID):
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed + "\(siteID)"
             case let .freeTrialSurvey24hAfterFreeTrialSubscribed(siteID):
@@ -38,6 +38,7 @@ struct LocalNotification {
 
         enum Identifier {
             enum Prefix {
+                static let storeCreationComplete = "store_creation_complete"
                 static let sixHoursAfterFreeTrialSubscribed = "six_hours_after_free_trial_subscribed"
                 static let freeTrialSurvey24hAfterFreeTrialSubscribed = "free_trial_survey_24h_after_free_trial_subscribed"
                 static let threeDaysAfterStillExploring = "three_days_after_still_exploring"
@@ -46,7 +47,9 @@ struct LocalNotification {
 
         /// Helper method to remove postfix from notification identifiers if needed.
         static func identifierForAnalytics(_ identifier: String) -> String {
-            if identifier.hasPrefix(Identifier.Prefix.sixHoursAfterFreeTrialSubscribed) {
+            if identifier.hasPrefix(Identifier.Prefix.storeCreationComplete) {
+                return Identifier.Prefix.storeCreationComplete
+            } else if identifier.hasPrefix(Identifier.Prefix.sixHoursAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
             } else if identifier.hasPrefix(Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed) {
                 return Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed

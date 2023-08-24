@@ -4,7 +4,7 @@ import Yosemite
 protocol CollectOrderPaymentAnalyticsTracking {
     var connectedReaderModel: String? { get }
 
-    func preflightResultRecieved(_ result: CardReaderPreflightResult?)
+    func preflightResultReceived(_ result: CardReaderPreflightResult?)
 
     func trackProcessingCompletion(intent: PaymentIntent)
 
@@ -53,7 +53,7 @@ final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
         self.paymentGatewayAccount = paymentGatewayAccount
     }
 
-    func preflightResultRecieved(_ result: CardReaderPreflightResult?) {
+    func preflightResultReceived(_ result: CardReaderPreflightResult?) {
         switch result {
         case .completed(let connectedReader, let paymentGatewayAccount):
             self.connectedReader = connectedReader

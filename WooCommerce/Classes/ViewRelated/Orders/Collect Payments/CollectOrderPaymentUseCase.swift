@@ -144,7 +144,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
         preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
-            self.analyticsTracker.preflightResultRecieved(connectionResult)
+            self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
                 let paymentAlertProvider = reader.paymentAlertProvider()

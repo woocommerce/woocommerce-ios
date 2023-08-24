@@ -15,6 +15,7 @@ GITHUB_REPO = 'woocommerce/woocommerce-ios'
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
+PUBLIC_VERSION_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
 RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
@@ -154,9 +155,7 @@ platform :ios do
   Dotenv.load(USER_ENV_FILE_PATH)
   Dotenv.load(PROJECT_ENV_FILE_PATH)
   ENV['PROJECT_NAME'] = 'WooCommerce'
-  ENV['PUBLIC_CONFIG_FILE'] = 'config/Version.Public.xcconfig'
   ENV['PROJECT_ROOT_FOLDER'] = './'
-  ENV['APP_STORE_STRINGS_FILE_NAME'] = 'AppStoreStrings.pot'
   ENV['FL_RELEASE_TOOLKIT_DEFAULT_BRANCH'] = 'trunk'
 
   ########################################################################
@@ -178,8 +177,8 @@ platform :ios do
   lane :code_freeze do |options|
     ios_codefreeze_prechecks(options)
 
-    ios_bump_version_release(skip_deliver: true)
-    new_version = ios_get_app_version
+    ios_bump_version_release
+    new_version = app_version
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
@@ -229,7 +228,7 @@ platform :ios do
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{ios_get_app_version}")
+      trigger_beta_build(branch_to_build: "release/#{app_version}")
     else
       UI.message('Aborting code freeze completion. See you later 👋')
     end
@@ -259,7 +258,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options.fetch(:version, ios_get_app_version)
+      release_version: options.fetch(:version, app_version)
     )
   end
 
@@ -285,14 +284,13 @@ platform :ios do
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
     ios_bump_version_beta
-    version = ios_get_app_version
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the beta build?',
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{version}")
+      trigger_beta_build(branch_to_build: "release/#{app_version}")
     else
       UI.message('Aborting beta deployment. See you later 👋')
     end
@@ -333,14 +331,13 @@ platform :ios do
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do |options|
     ios_finalize_prechecks(options)
-    version = ios_get_app_version
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the release build?',
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_release_build(branch_to_build: "release/#{version}")
+      trigger_release_build(branch_to_build: "release/#{app_version}")
     else
       UI.message('Aborting hotfix finalization. See you later 👋')
     end
@@ -384,7 +381,7 @@ platform :ios do
     ios_bump_version_beta
 
     # Wrap up
-    version = ios_get_app_version
+    version = app_version
     removebranchprotection(
       repository: GITHUB_REPO,
       branch: "release/#{version}"
@@ -564,7 +561,7 @@ platform :ios do
       archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
       zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
-      version = options[:beta_release] ? ios_get_build_version : ios_get_app_version
+      version = options[:beta_release] ? ios_get_build_version : app_version
       create_release(
         repository: GITHUB_REPO,
         version: version,
@@ -597,13 +594,12 @@ platform :ios do
     alpha_code_signing
 
     # Get the current build version, and update it if needed
-    version_config_path = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
-    versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
+    versions = Xcodeproj::Config.new(File.new(PUBLIC_VERSION_CONFIG_FILE)).to_hash
     build_number = generate_installable_build_number
     UI.message("Updating build version to #{build_number}")
     versions['VERSION_LONG'] = build_number
     new_config = Xcodeproj::Config.new(versions)
-    new_config.save_as(Pathname.new(version_config_path))
+    new_config.save_as(Pathname.new(PUBLIC_VERSION_CONFIG_FILE))
 
     gym(
       scheme: 'WooCommerce Alpha',
@@ -695,7 +691,7 @@ platform :ios do
 
     upload_to_app_store(
       app_identifier: APP_STORE_VERSION_BUNDLE_IDENTIFIER,
-      app_version: ios_get_app_version,
+      app_version: app_version,
       team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
@@ -879,7 +875,7 @@ platform :ios do
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
     target_files = {
-      "v#{ios_get_app_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
+      "v#{app_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
       app_store_name: { desc: 'name.txt', max_size: 30 },
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
@@ -937,7 +933,7 @@ platform :ios do
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
       'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      "v#{ios_get_app_version}-whats-new" => { desc: 'whats_new.txt' },
+      "v#{app_version}-whats-new" => { desc: 'whats_new.txt' },
 
       # Screenshots
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
@@ -1238,6 +1234,12 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
   end
 
   File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
+end
+
+# Returns the version of the app based on the specified xcconfig file
+#
+def app_version(xcconfig_path: PUBLIC_VERSION_CONFIG_FILE)
+  ios_get_app_version(public_version_xcconfig_file: xcconfig_path)
 end
 
 def buildkite_ci?

@@ -7,7 +7,8 @@ import Experiments
 /// Displays the WooCommerce Prologue UI.
 ///
 final class LoginPrologueViewController: UIViewController {
-
+    /// The feature carousel is not shown right after finishing the onboarding.
+    private let isFeatureCarouselShown: Bool
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
 
@@ -19,12 +20,12 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet private var containerView: UIView!
 
+    /// Curved Rectangle: Background shape with curved top edge
+    ///
+    @IBOutlet private weak var curvedRectangle: UIImageView!
+
     /// The WooCommerce logo on top of the screen
     @IBOutlet private weak var topLogoImageView: UIImageView!
-
-    @IBOutlet private weak var titleLabel: UILabel!
-
-    @IBOutlet private weak var subtitleLabel: UILabel!
 
     // MARK: - Overridden Properties
 
@@ -36,7 +37,9 @@ final class LoginPrologueViewController: UIViewController {
     // MARK: - Overridden Methods
 
     init(analytics: Analytics = ServiceLocator.analytics,
+         isFeatureCarouselShown: Bool,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+        self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
@@ -49,8 +52,11 @@ final class LoginPrologueViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupBackgroundViews()
-        setupLabels()
+        setupMainView()
+        setupBackgroundView()
+        setupContainerView()
+        setupCurvedRectangle()
+        setupCarousel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -64,39 +70,50 @@ final class LoginPrologueViewController: UIViewController {
 //
 private extension LoginPrologueViewController {
 
-    func setupBackgroundViews() {
-        view.backgroundColor = .systemBackground
-        backgroundView.backgroundColor = .clear
-        containerView.backgroundColor = .clear
+    func setupMainView() {
+        view.backgroundColor = .basicBackground
     }
 
-    func setupLabels() {
-        titleLabel.adjustsFontForContentSizeCategory = true
-        titleLabel.font = .title3.bold
-        titleLabel.textColor = .text
-        titleLabel.text = Localization.title
+    func setupBackgroundView() {
+        backgroundView.backgroundColor = .authPrologueBottomBackgroundColor
+    }
 
-        subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.font = .subheadline
-        subtitleLabel.textColor = .text
-        subtitleLabel.text = Localization.subtitle
+    func setupContainerView() {
+        containerView.backgroundColor = .authPrologueBottomBackgroundColor
+    }
+
+    func setupCurvedRectangle() {
+        curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
+        curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
+    }
+
+    /// Adds a carousel (slider) of screens to promote the main features of the app.
+    /// This is contained in a child view so that this view's background doesn't scroll.
+    ///
+    func setupCarousel() {
+        let pageTypes: [LoginProloguePageType] = {
+            if isFeatureCarouselShown {
+                return [.stats, .orderManagement, .products, .reviews]
+            } else {
+                return [.getStarted]
+            }
+        }()
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
+        carousel.view.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(carousel)
+        view.addSubview(carousel.view)
+        NSLayoutConstraint.activate([
+            carousel.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            carousel.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            carousel.view.topAnchor.constraint(equalTo: topLogoImageView.bottomAnchor, constant: Constants.spacingBetweenTopLogoAndCarousel),
+            carousel.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 }
 
 private extension LoginPrologueViewController {
     enum Constants {
         static let spacingBetweenTopLogoAndCarousel: CGFloat = 56
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString(
-            "The e-commerce platform that grows with you",
-            comment: "Caption displayed in the simplified prologue screen"
-        )
-        static let subtitle = NSLocalizedString(
-            "Start with our 15-day free trial, no credit card needed. "
-            + "Join 3.4M stores thriving with Woo, from first sale to millions.",
-            comment: "Subtitle displayed in the simplified prologue screen"
-        )
     }
 }

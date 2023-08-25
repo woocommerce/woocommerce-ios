@@ -26,7 +26,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("The ecommerce platform that grows with you",
+            return NSLocalizedString("The e-commerce platform that grows with you",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
     }
@@ -79,9 +79,9 @@ enum LoginProloguePageType: CaseIterable {
     var stackSpacing: CGFloat {
         switch self {
         case .stats, .orderManagement, .products, .reviews:
-            return 40
-        case .getStarted:
             return 16
+        case .getStarted:
+            return 8
         }
     }
 }
@@ -212,7 +212,7 @@ private extension LoginProloguePageTypeViewController {
 
 private extension LoginProloguePageTypeViewController {
     enum Constants {
-        static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
+        static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelLeadingMargin: CGFloat = 48
     }
 }

@@ -76,7 +76,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private let configuration: CardPresentPaymentsConfiguration
 
-    private let paymentOrchestrator: PaymentCaptureOrchestrator
+    private let paymentOrchestrator: PaymentCaptureOrchestrating
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
@@ -92,7 +92,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         paymentOrchestrator: PaymentCaptureOrchestrator = PaymentCaptureOrchestrator(),
+         paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
          preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,

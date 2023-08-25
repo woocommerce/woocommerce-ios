@@ -14,7 +14,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var mockPreflightController: MockCardPresentPaymentPreflightController!
     private var mockAnalyticsTracker: MockCollectOrderPaymentAnalyticsTracker!
-    private var paymentOrchestrator: PaymentCaptureOrchestrator!
+    private var mockPaymentOrchestrator: MockPaymentCaptureOrchestrator!
     private var useCase: CollectOrderPaymentUseCase!
 
     override func setUp() {
@@ -23,7 +23,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         stores.reset()
         mockAnalyticsTracker = MockCollectOrderPaymentAnalyticsTracker()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
-        paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: MockPaymentCaptureCelebration())
+        mockPaymentOrchestrator = MockPaymentCaptureOrchestrator()
         alertsPresenter = MockCardPresentPaymentAlertsPresenter()
         mockPreflightController = MockCardPresentPaymentPreflightController()
         useCase = CollectOrderPaymentUseCase(siteID: defaultSiteID,
@@ -33,7 +33,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                              onboardingPresenter: onboardingPresenter,
                                              configuration: Mocks.configuration,
                                              stores: stores,
-                                             paymentOrchestrator: paymentOrchestrator,
+                                             paymentOrchestrator: mockPaymentOrchestrator,
                                              alertsPresenter: alertsPresenter,
                                              preflightController: mockPreflightController,
                                              analyticsTracker: mockAnalyticsTracker)
@@ -41,7 +41,6 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_cancelling_reader_connection_triggers_onCancel_and_tracks_collectPaymentCanceled_event() throws {
         // Given
-        assertEmpty(stores.receivedActions)
 
         // When
         let _: Void = waitFor { promise in
@@ -60,7 +59,9 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         // Given
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
 
         // When
         waitFor { promise in
@@ -85,7 +86,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
                                                  onboardingPresenter: onboardingPresenter,
                                                  configuration: Mocks.configuration,
                                                  stores: stores,
-                                                 paymentOrchestrator: paymentOrchestrator,
+                                                 paymentOrchestrator: mockPaymentOrchestrator,
                                                  alertsPresenter: alertsPresenter,
                                                  analyticsTracker: mockAnalyticsTracker)
 
@@ -111,8 +112,11 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .interacPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
+        let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: interacPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
@@ -136,8 +140,11 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 
     func test_collectPayment_with_noninterac_does_not_dispatch_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given
-        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: .cardPresent(details: .fake()))])
-        mockSuccessfulCardPresentPaymentActions(intent: intent)
+        let cardPresentPaymentMethod = PaymentMethod.cardPresent(details: .fake())
+        let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: cardPresentPaymentMethod)])
+        mockSuccessfulCardPresentPaymentActions(intent: intent,
+                                                capturedPaymentData: CardPresentCapturedPaymentData(paymentMethod: cardPresentPaymentMethod,
+                                                                                                    receiptParameters: .fake()))
         var markOrderAsPaidLocallyAction: (siteID: Int64, orderID: Int64)?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             if case let .markOrderAsPaidLocally(siteID, orderID, _, _) = action {
@@ -159,39 +166,15 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
 }
 
 private extension CollectOrderPaymentUseCaseTests {
-    func mockCardPresentPaymentActions() {
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .publishCardReaderConnections(completion) = action {
-                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
-            } else if case let .observeConnectedReaders(completion) = action {
-                completion([MockCardReader.wisePad3()])
-            } else if case let .cancelPayment(completion) = action {
-                completion?(.success(()))
-            } else if case let .collectPayment(_, _, _, onCardReaderMessage, _, _) = action {
-                onCardReaderMessage(.waitingForInput([]))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
-            switch action {
-            case .synchronizeSystemPlugins(_, let completion):
-                completion(.success([]))
-            default:
-                break
-            }
-        }
-    }
-
-    func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent) {
-        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-            if case let .publishCardReaderConnections(completion) = action {
-                completion(Just<[CardReader]>([MockCardReader.wisePad3()]).eraseToAnyPublisher())
-            } else if case let .observeConnectedReaders(completion) = action {
-                completion([MockCardReader.wisePad3()])
-            } else if case let .collectPayment(_, _, _, _, onProcessingCompletion, onCompletion) = action {
-                onProcessingCompletion(intent)
-                onCompletion(.success(intent))
-            }
+    func mockSuccessfulCardPresentPaymentActions(intent: PaymentIntent, capturedPaymentData: CardPresentCapturedPaymentData) {
+        mockPaymentOrchestrator.mockCollectPaymentHandler = { onPreparingReader,
+                                                              onWaitingForInput,
+                                                              onProcessingMessage,
+                                                              onDisplayMessage,
+                                                              onProcessingCompletion,
+                                                              onCompletion in
+            onProcessingCompletion(intent)
+            onCompletion(.success(capturedPaymentData))
         }
     }
 }

@@ -67,3 +67,17 @@ public struct PaymentIntentParameters {
         self.metadata = metadata
     }
 }
+
+extension PaymentIntentParameters: Equatable {
+    public static func == (lhs: PaymentIntentParameters, rhs: PaymentIntentParameters) -> Bool {
+        return lhs.amount == rhs.amount &&
+        lhs.currency == rhs.currency &&
+        lhs.stripeSmallestCurrencyUnitMultiplier == rhs.stripeSmallestCurrencyUnitMultiplier &&
+        lhs.applicationFee == rhs.applicationFee &&
+        lhs.receiptDescription == rhs.receiptDescription &&
+        lhs.statementDescription == rhs.statementDescription &&
+        lhs.receiptEmail == rhs.receiptEmail &&
+        lhs.metadata == rhs.metadata &&
+        lhs.paymentMethodTypes == rhs.paymentMethodTypes
+    }
+}

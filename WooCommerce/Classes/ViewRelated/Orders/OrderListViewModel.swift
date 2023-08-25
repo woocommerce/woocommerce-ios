@@ -602,6 +602,19 @@ extension OrderListViewModel {
     }
 }
 
+// MARK: - Total completed order count
+//
+extension OrderListViewModel {
+    func totalCompletedOrderCount(pageNumber: Int) -> Int? {
+        do {
+            try statusResultsController.performFetch()
+            return currentSiteStatuses.first { $0.status == .completed }?.total
+        } catch {
+            return nil
+        }
+    }
+}
+
 // MARK: Definitions
 extension OrderListViewModel {
     /// Possible top banners this view model can show.

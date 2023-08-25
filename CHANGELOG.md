@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.1
+Did you know that you can create and use discount coupons in the app? Give it a try! This release includes a fix that ensures coupons can be created on all devices. Thank you for choosing WooCommerce!
+
 ## 15.0
 We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.
 

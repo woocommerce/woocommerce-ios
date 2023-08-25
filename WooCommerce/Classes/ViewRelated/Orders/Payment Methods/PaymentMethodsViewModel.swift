@@ -102,13 +102,9 @@ final class PaymentMethodsViewModel: ObservableObject {
 
     /// Retains the use-case so it can perform all of its async tasks.
     ///
-    private var legacyCollectPaymentsUseCase: LegacyCollectOrderPaymentProtocol?
-
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
-
-    private let isTapToPayOnIPhoneEnabled: Bool
 
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
@@ -148,7 +144,6 @@ final class PaymentMethodsViewModel: ObservableObject {
          paymentLink: URL? = nil,
          formattedTotal: String,
          flow: WooAnalyticsEvent.PaymentsFlow.Flow,
-         isTapToPayOnIPhoneEnabled: Bool = true,
          dependencies: Dependencies = Dependencies()) {
         self.siteID = siteID
         self.orderID = orderID
@@ -156,7 +151,6 @@ final class PaymentMethodsViewModel: ObservableObject {
         self.formattedTotal = formattedTotal
         self.flow = flow
         self.orderDurationRecorder = dependencies.orderDurationRecorder
-        self.isTapToPayOnIPhoneEnabled = isTapToPayOnIPhoneEnabled
         presentNoticeSubject = dependencies.presentNoticeSubject
         cardPresentPaymentsOnboardingPresenter = dependencies.cardPresentPaymentsOnboardingPresenter
         stores = dependencies.stores
@@ -203,33 +197,11 @@ final class PaymentMethodsViewModel: ObservableObject {
     /// Starts the collect payment flow in the provided `rootViewController`
     /// - parameter useCase: Assign a custom useCase object for testing purposes. If not provided `CollectOrderPaymentUseCase` will be used.
     ///
-    func collectPayment(on rootViewController: UIViewController?,
-                        useCase: LegacyCollectOrderPaymentProtocol? = nil,
-                        onSuccess: @escaping () -> Void,
-                        onFailure: @escaping () -> Void) {
-        switch isTapToPayOnIPhoneEnabled {
-        case true:
-            newCollectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: onSuccess, onFailure: onFailure)
-        case false:
-            legacyCollectPayment(on: rootViewController, useCase: useCase, onSuccess: onSuccess)
-        }
-    }
-
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
                         on rootViewController: UIViewController?,
+                        useCase: CollectOrderPaymentProtocol? = nil,
                         onSuccess: @escaping () -> Void,
                         onFailure: @escaping () -> Void) {
-        newCollectPayment(using: discoveryMethod,
-                          on: rootViewController,
-                          onSuccess: onSuccess,
-                          onFailure: onFailure)
-    }
-
-    func newCollectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
-                           on rootViewController: UIViewController?,
-                           useCase: CollectOrderPaymentProtocol? = nil,
-                           onSuccess: @escaping () -> Void,
-                           onFailure: @escaping () -> Void) {
         trackCollectIntention(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
         orderDurationRecorder.recordCardPaymentStarted()
 
@@ -263,6 +235,9 @@ final class PaymentMethodsViewModel: ObservableObject {
             onCancel: {
                 // No tracking required because the flow remains on screen to choose other payment methods.
             },
+            onPaymentCompletion: {
+                // No tracking required at present because it's handled internally.
+            },
             onCompleted: { [weak self] in
                 // Update order in case its status and/or other details are updated after a successful in-person payment
                 self?.updateOrderAsynchronously()
@@ -279,71 +254,6 @@ final class PaymentMethodsViewModel: ObservableObject {
                 // Tracks completion
                 self?.trackFlowCompleted(method: .card, cardReaderType: discoveryMethod.analyticsCardReaderType)
             })
-    }
-
-    func legacyCollectPayment(on rootViewController: UIViewController?,
-                              useCase: LegacyCollectOrderPaymentProtocol? = nil,
-                              onSuccess: @escaping () -> Void) {
-        trackCollectIntention(method: .card, cardReaderType: .external)
-        orderDurationRecorder.recordCardPaymentStarted()
-
-        guard let rootViewController = rootViewController else {
-            DDLogError("⛔️ Root ViewController is nil, can't present payment alerts.")
-            return presentNoticeSubject.send(.error(Localization.genericCollectError))
-        }
-
-        cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
-            from: rootViewController) { [weak self] in
-                guard let self = self else { return }
-
-                guard let order = self.ordersResultController.fetchedObjects.first else {
-                    DDLogError("⛔️ Order not found, can't collect payment.")
-                    return self.presentNoticeSubject.send(.error(Localization.genericCollectError))
-                }
-
-                let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGateway in
-                    guard let paymentGateway = paymentGateway else {
-                        return DDLogError("⛔️ Payment Gateway not found, can't collect payment.")
-                    }
-
-                    self.legacyCollectPaymentsUseCase = useCase ?? LegacyCollectOrderPaymentUseCase(
-                        siteID: self.siteID,
-                        order: order,
-                        formattedAmount: self.formattedTotal,
-                        paymentGatewayAccount: paymentGateway,
-                        rootViewController: rootViewController,
-                        alerts: OrderDetailsPaymentAlerts(transactionType: .collectPayment,
-                                                          presentingController: rootViewController),
-                        configuration: CardPresentConfigurationLoader().configuration)
-
-                    self.legacyCollectPaymentsUseCase?.collectPayment(
-                        onCollect: { [weak self] result in
-                            guard result.isFailure else { return }
-                            self?.trackFlowFailed()
-                        },
-                        onCancel: {
-                            // No tracking required because the flow remains on screen to choose other payment methods.
-                        },
-                        onCompleted: { [weak self] in
-                            // Update order in case its status and/or other details are updated after a successful in-person payment
-                            self?.updateOrderAsynchronously()
-
-                            // Inform success to consumer
-                            onSuccess()
-
-                            // Sent notice request
-                            self?.presentNoticeSubject.send(.completed)
-
-                            // Make sure we free all the resources
-                            self?.legacyCollectPaymentsUseCase = nil
-
-                            // Tracks completion
-                            self?.trackFlowCompleted(method: .card, cardReaderType: .external)
-                        })
-                }
-
-                self.stores.dispatch(action)
-            }
     }
 
     /// Tracks the collect by cash intention.

@@ -1,7 +1,32 @@
 import Foundation
 import Yosemite
 
-final class CollectOrderPaymentAnalytics {
+protocol CollectOrderPaymentAnalyticsTracking {
+    var connectedReaderModel: String? { get }
+
+    func preflightResultReceived(_ result: CardReaderPreflightResult?)
+
+    func trackProcessingCompletion(intent: PaymentIntent)
+
+    func trackSuccessfulPayment(capturedPaymentData: CardPresentCapturedPaymentData)
+
+    func trackPaymentFailure(with error: Error)
+
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource)
+
+    func trackEmailTapped()
+
+    func trackReceiptPrintTapped()
+
+    func trackReceiptPrintSuccess()
+
+    func trackReceiptPrintCanceled()
+
+    func trackReceiptPrintFailed(error: Error)
+}
+
+
+final class CollectOrderPaymentAnalytics: CollectOrderPaymentAnalyticsTracking {
 
     private let siteID: Int64
     private let analytics: Analytics
@@ -28,7 +53,7 @@ final class CollectOrderPaymentAnalytics {
         self.paymentGatewayAccount = paymentGatewayAccount
     }
 
-    func preflightResultRecieved(_ result: CardReaderPreflightResult?) {
+    func preflightResultReceived(_ result: CardReaderPreflightResult?) {
         switch result {
         case .completed(let connectedReader, let paymentGatewayAccount):
             self.connectedReader = connectedReader

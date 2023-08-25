@@ -30,7 +30,7 @@ final class PaymentCaptureOrchestrator {
 
     init(stores: StoresManager = ServiceLocator.stores,
          paymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer = PaymentReceiptEmailParameterDeterminer(),
-         celebration: PaymentCaptureCelebrationProtocol) {
+         celebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration()) {
         self.stores = stores
         self.paymentReceiptEmailParameterDeterminer = paymentReceiptEmailParameterDeterminer
         self.celebration = celebration

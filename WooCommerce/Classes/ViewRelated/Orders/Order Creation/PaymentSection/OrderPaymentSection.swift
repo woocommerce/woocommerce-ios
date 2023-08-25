@@ -166,6 +166,9 @@ struct OrderPaymentSection: View {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
+            if viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting.isNotEmpty {
+                taxBasedOnLine
+            }
         }
         .padding(Constants.sectionPadding)
     }
@@ -201,6 +204,12 @@ struct OrderPaymentSection: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder private var taxBasedOnLine: some View {
+        Text(viewModel.taxBasedOnSetting)
+            .footnoteStyle()
+            .multilineTextAlignment(.leading)
     }
 }
 

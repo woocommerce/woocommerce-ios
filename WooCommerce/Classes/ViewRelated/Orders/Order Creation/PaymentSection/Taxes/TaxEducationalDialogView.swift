@@ -83,7 +83,7 @@ struct TaxEducationalDialogView: View {
                 }
                 .padding(Layout.outterPadding)
                 .frame(maxWidth: .infinity, alignment: .center)
-                .background(Color(.white))
+                .background(Color(.systemBackground))
                 .cornerRadius(Layout.cornerRadius)
             }
             .padding(Layout.outterPadding)

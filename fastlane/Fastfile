@@ -15,7 +15,8 @@ GITHUB_REPO = 'woocommerce/woocommerce-ios'
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
-PUBLIC_VERSION_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
+PUBLIC_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
+ENV['PUBLIC_CONFIG_FILE'] = PUBLIC_CONFIG_FILE
 RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')
 DERIVED_DATA_DIR = File.join(FASTLANE_DIR, 'DerivedData')
@@ -594,12 +595,12 @@ platform :ios do
     alpha_code_signing
 
     # Get the current build version, and update it if needed
-    versions = Xcodeproj::Config.new(File.new(PUBLIC_VERSION_CONFIG_FILE)).to_hash
+    versions = Xcodeproj::Config.new(File.new(PUBLIC_CONFIG_FILE)).to_hash
     build_number = generate_installable_build_number
     UI.message("Updating build version to #{build_number}")
     versions['VERSION_LONG'] = build_number
     new_config = Xcodeproj::Config.new(versions)
-    new_config.save_as(Pathname.new(PUBLIC_VERSION_CONFIG_FILE))
+    new_config.save_as(Pathname.new(PUBLIC_CONFIG_FILE))
 
     gym(
       scheme: 'WooCommerce Alpha',
@@ -1238,7 +1239,7 @@ end
 
 # Returns the version of the app based on the specified xcconfig file
 #
-def app_version(xcconfig_path: PUBLIC_VERSION_CONFIG_FILE)
+def app_version(xcconfig_path: PUBLIC_CONFIG_FILE)
   ios_get_app_version(public_version_xcconfig_file: xcconfig_path)
 end
 

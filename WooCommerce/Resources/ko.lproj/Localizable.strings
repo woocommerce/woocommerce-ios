@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-17 22:54:09+0000 */
+/* Translation-Revision-Date: 2023-08-22 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -355,9 +355,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "확인 코드에는 숫자만 사용할 수 있습니다.";
 
-/* Header label on the top of the store name form in the store creation flow. */
-"ABOUT YOUR STORE" = "스토어 소개";
-
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "옵션 추가";
 
@@ -398,6 +395,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Feature option in the store creation features question. */
 "Access to a wide range of plugins and extensions" = "광범위한 플러그인 및 확장 기능 접근 권한";
+
+/* My Store > Settings > Account Settings section
+   Navigates to the Account Settings screen
+   Title of the Account Settings screen */
+"Account Settings" = "계정 설정";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "계좌 유형";
@@ -1239,9 +1241,6 @@ which should be translated separately and considered part of this sentence. */
 /* Details on the store onboarding WCPay setup screen. */
 "By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "우커머스 결제를 사용하면 [서비스 약관(https:\/\/wordpress.com\/tos) 적용에 동의하고 [개인정보 취급방침](https:\/\/automattic.com\/privacy\/)을 읽었다고 인정하는 것입니다.";
 
-/* Industry option in the store creation category question. */
-"CBD and other hemp-derived products" = "CBD 및 기타 대마 파생 상품";
-
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "국가";
 
@@ -1319,6 +1318,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
+   Button to dismiss the store name screen
    Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1346,7 +1346,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
@@ -1594,7 +1593,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "닫기";
 
-/* Close Account button title to close the user's WordPress.com account */
+/* Button to close account on the Account Settings screen */
 "Close Account" = "계정 종료";
 
 /* Button to close the WordPress.com account on the store picker. */
@@ -1820,7 +1819,6 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
-   Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain.
    Title of the submit button on the account creation form. */
@@ -2161,6 +2159,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "도메인 사용자 정의";
 
+/* Subtitle of the store onboarding task to update store title */
+"Customizing your store name can also help your store search engine optimization." = "스토어 이름을 사용자 정의하면 스토어 검색 엔진 최적화에도 도움이 될 수 있습니다.";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "세관";
@@ -2409,9 +2410,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "모바일 장치에서 인쇄하는 방법을 모르시나요?";
-
-/* Subtitle label on the store name form in the store creation flow. */
-"Don’t worry you can always change it later." = "나중에 언제든지 변경할 수 있으니 걱정하지 마세요.";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "닷컴 오류: [%1$@] %2$@";
@@ -2777,6 +2775,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "%@에 대한 스토어 자격 증명을 입력하세요.";
+
+/* Placeholder for the text field on the store name screen */
+"Enter your store name" = "스토어 이름 입력";
 
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "봉투";
@@ -3484,9 +3485,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "잠시만요! 우커머스 앱을 다운로드하는 링크가 있습니다. 정말 즐겁게 사용하고 있는데 여러분도 그럴 것입니다.";
-
-/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
-"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "%1$@ 님, %2$@이(가) 준비되어 있습니다! 단 한 번 클릭으로 Woo Express 14일 무료 평가판을 바로 시작하여 온라인 비즈니스를 시작하세요.";
 
 /* Message on the local notification about a newly created store.The placeholder is the name of the user. */
 "Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@ 님, Woo Express 14일 무료 평가판에 오신 것을 환영합니다. 성공적인 온라인 비즈니스의 시작과 성장에 필요한 모든 것이 한곳에 다 있습니다. 둘러볼 준비가 되셨나요?";
@@ -4531,6 +4529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "이름 누락";
 
+/* Title of the store onboarding task to update store title */
+"Name your store" = "스토어 이름 지정";
+
 /* Country option for a site address. */
 "Namibia" = "나미비아";
 
@@ -5020,6 +5021,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Original packaging" = "원래 포장";
 
 /* Challenge option in the store creation challenges question.
+   Feature option in the store creation features question.
    Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
@@ -5035,9 +5037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "기타 사이트";
-
-/* Feature option in the store creation features question. */
-"Others" = "기타";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -6218,6 +6217,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
    Button title that save the price selection for bulk variation update
+   Button to save the name in the store name screen
    Title for the 'Save' button in the privacy banner */
 "Save" = "저장";
 
@@ -6978,6 +6978,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "저장 공간";
 
+/* Navigates to the Store name setup screen */
+"Store Name" = "스토어 이름";
+
+/* Title on the notice presented when the store name is updated */
+"Store Name Set!" = "스토어 이름 설정됨!";
+
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "스토어 미리보기";
 
@@ -6996,7 +7002,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Store management title feature on the Free Trial Summary Screen */
 "Store management tools" = "스토어 관리 도구";
 
-/* Text field prompt on the store name form in the store creation flow. */
+/* Title for the store name screen */
 "Store name" = "스토어 이름";
 
 /* VoiceOver accessibility label for the store revenue chart. */
@@ -7795,6 +7801,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "변형을 추가하려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다.";
 
+/* Subtitle on the notice presented when the store name is updated */
+"To change again, visit Store Settings." = "다시 변경하려면 스토어 설정으로 이동하세요.";
+
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "이 계정을 지금 닫으려면, 지원 팀에 문의하세요.";
 
@@ -8051,8 +8060,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "트위터";
 
-/* Placeholder of the search text field on the domain selector.
-   Text field placeholder on the store name form in the store creation flow. */
+/* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "스토어의 이름 입력";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
@@ -8854,9 +8862,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "WooCommerce의 새로운 기능";
 
-/* Title label on the store name form in the store creation flow. */
-"What’s your store name?" = "스토어 이름은 무엇인가요?";
-
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "WooCommerce를 통해 배송 레이블을 구매하면 할인된 시중 가격을 이용하실 수 있습니다.";
 
@@ -9416,9 +9421,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡회원님의 구독 결정을 이해하도록 도와주기";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"🛍️ Your store is waiting!" = "🛍️ 회원님의 스토어가 기다리고 있습니다!";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 아직 우커머스를 둘러보시는 중이신가요?";

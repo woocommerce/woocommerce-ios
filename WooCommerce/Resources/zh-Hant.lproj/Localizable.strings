@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-18 16:38:28+0000 */
+/* Translation-Revision-Date: 2023-08-22 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -355,9 +355,6 @@ which should be translated separately and considered part of this sentence. */
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "驗證碼僅包含數字。";
 
-/* Header label on the top of the store name form in the store creation flow. */
-"ABOUT YOUR STORE" = "關於你的商店";
-
 /* Header of existing attribute options section in Add Attribute Options screen */
 "ADD OPTIONS" = "新增選項";
 
@@ -398,6 +395,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Feature option in the store creation features question. */
 "Access to a wide range of plugins and extensions" = "存取各式各樣的外掛程式和擴充功能";
+
+/* My Store > Settings > Account Settings section
+   Navigates to the Account Settings screen
+   Title of the Account Settings screen */
+"Account Settings" = "帳號設定";
 
 /* Reads as 'Account Type'. Part of the mandatory data in receipts */
 "Account Type" = "帳戶類型";
@@ -1239,9 +1241,6 @@ which should be translated separately and considered part of this sentence. */
 /* Details on the store onboarding WCPay setup screen. */
 "By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "使用 WooCommerce Payments，即表示你同意遵守我們的[服務條款](https:\/\/wordpress.com\/tos)，並確認已詳閱我們的[隱私權政策](https:\/\/automattic.com\/privacy\/)。";
 
-/* Industry option in the store creation category question. */
-"CBD and other hemp-derived products" = "CBD 和其他大麻衍生產品";
-
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "國家\/地區";
 
@@ -1319,6 +1318,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss the error modal when a user without admin role tries to install Jetpack
    Button to dismiss the site credential login screen
    Button to dismiss the store creation profiler flow
+   Button to dismiss the store name screen
    Button to dismiss the survey screen.
    Button to dismiss the view or error alerts of the application password authorization web view
    Button to dismiss. Presented to users when updating the card reader software fails
@@ -1346,7 +1346,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss button on the alert when the user taps to delete a Product image
    Label for a button that when tapped, cancels the process of connecting to a card reader 
    Label for a cancel button
-   Navigation bar button on the store name form to leave the store creation flow.
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
@@ -1594,7 +1593,7 @@ which should be translated separately and considered part of this sentence. */
    Title of the Close action on the Jetpack Install view */
 "Close" = "關閉";
 
-/* Close Account button title to close the user's WordPress.com account */
+/* Button to close account on the Account Settings screen */
 "Close Account" = "關閉帳號";
 
 /* Button to close the WordPress.com account on the store picker. */
@@ -1820,7 +1819,6 @@ which should be translated separately and considered part of this sentence. */
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
-   Title of the button on the store creation store name form to continue.
    Title of the button to continue with a profiler question.
    Title of the button to continue with a selected domain.
    Title of the submit button on the account creation form. */
@@ -2161,6 +2159,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store onboarding task to customize the store domain. */
 "Customize your domain" = "自訂你的網域";
 
+/* Subtitle of the store onboarding task to update store title */
+"Customizing your store name can also help your store search engine optimization." = "自訂商店名稱也能協助商店提升搜尋引擎最佳化。";
+
 /* Navigation title for Customs screen in Shipping Label flow
    Title of the cell Customs inside Create Shipping Label form */
 "Customs" = "海關";
@@ -2409,9 +2410,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of button in order details > shipping label that shows the instructions on how to print a shipping label on the mobile device. */
 "Don’t know how to print from your mobile device?" = "不知道如何從行動裝置列印嗎？";
-
-/* Subtitle label on the store name form in the store creation flow. */
-"Don’t worry you can always change it later." = "之後隨時都能修改，不用擔心。";
 
 /* WordPress.com (unmapped!) error. Parameters: %1$@ - code, %2$@ - message */
 "Dotcom Error: [%1$@] %2$@" = "Dotcom 錯誤：[%1$@] %2$@";
@@ -2777,6 +2775,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Enter your store credentials for {site url}. Asks the user to enter .org site credentials for their store. */
 "Enter your store credentials for %@." = "請輸入 %@ 的商店憑證。";
+
+/* Placeholder for the text field on the store name screen */
+"Enter your store name" = "輸入商店名稱";
 
 /* Envelope package type, used to create a custom package in the Shipping Label flow */
 "Envelope" = "信封";
@@ -3484,9 +3485,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text used when sharing a link to the app with a friend. */
 "Hey! Here is a link to download the WooCommerce app. I'm really enjoying it and thought you might too." = "嗨！ 在此提供 WooCommerce 應用程式的下載連結。我很喜歡這個應用程式，相信你也會喜歡。 ";
-
-/* Message on the local notification suggesting a trial plan subscription.The placeholders are the name of the user and the store name. */
-"Hi %1$@, %2$@ is ready for you! Start your 14-day free trial of Woo Express right in just one click to start your online business." = "%1$@，你好，%2$@ 已準備就緒！ 只要按一下即可開始免費試用 14 天 Woo Express，展開你的線上事業。";
 
 /* Message on the local notification about a newly created store.The placeholder is the name of the user. */
 "Hi %1$@, Welcome to your 14-day free trial of Woo Express – everything you need to start and grow a successful online business, all in one place. Ready to explore?" = "%1$@，你好，歡迎免費試用 14 天 Woo Express：建立及發展成功線上事業所需的一切工具，這裡通通都有。 準備好開始探索了嗎？";
@@ -4531,6 +4529,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the name field */
 "Name missing" = "未填寫姓名";
 
+/* Title of the store onboarding task to update store title */
+"Name your store" = "為自己的商店命名";
+
 /* Country option for a site address. */
 "Namibia" = "納米比亞";
 
@@ -5020,6 +5021,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Original packaging" = "原包裝";
 
 /* Challenge option in the store creation challenges question.
+   Feature option in the store creation features question.
    Generic name of non-default discount types
    Industry option in the store creation category question.
    My Store > Settings > Other app section
@@ -5035,9 +5037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Store Picker's Section Title: Displayed when there are sites without WooCommerce */
 "Other Sites" = "其他網站";
-
-/* Feature option in the store creation features question. */
-"Others" = "其他";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status */
@@ -6218,6 +6217,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Add Product Category. Save button title in navbar.
    Add Product Tags. Save button title in navbar.
    Button title that save the price selection for bulk variation update
+   Button to save the name in the store name screen
    Title for the 'Save' button in the privacy banner */
 "Save" = "儲存";
 
@@ -6978,6 +6978,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "儲存空間";
 
+/* Navigates to the Store name setup screen */
+"Store Name" = "商店名稱";
+
+/* Title on the notice presented when the store name is updated */
+"Store Name Set!" = "商店名稱已設定！";
+
 /* Title of the secondary button on the store creation success screen to preview the newly created store. */
 "Store Preview" = "商店預覽";
 
@@ -6996,7 +7002,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Store management title feature on the Free Trial Summary Screen */
 "Store management tools" = "商店管理工具";
 
-/* Text field prompt on the store name form in the store creation flow. */
+/* Title for the store name screen */
 "Store name" = "商店名稱";
 
 /* VoiceOver accessibility label for the store revenue chart. */
@@ -7795,6 +7801,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "若要新增款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
 
+/* Subtitle on the notice presented when the store name is updated */
+"To change again, visit Store Settings." = "若要再變更一次，請造訪商店設定。";
+
 /* Error message displayed when unable to close user account due to having active atomic site. */
 "To close this account now, contact our support team." = "若要立即關閉此帳號，請與支援團隊聯絡。";
 
@@ -8051,8 +8060,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the app's Twitter profile */
 "Twitter" = "Twitter";
 
-/* Placeholder of the search text field on the domain selector.
-   Text field placeholder on the store name form in the store creation flow. */
+/* Placeholder of the search text field on the domain selector. */
 "Type a name for your store" = "輸入你的商店名稱";
 
 /* Placeholder for the Content Details row in Customs screen of Shipping Label flow */
@@ -8854,9 +8862,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of Whats New Component */
 "What’s New in WooCommerce" = "WooCommerce 新功能";
 
-/* Title label on the store name form in the store creation flow. */
-"What’s your store name?" = "你的商店名稱為何？";
-
 /* Shipping Labels: info description about WooCommerce Services discount */
 "When purchasing shipping labels with WooCommerce, you get access to discounted commercial prices." = "透過 WooCommerce 購買郵寄標籤可享折扣商業價。";
 
@@ -9416,9 +9421,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡 與我們分享你的訂閱決策";
-
-/* Title of the local notification suggesting a trial plan subscription. */
-"🛍️ Your store is waiting!" = "🛍️ 你的商店蓄勢待發！";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 還在探索 WooCommerce 嗎？";

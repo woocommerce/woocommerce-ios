@@ -1654,6 +1654,7 @@
 		B95A45EC2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
+		B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */; };
 		B991D3952A4EC0F800D886ED /* CouponLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */; };
 		B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */; };
 		B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */; };
@@ -4088,6 +4089,7 @@
 		B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
+		B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModelTests.swift; sourceTree = "<group>"; };
 		B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponLineViewModel.swift; sourceTree = "<group>"; };
 		B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayView.swift; sourceTree = "<group>"; };
 		B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayViewModel.swift; sourceTree = "<group>"; };
@@ -8889,6 +8891,22 @@
 			path = CustomerSection;
 			sourceTree = "<group>";
 		};
+		B98968542A98F1DF007A2FBE /* PaymentSection */ = {
+			isa = PBXGroup;
+			children = (
+				B98968552A98F219007A2FBE /* Taxes */,
+			);
+			path = PaymentSection;
+			sourceTree = "<group>";
+		};
+		B98968552A98F219007A2FBE /* Taxes */ = {
+			isa = PBXGroup;
+			children = (
+				B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */,
+			);
+			path = Taxes;
+			sourceTree = "<group>";
+		};
 		B99686E12A13C8D200D1AF62 /* ScanToPay */ = {
 			isa = PBXGroup;
 			children = (
@@ -9077,6 +9095,7 @@
 		CCB366AD274518CD007D437A /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B98968542A98F1DF007A2FBE /* PaymentSection */,
 				B95A45EA2A77D78F0073A91F /* CustomerSection */,
 				B9FECD832A6043E5003D98B7 /* ProductsSection */,
 				CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */,
@@ -13269,6 +13288,7 @@
 				0242CFB829F278B70080F500 /* ProductFormAIEligibilityCheckerTests.swift in Sources */,
 				E10DFC78267331590083AFF2 /* ApplicationLogViewModelTests.swift in Sources */,
 				0298431225936DFC00979CAE /* ShippingLabelsTopBannerFactoryTests.swift in Sources */,
+				B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */,
 				57B374B6245B331100D58BE0 /* EmptyStateViewControllerTests.swift in Sources */,
 				EE6F08662A718DFB00AA9B88 /* FreeTrialSurveyViewModelTests.swift in Sources */,
 				02D7E7CC2A4CE5060003049A /* LocalAnnouncementsProviderTests.swift in Sources */,

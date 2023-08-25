@@ -4,19 +4,19 @@ import Fakes
 @testable import WooCommerce
 @testable import Yosemite
 
-class OrderAddOnListI1Tests: XCTestCase {
+final class OrderAddOnListI1Tests: XCTestCase {
 
     func tests_addOns_view_models_are_correctly_converted_from_attributes() {
         // Given
-        let attributes = [
-            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: "Salami"),
-            OrderItemAttribute(metaID: 2, name: "Fast Delivery ($7.00)", value: "Yes"),
-            OrderItemAttribute(metaID: 3, name: "Soda (No Sugar) ($7.00)", value: "5"),
-            OrderItemAttribute(metaID: 4, name: "Engraving", value: "Earned Not Given"),
+        let addOns = [
+            OrderItemProductAddOn(addOnID: 1, key: "Topping ($3.00)", value: "Salami"),
+            OrderItemProductAddOn(addOnID: 2, key: "Fast Delivery ($7.00)", value: "Yes"),
+            OrderItemProductAddOn(addOnID: 3, key: "Soda (No Sugar) ($7.00)", value: "5"),
+            OrderItemProductAddOn(addOnID: 4, key: "Engraving", value: "Earned Not Given"),
         ]
 
         // When
-        let viewModel = OrderAddOnListI1ViewModel(attributes: attributes)
+        let viewModel = OrderAddOnListI1ViewModel(addOns: addOns)
 
         // Then
         XCTAssertEqual(viewModel.addOns, [
@@ -30,13 +30,13 @@ class OrderAddOnListI1Tests: XCTestCase {
     func test_addOns_are_properly_tracked() throws {
         // Given
         let analytics = MockAnalyticsProvider()
-        let attributes = [
-            OrderItemAttribute(metaID: 1, name: "Topping ($3.00)", value: "Salami"),
-            OrderItemAttribute(metaID: 2, name: "Fast Delivery ($7.00)", value: "Yes"),
-            OrderItemAttribute(metaID: 3, name: "Soda (No Sugar) ($7.00)", value: "5"),
-            OrderItemAttribute(metaID: 4, name: "Engraving", value: "Earned Not Given"),
+        let addOns = [
+            OrderItemProductAddOn(addOnID: 1, key: "Topping ($3.00)", value: "Salami"),
+            OrderItemProductAddOn(addOnID: 2, key: "Fast Delivery ($7.00)", value: "Yes"),
+            OrderItemProductAddOn(addOnID: 3, key: "Soda (No Sugar) ($7.00)", value: "5"),
+            OrderItemProductAddOn(addOnID: 4, key: "Engraving", value: "Earned Not Given"),
         ]
-        let viewModel = OrderAddOnListI1ViewModel(attributes: attributes, analytics: WooAnalytics(analyticsProvider: analytics))
+        let viewModel = OrderAddOnListI1ViewModel(addOns: addOns, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
         viewModel.trackAddOns()

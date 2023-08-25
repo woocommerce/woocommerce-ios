@@ -89,6 +89,7 @@
 		02AF07EA27492DBC00B2D81E /* WordPressMedia.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AF07E927492DBC00B2D81E /* WordPressMedia.swift */; };
 		02AF07EC27492FDD00B2D81E /* media-library-from-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */; };
 		02AF07EE27493AE700B2D81E /* media-upload-to-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = 02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */; };
+		02B1CAB42A9886D0008080B2 /* order-with-all-addon-types.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B1CAB32A9886D0008080B2 /* order-with-all-addon-types.json */; };
 		02B41A90296BC85800FE3311 /* site-domains.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A8F296BC85800FE3311 /* site-domains.json */; };
 		02B41A92296BEB3000FE3311 /* load-site-current-plan-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */; };
 		02B41A94296C04BC00FE3311 /* load-site-plans-no-current-plan.json in Resources */ = {isa = PBXBuildFile; fileRef = 02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */; };
@@ -1047,6 +1048,7 @@
 		02AF07E927492DBC00B2D81E /* WordPressMedia.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressMedia.swift; sourceTree = "<group>"; };
 		02AF07EB27492FDD00B2D81E /* media-library-from-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-library-from-wordpress-site.json"; sourceTree = "<group>"; };
 		02AF07ED27493AE700B2D81E /* media-upload-to-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-upload-to-wordpress-site.json"; sourceTree = "<group>"; };
+		02B1CAB32A9886D0008080B2 /* order-with-all-addon-types.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-with-all-addon-types.json"; sourceTree = "<group>"; };
 		02B41A8F296BC85800FE3311 /* site-domains.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-domains.json"; sourceTree = "<group>"; };
 		02B41A91296BEB3000FE3311 /* load-site-current-plan-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-site-current-plan-success.json"; sourceTree = "<group>"; };
 		02B41A93296C04BC00FE3311 /* load-site-plans-no-current-plan.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "load-site-plans-no-current-plan.json"; sourceTree = "<group>"; };
@@ -2614,6 +2616,7 @@
 				02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */,
 				02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */,
 				CE19CB10222486A500E8AF7A /* order-statuses.json */,
+				02B1CAB32A9886D0008080B2 /* order-with-all-addon-types.json */,
 				268EC45B26C169F600716F5C /* order-with-faulty-attributes.json */,
 				0272E3F4254AA48F00436277 /* order-with-line-item-attributes.json */,
 				0272E3FA254AABB800436277 /* order-with-line-item-attributes-before-API-support.json */,
@@ -3505,6 +3508,7 @@
 				02698CF624C17FC1005337C4 /* product-alternative-types.json in Resources */,
 				03EB99962907F03000F06A39 /* empty-data-array.json in Resources */,
 				57BE08D82409B63800F6DCED /* reviews-missing-avatar-urls.json in Resources */,
+				02B1CAB42A9886D0008080B2 /* order-with-all-addon-types.json in Resources */,
 				EEFC4C962A5E996C004C5A83 /* jwt-token-failure.json in Resources */,
 				3158FE8026129EC300E566B9 /* wcpay-account-restricted-overdue.json in Resources */,
 				45AF57A924AB42CD0088E2F7 /* product-tags-extra.json in Resources */,

@@ -118,7 +118,7 @@ private struct OrderAddOnNoticeView: View {
 
 struct OrderAddOnView_Previews: PreviewProvider {
     static var previews: some View {
-        OrderAddOnListI1View(viewModel: .init(addOns: [
+        OrderAddOnListI1View(viewModel: .init(addOnViewModels: [
             OrderAddOnI1ViewModel(id: 1, title: "Topping", content: "Pepperoni", price: "$3.00"),
             OrderAddOnI1ViewModel(id: 2, title: "Topping", content: "Salami", price: "$2.00"),
             OrderAddOnI1ViewModel(id: 3, title: "Soda", content: "3", price: "$6.00"),

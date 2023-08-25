@@ -440,14 +440,35 @@ final class OrderMapperTests: XCTestCase {
     }
 
     func test_addons_are_parsed_correctly() throws {
-        let order = try XCTUnwrap(mapLoadOrderWithLintItemAddOnsResponse())
+        let order = try XCTUnwrap(mapLoadOrderWithLineItemAddOnsResponse())
 
         let lineItems = order.items
         XCTAssertEqual(lineItems.count, 1)
 
         let lineItem = try XCTUnwrap(lineItems.first)
 
-        XCTAssertEqual(lineItem.addOns, [.init(addOnID: 0, key: "As a Gift", value: "No")])
+        XCTAssertEqual(lineItem.addOns, [.init(addOnID: -1, key: "As a Gift", value: "No")])
+    }
+
+    func test_order_line_item_addons_with_all_types_are_decoded_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithAllAddOnTypesResponse())
+
+        // When
+        let addOns = try XCTUnwrap(order.items.first?.addOns)
+
+        // Then
+        assertEqual(addOns, [
+            .init(addOnID: 1690787061, key: "Extra cheese (multiple choice)", value: "20-year parmesan"),
+            .init(addOnID: 1691020417, key: "Test checkbox", value: "10% bigger"),
+            .init(addOnID: 1691020418, key: "Pizza pattern (file)", value: "https://example.com/wp-content/uploads/product_addons_uploads/file-2.jpg"),
+            .init(addOnID: 1691020419, key: "Tip (customer defined price)", value: " ($2.50)"),
+            .init(addOnID: 1691020420, key: "Birthday candle (quantity)", value: "10"),
+            .init(addOnID: 1691020421, key: "Recipient email (short text)", value: "test@example.com"),
+            .init(addOnID: 1692927665, key: "Customizations (long text)", value: "Very long text."),
+            .init(addOnID: 1690419140, key: "As a Gift", value: "Yes"),
+            .init(addOnID: 1690786915, key: "Wrapping paper", value: "Yes"),
+        ])
     }
 }
 
@@ -502,7 +523,7 @@ private extension OrderMapperTests {
         return mapOrder(from: "order-with-line-item-attributes")
     }
 
-    func mapLoadOrderWithLintItemAddOnsResponse() -> Order? {
+    func mapLoadOrderWithLineItemAddOnsResponse() -> Order? {
         mapOrder(from: "order-with-subscription-renewal")
     }
 
@@ -511,6 +532,13 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-faulty-attributes")
+    }
+
+    /// Returns the Order output upon receiving `order-with-faulty-attributes`
+    /// Where the `value` to `_measurement_data` is not a `string` but a `JSON object`
+    ///
+    func mapLoadOrderWithAllAddOnTypesResponse() -> Order? {
+        return mapOrder(from: "order-with-all-addon-types")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes-before-API-support`

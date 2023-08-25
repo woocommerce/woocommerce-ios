@@ -18,13 +18,12 @@ public struct OrderItemProductAddOn: Decodable, Hashable, Equatable, GeneratedFa
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let addOnID = container.failsafeDecodeIfPresent(targetType: Int64.self, forKey: .addOnID, alternativeTypes: [.string(transform: {
-            Int64($0) ?? 0
-        })]) ?? 0
+        let addOnID = container.failsafeDecodeIfPresent(integerForKey: .addOnID) ?? Constants.defaultAddOnID
         let key = try container.decode(String.self, forKey: .key)
-        let value = try container.decode(String.self, forKey: .value)
-
-        self.init(addOnID: addOnID, key: key, value: value)
+        guard let value = container.failsafeDecodeIfPresent(stringForKey: .value) else {
+            throw OrderItemProductAddOnDecodingError.invalidValue
+        }
+        self.init(addOnID: Int64(addOnID), key: key, value: value)
     }
 }
 
@@ -35,5 +34,16 @@ private extension OrderItemProductAddOn {
         case addOnID = "id"
         case key
         case value
+    }
+}
+
+enum OrderItemProductAddOnDecodingError: Error {
+    case invalidValue
+}
+
+private extension OrderItemProductAddOn {
+    enum Constants {
+        /// WCPay plugin removes the add-on ID, thus a default add-on ID is set to support WCPay as a workaround.
+        static let defaultAddOnID = -1
     }
 }

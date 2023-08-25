@@ -30,8 +30,8 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
 
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
-    init(addOns: [OrderAddOnI1ViewModel], analytics: Analytics = ServiceLocator.analytics) {
-        self.addOns = addOns
+    init(addOnViewModels: [OrderAddOnI1ViewModel], analytics: Analytics = ServiceLocator.analytics) {
+        self.addOns = addOnViewModels
         self.analytics = analytics
     }
 

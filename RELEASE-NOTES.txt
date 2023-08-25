@@ -2,6 +2,7 @@
 
 15.1
 -----
+- [*] Updated UI and copy on prologue and free trial summary screens. [https://github.com/woocommerce/woocommerce-ios/pull/10539]
 
 
 15.0

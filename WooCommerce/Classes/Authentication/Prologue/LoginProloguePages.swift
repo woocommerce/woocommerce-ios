@@ -26,7 +26,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("Sell anything, anywhere.",
+            return NSLocalizedString("The e-commerce platform that grows with you",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
     }
@@ -43,11 +43,20 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("From your first sale to millions in revenue, Woo is with you. "
-                                     + "See why merchants trust us to power 3.4 million online stores.",
+            return NSLocalizedString("Start with our 15-day free trial, no credit card needed. "
+                                     + "Join 3.4M stores thriving with Woo, from first sale to millions.",
                                      comment: "Subtitle displayed in the simplified prologue screen")
         default:
             return nil
+        }
+    }
+
+    var subtitleColor: UIColor {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return .textSubtle
+        case .getStarted:
+            return .text
         }
     }
 
@@ -63,6 +72,25 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueReviewsImage
         case .getStarted:
             return UIImage.prologueWooMobileImage
+        }
+    }
+
+    var imageHeightMultiplier: CGFloat {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return 0.35
+        case .getStarted:
+            return 0.6
+        }
+    }
+
+    // Space between image and text
+    var stackSpacing: CGFloat {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return 16
+        case .getStarted:
+            return 8
         }
     }
 }
@@ -116,7 +144,7 @@ private extension LoginProloguePageTypeViewController {
         // Stack view layout
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = Constants.stackSpacing
+        stackView.spacing = pageType.stackSpacing
 
 
         // Set constraints
@@ -135,7 +163,7 @@ private extension LoginProloguePageTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: pageType.imageHeightMultiplier)
         ])
 
         // Image contents
@@ -177,7 +205,7 @@ private extension LoginProloguePageTypeViewController {
         // Label style & layout
         subtitleLabel.font = .body
         subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.textColor = .textSubtle
+        subtitleLabel.textColor = pageType.subtitleColor
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -193,9 +221,7 @@ private extension LoginProloguePageTypeViewController {
 
 private extension LoginProloguePageTypeViewController {
     enum Constants {
-        static let stackSpacing: CGFloat = 40 // Space between image and text
-        static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
-        static let imageHeightMultiplier: CGFloat = 0.35
+        static let stackBottomMargin: CGFloat = -24 // Minimum margin between stack view and login buttons, including space required for UIPageControl
         static let labelLeadingMargin: CGFloat = 48
     }
 }

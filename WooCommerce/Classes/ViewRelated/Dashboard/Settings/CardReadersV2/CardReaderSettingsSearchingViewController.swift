@@ -10,17 +10,22 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private var viewModel: CardReaderSettingsSearchingViewModel
 
+    private lazy var alertsPresenter: CardPresentPaymentAlertsPresenting = CardPresentPaymentAlertsPresenter(rootViewController: self)
+
+    private let alertsProvider: BluetoothReaderConnnectionAlertsProviding = BluetoothReaderConnectionAlertsProvider()
+
     /// Connection Controller (helps connect readers)
     ///
-    private lazy var connectionController: LegacyCardReaderConnectionController? = {
+    private lazy var connectionController: CardReaderConnectionController? = {
         guard let knownReaderProvider = viewModel.knownReaderProvider else {
             return nil
         }
 
-        return LegacyCardReaderConnectionController(
+        return CardReaderConnectionController(
             forSiteID: viewModel.siteID,
             knownReaderProvider: knownReaderProvider,
-            alertsProvider: CardReaderSettingsAlerts(),
+            alertsPresenter: alertsPresenter,
+            alertsProvider: alertsProvider,
             configuration: viewModel.configuration,
             analyticsTracker: viewModel.cardReaderConnectionAnalyticsTracker
         )
@@ -99,9 +104,10 @@ private extension CardReaderSettingsSearchingViewController {
 //
 private extension CardReaderSettingsSearchingViewController {
     func searchAndConnect() {
-        connectionController?.searchAndConnect(from: self) { _ in
+        connectionController?.searchAndConnect() { [weak self] _ in
             /// No need for logic here. Once connected, the connected reader will publish
             /// through the `cardReaderAvailableSubscription`
+            self?.alertsPresenter.dismiss()
         }
     }
 }

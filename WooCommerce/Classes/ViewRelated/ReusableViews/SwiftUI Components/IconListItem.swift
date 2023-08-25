@@ -10,6 +10,8 @@ struct IconListItem: View {
         /// Base64 icon
         case base64(UIImage)
 
+        case adaptiveBase64(universal: UIImage, dark: UIImage?)
+
         /// Icon that comes from an URL
         case remote(URL)
 
@@ -23,6 +25,8 @@ struct IconListItem: View {
             case .base64(let image):
                 Image(uiImage: image)
                     .resizable()
+            case .adaptiveBase64(let universal, let dark):
+                AdaptiveImage(light: universal, dark: dark)
             case .remote(let url):
                 KFImage(url)
                     .resizable()

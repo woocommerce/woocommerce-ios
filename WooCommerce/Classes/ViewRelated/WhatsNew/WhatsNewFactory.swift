@@ -27,17 +27,32 @@ struct WhatsNewFactory {
     /// Get IconListItem.Icon from a Feature
     private static func icon(for feature: Feature) -> IconListItem.Icon? {
         var icon: IconListItem.Icon?
-        if let base64string = feature.iconBase64,
-           let imageURL = URL(string: base64string),
-           let imageData = try? Data(contentsOf: imageURL),
-           let image = UIImage(data: imageData) {
+
+        if let icons = feature.icons,
+           let lightIcon = icons.first(where: { $0.iconType == "light" }) {
+            let darkIcon = icons.first(where: { $0.iconType == "dark" })
+
+            if let lightImage = image(fromBase64: lightIcon.iconBase64) {
+                let darkImage = image(fromBase64: darkIcon?.iconBase64)
+                icon = .adaptiveBase64(universal: lightImage, dark: darkImage)
+            } else if let lightUrl = URL(string: lightIcon.iconUrl) {
+                let darkUrl = URL(string: darkIcon?.iconUrl ?? "")
+                icon = .adaptiveRemote(universal: lightUrl, dark: darkUrl)
+            }
+        } else if let image = image(fromBase64: feature.iconBase64) {
             icon = .base64(image)
-        } else if let lightUrl = URL(string: feature.icons?.first(where: { $0.iconType == "light" })?.iconUrl ?? "") {
-            let darkUrl = URL(string: feature.icons?.first(where: { $0.iconType == "dark" })?.iconUrl ?? "")
-            icon = .adaptiveRemote(universal: lightUrl, dark: darkUrl)
         } else if let url = URL(string: feature.iconUrl) {
             icon = .remote(url)
         }
         return icon
+    }
+
+    private static func image(fromBase64 base64String: String?) -> UIImage? {
+        guard let base64String,
+              let imageURL = URL(string: base64String),
+              let imageData = try? Data(contentsOf: imageURL) else {
+            return nil
+        }
+        return UIImage(data: imageData)
     }
 }

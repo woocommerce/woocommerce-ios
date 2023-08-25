@@ -24,7 +24,7 @@
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="login-prologue-woo-mobile" translatesAutoresizingMaskIntoConstraints="NO" id="vU6-mF-0Px">
-                    <rect key="frame" x="-17" y="99" width="424" height="422"/>
+                    <rect key="frame" x="-17" y="99" width="424" height="424"/>
                 </imageView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3vu-Xh-Yk9" userLabel="Bottom View">
                     <rect key="frame" x="0.0" y="810" width="390" height="34"/>
@@ -32,7 +32,7 @@
                     <color key="backgroundColor" red="0.96470588235294119" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="o29-Vv-KDs" userLabel="Container View">
-                    <rect key="frame" x="0.0" y="481" width="390" height="329"/>
+                    <rect key="frame" x="0.0" y="483" width="390" height="327"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kB9-3M-C7f">
                             <rect key="frame" x="32" y="0.0" width="326" height="20.333333333333332"/>
@@ -67,7 +67,6 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="3oc-0l-uZX"/>
             <constraints>
-                <constraint firstItem="vU6-mF-0Px" firstAttribute="height" secondItem="V2X-Xj-JeZ" secondAttribute="height" multiplier="0.5" id="1xX-5J-wBm"/>
                 <constraint firstAttribute="bottom" secondItem="3vu-Xh-Yk9" secondAttribute="bottom" id="DQs-9H-0q1"/>
                 <constraint firstItem="o29-Vv-KDs" firstAttribute="leading" secondItem="3oc-0l-uZX" secondAttribute="leading" id="EIM-fi-cgJ"/>
                 <constraint firstItem="3oc-0l-uZX" firstAttribute="trailing" secondItem="o29-Vv-KDs" secondAttribute="trailing" id="LER-Vg-1a4"/>

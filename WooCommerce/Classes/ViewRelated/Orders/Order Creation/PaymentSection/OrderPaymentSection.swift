@@ -22,6 +22,10 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
 
+    /// Indicates if the tax educational dialog should be shown or not.
+    ///
+    @State private var shouldShowTaxEducationalDialog: Bool = false
+
     /// Keeps track of the selected coupon line details view model.
     ///
     @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
@@ -107,6 +111,9 @@ struct OrderPaymentSection: View {
 
             if viewModel.shouldShowTaxExtraInformation {
                 taxesSection
+                    .sheet(isPresented: $shouldShowTaxEducationalDialog) {
+
+                    }
             } else {
                 TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))
             }
@@ -178,8 +185,12 @@ struct OrderPaymentSection: View {
             Text(Localization.taxesTotal)
                 .bodyStyle()
 
-            Image(systemName: "questionmark.circle")
-                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            Button {
+                shouldShowTaxEducationalDialog = true
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            }
 
             Spacer()
 

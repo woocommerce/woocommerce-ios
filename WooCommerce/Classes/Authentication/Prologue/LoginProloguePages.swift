@@ -65,6 +65,25 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueWooMobileImage
         }
     }
+
+    var imageHeightMultiplier: CGFloat {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return 0.35
+        case .getStarted:
+            return 0.6
+        }
+    }
+
+    // Space between image and text
+    var stackSpacing: CGFloat {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return 40
+        case .getStarted:
+            return 16
+        }
+    }
 }
 
 // MARK: - View Controller
@@ -116,7 +135,7 @@ private extension LoginProloguePageTypeViewController {
         // Stack view layout
         stackView.axis = .vertical
         stackView.alignment = .center
-        stackView.spacing = Constants.stackSpacing
+        stackView.spacing = pageType.stackSpacing
 
 
         // Set constraints
@@ -135,7 +154,7 @@ private extension LoginProloguePageTypeViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.widthAnchor.constraint(equalTo: stackView.widthAnchor),
-            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: Constants.imageHeightMultiplier)
+            imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: pageType.imageHeightMultiplier)
         ])
 
         // Image contents
@@ -193,9 +212,7 @@ private extension LoginProloguePageTypeViewController {
 
 private extension LoginProloguePageTypeViewController {
     enum Constants {
-        static let stackSpacing: CGFloat = 40 // Space between image and text
         static let stackBottomMargin: CGFloat = -57 // Minimum margin between stack view and login buttons, including space required for UIPageControl
-        static let imageHeightMultiplier: CGFloat = 0.35
         static let labelLeadingMargin: CGFloat = 48
     }
 }

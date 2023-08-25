@@ -8,7 +8,7 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                                      _ onProcessingMessage: () -> Void,
                                      _ onDisplayMessage: (String) -> Void,
                                      _ onProcessingCompletion: (Yosemite.PaymentIntent) -> Void,
-                                     _ onCompletion: (Result<WooCommerce.CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
+                                     _ onCompletion: (Result<CardPresentCapturedPaymentData, Error>) -> Void) -> Void)? = nil
 
     var spyDidCallCollectPayment = false
     var spyCollectPaymentOrder: Order? = nil

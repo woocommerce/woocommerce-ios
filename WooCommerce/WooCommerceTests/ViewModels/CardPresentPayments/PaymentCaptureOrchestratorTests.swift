@@ -1,6 +1,5 @@
 import XCTest
 import Yosemite
-import Hardware
 @testable import WooCommerce
 
 final class PaymentCaptureOrchestratorTests: XCTestCase {

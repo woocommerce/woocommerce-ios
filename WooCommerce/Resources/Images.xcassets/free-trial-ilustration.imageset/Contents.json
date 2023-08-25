@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "free-trial-ilustration.pdf",
+      "filename" : "woobles-Celebration.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "woobles-Celebration 1.pdf",
       "idiom" : "universal"
     }
   ],

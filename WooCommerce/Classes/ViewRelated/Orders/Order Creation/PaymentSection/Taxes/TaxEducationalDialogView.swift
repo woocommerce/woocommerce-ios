@@ -6,6 +6,9 @@ struct TaxEducationalDialogView: View {
 
     @Environment(\.dismiss) var dismiss
 
+    /// Whether the WPAdmin webview is being shown.
+    @State private var showingWPAdminWebview: Bool = false
+
     let viewModel: TaxEducationalDialogViewModel
 
     var body: some View {
@@ -54,6 +57,7 @@ struct TaxEducationalDialogView: View {
                     }.renderedIf(viewModel.taxLines.isNotEmpty)
 
                     Button {
+                        showingWPAdminWebview = true
                     } label: {
                         Label {
                             Text(Localization.editTaxRatesInAdminButtonTitle)
@@ -66,6 +70,9 @@ struct TaxEducationalDialogView: View {
                         }
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                        showingWPAdminWebview = false
+                    })
 
                     Button {
                         dismiss()

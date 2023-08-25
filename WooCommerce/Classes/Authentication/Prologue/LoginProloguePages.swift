@@ -9,6 +9,7 @@ enum LoginProloguePageType: CaseIterable {
     case orderManagement
     case products
     case reviews
+    case getStarted
 
     var title: String {
         switch self {
@@ -24,6 +25,9 @@ enum LoginProloguePageType: CaseIterable {
         case .reviews:
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
+        case .getStarted:
+            return NSLocalizedString("Sell anything, anywhere.",
+                                     comment: "Caption displayed in the simplified prologue screen")
         }
     }
 
@@ -38,6 +42,10 @@ enum LoginProloguePageType: CaseIterable {
         case .products:
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
+        case .getStarted:
+            return NSLocalizedString("From your first sale to millions in revenue, Woo is with you. "
+                                     + "See why merchants trust us to power 3.4 million online stores.",
+                                     comment: "Subtitle displayed in the simplified prologue screen")
         default:
             return nil
         }
@@ -53,6 +61,8 @@ enum LoginProloguePageType: CaseIterable {
             return UIImage.prologueProductsImage
         case .reviews:
             return UIImage.prologueReviewsImage
+        case .getStarted:
+            return UIImage.prologueWooMobileImage
         }
     }
 }
@@ -137,7 +147,9 @@ private extension LoginProloguePageTypeViewController {
 
         // Label style & layout
         titleLabel.font = {
-            if showsSubtitle {
+            if pageType == .getStarted {
+                return .title3SemiBold
+            } else if showsSubtitle {
                 return .font(forStyle: .title2, weight: .semibold)
             } else {
                 return .body

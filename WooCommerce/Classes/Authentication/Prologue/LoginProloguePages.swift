@@ -26,7 +26,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("Sell anything, anywhere.",
+            return NSLocalizedString("The ecommerce platform that grows with you",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
     }
@@ -43,8 +43,8 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("We enable you to process them effortlessly.",
                                      comment: "Subtitle displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("From your first sale to millions in revenue, Woo is with you. "
-                                     + "See why merchants trust us to power 3.4 million online stores.",
+            return NSLocalizedString("Start with our 15-day free trial, no credit card needed. "
+                                     + "Join 3.4M stores thriving with Woo, from first sale to millions.",
                                      comment: "Subtitle displayed in the simplified prologue screen")
         default:
             return nil

@@ -51,6 +51,15 @@ enum LoginProloguePageType: CaseIterable {
         }
     }
 
+    var subtitleColor: UIColor {
+        switch self {
+        case .stats, .orderManagement, .products, .reviews:
+            return .textSubtle
+        case .getStarted:
+            return .text
+        }
+    }
+
     var image: UIImage {
         switch self {
         case .stats:
@@ -196,7 +205,7 @@ private extension LoginProloguePageTypeViewController {
         // Label style & layout
         subtitleLabel.font = .body
         subtitleLabel.adjustsFontForContentSizeCategory = true
-        subtitleLabel.textColor = .textSubtle
+        subtitleLabel.textColor = pageType.subtitleColor
         subtitleLabel.textAlignment = .center
         subtitleLabel.numberOfLines = 0
         subtitleLabel.translatesAutoresizingMaskIntoConstraints = false

@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Represents the Payment section in an order
 ///
@@ -111,8 +112,9 @@ struct OrderPaymentSection: View {
 
             if viewModel.shouldShowTaxExtraInformation {
                 taxesSection
-                    .sheet(isPresented: $shouldShowTaxEducationalDialog) {
-
+                    .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
+                        TaxEducationalDialogView()
+                            .background(FullScreenCoverClearBackgroundView())
                     }
             } else {
                 TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))

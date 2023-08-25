@@ -2,15 +2,16 @@ import SwiftUI
 
 struct AdaptiveImage: View {
     @Environment(\.colorScheme) var colorScheme
-    let light: UIImage
+    let anyAppearance: UIImage
     let dark: UIImage?
 
     @ViewBuilder var body: some View {
-        if colorScheme == .light {
-            Image(uiImage: light)
+        if colorScheme == .dark,
+           let dark = dark {
+            Image(uiImage: dark)
                 .resizable()
         } else {
-            Image(uiImage: dark ?? light)
+            Image(uiImage: anyAppearance)
                 .resizable()
         }
     }

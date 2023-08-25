@@ -10,13 +10,13 @@ struct IconListItem: View {
         /// Base64 icon
         case base64(UIImage)
 
-        case adaptiveBase64(universal: UIImage, dark: UIImage?)
+        case adaptiveBase64(anyAppearance: UIImage, dark: UIImage?)
 
         /// Icon that comes from an URL
         case remote(URL)
 
         /// Adaptive (light/dark mode) remote image, with URLs for one or more parts
-        case adaptiveRemote(universal: URL, dark: URL?)
+        case adaptiveRemote(anyAppearance: URL, dark: URL?)
 
         /// Return an Image for base64 or a FKImage in case of a remote one
         @ViewBuilder
@@ -25,13 +25,15 @@ struct IconListItem: View {
             case .base64(let image):
                 Image(uiImage: image)
                     .resizable()
-            case .adaptiveBase64(let universal, let dark):
-                AdaptiveImage(light: universal, dark: dark)
+            case .adaptiveBase64(let anyAppearance, let dark):
+                AdaptiveImage(anyAppearance: anyAppearance, dark: dark)
             case .remote(let url):
                 KFImage(url)
                     .resizable()
-            case .adaptiveRemote(let universal, let dark):
-                AdaptiveAsyncImage(lightUrl: universal, darkUrl: dark, scale: 3) { imagePhase in
+            case .adaptiveRemote(let anyAppearance, let dark):
+                AdaptiveAsyncImage(anyAppearanceUrl: anyAppearance,
+                                   darkUrl: dark,
+                                   scale: 3) { imagePhase in
                     switch imagePhase {
                     case .success(let image):
                         image.scaledToFit()

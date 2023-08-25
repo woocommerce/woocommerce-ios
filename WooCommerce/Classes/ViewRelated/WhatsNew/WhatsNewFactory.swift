@@ -34,10 +34,10 @@ struct WhatsNewFactory {
 
             if let lightImage = image(fromBase64: lightIcon.iconBase64) {
                 let darkImage = image(fromBase64: darkIcon?.iconBase64)
-                icon = .adaptiveBase64(universal: lightImage, dark: darkImage)
+                icon = .adaptiveBase64(anyAppearance: lightImage, dark: darkImage)
             } else if let lightUrl = URL(string: lightIcon.iconUrl) {
                 let darkUrl = URL(string: darkIcon?.iconUrl ?? "")
-                icon = .adaptiveRemote(universal: lightUrl, dark: darkUrl)
+                icon = .adaptiveRemote(anyAppearance: lightUrl, dark: darkUrl)
             }
         } else if let image = image(fromBase64: feature.iconBase64) {
             icon = .base64(image)

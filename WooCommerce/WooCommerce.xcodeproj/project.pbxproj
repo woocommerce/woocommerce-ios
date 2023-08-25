@@ -607,6 +607,7 @@
 		0379C51927BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */; };
 		0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */; };
 		037D270D28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */; };
+		03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03825FE82A97B63800363BDA /* AdaptiveImage.swift */; };
 		0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */; };
 		0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */; };
 		0388E1A829E04687007DF84D /* DeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */; };
@@ -3039,6 +3040,7 @@
 		0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundConfirmationCardDetailsCell.xib; sourceTree = "<group>"; };
 		0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundConfirmationCardDetailsCell.swift; sourceTree = "<group>"; };
 		037D270C28CA444F00A3F924 /* CardReaderModalFlowViewControllerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderModalFlowViewControllerProtocol.swift; sourceTree = "<group>"; };
+		03825FE82A97B63800363BDA /* AdaptiveImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveImage.swift; sourceTree = "<group>"; };
 		0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsHostingController.swift; sourceTree = "<group>"; };
 		0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRouteTests.swift; sourceTree = "<group>"; };
 		0388E1A729E04687007DF84D /* DeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkForwarder.swift; sourceTree = "<group>"; };
@@ -7422,6 +7424,7 @@
 				CC857C7629B25FAF00E19D1E /* FooterNotice.swift */,
 				02BE9CBF29C05CFD00292333 /* SitePreviewView.swift */,
 				03A9F3B12A03E70700385673 /* AdaptiveAsyncImage.swift */,
+				03825FE82A97B63800363BDA /* AdaptiveImage.swift */,
 				03F5CAFE2A0BA37C0026877A /* JustInTimeMessageModal.swift */,
 				03F5CB002A0BA3D40026877A /* ModalOverlay.swift */,
 				02D7E7C82A4CBEEC0003049A /* LocalAnnouncementModal.swift */,
@@ -12747,6 +12750,7 @@
 				03582BE2299A9CC8007B7AA3 /* CollectOrderPaymentAnalytics.swift in Sources */,
 				02F36F472978349500D97EA0 /* DomainPurchaseSuccessView.swift in Sources */,
 				B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */,
+				03825FE92A97B63800363BDA /* AdaptiveImage.swift in Sources */,
 				453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */,
 				CC53FB3527551A6E00C4CA4F /* ProductRow.swift in Sources */,
 				CC04918D292BB74500F719D8 /* StatsDataTextFormatter.swift in Sources */,

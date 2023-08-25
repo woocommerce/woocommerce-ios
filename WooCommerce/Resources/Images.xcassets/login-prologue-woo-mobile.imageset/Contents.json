@@ -1,7 +1,7 @@
 {
   "images" : [
     {
-      "filename" : "prologue-light.pdf",
+      "filename" : "Prologue Image Light.pdf",
       "idiom" : "universal"
     },
     {
@@ -11,7 +11,7 @@
           "value" : "dark"
         }
       ],
-      "filename" : "prologue-dark.pdf",
+      "filename" : "Prologue Image Dark.pdf",
       "idiom" : "universal"
     }
   ],

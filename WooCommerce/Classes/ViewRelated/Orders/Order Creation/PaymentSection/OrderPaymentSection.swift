@@ -113,7 +113,7 @@ struct OrderPaymentSection: View {
             if viewModel.shouldShowTaxExtraInformation {
                 taxesSection
                     .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
-                        TaxEducationalDialogView()
+                        TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel)
                             .background(FullScreenCoverClearBackgroundView())
                     }
             } else {
@@ -175,7 +175,7 @@ struct OrderPaymentSection: View {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
-            if viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting.isNotEmpty {
+            if viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting != nil {
                 taxBasedOnLine
             }
         }
@@ -222,7 +222,7 @@ struct OrderPaymentSection: View {
     }
 
     @ViewBuilder private var taxBasedOnLine: some View {
-        Text(viewModel.taxBasedOnSetting)
+        Text(viewModel.taxBasedOnSetting?.displayString ?? "")
             .footnoteStyle()
             .multilineTextAlignment(.leading)
     }

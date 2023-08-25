@@ -153,7 +153,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
     /// 
-    @Published private(set) var taxBasedOnSetting: String = ""
+    @Published private(set) var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Defines the multiple lines info message to show.
     ///
@@ -719,7 +719,8 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let taxLineViewModels: [TaxLineViewModel]
-        let taxBasedOnSetting: String
+        let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
+        let taxBasedOnSetting: TaxBasedOnSetting?
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -754,8 +755,9 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
-             taxBasedOnSetting: String = "",
+             taxBasedOnSetting: TaxBasedOnSetting? = nil,
              taxLineViewModels: [TaxLineViewModel] = [],
+             taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
              couponCode: String = "",
              discountTotal: String = "",
              shouldShowDiscountTotal: Bool = false,
@@ -786,6 +788,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.taxBasedOnSetting = taxBasedOnSetting
             self.taxLineViewModels = taxLineViewModels
+            self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
@@ -1109,6 +1112,8 @@ private extension EditableOrderViewModel {
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
+                                            taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
+                                                                                                         taxBasedOnSetting: taxBasedOnSetting),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
@@ -1170,7 +1175,7 @@ private extension EditableOrderViewModel {
                                                                         return
                                                                     }
 
-                                                                    self?.taxBasedOnSetting = setting.displayString
+                                                                    self?.taxBasedOnSetting = setting
                                                                 }))
     }
 

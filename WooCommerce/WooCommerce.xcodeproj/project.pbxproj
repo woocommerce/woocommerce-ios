@@ -1658,6 +1658,7 @@
 		B99686E02A13C8CC00D1AF62 /* ScanToPayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */; };
 		B99686E32A13C98200D1AF62 /* ScanToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */; };
 		B998DF482A989BE100D1C6E8 /* TaxEducationalDialogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */; };
+		B998DF4A2A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */; };
 		B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
@@ -4091,6 +4092,7 @@
 		B99686DF2A13C8CC00D1AF62 /* ScanToPayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayView.swift; sourceTree = "<group>"; };
 		B99686E22A13C98200D1AF62 /* ScanToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanToPayViewModel.swift; sourceTree = "<group>"; };
 		B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogView.swift; sourceTree = "<group>"; };
+		B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModel.swift; sourceTree = "<group>"; };
 		B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModel.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
@@ -8901,6 +8903,7 @@
 			children = (
 				B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */,
 				B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */,
+				B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -12787,6 +12790,7 @@
 				02863F6A29246E18006A06AA /* StoreCreationPlanFeaturesView.swift in Sources */,
 				B6C838DE28793B3A003AB786 /* OrderCustomFieldsViewModel.swift in Sources */,
 				E1E125AA26EB42530068A9B0 /* CardPresentModalUpdateProgress.swift in Sources */,
+				B998DF4A2A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift in Sources */,
 				E1C5E78226C2A971008D4C47 /* InPersonPaymentsPluginNotSetup.swift in Sources */,
 				022F941E257F8E820011CD94 /* BoldableTextParser.swift in Sources */,
 				26FE09DD24D9F3F600B9BDF5 /* LoadingView.swift in Sources */,

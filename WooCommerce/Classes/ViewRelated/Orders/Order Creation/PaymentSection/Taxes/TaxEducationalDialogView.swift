@@ -6,6 +6,8 @@ struct TaxEducationalDialogView: View {
 
     @Environment(\.dismiss) var dismiss
 
+    let viewModel: TaxEducationalDialogViewModel
+
     var body: some View {
         ZStack {
             Color.black.opacity(Layout.backgroundOpacity).edgesIgnoringSafeArea(.all)
@@ -19,16 +21,37 @@ struct TaxEducationalDialogView: View {
                         .bodyStyle()
 
 
-                    VStack() {
+                    VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
                         Divider()
                             .frame(height: Layout.dividerHeight)
                             .foregroundColor(Color(.opaqueSeparator))
-                        Text(Localization.taxRatesExplanatoryText)
-                            .bodyStyle()
+                        if let taxBasedOnSettingExplanatoryText = viewModel.taxBasedOnSettingExplanatoryText {
+                            Text(viewModel.taxBasedOnSettingExplanatoryText ?? "")
+                                .bodyStyle()
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+
+                        ForEach(viewModel.taxLines, id: \.title) { taxLine in
+                            HStack {
+                                AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.taxLinesInnerSpacing) {
+                                    Text(taxLine.title)
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+                                        .multilineTextAlignment(.leading)
+                                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                                    Text(taxLine.value)
+                                        .font(.body)
+                                        .fontWeight(.semibold)
+                                        .multilineTextAlignment(.trailing)
+                                        .frame(width: nil, alignment: .trailing)
+                                }
+                            }
+                        }
                         Divider()
                             .frame(height: Layout.dividerHeight)
                             .foregroundColor(Color(.opaqueSeparator))
-                    }
+                    }.renderedIf(viewModel.taxLines.isNotEmpty)
 
                     Button {
                     } label: {
@@ -64,7 +87,7 @@ struct TaxEducationalDialogView: View {
 extension TaxEducationalDialogView {
     enum Localization {
         static let title = NSLocalizedString("Taxes & Tax Rates", comment: "Title for the tax educational dialog")
-        static let bodyFirstParagraph = NSLocalizedString("Taxes are calculated by matching your customer’s billing" +
+        static let bodyFirstParagraph = NSLocalizedString("Taxes are calculated by matching your customer’s billing " +
                                                           "or shipping address, or your shop address to a tax rate location.",
                                                           comment: "First paragraph of the body for the tax educational dialog")
         static let bodySecondParagraph = NSLocalizedString("Tax rates for different locations can be managed in your store’s admin.",
@@ -83,5 +106,6 @@ extension TaxEducationalDialogView {
         static let outterPadding: CGFloat = 24
         static let cornerRadius: CGFloat = 8
         static let dividerHeight: CGFloat = 1
+        static let taxLinesInnerSpacing: CGFloat = 4
     }
 }

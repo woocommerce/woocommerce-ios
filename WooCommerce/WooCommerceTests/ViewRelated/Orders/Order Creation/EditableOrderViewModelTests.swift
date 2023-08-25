@@ -1884,7 +1884,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Calculated on billing address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on billing address", comment: ""))
     }
 
     func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
@@ -1900,7 +1900,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Calculated on shop base address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shop base address", comment: ""))
     }
 
     func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
@@ -1916,7 +1916,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                stores: stores)
 
-        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting, NSLocalizedString("Calculated on shipping address", comment: ""))
+        XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayString, NSLocalizedString("Calculated on shipping address", comment: ""))
     }
 }
 

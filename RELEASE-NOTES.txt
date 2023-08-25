@@ -2,7 +2,7 @@
 
 15.1
 -----
-
+- [*] What's New announcements support dark mode properly [https://github.com/woocommerce/woocommerce-ios/pull/10540]
 
 15.0
 -----

@@ -738,6 +738,7 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
+        let onDismissWpAdminWebViewClosure: () -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -767,6 +768,7 @@ extension EditableOrderViewModel {
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
+             onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -803,6 +805,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
+            self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
         }
     }
 
@@ -1126,6 +1129,10 @@ private extension EditableOrderViewModel {
                                             },
                                             onGoToCouponsClosure: { [weak self] in
                                                 self?.analytics.track(event: WooAnalyticsEvent.Orders.orderGoToCouponsButtonTapped())
+                                            },
+                                            onDismissWpAdminWebViewClosure: { [weak self] in
+                                                self?.retrieveTaxBasedOnSetting()
+                                                self?.orderSynchronizer.retryTrigger.send()
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }

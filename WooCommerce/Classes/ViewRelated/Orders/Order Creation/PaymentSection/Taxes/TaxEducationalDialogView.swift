@@ -10,6 +10,7 @@ struct TaxEducationalDialogView: View {
     @State private var showingWPAdminWebview: Bool = false
 
     let viewModel: TaxEducationalDialogViewModel
+    let onDismissWpAdminWebView: (() -> Void)
 
     var body: some View {
         ZStack {
@@ -71,6 +72,7 @@ struct TaxEducationalDialogView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                        onDismissWpAdminWebView()
                         showingWPAdminWebview = false
                     })
 

@@ -113,7 +113,8 @@ struct OrderPaymentSection: View {
             if viewModel.shouldShowTaxExtraInformation {
                 taxesSection
                     .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
-                        TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel)
+                        TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
+                                                 onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
                             .background(FullScreenCoverClearBackgroundView())
                     }
             } else {

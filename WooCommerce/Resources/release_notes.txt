@@ -1,1 +1,3 @@
-We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.
+- [*] What's New announcements support dark mode properly [https://github.com/woocommerce/woocommerce-ios/pull/10540]
+- [*] Updated UI and copy on prologue and free trial summary screens. [https://github.com/woocommerce/woocommerce-ios/pull/10539]
+

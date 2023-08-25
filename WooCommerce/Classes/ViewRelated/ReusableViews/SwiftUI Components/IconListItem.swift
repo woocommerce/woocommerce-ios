@@ -36,9 +36,12 @@ struct IconListItem: View {
                     case .success(let image):
                         image.scaledToFit()
                     case .empty:
-                        Image(systemName: "list.bullet.circle.fill").redacted(reason: .placeholder)
+                        Image(systemName: Constants.placeholderImageName)
+                            .font(.system(size: Layout.placeholderSize))
+                            .redacted(reason: .placeholder)
                     case .failure:
-                        EmptyView()
+                        Image(systemName: Constants.placeholderImageName)
+                            .font(.system(size: Layout.placeholderSize))
                     @unknown default:
                         EmptyView()
                     }
@@ -77,6 +80,11 @@ private extension IconListItem {
         static let contentSpacing: CGFloat = 16
         static let innerSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 40
+        static let placeholderSize: CGFloat = 40
+    }
+
+    enum Constants {
+        static let placeholderImageName: String = "list.bullet.circle.fill"
     }
 }
 

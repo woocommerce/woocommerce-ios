@@ -1,3 +1,1 @@
-- [*] What's New announcements support dark mode properly [https://github.com/woocommerce/woocommerce-ios/pull/10540]
-- [*] Updated UI and copy on prologue and free trial summary screens. [https://github.com/woocommerce/woocommerce-ios/pull/10539]
-
+Did you know that you can create and use discount coupons in the app? Give it a try! This release includes a fix that ensures coupons can be created on all devices. Thank you for choosing WooCommerce!

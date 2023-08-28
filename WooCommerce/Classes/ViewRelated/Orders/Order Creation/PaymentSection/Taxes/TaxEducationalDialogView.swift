@@ -30,7 +30,7 @@ struct TaxEducationalDialogView: View {
                             .frame(height: Layout.dividerHeight)
                             .foregroundColor(Color(.opaqueSeparator))
                         if let taxBasedOnSettingExplanatoryText = viewModel.taxBasedOnSettingExplanatoryText {
-                            Text(viewModel.taxBasedOnSettingExplanatoryText ?? "")
+                            Text(taxBasedOnSettingExplanatoryText)
                                 .bodyStyle()
                                 .fixedSize(horizontal: false, vertical: true)
                         }

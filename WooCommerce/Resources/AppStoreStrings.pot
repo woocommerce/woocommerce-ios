@@ -46,7 +46,7 @@ msgid ""
 "\n"
 "View the Privacy Policy at https://automattic.com/privacy/\n"
 "\n"
-"View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa."
+"View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.\n"
 msgstr ""
 
 #. translators: Keywords used in the App Store search engine to find the app.
@@ -71,7 +71,7 @@ msgstr ""
 msgctxt "app_store_screenshot-1"
 msgid ""
 "Track sales and\n"
-"bestselling products"
+"bestselling products\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -87,7 +87,7 @@ msgstr ""
 msgctxt "app_store_screenshot-2"
 msgid ""
 "Create orders\n"
-"on the fly"
+"on the fly\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -95,7 +95,7 @@ msgstr ""
 msgctxt "app_store_screenshot-3"
 msgid ""
 "Take payments\n"
-"in person"
+"in person\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -103,7 +103,7 @@ msgstr ""
 msgctxt "app_store_screenshot-4"
 msgid ""
 "Add and edit products\n"
-"with a touch"
+"with a touch\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -111,7 +111,7 @@ msgstr ""
 msgctxt "app_store_screenshot-5"
 msgid ""
 "Get notified of\n"
-"every sale"
+"every sale\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

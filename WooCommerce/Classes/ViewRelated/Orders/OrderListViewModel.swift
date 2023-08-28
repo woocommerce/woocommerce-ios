@@ -606,12 +606,7 @@ extension OrderListViewModel {
 //
 extension OrderListViewModel {
     func totalCompletedOrderCount(pageNumber: Int) -> Int? {
-        do {
-            try statusResultsController.performFetch()
-            return currentSiteStatuses.first { $0.status == .completed }?.total
-        } catch {
-            return nil
-        }
+        currentSiteStatuses.first { $0.status == .completed }?.total
     }
 }
 

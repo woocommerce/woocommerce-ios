@@ -26,7 +26,7 @@ enum LoginProloguePageType: CaseIterable {
             return NSLocalizedString("Monitor and approve your product reviews",
                                      comment: "Caption displayed in promotional screens shown during the login flow.")
         case .getStarted:
-            return NSLocalizedString("The e-commerce platform that grows with you",
+            return NSLocalizedString("The ecommerce platform that grows with you",
                                      comment: "Caption displayed in the simplified prologue screen")
         }
     }

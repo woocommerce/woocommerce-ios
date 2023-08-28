@@ -190,6 +190,7 @@ struct OrderPaymentSection: View {
 
             Button {
                 shouldShowTaxEducationalDialog = true
+                viewModel.onTaxHelpButtonTappedClosure()
             } label: {
                 Image(systemName: "questionmark.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))

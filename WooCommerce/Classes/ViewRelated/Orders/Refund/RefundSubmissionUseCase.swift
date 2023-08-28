@@ -60,10 +60,10 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     /// In-person refund orchestrator.
     private lazy var cardPresentRefundOrchestrator = CardPresentRefundOrchestrator(stores: stores)
 
-    /// Alert manager to inform merchants about card reader connection actions used in `LegacyCardReaderConnectionController`.
-    private let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
+    /// Alert manager to inform merchants about card reader connection actions used in `CardReaderConnectionController`.
+    private let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
 
-    /// Provides any known card reader to be used in `LegacyCardReaderConnectionController`.
+    /// Provides any known card reader to be used in `CardReaderConnectionController`.
     private let knownReaderProvider: CardReaderSettingsKnownReaderProvider
 
     /// Presents the card present onboarding flow, when required.
@@ -72,10 +72,11 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
 
     /// Controller to connect a card reader for in-person refund.
     private lazy var cardReaderConnectionController =
-    LegacyCardReaderConnectionController(forSiteID: order.siteID,
+    CardReaderConnectionController(forSiteID: order.siteID,
                                    storageManager: storageManager,
                                    stores: stores,
                                    knownReaderProvider: knownReaderProvider,
+                                   alertsPresenter: CardPresentPaymentAlertsPresenter(rootViewController: rootViewController),
                                    alertsProvider: cardReaderConnectionAlerts,
                                    configuration: cardPresentConfiguration,
                                    analyticsTracker: .init(configuration: cardPresentConfiguration,
@@ -88,7 +89,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
     private let cardPresentConfiguration: CardPresentPaymentsConfiguration
 
     struct Dependencies {
-        let cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider
+        let cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding
         let currencyFormatter: CurrencyFormatter
         let currencySettings: CurrencySettings
         let knownReaderProvider: CardReaderSettingsKnownReaderProvider
@@ -97,7 +98,7 @@ final class RefundSubmissionUseCase: NSObject, RefundSubmissionProtocol {
         let storageManager: StorageManagerType
         let analytics: Analytics
 
-        init(cardReaderConnectionAlerts: CardReaderSettingsAlertsProvider = CardReaderSettingsAlerts(),
+        init(cardReaderConnectionAlerts: BluetoothReaderConnnectionAlertsProviding = BluetoothReaderConnectionAlertsProvider(),
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
              currencySettings: CurrencySettings = ServiceLocator.currencySettings,
              knownReaderProvider: CardReaderSettingsKnownReaderProvider = CardReaderSettingsKnownReaderStorage(),
@@ -262,7 +263,7 @@ private extension RefundSubmissionUseCase {
                         self.readerSubscription = nil
                     } else {
                         // Attempts reader connection
-                        self.cardReaderConnectionController.searchAndConnect(from: self.rootViewController) { [weak self] result in
+                        self.cardReaderConnectionController.searchAndConnect() { [weak self] result in
                             guard let self = self else { return }
                             switch result {
                             case let .success(connectionResult):

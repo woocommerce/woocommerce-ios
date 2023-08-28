@@ -12,12 +12,18 @@ enum CardReaderConnectionResult {
     case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 }
 
-final class CardPresentPaymentPreflightController {
+protocol CardPresentPaymentPreflightControllerProtocol {
+    func start(discoveryMethod: CardReaderDiscoveryMethod?) async
+
+    var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
+}
+
+final class CardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
     /// Store's ID.
     ///
     private let siteID: Int64
 
-    private let discoveryMethod: CardReaderDiscoveryMethod?
+    private var discoveryMethod: CardReaderDiscoveryMethod? = nil
 
     /// IPP Configuration.
     ///
@@ -56,8 +62,11 @@ final class CardPresentPaymentPreflightController {
     ///
     private var builtInConnectionController: BuiltInCardReaderConnectionController
 
+    private var readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
-    private(set) var readerConnection = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
+    var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> {
+        readerConnectionSubject.eraseToAnyPublisher()
+    }
 
     private let analyticsTracker: CardReaderConnectionAnalyticsTracker
 
@@ -66,7 +75,6 @@ final class CardPresentPaymentPreflightController {
     private let tapToPayReconnectionController: TapToPayReconnectionController
 
     init(siteID: Int64,
-         discoveryMethod: CardReaderDiscoveryMethod?,
          configuration: CardPresentPaymentsConfiguration,
          rootViewController: UIViewController,
          alertsPresenter: CardPresentPaymentAlertsPresenting,
@@ -75,7 +83,6 @@ final class CardPresentPaymentPreflightController {
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.discoveryMethod = discoveryMethod
         self.configuration = configuration
         self.rootViewController = rootViewController
         self.alertsPresenter = alertsPresenter
@@ -108,7 +115,8 @@ final class CardPresentPaymentPreflightController {
     }
 
     @MainActor
-    func start() async {
+    func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
+        self.discoveryMethod = discoveryMethod
         observeConnectedReaders()
         await checkForConnectedReader()
     }
@@ -264,9 +272,9 @@ final class CardPresentPaymentPreflightController {
         case .success(let unwrapped):
             switch unwrapped {
             case .canceled(let source):
-                readerConnection.send(.canceled(source, paymentGatewayAccount))
+                readerConnectionSubject.send(.canceled(source, paymentGatewayAccount))
             case .connected(let reader):
-                readerConnection.send(.completed(reader, paymentGatewayAccount))
+                readerConnectionSubject.send(.completed(reader, paymentGatewayAccount))
             }
         case .failure(let error):
             DDLogError("⛔️ Card Present Payment Preflight failed: \(error.localizedDescription)")

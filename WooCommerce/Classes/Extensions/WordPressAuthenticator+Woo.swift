@@ -71,7 +71,7 @@ extension WordPressAuthenticator {
                                                 navBarBadgeColor: .primary,
                                                 navBarBackgroundColor: .appBar,
                                                 prologueTopContainerChildViewController:
-                                                    LoginPrologueViewController(isFeatureCarouselShown: false),
+                                                    LoginPrologueViewController(),
                                                 statusBarStyle: .default)
 
         let getStartedInstructions = AuthenticationConstants.getStartedInstructions
@@ -105,8 +105,8 @@ extension WordPressAuthenticator {
                                                               textButtonColor: .accent,
                                                               textButtonHighlightColor: .accentDark,
                                                               viewControllerBackgroundColor: .basicBackground,
-                                                              prologueButtonsBackgroundColor: .authPrologueBottomBackgroundColor,
-                                                              prologueViewBackgroundColor: .authPrologueBottomBackgroundColor,
+                                                              prologueButtonsBackgroundColor: .systemBackground,
+                                                              prologueViewBackgroundColor: .systemBackground,
                                                               navBarBackgroundColor: .basicBackground,
                                                               navButtonTextColor: .accent,
                                                               navTitleTextColor: .text,

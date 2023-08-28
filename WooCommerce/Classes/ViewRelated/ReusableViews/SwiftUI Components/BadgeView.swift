@@ -60,7 +60,7 @@ struct BadgeView: View {
                     .fill(customizations.backgroundColor)
                 )
         } else if case .remoteImage(let lightUrl, let darkUrl) = type {
-            AdaptiveAsyncImage(lightUrl: lightUrl, darkUrl: darkUrl, scale: 3) { imagePhase in
+            AdaptiveAsyncImage(anyAppearanceUrl: lightUrl, darkUrl: darkUrl, scale: 3) { imagePhase in
                 switch imagePhase {
                 case .success(let image):
                     image.scaledToFit()

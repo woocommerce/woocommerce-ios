@@ -26,7 +26,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         alerts = MockOrderDetailsPaymentAlerts()
-        cardReaderConnectionAlerts = MockCardReaderSettingsAlerts(mode: .continueSearching)
+        cardReaderConnectionAlerts = MockCardReaderSettingsAlerts(mode: .connectFoundReader)
         knownCardReaderProvider = MockKnownReaderProvider()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         storageManager = MockStorageManager()
@@ -322,6 +322,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     func test_canceling_scanningForReader_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
         // Given
         let siteID: Int64 = 863
+        cardReaderConnectionAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
         let useCase = createUseCase(details: .init(order: .fake().copy(siteID: siteID, total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -338,7 +339,6 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        cardReaderConnectionAlerts.update(mode: .cancelScanning)
         let result: Result<Void, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)

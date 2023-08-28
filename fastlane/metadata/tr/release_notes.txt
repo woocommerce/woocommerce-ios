@@ -1,1 +1,1 @@
-Daha hızlı bir deneyim sağlamak için sipariş oluşturma sürecini geliştirdik. Sipariş oluştururken müşteri seçme işlemi, değerli geri bildirimlerinize dayanarak iyileştirildi. Sağladığınız bilgiler, sürekli iyileştirmelerimize yön veriyor. Teşekkür ederiz!
+İşletmenizi kurmanıza yardımcı olmak üzere çeşitli iyileştirmeler yaptık. Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.

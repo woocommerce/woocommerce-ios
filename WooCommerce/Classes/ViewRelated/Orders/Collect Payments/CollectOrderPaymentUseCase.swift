@@ -15,10 +15,15 @@ protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
     /// - Parameter using: We specify a discovery method to allow us to choose between Tap to Pay and Bluetooth readers, which have distinct connection flows.
-    /// - Parameter onCollect: Closure Invoked after the collect process has finished.
     /// - Parameter onCompleted: Closure Invoked after the flow has been totally completed.
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
-    func collectPayment(using: CardReaderDiscoveryMethod, onFailure: @escaping (Error) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ())
+    /// - Parameter onFailure: Closure invoked when there is an error in the flow
+    /// - Parameter onPaymentCompletion: Closure invoked after any payment completes, but while the user can still continue with the flow in some way
+    func collectPayment(using: CardReaderDiscoveryMethod,
+                        onFailure: @escaping (Error) -> Void,
+                        onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
+                        onCompleted: @escaping () -> Void)
 }
 
 /// Use case to collect payments from an order.
@@ -51,7 +56,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private let stores: StoresManager
 
-    private let analyticsTracker: CollectOrderPaymentAnalytics
+    private let analyticsTracker: CollectOrderPaymentAnalyticsTracking
 
     /// View Controller used to present alerts.
     ///
@@ -71,15 +76,12 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     private let configuration: CardPresentPaymentsConfiguration
 
-    /// Celebration UX when the payment is captured successfully.
-    private let paymentCaptureCelebration: PaymentCaptureCelebrationProtocol
-
-    private lazy var paymentOrchestrator = PaymentCaptureOrchestrator(stores: stores, celebration: paymentCaptureCelebration)
+    private let paymentOrchestrator: PaymentCaptureOrchestrating
 
     /// Coordinates emailing a receipt after payment success.
     private var receiptEmailCoordinator: CardPresentPaymentReceiptEmailCoordinator?
 
-    private var preflightController: CardPresentPaymentPreflightController?
+    private let preflightController: CardPresentPaymentPreflightControllerProtocol
 
     private var cancellables: Set<AnyCancellable> = []
 
@@ -90,22 +92,29 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
          onboardingPresenter: CardPresentPaymentsOnboardingPresenting,
          configuration: CardPresentPaymentsConfiguration,
          stores: StoresManager = ServiceLocator.stores,
-         paymentCaptureCelebration: PaymentCaptureCelebrationProtocol = PaymentCaptureCelebration(),
+         paymentOrchestrator: PaymentCaptureOrchestrating = PaymentCaptureOrchestrator(),
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
-         analytics: Analytics = ServiceLocator.analytics) {
+         alertsPresenter: CardPresentPaymentAlertsPresenting? = nil,
+         preflightController: CardPresentPaymentPreflightControllerProtocol? = nil,
+         analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
         self.rootViewController = rootViewController
         self.onboardingPresenter = onboardingPresenter
-        self.alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
+        self.alertsPresenter = alertsPresenter ?? CardPresentPaymentAlertsPresenter(rootViewController: rootViewController)
         self.configuration = configuration
         self.stores = stores
-        self.paymentCaptureCelebration = paymentCaptureCelebration
-        self.analyticsTracker = CollectOrderPaymentAnalytics(siteID: siteID,
-                                                             analytics: analytics,
-                                                             configuration: configuration,
-                                                             orderDurationRecorder: orderDurationRecorder)
+        self.paymentOrchestrator = paymentOrchestrator
+        self.preflightController = preflightController ?? CardPresentPaymentPreflightController(siteID: siteID,
+                                                                                                configuration: configuration,
+                                                                                                rootViewController: rootViewController,
+                                                                                                alertsPresenter: self.alertsPresenter,
+                                                                                                onboardingPresenter: onboardingPresenter)
+        self.analyticsTracker = analyticsTracker ?? CollectOrderPaymentAnalytics(siteID: siteID,
+                                                                                 analytics: ServiceLocator.analytics,
+                                                                                 configuration: configuration,
+                                                                                 orderDurationRecorder: orderDurationRecorder)
     }
 
     /// Starts the collect payment flow.
@@ -122,9 +131,10 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
     /// - Parameter onCancel: Closure invoked after the flow is cancelled
     /// - Parameter onCompleted: Closure invoked after the flow has been totally completed, currently after merchant has handled the receipt.
     func collectPayment(using discoveryMethod: CardReaderDiscoveryMethod,
-                        onFailure: @escaping (Error) -> (),
-                        onCancel: @escaping () -> (),
-                        onCompleted: @escaping () -> ()) {
+                        onFailure: @escaping (Error) -> Void,
+                        onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
+                        onCompleted: @escaping () -> Void) {
         guard isTotalAmountValid() else {
             let error = totalAmountInvalidError()
             return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: {
@@ -132,15 +142,9 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
             })
         }
 
-        preflightController = CardPresentPaymentPreflightController(siteID: siteID,
-                                                                    discoveryMethod: discoveryMethod,
-                                                                    configuration: configuration,
-                                                                    rootViewController: rootViewController,
-                                                                    alertsPresenter: alertsPresenter,
-                                                                    onboardingPresenter: onboardingPresenter)
-        preflightController?.readerConnection.sink { [weak self] connectionResult in
+        preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
-            self.analyticsTracker.preflightResultRecieved(connectionResult)
+            self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
                 let paymentAlertProvider = reader.paymentAlertProvider()
@@ -163,6 +167,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                                                  alertProvider: paymentAlertProvider,
                                                  onCompleted: onCompleted)
                     }
+                    onPaymentCompletion()
                 })
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)
@@ -174,7 +179,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
         .store(in: &cancellables)
 
         Task {
-            await preflightController?.start()
+            await preflightController.start(discoveryMethod: discoveryMethod)
         }
     }
 }
@@ -536,7 +541,7 @@ private extension CollectOrderPaymentUseCase {
 }
 
 extension CollectOrderPaymentUseCase {
-    enum NotValidAmountError: Error, LocalizedError {
+    enum NotValidAmountError: Error, LocalizedError, Equatable {
         case belowMinimumAmount(amount: String)
         case other
 

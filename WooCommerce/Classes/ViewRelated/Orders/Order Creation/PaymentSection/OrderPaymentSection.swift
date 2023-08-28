@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Represents the Payment section in an order
 ///
@@ -21,6 +22,10 @@ struct OrderPaymentSection: View {
     /// Indicates if the go to coupons alert should be shown or not.
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
+
+    /// Indicates if the tax educational dialog should be shown or not.
+    ///
+    @State private var shouldShowTaxEducationalDialog: Bool = false
 
     /// Keeps track of the selected coupon line details view model.
     ///
@@ -107,6 +112,11 @@ struct OrderPaymentSection: View {
 
             if viewModel.shouldShowTaxExtraInformation {
                 taxesSection
+                    .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
+                        TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
+                                                 onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
+                            .background(FullScreenCoverClearBackgroundView())
+                    }
             } else {
                 TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))
             }
@@ -166,9 +176,8 @@ struct OrderPaymentSection: View {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
-            if viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting.isNotEmpty {
-                taxBasedOnLine
-            }
+            taxBasedOnLine
+            .renderedIf(viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
     }
@@ -177,12 +186,18 @@ struct OrderPaymentSection: View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
             Text(Localization.taxesTotal)
                 .bodyStyle()
-                .multilineTextAlignment(.leading)
-                .frame(maxWidth: .infinity, alignment: .leading)
+
+            Button {
+                shouldShowTaxEducationalDialog = true
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+            }
+
+            Spacer()
 
             Text(viewModel.taxesTotal)
                 .bodyStyle()
-                .multilineTextAlignment(.trailing)
                 .frame(width: nil, alignment: .trailing)
         }
     }
@@ -207,7 +222,7 @@ struct OrderPaymentSection: View {
     }
 
     @ViewBuilder private var taxBasedOnLine: some View {
-        Text(viewModel.taxBasedOnSetting)
+        Text(viewModel.taxBasedOnSetting?.displayString ?? "")
             .footnoteStyle()
             .multilineTextAlignment(.leading)
     }

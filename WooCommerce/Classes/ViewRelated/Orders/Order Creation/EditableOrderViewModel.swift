@@ -153,7 +153,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
     /// 
-    @Published private(set) var taxBasedOnSetting: String = ""
+    @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Defines the multiple lines info message to show.
     ///
@@ -719,7 +719,8 @@ extension EditableOrderViewModel {
 
         let couponLineViewModels: [CouponLineViewModel]
         let taxLineViewModels: [TaxLineViewModel]
-        let taxBasedOnSetting: String
+        let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
+        let taxBasedOnSetting: TaxBasedOnSetting?
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -737,6 +738,7 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
+        let onDismissWpAdminWebViewClosure: () -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -754,8 +756,9 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
-             taxBasedOnSetting: String = "",
+             taxBasedOnSetting: TaxBasedOnSetting? = nil,
              taxLineViewModels: [TaxLineViewModel] = [],
+             taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
              couponCode: String = "",
              discountTotal: String = "",
              shouldShowDiscountTotal: Bool = false,
@@ -765,6 +768,7 @@ extension EditableOrderViewModel {
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
+             onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -786,6 +790,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.taxBasedOnSetting = taxBasedOnSetting
             self.taxLineViewModels = taxLineViewModels
+            self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
             self.discountTotal = "-" + (currencyFormatter.formatAmount(discountTotal) ?? "0.00")
             self.shouldShowDiscountTotal = shouldShowDiscountTotal
@@ -800,6 +805,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
+            self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
         }
     }
 
@@ -1109,6 +1115,8 @@ private extension EditableOrderViewModel {
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
+                                            taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
+                                                                                                         taxBasedOnSetting: taxBasedOnSetting),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
                                             shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
@@ -1121,6 +1129,10 @@ private extension EditableOrderViewModel {
                                             },
                                             onGoToCouponsClosure: { [weak self] in
                                                 self?.analytics.track(event: WooAnalyticsEvent.Orders.orderGoToCouponsButtonTapped())
+                                            },
+                                            onDismissWpAdminWebViewClosure: { [weak self] in
+                                                self?.retrieveTaxBasedOnSetting()
+                                                self?.orderSynchronizer.retryTrigger.send()
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }
@@ -1168,7 +1180,7 @@ private extension EditableOrderViewModel {
                                                                 onCompletion: { [weak self] result in
                                                                     switch result {
                                                                         case .success(let setting):
-                                                                            self?.taxBasedOnSetting = setting.displayString
+                                                                            self?.taxBasedOnSetting = setting
                                                                         case .failure(let error):
                                                                         DDLogError("⛔️ Error retrieving tax based on setting: \(error)")
                                                                     }

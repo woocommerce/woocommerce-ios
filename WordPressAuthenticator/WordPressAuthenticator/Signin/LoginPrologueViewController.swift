@@ -283,7 +283,7 @@ class LoginPrologueViewController: LoginViewController {
                                  onTap: siteAddressTapCallback())
         }()
         let createSiteButton: StackedButton = {
-            let isPrimary = !configuration.enableSiteAddressLoginOnlyInPrologue
+            let isPrimary = configuration.enableSiteAddressLoginOnlyInPrologue
             return StackedButton(title: displayStrings.siteCreationButtonTitle,
                                  isPrimary: isPrimary,
                                  configureBodyFontForTitle: true,

@@ -645,6 +645,10 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderTaxHelpButtonTapped, properties: [:])
         }
 
+        static func taxEducationalDialogEditInAdminButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .taxEducationalDialogEditInAdminButtonTapped, properties: [:])
+        }
+
         static func productDiscountAdd(type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
         }

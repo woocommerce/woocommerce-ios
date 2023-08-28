@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.0-whats-new"
+msgctxt "v15.1-whats-new"
 msgid ""
-"We have made several improvements to help you get your business started. Keep your feedback rolling in; it helps us figure out what to work on next.\n"
+"Did you know that you can create and use discount coupons in the app? Give it a try! This release includes a fix that ensures coupons can be created on all devices. Thank you for choosing WooCommerce!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

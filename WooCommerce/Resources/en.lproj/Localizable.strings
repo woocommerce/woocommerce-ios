@@ -1255,6 +1255,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Calculated amount";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "Calculated on billing address";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "Calculated on shipping address";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "Calculated on shop base address";
+
 /* Call phone number button title */
 "Call" = "Call";
 
@@ -2012,6 +2021,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for fixed cart discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a fixed total discount for the entire cart" = "Create a fixed total discount for the entire cart";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "Create a New Store";
 
 /* Button to create a new store from the store picker */
 "Create a new store" = "Create a new store";
@@ -3217,9 +3229,6 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the downloadable file bottom sheet action for adding file from WordPress Media Library. */
 "From WordPress Media Library" = "From WordPress Media Library";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Fulfill your orders with WooCommerce Shipping";
 
@@ -3289,8 +3298,7 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of push notifications as part of Jetpack benefits. */
 "Get push notifications for new orders, reviews, etc. delivered to your device." = "Get push notifications for new orders, reviews, etc. delivered to your device.";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Get Started";
 
@@ -6496,9 +6504,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Select your test product, add to cart, and complete checkout on that web store as a real customer.";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "Sell anything, anywhere.";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "Send";
 
@@ -7037,6 +7042,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "Start with a template";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
 
@@ -7453,6 +7461,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Taxes are automatically calculated based on your store address.";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "Taxes Total";
+
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "Tell us all about your experience with in-person payments.";
 
@@ -7607,6 +7618,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "The domain purchased will redirect users to your primary address.";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "The e-commerce platform that grows with you";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service.";

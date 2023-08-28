@@ -1178,11 +1178,12 @@ private extension EditableOrderViewModel {
     func retrieveTaxBasedOnSetting() {
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
-                                                                    guard case let .success(setting) = result else {
-                                                                        return
+                                                                    switch result {
+                                                                        case .success(let setting):
+                                                                            self?.taxBasedOnSetting = setting
+                                                                        case .failure(let error):
+                                                                        DDLogError("⛔️ Error retrieving tax based on setting: \(error)")
                                                                     }
-
-                                                                    self?.taxBasedOnSetting = setting
                                                                 }))
     }
 

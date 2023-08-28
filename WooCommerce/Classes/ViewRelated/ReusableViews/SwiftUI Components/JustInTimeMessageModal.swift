@@ -7,7 +7,7 @@ struct JustInTimeMessageModal: View {
     var body: some View {
         VStack(spacing: Layout.spacing) {
             if let imageUrl = viewModel.imageUrl {
-                AdaptiveAsyncImage(lightUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
+                AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
                     switch imagePhase {
                     case .failure:
                         Image(uiImage: viewModel.image)

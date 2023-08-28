@@ -46,7 +46,8 @@ final class AppCoordinator {
          loggedOutAppSettings: LoggedOutAppSettingsProtocol = LoggedOutAppSettings(userDefaults: .standard),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()) {
+         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -63,7 +64,7 @@ final class AppCoordinator {
         self.loggedOutAppSettings = loggedOutAppSettings
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
-        self.switchStoreUseCase = SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         self.upgradesViewPresentationCoordinator = upgradesViewPresentationCoordinator
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
 
@@ -344,6 +345,7 @@ private extension AppCoordinator {
 
     func handleLocalNotificationResponse(_ response: UNNotificationResponse) {
         let identifier = response.notification.request.identifier
+        let storeCreationComplete = LocalNotification.Scenario.Identifier.Prefix.storeCreationComplete
         let sixHoursAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.sixHoursAfterFreeTrialSubscribed
         let freeTrialSurvey24hAfterFreeTrialSubscribed = LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed
 
@@ -358,6 +360,12 @@ private extension AppCoordinator {
                                                                           userInfo: userInfo))
 
         switch identifier {
+        case let identifier where identifier.hasPrefix(storeCreationComplete):
+            guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
+                  let siteID = Int64(identifier.replacingOccurrences(of: storeCreationComplete, with: "")) else {
+                return
+            }
+            switchStoreUseCase.switchStore(with: siteID) { _ in }
         case let identifier where identifier.hasPrefix(sixHoursAfterFreeTrialSubscribed):
             guard response.actionIdentifier == UNNotificationDefaultActionIdentifier,
                   let siteID = Int64(identifier.replacingOccurrences(of: sixHoursAfterFreeTrialSubscribed, with: "")) else {

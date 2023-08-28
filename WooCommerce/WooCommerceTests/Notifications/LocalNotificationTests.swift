@@ -5,7 +5,7 @@ final class LocalNotificationTests: XCTestCase {
 
     func test_storeCreationComplete_scenario_returns_correct_notification_contents() throws {
         // Given
-        let scenario = LocalNotification.Scenario.storeCreationComplete
+        let scenario = LocalNotification.Scenario.storeCreationComplete(siteID: 123)
         let testName = "Miffy"
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, displayName: testName))
 

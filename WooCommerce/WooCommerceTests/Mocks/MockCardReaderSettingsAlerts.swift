@@ -8,8 +8,6 @@ enum MockCardReaderSettingsAlertsMode {
     case closeScanFailure
     case continueSearching
     case connectFoundReader
-    case connectFirstFound
-    case cancelFoundSeveral
     case cancelFoundReader
     case continueSearchingAfterConnectionFailure
     case cancelSearchingAfterConnectionFailure
@@ -29,8 +27,8 @@ final class MockCardReaderSettingsAlerts {
     }
 }
 
-extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
-    func scanningForReader(from: UIViewController, cancel: @escaping () -> Void) {
+extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProviding {
+    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .cancelScanning {
             cancel()
         }
@@ -42,19 +40,21 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
                 cancel()
             }
         }
+
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func scanningFailed(from: UIViewController, error: Error, close: @escaping () -> Void) {
+    func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .closeScanFailure {
             close()
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func foundReader(from: UIViewController,
-                     name: String,
+    func foundReader(name: String,
                      connect: @escaping () -> Void,
                      continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void) {
+                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         didPresentFoundReader = true
 
         switch mode {
@@ -67,45 +67,39 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         default:
             break
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updateProgress(from: UIViewController, requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) {
-        // GNDN
+    func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingToReader(from: UIViewController) {
-        // GNDN
+    func connectingToReader() -> CardPresentPaymentsModalViewModel {
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func foundSeveralReaders(from: UIViewController, readerIDs: [String], connect: @escaping (String) -> Void, cancelSearch: @escaping () -> Void) {
-        let readerID = readerIDs.first ?? ""
-
-        if mode == .connectFirstFound {
-            connect(readerID)
-        }
-
-        if mode == .cancelFoundSeveral {
-            cancelSearch()
-        }
+    func foundSeveralReaders(readerIDs: [String],
+                             connect: @escaping (String) -> Void,
+                             cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailed(from: UIViewController,
-                          error: Error,
-                          continueSearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) {
+    func connectingFailed(error: Error,
+                          retrySearch: @escaping () -> Void,
+                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .continueSearchingAfterConnectionFailure {
-            continueSearch()
+            retrySearch()
         }
 
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedIncompleteAddress(from: UIViewController,
-                                           openWCSettings: ((UIViewController) -> Void)?,
+    func connectingFailedIncompleteAddress(openWCSettings: ((UIViewController) -> Void)?,
                                            retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) {
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .continueSearchingAfterConnectionFailure {
             retrySearch()
         }
@@ -113,11 +107,11 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedInvalidPostalCode(from: UIViewController,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) {
+    func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
+                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .continueSearchingAfterConnectionFailure {
             retrySearch()
         }
@@ -125,11 +119,11 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedCriticallyLowBattery(from: UIViewController,
-                                              retrySearch: @escaping () -> Void,
-                                              cancelSearch: @escaping () -> Void) {
+    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
+                                              cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .continueSearchingAfterConnectionFailure {
             retrySearch()
         }
@@ -137,21 +131,66 @@ extension MockCardReaderSettingsAlerts: CardReaderSettingsAlertsProvider {
         if mode == .cancelSearchingAfterConnectionFailure {
             cancelSearch()
         }
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updatingFailedLowBattery(from: UIViewController, batteryLevel: Double?, close: @escaping () -> Void) {
+    func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         close()
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updatingFailed(from: UIViewController, tryAgain: (() -> Void)?, close: @escaping () -> Void) {
+    func updatingFailedLowBattery(batteryLevel: Double?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         close()
+        return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updateSeveralReadersList(readerIDs: [String]) {
-        // GNDN
+    func updatingFailed(tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        close()
+        return MockCardPresentPaymentsModalViewModel()
+    }
+
+    func updateSeveralReadersList(readerIDs: [String]) -> CardPresentPaymentsModalViewModel {
+        return MockCardPresentPaymentsModalViewModel()
     }
 
     func dismiss() {
         // GNDN
+    }
+}
+
+
+struct MockCardPresentPaymentsModalViewModel: CardPresentPaymentsModalViewModel {
+    var textMode: PaymentsModalTextMode = .fullInfo
+
+    var actionsMode: PaymentsModalActionsMode = .none
+
+    var topTitle: String = "Title"
+
+    var topSubtitle: String? = nil
+
+    var image: UIImage = UIImage(systemName: "circle")!
+
+    var primaryButtonTitle: String? = nil
+
+    var secondaryButtonTitle: String? = nil
+
+    var auxiliaryButtonTitle: String? = nil
+
+    var bottomTitle: String? = nil
+
+    var bottomSubtitle: String? = nil
+
+    var accessibilityLabel: String? = nil
+
+    func didTapPrimaryButton(in viewController: UIViewController?) {
+        //no-op
+    }
+
+    func didTapSecondaryButton(in viewController: UIViewController?) {
+        //no-op
+    }
+
+    func didTapAuxiliaryButton(in viewController: UIViewController?) {
+        //no-op
     }
 }

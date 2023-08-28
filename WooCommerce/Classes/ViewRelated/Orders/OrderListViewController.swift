@@ -403,9 +403,12 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                         // save timestamp of last successful update
                         self.lastFullSyncTimestamp = Date()
                     }
+
+                    let totalCompletedOrderCount = self.viewModel.totalCompletedOrderCount(pageNumber: pageNumber)
                     ServiceLocator.analytics.track(event: .ordersListLoaded(totalDuration: totalDuration,
                                                                             pageNumber: pageNumber,
-                                                                            filters: self.viewModel.filters))
+                                                                            filters: self.viewModel.filters,
+                                                                            totalCompletedOrders: totalCompletedOrderCount))
                 }
 
                 self.transitionToResultsUpdatedState()

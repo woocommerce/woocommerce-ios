@@ -345,6 +345,32 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Handle local notification response
 
+    func test_it_switches_store_when_tapping_storeCreationComplete_notification() throws {
+        // Given
+        let pushNotesManager = MockPushNotificationsManager()
+        let mockInAppPurchasesManager = MockInAppPurchasesForWPComPlansManager(isIAPSupported: false)
+        let upgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(inAppPurchaseManager: mockInAppPurchasesManager)
+        let usecase = MockSwitchStoreUseCase()
+        let coordinator = makeCoordinator(window: window,
+                                          pushNotesManager: pushNotesManager,
+                                          upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator,
+                                          switchStoreUseCase: usecase)
+        coordinator.start()
+        let siteID: Int64 = 123
+
+        // When
+        let response = try XCTUnwrap(MockNotificationResponse(
+            actionIdentifier: UNNotificationDefaultActionIdentifier,
+            requestIdentifier: LocalNotification.Scenario.storeCreationComplete(siteID: siteID).identifier)
+        )
+        pushNotesManager.sendLocalNotificationResponse(response)
+
+        // Then
+        waitUntil {
+            usecase.destinationStoreIDs == [123]
+        }
+    }
+
     func test_SubscriptionsHostingController_is_shown_when_tapping_sixHoursAfterFreeTrialSubscribed_notification_if_freeTrialIAP_not_available() throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -478,7 +504,8 @@ private extension AppCoordinatorTests {
                          loggedOutAppSettings: LoggedOutAppSettingsProtocol = MockLoggedOutAppSettings(),
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
-                         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator()
+                         upgradesViewPresentationCoordinator: UpgradesViewPresentationCoordinator = UpgradesViewPresentationCoordinator(),
+                         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
                               stores: stores ?? self.stores,
@@ -489,6 +516,7 @@ private extension AppCoordinatorTests {
                               loggedOutAppSettings: loggedOutAppSettings,
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
-                              upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator)
+                              upgradesViewPresentationCoordinator: upgradesViewPresentationCoordinator,
+                              switchStoreUseCase: switchStoreUseCase)
     }
 }

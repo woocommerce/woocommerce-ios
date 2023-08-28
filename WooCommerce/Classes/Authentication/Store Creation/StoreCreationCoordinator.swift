@@ -195,7 +195,7 @@ private extension StoreCreationCoordinator {
             let freeTrialResult = await enableFreeTrial(siteID: siteResult.siteID)
             switch freeTrialResult {
             case .success:
-                scheduleLocalNotificationWhenStoreIsReady()
+                scheduleLocalNotificationWhenStoreIsReady(siteID: siteResult.siteID)
                 return .success(siteResult)
             case .failure(let error):
                 return .failure(SiteCreationError(remoteError: error))
@@ -292,7 +292,7 @@ private extension StoreCreationCoordinator {
     }
 
     func handleCompletionStatus(siteID: Int64, site: Site?, waitingTimeStart: Date, expectedStoreName: String) {
-        cancelLocalNotificationWhenStoreIsReady()
+        cancelLocalNotificationWhenStoreIsReady(siteID: siteID)
         guard let site else {
             return showJetpackSiteTimeoutView { [weak self] in
                 guard let self else { return }
@@ -360,10 +360,10 @@ private extension StoreCreationCoordinator {
 
 // MARK: - Local notification
 private extension StoreCreationCoordinator {
-    func scheduleLocalNotificationWhenStoreIsReady() {
-        let notification = LocalNotification(scenario: Constants.LocalNotificationScenario.storeCreationComplete,
+    func scheduleLocalNotificationWhenStoreIsReady(siteID: Int64) {
+        let notification = LocalNotification(scenario: LocalNotification.Scenario.storeCreationComplete(siteID: siteID),
                                              stores: stores)
-        cancelLocalNotificationWhenStoreIsReady()
+        cancelLocalNotificationWhenStoreIsReady(siteID: siteID)
         Task {
             await localNotificationScheduler.schedule(notification: notification,
                                                       // 5 minutes from now when the site is most likely ready.
@@ -372,9 +372,9 @@ private extension StoreCreationCoordinator {
         }
     }
 
-    func cancelLocalNotificationWhenStoreIsReady() {
+    func cancelLocalNotificationWhenStoreIsReady(siteID: Int64) {
         Task {
-            await localNotificationScheduler.cancel(scenario: Constants.LocalNotificationScenario.storeCreationComplete)
+            await localNotificationScheduler.cancel(scenario: LocalNotification.Scenario.storeCreationComplete(siteID: siteID))
         }
     }
 }
@@ -417,11 +417,6 @@ private extension StoreCreationCoordinator {
     }
 
     enum Constants {
-        /// Local notification scenarios during store creation.
-        enum LocalNotificationScenario {
-            static let storeCreationComplete: LocalNotification.Scenario = .storeCreationComplete
-        }
-
         static let jetpackCheckRetryInterval: TimeInterval = 10
     }
 }

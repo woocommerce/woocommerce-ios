@@ -7,8 +7,7 @@ import Experiments
 /// Displays the WooCommerce Prologue UI.
 ///
 final class LoginPrologueViewController: UIViewController {
-    /// The feature carousel is not shown right after finishing the onboarding.
-    private let isFeatureCarouselShown: Bool
+
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
 
@@ -37,9 +36,7 @@ final class LoginPrologueViewController: UIViewController {
     // MARK: - Overridden Methods
 
     init(analytics: Analytics = ServiceLocator.analytics,
-         isFeatureCarouselShown: Bool,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
-        self.isFeatureCarouselShown = isFeatureCarouselShown
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         super.init(nibName: nil, bundle: nil)
@@ -71,34 +68,27 @@ final class LoginPrologueViewController: UIViewController {
 private extension LoginPrologueViewController {
 
     func setupMainView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .systemBackground
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .authPrologueBottomBackgroundColor
+        backgroundView.backgroundColor = .systemBackground
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = .authPrologueBottomBackgroundColor
+        containerView.backgroundColor = .systemBackground
     }
 
     func setupCurvedRectangle() {
-        curvedRectangle.image = UIImage.curvedRectangle.withRenderingMode(.alwaysTemplate)
-        curvedRectangle.tintColor = .authPrologueBottomBackgroundColor
+        curvedRectangle.isHidden = true
     }
 
     /// Adds a carousel (slider) of screens to promote the main features of the app.
     /// This is contained in a child view so that this view's background doesn't scroll.
     ///
     func setupCarousel() {
-        let pageTypes: [LoginProloguePageType] = {
-            if isFeatureCarouselShown {
-                return [.stats, .orderManagement, .products, .reviews]
-            } else {
-                return [.getStarted]
-            }
-        }()
-        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: !isFeatureCarouselShown)
+        let pageTypes: [LoginProloguePageType] = [.getStarted]
+        let carousel = LoginProloguePageViewController(pageTypes: pageTypes, showsSubtitle: true)
         carousel.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(carousel)
@@ -109,11 +99,13 @@ private extension LoginPrologueViewController {
             carousel.view.topAnchor.constraint(equalTo: topLogoImageView.bottomAnchor, constant: Constants.spacingBetweenTopLogoAndCarousel),
             carousel.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
+
+        view.bringSubviewToFront(topLogoImageView)
     }
 }
 
 private extension LoginPrologueViewController {
     enum Constants {
-        static let spacingBetweenTopLogoAndCarousel: CGFloat = 56
+        static let spacingBetweenTopLogoAndCarousel: CGFloat = -16
     }
 }

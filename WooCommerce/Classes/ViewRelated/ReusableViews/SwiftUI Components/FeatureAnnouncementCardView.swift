@@ -53,7 +53,7 @@ struct FeatureAnnouncementCardView: View {
                 }
                 Spacer()
                 if let imageUrl = viewModel.imageUrl {
-                    AdaptiveAsyncImage(lightUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
+                    AdaptiveAsyncImage(anyAppearanceUrl: imageUrl, darkUrl: viewModel.imageDarkUrl, scale: 3) { imagePhase in
                         switch imagePhase {
                         case .failure:
                             Image(uiImage: viewModel.image)

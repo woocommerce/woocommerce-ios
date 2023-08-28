@@ -10,8 +10,13 @@ struct IconListItem: View {
         /// Base64 icon
         case base64(UIImage)
 
+        case adaptiveBase64(anyAppearance: UIImage, dark: UIImage?)
+
         /// Icon that comes from an URL
         case remote(URL)
+
+        /// Adaptive (light/dark mode) remote image, with URLs for one or more parts
+        case adaptiveRemote(anyAppearance: URL, dark: URL?)
 
         /// Return an Image for base64 or a FKImage in case of a remote one
         @ViewBuilder
@@ -20,9 +25,29 @@ struct IconListItem: View {
             case .base64(let image):
                 Image(uiImage: image)
                     .resizable()
+            case .adaptiveBase64(let anyAppearance, let dark):
+                AdaptiveImage(anyAppearance: anyAppearance, dark: dark)
             case .remote(let url):
                 KFImage(url)
                     .resizable()
+            case .adaptiveRemote(let anyAppearance, let dark):
+                AdaptiveAsyncImage(anyAppearanceUrl: anyAppearance,
+                                   darkUrl: dark,
+                                   scale: 3) { imagePhase in
+                    switch imagePhase {
+                    case .success(let image):
+                        image.scaledToFit()
+                    case .empty:
+                        Image(systemName: Constants.placeholderImageName)
+                            .font(.system(size: Layout.placeholderSize))
+                            .redacted(reason: .placeholder)
+                    case .failure:
+                        Image(systemName: Constants.placeholderImageName)
+                            .font(.system(size: Layout.placeholderSize))
+                    @unknown default:
+                        EmptyView()
+                    }
+                }
             }
         }
     }
@@ -57,6 +82,11 @@ private extension IconListItem {
         static let contentSpacing: CGFloat = 16
         static let innerSpacing: CGFloat = 2
         static let horizontalPadding: CGFloat = 40
+        static let placeholderSize: CGFloat = 40
+    }
+
+    enum Constants {
+        static let placeholderImageName: String = "list.bullet.circle.fill"
     }
 }
 

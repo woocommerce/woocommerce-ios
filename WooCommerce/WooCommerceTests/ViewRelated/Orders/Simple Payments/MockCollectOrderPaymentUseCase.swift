@@ -1,20 +1,26 @@
 import Foundation
 @testable import WooCommerce
+import Yosemite
 
-/// Mock type for `LegacyCollectOrderPaymentProtocol`
+/// Mock type for `CollectOrderPaymentProtocol`
 ///
-struct MockCollectOrderPaymentUseCase: LegacyCollectOrderPaymentProtocol {
-
-    /// Assign to be returned on `onCollect` closure.
+struct MockCollectOrderPaymentUseCase: CollectOrderPaymentProtocol {
+    /// Assign to configure `collectPayment` behaviour.
     ///
     var onCollectResult: Result<Void, Error>
 
-    /// Calls `onCollect` and `onCompleted` secuencially.
+    /// Calls `onCompleted` for a successful collect result, and `onFailure` for an errer .
     ///
-    func collectPayment(onCollect: @escaping (Result<Void, Error>) -> (), onCancel: @escaping () -> (), onCompleted: @escaping () -> ()) {
-        onCollect(onCollectResult)
-        if onCollectResult.isSuccess {
+    func collectPayment(using: Yosemite.CardReaderDiscoveryMethod,
+                        onFailure: @escaping (Error) -> Void,
+                        onCancel: @escaping () -> Void,
+                        onPaymentCompletion: @escaping () -> Void,
+                        onCompleted: @escaping () -> Void) {
+        switch onCollectResult {
+        case .success:
             onCompleted()
+        case .failure(let error):
+            onFailure(error)
         }
     }
 }

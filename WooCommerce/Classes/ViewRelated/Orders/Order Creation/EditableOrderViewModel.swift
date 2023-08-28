@@ -153,7 +153,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Defines the tax based on setting to be displayed in the Taxes section.
     /// 
-    @Published private(set) var taxBasedOnSetting: TaxBasedOnSetting?
+    @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
     /// Defines the multiple lines info message to show.
     ///

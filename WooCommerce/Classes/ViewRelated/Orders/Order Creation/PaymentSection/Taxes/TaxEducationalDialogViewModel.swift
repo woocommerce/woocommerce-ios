@@ -12,7 +12,10 @@ struct TaxEducationalDialogViewModel {
     private let stores: StoresManager
     private let analytics: Analytics
 
-    init(orderTaxLines: [OrderTaxLine], taxBasedOnSetting: TaxBasedOnSetting?, stores: StoresManager = ServiceLocator.stores, analytics: Analytics = ServiceLocator.analytics) {
+    init(orderTaxLines: [OrderTaxLine],
+         taxBasedOnSetting: TaxBasedOnSetting?,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.taxLines = orderTaxLines.map { TaxLine(title: $0.label, value: $0.ratePercent.percentFormatted() ?? "") }
         self.taxBasedOnSettingExplanatoryText = taxBasedOnSetting?.explanatoryText
         self.stores = stores

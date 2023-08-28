@@ -273,18 +273,24 @@ class LoginPrologueViewController: LoginViewController {
                                                  accessibilityIdentifier: "Prologue Continue Button",
                                                  style: primaryButtonStyle,
                                                  onTap: loginTapCallback())
-        let enterYourSiteAddressButton = StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
-                                                       isPrimary: configuration.enableSiteAddressLoginOnlyInPrologue,
-                                                       configureBodyFontForTitle: true,
-                                                       accessibilityIdentifier: "Prologue Self Hosted Button",
-                                                       style: secondaryButtonStyle,
-                                                       onTap: siteAddressTapCallback())
-        let createSiteButton = StackedButton(title: displayStrings.siteCreationButtonTitle,
-                                             isPrimary: false,
-                                             configureBodyFontForTitle: true,
-                                             accessibilityIdentifier: "Prologue Create Site Button",
-                                             style: secondaryButtonStyle,
-                                             onTap: simplifiedLoginSiteCreationCallback())
+        let enterYourSiteAddressButton: StackedButton = {
+            let isPrimary = configuration.enableSiteAddressLoginOnlyInPrologue && !configuration.enableSiteCreation
+            return StackedButton(title: displayStrings.enterYourSiteAddressButtonTitle,
+                                 isPrimary: isPrimary,
+                                 configureBodyFontForTitle: true,
+                                 accessibilityIdentifier: "Prologue Self Hosted Button",
+                                 style: secondaryButtonStyle,
+                                 onTap: siteAddressTapCallback())
+        }()
+        let createSiteButton: StackedButton = {
+            let isPrimary = !configuration.enableSiteAddressLoginOnlyInPrologue
+            return StackedButton(title: displayStrings.siteCreationButtonTitle,
+                                 isPrimary: isPrimary,
+                                 configureBodyFontForTitle: true,
+                                 accessibilityIdentifier: "Prologue Create Site Button",
+                                 style: secondaryButtonStyle,
+                                 onTap: simplifiedLoginSiteCreationCallback())
+        }()
 
         if configuration.enableWPComLoginOnlyInPrologue && configuration.enableSiteCreation {
             buttons = [continueWithWPButton,
@@ -292,7 +298,7 @@ class LoginPrologueViewController: LoginViewController {
         } else if configuration.enableWPComLoginOnlyInPrologue {
             buttons = [continueWithWPButton]
         } else if configuration.enableSiteAddressLoginOnlyInPrologue && configuration.enableSiteCreation {
-            buttons = [enterYourSiteAddressButton, createSiteButton]
+            buttons = [createSiteButton, enterYourSiteAddressButton]
         } else if configuration.enableSiteAddressLoginOnlyInPrologue {
             buttons = [enterYourSiteAddressButton]
         } else if configuration.enableSiteCreation {

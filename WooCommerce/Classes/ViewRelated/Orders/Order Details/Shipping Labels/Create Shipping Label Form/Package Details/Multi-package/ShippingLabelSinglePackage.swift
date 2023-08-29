@@ -117,7 +117,7 @@ struct ShippingLabelSinglePackage: View {
     
     func hazmatSection() -> some View {
         VStack(spacing: 0) {
-            TitleAndValueRow(title: "Hazardous material category", value: .placeholder("Select a category"))
+            TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory))
             Divider()
         }
     }
@@ -149,6 +149,8 @@ private extension ShippingLabelSinglePackage {
                                                          "the Shipping section of your product page to continue.",
                                                          comment: "Validation error for original package without dimensions " +
                                                          "on Package Details screen in Shipping Labels flow.")
+        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category", comment: "Pending")
+        static let selectHazmatCategory = NSLocalizedString("Select a category", comment: "Pending")
     }
 
     enum Constants {

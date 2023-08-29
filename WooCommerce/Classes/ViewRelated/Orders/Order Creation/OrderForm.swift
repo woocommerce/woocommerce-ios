@@ -106,40 +106,50 @@ struct OrderForm: View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
                 ScrollView {
-                    VStack(spacing: Layout.noSpacing) {
+                    Group {
+                        VStack(spacing: Layout.noSpacing) {
 
-                        Group {
-                            Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
-                            NonEditableOrderBanner(width: geometry.size.width)
-                        }
-                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
+                            Group {
+                                Divider() // Needed because `NonEditableOrderBanner` does not have a top divider
+                                NonEditableOrderBanner(width: geometry.size.width)
+                            }
+                            .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                        OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
+                            OrderStatusSection(viewModel: viewModel, topDivider: !viewModel.shouldShowNonEditableIndicators)
 
-                        Spacer(minLength: Layout.sectionSpacing)
+                            Spacer(minLength: Layout.sectionSpacing)
 
-                        ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
-                            .disabled(viewModel.shouldShowNonEditableIndicators)
+                            ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
 
-                        Spacer(minLength: Layout.sectionSpacing)
+                            Spacer(minLength: Layout.sectionSpacing)
 
-                        Group {
-                            if let title = viewModel.multipleLinesMessage {
-                                MultipleLinesMessage(title: title)
-                                Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                if let title = viewModel.multipleLinesMessage {
+                                    MultipleLinesMessage(title: title)
+                                    Spacer(minLength: Layout.sectionSpacing)
+                                }
+
+                                OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
-                            OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                            Spacer(minLength: Layout.sectionSpacing)
                         }
 
-                        Spacer(minLength: Layout.sectionSpacing)
+                        VStack(spacing: Layout.noSpacing) {
+                            Group {
+                                NewTaxRateSection()
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
-                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                            OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
-                        Spacer(minLength: Layout.sectionSpacing)
+                            Spacer(minLength: Layout.sectionSpacing)
 
-                        CustomerNoteSection(viewModel: viewModel)
+                            CustomerNoteSection(viewModel: viewModel)
+                        }
                     }
                     .disabled(viewModel.disabled)
                 }
@@ -213,6 +223,20 @@ private struct MultipleLinesMessage: View {
             Divider()
         }
         .background(Color(.listForeground(modal: true)))
+    }
+}
+
+private struct NewTaxRateSection: View {
+    var body: some View {
+        Button(action: {},
+               label: {
+                    Text(OrderForm.Localization.setNewTaxRate)
+                        .multilineTextAlignment(.center)
+                        .padding(OrderForm.Layout.sectionSpacing)
+                        .frame(maxWidth: .infinity)
+        })
+        .background(Color(.listForeground(modal: true)))
+        .addingTopAndBottomDividers()
     }
 }
 
@@ -395,6 +419,7 @@ private extension OrderForm {
                                                           "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
+        static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
     }
 
     enum Accessibility {

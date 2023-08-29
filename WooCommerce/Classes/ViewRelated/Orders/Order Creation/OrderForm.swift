@@ -230,10 +230,10 @@ private struct NewTaxRateSection: View {
     var body: some View {
         Button(action: {},
                label: {
-            Text(OrderForm.Localization.setNewTaxRate)
-                .multilineTextAlignment(.center)
-                .padding(OrderForm.Layout.sectionSpacing)
-                .frame(maxWidth: .infinity)
+                    Text(OrderForm.Localization.setNewTaxRate)
+                        .multilineTextAlignment(.center)
+                        .padding(OrderForm.Layout.sectionSpacing)
+                        .frame(maxWidth: .infinity)
         })
         .background(Color(.listForeground(modal: true)))
         .addingTopAndBottomDividers()

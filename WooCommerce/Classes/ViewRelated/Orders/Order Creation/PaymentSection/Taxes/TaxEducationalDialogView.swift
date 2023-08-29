@@ -58,6 +58,7 @@ struct TaxEducationalDialogView: View {
                     }.renderedIf(viewModel.taxLines.isNotEmpty)
 
                     Button {
+                        viewModel.onGoToWpAdminButtonTapped()
                         showingWPAdminWebview = true
                     } label: {
                         Label {

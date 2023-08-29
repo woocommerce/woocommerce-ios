@@ -738,6 +738,7 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
+        let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
 
         init(siteID: Int64 = 0,
@@ -768,6 +769,7 @@ extension EditableOrderViewModel {
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
+             onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
@@ -805,6 +807,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
+            self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
         }
     }
@@ -1129,6 +1132,9 @@ private extension EditableOrderViewModel {
                                             },
                                             onGoToCouponsClosure: { [weak self] in
                                                 self?.analytics.track(event: WooAnalyticsEvent.Orders.orderGoToCouponsButtonTapped())
+                                            },
+                                            onTaxHelpButtonTappedClosure: { [weak self] in
+                                                self?.analytics.track(event: WooAnalyticsEvent.Orders.orderTaxHelpButtonTapped())
                                             },
                                             onDismissWpAdminWebViewClosure: { [weak self] in
                                                 self?.retrieveTaxBasedOnSetting()

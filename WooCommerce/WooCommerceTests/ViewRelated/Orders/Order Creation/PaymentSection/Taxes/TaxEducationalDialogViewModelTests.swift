@@ -66,4 +66,18 @@ final class TaxEducationalDialogViewModelTests: XCTestCase {
         let expectedURLString = sampleAdminURL + "admin.php?page=wc-settings&tab=tax"
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL?.absoluteString, expectedURLString)
     }
+
+    func test_onGoToWpAdminButtonTapped_tracks_right_event() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        viewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil, analytics: analytics)
+
+        // When
+        viewModel.onGoToWpAdminButtonTapped()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.first, WooAnalyticsStat.taxEducationalDialogEditInAdminButtonTapped.rawValue)
+    }
 }

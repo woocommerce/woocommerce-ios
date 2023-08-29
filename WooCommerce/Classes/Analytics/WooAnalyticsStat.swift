@@ -417,6 +417,7 @@ public enum WooAnalyticsStat: String {
     case orderCouponAdd = "order_coupon_add"
     case orderCouponRemove = "order_coupon_remove"
     case orderGoToCouponsButtonTapped = "order_go_to_coupons_button_tapped"
+    case orderTaxHelpButtonTapped = "order_taxes_help_button_tapped"
     case orderProductDiscountAdd = "order_product_discount_add"
     case orderProductDiscountRemove = "order_product_discount_remove"
     case orderProductDiscountAddButtonTapped = "order_product_discount_add_button_tapped"
@@ -429,6 +430,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
     case orderDetailsGiftCardShown = "order_details_gift_card_shown"
+
+    // MARK: Order Tax Educational Dialog
+    //
+    case taxEducationalDialogEditInAdminButtonTapped = "tax_educational_dialog_edit_in_admin_button_tapped"
 
     // MARK: Order List Sorting/Filtering
     //

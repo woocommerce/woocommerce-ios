@@ -45,15 +45,13 @@ struct FreeTrialSummaryView: View {
                         .disabled(isWaitingToContinue)
 
                         Spacer()
-
-                        Image(uiImage: .freeTrialIllustration)
                     }
-                    .padding([.trailing, .bottom], Layout.illustrationInset)
 
                     // Title
                     Text(Localization.launchInDays)
                         .bold()
                         .titleStyle()
+                        .padding(.top, Layout.titleTopSpacing)
                         .padding(.bottom, Layout.titleSpacing)
                         .padding(.trailing, Layout.estimatedIllustrationWidth)
 
@@ -98,8 +96,17 @@ struct FreeTrialSummaryView: View {
                     }
                 }
                 .padding()
+                .background(
+                    VStack {
+                        HStack(alignment: .top) {
+                            Spacer()
+                            Image(uiImage: .freeTrialIllustration)
+                        }
+                        Spacer()
+                    }
+                    .background(Color(.listBackground))
+                )
             }
-            .background(Color(.listBackground))
 
             // Continue Footer
             VStack() {
@@ -142,7 +149,7 @@ private extension FreeTrialSummaryView {
         static let titleSpacing = 16.0
         static let sectionsSpacing = 32.0
         static let infoTrailingMargin = 8.0
-        static let illustrationInset = -32.0
+        static let titleTopSpacing = 64.0
         static let estimatedIllustrationWidth = 150.0
     }
 }

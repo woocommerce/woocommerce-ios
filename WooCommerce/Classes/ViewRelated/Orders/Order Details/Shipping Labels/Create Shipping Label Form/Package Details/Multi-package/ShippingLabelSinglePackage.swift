@@ -114,6 +114,13 @@ struct ShippingLabelSinglePackage: View {
             }
         }
     }
+    
+    func hazmatSection() -> some View {
+        VStack(spacing: 0) {
+            TitleAndValueRow(title: "Hazardous material category", value: .placeholder("Select a category"))
+            Divider()
+        }
+    }
 }
 
 private extension ShippingLabelSinglePackage {

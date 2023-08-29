@@ -145,7 +145,7 @@ struct OrderForm: View {
                                     shouldShowNewTaxRateSelector = true
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {
-                                    NewTaxRateSelectorView()
+                                    NewTaxRateSelectorView(taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel)
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)

@@ -138,9 +138,11 @@ struct OrderForm: View {
                         }
 
                         VStack(spacing: Layout.noSpacing) {
-                            NewTaxRateSection()
-
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                NewTaxRateSection()
+                                Spacer(minLength: Layout.sectionSpacing)
+                            }
+                            .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
                             OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 

@@ -74,6 +74,10 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
+    var shouldShowNewTaxRateSection: Bool {
+        featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2)
+    }
+
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {

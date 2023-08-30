@@ -5,7 +5,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
     func test_title_is_set_from_init() throws {
         // Given
-        let viewModel = WooPaymentSetupWebViewModel(title: "Woo Test", initialURL: WooConstants.URLs.blog.asURL()) {}
+        let viewModel = WooPaymentSetupWebViewModel(title: "Woo Test", initialURL: WooConstants.URLs.blog.asURL()) { _ in }
 
         // Then
         XCTAssertEqual(viewModel.title, "Woo Test")
@@ -14,7 +14,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
     func test_initialURL_is_set_from_init() throws {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
-        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {}
+        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // Then
         XCTAssertEqual(viewModel.initialURL?.absoluteString, "https://woocommerce.com")
@@ -24,7 +24,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let urlAfterWPComAuth = try XCTUnwrap(URL(string: WooPaymentSetupWebViewModel.Constants.urlAfterWPComAuth))
-        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {}
+        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // When
         let urlToLoad: URL = waitFor { promise in
@@ -41,7 +41,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
     func test_redirecting_to_wpcom_does_not_invoke_reloadWebview_when_initialURL_is_the_same() throws {
         // Given
         let url = try XCTUnwrap(URL(string: WooPaymentSetupWebViewModel.Constants.urlAfterWPComAuth))
-        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {}
+        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // When
         viewModel.reloadWebview = {
@@ -55,7 +55,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let nonWPComAuthURL = try XCTUnwrap(URL(string: "https://example.com"))
-        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {}
+        let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // When
         viewModel.reloadWebview = {
@@ -70,8 +70,10 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let successURL = try XCTUnwrap(URL(string: "https://example.com?wcpay-connection-success=1"))
         var completionInvoked = false
+        var isSuccess: Bool?
         let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {
             completionInvoked = true
+            isSuccess = $0
         }
 
         // When
@@ -83,6 +85,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(completionInvoked)
+        XCTAssertEqual(isSuccess, true)
     }
 
     func test_redirecting_to_url_with_error_param_invokes_completion_handler() throws {
@@ -90,8 +93,10 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let errorURL = try XCTUnwrap(URL(string: "https://example.com?wcpay-connection-error=1"))
         var completionInvoked = false
+        var isSuccess: Bool?
         let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {
             completionInvoked = true
+            isSuccess = $0
         }
 
         // When
@@ -103,6 +108,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(completionInvoked)
+        XCTAssertEqual(isSuccess, false)
     }
 
     func test_redirecting_to_url_without_completion_param_does_not_invoke_completion_handler() throws {
@@ -110,8 +116,10 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
         let nonCompletionURL = try XCTUnwrap(URL(string: "https://example.com"))
         var completionInvoked = false
+        var isSuccess: Bool?
         let viewModel = WooPaymentSetupWebViewModel(initialURL: url) {
             completionInvoked = true
+            isSuccess = $0
         }
 
         // When
@@ -123,5 +131,6 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(completionInvoked)
+        XCTAssertNil(isSuccess)
     }
 }

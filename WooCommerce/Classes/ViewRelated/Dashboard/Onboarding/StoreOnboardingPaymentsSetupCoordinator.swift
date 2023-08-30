@@ -59,8 +59,9 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] in
+        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] _ in
             self?.dismissWebview()
+            // TODO: show celebratory screen if success
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))

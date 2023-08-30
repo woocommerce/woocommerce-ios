@@ -8,11 +8,11 @@ final class WooPaymentSetupWebViewModel: AuthenticatedWebViewModel, WebviewReloa
 
     let title: String
     let initialURL: URL?
-    let completionHandler: () -> Void
+    let completionHandler: (_ isSuccess: Bool) -> Void
 
     init(title: String = "",
          initialURL: URL,
-         onCompletion: @escaping () -> Void) {
+         onCompletion: @escaping (Bool) -> Void) {
         self.title = title
         self.initialURL = initialURL
         self.completionHandler = onCompletion
@@ -33,9 +33,10 @@ final class WooPaymentSetupWebViewModel: AuthenticatedWebViewModel, WebviewReloa
             reloadWebview()
         }
 
-        if urlString.contains(Constants.successParam) ||
-            urlString.contains(Constants.errorParam) {
-            completionHandler()
+        if urlString.contains(Constants.successParam) {
+            completionHandler(true)
+        } else if urlString.contains(Constants.errorParam) {
+            completionHandler(false)
         }
     }
 

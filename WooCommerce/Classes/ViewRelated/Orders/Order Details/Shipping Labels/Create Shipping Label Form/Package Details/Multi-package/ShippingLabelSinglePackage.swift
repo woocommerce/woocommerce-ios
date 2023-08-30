@@ -90,34 +90,38 @@ struct ShippingLabelSinglePackage: View {
                 .renderedIf(viewModel.isOriginalPackaging && !viewModel.hasValidPackageDimensions)
 
             VStack(spacing: 0) {
-                Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
+                VStack {
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
 
-                TitleAndTextFieldRow(title: Localization.totalPackageWeight,
-                                     placeholder: "0",
-                                     text: $viewModel.totalWeight,
-                                     symbol: viewModel.weightUnit,
-                                     keyboardType: .decimalPad)
-                    .padding(.horizontal, insets: safeAreaInsets)
+                    TitleAndTextFieldRow(title: Localization.totalPackageWeight,
+                                         placeholder: "0",
+                                         text: $viewModel.totalWeight,
+                                         symbol: viewModel.weightUnit,
+                                         keyboardType: .decimalPad)
+                        .padding(.horizontal, insets: safeAreaInsets)
 
-                Divider()
-                hazmatSection()
+                    Divider()
+                }
+                .background(Color(.listForeground(modal: false)))
+                
+                if viewModel.isValidTotalWeight {
+                    ListHeaderView(text: Localization.footer, alignment: .left)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                } else {
+                    ValidationErrorRow(errorMessage: Localization.invalidWeight)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                }
             }
-            .background(Color(.listForeground(modal: false)))
 
-            if viewModel.isValidTotalWeight {
-                ListHeaderView(text: Localization.footer, alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            } else {
-                ValidationErrorRow(errorMessage: Localization.invalidWeight)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            }
+            hazmatSection()
         }
     }
     
     func hazmatSection() -> some View {
         VStack(spacing: 0) {
+            Divider()
             TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
             VStack {
                 Divider()
@@ -134,6 +138,7 @@ struct ShippingLabelSinglePackage: View {
             .renderedIf(viewModel.containsHazmatMaterials)
             Divider()
         }
+        .background(Color(.listForeground(modal: false)))
         .padding(.horizontal, insets: safeAreaInsets)
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }

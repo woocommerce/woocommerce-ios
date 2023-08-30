@@ -57,6 +57,26 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         useCase.refresh()
     }
 
+    /// Sends the action to the dispatcher to install the CPP plugin
+    /// At the moment we only do so for WCPay
+    ///
+    func installPlugin() {
+        guard let siteID = stores.sessionManager.defaultSite?.siteID else {
+            return
+        }
+        let pluginSlug = "woocommerce-payments"
+        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { result in
+            switch result {
+            case .success:
+                print("Success installing \(pluginSlug)")
+                self.useCase.updateState()
+            case .failure(let error):
+                DDLogError("Error installing plugin: \(error)")
+            }
+        })
+        stores.dispatch(installPluginAction)
+    }
+
     /// Skips the Pending Requirements step when the user taps `Skip`
     ///
     func skipPendingRequirements() {

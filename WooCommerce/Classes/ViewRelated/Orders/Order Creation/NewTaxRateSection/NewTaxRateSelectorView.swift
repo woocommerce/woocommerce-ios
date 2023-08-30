@@ -24,31 +24,31 @@ struct NewTaxRateSelectorView: View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
                 Group {
-                    HStack(alignment: .top, spacing: 11) {
+                    HStack(alignment: .top, spacing: Layout.explanatoryBoxHorizontalSpacing) {
                         Image(systemName: "info.circle")
-                            .foregroundColor(Color(.wooCommercePurple(.shade90)))
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
                         Text(Localization.infoText)
                     }
-                    .padding(16)
+                    .padding(Layout.generalPadding)
                 }
                 .overlay(
-                    RoundedRectangle(cornerRadius: 8)
+                    RoundedRectangle(cornerRadius: Layout.explanatoryBoxCornerRadius)
                         .stroke(Color(.separator), lineWidth: 1)
                 )
-                .padding(16)
+                .padding(Layout.generalPadding)
 
-                Text("SELECT A TAX RATE")
+                Text(Localization.taxRatesSectionTitle.uppercased())
                     .footnoteStyle()
                     .multilineTextAlignment(.leading)
-                    .padding([.leading, .trailing], 16)
-                    .padding(.bottom, 8)
+                    .padding([.leading, .trailing], Layout.generalPadding)
+                    .padding(.bottom, Layout.taxRatesSectionTitleBottomPadding)
 
                 Divider()
 
                 ForEach(demoTaxRates, id: \.title) { taxRate in
                     HStack {
-                        Button(action: { debugPrint("tap tap") }) {
-                            AdaptiveStack(horizontalAlignment: .leading, spacing: 16) {
+                        Button(action: { }) {
+                            AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {
                                 Text(taxRate.title)
                                     .foregroundColor(Color(.text))
                                     .multilineTextAlignment(.leading)
@@ -60,22 +60,39 @@ struct NewTaxRateSelectorView: View {
                                     .frame(width: nil, alignment: .trailing)
 
                                 Image(systemName: "chevron.right")
+                                    .font(.body)
                                     .font(Font.title.weight(.semibold))
                                     .foregroundColor(Color(.textTertiary))
+                                    .padding(.leading, Layout.generalPadding)
                             }
-                            .padding(16)
+                            .padding(Layout.generalPadding)
                         }
                     }
 
                     Divider()
                 }
 
-                Text("Can’t find the rate you’re looking for?")
+                Text(Localization.editTaxRatesInWpAdminSectionTitle)
                     .foregroundColor(Color(.textSubtle))
                     .footnoteStyle()
-                    .padding(.top, 24)
+                    .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
                     .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.leading, .trailing], 16)
+                    .padding([.leading, .trailing], Layout.generalPadding)
+
+                Button(action: { }) {
+                    HStack {
+                        Text(Localization.editTaxRatesInWpAdminButtonTitle)
+                            .fontWeight(.semibold)
+                            .font(.footnote)
+                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+
+                        Image(systemName: "arrow.up.forward.square")
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+
+                }
+                .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
 
                 Spacer()
 
@@ -102,10 +119,23 @@ struct NewTaxRateSelectorView: View {
 }
 
 extension NewTaxRateSelectorView {
+    enum Layout {
+        static let generalPadding: CGFloat = 16
+        static let explanatoryBoxHorizontalSpacing: CGFloat = 11
+        static let explanatoryBoxCornerRadius: CGFloat = 8
+        static let taxRatesSectionTitleBottomPadding: CGFloat = 8
+        static let editTaxRatesInWpAdminSectionTopPadding: CGFloat = 24
+        static let editTaxRatesInWpAdminSectionVerticalSpacing: CGFloat = 8
+    }
     enum Localization {
         static let navigationTitle = NSLocalizedString("Set Tax Rate", comment: "Navigation title for the tax rate selector")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title for the tax rate selector")
         static let infoText = NSLocalizedString("This will change the customer’s address to the location of the tax rate you select.",
                                                 comment: "Explanatory text for the tax rate selector")
+        static let taxRatesSectionTitle = NSLocalizedString("Select a tax rate", comment: "Title for the tax rate selector section")
+        static let editTaxRatesInWpAdminSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
+                                                                         comment: "Text to prompt the user to edit tax rates in the web")
+        static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString("Edit tax rates in admin",
+                                                                         comment: "Title of the button that prompts the user to edit tax rates in the web")
     }
 }

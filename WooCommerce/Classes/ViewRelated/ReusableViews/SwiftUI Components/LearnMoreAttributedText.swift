@@ -13,11 +13,12 @@ struct LearnMoreAttributedText: View {
     init(format: String,
          tappableLearnMoreText learnMoreText: String,
          url: URL,
-         shouldUnderLine: Bool = true) {
+         shouldUnderLine: Bool = true,
+         textColor: UIColor = .textSubtle) {
         attributedLearnMoreText = {
             var attributedText = AttributedString(.init(format: format, learnMoreText))
             attributedText.font = .footnote
-            attributedText.foregroundColor = .init(.textSubtle)
+            attributedText.foregroundColor = .init(textColor)
 
             // Link styles for the learn more string.
             if let range = attributedText.range(of: learnMoreText) {

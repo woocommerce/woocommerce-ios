@@ -128,7 +128,8 @@ struct WooPaymentsSetupInstructionsView: View {
                     LearnMoreAttributedText(format: Localization.Footer.learnMoreFormat,
                                             tappableLearnMoreText: Localization.Footer.learnMore,
                                             url: URLs.learnMore,
-                                            shouldUnderLine: false)
+                                            shouldUnderLine: false,
+                                            textColor: .text)
                 }
             }
             .padding(.horizontal, Layout.Footer.margin)

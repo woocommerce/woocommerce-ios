@@ -89,6 +89,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
                                               totalWeight: totalWeight,
                                               items: orderItems)
     }
+    
+    /// Whether the Package contains hazmat materials or not
+    ///
+    @Published var containsHazmatMaterials: Bool = false
 
     private let order: Order
     private let orderItems: [ShippingLabelPackageItem]

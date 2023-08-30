@@ -135,11 +135,13 @@ struct ShippingLabelSinglePackage: View {
                 Button(action: {
                     isShowingHazmatSelection.toggle()
                 }, label: {
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text(Localization.hazmatCategoryTitle)
                         Text(Localization.selectHazmatCategory)
                     }
                 })
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal, Constants.horizontalPadding)
 
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)

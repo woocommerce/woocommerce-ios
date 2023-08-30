@@ -14,11 +14,17 @@ struct NewTaxRateSelectorView: View {
 
     @Environment(\.dismiss) var dismiss
 
+    let viewModel: NewTaxRateSelectorViewModel
     let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
+    let onDismissWpAdminWebView: (() -> Void)
 
     /// Indicates if the tax educational dialog should be shown or not.
     ///
     @State private var shouldShowTaxEducationalDialog: Bool = false
+
+    /// Whether the WPAdmin webview is being shown.
+    ///
+    @State private var showingWPAdminWebview: Bool = false
 
     var body: some View {
         NavigationView {
@@ -79,7 +85,9 @@ struct NewTaxRateSelectorView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding([.leading, .trailing], Layout.generalPadding)
 
-                Button(action: { }) {
+                Button(action: {
+                    showingWPAdminWebview = true
+                }) {
                     HStack {
                         Text(Localization.editTaxRatesInWpAdminButtonTitle)
                             .fontWeight(.semibold)
@@ -93,6 +101,10 @@ struct NewTaxRateSelectorView: View {
 
                 }
                 .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
+                .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                    onDismissWpAdminWebView()
+                    showingWPAdminWebview = false
+                })
 
                 Spacer()
 

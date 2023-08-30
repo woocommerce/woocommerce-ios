@@ -1,1 +1,1 @@
-Kami telah membuat beberapa penyempurnaan untuk membantu Anda memulai bisnis. Terus berikan feedback agar kami tahu apa yang harus ditingkatkan selanjutnya.
+Did you know that you can create and use discount coupons in the app? Cobalah! This release includes a fix that ensures coupons can be created on all devices. Terima kasih telah memilih WooCommerce!

@@ -1,5 +1,4 @@
 import Foundation
-import GoogleSignIn
 import WordPressKit
 import SVProgressHUD
 
@@ -131,12 +130,6 @@ class GoogleAuthenticator: NSObject {
         self.loginFields.meta.socialService = SocialServiceName.google
         self.authType = authType
 
-        guard authConfig.googleLoginWithoutSDK else {
-            // Use method that depends on SDK
-            requestAuthorization(from: viewController)
-            return
-        }
-
         Task { @MainActor in
             do {
                 let token = try await requestAuthorization(
@@ -174,24 +167,6 @@ class GoogleAuthenticator: NSObject {
 
 private extension GoogleAuthenticator {
 
-    /// Initiates the Google authentication flow.
-    ///   - viewController: The UIViewController that Google is being presented from.
-    ///                     Required by Google SDK.
-    func requestAuthorization(from viewController: UIViewController) {
-        trackRequestAuthorizitation(type: authType)
-
-        let googleInstance = GIDSignIn.sharedInstance
-        let configuration = GIDConfiguration(clientID: authConfig.googleLoginClientId, serverClientID: authConfig.googleLoginServerClientId)
-
-        googleInstance.disconnect()
-
-        // Start the Google auth process. This presents the Google account selection view.
-        // Assigning the view controller has no effect since we don't use Google UI, but it's is required, so here we are.
-        googleInstance.signIn(with: configuration, presenting: viewController) { user, error in
-            self.didSignIn(for: user, error: error)
-        }
-    }
-
     private func trackRequestAuthorizitation(type: GoogleAuthType) {
         switch type {
         case .login:
@@ -208,21 +183,6 @@ private extension GoogleAuthenticator {
         var trackProperties = properties
         trackProperties["source"] = "google"
         WordPressAuthenticator.track(event, properties: trackProperties)
-    }
-
-    /// Handles when the sign in process is either succeeded or failed.
-    /// This is invoked after signing in through `GIDSignIn`'s `signIn` method.
-    func didSignIn(for user: GIDGoogleUser?, error: Error?) {
-        // Get account information
-        guard let user = user,
-              let token = user.authentication.idToken,
-              let email = user.profile?.email,
-              let fullName = user.profile?.name else {
-            failedToSignIn(error: error)
-            return
-        }
-
-        didSignIn(token: token, email: email, fullName: fullName)
     }
 
     private func failedToSignIn(error: Error?) {
@@ -254,7 +214,7 @@ private extension GoogleAuthenticator {
         loginFields.emailAddress = email
         loginFields.username = email
         loginFields.meta.socialServiceIDToken = token
-        loginFields.meta.googleUser = SocialService.User(email: email, fullName: fullName)
+        loginFields.meta.socialUser = SocialUser(email: email, fullName: fullName, service: .google)
 
         guard authConfig.enableUnifiedAuth else {
             // Initiate separate WP login / signup paths.
@@ -325,7 +285,6 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful.
     func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance.disconnect()
 
         // This stat is part of a funnel that provides critical information.  Please
         // consult with your lead before removing this event.
@@ -348,7 +307,6 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful, but a WP 2FA code is required.
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance.disconnect()
 
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
@@ -364,7 +322,6 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login was successful, but a WP password is required.
     func existingUserNeedsConnection(_ email: String) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance.disconnect()
 
         loginFields.username = email
         loginFields.emailAddress = email
@@ -380,7 +337,6 @@ extension GoogleAuthenticator: LoginFacadeDelegate {
     // Google account login failed.
     func displayRemoteError(_ error: Error) {
         SVProgressHUD.dismiss()
-        GIDSignIn.sharedInstance.disconnect()
 
         var errorTitle = LocalizedText.googleUnableToConnect
         var errorDescription = error.localizedDescription

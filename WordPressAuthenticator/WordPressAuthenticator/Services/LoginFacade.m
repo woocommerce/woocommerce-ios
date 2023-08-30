@@ -25,7 +25,7 @@
 {
     NSAssert(self.delegate != nil, @"Must set delegate to use service");
     
-    if (loginFields.meta.userIsDotCom || loginFields.siteAddress.isWordPressComPath) {
+    if (loginFields.userIsDotCom || loginFields.siteAddress.isWordPressComPath) {
         [self signInToWordpressDotCom:loginFields];
     } else {
         [self signInToSelfHosted:loginFields];
@@ -99,7 +99,7 @@
 
     [self.wordpressComOAuthClientFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:^(NSString *authToken) {
         if ([self.delegate respondsToSelector:@selector(finishedLoginWithAuthToken:requiredMultifactorCode:)]) {
-            [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.meta.requiredMultifactor];
+            [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
         }
         [self trackSuccess];
     } needsMultiFactor:^{
@@ -117,7 +117,7 @@
 - (void)signInToSelfHosted:(LoginFields *)loginFields
 {
     void (^guessXMLRPCURLSuccess)(NSURL *) = ^(NSURL *xmlRPCURL) {
-        loginFields.meta.xmlrpcURL = xmlRPCURL;
+        loginFields.xmlrpcURL = xmlRPCURL;
         [self loginToSelfHosted:loginFields];
     };
 
@@ -137,7 +137,7 @@
 
 - (void)loginToSelfHosted:(LoginFields *)loginFields
 {
-    NSURL *xmlRPCURL = loginFields.meta.xmlrpcURL;
+    NSURL *xmlRPCURL = loginFields.xmlrpcURL;
     [self.wordpressXMLRPCAPIFacade getBlogOptionsWithEndpoint:xmlRPCURL username:loginFields.username password:loginFields.password success:^(id options) {
         if ([options objectForKey:@"wordpress.com"] != nil) {
             [self signInToWordpressDotCom:loginFields];

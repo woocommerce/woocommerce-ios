@@ -1,4 +1,3 @@
-import GoogleSignIn
 import WordPressKit
 
 // MARK: - WordPressAuthenticator Configuration
@@ -54,8 +53,6 @@ public struct WordPressAuthenticatorConfiguration {
 
         return clientId
     }
-
-    let googleLoginWithoutSDK: Bool
 
     /// UserAgent
     ///
@@ -209,8 +206,7 @@ public struct WordPressAuthenticatorConfiguration {
                  enableManualSiteCredentialLogin: Bool = false,
                  enableManualErrorHandlingForSiteCredentialLogin: Bool = false,
                  useEnterEmailAddressAsStepValueForGetStartedVC: Bool = false,
-                 enableSiteAddressLoginOnlyInPrologue: Bool = false,
-                 googleLoginWithoutSDK: Bool = false
+                 enableSiteAddressLoginOnlyInPrologue: Bool = false
     ) {
 
         self.wpcomClientId = wpcomClientId
@@ -223,7 +219,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginClientId =  googleLoginClientId
         self.googleLoginServerClientId = googleLoginServerClientId
         self.googleLoginScheme = googleLoginScheme
-        self.googleLoginWithoutSDK = googleLoginWithoutSDK
         self.userAgent = userAgent
         self.showLoginOptions = showLoginOptions
         self.enableSignUp = enableSignUp

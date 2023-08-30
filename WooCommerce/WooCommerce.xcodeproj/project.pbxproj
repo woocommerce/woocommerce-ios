@@ -5916,6 +5916,8 @@
 		02BBD6E329A2674C00243BE2 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				EE3B17AB2A9EF478004D3E0C /* Payments */,
+				EE3B17AA2A9EF45C004D3E0C /* LaunchStore */,
 				DE36E0962A8634DB00B98496 /* StoreName */,
 				EE46CEE029CB31E7004E4524 /* StoreDetails */,
 				02BBD6E429A2678100243BE2 /* StoreOnboardingView.swift */,
@@ -5924,12 +5926,6 @@
 				02BBD6EA29A316FB00243BE2 /* StoreOnboardingCoordinator.swift */,
 				EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */,
 				EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */,
-				027EB56B29C05F4A003CE551 /* StoreOnboardingLaunchStoreView.swift */,
-				027EB56D29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift */,
-				027EB56F29C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift */,
-				020B640E29C194CF001C5BD9 /* StoreOnboardingStoreLaunchedView.swift */,
-				02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */,
-				02D681AA29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -10685,6 +10681,26 @@
 				DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		EE3B17AA2A9EF45C004D3E0C /* LaunchStore */ = {
+			isa = PBXGroup;
+			children = (
+				020B640E29C194CF001C5BD9 /* StoreOnboardingStoreLaunchedView.swift */,
+				027EB56B29C05F4A003CE551 /* StoreOnboardingLaunchStoreView.swift */,
+				027EB56D29C0602D003CE551 /* StoreOnboardingLaunchStoreViewModel.swift */,
+				027EB56F29C062DD003CE551 /* StoreOnboardingLaunchStoreCoordinator.swift */,
+			);
+			path = LaunchStore;
+			sourceTree = "<group>";
+		};
+		EE3B17AB2A9EF478004D3E0C /* Payments */ = {
+			isa = PBXGroup;
+			children = (
+				02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */,
+				02D681AA29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift */,
+			);
+			path = Payments;
 			sourceTree = "<group>";
 		};
 		EE45E29B2A381A050085F227 /* Celebration */ = {

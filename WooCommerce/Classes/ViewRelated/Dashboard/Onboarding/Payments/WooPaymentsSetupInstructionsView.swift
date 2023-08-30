@@ -105,8 +105,7 @@ struct WooPaymentsSetupInstructionsView: View {
                                 .padding(Layout.Instruction.indexPadding)
                                 .background(
                                     Circle()
-                                        .foregroundColor(.init(uiColor: UIColor(light: .systemGroupedBackground,
-                                                                                dark: .secondarySystemGroupedBackground)))
+                                        .foregroundColor(Color(.wooCommercePurple(.shade0)))
                                 )
                             AttributedText(content)
                         }

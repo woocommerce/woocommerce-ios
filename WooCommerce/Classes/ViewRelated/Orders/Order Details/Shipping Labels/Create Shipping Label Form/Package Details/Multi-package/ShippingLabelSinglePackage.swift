@@ -131,11 +131,16 @@ struct ShippingLabelSinglePackage: View {
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
-                
-                TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
+
+                Button(action: {
                     isShowingHazmatSelection.toggle()
-                }
-                
+                }, label: {
+                    VStack {
+                        Text(Localization.hazmatCategoryTitle)
+                        Text(Localization.selectHazmatCategory)
+                    }
+                })
+
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)

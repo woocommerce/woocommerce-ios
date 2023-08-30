@@ -23,6 +23,7 @@ final class WooPaymentsSetupInstructionsHostingController: UIHostingController<W
 struct WooPaymentsSetupInstructionsView: View {
     private let onContinue: () -> Void
     private let onDismiss: () -> Void
+    @State private var urlFromInstruction: URL?
 
     private let instructions: [NSAttributedString] = {
         let font: UIFont = .body
@@ -105,7 +106,12 @@ struct WooPaymentsSetupInstructionsView: View {
                                     Circle()
                                         .foregroundColor(Color(.wooCommercePurple(.shade0)))
                                 )
+
                             AttributedText(content)
+                                .environment(\.customOpenURL) { url in
+                                    urlFromInstruction = url
+                                }
+                                .safariSheet(url: $urlFromInstruction)
                         }
                     }
                 }

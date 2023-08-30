@@ -537,12 +537,6 @@ platform :ios do
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
     )
 
-    testflight(
-      skip_waiting_for_build_processing: true,
-      api_key_path: ASC_KEY_PATH
-    )
-    sh('cd .. && rm WooCommerce.ipa')
-
     sentry_upload_dsym(
       auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
       org_slug: 'a8c',
@@ -551,21 +545,31 @@ platform :ios do
     )
     sh('cd .. && rm WooCommerce.app.dSYM.zip')
 
-    if options[:create_release]
-      archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
-      zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
+    archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
+    zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
+    sh("rm #{archive_zip_path}")
 
-      version = options[:beta_release] ? ios_get_build_version : app_version
-      create_release(
-        repository: GITHUB_REPO,
-        version: version,
-        release_notes_file_path: RELEASE_NOTES_PATH,
-        release_assets: archive_zip_path.to_s,
-        prerelease: options[:beta_release]
-      )
+    version = options[:beta_release] ? ios_get_build_version : app_version
+    create_release(
+      repository: GITHUB_REPO,
+      version: version,
+      release_notes_file_path: RELEASE_NOTES_PATH,
+      release_assets: archive_zip_path.to_s,
+      prerelease: options[:beta_release]
+    )
 
-      sh("rm #{archive_zip_path}")
-    end
+    upload_to_testflight(
+      api_key_path: ASC_KEY_PATH,
+      # Wait 2 hours for the build to process then time out
+      wait_processing_timeout_duration: 7200,
+      changelog: File.read(RELEASE_NOTES_PATH),
+      distribute_external: true,
+      # If there is a build waiting for beta review, we want to reject that so the new build can be submitted instead
+      reject_build_waiting_for_review: true,
+      # These three groups are the same for iOS and Mac
+      groups: ['Internal a8c beta testers', 'Public Beta Testers'],
+    )
+    sh('cd .. && rm WooCommerce.ipa')
   end
 
   #####################################################################################

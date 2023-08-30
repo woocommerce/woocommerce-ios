@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22D68" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22D49" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -238,6 +238,7 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <attribute name="variationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="addOns" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="OrderItemProductAddOn" inverseName="orderItem" inverseEntity="OrderItemProductAddOn"/>
         <relationship name="attributes" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="OrderItemAttribute" inverseName="orderItem" inverseEntity="OrderItemAttribute"/>
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
@@ -249,6 +250,12 @@
         <relationship name="orderFeeLine" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderFeeLine" inverseName="attributes" inverseEntity="OrderFeeLine"/>
         <relationship name="orderItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItem" inverseName="attributes" inverseEntity="OrderItem"/>
         <relationship name="orderTaxLine" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderTaxLine" inverseName="attributes" inverseEntity="OrderTaxLine"/>
+    </entity>
+    <entity name="OrderItemProductAddOn" representedClassName="OrderItemProductAddOn" syncable="YES">
+        <attribute name="addOnID" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="key" attributeType="String" defaultValueString=""/>
+        <attribute name="value" attributeType="String" defaultValueString=""/>
+        <relationship name="orderItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItem" inverseName="addOns" inverseEntity="OrderItem"/>
     </entity>
     <entity name="OrderItemRefund" representedClassName="OrderItemRefund" syncable="YES">
         <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

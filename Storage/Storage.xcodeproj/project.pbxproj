@@ -28,6 +28,8 @@
 		02C254F02563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254E82563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift */; };
 		02C254F12563B12E00A04423 /* ShippingLabelAddress+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254E92563B12E00A04423 /* ShippingLabelAddress+CoreDataClass.swift */; };
 		02C254F22563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254EA2563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift */; };
+		02C64D762A9F8460005ED906 /* OrderItemProductAddOn+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C64D742A9F8460005ED906 /* OrderItemProductAddOn+CoreDataClass.swift */; };
+		02C64D772A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C64D752A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift */; };
 		02D200D8253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */; };
 		02D45649231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */; };
 		02D7E7C52A4CB25D0003049A /* LocalAnnouncement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D7E7C42A4CB25D0003049A /* LocalAnnouncement.swift */; };
@@ -277,6 +279,8 @@
 		02C254E92563B12E00A04423 /* ShippingLabelAddress+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+CoreDataClass.swift"; sourceTree = "<group>"; };
 		02C254EA2563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		02C64D732A9F4118005ED906 /* Model 94.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 94.xcdatamodel"; sourceTree = "<group>"; };
+		02C64D742A9F8460005ED906 /* OrderItemProductAddOn+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemProductAddOn+CoreDataClass.swift"; sourceTree = "<group>"; };
+		02C64D752A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemProductAddOn+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		02D200D7253FDEE500840173 /* WooCommerceModelV32toV33.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = WooCommerceModelV32toV33.xcmappingmodel; sourceTree = "<group>"; };
 		02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBannerVisibility.swift; sourceTree = "<group>"; };
 		02D7E7C42A4CB25D0003049A /* LocalAnnouncement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalAnnouncement.swift; sourceTree = "<group>"; };
@@ -938,6 +942,8 @@
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				021EAA4525493A1600AA8CCD /* OrderItemAttribute+CoreDataClass.swift */,
 				021EAA4625493A1600AA8CCD /* OrderItemAttribute+CoreDataProperties.swift */,
+				02C64D742A9F8460005ED906 /* OrderItemProductAddOn+CoreDataClass.swift */,
+				02C64D752A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift */,
 				CE4FD43F2350EB7600A16B31 /* OrderItemRefund+CoreDataClass.swift */,
 				CE4FD4402350EB7600A16B31 /* OrderItemRefund+CoreDataProperties.swift */,
 				CE4FD4412350EB7600A16B31 /* OrderItemTax+CoreDataClass.swift */,
@@ -1413,6 +1419,7 @@
 				02C254F22563B12E00A04423 /* ShippingLabelAddress+CoreDataProperties.swift in Sources */,
 				02C254F02563B12E00A04423 /* ShippingLabelRefund+CoreDataProperties.swift in Sources */,
 				746A9D23214078080013F6FF /* TopEarnerStatsItem+CoreDataClass.swift in Sources */,
+				02C64D772A9F8460005ED906 /* OrderItemProductAddOn+CoreDataProperties.swift in Sources */,
 				4501068B2399AC9B00E24722 /* TaxClass+CoreDataProperties.swift in Sources */,
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
 				031C1EA527AD3AFE00298699 /* WCPayCardPaymentDetails+CoreDataClass.swift in Sources */,
@@ -1446,6 +1453,7 @@
 				746A9D24214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift in Sources */,
 				CE43A8FE229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift in Sources */,
 				747453A22242C85E00E0B5EE /* ProductCategory+CoreDataProperties.swift in Sources */,
+				02C64D762A9F8460005ED906 /* OrderItemProductAddOn+CoreDataClass.swift in Sources */,
 				CE43A8FD229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

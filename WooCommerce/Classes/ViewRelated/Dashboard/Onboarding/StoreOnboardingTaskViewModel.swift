@@ -33,7 +33,11 @@ struct StoreOnboardingTaskViewModel: Identifiable, Equatable {
             icon = .customizeDomainsImage
             title = Localization.CustomizeDomains.title
             subtitle = Localization.CustomizeDomains.subtitle
-        case .payments, .woocommercePayments:
+        case .woocommercePayments:
+            icon = .getPaidImage
+            title = Localization.WooPayments.title
+            subtitle = Localization.WooPayments.subtitle
+        case .payments:
             icon = .getPaidImage
             title = Localization.Payments.title
             subtitle = Localization.Payments.subtitle
@@ -100,13 +104,24 @@ extension StoreOnboardingTaskViewModel {
             )
         }
 
-        enum Payments {
+        enum WooPayments {
             static let title = NSLocalizedString(
                 "Get paid",
                 comment: "Title of the store onboarding task to get paid."
             )
             static let subtitle = NSLocalizedString(
                 "Manage payments seamlessly with WooPayments, free from setup or monthly fees.",
+                comment: "Subtitle of the store onboarding task to get paid."
+            )
+        }
+
+        enum Payments {
+            static let title = NSLocalizedString(
+                "Get paid",
+                comment: "Title of the store onboarding task to get paid."
+            )
+            static let subtitle = NSLocalizedString(
+                "Give your customers an easy and convenient way to pay!",
                 comment: "Subtitle of the store onboarding task to get paid."
             )
         }

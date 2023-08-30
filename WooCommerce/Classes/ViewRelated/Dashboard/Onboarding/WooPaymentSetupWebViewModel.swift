@@ -44,7 +44,7 @@ final class WooPaymentSetupWebViewModel: AuthenticatedWebViewModel, WebviewReloa
     }
 }
 
-private extension WooPaymentSetupWebViewModel {
+extension WooPaymentSetupWebViewModel {
     enum Constants {
         static let urlAfterWPComAuth = "https://wordpress.com"
         static let successParam = "wcpay-connection-success"

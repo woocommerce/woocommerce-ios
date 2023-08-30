@@ -40,7 +40,18 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
         } onDismiss: {
             navigationController.dismiss(animated: true)
         }
-        navigationController.pushViewController(setupController, animated: false)
+
+        let instructionsController = WooPaymentsSetupInstructionsHostingController {
+            navigationController.pushViewController(setupController, animated: true)
+        } onDismiss: {
+            navigationController.dismiss(animated: true)
+        }
+
+        if task == .wcPay {
+            navigationController.pushViewController(instructionsController, animated: false)
+        } else {
+            navigationController.pushViewController(setupController, animated: false)
+        }
     }
 
     func showWebview(in navigationController: UINavigationController) {

@@ -99,7 +99,7 @@ struct WooPaymentsSetupInstructionsView: View {
                         .font(.title3)
 
                     ForEach(Array(instructions.enumerated()), id: \.element) { index, content in
-                        HStack(spacing: Layout.Instruction.margin) {
+                        HStack(alignment: .top, spacing: Layout.Instruction.margin) {
                             Text("\(index + 1)")
                                 .bodyStyle()
                                 .padding(Layout.Instruction.indexPadding)

@@ -707,7 +707,7 @@ platform :ios do
   desc 'Build Screenshots'
   lane :build_screenshots do
     # Ensure we're using the latest Pods
-    sh('bundle exec pod install --verbose')
+    cocoapods(verbose: true)
 
     # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     xcversion

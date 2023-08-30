@@ -137,7 +137,9 @@ struct ShippingLabelSinglePackage: View {
                 }, label: {
                     VStack(alignment: .leading) {
                         Text(Localization.hazmatCategoryTitle)
+                            .bodyStyle()
                         Text(Localization.selectHazmatCategory)
+                            .calloutStyle()
                     }
                 })
                 .frame(maxWidth: .infinity, alignment: .leading)

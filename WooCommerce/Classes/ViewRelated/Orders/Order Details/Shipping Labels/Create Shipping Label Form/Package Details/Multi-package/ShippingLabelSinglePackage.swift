@@ -119,10 +119,17 @@ struct ShippingLabelSinglePackage: View {
     func hazmatSection() -> some View {
         VStack(spacing: 0) {
             TitleAndToggleRow(title: "Contains Hazardous Materials", isOn: $viewModel.containsHazmatMaterials)
-            Divider()
-            TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory))
+            VStack {
+                Divider()
+                TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory))
+                Divider()
+                Text("Content description about the Hazmat details and stuff")
+            }
+            .renderedIf(viewModel.containsHazmatMaterials)
             Divider()
         }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 }
 

@@ -730,7 +730,6 @@ extension EditableOrderViewModel {
         let shouldShowDiscountTotal: Bool
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
-        let shouldShowTaxExtraInformation: Bool
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -742,6 +741,7 @@ extension EditableOrderViewModel {
         let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
+        let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
 
         init(siteID: Int64 = 0,
@@ -758,7 +758,6 @@ extension EditableOrderViewModel {
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
-             shouldShowTaxExtraInformation: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
              taxLineViewModels: [TaxLineViewModel] = [],
@@ -772,6 +771,7 @@ extension EditableOrderViewModel {
              saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
+             onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
@@ -790,7 +790,6 @@ extension EditableOrderViewModel {
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
-            self.shouldShowTaxExtraInformation = shouldShowTaxExtraInformation
             self.couponLineViewModels = couponLineViewModels
             self.taxBasedOnSetting = taxBasedOnSetting
             self.taxLineViewModels = taxLineViewModels
@@ -809,6 +808,7 @@ extension EditableOrderViewModel {
                                                             didSelectSave: saveFeeLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
+            self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
         }
     }
@@ -1115,7 +1115,6 @@ private extension EditableOrderViewModel {
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
-                                            shouldShowTaxExtraInformation: self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrder),
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
@@ -1133,6 +1132,9 @@ private extension EditableOrderViewModel {
                                             },
                                             onGoToCouponsClosure: { [weak self] in
                                                 self?.analytics.track(event: WooAnalyticsEvent.Orders.orderGoToCouponsButtonTapped())
+                                            },
+                                            onTaxHelpButtonTappedClosure: { [weak self] in
+                                                self?.analytics.track(event: WooAnalyticsEvent.Orders.orderTaxHelpButtonTapped())
                                             },
                                             onDismissWpAdminWebViewClosure: { [weak self] in
                                                 self?.retrieveTaxBasedOnSetting()

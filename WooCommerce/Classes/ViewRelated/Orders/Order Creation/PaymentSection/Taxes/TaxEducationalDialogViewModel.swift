@@ -10,11 +10,16 @@ struct TaxEducationalDialogViewModel {
     let taxLines: [TaxLine]
     let taxBasedOnSettingExplanatoryText: String?
     private let stores: StoresManager
+    private let analytics: Analytics
 
-    init(orderTaxLines: [OrderTaxLine], taxBasedOnSetting: TaxBasedOnSetting?, stores: StoresManager = ServiceLocator.stores) {
+    init(orderTaxLines: [OrderTaxLine],
+         taxBasedOnSetting: TaxBasedOnSetting?,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.taxLines = orderTaxLines.map { TaxLine(title: $0.label, value: $0.ratePercent.percentFormatted() ?? "") }
         self.taxBasedOnSettingExplanatoryText = taxBasedOnSetting?.explanatoryText
         self.stores = stores
+        self.analytics = analytics
     }
 
     /// WPAdmin URL to navigate user to edit the tax settings
@@ -35,6 +40,10 @@ struct TaxEducationalDialogViewModel {
         }
 
         return URL(string: "\(path)\(Constants.wpAdminTaxSettingsPath)")
+    }
+
+    func onGoToWpAdminButtonTapped() {
+        analytics.track(event: WooAnalyticsEvent.Orders.taxEducationalDialogEditInAdminButtonTapped())
     }
 }
 

@@ -27,7 +27,7 @@ struct WooPaymentsSetupInstructionsView: View {
     private let instructions: [NSAttributedString] = {
         let font: UIFont = .body
         let foregroundColor: UIColor = .text
-        let linkColor: UIColor = .textLink
+        let linkColor: UIColor = .accent
         let paragraphStyle = NSMutableParagraphStyle()
         paragraphStyle.alignment = .left
 
@@ -42,9 +42,7 @@ struct WooPaymentsSetupInstructionsView: View {
             )
             let upgradeLink = NSAttributedString(string: linkContent, attributes: [.font: font,
                                                                                    .foregroundColor: linkColor,
-                                                                                   .link: URLs.wpcomAccount,
-                                                                                   .underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                                                   .underlineColor: UIColor.textLink])
+                                                                                   .link: URLs.wpcomAccount])
             attributedString.replaceFirstOccurrence(of: linkContent, with: upgradeLink)
             return attributedString
         }()

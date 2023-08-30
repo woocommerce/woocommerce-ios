@@ -3,6 +3,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 import WooFoundation
+import Experiments
 
 /// View model for `ShippingLabelSinglePackage`.
 ///
@@ -101,6 +102,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
     private let onItemMoveRequest: () -> Void
+    let isHazmatShippingEnabled: Bool
 
     /// The packages  response fetched from API
     ///
@@ -134,7 +136,8 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit) {
+         weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.id = id
         self.order = order
         self.orderItems = orderItems
@@ -148,6 +151,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         self.onPackagesSync = onPackagesSync
         self.onItemMoveRequest = onItemMoveRequest
         self.packagesResponse = packagesResponse
+        self.isHazmatShippingEnabled = featureFlagService.isFeatureFlagEnabled(.hazmatShipping)
         self.packageListViewModel.delegate = self
 
         packageListViewModel.didSelectPackage(selectedPackageID)

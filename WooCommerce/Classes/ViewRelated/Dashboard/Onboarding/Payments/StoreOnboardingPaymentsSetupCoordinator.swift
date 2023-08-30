@@ -41,13 +41,12 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             navigationController.dismiss(animated: true)
         }
 
-        let instructionsController = WooPaymentsSetupInstructionsHostingController {
-            navigationController.pushViewController(setupController, animated: true)
-        } onDismiss: {
-            navigationController.dismiss(animated: true)
-        }
-
         if task == .wcPay {
+            let instructionsController = WooPaymentsSetupInstructionsHostingController {
+                navigationController.pushViewController(setupController, animated: true)
+            } onDismiss: {
+                navigationController.dismiss(animated: true)
+            }
             navigationController.pushViewController(instructionsController, animated: false)
         } else {
             navigationController.pushViewController(setupController, animated: false)

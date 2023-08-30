@@ -1,9 +1,13 @@
 import Foundation
 import Yosemite
 
+protocol WPAdminTaxSettingsURLProviderProtocol {
+    func provideWpAdminTaxSettingsURL() -> URL?
+}
+
 /// Provides the url to navigate to the Tax settings section in wp-admin
 /// 
-struct WPAdminTaxSettingsURLProvider {
+struct WPAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol {
     private let stores: StoresManager
 
     init(stores: StoresManager = ServiceLocator.stores) {
@@ -11,7 +15,7 @@ struct WPAdminTaxSettingsURLProvider {
     }
 
     /// WPAdmin URL to navigate user to edit the tax settings
-    var wpAdminTaxSettingsURL: URL? {
+    func provideWpAdminTaxSettingsURL() -> URL? {
         guard let site = stores.sessionManager.defaultSite else {
             return nil
         }

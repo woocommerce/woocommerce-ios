@@ -9,12 +9,12 @@ struct TaxEducationalDialogViewModel {
 
     let taxLines: [TaxLine]
     let taxBasedOnSettingExplanatoryText: String?
-    private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProvider
+    private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol
     private let analytics: Analytics
 
     init(orderTaxLines: [OrderTaxLine],
          taxBasedOnSetting: TaxBasedOnSetting?,
-         wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProvider = WPAdminTaxSettingsURLProvider(),
+         wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
          analytics: Analytics = ServiceLocator.analytics) {
         self.taxLines = orderTaxLines.map { TaxLine(title: $0.label, value: $0.ratePercent.percentFormatted() ?? "") }
         self.taxBasedOnSettingExplanatoryText = taxBasedOnSetting?.explanatoryText
@@ -24,7 +24,7 @@ struct TaxEducationalDialogViewModel {
 
     /// WPAdmin URL to navigate user to edit the tax settings
     var wpAdminTaxSettingsURL: URL? {
-        wpAdminTaxSettingsURLProvider.wpAdminTaxSettingsURL
+        wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 
     func onGoToWpAdminButtonTapped() {

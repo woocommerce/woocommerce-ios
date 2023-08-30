@@ -11,14 +11,14 @@ struct NewTaxRateSelectorViewModel {
                                        DemoTaxRate(title: "GST · US CA", value: "10%"),
                                        DemoTaxRate(title: "GST · AU", value: "10%")]
 
-    private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProvider
+    private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol
 
-    init(wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProvider = WPAdminTaxSettingsURLProvider()) {
+    init(wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider()) {
         self.wpAdminTaxSettingsURLProvider = wpAdminTaxSettingsURLProvider
     }
 
     /// WPAdmin URL to navigate user to edit the tax settings
     var wpAdminTaxSettingsURL: URL? {
-        wpAdminTaxSettingsURLProvider.wpAdminTaxSettingsURL
+        wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 }

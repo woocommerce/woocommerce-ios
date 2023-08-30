@@ -646,7 +646,7 @@ platform :ios do
     COMMENT_BODY
 
     comment_on_pr(
-      project: 'woocommerce/woocommerce-ios',
+      project: GITHUB_REPO,
       pr_number: Integer(ENV.fetch('BUILDKITE_PULL_REQUEST')),
       reuse_identifier: 'installable-build-link',
       body: comment_body

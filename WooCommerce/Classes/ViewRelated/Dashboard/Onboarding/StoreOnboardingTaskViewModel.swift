@@ -106,7 +106,7 @@ extension StoreOnboardingTaskViewModel {
                 comment: "Title of the store onboarding task to get paid."
             )
             static let subtitle = NSLocalizedString(
-                "Give your customers an easy and convenient way to pay!",
+                "Manage payments seamlessly with WooPayments, free from setup or monthly fees.",
                 comment: "Subtitle of the store onboarding task to get paid."
             )
         }

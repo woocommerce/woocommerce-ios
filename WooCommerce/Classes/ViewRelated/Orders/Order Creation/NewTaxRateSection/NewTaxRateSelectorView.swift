@@ -2,16 +2,6 @@ import SwiftUI
 import WooFoundation
 
 struct NewTaxRateSelectorView: View {
-    // Demo values. To be removed once we fetch the tax rates remotely
-    private struct DemoTaxRate {
-        let title: String
-        let value: String
-    }
-
-    private let demoTaxRates: [DemoTaxRate] = [DemoTaxRate(title: "Government Sales Tax · US CA 94016 San Francisco", value: "10%"),
-                                       DemoTaxRate(title: "GST · US CA", value: "10%"),
-                                       DemoTaxRate(title: "GST · AU", value: "10%")]
-
     @Environment(\.dismiss) var dismiss
 
     let viewModel: NewTaxRateSelectorViewModel
@@ -51,7 +41,7 @@ struct NewTaxRateSelectorView: View {
 
                 Divider()
 
-                ForEach(demoTaxRates, id: \.title) { taxRate in
+                ForEach(viewModel.demoTaxRates, id: \.title) { taxRate in
                     HStack {
                         Button(action: { }) {
                             AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {

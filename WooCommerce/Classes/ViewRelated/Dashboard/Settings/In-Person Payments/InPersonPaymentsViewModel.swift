@@ -68,8 +68,8 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { result in
             switch result {
             case .success:
-                print("Success installing \(pluginSlug)")
-                self.useCase.updateState()
+                DDLogInfo("Success installing \(pluginSlug)")
+                self.refresh()
             case .failure(let error):
                 DDLogError("Error installing plugin: \(error)")
             }

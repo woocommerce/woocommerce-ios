@@ -3,7 +3,6 @@ import SwiftUI
 struct InPersonPaymentsPluginNotInstalled: View {
     let analyticReason: String
     let onInstall: () -> Void
-    let onRefresh: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -39,6 +38,6 @@ private enum Localization {
 
 struct InPersonPaymentsPluginNotInstalled_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotInstalled(analyticReason: "", onInstall: {}, onRefresh: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: "", onInstall: {})
     }
 }

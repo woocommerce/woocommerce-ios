@@ -116,19 +116,18 @@ struct ShippingLabelSinglePackage: View {
                 }
             }
 
-            hazmatSection()
+            HazmatSection()
         }
     }
     
-    func hazmatSection() -> some View {
-        VStack(spacing: 0) {
+    func HazmatSection() -> some View {
+        VStack {
             Divider()
             
             TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
                 .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.verticalPadding)
             
-            VStack(spacing: 0) {
+            VStack {
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -136,13 +135,13 @@ struct ShippingLabelSinglePackage: View {
                 TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
                     isShowingHazmatSelection.toggle()
                 }
-                .padding(.vertical, Constants.verticalPadding)
                 
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
 
-                hazmatInstructions()
+                HazmatInstructions()
+                
             }
             .renderedIf(viewModel.containsHazmatMaterials)
             
@@ -152,23 +151,25 @@ struct ShippingLabelSinglePackage: View {
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
     
-    func hazmatInstructions() -> some View {
-        VStack(spacing: 0) {
+    func HazmatInstructions() -> some View {
+        VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)
-                .font(.subheadline)
+                .calloutStyle()
             
             Spacer()
             Text(Localization.hazmatInstructionsSecondSection)
-                .font(.subheadline)
+                .calloutStyle()
             
             Spacer()
             Text(Localization.hazmatInstructionsThirdSection)
-                .font(.subheadline)
+                .calloutStyle()
             
             Spacer()
             Text(Localization.hazmatInstructionsFourthSection)
-                .font(.subheadline)
+                .calloutStyle()
+
+            Spacer()
         }
         .padding(.horizontal, Constants.horizontalPadding)
     }
@@ -211,7 +212,6 @@ private extension ShippingLabelSinglePackage {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
-        static let verticalPadding: CGFloat = 8
     }
 }
 

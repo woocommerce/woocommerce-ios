@@ -5,6 +5,7 @@ struct ShippingLabelSinglePackage: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingPackageSelection = false
     @State private var isCollapsed: Bool = false
+    @State private var isShowingHazmatSelection = false
 
     private let isCollapsible: Bool
     private let safeAreaInsets: EdgeInsets
@@ -125,7 +126,9 @@ struct ShippingLabelSinglePackage: View {
             TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
             VStack {
                 Divider()
-                TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory))
+                TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
+                    isShowingHazmatSelection.toggle()
+                }
                 Divider()
                 Text(Localization.hazmatInstructionsFirstSection)
                 Spacer()

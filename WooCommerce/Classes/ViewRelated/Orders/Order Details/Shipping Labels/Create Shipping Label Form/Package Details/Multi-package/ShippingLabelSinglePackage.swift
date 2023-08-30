@@ -118,12 +118,18 @@ struct ShippingLabelSinglePackage: View {
     
     func hazmatSection() -> some View {
         VStack(spacing: 0) {
-            TitleAndToggleRow(title: "Contains Hazardous Materials", isOn: $viewModel.containsHazmatMaterials)
+            TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
             VStack {
                 Divider()
                 TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory))
                 Divider()
-                Text("Content description about the Hazmat details and stuff")
+                Text(Localization.hazmatInstructionsFirstSection)
+                Spacer()
+                Text(Localization.hazmatInstructionsSecondSection)
+                Spacer()
+                Text(Localization.hazmatInstructionsThirdSection)
+                Spacer()
+                Text(Localization.hazmatInstructionsFourthSection)
             }
             .renderedIf(viewModel.containsHazmatMaterials)
             Divider()
@@ -159,8 +165,13 @@ private extension ShippingLabelSinglePackage {
                                                          "the Shipping section of your product page to continue.",
                                                          comment: "Validation error for original package without dimensions " +
                                                          "on Package Details screen in Shipping Labels flow.")
+        static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials", comment: "Pending")
         static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category", comment: "Pending")
         static let selectHazmatCategory = NSLocalizedString("Select a category", comment: "Pending")
+        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages.", comment: "Pending")
+        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through USPS® at www.usps.com/hazmat.", comment: "Pending")
+        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.", comment: "Pending")
+        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments through DHL Express.", comment: "Pending")
     }
 
     enum Constants {

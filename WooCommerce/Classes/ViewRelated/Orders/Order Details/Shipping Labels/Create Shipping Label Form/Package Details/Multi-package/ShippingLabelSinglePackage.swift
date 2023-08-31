@@ -152,6 +152,12 @@ struct ShippingLabelSinglePackage: View {
                 HazmatInstructions()
             }
             .renderedIf(viewModel.containsHazmatMaterials)
+            .sheet(isPresented: $isShowingHazmatSelection) {
+                SelectionList(title: "Select category",
+                              items: HazmatCategory.allCases,
+                              contentKeyPath: \.localizedName,
+                              selected: $viewModel.selectedHazmatCategory)
+            }
 
             Divider()
         }
@@ -224,12 +230,13 @@ private extension ShippingLabelSinglePackage {
 }
 
 extension ShippingLabelSinglePackage {
-    enum HazmatCategory: CaseIterable {
+    enum HazmatCategory: String, CaseIterable {
         case firstCategory
         case secondCategory
         case thirdCategory
+        case none
         
-        var description: String {
+        var localizedName: String {
             switch self {
             case .firstCategory:
                 return "First Category"
@@ -237,6 +244,8 @@ extension ShippingLabelSinglePackage {
                 return "Second Category"
             case .thirdCategory:
                 return "Third Category"
+            case .none:
+                return "Select a category"
             }
         }
     }

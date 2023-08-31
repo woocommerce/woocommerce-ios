@@ -30,12 +30,68 @@ enum ShippingLabelHazmatCategory: String, CaseIterable {
     case smallQuantityProvision
     
     var localizedName: String {
-        ""
+        switch self {
+        case .none:
+            return Localization.selectCategory
+        case .airEligibleEthanol:
+            return Localization.airEligibleEthanol
+        case .class1:
+            return Localization.class1
+        case .class3:
+            return Localization.class3
+        case .class4:
+            return Localization.class4
+        case .class5:
+            return Localization.class5
+        case .class6:
+            return Localization.class6
+        case .class7:
+            return Localization.class7
+        case .class8Corrosive:
+            return Localization.class8Corrosive
+        case .class8WetBattery:
+            return Localization.class8Wetbattery
+        case .class9NewLithiumIndividual:
+            return Localization.class9NewLithiumIndividual
+        case .class9UsedLithium:
+            return Localization.class9UsedLithium
+        case .class9newLithiumDevice:
+            return Localization.class9newLithiumDevice
+        case .class9DryIce:
+            return Localization.class9DryIce
+        case .class9UnmarkedLithium:
+            return Localization.class9UnmarkedLithium
+        case .class9Magnitized:
+            return Localization.class9Magnitized
+        case .division41:
+            return Localization.division41
+        case .division51:
+            return Localization.division51
+        case .division52:
+            return Localization.division52
+        case .division61:
+            return Localization.division61
+        case .division62:
+            return Localization.division62
+        case .exceptedQuantityProvision:
+            return Localization.exceptedQuantityProvision
+        case .groundOnly:
+            return Localization.groundOnly
+        case .id8000:
+            return Localization.id8000
+        case .lighters:
+            return Localization.lighters
+        case .limitedQuantity:
+            return Localization.limitedQuantity
+        case .smallQuantityProvision:
+            return Localization.smallQuantityProvision
+        }
     }
 }
 
 extension ShippingLabelHazmatCategory {
     enum Localization {
+        static let selectCategory = NSLocalizedString("Select a category", comment: "Title of the Hazmat category selection list")
         static let airEligibleEthanol = NSLocalizedString("Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)",
                                                           comment: "A hazardous material description stating when a package can fit into this category")
         static let class1 = NSLocalizedString("Class 1 – Toy Propellant/Safety Fuse Package",
@@ -57,7 +113,7 @@ extension ShippingLabelHazmatCategory {
         static let class9NewLithiumIndividual = NSLocalizedString("Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)",
                                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let class9UsedLithium = NSLocalizedString("Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)",
-                                                     comment: "A hazardous material description stating when a package can fit into this category")
+                                                         comment: "A hazardous material description stating when a package can fit into this category")
         static let class9newLithiumDevice = NSLocalizedString("Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)",
                                                               comment: "A hazardous material description stating when a package can fit into this category")
         static let class9DryIce = NSLocalizedString("Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)",

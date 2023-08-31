@@ -1,1 +1,1 @@
-We hebben enkele verbeteringen doorgevoerd om je te helpen bij het opstarten van je bedrijf. Blijf maar komen met jullie feedback, dat helpt ons kiezen waar we aan moeten werken.
+Did you know that you can create and use discount coupons in the app? Probeer het ook eens! This release includes a fix that ensures coupons can be created on all devices. Bedankt dat je voor WooCommerce Payments hebt gekozen.

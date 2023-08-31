@@ -3161,9 +3161,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Dari pembelian sampai penyelesaian – kelola seluruh proses pemesanan via aplikasi.";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "Woo selalu menyertai mulai dari rintisan hingga jutaan penjualan Anda. Inilah alasan kami dipercaya para penjual untuk memperkuat 3,4 juta toko online mereka.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Penuhi pesanan Anda dengan WooCommerce Shipping";
 
@@ -3215,8 +3212,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Jerman";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Memulai";
 
@@ -6430,9 +6426,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Pilih produk uji coba Anda, tambahkan ke keranjang, lalu selesaikan proses checkout di toko web tersebut sebagai pelanggan sungguhan.";
-
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "Jual apa pun, di mana pun.";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "Kirim";

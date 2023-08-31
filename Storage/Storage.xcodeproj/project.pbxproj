@@ -446,8 +446,8 @@
 		B963A5CA2853859400EFADA0 /* Model 70.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 70.xcdatamodel"; sourceTree = "<group>"; };
 		B97E98422A7BC131003CBD35 /* Model 93.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 93.xcdatamodel"; sourceTree = "<group>"; };
 		B9B8B5022AA0D52B00B36811 /* Model 95.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 95.xcdatamodel"; sourceTree = "<group>"; };
-		B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TaxRate+CoreDataClass.swift"; path = "/Users/toupper/Projects/Repos/woocommerce-ios/Storage/Storage/Model/TaxRate+CoreDataClass.swift"; sourceTree = "<absolute>"; };
-		B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "TaxRate+CoreDataProperties.swift"; path = "/Users/toupper/Projects/Repos/woocommerce-ios/Storage/Storage/Model/TaxRate+CoreDataProperties.swift"; sourceTree = "<absolute>"; };
+		B9B8B5032AA0D7F400B36811 /* TaxRate+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataClass.swift"; sourceTree = "<group>"; };
+		B9B8B5042AA0D7F400B36811 /* TaxRate+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		B9EFC27628903F7C00667217 /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BAB373732796310100837B4A /* Model 61.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 61.xcdatamodel"; sourceTree = "<group>"; };
 		BAB373742796327000837B4A /* OrderTaxLine+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+CoreDataClass.swift"; sourceTree = "<group>"; };

@@ -287,6 +287,27 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     }
 
+    func test_onboarding_sends_install_plugin_action_for_wcpay_plugin_when_installPlugin_is_invoked() throws {
+        // Given
+        setupCountry(country: .us)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.installCardPresentPlugin()
+
+        // Then
+        let action = try XCTUnwrap(stores.receivedActions.last as? SitePluginAction)
+
+        switch action {
+        case let .installSitePlugin(_, slug, _):
+            XCTAssertEqual(slug, "woocommerce-payments")
+        default:
+            XCTFail("Did not send installSitePlugin SitePluginAction")
+        }
+    }
+
     func test_onboarding_returns_wcpay_plugin_not_activated_when_wcpay_installed_but_not_active() {
         // Given
         setupCountry(country: .us)

@@ -1,22 +1,36 @@
 import Foundation
 
 enum ShippingLabelHazmatCategory: String, CaseIterable {
-    case firstCategory
-    case secondCategory
-    case thirdCategory
     case none
+    case airEligibleEthanol
+    case class1
+    case class3
+    case class4
+    case class5
+    case class6
+    case class7
+    case class8Corrosive
+    case class8WetBattery
+    case class9NewLithiumIndividual
+    case class9usedLithium
+    case class9newLithiumDevice
+    case class9DryIce
+    case class9UnmarkedLithium
+    case class9Magnitized
+    case division41
+    case division51
+    case division52
+    case division61
+    case division62
+    case exceptedQuantityProvision
+    case groundOnly
+    case id8000
+    case lighters
+    case limitedQuantity
+    case smallQuantityProvision
     
     var localizedName: String {
-        switch self {
-        case .firstCategory:
-            return "First Category"
-        case .secondCategory:
-            return "Second Category"
-        case .thirdCategory:
-            return "Third Category"
-        case .none:
-            return "Select a category"
-        }
+        ""
     }
 }
 

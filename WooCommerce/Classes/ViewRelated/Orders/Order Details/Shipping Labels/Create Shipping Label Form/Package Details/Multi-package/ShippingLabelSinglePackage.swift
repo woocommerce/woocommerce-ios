@@ -138,7 +138,7 @@ struct ShippingLabelSinglePackage: View {
                     VStack(alignment: .leading) {
                         Text(Localization.hazmatCategoryTitle)
                             .bodyStyle()
-                        Text(Localization.selectHazmatCategory)
+                        Text(viewModel.selectedHazmatCategory.localizedName)
                             .calloutStyle()
                     }
                 })
@@ -153,7 +153,7 @@ struct ShippingLabelSinglePackage: View {
             }
             .renderedIf(viewModel.containsHazmatMaterials)
             .sheet(isPresented: $isShowingHazmatSelection) {
-                SelectionList(title: "Select category",
+                SelectionList(title: Localization.selectHazmatCategory,
                               items: HazmatCategory.allCases,
                               contentKeyPath: \.localizedName,
                               selected: $viewModel.selectedHazmatCategory)

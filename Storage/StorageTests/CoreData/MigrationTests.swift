@@ -2102,6 +2102,26 @@ final class MigrationTests: XCTestCase {
         // OrderItem's addOns relationship exists.
         XCTAssertEqual(migratedOrderItem.value(forKey: "addOns") as? NSOrderedSet, [addOn])
     }
+
+    func test_migrating_from_94_to_95_enables_creating_new_TaxRate_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 94")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 95")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 0)
+
+        _ = insertTaxRate(to: targetContext)
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 1)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2770,6 +2790,24 @@ private extension MigrationTests {
             "addOnID": 645,
             "key": "Sugar level",
             "value": "Zero"
+        ])
+    }
+
+    @discardableResult
+    func insertTaxRate(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "TaxRate", properties: [
+            "id": 123123,
+            "country": "US",
+            "state": "1234",
+            "postcodes": ["1234"],
+            "priority": 1,
+            "name": "State Tax",
+            "order": 1,
+            "taxRateClass": "standard",
+            "shipping": true,
+            "compound": true,
+            "city": "Miami",
+            "cities": ["Miami"]
         ])
     }
 }

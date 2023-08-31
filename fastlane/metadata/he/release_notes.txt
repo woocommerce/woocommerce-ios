@@ -1,1 +1,1 @@
-בגרסה הזו הוספנו גם כמה שיפורים כדי לעזור לך להתחיל לעבוד על העסק. נשמח להמשיך לקבל משוב, זה עוזר לנו להבין על מה כדאי לנו לעבוד בשלב הבא.
+Did you know that you can create and use discount coupons in the app? כדאי לנסות! This release includes a fix that ensures coupons can be created on all devices. תודה שבחרת ב-WooCommerce Payments.

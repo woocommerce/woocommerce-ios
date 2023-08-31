@@ -170,22 +170,38 @@ struct ShippingLabelSinglePackage: View {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)
                 .calloutStyle()
-            
+
             Spacer()
-            Text(Localization.hazmatInstructionsSecondSection)
-                .calloutStyle()
-            
+            createText(withLink: "", content: Localization.hazmatInstructionsSecondSection) {
+                // call link execution
+            }
+
             Spacer()
-            Text(Localization.hazmatInstructionsThirdSection)
-                .calloutStyle()
-            
+            createText(withLink: "", content: Localization.hazmatInstructionsThirdSection) {
+                // call link execution
+            }
+
             Spacer()
-            Text(Localization.hazmatInstructionsFourthSection)
-                .calloutStyle()
+            createText(withLink: "", content: Localization.hazmatInstructionsFourthSection) {
+                // call link execution
+            }
 
             Spacer()
         }
         .padding(.horizontal, Constants.horizontalPadding)
+    }
+    
+    func createText(withLink link: String, content: String, action: @escaping () -> Void) -> some View {
+        HStack {
+            Text(content)
+                .calloutStyle()
+
+            Text(link)
+                .underline(true)
+                .linkStyle()
+                .onTapGesture(perform: action)
+                .accessibilityAddTraits(.isButton)
+        }
     }
 }
 

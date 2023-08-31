@@ -13,15 +13,18 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
+    private let analytics: Analytics
     private let onDismiss: (() -> Void)?
 
     init(task: Task,
          site: Site,
          navigationController: UINavigationController,
+         analytics: Analytics = ServiceLocator.analytics,
          onDismiss: (() -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
+        self.analytics = analytics
         self.onDismiss = onDismiss
     }
 
@@ -36,13 +39,15 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 private extension StoreOnboardingPaymentsSetupCoordinator {
     func showSetupView(in navigationController: UINavigationController) {
         let setupController = StoreOnboardingPaymentsSetupHostingController(task: task) { [weak self] in
+            self?.analytics.track(.storeOnboardingWCPayTermsContinueTapped)
             self?.showWebview(in: navigationController)
         } onDismiss: {
             navigationController.dismiss(animated: true)
         }
 
         if task == .wcPay {
-            let instructionsController = WooPaymentsSetupInstructionsHostingController {
+            let instructionsController = WooPaymentsSetupInstructionsHostingController { [weak self] in
+                self?.analytics.track(.storeOnboardingWCPayBeginSetupTapped)
                 navigationController.pushViewController(setupController, animated: true)
             } onDismiss: {
                 navigationController.dismiss(animated: true)

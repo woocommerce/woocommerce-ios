@@ -78,10 +78,10 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
         }
 
         let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] success in
+            self?.dismissWebview()
             if success {
                 self?.onCompleted?()
             }
-            self?.dismissWebview()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))

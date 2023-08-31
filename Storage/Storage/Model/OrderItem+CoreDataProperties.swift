@@ -24,23 +24,7 @@ extension OrderItem {
     @NSManaged public var taxes: Set<OrderItemTax>?
     @NSManaged public var attributes: NSOrderedSet?
     @NSManaged public var parent: NSNumber?
-
-}
-
-// MARK: Generated accessors for taxes
-extension OrderItem {
-
-    @objc(addTaxesObject:)
-    @NSManaged public func addToTaxes(_ value: OrderItemTax)
-
-    @objc(removeTaxesObject:)
-    @NSManaged public func removeFromTaxes(_ value: OrderItemTax)
-
-    @objc(addTaxes:)
-    @NSManaged public func addToTaxes(_ values: NSSet)
-
-    @objc(removeTaxes:)
-    @NSManaged public func removeFromTaxes(_ values: NSSet)
+    @NSManaged public var addOns: NSOrderedSet?
 
 }
 
@@ -76,5 +60,61 @@ extension OrderItem {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSOrderedSet)
+
+}
+
+// MARK: Generated accessors for taxes
+extension OrderItem {
+
+    @objc(addTaxesObject:)
+    @NSManaged public func addToTaxes(_ value: OrderItemTax)
+
+    @objc(removeTaxesObject:)
+    @NSManaged public func removeFromTaxes(_ value: OrderItemTax)
+
+    @objc(addTaxes:)
+    @NSManaged public func addToTaxes(_ values: NSSet)
+
+    @objc(removeTaxes:)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for addOns
+extension OrderItem {
+
+    @objc(insertObject:inAddOnsAtIndex:)
+    @NSManaged public func insertIntoAddOns(_ value: OrderItemProductAddOn, at idx: Int)
+
+    @objc(removeObjectFromAddOnsAtIndex:)
+    @NSManaged public func removeFromAddOns(at idx: Int)
+
+    @objc(insertAddOns:atIndexes:)
+    @NSManaged public func insertIntoAddOns(_ values: [OrderItemProductAddOn], at indexes: NSIndexSet)
+
+    @objc(removeAddOnsAtIndexes:)
+    @NSManaged public func removeFromAddOns(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInAddOnsAtIndex:withObject:)
+    @NSManaged public func replaceAddOns(at idx: Int, with value: OrderItemProductAddOn)
+
+    @objc(replaceAddOnsAtIndexes:withAddOns:)
+    @NSManaged public func replaceAddOns(at indexes: NSIndexSet, with values: [OrderItemProductAddOn])
+
+    @objc(addAddOnsObject:)
+    @NSManaged public func addToAddOns(_ value: OrderItemProductAddOn)
+
+    @objc(removeAddOnsObject:)
+    @NSManaged public func removeFromAddOns(_ value: OrderItemProductAddOn)
+
+    @objc(addAddOns:)
+    @NSManaged public func addToAddOns(_ values: NSOrderedSet)
+
+    @objc(removeAddOns:)
+    @NSManaged public func removeFromAddOns(_ values: NSOrderedSet)
+
+}
+
+extension OrderItem: Identifiable {
 
 }

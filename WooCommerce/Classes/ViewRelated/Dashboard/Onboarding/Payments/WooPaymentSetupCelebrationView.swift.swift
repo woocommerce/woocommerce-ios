@@ -24,6 +24,7 @@ struct WooPaymentSetupCelebrationView: View {
     var body: some View {
         VStack(spacing: Layout.verticalSpacing) {
             Image(uiImage: .checkSuccessImage)
+                .padding(.vertical, Layout.imageVerticalPadding)
 
             Group {
                 Text(Localization.title)
@@ -50,6 +51,7 @@ struct WooPaymentSetupCelebrationView: View {
 private extension WooPaymentSetupCelebrationView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
+        static let imageVerticalPadding: CGFloat = 18
         static let textHorizontalPadding: CGFloat = 24
         static let buttonHorizontalPadding: CGFloat = 16
         static let insets: EdgeInsets = .init(top: 40, leading: 0, bottom: 16, trailing: 0)

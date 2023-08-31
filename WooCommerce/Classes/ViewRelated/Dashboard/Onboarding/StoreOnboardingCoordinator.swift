@@ -146,7 +146,7 @@ private extension StoreOnboardingCoordinator {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments,
                                                                   site: site,
                                                                   navigationController: navigationController,
-                                                                  onDismiss: { [weak self] _ in
+                                                                  onDismiss: { [weak self] in
             self?.reloadTasks()
          })
         self.paymentsSetupCoordinator = coordinator

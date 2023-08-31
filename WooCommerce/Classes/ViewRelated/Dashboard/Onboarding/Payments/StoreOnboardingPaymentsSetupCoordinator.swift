@@ -13,12 +13,12 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
-    private let onDismiss: (() -> Void)?
+    private let onDismiss: ((Bool) -> Void)?
 
     init(task: Task,
          site: Site,
          navigationController: UINavigationController,
-         onDismiss: (() -> Void)? = nil) {
+         onDismiss: ((Bool) -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
@@ -69,18 +69,22 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] _ in
-            self?.dismissWebview()
-            // TODO: show celebratory screen if success
+        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] setupSuccess in
+            self?.dismissWebview(setupSuccess: setupSuccess)
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))
         navigationController.show(webViewController, sender: navigationController)
     }
 
-    @objc func dismissWebview() {
-        onDismiss?()
-        navigationController.dismiss(animated: true)
+    @objc func didTapDone() {
+        dismissWebview(setupSuccess: false)
+    }
+
+    @objc func dismissWebview(setupSuccess: Bool) {
+        navigationController.dismiss(animated: true) { [weak self] in
+            self?.onDismiss?(setupSuccess)
+        }
     }
 }
 

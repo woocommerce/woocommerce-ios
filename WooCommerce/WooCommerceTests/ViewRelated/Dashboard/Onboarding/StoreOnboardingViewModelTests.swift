@@ -74,8 +74,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
-        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
-        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .payments)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
     }
 
     func test_tasksForDisplay_returns_all_tasks_when_isExpanded_is_true() async {
@@ -118,8 +118,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
-        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
-        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .payments)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
     }
 
     func test_tasksForDisplay_returns_all_tasks_when_view_all_button_is_hidden_in_collapsed_mode() async {
@@ -506,9 +506,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: true, type: .customizeDomains)
         ]
         mockLoadOnboardingTasks(result: .success(initialTasks))
         let sut = StoreOnboardingViewModel(siteID: 0,
@@ -533,9 +533,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: true, type: .customizeDomains)
         ]
 
         let tasks = initialTasks + [(.init(isComplete: true, type: .unsupported("")))]

@@ -13,15 +13,21 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 
     private let task: Task
     private let site: Site
-    private let onDismiss: ((Bool) -> Void)?
+    private let analytics: Analytics
+    private let onCompleted: (() -> Void)?
+    private let onDismiss: (() -> Void)?
 
     init(task: Task,
          site: Site,
          navigationController: UINavigationController,
-         onDismiss: ((Bool) -> Void)? = nil) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onCompleted: (() -> Void)? = nil,
+         onDismiss: (() -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
+        self.analytics = analytics
+        self.onCompleted = onCompleted
         self.onDismiss = onDismiss
     }
 
@@ -36,13 +42,15 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
 private extension StoreOnboardingPaymentsSetupCoordinator {
     func showSetupView(in navigationController: UINavigationController) {
         let setupController = StoreOnboardingPaymentsSetupHostingController(task: task) { [weak self] in
+            self?.analytics.track(.storeOnboardingWCPayTermsContinueTapped)
             self?.showWebview(in: navigationController)
         } onDismiss: {
             navigationController.dismiss(animated: true)
         }
 
         if task == .wcPay {
-            let instructionsController = WooPaymentsSetupInstructionsHostingController {
+            let instructionsController = WooPaymentsSetupInstructionsHostingController { [weak self] in
+                self?.analytics.track(.storeOnboardingWCPayBeginSetupTapped)
                 navigationController.pushViewController(setupController, animated: true)
             } onDismiss: {
                 navigationController.dismiss(animated: true)
@@ -69,21 +77,20 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] setupSuccess in
-            self?.dismissWebview(setupSuccess: setupSuccess)
+        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] success in
+            if success {
+                self?.onCompleted?()
+            }
+            self?.dismissWebview()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-        webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
+        webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))
         navigationController.show(webViewController, sender: navigationController)
     }
 
-    @objc func didTapDone() {
-        dismissWebview(setupSuccess: false)
-    }
-
-    @objc func dismissWebview(setupSuccess: Bool) {
+    @objc func dismissWebview() {
         navigationController.dismiss(animated: true) { [weak self] in
-            self?.onDismiss?(setupSuccess)
+            self?.onDismiss?()
         }
     }
 }
@@ -102,7 +109,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
 
     enum URLs {
         static func wcPay(site: Site) -> String {
-            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-settings&tab=checkout&section=woocommerce_payments"
+            "\(site.adminURL.removingSuffix("/"))/admin.php?page=wc-admin&task=woocommerce-payments"
         }
 
         static func payments(site: Site) -> String {

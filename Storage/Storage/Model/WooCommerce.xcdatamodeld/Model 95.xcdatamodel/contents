@@ -848,7 +848,7 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
     </entity>
-    <entity name="TaxRate" representedClassName="TaxRate" syncable="YES" codeGenerationType="class">
+    <entity name="TaxRate" representedClassName="TaxRate" syncable="YES">
         <attribute name="cities" optional="YES" attributeType="Transformable"/>
         <attribute name="city" optional="YES" attributeType="String"/>
         <attribute name="compound" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

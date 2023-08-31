@@ -195,7 +195,7 @@ private extension WooPaymentsSetupInstructionsView {
                                                             "Prefer a new account? More details here.",
                                                             comment: "First instruction on the Woo payments setup instructions screen.")
 
-                static let tappableText = NSLocalizedString("here",
+                static let tappableText = NSLocalizedString("More details here",
                                                             comment: "Tappable text in the instructions of store onboarding payments "
                                                             + "setup screen that opens a webview.")
             }

@@ -95,12 +95,17 @@ struct StoreOnboardingPaymentsSetupView: View {
             }
             .background(Color(.systemBackground))
         }
-        .toolbar {
-            ToolbarItem(placement: .navigationBarLeading) {
-                Button(Localization.dismiss) {
-                    onDismiss()
+        /// Show cancel button only if this view is presented as the first screen in a navigation controller.
+        /// When the task is `wcPay` `WooPaymentsSetupInstructionsHostingController` will take care of showing `Cancel` button
+        /// and we just need a back arrow in this screen.
+        .if(task != .wcPay) { view in
+            view.toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(Localization.dismiss) {
+                        onDismiss()
+                    }
+                    .buttonStyle(TextButtonStyle())
                 }
-                .buttonStyle(TextButtonStyle())
             }
         }
     }

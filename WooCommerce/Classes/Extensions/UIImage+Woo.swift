@@ -617,6 +617,10 @@ extension UIImage {
         .gridicon(.infoOutline, size: CGSize(width: 20, height: 20))
     }
 
+    static var wooPaymentsBadge: UIImage {
+        UIImage(named: "woo-payments-badge")!
+    }
+
     /// Credit card tapping on a card reader
     ///
     static var cardPresentImage: UIImage {

@@ -3161,9 +3161,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "מרגע הרכישה עד השלמת ההזמנה – ניתן לנהל את תהליך ההזמנה בשלמותו באמצעות האפליקציה.";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "מהמכירה הראשונה עד מחזור רווחים של מיליונים, השירות של WooCommerce עומד לצדך. כדאי להתרשם למה סוחרים סומכים עלינו בהפעלת 3.4 מיליון חנויות מקוונות.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "להשלים הזמנות בעזרת WooCommerce Shipping";
 
@@ -3215,8 +3212,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "גרמניה";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "מתחילים כאן";
 
@@ -6430,9 +6426,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "יש לבחור את המוצר לבדיקה, להוסיף אותו לעגלה ולהשלים את תהליך התשלום בקופה בחנות המקוונת, בדיוק כמו לקוח אמיתי.";
-
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "למכור כל דבר, בכל מקום.";
 
 /* Text for the send button in the product review reply screen */
 "Send" = "לשלוח";

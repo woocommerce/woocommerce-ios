@@ -85,8 +85,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .betterCustomerSelectionInOrder:
             return true
-        case .manualTaxesInOrder:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .manualTaxesInOrderM2:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

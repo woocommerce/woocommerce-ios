@@ -3,6 +3,8 @@
 15.2
 -----
 - [*] Fixed minor UI issues in the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/10555]
+- [*] New setup instructions screen for WCPay store onboarding task. [https://github.com/woocommerce/woocommerce-ios/pull/10579]
+- [**] Taxes in orders: Users can now see the order tax rates, get more information about them, and navigate to wp-admin to change them. [https://github.com/woocommerce/woocommerce-ios/pull/10569]
 
 
 15.1

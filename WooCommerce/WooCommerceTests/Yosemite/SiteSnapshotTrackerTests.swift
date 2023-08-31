@@ -68,10 +68,10 @@ final class SiteSnapshotTrackerTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties.first)
         XCTAssertEqual(eventProperties["orders_count"] as? Int64, 115)
         XCTAssertEqual(eventProperties["products_count"] as? Int64, 98)
-        XCTAssertEqual(eventProperties["woocommerce-payments"] as? String, "installed_and_activated")
-        XCTAssertEqual(eventProperties["woocommerce-gateway-stripe"] as? String, "not_installed")
-        XCTAssertEqual(eventProperties["woocommerce-square"] as? String, "not_installed")
-        XCTAssertEqual(eventProperties["woocommerce-paypal-payments"] as? String, "installed_and_not_activated")
+        XCTAssertEqual(eventProperties["woocommerce_payments"] as? String, "installed_and_activated")
+        XCTAssertEqual(eventProperties["woocommerce_gateway_stripe"] as? String, "not_installed")
+        XCTAssertEqual(eventProperties["woocommerce_square"] as? String, "not_installed")
+        XCTAssertEqual(eventProperties["woocommerce_paypal_payments"] as? String, "installed_and_not_activated")
     }
 
     func test_event_is_not_tracked_when_the_site_snapshot_has_been_tracked() throws {

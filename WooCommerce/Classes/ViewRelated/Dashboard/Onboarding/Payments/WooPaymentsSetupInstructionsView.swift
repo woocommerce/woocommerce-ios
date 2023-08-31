@@ -226,8 +226,7 @@ private extension WooPaymentsSetupInstructionsView {
         static let wpcomAccount = URL(string: "https://woocommerce.com/document/woopayments/startup-guide/"
                                       + "#:~:text=Enter%20your%20email%20address%20to%20connect%20to%20your%20WordPress.com%20account")!
 
-        // TODO: 10571 Update URL
-        static let learnMore: URL = URL(string: "https://woocommerce.com/payments/")!
+        static let learnMore: URL = URL(string: "https://woocommerce.com/document/woopayments/our-policies/know-your-customer/")!
     }
 }
 

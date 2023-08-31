@@ -89,9 +89,8 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
     }
 
     @objc func dismissWebview() {
-        navigationController.dismiss(animated: true) { [weak self] in
-            self?.onDismiss?()
-        }
+        onDismiss?()
+        navigationController.dismiss(animated: true)
     }
 }
 

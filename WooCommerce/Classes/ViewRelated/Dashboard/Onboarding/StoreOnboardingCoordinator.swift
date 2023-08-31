@@ -131,9 +131,12 @@ private extension StoreOnboardingCoordinator {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay,
                                                                   site: site,
                                                                   navigationController: navigationController,
-                                                                  onDismiss: { [weak self] in
-             self?.reloadTasks()
-         })
+                                                                  onDismiss: { [weak self] success in
+            self?.reloadTasks()
+            if success {
+                self?.showWooPaySetupCelebrationView()
+            }
+        })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }
@@ -142,7 +145,7 @@ private extension StoreOnboardingCoordinator {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .payments,
                                                                   site: site,
                                                                   navigationController: navigationController,
-                                                                  onDismiss: { [weak self] in
+                                                                  onDismiss: { [weak self] _ in
             self?.reloadTasks()
          })
         self.paymentsSetupCoordinator = coordinator

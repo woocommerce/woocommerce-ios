@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-30 16:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Montant calculé";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "Calcul réalisé à partir de l’adresse de facturation";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "Calcul réalisé à partir de l’adresse d’expédition";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "Calcul réalisé à partir de l’adresse de base de la boutique";
+
 /* Call phone number button title */
 "Call" = "Appel";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "Créez une boutique pour %1$@\/mois";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "Créer une boutique";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "Créer un site";
@@ -3161,9 +3173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "De l’achat à l’exécution, gérez l’ensemble du processus de commande via l’application.";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "Woo vous accompagne, de votre toute première vente au développement colossal de votre chiffre d’affaires. Découvrez pourquoi les commerçants nous font confiance pour faire fonctionner 3,4 millions de boutiques en ligne.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Exécutez vos commandes avec WooCommerce Shipping";
 
@@ -3215,8 +3224,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Allemagne";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Commencer";
 
@@ -6431,9 +6439,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Sélectionnez votre produit de test, ajoutez-le au panier et finalisez la commande dans cette boutique en ligne comme un vrai client.";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "Vendre tout, partout.";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "Envoyer";
 
@@ -6941,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "Commencer avec un modèle";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "Profitez d’un essai gratuit de 15 jours. Aucune carte de crédit n’est nécessaire. Rejoignez les 3,4 millions de boutiques qui avancent avec Woo, de la première vente à plusieurs millions de transactions.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Période commençant le %1$@ et se terminant le %2$@";
 
@@ -7303,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "Taxes";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "Total des taxes";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Les taxes sont calculées automatiquement en fonction de l’adresse de votre boutique.";
 
@@ -7472,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Le domaine acheté redirigera les utilisateurs vers votre adresse principale.";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "La plateforme d’eCommerce qui grandit avec vous";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Lors de la première utilisation de la fonctionnalité Appuyer pour payer sur iPhone, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";

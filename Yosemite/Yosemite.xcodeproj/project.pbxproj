@@ -71,6 +71,7 @@
 		029F44CB28D310BA00FCF439 /* ProductSearchFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029F44CA28D310BA00FCF439 /* ProductSearchFilter.swift */; };
 		02A26F1E2744FE97008E4EDB /* MockAccountRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */; };
 		02AB40802784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */; };
+		02AED9DA2AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02AED9D92AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift */; };
 		02C254F62563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254F52563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift */; };
 		02C254FA2563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254F92563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift */; };
 		02C254FE2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C254FD2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift */; };
@@ -525,6 +526,7 @@
 		029F44CA28D310BA00FCF439 /* ProductSearchFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchFilter.swift; sourceTree = "<group>"; };
 		02A26F1D2744FE97008E4EDB /* MockAccountRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAccountRemote.swift; sourceTree = "<group>"; };
 		02AB407F2784176600929CF3 /* TopEarnerStatsItem+ComparableTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TopEarnerStatsItem+ComparableTests.swift"; sourceTree = "<group>"; };
+		02AED9D92AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderItemProductAddOn+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		02C254F52563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelAddress+ReadonlyConvertible.swift"; sourceTree = "<group>"; };
 		02C254F92563B66600A04423 /* ShippingLabelRefund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelRefund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		02C254FD2563C6E500A04423 /* ShippingLabelSettings+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLabelSettings+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1310,6 +1312,7 @@
 				CEE9188B29F7F68C004B23FF /* OrderGiftCard+ReadOnlyConvertible.swift */,
 				74685D4D20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift */,
 				021EAA5B25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift */,
+				02AED9D92AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift */,
 				CE4FD44F2350F27C00A16B31 /* OrderItemTax+ReadOnlyConvertible.swift */,
 				CE4FD4532350FC0100A16B31 /* OrderItemRefund+ReadOnlyConvertible.swift */,
 				CE4FD4512350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift */,
@@ -2265,6 +2268,7 @@
 				02E4F5E423CD5628003B0010 /* NSOrderedSet+Array.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				CCE5F39D29F0165900087332 /* SubscriptionStore.swift in Sources */,
+				02AED9DA2AA0446F006DC460 /* OrderItemProductAddOn+ReadOnlyConvertible.swift in Sources */,
 				7493751222498B2C007D85D1 /* ProductTag+ReadOnlyConvertible.swift in Sources */,
 				E109876C284F6EEB002EBB05 /* CardPresentPaymentsPluginState.swift in Sources */,
 				03FBDA26263296A100ACE257 /* CouponStore.swift in Sources */,

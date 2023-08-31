@@ -2113,6 +2113,8 @@
 		DE50295328BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295228BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift */; };
 		DE50295728BF595200551736 /* WordPressOrgCredentialsAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50295628BF595200551736 /* WordPressOrgCredentialsAuthenticatorTests.swift */; };
 		DE525499268C8B32007A5829 /* UIRefreshControl+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */; };
+		DE5FBB912A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */; };
+		DE5FBB932A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */; };
 		DE61978B28991F0E005E4362 /* WKWebView+Authenticated.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61978A28991F0E005E4362 /* WKWebView+Authenticated.swift */; };
 		DE61978D289A5326005E4362 /* WooSetupWebViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61978C289A5326005E4362 /* WooSetupWebViewModelTests.swift */; };
 		DE61978F289A5674005E4362 /* NoWooErrorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61978E289A5674005E4362 /* NoWooErrorViewModelTests.swift */; };
@@ -4563,6 +4565,8 @@
 		DE50295228BF4A8A00551736 /* JetpackConnectionWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionWebViewModelTests.swift; sourceTree = "<group>"; };
 		DE50295628BF595200551736 /* WordPressOrgCredentialsAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressOrgCredentialsAuthenticatorTests.swift; sourceTree = "<group>"; };
 		DE525498268C8B32007A5829 /* UIRefreshControl+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIRefreshControl+Woo.swift"; sourceTree = "<group>"; };
+		DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModel.swift; sourceTree = "<group>"; };
+		DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupWebViewModelTests.swift; sourceTree = "<group>"; };
 		DE61978A28991F0E005E4362 /* WKWebView+Authenticated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Authenticated.swift"; sourceTree = "<group>"; };
 		DE61978C289A5326005E4362 /* WooSetupWebViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooSetupWebViewModelTests.swift; sourceTree = "<group>"; };
 		DE61978E289A5674005E4362 /* NoWooErrorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoWooErrorViewModelTests.swift; sourceTree = "<group>"; };
@@ -5928,6 +5932,7 @@
 				02BBD6EA29A316FB00243BE2 /* StoreOnboardingCoordinator.swift */,
 				EEC5E01029A70CC300416CAC /* StoreSetupProgressView.swift */,
 				EEB4E2D429B205F400371C3C /* StoreOnboardingTaskViewModel.swift */,
+				DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -10681,6 +10686,7 @@
 				EEB4E2D729B20F0F00371C3C /* StoreOnboardingTaskViewModel.swift */,
 				027EB57729C18AAC003CE551 /* StoreOnboardingLaunchStoreViewModelTests.swift */,
 				DE36E09B2A89EEA400B98496 /* StoreNameSetupViewModelTests.swift */,
+				DE5FBB922A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -13113,6 +13119,7 @@
 				DE3404E828B4B96800CF0D97 /* NonAtomicSiteViewModel.swift in Sources */,
 				D8815B0126385E3F00EDAD62 /* CardPresentModalTapCard.swift in Sources */,
 				773077EE251E943700178696 /* ProductDownloadFileViewController.swift in Sources */,
+				DE5FBB912A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift in Sources */,
 				B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */,
 				CC3B35DB28E5A6830036B097 /* ReviewReply.swift in Sources */,
 				45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */,
@@ -13644,6 +13651,7 @@
 				EECB7EE02862115C0028C888 /* MockProductImageUploader.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
+				DE5FBB932A9EFBCC0072FB35 /* WooPaymentSetupWebViewModelTests.swift in Sources */,
 				26F94E34267AA42F00DB6CCF /* ProductAddOnViewModelTests.swift in Sources */,
 				AE7C957F27C417FA007E8E12 /* FeeOrDiscountLineDetailsViewModelTests.swift in Sources */,
 				CCE64E3E29EEA9DA00C1C937 /* SubscriptionSettingsViewModelTests.swift in Sources */,

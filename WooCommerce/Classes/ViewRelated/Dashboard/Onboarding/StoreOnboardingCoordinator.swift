@@ -189,7 +189,7 @@ private extension StoreOnboardingCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
+            sheet.detents = [.medium()]
         })
     }
 }

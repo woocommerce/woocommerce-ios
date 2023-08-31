@@ -97,7 +97,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     
     /// Currently selected hazmat category
     ///
-    @Published var selectedHazmatCategory: ShippingLabelSinglePackage.HazmatCategory = .none
+    @Published var selectedHazmatCategory: ShippingLabelHazmatCategory = .none
 
     private let order: Order
     private let orderItems: [ShippingLabelPackageItem]

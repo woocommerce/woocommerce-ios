@@ -14,17 +14,20 @@ final class StoreOnboardingPaymentsSetupCoordinator: Coordinator {
     private let task: Task
     private let site: Site
     private let analytics: Analytics
+    private let onCompleted: (() -> Void)?
     private let onDismiss: (() -> Void)?
 
     init(task: Task,
          site: Site,
          navigationController: UINavigationController,
          analytics: Analytics = ServiceLocator.analytics,
+         onCompleted: (() -> Void)? = nil,
          onDismiss: (() -> Void)? = nil) {
         self.task = task
         self.site = site
         self.navigationController = navigationController
         self.analytics = analytics
+        self.onCompleted = onCompleted
         self.onDismiss = onDismiss
     }
 
@@ -74,7 +77,10 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             return assertionFailure("Invalid URL for onboarding payments setup: \(urlString)")
         }
 
-        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] _ in
+        let webViewModel = WooPaymentSetupWebViewModel(title: title, initialURL: url) { [weak self] success in
+            if success {
+                self?.onCompleted?()
+            }
             self?.dismissWebview()
             // TODO: show celebratory screen if success
         }

@@ -46,3 +46,21 @@ extension AuthenticatedWebViewModel {
         // NO-OP
     }
 }
+
+// MARK: - Helper methods
+extension AuthenticatedWebViewModel {
+    /// If the site allows login with WPCOM as a Jetpack feature,
+    /// WPCOM authentication is complete after redirecting to the WPCOM homepage.
+    /// This checks for the redirect URL to decide if the initial page should be reloaded.
+    ///
+    func shouldReload(for url: URL) -> Bool {
+
+        let urlAfterWPComAuth = "https://wordpress.com"
+        
+        if  url.absoluteString.removingSuffix("/") == urlAfterWPComAuth,
+           initialURL?.absoluteString != urlAfterWPComAuth {
+            return true
+        }
+        return false
+    }
+}

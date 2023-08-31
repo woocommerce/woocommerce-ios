@@ -3,6 +3,8 @@ import XCTest
 
 final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
+    private let urlAfterWPComAuth = "https://wordpress.com"
+
     func test_title_is_set_from_init() throws {
         // Given
         let viewModel = WooPaymentSetupWebViewModel(title: "Woo Test", initialURL: WooConstants.URLs.blog.asURL()) { _ in }
@@ -23,7 +25,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
     func test_redirecting_to_wpcom_invokes_reloadWebview() throws {
         // Given
         let url = try XCTUnwrap(URL(string: "https://woocommerce.com"))
-        let urlAfterWPComAuth = try XCTUnwrap(URL(string: WooPaymentSetupWebViewModel.Constants.urlAfterWPComAuth))
+        let urlAfterWPComAuth = try XCTUnwrap(URL(string: urlAfterWPComAuth))
         let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // When
@@ -40,7 +42,7 @@ final class WooPaymentSetupWebViewModelTests: XCTestCase {
 
     func test_redirecting_to_wpcom_does_not_invoke_reloadWebview_when_initialURL_is_the_same() throws {
         // Given
-        let url = try XCTUnwrap(URL(string: WooPaymentSetupWebViewModel.Constants.urlAfterWPComAuth))
+        let url = try XCTUnwrap(URL(string: urlAfterWPComAuth))
         let viewModel = WooPaymentSetupWebViewModel(initialURL: url) { _ in }
 
         // When

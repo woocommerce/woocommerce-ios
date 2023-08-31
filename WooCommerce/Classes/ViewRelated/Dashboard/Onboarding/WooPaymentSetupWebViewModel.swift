@@ -23,16 +23,14 @@ final class WooPaymentSetupWebViewModel: AuthenticatedWebViewModel, WebviewReloa
     }
 
     func handleRedirect(for url: URL?) {
-        guard let urlString = url?.absoluteString else {
+        guard let url else {
             return
         }
-        // If the self-hosted site allows login with WPCOM as a Jetpack feature,
-        // WPCOM authentication is complete after redirecting to the WPCOM homepage.
-        if urlString.removingSuffix("/") == Constants.urlAfterWPComAuth,
-           initialURL?.absoluteString != Constants.urlAfterWPComAuth {
+        if shouldReload(for: url) {
             reloadWebview()
         }
 
+        let urlString = url.absoluteString
         if urlString.contains(Constants.successParam) {
             completionHandler(true)
         } else if urlString.contains(Constants.errorParam) {
@@ -45,9 +43,8 @@ final class WooPaymentSetupWebViewModel: AuthenticatedWebViewModel, WebviewReloa
     }
 }
 
-extension WooPaymentSetupWebViewModel {
+private extension WooPaymentSetupWebViewModel {
     enum Constants {
-        static let urlAfterWPComAuth = "https://wordpress.com"
         static let successParam = "wcpay-connection-success"
         static let errorParam = "wcpay-connection-error"
     }

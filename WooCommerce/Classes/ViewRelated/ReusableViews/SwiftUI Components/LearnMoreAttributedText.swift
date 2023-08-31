@@ -10,6 +10,7 @@ struct LearnMoreAttributedText: View {
     ///   - learnMoreText: A string that is tappable that opens a Safari sheet for the user to learn more.
     ///   - url: URL to display in a Safari sheet when the learn more text is tapped.
     ///   - shouldUnderLine: The tappable text will be underlined if `true`. Default value is `true`
+    ///   - textColor: The foreground text color. Default value is `.textSubtle`
     init(format: String,
          tappableLearnMoreText learnMoreText: String,
          url: URL,

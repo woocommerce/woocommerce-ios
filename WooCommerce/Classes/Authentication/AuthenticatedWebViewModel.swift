@@ -56,7 +56,7 @@ extension AuthenticatedWebViewModel {
     func shouldReload(for url: URL) -> Bool {
 
         let urlAfterWPComAuth = "https://wordpress.com"
-        
+
         if  url.absoluteString.removingSuffix("/") == urlAfterWPComAuth,
            initialURL?.absoluteString != urlAfterWPComAuth {
             return true

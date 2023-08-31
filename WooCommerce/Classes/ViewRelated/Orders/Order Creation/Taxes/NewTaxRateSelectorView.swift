@@ -84,11 +84,9 @@ struct NewTaxRateSelectorView: View {
                             .font(.footnote)
                             .foregroundColor(Color(.wooCommercePurple(.shade60)))
 
-
                         Image(systemName: "arrow.up.forward.square")
                     }
                     .frame(maxWidth: .infinity, alignment: .center)
-
                 }
                 .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
                 .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {

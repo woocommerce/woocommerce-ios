@@ -57,7 +57,36 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         XCTAssertEqual(tasks, [.init(isComplete: true, type: .launchStore)])
     }
 
-    func test_loadOnboardingTasks_returns_sorted_tasks_on_success() throws {
+    func test_loadOnboardingTasks_returns_sorted_tasks_with_wcpay_before_launchStore_on_success() throws {
+        // Given
+        let unsortedTasks: [StoreOnboardingTask] = [.init(isComplete: true, type: .unsupported("")),
+                                                    .init(isComplete: true, type: .customizeDomains),
+                                                    .init(isComplete: true, type: .launchStore),
+                                                    .init(isComplete: true, type: .addFirstProduct),
+                                                    .init(isComplete: true, type: .storeDetails),
+                                                    .init(isComplete: true, type: .woocommercePayments)]
+        remote.whenLoadingOnboardingTasks(thenReturn: .success(unsortedTasks))
+
+        // When
+        let result: Result<[StoreOnboardingTask], Error> = waitFor { promise in
+            let action = StoreOnboardingTasksAction.loadOnboardingTasks(siteID: 0) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let tasks = try XCTUnwrap(result.get())
+        XCTAssertEqual(tasks, [.init(isComplete: true, type: .storeDetails),
+                               .init(isComplete: true, type: .addFirstProduct),
+                               .init(isComplete: true, type: .woocommercePayments),
+                               .init(isComplete: true, type: .launchStore),
+                               .init(isComplete: true, type: .customizeDomains),
+                               .init(isComplete: true, type: .unsupported(""))])
+    }
+
+    func test_loadOnboardingTasks_returns_sorted_tasks_with_payments_after_launchStore_on_success() throws {
         // Given
         let unsortedTasks: [StoreOnboardingTask] = [.init(isComplete: true, type: .unsupported("")),
                                                     .init(isComplete: true, type: .customizeDomains),
@@ -80,9 +109,9 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         let tasks = try XCTUnwrap(result.get())
         XCTAssertEqual(tasks, [.init(isComplete: true, type: .storeDetails),
                                .init(isComplete: true, type: .addFirstProduct),
-                               .init(isComplete: true, type: .payments),
                                .init(isComplete: true, type: .launchStore),
                                .init(isComplete: true, type: .customizeDomains),
+                               .init(isComplete: true, type: .payments),
                                .init(isComplete: true, type: .unsupported(""))])
     }
 

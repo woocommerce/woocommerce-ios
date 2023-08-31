@@ -55,7 +55,30 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 
     // MARK: - `tasksForDisplay``
 
-    func test_tasksForDisplay_returns_first_3_incomplete_tasks_when_isExpanded_is_false() async {
+    func test_tasksForDisplay_returns_first_3_incomplete_tasks_including_wcpay_when_isExpanded_is_false() async {
+        // Given
+        mockLoadOnboardingTasks(result: .success([
+            .init(isComplete: false, type: .addFirstProduct),
+            .init(isComplete: false, type: .launchStore),
+            .init(isComplete: false, type: .customizeDomains),
+            .init(isComplete: false, type: .woocommercePayments)
+        ]))
+        let sut = StoreOnboardingViewModel(siteID: 0,
+                                           isExpanded: false,
+                                           stores: stores,
+                                           defaults: defaults)
+        // When
+        await sut.reloadTasks()
+
+        // Then
+        XCTAssertEqual(sut.tasksForDisplay.count, 3)
+
+        XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .woocommercePayments)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
+    }
+
+    func test_tasksForDisplay_returns_first_3_incomplete_tasks_not_including_payments_when_isExpanded_is_false() async {
         // Given
         mockLoadOnboardingTasks(result: .success([
             .init(isComplete: false, type: .addFirstProduct),
@@ -74,8 +97,8 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
-        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .payments)
-        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .launchStore)
+        XCTAssertEqual(sut.tasksForDisplay[2].task.type, .customizeDomains)
     }
 
     func test_tasksForDisplay_returns_all_tasks_when_isExpanded_is_true() async {
@@ -103,7 +126,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
             .init(isComplete: false, type: .addFirstProduct),
             .init(isComplete: false, type: .launchStore),
             .init(isComplete: false, type: .customizeDomains),
-            .init(isComplete: false, type: .payments)
+            .init(isComplete: false, type: .woocommercePayments)
         ]))
         let sut = StoreOnboardingViewModel(siteID: 0,
                                            isExpanded: false,
@@ -118,7 +141,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         XCTAssertEqual(sut.tasksForDisplay.count, 3)
 
         XCTAssertEqual(sut.tasksForDisplay[0].task.type, .addFirstProduct)
-        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .payments)
+        XCTAssertEqual(sut.tasksForDisplay[1].task.type, .woocommercePayments)
         XCTAssertEqual(sut.tasksForDisplay[2].task.type, .launchStore)
     }
 
@@ -506,7 +529,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .payments),
+            .init(isComplete: false, type: .woocommercePayments),
             .init(isComplete: false, type: .launchStore),
             .init(isComplete: true, type: .customizeDomains)
         ]
@@ -533,9 +556,9 @@ final class StoreOnboardingViewModelTests: XCTestCase {
         // Given
         let initialTasks: [StoreOnboardingTask] = [
             .init(isComplete: false, type: .addFirstProduct),
-            .init(isComplete: false, type: .payments),
             .init(isComplete: false, type: .launchStore),
-            .init(isComplete: true, type: .customizeDomains)
+            .init(isComplete: true, type: .customizeDomains),
+            .init(isComplete: false, type: .payments)
         ]
 
         let tasks = initialTasks + [(.init(isComplete: true, type: .unsupported("")))]

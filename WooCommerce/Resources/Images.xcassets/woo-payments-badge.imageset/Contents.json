@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "woo-payments-badge.pdf",
+      "filename" : "woo-payments-badge-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "woo-payments-badge-dark.pdf",
       "idiom" : "universal"
     }
   ],

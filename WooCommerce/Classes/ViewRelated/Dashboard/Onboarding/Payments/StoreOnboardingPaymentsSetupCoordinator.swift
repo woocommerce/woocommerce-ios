@@ -73,7 +73,7 @@ private extension StoreOnboardingPaymentsSetupCoordinator {
             self?.dismissWebview(setupSuccess: setupSuccess)
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
-        webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(dismissWebview))
+        webViewController.navigationItem.leftBarButtonItem = .init(barButtonSystemItem: .done, target: self, action: #selector(didTapDone))
         navigationController.show(webViewController, sender: navigationController)
     }
 

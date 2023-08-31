@@ -108,8 +108,10 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         let allAttributes = container.failsafeDecodeIfPresent(lossyList: [OrderItemAttribute].self, forKey: .attributes)
         attributes = allAttributes.filter { !$0.name.hasPrefix("_") } // Exclude private items (marked with an underscore)
 
+        // Product add-ons became available in `_pao_ids` with Product Add-Ons plugin v5.0.2+.
         let productAddOns = container.failsafeDecodeIfPresent(lossyList: [OrderItemProductAddOnContainer].self,
-                                                              forKey: .attributes).first?.value ?? []
+                                                              forKey: .attributes)
+            .first(where: { $0.key == "_pao_ids" })?.value ?? []
 
         // Product Bundle extension properties:
         // If the order item is part of a product bundle, `bundledBy` is the parent order item (product bundle).
@@ -201,5 +203,6 @@ extension OrderItem: Comparable {
 }
 
 private struct OrderItemProductAddOnContainer: Decodable {
+    let key: String
     let value: [OrderItemProductAddOn]
 }

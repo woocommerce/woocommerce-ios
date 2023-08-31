@@ -2060,6 +2060,48 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertNotNil(migratedCustomerEntity.entity.attributesByName["username"], "Confirm expected property exists")
     }
+
+    func test_migrating_from_93_to_94_enables_creating_new_OrderItemProductAddOn_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 93")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderItem = insertOrderItem(to: sourceContext)
+        orderItem.setValue(order, forKey: "order")
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 93.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderItemProductAddOn", in: sourceContext))
+        XCTAssertNil(orderItem.entity.relationshipsByName["addOns"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 94")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemProductAddOn"), 0)
+
+        // Migrated order item has empty add-ons.
+        let migratedOrderItem = try XCTUnwrap(targetContext.firstObject(ofType: OrderItem.self))
+        XCTAssertEqual(migratedOrderItem.value(forKey: "addOns") as? NSOrderedSet, [])
+
+        // Insert a new OrderItemProductAddOn and add it to order item.
+        let addOn = insertOrderItemProductAddOn(to: targetContext)
+        addOn.setValue(migratedOrderItem, forKey: "orderItem")
+        try targetContext.save()
+
+        // OrderItemProductAddOn entity and attributes exist, including relationship with OrderItem.
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemProductAddOn"), 1)
+        XCTAssertEqual(addOn.value(forKey: "addOnID") as? NSNumber, .init(value: 645))
+        XCTAssertEqual(addOn.value(forKey: "key") as? String, "Sugar level")
+        XCTAssertEqual(addOn.value(forKey: "value") as? String, "Zero")
+        XCTAssertEqual(addOn.value(forKey: "orderItem") as? NSManagedObject, migratedOrderItem)
+
+        // OrderItem's addOns relationship exists.
+        XCTAssertEqual(migratedOrderItem.value(forKey: "addOns") as? NSOrderedSet, [addOn])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2719,6 +2761,15 @@ private extension MigrationTests {
             "giftCardID": 2,
             "code": "SU9F-MGB5-KS5V-EZFT",
             "amount": 20
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemProductAddOn(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemProductAddOn", properties: [
+            "addOnID": 645,
+            "key": "Sugar level",
+            "value": "Zero"
         ])
     }
 }

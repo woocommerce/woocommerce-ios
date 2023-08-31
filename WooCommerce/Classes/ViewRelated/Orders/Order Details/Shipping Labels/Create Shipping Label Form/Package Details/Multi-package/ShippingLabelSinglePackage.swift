@@ -150,10 +150,9 @@ struct ShippingLabelSinglePackage: View {
                     .padding(.leading, Constants.horizontalPadding)
 
                 HazmatInstructions()
-                
             }
             .renderedIf(viewModel.containsHazmatMaterials)
-            
+
             Divider()
         }
         .background(Color(.listForeground(modal: false)))
@@ -221,6 +220,25 @@ private extension ShippingLabelSinglePackage {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
+    }
+}
+
+extension ShippingLabelSinglePackage {
+    enum HazmatCategory: CaseIterable {
+        case firstCategory
+        case secondCategory
+        case thirdCategory
+        
+        var description: String {
+            switch self {
+            case .firstCategory:
+                return "First Category"
+            case .secondCategory:
+                return "Second Category"
+            case .thirdCategory:
+                return "Third Category"
+            }
+        }
     }
 }
 

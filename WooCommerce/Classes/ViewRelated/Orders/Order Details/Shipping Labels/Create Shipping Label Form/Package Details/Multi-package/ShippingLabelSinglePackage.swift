@@ -124,15 +124,15 @@ struct ShippingLabelSinglePackage: View {
         VStack(alignment: .leading) {
             VStack {
                 Divider()
-
+                
                 TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
                     .padding(.horizontal, Constants.horizontalPadding)
-
+                
                 VStack {
                     Divider()
                         .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
-
+                    
                     Button(action: {
                         isShowingHazmatSelection.toggle()
                     }, label: {
@@ -141,36 +141,36 @@ struct ShippingLabelSinglePackage: View {
                                 .bodyStyle()
                             Text(viewModel.selectedHazmatCategory.localizedName)
                                 .calloutStyle()
+                                .multilineTextAlignment(.leading)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, Constants.horizontalPadding)
                     })
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.horizontal, Constants.horizontalPadding)
-
+                    
                     Divider()
                         .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
-
+                    
                     createHazmatInstructionsView()
-
                 }
                 .renderedIf(viewModel.containsHazmatMaterials)
-                .sheet(isPresented: $isShowingHazmatSelection) {
-                    SelectionList(title: Localization.selectHazmatCategory,
-                                  items: ShippingLabelHazmatCategory.allCases,
-                                  contentKeyPath: \.localizedName,
-                                  selected: $viewModel.selectedHazmatCategory)
+                
+                Divider()
+            }
+            .background(Color(.listForeground(modal: false)))
 
-                    Divider()
-                }
-                .background(Color(.listForeground(modal: false)))
-
-                Text(Localization.hazmatTooltip)
-                    .renderedIf(!viewModel.containsHazmatMaterials)
-                    .padding(.leading, Constants.horizontalPadding)
-                    .calloutStyle()
+            Text(Localization.hazmatTooltip)
+                .renderedIf(!viewModel.containsHazmatMaterials)
+                .padding(.leading, Constants.horizontalPadding)
+                .calloutStyle()
             }
             .renderedIf(viewModel.isHazmatShippingEnabled)
-        }
+            .sheet(isPresented: $isShowingHazmatSelection) {
+                SelectionList(title: Localization.selectHazmatCategory,
+                              items: ShippingLabelHazmatCategory.allCases,
+                              contentKeyPath: \.localizedName,
+                              selected: $viewModel.selectedHazmatCategory)
+            }
     }
 
     func createHazmatInstructionsView() -> some View {

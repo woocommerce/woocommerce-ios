@@ -67,4 +67,53 @@ final class TaxRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_retrieveTaxRates_then_returns_parsed_data() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "taxes", filename: "taxes")
+
+        let remote = TaxRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+        }
+        let rates = try XCTUnwrap(result.get())
+
+        // Then
+        XCTAssertEqual(rates.count, 3)
+        XCTAssertEqual(rates.first?.id, 72)
+        XCTAssertEqual(rates.first?.country, "US")
+        XCTAssertEqual(rates.first?.state, "AL")
+        XCTAssertEqual(rates.first?.postcode, "35041")
+        XCTAssertEqual(rates.first?.city, "Cardiff")
+        XCTAssertEqual(rates.first?.postcodes, ["35014", "35036", "35041"])
+        XCTAssertEqual(rates.first?.rate, "4.0000")
+        XCTAssertEqual(rates.first?.name, "State Tax")
+        XCTAssertEqual(rates.first?.priority, 0)
+        XCTAssertEqual(rates.first?.compound, false)
+        XCTAssertEqual(rates.first?.shipping, false)
+        XCTAssertEqual(rates.first?.order, 1)
+        XCTAssertEqual(rates.first?.taxRateClass, "standard")
+    }
+
+    func test_retrieveTaxRates_then_relays_networking_errors() throws {
+        // Given
+        let remote = TaxRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "taxes", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+        }
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
+    }
 }

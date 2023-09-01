@@ -582,6 +582,7 @@
 		B990FA922AA1EBC600496375 /* TaxRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B990FA912AA1EBC600496375 /* TaxRate.swift */; };
 		B9CB14DE2A42DE60005912C2 /* products-sku-search-non-purchasable.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */; };
 		B9DFE4BE2AA2057B00174004 /* TaxRateListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */; };
+		B9DFE4C22AA22B6F00174004 /* taxes.json in Resources */ = {isa = PBXBuildFile; fileRef = B9DFE4C12AA22B6F00174004 /* taxes.json */; };
 		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
 		CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */ = {isa = PBXBuildFile; fileRef = CC01CE5729B0EBED004FF537 /* product-bundle.json */; };
 		CC01CE5A29B0FD61004FF537 /* ProductBundleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */; };
@@ -1552,6 +1553,7 @@
 		B990FA912AA1EBC600496375 /* TaxRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRate.swift; sourceTree = "<group>"; };
 		B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search-non-purchasable.json"; sourceTree = "<group>"; };
 		B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateListMapper.swift; sourceTree = "<group>"; };
+		B9DFE4C12AA22B6F00174004 /* taxes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = taxes.json; sourceTree = "<group>"; };
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
@@ -2777,6 +2779,7 @@
 				CE12AE9A29F2AC3C0056DD17 /* subscription-without-data.json */,
 				CCE5F38E29EFFE3800087332 /* subscription-list.json */,
 				CCE5F39429F0034400087332 /* subscription-list-without-data.json */,
+				B9DFE4C12AA22B6F00174004 /* taxes.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
 				EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */,
 				74ABA1C4213F17AA00FFAD30 /* top-performers-day.json */,
@@ -3461,6 +3464,7 @@
 				EE57C143297FCCA700BC31E7 /* product-shipping-classes-load-all-without-data.json in Resources */,
 				26BD9FCD2965EC3C004E0D15 /* product-variations-bulk-create.json in Resources */,
 				02C43260298A55D100F14AEE /* validate-domain-contact-info-failure.json in Resources */,
+				B9DFE4C22AA22B6F00174004 /* taxes.json in Resources */,
 				EE57C13C297FBECB00BC31E7 /* product-tags-all-without-data.json in Resources */,
 				028CB718290223CB00331C09 /* account-username-suggestions.json in Resources */,
 				0282DD91233A120A006A5FDB /* products-search-photo.json in Resources */,

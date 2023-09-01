@@ -151,6 +151,7 @@ struct ShippingLabelSinglePackage: View {
             .background(Color(.listForeground(modal: false)))
 
             Text(Localization.hazmatTooltip)
+                .renderedIf(!viewModel.containsHazmatMaterials)
                 .padding(.leading, Constants.horizontalPadding)
                 .calloutStyle()
         }

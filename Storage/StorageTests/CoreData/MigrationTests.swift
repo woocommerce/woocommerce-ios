@@ -2110,6 +2110,9 @@ final class MigrationTests: XCTestCase {
 
         try sourceContext.save()
 
+        // Confidence Check. This entity should not exist in Model 94.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "TaxRate", in: sourceContext))
+
         // When
         let targetContainer = try migrate(sourceContainer, to: "Model 95")
 
@@ -2117,10 +2120,22 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
         XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 0)
 
-        _ = insertTaxRate(to: targetContext)
+        let taxRate = insertTaxRate(to: targetContext)
 
         // Then
         XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 1)
+        XCTAssertEqual(taxRate.value(forKey: "id") as? Int, 123123)
+        XCTAssertEqual(taxRate.value(forKey: "state") as? String, "FL")
+        XCTAssertEqual(taxRate.value(forKey: "postcode") as? String, "1234")
+        XCTAssertEqual(taxRate.value(forKey: "postcodes") as? [String], ["1234"])
+        XCTAssertEqual(taxRate.value(forKey: "priority") as? Int, 1)
+        XCTAssertEqual(taxRate.value(forKey: "name") as? String, "State Tax")
+        XCTAssertEqual(taxRate.value(forKey: "order") as? Int, 1)
+        XCTAssertEqual(taxRate.value(forKey: "taxRateClass") as? String, "standard")
+        XCTAssertEqual(taxRate.value(forKey: "shipping") as? Bool, true)
+        XCTAssertEqual(taxRate.value(forKey: "compound") as? Bool, true)
+        XCTAssertEqual(taxRate.value(forKey: "city") as? String, "Miami")
+        XCTAssertEqual(taxRate.value(forKey: "cities") as? [String], ["Miami"])
     }
 }
 
@@ -2798,7 +2813,8 @@ private extension MigrationTests {
         context.insert(entityName: "TaxRate", properties: [
             "id": 123123,
             "country": "US",
-            "state": "1234",
+            "state": "FL",
+            "postcode": "1234",
             "postcodes": ["1234"],
             "priority": 1,
             "name": "State Tax",

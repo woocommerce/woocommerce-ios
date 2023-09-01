@@ -119,23 +119,23 @@ struct ShippingLabelSinglePackage: View {
             HazmatSection()
         }
     }
-    
+
     func HazmatSection() -> some View {
         VStack {
             Divider()
-            
+
             TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
                 .padding(.horizontal, Constants.horizontalPadding)
-            
+
             VStack {
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
-                
+
                 TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
                     isShowingHazmatSelection.toggle()
                 }
-                
+
                 Divider()
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
@@ -150,21 +150,21 @@ struct ShippingLabelSinglePackage: View {
         .background(Color(.listForeground(modal: false)))
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
-    
+
     func HazmatInstructions() -> some View {
         VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)
                 .calloutStyle()
-            
+
             Spacer()
             Text(Localization.hazmatInstructionsSecondSection)
                 .calloutStyle()
-            
+
             Spacer()
             Text(Localization.hazmatInstructionsThirdSection)
                 .calloutStyle()
-            
+
             Spacer()
             Text(Localization.hazmatInstructionsFourthSection)
                 .calloutStyle()

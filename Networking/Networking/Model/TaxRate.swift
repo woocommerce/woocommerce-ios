@@ -12,7 +12,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let name: String
 
-    /// Tax rate country.
+    /// Tax rate country. Deprecated in WooCommerce 5.3 (use countries)
     ///
     public let country: String
 
@@ -52,7 +52,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let compound: Bool
 
-    /// Tax rate city.
+    /// Tax rate city. Deprecated in WooCommerce 5.3 (use countries)
     ///
     public let city: String
 

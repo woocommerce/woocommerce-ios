@@ -122,7 +122,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 DDLogInfo("Success installing \(pluginSlug)")
                 self.refresh()
             case .failure(let error):
-                DDLogError("Error installing plugin: \(error)")
+                guard let countryCode = self.storeCountryCode else {
+                    DDLogError("Error installing plugin: \(error)")
+                    return
+                }
+                ServiceLocator.analytics.track(event: WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
+                                                                        properties: [
+                                                                            "country": "\(countryCode)",
+                                                                            "reason": "plugin_install_tapped",
+                                                                            "error_description": "\(error)"
+                                                                        ]))
             }
         })
         stores.dispatch(installPluginAction)

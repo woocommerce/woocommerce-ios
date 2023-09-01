@@ -1,0 +1,1 @@
+Uygulamada indirim kuponları oluşturup kullanabileceğinizi biliyor muydunuz? Deneyin! Bu sürüm, kuponların tüm cihazlarda oluşturulabilmesini sağlayan bir düzeltme içeriyor. WooCommerce'i seçtiğiniz için teşekkür ederiz!

@@ -46,7 +46,7 @@ msgid ""
 "\n"
 "View the Privacy Policy at https://automattic.com/privacy/\n"
 "\n"
-"View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa.\n"
+"View the Privacy Notice for California users at https://automattic.com/privacy/#california-consumer-privacy-act-ccpa."
 msgstr ""
 
 #. translators: Keywords used in the App Store search engine to find the app.
@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.1-whats-new"
+msgctxt "v15.2-whats-new"
 msgid ""
-"Did you know that you can create and use discount coupons in the app? Give it a try! This release includes a fix that ensures coupons can be created on all devices. Thank you for choosing WooCommerce!\n"
+"We're excited to introduce a new update for our app! This version includes a fix for minor UI issues in the store creation profiler flow to enhance your user experience. Additionally, you can now see the order tax rates, get more information about them, and even navigate to wp-admin to change them. Update now for a better experience!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -71,7 +71,7 @@ msgstr ""
 msgctxt "app_store_screenshot-1"
 msgid ""
 "Track sales and\n"
-"bestselling products\n"
+"bestselling products"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -87,7 +87,7 @@ msgstr ""
 msgctxt "app_store_screenshot-2"
 msgid ""
 "Create orders\n"
-"on the fly\n"
+"on the fly"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -95,7 +95,7 @@ msgstr ""
 msgctxt "app_store_screenshot-3"
 msgid ""
 "Take payments\n"
-"in person\n"
+"in person"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -103,7 +103,7 @@ msgstr ""
 msgctxt "app_store_screenshot-4"
 msgid ""
 "Add and edit products\n"
-"with a touch\n"
+"with a touch"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -111,7 +111,7 @@ msgstr ""
 msgctxt "app_store_screenshot-5"
 msgid ""
 "Get notified of\n"
-"every sale\n"
+"every sale"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

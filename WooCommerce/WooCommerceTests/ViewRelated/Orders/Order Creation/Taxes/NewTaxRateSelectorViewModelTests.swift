@@ -9,7 +9,6 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
 
         let viewModel = NewTaxRateSelectorViewModel(wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
-        XCTAssertNotNil(wpAdminTaxSettingsURL)
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
 }

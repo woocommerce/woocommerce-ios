@@ -60,7 +60,6 @@ final class TaxEducationalDialogViewModelTests: XCTestCase {
                                                   taxBasedOnSetting: .customerShippingAddress,
                                                   wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
-        XCTAssertNotNil(wpAdminTaxSettingsURL)
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
 

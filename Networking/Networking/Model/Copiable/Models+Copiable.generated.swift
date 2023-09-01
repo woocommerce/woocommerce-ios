@@ -2385,7 +2385,6 @@ extension Networking.TaxRate {
         let id = id ?? self.id
         let name = name ?? self.name
         let country = country ?? self.country
-        let countries = countries ?? self.countries
         let postcode = postcode ?? self.postcode
         let postcodes = postcodes ?? self.postcodes
         let priority = priority ?? self.priority
@@ -2401,7 +2400,7 @@ extension Networking.TaxRate {
             id: id,
             name: name,
             country: country,
-            countries: countries,
+            state: state,
             postcode: postcode,
             postcodes: postcodes,
             priority: priority,

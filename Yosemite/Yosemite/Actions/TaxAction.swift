@@ -13,4 +13,11 @@ public enum TaxAction: Action {
     /// Request the Tax Class found in a specified Product.
     ///
     case requestMissingTaxClasses(for: TaxClassRequestable, onCompletion: (TaxClass?, Error?) -> Void)
+
+    /// Retrieve and synchronizes Tax Rates matching the specified criteria.
+    ///
+    case retrieveTaxRates(siteID: Int64,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          onCompletion: (Result<([TaxRate]), Error>) -> Void)
 }

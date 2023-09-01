@@ -12,15 +12,15 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let name: String
 
-    /// Tax rate country. Deprecated in WooCommerce 5.3 (use countries)
+    /// Tax rate state.
+    ///
+    public let state: String
+
+    /// Tax rate country.
     ///
     public let country: String
 
-    /// Tax rate countries.
-    ///
-    public let countries: [String]
-
-    /// Tax rate postcode.
+    /// Tax rate postcode.  Deprecated in WooCommerce 5.3 (use countries)
     ///
     public let postcode: String
 
@@ -62,11 +62,11 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
 
     /// Default initializer for TaxClass.
     ///
-    public init(id: Int64, name: String, country: String, countries: [String], postcode: String, postcodes: [String], priority: Int64, rate: String, order: Int64, taxRateClass: String, shipping: Bool, compound: Bool, city: String, cities: [String]) {
+    public init(id: Int64, name: String, country: String, state: String, postcode: String, postcodes: [String], priority: Int64, rate: String, order: Int64, taxRateClass: String, shipping: Bool, compound: Bool, city: String, cities: [String]) {
         self.id = id
         self.name = name
         self.country = country
-        self.countries = countries
+        self.state = state
         self.postcode = postcode
         self.postcodes = postcodes
         self.priority = priority
@@ -88,7 +88,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         let id = try container.decode(Int64.self, forKey: .id)
         let name = try container.decode(String.self, forKey: .name)
         let country = try container.decode(String.self, forKey: .country)
-        let countries = try container.decode([String].self, forKey: .countries)
+        let state = try container.decode(String.self, forKey: .state)
         let postcode = try container.decode(String.self, forKey: .postcode)
         let postcodes = try container.decode([String].self, forKey: .postcodes)
         let priority = try container.decode(Int64.self, forKey: .priority)
@@ -101,7 +101,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         let cities = try container.decode([String].self, forKey: .cities)
 
 
-        self.init(id: id, name: name, country: country, countries: countries, postcode: postcode, postcodes: postcodes, priority: priority, rate: rate, order: order, taxRateClass: taxRateClass, shipping: shipping, compound: compound, city: city, cities: cities)
+        self.init(id: id, name: name, country: country, state: state, postcode: postcode, postcodes: postcodes, priority: priority, rate: rate, order: order, taxRateClass: taxRateClass, shipping: shipping, compound: compound, city: city, cities: cities)
     }
 }
 
@@ -111,7 +111,6 @@ private extension TaxRate {
     enum CodingKeys: String, CodingKey {
         case id
         case country
-        case countries
         case state
         case postcode
         case postcodes

@@ -45,8 +45,9 @@ public class TaxStore: Store {
             retrieveTaxClasses(siteID: siteID, onCompletion: onCompletion)
         case .requestMissingTaxClasses(let product, let onCompletion):
             requestMissingTaxClasses(for: product, onCompletion: onCompletion)
+        case let .retrieveTaxRates(siteID, pageNumber, pageSize, onCompletion):
+            retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
-
     }
 }
 
@@ -98,6 +99,20 @@ private extension TaxStore {
             }
         }
     }
+
+    func retrieveTaxRates(siteID: Int64,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          onCompletion: @escaping (Result<([TaxRate]), Error>) -> Void) {
+        remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+            switch result {
+            case .success(let taxRates):
+                onCompletion(.success(taxRates))
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
@@ -132,9 +147,39 @@ private extension TaxStore {
             storageTaxClass.update(with: readOnlyTaxClass)
         }
     }
-
 }
 
+// MARK: - Storage: TaxRate
+//
+private extension TaxStore {
+
+    /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyTaxClasses: Remote TaxClass to be persisted.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], in storage: StorageType) {
+        for readOnlyTaxRate in readOnlyTaxRates {
+            let storageTaxRate = storage.insertNewObject(ofType: Storage.TaxRate.self)
+            storageTaxRate.update(with: readOnlyTaxRate)
+        }
+    }
+}
 
 // MARK: - Unit Testing Helpers
 //

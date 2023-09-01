@@ -581,6 +581,7 @@
 		B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */; };
 		B990FA922AA1EBC600496375 /* TaxRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B990FA912AA1EBC600496375 /* TaxRate.swift */; };
 		B9CB14DE2A42DE60005912C2 /* products-sku-search-non-purchasable.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */; };
+		B9DFE4BE2AA2057B00174004 /* TaxRateListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */; };
 		BAB373722795A1FB00837B4A /* OrderTaxLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB373712795A1FB00837B4A /* OrderTaxLine.swift */; };
 		CC01CE5829B0EBED004FF537 /* product-bundle.json in Resources */ = {isa = PBXBuildFile; fileRef = CC01CE5729B0EBED004FF537 /* product-bundle.json */; };
 		CC01CE5A29B0FD61004FF537 /* ProductBundleItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC01CE5929B0FD61004FF537 /* ProductBundleItem.swift */; };
@@ -1550,6 +1551,7 @@
 		B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefundMetaData.swift; sourceTree = "<group>"; };
 		B990FA912AA1EBC600496375 /* TaxRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRate.swift; sourceTree = "<group>"; };
 		B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search-non-purchasable.json"; sourceTree = "<group>"; };
+		B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateListMapper.swift; sourceTree = "<group>"; };
 		BAB373712795A1FB00837B4A /* OrderTaxLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderTaxLine.swift; sourceTree = "<group>"; };
 		BD9439D9B8F2C1ED2EADAA51 /* Pods-NetworkingTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.debug.xcconfig"; sourceTree = "<group>"; };
 		C8F9A8CC6F90A8C9B5EF2EE2 /* Pods-Networking.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Networking.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Networking/Pods-Networking.release.xcconfig"; sourceTree = "<group>"; };
@@ -2953,6 +2955,7 @@
 				DE2E8E9E295310C5002E4B14 /* WordPressSiteMapper.swift */,
 				EE2C09C129AF26B2009396F9 /* StoreOnboardingTaskListMapper.swift */,
 				020EF5E82A8BC957009D2169 /* ProductsTotalMapper.swift */,
+				B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -3888,6 +3891,7 @@
 				451A97E9260B657D0059D135 /* ShippingLabelPredefinedOption.swift in Sources */,
 				263659DC2A264A3E00607A0D /* IPLocationRemote.swift in Sources */,
 				02C2548425635BD000A04423 /* ShippingLabelPaperSize.swift in Sources */,
+				B9DFE4BE2AA2057B00174004 /* TaxRateListMapper.swift in Sources */,
 				CE132BBC223859710029DB6C /* ProductTag.swift in Sources */,
 				DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */,
 				02EBCB3E2AA03D520019085B /* OrderItemProductAddOn.swift in Sources */,

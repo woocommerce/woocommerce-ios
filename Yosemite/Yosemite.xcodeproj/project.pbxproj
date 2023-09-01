@@ -341,6 +341,7 @@
 		B9AECD462851DBED00E78584 /* Order+CurrencyFormattedValues.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD452851DBED00E78584 /* Order+CurrencyFormattedValues.swift */; };
 		B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD472851F28E00E78584 /* Order+CardPresentPaymentTests.swift */; };
 		B9C0C1082A3C666A00DF84EA /* ProductVariationStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */; };
+		B9DFE4C02AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DFE4BF2AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift */; };
 		B9F146972A0E30ED0039E159 /* Product+ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F146962A0E30ED0039E159 /* Product+ProductVariation.swift */; };
 		BAB3737927964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */; };
 		CC24A4F129ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC24A4F029ED4CEB0009D6DA /* ProductSubscription+ReadOnlyConvertible.swift */; };
@@ -800,6 +801,7 @@
 		B9AECD452851DBED00E78584 /* Order+CurrencyFormattedValues.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+CurrencyFormattedValues.swift"; sourceTree = "<group>"; };
 		B9AECD472851F28E00E78584 /* Order+CardPresentPaymentTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPaymentTests.swift"; sourceTree = "<group>"; };
 		B9C0C1072A3C666A00DF84EA /* ProductVariationStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationStorageManager.swift; sourceTree = "<group>"; };
+		B9DFE4BF2AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		B9F146962A0E30ED0039E159 /* Product+ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductVariation.swift"; sourceTree = "<group>"; };
 		BAB3737827964A9500837B4A /* OrderTaxLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderTaxLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Yosemite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1358,6 +1360,7 @@
 				026CF62B237D92DC009563D4 /* ProductVariationAttribute+ReadOnlyConvertible.swift */,
 				025CA2CD238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift */,
 				450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */,
+				B9DFE4BF2AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift */,
 				CC2C036B262F316600928C9C /* ShippingLabelAccountSettings+ReadOnlyConvertible.swift */,
 				02C254F52563B47C00A04423 /* ShippingLabelAddress+ReadonlyConvertible.swift */,
 				CC2C0371262F32D800928C9C /* ShippingLabelPaymentMethod+ReadonlyConvertible.swift */,
@@ -2052,6 +2055,7 @@
 				31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */,
 				02FF055223D983F30058E6E7 /* MediaExportService.swift in Sources */,
 				45010695239A6CDE00E24722 /* TaxAction.swift in Sources */,
+				B9DFE4C02AA2136100174004 /* TaxRate+ReadOnlyConvertible.swift in Sources */,
 				03FBDA222631521100ACE257 /* CouponAction.swift in Sources */,
 				CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */,
 				B9F146972A0E30ED0039E159 /* Product+ProductVariation.swift in Sources */,

@@ -308,6 +308,7 @@ public enum WooAnalyticsStat: String {
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"
     case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
     case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"
+    case cardPresentOnboardingCtaFailed = "card_present_onboarding_cta_failed"
 
     // MARK: Tap to Pay
     case tapToPaySummaryTryPaymentTapped = "tap_to_pay_summary_try_payment_tapped"

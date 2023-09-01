@@ -1820,6 +1820,22 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        /// Tracked when a In-Person Payments onboarding step's CTA is tapped by the user and the expected action fails
+        ///
+        /// - Parameters:
+        ///   - reason: the reason why the onboarding step was shown (effectively the name of the step)
+        ///   - countryCode: the country code of the store
+        ///   - error: the logged error
+        ///
+        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
+                              properties: [
+                                Keys.countryCode: countryCode,
+                                Keys.reason: reason,
+                                Keys.errorDescription: error.localizedDescription
+                              ])
+        }
+
         enum CashOnDeliverySource: String {
             case onboarding
             case paymentsHub = "payments_hub"

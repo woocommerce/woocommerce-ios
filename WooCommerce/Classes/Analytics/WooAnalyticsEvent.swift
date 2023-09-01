@@ -544,6 +544,9 @@ extension WooAnalyticsEvent {
                 guard let product = products.first(where: { $0.productID == item.productID }) else {
                     continue
                 }
+                if item.addOns.isNotEmpty {
+                    return true
+                }
                 let itemHasAddOns = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes,
                                                                product: product,
                                                                addOnGroups: addOnGroups)

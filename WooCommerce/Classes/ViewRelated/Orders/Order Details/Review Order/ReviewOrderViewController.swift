@@ -284,9 +284,11 @@ private extension ReviewOrderViewController {
 
         let itemViewModel = viewModel.productDetailsCellViewModel(for: item)
         cell.configure(item: itemViewModel, imageService: imageService)
+
+        let addOns = viewModel.addOns(for: item)
         cell.onViewAddOnsTouchUp = { [weak self] in
             guard let self = self else { return }
-            self.itemAddOnsButtonTapped(addOns: item.addOns)
+            self.itemAddOnsButtonTapped(addOns: addOns)
         }
     }
 

@@ -121,33 +121,39 @@ struct ShippingLabelSinglePackage: View {
     }
 
     func createHazmatSection() -> some View {
-        VStack {
-            Divider()
-
-            TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
-                .padding(.horizontal, Constants.horizontalPadding)
-
+        VStack(alignment: .leading) {
             VStack {
                 Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
 
-                TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
-                    isShowingHazmatSelection.toggle()
+                TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
+                    .padding(.horizontal, Constants.horizontalPadding)
+
+                VStack {
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
+
+                    TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
+                        isShowingHazmatSelection.toggle()
+                    }
+
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
+
+                    createHazmatInstructionsView()
+
                 }
+                .renderedIf(viewModel.containsHazmatMaterials)
 
                 Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
-
-                createHazmatInstructionsView()
-
             }
-            .renderedIf(viewModel.containsHazmatMaterials)
+            .background(Color(.listForeground(modal: false)))
 
-            Divider()
+            Text("Select this if your package contains dangerous goods or hazardous materials")
+                .padding(.leading, Constants.horizontalPadding)
+                .calloutStyle()
         }
-        .background(Color(.listForeground(modal: false)))
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
@@ -171,7 +177,8 @@ struct ShippingLabelSinglePackage: View {
 
             Spacer()
         }
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.leading, Constants.horizontalPadding)
+        .padding(.trailing, Constants.longTextTrailingPadding)
     }
 }
 
@@ -221,6 +228,7 @@ private extension ShippingLabelSinglePackage {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
+        static let longTextTrailingPadding: CGFloat = 12
     }
 }
 

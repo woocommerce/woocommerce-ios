@@ -547,7 +547,7 @@ extension WooAnalyticsEvent {
                 let itemHasAddOns = AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes,
                                                                product: product,
                                                                addOnGroups: addOnGroups)
-                    .addOnsAttributes().isNotEmpty
+                    .addOns().isNotEmpty
                 if itemHasAddOns {
                     return true
                 }

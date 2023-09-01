@@ -185,19 +185,19 @@ extension ReviewOrderViewModel {
 
     /// Filter addons for an order item
     ///
-    func filterAddons(for item: AggregateOrderItem) -> [OrderItemAttribute] {
+    func filterAddons(for item: AggregateOrderItem) -> [OrderItemProductAddOn] {
         let product = filterProduct(for: item)
         guard let product = product, showAddOns else {
             return []
         }
-        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOns()
     }
 
     /// Product Details cell view model for an order item
     ///
     func productDetailsCellViewModel(for item: AggregateOrderItem) -> ProductDetailsCellViewModel {
         let product = filterProduct(for: item)
-        let addOns = filterAddons(for: item)
+        let addOns = item.addOns.isNotEmpty ? item.addOns: filterAddons(for: item)
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(item, in: aggregateOrderItems)
         return ProductDetailsCellViewModel(aggregateItem: item,
                                            currency: order.currency,

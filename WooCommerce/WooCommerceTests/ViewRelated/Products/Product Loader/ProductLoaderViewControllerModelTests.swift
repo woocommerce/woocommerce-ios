@@ -136,6 +136,7 @@ private extension ProductLoaderViewControllerModelTests {
                            sku: nil,
                            total: 3.6,
                            attributes: [],
+                           addOns: [],
                            parent: nil)
     }
 

@@ -1,1 +1,1 @@
-Abbiamo apportato numerosi miglioramenti per aiutarti ad avviare la tua attività. Continua a inviarci il tuo feedback; ci aiuta a capire su cosa lavorare in futuro.
+Sapevi che puoi creare e usare i codici promozionali degli sconti nell'app? Prova. Questo rilascio include una correzione che assicura che i codici promozionali possano essere creati su tutti i dispositivi. Grazie per aver scelto WooCommerce.

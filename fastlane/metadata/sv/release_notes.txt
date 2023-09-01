@@ -1,1 +1,1 @@
-Vi har gjort flertalet förbättringar som hjälper dig att komma igång med din verksamhet. Fortsätt att lämna feedback. Det hjälper oss att lista ut vad vi ska hitta på härnäst.
+Visste du att du kan skapa och använda rabattkoder i appen? Testa själv. Den här versionen inkluderar en korrigering som säkerställer att rabattkoder kan skapas på alla enheter. Tack för att du väljer WooCommerce.

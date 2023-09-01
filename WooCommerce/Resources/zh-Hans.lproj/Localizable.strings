@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-30 10:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "计算的金额";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "按账单地址计算";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "按配送地址计算";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "按商店基址计算";
+
 /* Call phone number button title */
 "Call" = "致电";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "创建商店，每月支付 %1$@\/月";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "创建新的商店";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "创建站点";
@@ -3161,9 +3173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "从购买到履行 – 通过此应用程序管理整个订单流程。";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "从您的第一笔交易到赚得数百万收入，Woo 都与您同在。 看看为什么商家信任我们为 340 万家在线商店提供帮助。";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "使用 WooCommerce Shipping 履行您的订单";
 
@@ -3215,8 +3224,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "德国";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "开始";
 
@@ -6431,9 +6439,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "以真实客户的身份，在 Web 商店中选择您的测试产品，将产品添加至购物车，然后完成结账。";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "随时随地销售各类货品。";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "发送";
 
@@ -6941,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "从模板开始";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "无需信用卡即可开始 15 天免费试用 。 成为 340 万商店之一，从达成第一笔交易到赚得数百万收入，与 Woo 一同茁壮成长。";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "起始日期：%1$@；结束日期：%2$@";
 
@@ -7303,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "税费";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "税额总计";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税款会根据您的店铺地址自动计算。";
 
@@ -7472,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "购买的域名会将用户重定向至您的主要地址。";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "与您一同成长的电子商务平台";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "第一次在 iPhone 上使用“点按付款”功能时，系统可能会提醒您接受 Apple 的服务条款。";

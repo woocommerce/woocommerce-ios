@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "المبلغ المحسوب";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "تم الحساب وفق عنوان الفوترة";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "تم الحساب وفق عنوان الشحن";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "تم الحساب وفق العنوان الأساسي للمتجر";
+
 /* Call phone number button title */
 "Call" = "اتصال";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "إنشاء متجر مقابل %1$@ شهريًا";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "إنشاء متجر جديد";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "إنشاء موقع";
@@ -3161,9 +3173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "بدءًا من الشراء وحتى الاستيفاء - يمكنك إدارة معالجة الطلبات بالكامل عبر التطبيق.";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "بدءًا من أول عملية بيع لك وصولاً إلى الملايين في الإيرادات، يكون Woo بجوارك. تعرّف على سبب ثقة التجار بنا لتشغيل 3.4 ملايين متجر على الإنترنت.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "شحن طلباتك باستخدام WooCommerce Shipping";
 
@@ -3215,8 +3224,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "ألمانيا";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "البدء";
 
@@ -6431,9 +6439,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "حدد منتج الاختبار الخاص بك وأضفه إلى عربة التسوق وأكمل السداد على متجر الويب ذلك كعميل حقيقي.";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "يمكنك بيع أي شيء في أي مكان.";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "إرسال";
 
@@ -6941,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "البدء باستخدام قالب";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "ابدأ إصدارك التجريبي المجاني لمدة 15 يومًا، لا تلزم بطاقة الائتمان. انضم إلى 3.4 ملايين متجر يحقق ازدهارًا مع Woo، بدءًا من عملية البيع الأولى وحتى ملايين عمليات البيع.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
 
@@ -7303,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "الضرائب";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "إجمالي الضرائب";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "يتم حساب الضرائب تلقائيًا بناءً على عنوان مخزنك.";
 
@@ -7472,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "سيُعيد النطاق المشترى توجيه المستخدمين إلى عنوان الأساسي.";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "منصة للتجارة الإلكترونية تتطور معك";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "في المرة الأولى التي تستخدم فيها Pay on iPhone، قد تُطالب بقبول شروط الخدمة التي تُقرها Apple.";

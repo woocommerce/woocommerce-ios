@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-08-31 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "算出額";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "請求先住所に基づいて計算されます";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "配送先住所に基づいて計算されます";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "店舗の基本住所に基づいて計算されます";
+
 /* Call phone number button title */
 "Call" = "通話";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "月額 %1$@でストアを作成";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "新しいストアを作成";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "サイトを作成";
@@ -3161,9 +3173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "購入から履行まで - アプリから注文処理全体を管理します。";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "はじめての販売から数百万ドルの収益まで、Woo はあなたと共にあります。 Woo がなぜマーチャントから支持され、340にのぼるオンラインストアに利用されているかがおわかりいただけます。";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "WooCommerce Shipping で注文を処理";
 
@@ -3215,8 +3224,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "ドイツ";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "今すぐ始める";
 
@@ -6431,9 +6439,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "テスト商品を選択し、カートに追加して、実際の顧客として Web ストアで購入手続きを完了します。";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "あらゆるものを売り、あらゆる場所へ届ける";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "送信";
 
@@ -6941,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "テンプレートで開始";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "15日間のお試し期間を始めましょう。クレジットカードは不要です。 最初の売上から数百万に至るまで、Woo で繁盛する340万店舗になりましょう。";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "開始期間%1$@、終了期間%2$@";
 
@@ -7303,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "税";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "税合計";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
@@ -7472,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "購入したドメインにアクセスするとメインアドレスに転送されます。";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "ともに成長する eコマースプラットフォーム";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "最初に Tap to Pay on iPhone を使用した際は、Apple の利用規約への同意を促す通知が表示されます。";

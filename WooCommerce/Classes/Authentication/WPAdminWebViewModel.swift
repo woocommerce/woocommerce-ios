@@ -21,21 +21,16 @@ final class WPAdminWebViewModel: AuthenticatedWebViewModel, WebviewReloadable {
     }
 
     func handleRedirect(for url: URL?) {
-        // If the self-hosted site allows login with WPCOM as a Jetpack feature,
-        // WPCOM authentication is complete after redirecting to the WPCOM homepage.
-        if url?.absoluteString.removingSuffix("/") == URLs.urlAfterWPComAuth,
-           initialURL?.absoluteString != URLs.urlAfterWPComAuth {
+        guard let url else {
+            return
+        }
+
+        if shouldReload(for: url) {
             reloadWebview()
         }
     }
 
     func decidePolicy(for navigationURL: URL) async -> WKNavigationActionPolicy {
         .allow
-    }
-}
-
-private extension WPAdminWebViewModel {
-    enum URLs {
-        static let urlAfterWPComAuth = "https://wordpress.com"
     }
 }

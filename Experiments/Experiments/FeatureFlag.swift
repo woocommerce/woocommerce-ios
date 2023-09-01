@@ -182,9 +182,9 @@ public enum FeatureFlag: Int {
     /// 
     case betterCustomerSelectionInOrder
 
-    /// Enables the improvements related to taxes in the order flows
-    /// 
-    case manualTaxesInOrder
+    /// Enables the improvements related to taxes in the order flows (Milestone 2)
+    ///
+    case manualTaxesInOrderM2
 
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///

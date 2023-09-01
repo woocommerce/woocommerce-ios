@@ -65,7 +65,7 @@ extension KeyedDecodingContainer {
         return nil
     }
 
-    /// Decodes a String for the specified key. Supported Encodings = [String, Integer]
+    /// Decodes a String for the specified key. Supported Encodings = [String, Integer, Double]
     ///
     /// This method *does NOT throw*. We want this behavior so that if a malformed entity is received, we just skip it, rather
     /// than breaking the entire parsing chain.
@@ -77,6 +77,10 @@ extension KeyedDecodingContainer {
 
         if let stringAsInteger = failsafeDecodeIfPresent(Int.self, forKey: key) {
             return String(stringAsInteger)
+        }
+
+        if let stringAsDouble = failsafeDecodeIfPresent(Double.self, forKey: key) {
+            return String(stringAsDouble)
         }
 
         return nil

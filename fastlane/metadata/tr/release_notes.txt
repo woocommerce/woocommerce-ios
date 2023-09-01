@@ -1,1 +1,1 @@
-İşletmenizi kurmanıza yardımcı olmak üzere çeşitli iyileştirmeler yaptık. Geri bildirimleriniz devam etsin; üzerinde çalışacağımız bir sonraki özelliği bulmamıza yardımcı oluyor.
+Uygulamada indirim kuponları oluşturup kullanabileceğinizi biliyor muydunuz? Deneyin! Bu sürüm, kuponların tüm cihazlarda oluşturulabilmesini sağlayan bir düzeltme içeriyor. WooCommerce'i seçtiğiniz için teşekkür ederiz!

@@ -15,6 +15,7 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var domainSettingsCoordinator: DomainSettingsCoordinator?
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
+    private var wooPaySetupCelebrationViewBottomSheetPresenter: BottomSheetPresenter?
 
     private let site: Site
     private let onTaskCompleted: (_ task: TaskType) -> Void
@@ -130,9 +131,13 @@ private extension StoreOnboardingCoordinator {
         let coordinator = StoreOnboardingPaymentsSetupCoordinator(task: .wcPay,
                                                                   site: site,
                                                                   navigationController: navigationController,
+                                                                  onCompleted: { [weak self] in
+            self?.onTaskCompleted(.woocommercePayments)
+            self?.showWooPaySetupCelebrationView()
+        },
                                                                   onDismiss: { [weak self] in
-             self?.reloadTasks()
-         })
+            self?.reloadTasks()
+        })
         self.paymentsSetupCoordinator = coordinator
         coordinator.start()
     }
@@ -163,6 +168,29 @@ private extension StoreOnboardingCoordinator {
         let notice = Notice(title: Localization.StoreNameNotice.title,
                             subtitle: Localization.StoreNameNotice.subtitle)
         noticePresenter.enqueue(notice: notice)
+    }
+
+    func showWooPaySetupCelebrationView() {
+        wooPaySetupCelebrationViewBottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = WooPaymentSetupCelebrationHostingController(onTappingDone: { [weak self] in
+            self?.wooPaySetupCelebrationViewBottomSheetPresenter?.dismiss()
+            self?.wooPaySetupCelebrationViewBottomSheetPresenter = nil
+        })
+        wooPaySetupCelebrationViewBottomSheetPresenter?.present(controller, from: navigationController)
+    }
+}
+
+// MARK: Bottom sheet helpers
+//
+private extension StoreOnboardingCoordinator {
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium()]
+        })
     }
 }
 

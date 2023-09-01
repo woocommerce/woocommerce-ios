@@ -60,14 +60,16 @@ private extension StoreOnboardingTask.TaskType {
             return 1
         case .addFirstProduct:
             return 2
-        case .launchStore:
+        case .woocommercePayments:
             return 3
-        case .customizeDomains:
+        case .launchStore:
             return 4
-        case .payments, .woocommercePayments:
+        case .customizeDomains:
             return 5
-        case .unsupported:
+        case .payments:
             return 6
+        case .unsupported:
+            return 7
         }
     }
 }

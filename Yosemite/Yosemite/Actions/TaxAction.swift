@@ -2,7 +2,7 @@ import Foundation
 import Networking
 
 
-/// TaxAction: Defines all of the Actions supported by the TaxClassStore.
+/// TaxAction: Defines all of the Actions supported by the TaxStore.
 ///
 public enum TaxAction: Action {
 

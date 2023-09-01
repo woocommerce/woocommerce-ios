@@ -5,7 +5,7 @@ import Fakes
 @testable import Storage
 
 
-/// TaxClassStore Unit Tests
+/// TaxStore Unit Tests
 ///
 final class TaxClassStoreTests: XCTestCase {
 
@@ -23,7 +23,7 @@ final class TaxClassStoreTests: XCTestCase {
 
     /// Store
     ///
-    private var store: TaxClassStore!
+    private var store: TaxStore!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -42,7 +42,7 @@ final class TaxClassStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
-        store = TaxClassStore(dispatcher: dispatcher,
+        store = TaxStore(dispatcher: dispatcher,
                                 storageManager: storageManager,
                                 network: network)
     }

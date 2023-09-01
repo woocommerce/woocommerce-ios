@@ -75,7 +75,7 @@ class AuthenticatedState: StoresManagerState {
             StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SubscriptionStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TaxStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CardPresentPaymentStore(dispatcher: dispatcher,

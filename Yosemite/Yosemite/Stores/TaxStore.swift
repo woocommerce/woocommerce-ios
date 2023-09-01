@@ -12,9 +12,9 @@ extension Product: TaxClassRequestable {}
 
 extension ProductVariation: TaxClassRequestable {}
 
-// MARK: - TaxClassStore
+// MARK: - TaxStore
 //
-public class TaxClassStore: Store {
+public class TaxStore: Store {
     private let remote: TaxClassRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
@@ -53,7 +53,7 @@ public class TaxClassStore: Store {
 
 // MARK: - Services!
 //
-private extension TaxClassStore {
+private extension TaxStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
@@ -103,7 +103,7 @@ private extension TaxClassStore {
 
 // MARK: - Storage: TaxClass
 //
-private extension TaxClassStore {
+private extension TaxStore {
 
     /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
@@ -138,7 +138,7 @@ private extension TaxClassStore {
 
 // MARK: - Unit Testing Helpers
 //
-extension TaxClassStore {
+extension TaxStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Product in a given Storage Layer.
     ///

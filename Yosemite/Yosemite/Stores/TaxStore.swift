@@ -104,10 +104,12 @@ private extension TaxStore {
                           pageNumber: Int,
                           pageSize: Int,
                           onCompletion: @escaping (Result<([TaxRate]), Error>) -> Void) {
-        remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { result in
+        remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):
-                onCompletion(.success(taxRates))
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates) {
+                    onCompletion(.success(taxRates))
+                }
             case .failure(let error):
                 onCompletion(.failure(error))
             }

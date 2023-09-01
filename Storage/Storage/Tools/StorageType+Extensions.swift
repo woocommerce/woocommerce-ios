@@ -444,6 +444,13 @@ public extension StorageType {
         return allObjects(ofType: TaxClass.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Retrieves all of the stored TaxRates
+    ///
+    func loadTaxRates() -> [TaxRate]? {
+        let predicate = NSPredicate()
+        return allObjects(ofType: TaxRate.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Refunds
 
     /// Retrieves all of the stored Refund entities for the provided siteID and orderID.

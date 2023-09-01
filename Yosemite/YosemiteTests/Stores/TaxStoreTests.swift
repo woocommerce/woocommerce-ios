@@ -7,7 +7,7 @@ import Fakes
 
 /// TaxStore Unit Tests
 ///
-final class TaxClassStoreTests: XCTestCase {
+final class TaxStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -191,12 +191,28 @@ final class TaxClassStoreTests: XCTestCase {
         XCTAssertEqual(taxClass1?.toReadOnly(), sampleTaxClassMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 1)
     }
+
+    func test_retrieveTaxRates_then_persists_TaxRates() {
+        network.simulateResponse(requestUrlSuffix: "taxes", filename: "taxes")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 0)
+
+        // When
+        let result: Result<[Yosemite.TaxRate], Error> = waitFor { promise in
+            let action = TaxAction.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 3)
+    }
 }
 
 
 // MARK: - Private Helpers
 //
-private extension TaxClassStoreTests {
+private extension TaxStoreTests {
 
     func sampleTaxClass() -> Networking.TaxClass {
         return Networking.TaxClass(siteID: sampleSiteID,

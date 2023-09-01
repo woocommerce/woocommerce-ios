@@ -143,6 +143,7 @@ public typealias SubscriptionStatus = Networking.SubscriptionStatus
 public typealias SystemPlugin = Networking.SystemPlugin
 public typealias SystemStatus = Networking.SystemStatus
 public typealias TaxClass = Networking.TaxClass
+public typealias TaxRate = Networking.TaxRate
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias User = Networking.User

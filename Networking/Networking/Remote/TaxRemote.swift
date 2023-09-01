@@ -2,7 +2,7 @@ import Foundation
 
 /// Tax Class: Remote Endpoints
 ///
-public class TaxClassRemote: Remote {
+public class TaxRemote: Remote {
 
     // MARK: - Tax Class
 
@@ -30,7 +30,7 @@ public class TaxClassRemote: Remote {
 
 // MARK: - Constants
 //
-public extension TaxClassRemote {
+public extension TaxRemote {
 
     private enum Path {
         static let taxes   = "taxes"

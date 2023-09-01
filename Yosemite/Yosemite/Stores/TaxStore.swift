@@ -15,14 +15,14 @@ extension ProductVariation: TaxClassRequestable {}
 // MARK: - TaxStore
 //
 public class TaxStore: Store {
-    private let remote: TaxClassRemote
+    private let remote: TaxRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = TaxClassRemote(network: network)
+        self.remote = TaxRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

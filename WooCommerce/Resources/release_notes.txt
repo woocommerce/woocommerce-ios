@@ -1,7 +1,1 @@
-- [*] Fixed minor UI issues in the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/10555]
-- [*] Updated priority, description and URL for payment onboarding task. [https://github.com/woocommerce/woocommerce-ios/pull/10572]
-- [*] New setup instructions screen for WCPay store onboarding task. [https://github.com/woocommerce/woocommerce-ios/pull/10579]
-- [*] Show celebration view after successful WCPay setup. [https://github.com/woocommerce/woocommerce-ios/pull/10594]
-- [**] Taxes in orders: Users can now see the order tax rates, get more information about them, and navigate to wp-admin to change them. [https://github.com/woocommerce/woocommerce-ios/pull/10569]
-
-
+We're excited to introduce a new update for our app! This version includes a fix for minor UI issues in the store creation profiler flow to enhance your user experience. Additionally, you can now see the order tax rates, get more information about them, and even navigate to wp-admin to change them. Update now for a better experience!

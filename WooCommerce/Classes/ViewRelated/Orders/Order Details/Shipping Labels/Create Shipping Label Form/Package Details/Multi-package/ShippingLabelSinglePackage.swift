@@ -106,7 +106,7 @@ struct ShippingLabelSinglePackage: View {
                     Divider()
                 }
                 .background(Color(.listForeground(modal: false)))
-                
+
                 if viewModel.isValidTotalWeight {
                     ListHeaderView(text: Localization.footer, alignment: .left)
                         .padding(.horizontal, insets: safeAreaInsets)
@@ -141,10 +141,10 @@ struct ShippingLabelSinglePackage: View {
                     .padding(.leading, Constants.horizontalPadding)
 
                 createHazmatInstructionsView()
-                
+
             }
             .renderedIf(viewModel.containsHazmatMaterials)
-            
+
             Divider()
         }
         .background(Color(.listForeground(modal: false)))
@@ -204,10 +204,19 @@ private extension ShippingLabelSinglePackage {
         static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials", comment: "Pending")
         static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category", comment: "Pending")
         static let selectHazmatCategory = NSLocalizedString("Select a category", comment: "Pending")
-        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages.", comment: "Pending")
-        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through USPS® at www.usps.com/hazmat.", comment: "Pending")
-        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.", comment: "Pending")
-        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments through DHL Express.", comment: "Pending")
+        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, " +
+                                                                      "dry ice, flammable liquids, aerosols, ammunition, fireworks, nail " +
+                                                                      "polish, perfume, paint, solvents, and more. Hazardous items must " +
+                                                                      "ship in separate packages.",
+                                                                      comment: "Instructions for hazardous package shipping")
+        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
+                                                                       "USPS® at www.usps.com/hazmat.",
+                                                                       comment: "Instructions for hazardous package shipping")
+        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.",
+                                                                      comment: "Instructions for hazardous package shipping")
+        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
+                                                                       + "through DHL Express.",
+                                                                       comment: "Instructions for hazardous package shipping")
     }
 
     enum Constants {

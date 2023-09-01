@@ -426,6 +426,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.cardReaderLowBattery)
     }
 
+    func test_woo_payments_badge_is_not_nil() {
+        XCTAssertNotNil(UIImage.wooPaymentsBadge)
+    }
+
     func test_payment_card_image() {
         XCTAssertNotNil(UIImage.cardPresentImage)
     }

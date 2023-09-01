@@ -1,1 +1,2 @@
+#include "Common.xcconfig"
 #include "Version.public.xcconfig"

@@ -33,6 +33,7 @@ public struct MockOrderItem {
                          total: total,
                          totalTax: totalTax,
                          attributes: attributes,
+                         addOns: [],
                          parent: parent)
     }
 }

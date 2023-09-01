@@ -40,7 +40,7 @@ final class SiteSnapshotTracker {
         let paymentGatewaySnapshot = PaymentGatewaySnapshot(plugins: systemPlugins)
         let properties: [String: Any] = PaymentGatewaySnapshot.Plugin.allCases.reduce(otherProperties) { partialResult, plugin in
             var newResult = partialResult
-            newResult[plugin.rawValue] = paymentGatewaySnapshot.status(of: plugin).rawValue
+            newResult[plugin.eventPropertyName] = paymentGatewaySnapshot.status(of: plugin).rawValue
             return newResult
         }
         analytics.track(.applicationSiteSnapshot, withProperties: properties)
@@ -69,6 +69,10 @@ private struct PaymentGatewaySnapshot {
         case stripe = "woocommerce-gateway-stripe"
         case square = "woocommerce-square"
         case payPal = "woocommerce-paypal-payments"
+
+        var eventPropertyName: String {
+            rawValue.replacingOccurrences(of: "-", with: "_")
+        }
     }
 
     private let plugins: [SystemPlugin]

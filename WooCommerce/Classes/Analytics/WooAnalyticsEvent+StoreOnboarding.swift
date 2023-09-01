@@ -55,8 +55,10 @@ private extension StoreOnboardingTask.TaskType {
             return "products"
         case .customizeDomains:
             return "add_domain"
-        case .payments, .woocommercePayments:
+        case .payments:
             return "payments"
+        case .woocommercePayments:
+            return "woocommerce-payments"
         case .storeName:
             return "store_name"
         case .unsupported(let task):

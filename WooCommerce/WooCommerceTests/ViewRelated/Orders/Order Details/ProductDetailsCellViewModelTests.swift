@@ -225,6 +225,7 @@ private extension ProductDetailsCellViewModelTests {
                   total: total,
                   totalTax: "",
                   attributes: attributes,
+                  addOns: [],
                   parent: nil)
     }
 

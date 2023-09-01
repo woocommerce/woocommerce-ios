@@ -511,6 +511,18 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderGoToCouponsButtonTapped.rawValue)
     }
 
+    func test_payment_data_view_model_when_calling_onTaxHelpButtonTappedClosure_then_calls_to_track_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.paymentDataViewModel.onTaxHelpButtonTappedClosure()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderTaxHelpButtonTapped.rawValue)
+    }
+
     // MARK: - Add Products to Order via SKU Scanner Tests
 
     func test_trackBarcodeScanningButtonTapped_tracks_right_event() {

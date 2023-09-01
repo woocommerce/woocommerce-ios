@@ -2060,6 +2060,83 @@ final class MigrationTests: XCTestCase {
 
         XCTAssertNotNil(migratedCustomerEntity.entity.attributesByName["username"], "Confirm expected property exists")
     }
+
+    func test_migrating_from_93_to_94_enables_creating_new_OrderItemProductAddOn_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 93")
+        let sourceContext = sourceContainer.viewContext
+
+        let order = insertOrder(to: sourceContext)
+        let orderItem = insertOrderItem(to: sourceContext)
+        orderItem.setValue(order, forKey: "order")
+        try sourceContext.save()
+
+        // Confidence Checks. This entity and relationship should not exist in Model 93.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "OrderItemProductAddOn", in: sourceContext))
+        XCTAssertNil(orderItem.entity.relationshipsByName["addOns"])
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 94")
+        let targetContext = targetContainer.viewContext
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItem"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemProductAddOn"), 0)
+
+        // Migrated order item has empty add-ons.
+        let migratedOrderItem = try XCTUnwrap(targetContext.firstObject(ofType: OrderItem.self))
+        XCTAssertEqual(migratedOrderItem.value(forKey: "addOns") as? NSOrderedSet, [])
+
+        // Insert a new OrderItemProductAddOn and add it to order item.
+        let addOn = insertOrderItemProductAddOn(to: targetContext)
+        addOn.setValue(migratedOrderItem, forKey: "orderItem")
+        try targetContext.save()
+
+        // OrderItemProductAddOn entity and attributes exist, including relationship with OrderItem.
+        XCTAssertEqual(try targetContext.count(entityName: "OrderItemProductAddOn"), 1)
+        XCTAssertEqual(addOn.value(forKey: "addOnID") as? NSNumber, .init(value: 645))
+        XCTAssertEqual(addOn.value(forKey: "key") as? String, "Sugar level")
+        XCTAssertEqual(addOn.value(forKey: "value") as? String, "Zero")
+        XCTAssertEqual(addOn.value(forKey: "orderItem") as? NSManagedObject, migratedOrderItem)
+
+        // OrderItem's addOns relationship exists.
+        XCTAssertEqual(migratedOrderItem.value(forKey: "addOns") as? NSOrderedSet, [addOn])
+    }
+
+    func test_migrating_from_94_to_95_enables_creating_new_TaxRate_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 94")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. This entity should not exist in Model 94.
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "TaxRate", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 95")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 0)
+
+        let taxRate = insertTaxRate(to: targetContext)
+
+        // Then
+        XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 1)
+        XCTAssertEqual(taxRate.value(forKey: "id") as? Int, 123123)
+        XCTAssertEqual(taxRate.value(forKey: "state") as? String, "FL")
+        XCTAssertEqual(taxRate.value(forKey: "postcode") as? String, "1234")
+        XCTAssertEqual(taxRate.value(forKey: "postcodes") as? [String], ["1234"])
+        XCTAssertEqual(taxRate.value(forKey: "priority") as? Int, 1)
+        XCTAssertEqual(taxRate.value(forKey: "name") as? String, "State Tax")
+        XCTAssertEqual(taxRate.value(forKey: "order") as? Int, 1)
+        XCTAssertEqual(taxRate.value(forKey: "taxRateClass") as? String, "standard")
+        XCTAssertEqual(taxRate.value(forKey: "shipping") as? Bool, true)
+        XCTAssertEqual(taxRate.value(forKey: "compound") as? Bool, true)
+        XCTAssertEqual(taxRate.value(forKey: "city") as? String, "Miami")
+        XCTAssertEqual(taxRate.value(forKey: "cities") as? [String], ["Miami"])
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2719,6 +2796,34 @@ private extension MigrationTests {
             "giftCardID": 2,
             "code": "SU9F-MGB5-KS5V-EZFT",
             "amount": 20
+        ])
+    }
+
+    @discardableResult
+    func insertOrderItemProductAddOn(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "OrderItemProductAddOn", properties: [
+            "addOnID": 645,
+            "key": "Sugar level",
+            "value": "Zero"
+        ])
+    }
+
+    @discardableResult
+    func insertTaxRate(to context: NSManagedObjectContext) -> NSManagedObject {
+        context.insert(entityName: "TaxRate", properties: [
+            "id": 123123,
+            "country": "US",
+            "state": "FL",
+            "postcode": "1234",
+            "postcodes": ["1234"],
+            "priority": 1,
+            "name": "State Tax",
+            "order": 1,
+            "taxRateClass": "standard",
+            "shipping": true,
+            "compound": true,
+            "city": "Miami",
+            "cities": ["Miami"]
         ])
     }
 }

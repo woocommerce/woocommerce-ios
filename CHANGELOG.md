@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.2
+We're excited to introduce a new update for our app! This version includes a fix for minor UI issues in the store creation profiler flow to enhance your user experience. Additionally, you can now see the order tax rates, get more information about them, and even navigate to wp-admin to change them. Update now for a better experience!
+
 ## 15.1
 Did you know that you can create and use discount coupons in the app? Give it a try! This release includes a fix that ensures coupons can be created on all devices. Thank you for choosing WooCommerce!
 

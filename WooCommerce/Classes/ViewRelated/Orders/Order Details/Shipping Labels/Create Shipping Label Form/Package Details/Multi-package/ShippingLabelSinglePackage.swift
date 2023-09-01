@@ -116,11 +116,11 @@ struct ShippingLabelSinglePackage: View {
                 }
             }
 
-            HazmatSection()
+            createHazmatSection()
         }
     }
 
-    func HazmatSection() -> some View {
+    func createHazmatSection() -> some View {
         VStack {
             Divider()
 
@@ -140,7 +140,7 @@ struct ShippingLabelSinglePackage: View {
                     .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.leading, Constants.horizontalPadding)
 
-                HazmatInstructions()
+                createHazmatInstructionsView()
                 
             }
             .renderedIf(viewModel.containsHazmatMaterials)
@@ -151,7 +151,7 @@ struct ShippingLabelSinglePackage: View {
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
-    func HazmatInstructions() -> some View {
+    func createHazmatInstructionsView() -> some View {
         VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)

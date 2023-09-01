@@ -122,16 +122,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 DDLogInfo("Success installing \(pluginSlug)")
                 self.refresh()
             case .failure(let error):
-                guard let countryCode = self.storeCountryCode else {
-                    DDLogError("Error installing plugin: \(error)")
-                    return
-                }
-                ServiceLocator.analytics.track(event: WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
-                                                                        properties: [
-                                                                            "country": "\(countryCode)",
-                                                                            "reason": "plugin_install_tapped",
-                                                                            "error_description": "\(error)"
-                                                                        ]))
+                self.trackPluginInstallFailed(error)
             }
         })
         stores.dispatch(installPluginAction)
@@ -524,6 +515,19 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func isNetworkError(_ error: Error) -> Bool {
         (error as NSError).domain == NSURLErrorDomain
+    }
+}
+
+// MARK: - Analytics
+private extension CardPresentPaymentsOnboardingUseCase {
+    func trackPluginInstallFailed(_ error: Error) {
+        guard let countryCode = self.storeCountryCode else {
+            DDLogError("Error installing plugin: \(error)")
+            return
+        }
+        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_install_tapped",
+                                                                                               countryCode: countryCode,
+                                                                                               error: error))
     }
 }
 

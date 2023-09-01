@@ -3,7 +3,7 @@ import Codegen
 
 /// Represent a Tax Rate Entity.
 ///
-public struct TaxRate: Decodable, Equatable, GeneratedFakeable {
+public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     /// Tax rate id.
     ///
     public let id: Int64

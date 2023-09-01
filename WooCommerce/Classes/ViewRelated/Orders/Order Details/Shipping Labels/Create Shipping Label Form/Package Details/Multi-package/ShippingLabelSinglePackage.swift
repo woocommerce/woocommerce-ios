@@ -150,7 +150,7 @@ struct ShippingLabelSinglePackage: View {
             }
             .background(Color(.listForeground(modal: false)))
 
-            Text("Select this if your package contains dangerous goods or hazardous materials")
+            Text(Localization.hazmatTooltip)
                 .padding(.leading, Constants.horizontalPadding)
                 .calloutStyle()
         }
@@ -208,9 +208,14 @@ private extension ShippingLabelSinglePackage {
                                                          "the Shipping section of your product page to continue.",
                                                          comment: "Validation error for original package without dimensions " +
                                                          "on Package Details screen in Shipping Labels flow.")
-        static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials", comment: "Pending")
-        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category", comment: "Pending")
-        static let selectHazmatCategory = NSLocalizedString("Select a category", comment: "Pending")
+        static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials",
+                                                               comment: "Toggle to declare when a package contains hazardous materials")
+        static let hazmatTooltip = NSLocalizedString("Select this if your package contains dangerous goods or hazardous materials",
+                                                     comment: "Tooltip below the hazmat toggle detailing when to select it")
+        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category",
+                                                           comment: "Button title for the hazmat material category selection")
+        static let selectHazmatCategory = NSLocalizedString("Select a category",
+                                                            comment: "Hazmat category button tooltip asking to select a category")
         static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, " +
                                                                       "dry ice, flammable liquids, aerosols, ammunition, fireworks, nail " +
                                                                       "polish, perfume, paint, solvents, and more. Hazardous items must " +

@@ -94,7 +94,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     /// Whether the Package contains hazmat materials or not
     ///
     @Published var containsHazmatMaterials: Bool = false
-    
+
     /// Currently selected hazmat category
     ///
     @Published var selectedHazmatCategory: ShippingLabelHazmatCategory = .none

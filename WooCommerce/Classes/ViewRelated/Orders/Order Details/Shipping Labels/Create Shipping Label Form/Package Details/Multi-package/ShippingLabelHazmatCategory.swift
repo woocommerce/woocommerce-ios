@@ -28,7 +28,7 @@ enum ShippingLabelHazmatCategory: String, CaseIterable {
     case lighters
     case limitedQuantity
     case smallQuantityProvision
-    
+
     var localizedName: String {
         switch self {
         case .none:
@@ -102,8 +102,8 @@ extension ShippingLabelHazmatCategory {
                                               comment: "A hazardous material description stating when a package can fit into this category")
         static let class5 = NSLocalizedString("Class 5 - Package (Oxidizers)",
                                               comment: "A hazardous material description stating when a package can fit into this category")
-        static let class6 = NSLocalizedString("Class 6 - Package (Poisonous materials)"
-                                              , comment: "A hazardous material description stating when a package can fit into this category")
+        static let class6 = NSLocalizedString("Class 6 - Package (Poisonous materials)",
+                                              comment: "A hazardous material description stating when a package can fit into this category")
         static let class7 = NSLocalizedString("Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)",
                                               comment: "A hazardous material description stating when a package can fit into this category")
         static let class8Corrosive = NSLocalizedString("Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or " +

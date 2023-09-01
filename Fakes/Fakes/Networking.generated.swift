@@ -1891,7 +1891,7 @@ extension Networking.TaxRate {
             id: .fake(),
             name: .fake(),
             country: .fake(),
-            countries: .fake(),
+            state: .fake(),
             postcode: .fake(),
             postcodes: .fake(),
             priority: .fake(),

@@ -1,7 +1,7 @@
 import Yosemite
 @testable import WooCommerce
 
-/// Allows mocking for `TaxClassAction`.
+/// Allows mocking for `TaxAction`.
 ///
 final class MockTaxClassStoresManager: DefaultStoresManager {
     private var missingTaxClass: TaxClass?
@@ -14,14 +14,14 @@ final class MockTaxClassStoresManager: DefaultStoresManager {
     // MARK: - Overridden Methods
 
     override func dispatch(_ action: Action) {
-        if let action = action as? TaxClassAction {
-            onTaxClassAction(action: action)
+        if let action = action as? TaxAction {
+            onTaxAction(action: action)
         } else {
             super.dispatch(action)
         }
     }
 
-    private func onTaxClassAction(action: TaxClassAction) {
+    private func onTaxAction(action: TaxAction) {
         switch action {
         case .requestMissingTaxClasses(_, let onCompletion):
             onCompletion(missingTaxClass, nil)

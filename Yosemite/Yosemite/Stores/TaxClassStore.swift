@@ -29,13 +29,13 @@ public class TaxClassStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: TaxClassAction.self)
+        dispatcher.register(processor: self, for: TaxAction.self)
     }
 
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {
-        guard let action = action as? TaxClassAction else {
+        guard let action = action as? TaxAction else {
             assertionFailure("TaxClassStore received an unsupported action")
             return
         }

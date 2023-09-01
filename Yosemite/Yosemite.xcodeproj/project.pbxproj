@@ -198,7 +198,7 @@
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
 		45010693239A6C9F00E24722 /* TaxClassStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxClassStore.swift */; };
-		45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxClassAction.swift */; };
+		45010695239A6CDE00E24722 /* TaxAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxAction.swift */; };
 		45151A8F27B156E40080845F /* InboxNotesAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A8E27B156E40080845F /* InboxNotesAction.swift */; };
 		45151A9127B158A10080845F /* InboxNotesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45151A9027B158A10080845F /* InboxNotesStore.swift */; };
 		45182D1F27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */; };
@@ -333,7 +333,6 @@
 		B5F2AE9520EBAD6000FEDC59 /* ResultsControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */; };
 		B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */; };
 		B93E03282A960CAD009CA9C1 /* TaxBasedOnSetting.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */; };
-		B990FA942AA1F53C00496375 /* TaxRateAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B990FA932AA1F53C00496375 /* TaxRateAction.swift */; };
 		B9AECD3C2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */; };
 		B9AECD3E2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */; };
 		B9AECD402850FE4600E78584 /* Order+CardPresentPayment.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */; };
@@ -650,7 +649,7 @@
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStore.swift; sourceTree = "<group>"; };
-		45010694239A6CDE00E24722 /* TaxClassAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassAction.swift; sourceTree = "<group>"; };
+		45010694239A6CDE00E24722 /* TaxAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxAction.swift; sourceTree = "<group>"; };
 		45151A8E27B156E40080845F /* InboxNotesAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesAction.swift; sourceTree = "<group>"; };
 		45151A9027B158A10080845F /* InboxNotesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxNotesStore.swift; sourceTree = "<group>"; };
 		45182D1E27B54D3000B4C05C /* InboxNote+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InboxNote+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -793,7 +792,6 @@
 		B5F2AE9420EBAD6000FEDC59 /* ResultsControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultsControllerTests.swift; sourceTree = "<group>"; };
 		B5F2AE9620EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchedResultsControllerDelegateWrapper.swift; sourceTree = "<group>"; };
 		B93E03272A960CAD009CA9C1 /* TaxBasedOnSetting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxBasedOnSetting.swift; sourceTree = "<group>"; };
-		B990FA932AA1F53C00496375 /* TaxRateAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateAction.swift; sourceTree = "<group>"; };
 		B9AECD3B2850F3C600E78584 /* OrderCardPresentPaymentEligibilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityStore.swift; sourceTree = "<group>"; };
 		B9AECD3D2850F41100E78584 /* OrderCardPresentPaymentEligibilityAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCardPresentPaymentEligibilityAction.swift; sourceTree = "<group>"; };
 		B9AECD3F2850FE4600E78584 /* Order+CardPresentPayment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Order+CardPresentPayment.swift"; sourceTree = "<group>"; };
@@ -1737,7 +1735,7 @@
 				026CF627237D8F30009563D4 /* ProductVariationAction.swift */,
 				025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */,
 				029BA55A255E0D39006171FD /* ShippingLabelAction.swift */,
-				45010694239A6CDE00E24722 /* TaxClassAction.swift */,
+				45010694239A6CDE00E24722 /* TaxAction.swift */,
 				AEF945862729760F001DCCFB /* TelemetryAction.swift */,
 				022F00BF24725BC6008CD97F /* NotificationCountAction.swift */,
 				DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */,
@@ -1752,7 +1750,6 @@
 				DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */,
 				EEB4E2CA29B04A1200371C3C /* StoreOnboardingTasksAction.swift */,
 				0286A1B92A0CBE1B0099EF94 /* FeatureFlagAction.swift */,
-				B990FA932AA1F53C00496375 /* TaxRateAction.swift */,
 			);
 			path = Actions;
 			sourceTree = "<group>";
@@ -2023,7 +2020,6 @@
 				B52E0032211A440D00700FDE /* Order+ReadOnlyType.swift in Sources */,
 				261F94E4242EFA6D00762B58 /* ProductCategoryAction.swift in Sources */,
 				CC6A054628773F75002C144E /* OrderMetaData+ReadOnlyConvertible.swift in Sources */,
-				B990FA942AA1F53C00496375 /* TaxRateAction.swift in Sources */,
 				029BA557255E0CD4006171FD /* ShippingLabelStore.swift in Sources */,
 				021EAA5C25493E9300AA8CCD /* OrderItemAttribute+ReadOnlyConvertible.swift in Sources */,
 				45AB8B1524AA4A1E00B5B36E /* ProductTagAction.swift in Sources */,
@@ -2055,7 +2051,7 @@
 				CE4FD4522350FB5400A16B31 /* OrderItemTaxRefund+ReadOnlyConvertible.swift in Sources */,
 				31A89EE6278CC38F002A588E /* StripeAccount+PaymentGatewayAccount.swift in Sources */,
 				02FF055223D983F30058E6E7 /* MediaExportService.swift in Sources */,
-				45010695239A6CDE00E24722 /* TaxClassAction.swift in Sources */,
+				45010695239A6CDE00E24722 /* TaxAction.swift in Sources */,
 				03FBDA222631521100ACE257 /* CouponAction.swift in Sources */,
 				CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */,
 				B9F146972A0E30ED0039E159 /* Product+ProductVariation.swift in Sources */,

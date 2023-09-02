@@ -152,7 +152,7 @@ struct ShippingLabelSinglePackage: View {
                         .padding(.horizontal, Constants.horizontalPadding)
                         .sheet(isPresented: $isShowingHazmatSelection) {
                             SelectionList(title: Localization.selectHazmatCategory,
-                                          items: ShippingLabelHazmatCategory.allCases,
+                                          items: viewModel.selectableHazmatCategories,
                                           contentKeyPath: \.localizedName,
                                           selected: $viewModel.selectedHazmatCategory)
                         }

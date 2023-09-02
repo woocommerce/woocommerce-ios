@@ -128,6 +128,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
+    /// The group of selectable Hazardous materials that can be selected
+    ///
+    let selectableHazmatCategories = ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
+
     init(id: String = UUID().uuidString,
          order: Order,
          orderItems: [ShippingLabelPackageItem],

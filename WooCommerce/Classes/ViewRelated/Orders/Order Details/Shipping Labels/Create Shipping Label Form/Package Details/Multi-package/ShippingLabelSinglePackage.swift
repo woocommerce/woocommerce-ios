@@ -157,7 +157,6 @@ struct ShippingLabelSinglePackage: View {
                                           selected: $viewModel.selectedHazmatCategory)
                         }
                     })
-                    
 
                     Divider()
                         .padding(.horizontal, insets: safeAreaInsets)

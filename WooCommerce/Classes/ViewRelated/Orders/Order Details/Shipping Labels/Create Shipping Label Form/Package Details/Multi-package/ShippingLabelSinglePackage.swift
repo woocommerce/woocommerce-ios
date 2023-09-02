@@ -124,15 +124,15 @@ struct ShippingLabelSinglePackage: View {
         VStack(alignment: .leading) {
             VStack {
                 Divider()
-                
+
                 TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
                     .padding(.horizontal, Constants.horizontalPadding)
-                
+
                 VStack {
                     Divider()
                         .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
-                    
+
                     Button(action: {
                         isShowingHazmatSelection.toggle()
                     }, label: {
@@ -146,15 +146,15 @@ struct ShippingLabelSinglePackage: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, Constants.horizontalPadding)
                     })
-                    
+
                     Divider()
                         .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
-                    
+
                     createHazmatInstructionsView()
                 }
                 .renderedIf(viewModel.containsHazmatMaterials)
-                
+
                 Divider()
             }
             .background(Color(.listForeground(modal: false)))

@@ -547,7 +547,6 @@ platform :ios do
 
     archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
-    sh("rm #{archive_zip_path}")
 
     version = options[:beta_release] ? ios_get_build_version : app_version
     create_release(
@@ -557,6 +556,7 @@ platform :ios do
       release_assets: archive_zip_path.to_s,
       prerelease: options[:beta_release]
     )
+    sh("rm #{archive_zip_path}")
 
     upload_to_testflight(
       api_key_path: ASC_KEY_PATH,

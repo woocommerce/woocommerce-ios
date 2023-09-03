@@ -646,6 +646,7 @@ private extension OrderDetailsDataSourceTests {
                   total: "1",
                   totalTax: "1",
                   attributes: [],
+                  addOns: [],
                   parent: nil)
     }
 

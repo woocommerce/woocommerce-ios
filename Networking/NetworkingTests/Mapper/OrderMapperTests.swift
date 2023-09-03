@@ -438,6 +438,38 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.shippingLines.first?.taxes.first?.taxID, 1)
         XCTAssertEqual(order.items.first?.sku, "123")
     }
+
+    func test_order_line_item_addons_without_ID_are_parsed_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithAddOnButNoAddIDResponse())
+
+        // When
+        let addOns = try XCTUnwrap(order.items.first?.addOns)
+
+        // Then
+        XCTAssertEqual(addOns, [.init(addOnID: nil, key: "As a Gift", value: "No")])
+    }
+
+    func test_order_line_item_addons_with_all_types_are_decoded_correctly() throws {
+        // Given
+        let order = try XCTUnwrap(mapLoadOrderWithAllAddOnTypesResponse())
+
+        // When
+        let addOns = try XCTUnwrap(order.items.first?.addOns)
+
+        // Then
+        assertEqual(addOns, [
+            .init(addOnID: 1690787061, key: "Extra cheese (multiple choice)", value: "20-year parmesan"),
+            .init(addOnID: 1691020417, key: "Test checkbox", value: "10% bigger"),
+            .init(addOnID: 1691020418, key: "Pizza pattern (file)", value: "https://example.com/wp-content/uploads/product_addons_uploads/file-2.jpg"),
+            .init(addOnID: 1691020419, key: "Tip (customer defined price)", value: " ($2.50)"),
+            .init(addOnID: 1691020420, key: "Birthday candle (quantity)", value: "10"),
+            .init(addOnID: 1691020421, key: "Recipient email (short text)", value: "test@example.com"),
+            .init(addOnID: 1692927665, key: "Customizations (long text)", value: "Very long text."),
+            .init(addOnID: 1690419140, key: "As a Gift", value: "Yes"),
+            .init(addOnID: 1690786915, key: "Wrapping paper", value: "Yes"),
+        ])
+    }
 }
 
 
@@ -496,6 +528,16 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderWithFaultyAttributesResponse() -> Order? {
         return mapOrder(from: "order-with-faulty-attributes")
+    }
+
+    /// Returns the Order output with a line item with a product add-on but no ID.
+    func mapLoadOrderWithAddOnButNoAddIDResponse() -> Order? {
+        mapOrder(from: "order-with-subscription-renewal")
+    }
+
+    /// Returns the Order output with a line item with all types of product add-ons.
+    func mapLoadOrderWithAllAddOnTypesResponse() -> Order? {
+        return mapOrder(from: "order-with-all-addon-types")
     }
 
     /// Returns the Order output upon receiving `order-with-line-item-attributes-before-API-support`

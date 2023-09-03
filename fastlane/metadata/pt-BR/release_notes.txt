@@ -1,1 +1,1 @@
-Fizemos várias melhorias para ajudar você a começar seu negócio. Continue dando feedback, ele nos ajuda a saber no que trabalhar em seguida.
+Você sabia que pode criar e usar cupons de desconto no aplicativo? Experimente! Esta versão inclui uma correção que garante a possibilidade de criar cupons em todos os dispositivos. Obrigado por utilizar o WooCommerce!

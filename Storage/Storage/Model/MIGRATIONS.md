@@ -2,6 +2,18 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 95 (Release 15.2.0.0)
+- @cvargascasaseca 2023-08-30
+    - Added `TaxRate` entity`.
+
+## Model 94 (Release 15.2.0.0)
+- @jaclync 2023-08-30
+    - Added `OrderItemProductAddOn` entity with many-to-one relationship to `OrderItem`.
+    
+## Model 93 (Release 14.8.0.0)
+- @cvargascasaseca 2023-08-03
+    - Added `username` entity attribute to `Customer` entity.
+
 ## Model 92 (Release 14.7.0.0)
 - @itsmeichigo 2023-07-25
     - Added `wasEcommerceTrial` attribute to `Site` entity.

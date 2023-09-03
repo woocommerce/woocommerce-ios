@@ -90,11 +90,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
                                               totalWeight: totalWeight,
                                               items: orderItems)
     }
-    
+
     /// Whether the Package contains hazmat materials or not
     ///
     @Published var containsHazmatMaterials: Bool = false
-    
+
     /// Currently selected hazmat category
     ///
     @Published var selectedHazmatCategory: ShippingLabelHazmatCategory = .none
@@ -127,6 +127,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     /// Whether the user has edited the total package weight. If true, we won't make any automatic changes to the total weight.
     ///
     @Published private var isPackageWeightEdited: Bool = false
+
+    /// The group of selectable Hazardous materials that can be selected
+    ///
+    let selectableHazmatCategories = ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
 
     init(id: String = UUID().uuidString,
          order: Order,

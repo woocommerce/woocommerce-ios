@@ -568,6 +568,7 @@ extension Networking.OrderItem {
             total: .fake(),
             totalTax: .fake(),
             attributes: .fake(),
+            addOns: .fake(),
             parent: .fake()
         )
     }
@@ -579,6 +580,17 @@ extension Networking.OrderItemAttribute {
         .init(
             metaID: .fake(),
             name: .fake(),
+            value: .fake()
+        )
+    }
+}
+extension Networking.OrderItemProductAddOn {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderItemProductAddOn {
+        .init(
+            addOnID: .fake(),
+            key: .fake(),
             value: .fake()
         )
     }

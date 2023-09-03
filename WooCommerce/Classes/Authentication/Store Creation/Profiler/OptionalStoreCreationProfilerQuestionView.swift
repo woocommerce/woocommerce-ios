@@ -41,7 +41,6 @@ struct OptionalStoreCreationProfilerQuestionView<QuestionContent: View>: View {
                 Button(Localization.skipButtonTitle) {
                     viewModel.skipButtonTapped()
                 }
-                .buttonStyle(LinkButtonStyle())
             }
         }
         // Disables large title to avoid a large gap below the navigation bar.

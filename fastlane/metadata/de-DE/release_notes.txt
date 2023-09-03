@@ -1,1 +1,1 @@
-Wir haben mehrere Verbesserungen vorgenommen, damit du mit deinem Geschäft starten kannst. Sende uns weiterhin Feedback! So finden wir heraus, was wir als Nächstes verbessern können.
+Hast du gewusst, dass du in der App Rabattgutscheine erstellen und verwenden kannst? Probiere es aus! Dieses Release enthält eine Fehlerbehebung, mit der sichergestellt wird, dass Gutscheine auf allen Geräten erstellt werden können. Danke, dass du dich für WooCommerce entschieden hast!

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "Jumlah terhitung";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "Dihitung sesuai alamat penagihan";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "Dihitung sesuai alamat pengiriman";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "Dihitung sesuai alamat toko";
+
 /* Call phone number button title */
 "Call" = "Hubungi";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "Buat Toko hanya dengan %1$@\/bulan";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "Buat Toko Baru";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "Buat Situs";
@@ -3161,9 +3173,6 @@ which should be translated separately and considered part of this sentence. */
 /* Description of the 'Orders' screen - used for spotlight indexing on iOS. */
 "From purchase to fulfillment – manage the entire order process via the app." = "Dari pembelian sampai penyelesaian – kelola seluruh proses pemesanan via aplikasi.";
 
-/* Subtitle displayed in the simplified prologue screen */
-"From your first sale to millions in revenue, Woo is with you. See why merchants trust us to power 3.4 million online stores." = "Woo selalu menyertai mulai dari rintisan hingga jutaan penjualan Anda. Inilah alasan kami dipercaya para penjual untuk memperkuat 3,4 juta toko online mereka.";
-
 /* Title of the CTA view for installing WCShip extension */
 "Fulfill your orders with WooCommerce Shipping" = "Penuhi pesanan Anda dengan WooCommerce Shipping";
 
@@ -3215,8 +3224,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Germany" = "Jerman";
 
-/* Button displayed on the prologue screen of the simplified login flow to create a new store
-   Title of install action in the Jetpack Install view.
+/* Title of install action in the Jetpack Install view.
    View title for initial auth views. */
 "Get Started" = "Memulai";
 
@@ -6431,9 +6439,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Second instruction on the test order screen */
 "Select your test product, add to cart, and complete checkout on that web store as a real customer." = "Pilih produk uji coba Anda, tambahkan ke keranjang, lalu selesaikan proses checkout di toko web tersebut sebagai pelanggan sungguhan.";
 
-/* Caption displayed in the simplified prologue screen */
-"Sell anything, anywhere." = "Jual apa pun, di mana pun.";
-
 /* Text for the send button in the product review reply screen */
 "Send" = "Kirim";
 
@@ -6941,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "Mulai dengan templat";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "Coba sekarang dengan percobaan gratis 15 hari. Tak perlu kartu kredit. Bersama 3,4 juta toko mitra Woo, jual barang pertama Anda sampai raih omzet luar biasa.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Periode awal %1$@, periode akhir %2$@";
 
@@ -7303,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "Pajak";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "Total Pajak";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Pajak dihitung otomatis berdasarkan alamat toko Anda.";
 
@@ -7472,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "Domain yang dibeli akan mengalihkan pengguna ke alamat utama Anda.";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "Platform e-commerce yang tumbuh bersama Anda";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Saat pertama kali menggunakan Ketuk untuk Bayar di iPhone, Anda akan diarahkan untuk menerima Ketentuan Layanan Apple.";

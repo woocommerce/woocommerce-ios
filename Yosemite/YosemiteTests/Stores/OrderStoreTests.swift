@@ -1503,6 +1503,7 @@ private extension OrderStoreTests {
                               total: "30.00",
                               totalTax: "1.20",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         let item2 = OrderItem(itemID: 891,
@@ -1519,6 +1520,7 @@ private extension OrderStoreTests {
                               total: "0.00",
                               totalTax: "0.00",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         return [item1, item2]
@@ -1539,6 +1541,7 @@ private extension OrderStoreTests {
                               total: "64.00",
                               totalTax: "4.00",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         let item2 = OrderItem(itemID: 891,
@@ -1555,6 +1558,7 @@ private extension OrderStoreTests {
                               total: "30.40",
                               totalTax: "0.40",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         let item3 = OrderItem(itemID: 23,
@@ -1571,6 +1575,7 @@ private extension OrderStoreTests {
                               total: "140.40",
                               totalTax: "10.40",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         return [item1, item2, item3]
@@ -1591,6 +1596,7 @@ private extension OrderStoreTests {
                               total: "64.00",
                               totalTax: "4.00",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         return [item1]

@@ -216,6 +216,7 @@ extension MockObjectGraph {
             total: "\(total)",
             totalTax: "0",
             attributes: [],
+            addOns: [],
             parent: nil
         )
     }

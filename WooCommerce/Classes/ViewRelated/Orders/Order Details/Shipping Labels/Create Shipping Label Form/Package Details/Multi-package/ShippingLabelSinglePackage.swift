@@ -106,7 +106,7 @@ struct ShippingLabelSinglePackage: View {
                     Divider()
                 }
                 .background(Color(.listForeground(modal: false)))
-                
+
                 if viewModel.isValidTotalWeight {
                     ListHeaderView(text: Localization.footer, alignment: .left)
                         .padding(.horizontal, insets: safeAreaInsets)
@@ -116,56 +116,69 @@ struct ShippingLabelSinglePackage: View {
                 }
             }
 
-            HazmatSection()
+            createHazmatSection()
         }
     }
-    
-    func HazmatSection() -> some View {
-        VStack {
-            Divider()
-            
-            TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
-                .padding(.horizontal, Constants.horizontalPadding)
-            
+
+    func createHazmatSection() -> some View {
+        VStack(alignment: .leading) {
             VStack {
                 Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
 
-                Button(action: {
-                    isShowingHazmatSelection.toggle()
-                }, label: {
-                    VStack(alignment: .leading) {
-                        Text(Localization.hazmatCategoryTitle)
-                            .bodyStyle()
-                        Text(viewModel.selectedHazmatCategory.localizedName)
-                            .calloutStyle()
-                    }
-                })
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.horizontal, Constants.horizontalPadding)
+                TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
+                    .padding(.horizontal, Constants.horizontalPadding)
+
+                VStack {
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
+
+                    Button(action: {
+                        isShowingHazmatSelection.toggle()
+                    }, label: {
+                        HStack(spacing: 0) {
+                            VStack(alignment: .leading) {
+                                Text(Localization.hazmatCategoryTitle)
+                                    .bodyStyle()
+                                Text(viewModel.selectedHazmatCategory.localizedName)
+                                    .calloutStyle()
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            DisclosureIndicator()
+                                .frame(alignment: .trailing)
+                        }
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .sheet(isPresented: $isShowingHazmatSelection) {
+                            SelectionList(title: Localization.selectHazmatCategory,
+                                          items: viewModel.selectableHazmatCategories,
+                                          contentKeyPath: \.localizedName,
+                                          selected: $viewModel.selectedHazmatCategory)
+                        }
+                    })
+
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
+
+                    createHazmatInstructionsView()
+                }
+                .renderedIf(viewModel.containsHazmatMaterials)
 
                 Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
-
-                HazmatInstructions()
             }
-            .renderedIf(viewModel.containsHazmatMaterials)
-            .sheet(isPresented: $isShowingHazmatSelection) {
-                SelectionList(title: Localization.selectHazmatCategory,
-                              items: ShippingLabelHazmatCategory.allCases,
-                              contentKeyPath: \.localizedName,
-                              selected: $viewModel.selectedHazmatCategory)
-            }
+            .background(Color(.listForeground(modal: false)))
 
-            Divider()
-        }
-        .background(Color(.listForeground(modal: false)))
-        .renderedIf(viewModel.isHazmatShippingEnabled)
+            Text(Localization.hazmatTooltip)
+                .renderedIf(!viewModel.containsHazmatMaterials)
+                .padding(.leading, Constants.horizontalPadding)
+                .calloutStyle()
+            }
+            .renderedIf(viewModel.isHazmatShippingEnabled)
     }
-    
-    func HazmatInstructions() -> some View {
+
+    func createHazmatInstructionsView() -> some View {
         VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)
@@ -194,9 +207,10 @@ struct ShippingLabelSinglePackage: View {
 
             Spacer()
         }
-        .padding(.horizontal, Constants.horizontalPadding)
+        .padding(.leading, Constants.horizontalPadding)
+        .padding(.trailing, Constants.longTextTrailingPadding)
     }
-    
+
     func createText(withLink link: String, content: String, action: @escaping () -> Void) -> some View {
         HStack {
             Text(content)
@@ -237,20 +251,35 @@ private extension ShippingLabelSinglePackage {
                                                          "the Shipping section of your product page to continue.",
                                                          comment: "Validation error for original package without dimensions " +
                                                          "on Package Details screen in Shipping Labels flow.")
-        static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials", comment: "Pending")
-        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category", comment: "Pending")
-        static let selectHazmatCategory = NSLocalizedString("Select a category", comment: "Pending")
-        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages.", comment: "Pending")
-        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through USPS® at ", comment: "Pending")
+        static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials",
+                                                               comment: "Toggle to declare when a package contains hazardous materials")
+        static let hazmatTooltip = NSLocalizedString("Select this if your package contains dangerous goods or hazardous materials",
+                                                     comment: "Tooltip below the hazmat toggle detailing when to select it")
+        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category",
+                                                           comment: "Button title for the hazmat material category selection")
+        static let selectHazmatCategory = NSLocalizedString("Select a category",
+                                                            comment: "Hazmat category button tooltip asking to select a category")
+        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, " +
+                                                                      "dry ice, flammable liquids, aerosols, ammunition, fireworks, nail " +
+                                                                      "polish, perfume, paint, solvents, and more. Hazardous items must " +
+                                                                      "ship in separate packages.",
+                                                                      comment: "Instructions for hazardous package shipping")
+        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
+                                                                       "USPS® at www.usps.com/hazmat.",
+                                                                       comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat.", comment: "Pending")
-        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the ", comment: "Pending")
+        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.",
+                                                                      comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool.", comment: "Pending")
-        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments through ", comment: "Pending")
+        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
+                                                                       + "through DHL Express.",
+                                                                       comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express.", comment: "Pending")
     }
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
+        static let longTextTrailingPadding: CGFloat = 12
     }
 }
 

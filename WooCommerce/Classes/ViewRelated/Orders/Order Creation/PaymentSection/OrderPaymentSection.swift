@@ -110,16 +110,12 @@ struct OrderPaymentSection: View {
                     }
                 }
 
-            if viewModel.shouldShowTaxExtraInformation {
-                taxesSection
-                    .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
-                        TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
-                                                 onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
-                            .background(FullScreenCoverClearBackgroundView())
+            taxesSection
+                .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
+                    TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
+                                             onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
+                        .background(FullScreenCoverClearBackgroundView())
                     }
-            } else {
-                TitleAndValueRow(title: Localization.taxes, value: .content(viewModel.taxesTotal))
-            }
 
             TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
                 .renderedIf(viewModel.shouldShowDiscountTotal)
@@ -189,6 +185,7 @@ struct OrderPaymentSection: View {
 
             Button {
                 shouldShowTaxEducationalDialog = true
+                viewModel.onTaxHelpButtonTappedClosure()
             } label: {
                 Image(systemName: "questionmark.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))

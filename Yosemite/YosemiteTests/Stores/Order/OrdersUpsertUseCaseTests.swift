@@ -268,6 +268,7 @@ private extension OrdersUpsertUseCaseTests {
                   total: "",
                   totalTax: "",
                   attributes: [],
+                  addOns: [],
                   parent: nil)
     }
 
@@ -290,6 +291,7 @@ private extension OrdersUpsertUseCaseTests {
               total: "-18.00",
               totalTax: "0.00",
               attributes: attributes,
+              addOns: [],
               parent: nil)
     }
 }

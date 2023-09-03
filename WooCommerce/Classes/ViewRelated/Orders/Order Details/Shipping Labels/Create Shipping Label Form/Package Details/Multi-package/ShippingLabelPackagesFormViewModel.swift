@@ -527,6 +527,7 @@ extension ShippingLabelPackagesFormViewModel {
                               total: "30.00",
                               totalTax: "1.20",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         let item2 = OrderItem(itemID: 891,
@@ -543,6 +544,7 @@ extension ShippingLabelPackagesFormViewModel {
                               total: "0.00",
                               totalTax: "0.00",
                               attributes: [],
+                              addOns: [],
                               parent: nil)
 
         return [item1, item2]

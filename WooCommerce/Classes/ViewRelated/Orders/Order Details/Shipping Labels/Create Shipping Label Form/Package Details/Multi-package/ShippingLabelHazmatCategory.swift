@@ -28,7 +28,7 @@ enum ShippingLabelHazmatCategory: String, CaseIterable {
     case lighters
     case limitedQuantity
     case smallQuantityProvision
-    
+
     var localizedName: String {
         switch self {
         case .none:
@@ -102,27 +102,34 @@ extension ShippingLabelHazmatCategory {
                                               comment: "A hazardous material description stating when a package can fit into this category")
         static let class5 = NSLocalizedString("Class 5 - Package (Oxidizers)",
                                               comment: "A hazardous material description stating when a package can fit into this category")
-        static let class6 = NSLocalizedString("Class 6 - Package (Poisonous materials)"
-                                              , comment: "A hazardous material description stating when a package can fit into this category")
+        static let class6 = NSLocalizedString("Class 6 - Package (Poisonous materials)",
+                                              comment: "A hazardous material description stating when a package can fit into this category")
         static let class7 = NSLocalizedString("Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)",
                                               comment: "A hazardous material description stating when a package can fit into this category")
-        static let class8Corrosive = NSLocalizedString("Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree/weed killing compounds, etc.)",
+        static let class8Corrosive = NSLocalizedString("Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or " +
+                                                       "tree/weed killing compounds, etc.)",
                                                        comment: "A hazardous material description stating when a package can fit into this category")
         static let class8Wetbattery = NSLocalizedString("Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries",
                                                         comment: "A hazardous material description stating when a package can fit into this category")
-        static let class9NewLithiumIndividual = NSLocalizedString("Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)",
-                                                                  comment: "A hazardous material description stating when a package can fit into this category")
-        static let class9UsedLithium = NSLocalizedString("Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)",
+        static let class9NewLithiumIndividual = NSLocalizedString("Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium " +
+                                                                  "batteries (marked UN3480 or UN3090)",
+                                                                  comment: "A hazardous material description stating when a " +
+                                                                  "package can fit into this category")
+        static let class9UsedLithium = NSLocalizedString("Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with " +
+                                                         "lithium batteries (markings required)",
                                                          comment: "A hazardous material description stating when a package can fit into this category")
-        static let class9newLithiumDevice = NSLocalizedString("Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)",
+        static let class9newLithiumDevice = NSLocalizedString("Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium " +
+                                                              "batteries (marked UN3481 or UN3091)",
                                                               comment: "A hazardous material description stating when a package can fit into this category")
         static let class9DryIce = NSLocalizedString("Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)",
                                                     comment: "A hazardous material description stating when a package can fit into this category")
-        static let class9UnmarkedLithium = NSLocalizedString("Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)",
+        static let class9UnmarkedLithium = NSLocalizedString("Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged " +
+                                                             "with lithium batteries (no marking)",
                                                              comment: "A hazardous material description stating when a package can fit into this category")
         static let class9Magnitized = NSLocalizedString("Class 9 – Magnetized Materials Package",
                                                         comment: "A hazardous material description stating when a package can fit into this category")
-        static let division41 = NSLocalizedString("Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, book matches, mailable flammable solids",
+        static let division41 = NSLocalizedString("Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, " +
+                                                  "book matches, mailable flammable solids",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let division51 = NSLocalizedString("Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
@@ -130,7 +137,8 @@ extension ShippingLabelHazmatCategory {
                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let division61 = NSLocalizedString("Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg/kg or less) - (pesticides, herbicides, etc.)",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
-        static let division62 = NSLocalizedString("Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)",
+        static let division62 = NSLocalizedString("Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test " +
+                                                  "kit returns)",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let exceptedQuantityProvision = NSLocalizedString("Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, " +
                                                                  "toxic or environmentally hazardous materials - marking required)",

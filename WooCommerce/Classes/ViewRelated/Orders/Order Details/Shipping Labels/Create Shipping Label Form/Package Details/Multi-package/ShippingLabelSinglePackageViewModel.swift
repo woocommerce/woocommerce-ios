@@ -179,6 +179,15 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             containsHazmatMaterials = true
             selectedHazmatCategory = hazmatCategory
         }
+        $containsHazmatMaterials
+            .map { [weak self] contains in
+                if contains {
+                    return self?.selectedHazmatCategory ?? .none
+                } else {
+                    return ShippingLabelHazmatCategory.none
+                }
+            }
+            .assign(to: &$selectedHazmatCategory)
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 

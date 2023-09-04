@@ -9,7 +9,7 @@ struct TaxRateListMapper: Mapper {
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into [TaxClass].
+    /// (Attempts) to convert a dictionary into [TaxRate].
     ///
     func map(response: Data) throws -> [TaxRate] {
         let decoder = JSONDecoder()

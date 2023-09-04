@@ -127,6 +127,7 @@ private extension ShippingLabelPackagesFormViewModel {
                          selectedPackageID: details.packageID,
                          totalWeight: details.totalWeight,
                          isOriginalPackaging: details.isOriginalPackaging,
+                         hazmatCategory: details.selectedHazmatCategory ?? .none,
                          onItemMoveRequest: { [weak self] in
                 self?.itemViewModels.forEach {
                     $0.dismissPopover()

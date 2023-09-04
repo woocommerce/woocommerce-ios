@@ -168,6 +168,7 @@ struct ShippingLabelSinglePackage_Previews: PreviewProvider {
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
                                                             isOriginalPackaging: false,
+                                                            hazmatCategory: .none,
                                                             onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })

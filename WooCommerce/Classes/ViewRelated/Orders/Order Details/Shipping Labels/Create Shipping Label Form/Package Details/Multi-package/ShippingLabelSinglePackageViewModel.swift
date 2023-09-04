@@ -146,6 +146,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
          selectedPackageID: String,
          totalWeight: String,
          isOriginalPackaging: Bool = false,
+         hazmatCategory: ShippingLabelHazmatCategory,
          onItemMoveRequest: @escaping () -> Void,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -173,6 +174,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         configureTotalWeight(initialTotalWeight: totalWeight)
         if isOriginalPackaging, let item = orderItems.first {
             configureOriginalPackageDimensions(for: item)
+        }
+        if hazmatCategory != .none {
+            containsHazmatMaterials = true
+            selectedHazmatCategory = hazmatCategory
         }
         configureValidation(originalPackaging: isOriginalPackaging)
     }

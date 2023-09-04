@@ -107,8 +107,11 @@ struct ShippingLabelSinglePackage: View {
                 .background(Color(.listForeground(modal: false)))
 
                 if viewModel.isValidTotalWeight {
-                    ListHeaderView(text: Localization.footer, alignment: .left)
-                        .padding(.horizontal, insets: safeAreaInsets)
+                    Text(Localization.footer)
+                        .footnoteStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .padding(.vertical, Constants.verticalSpacing)
                 } else {
                     ValidationErrorRow(errorMessage: Localization.invalidWeight)
                         .padding(.horizontal, insets: safeAreaInsets)
@@ -150,7 +153,7 @@ private extension ShippingLabelSinglePackage {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
-        static let longTextTrailingPadding: CGFloat = 12
+        static let verticalSpacing: CGFloat = 8
     }
 }
 

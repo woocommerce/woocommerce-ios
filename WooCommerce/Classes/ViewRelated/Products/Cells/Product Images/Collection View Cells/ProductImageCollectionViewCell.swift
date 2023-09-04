@@ -5,12 +5,15 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
+    @IBOutlet private weak var editButton: UIButton!
+
     var cancellableTask: Cancellable?
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
         configureImageView()
+        configureEditButton()
         configureCellAppearance()
     }
 
@@ -24,6 +27,17 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         cancellableTask?.cancel()
         cancellableTask = nil
     }
+
+    /// Set the menu that is shown when tapping on the edit button.
+    /// - Parameter menu: When the menu is `nil`, the edit button is not shown.
+    func setEditButtonMenu(_ menu: UIMenu?) {
+        editButton.isHidden = menu == nil
+        guard let menu else {
+            return
+        }
+        editButton.showsMenuAsPrimaryAction = true
+        editButton.menu = menu
+    }
 }
 
 /// Private Methods
@@ -36,6 +50,12 @@ private extension ProductImageCollectionViewCell {
     func configureImageView() {
         imageView.contentMode = Settings.imageContentMode
         imageView.clipsToBounds = Settings.clipToBounds
+    }
+
+    func configureEditButton() {
+        editButton.isHidden = true
+        editButton.applyIconButtonStyle(icon: .sparklesImage)
+        editButton.setTitle("", for: .normal)
     }
 
     func configureCellAppearance() {

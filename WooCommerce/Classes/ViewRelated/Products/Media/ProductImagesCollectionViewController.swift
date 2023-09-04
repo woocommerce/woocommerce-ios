@@ -96,6 +96,18 @@ private extension ProductImagesCollectionViewController {
             cell?.imageView.image = image
         }
         cell.cancellableTask = cancellable
+
+        // TODO-jc: editable check
+        if isDeletionEnabled {
+            let removeBackgroundAction = UIAction(title: "Remove background",
+                                                  image: .sparklesImage) { [weak self] _ in
+                self?.removeBackground(image: productImage)
+            }
+            let menu = UIMenu(title: "", children: [removeBackgroundAction])
+            cell.setEditButtonMenu(menu)
+        } else {
+            cell.setEditButtonMenu(nil)
+        }
     }
 
     func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
@@ -251,5 +263,34 @@ private extension ProductImagesCollectionViewController {
                                 forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
         collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
                                 forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+    }
+}
+
+private extension ProductImagesCollectionViewController {
+    func removeBackground(image: ProductImage) {
+        print("\(image)")
+    }
+}
+
+extension ProductImagesCollectionViewController {
+    override func collectionView(_ collectionView: UICollectionView,
+                                 contextMenuConfigurationForItemsAt indexPaths: [IndexPath],
+                                 point: CGPoint) -> UIContextMenuConfiguration? {
+        // Multi-selection is not supported.
+        guard let indexPath = indexPaths.first, indexPaths.count == 1 else {
+            return nil
+        }
+
+        guard case let .remote(image) = productImageStatuses[indexPath.row] else {
+            return nil
+        }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: { nil }, actionProvider: { suggestedActions in
+            let removeBackgroundAction = UIAction(title: NSLocalizedString("Remove background", comment: ""),
+                                                  image: .sparklesImage) { [weak self] action in
+                self?.removeBackground(image: image)
+            }
+            return UIMenu(title: "", children: [removeBackgroundAction])
+        })
     }
 }

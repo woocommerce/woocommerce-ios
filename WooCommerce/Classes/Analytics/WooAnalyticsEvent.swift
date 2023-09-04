@@ -1832,8 +1832,7 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Keys.countryCode: countryCode,
                                 Keys.reason: reason,
-                                Keys.errorDescription: error.localizedDescription
-                              ])
+                              ], error: error)
         }
 
         enum CashOnDeliverySource: String {

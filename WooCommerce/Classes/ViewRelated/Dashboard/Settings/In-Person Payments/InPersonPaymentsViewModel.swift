@@ -57,6 +57,12 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         useCase.refresh()
     }
 
+    ///
+    ///
+    func activatePlugin() {
+        useCase.activateCardPresentPlugin()
+    }
+
     /// Skips the Pending Requirements step when the user taps `Skip`
     ///
     func skipPendingRequirements() {

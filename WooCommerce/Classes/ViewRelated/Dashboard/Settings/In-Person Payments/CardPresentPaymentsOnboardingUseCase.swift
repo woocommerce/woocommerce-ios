@@ -35,6 +35,8 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
 
     func clearPluginSelection()
+    
+    func activateCardPresentPlugin()
 }
 
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
@@ -102,6 +104,26 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         } else {
             refresh()
         }
+    }
+
+    ///
+    ///
+    func activateCardPresentPlugin() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        // Only WCPay is currently supported, so we don't expose a different plugin option
+        let pluginName = "woocommerce-payments/woocommerce-payments"
+        let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { result in
+            switch result {
+            case .success:
+                break
+            case .failure(let error):
+                DDLogError("Error activating plugin: \(error)")
+            }
+        })
+        stores.dispatch(activatePluginAction)
     }
 
     private func refreshOnboardingState() {

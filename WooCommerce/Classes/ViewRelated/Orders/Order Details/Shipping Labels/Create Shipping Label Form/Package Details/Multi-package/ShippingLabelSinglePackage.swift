@@ -5,7 +5,6 @@ struct ShippingLabelSinglePackage: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingPackageSelection = false
     @State private var isCollapsed: Bool = false
-    @State private var isShowingHazmatSelection = false
 
     private let isCollapsible: Bool
     private let safeAreaInsets: EdgeInsets

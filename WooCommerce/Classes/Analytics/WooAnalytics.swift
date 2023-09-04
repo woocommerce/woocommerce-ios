@@ -13,7 +13,7 @@ public class WooAnalytics: Analytics {
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
     private(set) var analyticsProvider: AnalyticsProvider
-    
+
     private var stores: StoresManager
 
     /// Time when app was opened — used for calculating the time-in-app property

@@ -6,6 +6,7 @@ struct ShippingLabelSinglePackage: View {
     @State private var isShowingPackageSelection = false
     @State private var isCollapsed: Bool = false
     @State private var isShowingHazmatSelection = false
+    @State private var displayedURL: URL?
 
     private let isCollapsible: Bool
     private let safeAreaInsets: EdgeInsets
@@ -187,23 +188,17 @@ struct ShippingLabelSinglePackage: View {
             Spacer()
             createText(withLink: Localization.hazmatInstructionsSecondSectionLink,
                        content: Localization.hazmatInstructionsSecondSection,
-                       action: {
-                // call link execution
-            })
+                       url: WooConstants.URLs.uspsInstructions.asURL())
 
             Spacer()
             createText(withLink: Localization.hazmatInstructionsThirdSectionLink,
                        content: Localization.hazmatInstructionsThirdSection,
-                       action: {
-                // call link execution
-            })
+                       url: WooConstants.URLs.uspsSearchTool.asURL())
 
             Spacer()
             createText(withLink: Localization.hazmatInstructionsFourthSectionLink,
                        content: Localization.hazmatInstructionsFourthSection,
-                       action: {
-                // call link execution
-            })
+                       url: WooConstants.URLs.dhlExpressInstructions.asURL())
 
             Spacer()
         }
@@ -211,17 +206,9 @@ struct ShippingLabelSinglePackage: View {
         .padding(.trailing, Constants.longTextTrailingPadding)
     }
 
-    func createText(withLink link: String, content: String, action: @escaping () -> Void) -> some View {
-        HStack {
-            Text(content)
-                .calloutStyle()
-
-            Text(link)
-                .underline(true)
-                .linkStyle()
-                .onTapGesture(perform: action)
-                .accessibilityAddTraits(.isButton)
-        }
+    func createText(withLink link: String, content: String, url: URL) -> some View {
+        Text(.init("\(content) [\(link)](\(url))"))
+            .calloutStyle()
     }
 }
 
@@ -265,14 +252,14 @@ private extension ShippingLabelSinglePackage {
                                                                       "ship in separate packages.",
                                                                       comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
-                                                                       "USPS® at www.usps.com/hazmat.",
+                                                                       "USPS® at",
                                                                        comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat.", comment: "Pending")
-        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.",
+        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the",
                                                                       comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool.", comment: "Pending")
         static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
-                                                                       + "through DHL Express.",
+                                                                       + "through",
                                                                        comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express.", comment: "Pending")
     }

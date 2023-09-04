@@ -1889,6 +1889,7 @@ extension Networking.TaxRate {
     public static func fake() -> Networking.TaxRate {
         .init(
             id: .fake(),
+            siteID: .fake(),
             name: .fake(),
             country: .fake(),
             state: .fake(),

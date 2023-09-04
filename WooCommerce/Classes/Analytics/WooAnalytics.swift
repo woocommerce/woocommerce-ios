@@ -14,8 +14,6 @@ public class WooAnalytics: Analytics {
     ///
     private(set) var analyticsProvider: AnalyticsProvider
 
-    private var stores: StoresManager
-
     /// Time when app was opened — used for calculating the time-in-app property
     ///
     private var applicationOpenedTime: Date?
@@ -38,10 +36,8 @@ public class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
-         stores: StoresManager = ServiceLocator.stores) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
         self.analyticsProvider = analyticsProvider
-        self.stores = stores
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -68,14 +64,14 @@ public extension WooAnalytics {
 
         // Skips refreshing user data when user is authenticated without WPCom
         // since they are still identified with anonymous ID.
-        if stores.isAuthenticatedWithoutWPCom == false {
+        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
             analyticsProvider.refreshUserData()
         }
 
         // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
         // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
         // access.
-        let context: ExperimentContext = stores.isAuthenticated ?
+        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
             .loggedIn: .loggedOut
         Task { @MainActor in
             await ABTest.start(for: context)
@@ -239,12 +235,12 @@ private extension WooAnalytics {
     /// This function appends any additional properties to the provided properties dict if needed.
     ///
     func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        guard stat.shouldSendSiteProperties, stores.isAuthenticated else {
+        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
             return properties
         }
 
         var updatedProperties = properties ?? [:]
-        let site = stores.sessionManager.defaultSite
+        let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial

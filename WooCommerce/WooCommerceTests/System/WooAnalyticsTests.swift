@@ -23,6 +23,8 @@ class WooAnalyticsTests: XCTestCase {
 
     private let sampleSiteURL: String = "https://example.com"
 
+    private let originalStores: StoresManager = ServiceLocator.stores
+
     // MARK: - Overridden Methods
 
     override func setUp() {
@@ -31,7 +33,13 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), stores: stores)
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        ServiceLocator.setStores(originalStores)
     }
 
     /// Verifies basic events are received by the AnalyticsProvider
@@ -160,7 +168,8 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
-        analytics = WooAnalytics(analyticsProvider: testingProvider, stores: stores)
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -194,7 +203,8 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
-        analytics = WooAnalytics(analyticsProvider: testingProvider, stores: stores)
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)

@@ -36,7 +36,7 @@ public class TaxRemote: Remote {
     public func retrieveTaxRates(siteID: Int64,
                                  pageNumber: Int,
                                  pageSize: Int,
-                                 onCompletion: @escaping (Result<([TaxRate]), Error>) -> Void) {
+                                 onCompletion: @escaping (Result<[TaxRate], Error>) -> Void) {
 
         let path = Path.taxes
         let request = JetpackRequest(wooApiVersion: .mark3,

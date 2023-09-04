@@ -103,7 +103,7 @@ private extension TaxStore {
     func retrieveTaxRates(siteID: Int64,
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: @escaping (Result<([TaxRate]), Error>) -> Void) {
+                          onCompletion: @escaping (Result<[TaxRate], Error>) -> Void) {
         remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):

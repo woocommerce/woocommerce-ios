@@ -287,7 +287,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     }
 
-    func test_onboarding_sends_install_plugin_action_for_wcpay_plugin_when_installPlugin_is_invoked() throws {
+    func test_onboarding_sends_install_plugin_action_for_wcpay_plugin_when_installPlugin_is_invoked_then_installs_wcpay_plugin() throws {
         // Given
         setupCountry(country: .us)
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,

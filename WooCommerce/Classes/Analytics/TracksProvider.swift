@@ -30,8 +30,10 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
-        if let properties = properties {
-            tracksService.trackEventName(eventName, withCustomProperties: properties)
+        if let properties {
+            guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
+                return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
+            }
             DDLogInfo("🔵 Tracked \(eventName), properties: \(properties)")
         } else {
             tracksService.trackEventName(eventName)

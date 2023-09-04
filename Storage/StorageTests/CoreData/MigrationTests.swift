@@ -2153,9 +2153,28 @@ final class MigrationTests: XCTestCase {
 
         // Then
         let targetContext = targetContainer.viewContext
-        let migratedCustomerEntity = try XCTUnwrap(targetContext.first(entityName: "TaxRate"))
+        let migratedTaxRateEntity = try XCTUnwrap(targetContext.first(entityName: "TaxRate"))
 
-        XCTAssertNotNil(migratedCustomerEntity.entity.attributesByName["siteID"], "Confirm expected property exists")
+        XCTAssertNotNil(migratedTaxRateEntity.entity.attributesByName["siteID"], "Confirm expected property exists")
+    }
+
+    func test_migrating_from_95_to_96_keeps_transformables_in_taxRate_after_changing_transformer() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 95")
+        let sourceContext = sourceContainer.viewContext
+
+        let taxRate = insertTaxRate(to: sourceContext, forModel: 95)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 96")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedTaxRateEntity = try XCTUnwrap(targetContext.first(entityName: "TaxRate")) as? TaxRate
+
+        XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "postcodes") as? [String], ["1234"])
+        XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "cities") as? [String], ["Miami"])
     }
 }
 

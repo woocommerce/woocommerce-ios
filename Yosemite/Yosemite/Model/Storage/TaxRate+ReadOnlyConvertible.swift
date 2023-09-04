@@ -27,20 +27,20 @@ extension Storage.TaxRate: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.TaxRate {
-        return TaxRate(id: id,
-                       siteID: siteID,
-                       name: name ?? "",
-                       country: country ?? "",
-                       state: state ?? "",
-                       postcode: postcode ?? "",
-                       postcodes: postcodes as? [String] ?? [],
-                       priority: priority,
-                       rate: rate ?? "",
-                       order: order,
-                       taxRateClass: taxRateClass ?? "",
-                       shipping: shipping,
-                       compound: compound,
-                       city: city ?? "",
-                       cities: cities as? [String] ?? [])
+        .init(id: id,
+              siteID: siteID,
+              name: name ?? "",
+              country: country ?? "",
+              state: state ?? "",
+              postcode: postcode ?? "",
+              postcodes: postcodes as? [String] ?? [],
+              priority: priority,
+              rate: rate ?? "",
+              order: order,
+              taxRateClass: taxRateClass ?? "",
+              shipping: shipping,
+              compound: compound,
+              city: city ?? "",
+              cities: cities as? [String] ?? [])
     }
 }

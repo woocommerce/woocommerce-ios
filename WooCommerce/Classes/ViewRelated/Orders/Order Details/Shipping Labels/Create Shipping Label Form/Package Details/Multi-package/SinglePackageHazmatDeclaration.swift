@@ -78,47 +78,58 @@ struct SinglePackageHazmatDeclaration: View {
                 .calloutStyle()
 
             Spacer()
-            Text(Localization.hazmatInstructionsSecondSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsSecondSectionLink,
+                       url: WooConstants.URLs.uspsInstructions.asURL(),
+                       content: Localization.hazmatInstructionsSecondSection)
 
             Spacer()
-            Text(Localization.hazmatInstructionsThirdSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsThirdSectionLink,
+                       url: WooConstants.URLs.uspsSearchTool.asURL(),
+                       content: Localization.hazmatInstructionsThirdSection)
 
             Spacer()
-            Text(Localization.hazmatInstructionsFourthSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsFourthSectionLink,
+                       url: WooConstants.URLs.dhlExpressInstructions.asURL(),
+                       content: Localization.hazmatInstructionsFourthSection)
 
             Spacer()
         }
         .padding(.leading, Constants.horizontalPadding)
         .padding(.trailing, Constants.longTextTrailingPadding)
     }
+
+    func createText(withLink linkText: String, url: URL, content: String) -> some View {
+        Text(.init("\(content) [\(linkText)](\(url))"))
+            .calloutStyle()
+    }
 }
 
 private extension SinglePackageHazmatDeclaration {
     enum Localization {
         static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials",
-                                                               comment: "Toggle to declare when a package contains hazardous materials")
-        static let hazmatTooltip = NSLocalizedString("Select this if your package contains dangerous goods or hazardous materials",
-                                                     comment: "Tooltip below the hazmat toggle detailing when to select it")
-        static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category",
-                                                           comment: "Button title for the hazmat material category selection")
-        static let selectHazmatCategory = NSLocalizedString("Select a category",
-                                                            comment: "Hazmat category button tooltip asking to select a category")
-        static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, " +
-                                                                      "dry ice, flammable liquids, aerosols, ammunition, fireworks, nail " +
-                                                                      "polish, perfume, paint, solvents, and more. Hazardous items must " +
-                                                                      "ship in separate packages.",
-                                                                      comment: "Instructions for hazardous package shipping")
-        static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
-                                                                       "USPS® at www.usps.com/hazmat.",
-                                                                       comment: "Instructions for hazardous package shipping")
-        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.",
-                                                                      comment: "Instructions for hazardous package shipping")
-        static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
-                                                                       + "through DHL Express.",
-                                                                       comment: "Instructions for hazardous package shipping")
+                                                                       comment: "Toggle to declare when a package contains hazardous materials")
+                static let hazmatTooltip = NSLocalizedString("Select this if your package contains dangerous goods or hazardous materials",
+                                                             comment: "Tooltip below the hazmat toggle detailing when to select it")
+                static let hazmatCategoryTitle = NSLocalizedString("Hazardous material category",
+                                                                   comment: "Button title for the hazmat material category selection")
+                static let selectHazmatCategory = NSLocalizedString("Select a category",
+                                                                    comment: "Hazmat category button tooltip asking to select a category")
+                static let hazmatInstructionsFirstSection = NSLocalizedString("Potentially hazardous material includes items such as batteries, " +
+                                                                              "dry ice, flammable liquids, aerosols, ammunition, fireworks, nail " +
+                                                                              "polish, perfume, paint, solvents, and more. Hazardous items must " +
+                                                                              "ship in separate packages.",
+                                                                              comment: "Instructions for hazardous package shipping")
+                static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
+                                                                               "USPS® at",
+                                                                               comment: "Instructions for hazardous package shipping")
+                static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat.", comment: "Pending")
+                static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the",
+                                                                              comment: "Instructions for hazardous package shipping")
+                static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool.", comment: "Pending")
+                static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
+                                                                               + "through",
+                                                                               comment: "Instructions for hazardous package shipping")
+                static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express.", comment: "Pending")
     }
 
     enum Constants {

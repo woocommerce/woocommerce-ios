@@ -155,12 +155,13 @@ private extension TaxStore {
 //
 private extension TaxStore {
 
-    /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
+    /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
     func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
+            derivedStorage.deleteTaxRates(siteID: siteID)
             self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
         }
 
@@ -183,10 +184,12 @@ private extension TaxStore {
                                                          id: readOnlyTaxRate.id) {
                     return storedTaxRate
                 }
+
                 return storage.insertNewObject(ofType: Storage.TaxRate.self)
             }()
 
             storageTaxRate.update(with: readOnlyTaxRate)
+            storageTaxRate.siteID = siteID
         }
     }
 }

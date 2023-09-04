@@ -175,19 +175,6 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         if isOriginalPackaging, let item = orderItems.first {
             configureOriginalPackageDimensions(for: item)
         }
-        if hazmatCategory != .none {
-            containsHazmatMaterials = true
-            selectedHazmatCategory = hazmatCategory
-        }
-        $containsHazmatMaterials
-            .map { [weak self] contains in
-                if contains {
-                    return self?.selectedHazmatCategory ?? .none
-                } else {
-                    return ShippingLabelHazmatCategory.none
-                }
-            }
-            .assign(to: &$selectedHazmatCategory)
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 
@@ -237,6 +224,22 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         let height = item.dimensions.height.isEmpty ? "0" : item.dimensions.height
         originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
         hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
+    }
+    
+    private func configureHazmatCategory(hazmatCategory: ShippingLabelHazmatCategory) {
+        if hazmatCategory != .none {
+            containsHazmatMaterials = true
+            selectedHazmatCategory = hazmatCategory
+        }
+
+        $containsHazmatMaterials
+            .map { [weak self] contains in
+                if contains {
+                    return self?.selectedHazmatCategory ?? .none
+                }
+                return ShippingLabelHazmatCategory.none
+            }
+            .assign(to: &$selectedHazmatCategory)
     }
 
     private func configureValidation(originalPackaging: Bool) {

@@ -181,6 +181,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         }
     }
 
+    func showWebViewFor(url: URL) {
+        UIApplication.shared.open(url)
+    }
+
     private func configureItemRows() {
         itemsRows = generateItemsRows()
     }

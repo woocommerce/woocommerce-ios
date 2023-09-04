@@ -3,6 +3,7 @@ import SwiftUI
 struct SinglePackageHazmatDeclaration: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingHazmatSelection = false
+    @State private var destinationURL: URL?
 
     private let safeAreaInsets: EdgeInsets
 
@@ -101,6 +102,11 @@ struct SinglePackageHazmatDeclaration: View {
     func createText(withLink linkText: String, url: URL, content: String) -> some View {
         Text(.init("\(content) [\(linkText)](\(url))"))
             .calloutStyle()
+            .environment(\.openURL, OpenURLAction { url in
+                destinationURL = url
+                return .handled
+            })
+            .safariSheet(url: $destinationURL)
     }
 }
 

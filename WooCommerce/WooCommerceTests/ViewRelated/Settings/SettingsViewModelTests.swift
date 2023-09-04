@@ -1,6 +1,7 @@
 import Codegen
 import XCTest
 import Yosemite
+import class Networking.UserAgent
 
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType
@@ -400,6 +401,67 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(try XCTUnwrap(eventProperties["hide"] as? Bool))
         XCTAssertEqual(eventProperties["pending_tasks"] as? String, "add_domain,launch_site,payments,products")
     }
+
+    func test_sections_contains_whats_new_row_when_announcement_for_this_version_is_available() {
+        // Given
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager)
+        guard let currentVersion = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String
+        else {
+            return XCTFail("Could not get the current app version")
+        }
+
+        waitFor { [weak self] promise in
+            self?.stores.whenReceivingAction(ofType: AnnouncementsAction.self) { announcementAction in
+                switch announcementAction {
+                case .loadSavedAnnouncement(let completion):
+                    completion(.success((Announcement.fake().copy(appVersionName: currentVersion,
+                                                                  minimumAppVersion: currentVersion,
+                                                                  maximumAppVersion: currentVersion),
+                                         true)))
+                    promise(())
+                default:
+                    break
+                }
+            }
+
+            // When
+            viewModel.onViewDidLoad()
+        }
+
+        // Then
+        XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.whatsNew) })
+    }
+
+    func test_sections_does_not_contain_whats_new_row_when_announcement_is_available_for_past_version() {
+        // Given
+        let viewModel = SettingsViewModel(
+            stores: stores,
+            storageManager: storageManager)
+
+        waitFor { [weak self] promise in
+            self?.stores.whenReceivingAction(ofType: AnnouncementsAction.self) { announcementAction in
+                switch announcementAction {
+                case .loadSavedAnnouncement(let completion):
+                    completion(.success((Announcement.fake().copy(appVersionName: "10.1",
+                                                                  minimumAppVersion: "9.9",
+                                                                  maximumAppVersion: "11.1"),
+                                         true)))
+                    promise(())
+                default:
+                    break
+                }
+            }
+
+            // When
+            viewModel.onViewDidLoad()
+        }
+
+        // Then
+        XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.whatsNew) })
+    }
+
 }
 
 private final class MockSettingsPresenter: SettingsViewPresenter {

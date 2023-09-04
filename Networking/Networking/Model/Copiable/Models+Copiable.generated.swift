@@ -2368,6 +2368,7 @@ extension Networking.SystemPlugin {
 extension Networking.TaxRate {
     public func copy(
         id: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         country: CopiableProp<String> = .copy,
         countries: CopiableProp<[String]> = .copy,
@@ -2383,6 +2384,7 @@ extension Networking.TaxRate {
         cities: CopiableProp<[String]> = .copy
     ) -> Networking.TaxRate {
         let id = id ?? self.id
+        let siteID = siteID ?? self.siteID
         let name = name ?? self.name
         let country = country ?? self.country
         let postcode = postcode ?? self.postcode
@@ -2398,6 +2400,7 @@ extension Networking.TaxRate {
 
         return Networking.TaxRate(
             id: id,
+            siteID: siteID,
             name: name,
             country: country,
             state: state,

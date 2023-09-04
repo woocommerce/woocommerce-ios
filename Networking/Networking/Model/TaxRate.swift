@@ -8,6 +8,10 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let id: Int64
 
+    /// Site id.
+    ///
+    public let siteID: Int64
+
     /// Tax rate name.
     ///
     public let name: String
@@ -62,7 +66,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
 
     /// Default initializer for TaxClass.
     ///
-    public init(id: Int64, name: String, country: String, state: String, postcode: String, postcodes: [String], priority: Int64, rate: String, order: Int64, taxRateClass: String, shipping: Bool, compound: Bool, city: String, cities: [String]) {
+    public init(id: Int64, siteID: Int64, name: String, country: String, state: String, postcode: String, postcodes: [String], priority: Int64, rate: String, order: Int64, taxRateClass: String, shipping: Bool, compound: Bool, city: String, cities: [String]) {
         self.id = id
         self.name = name
         self.country = country
@@ -77,12 +81,17 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         self.compound = compound
         self.city = city
         self.cities = cities
+        self.siteID = siteID
     }
 
 
     /// The public initializer for TaxClass.
     ///
     public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
+            throw TaxRateDecodingError.missingSiteID
+        }
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let id = try container.decode(Int64.self, forKey: .id)
@@ -101,7 +110,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         let cities = try container.decode([String].self, forKey: .cities)
 
 
-        self.init(id: id, name: name, country: country, state: state, postcode: postcode, postcodes: postcodes, priority: priority, rate: rate, order: order, taxRateClass: taxRateClass, shipping: shipping, compound: compound, city: city, cities: cities)
+        self.init(id: id, siteID: siteID, name: name, country: country, state: state, postcode: postcode, postcodes: postcodes, priority: priority, rate: rate, order: order, taxRateClass: taxRateClass, shipping: shipping, compound: compound, city: city, cities: cities)
     }
 }
 
@@ -123,5 +132,11 @@ private extension TaxRate {
         case shipping
         case order
         case taxRateClass = "class"
+    }
+
+    // MARK: - Decoding Errors
+    //
+    enum TaxRateDecodingError: Error {
+        case missingSiteID
     }
 }

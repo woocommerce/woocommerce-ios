@@ -444,6 +444,13 @@ public extension StorageType {
         return allObjects(ofType: TaxClass.self, matching: predicate, sortedBy: nil)
     }
 
+    /// Returns a single TaxRate given a `siteID` and `id`
+    ///
+    func loadTaxRate(siteID: Int64, id: Int64) -> TaxRate? {
+        let predicate = \TaxRate.siteID == siteID && \TaxRate.id == id
+        return firstObject(ofType: TaxRate.self, matching: predicate)
+    }
+
     /// Retrieves all of the stored TaxRates
     ///
     func loadTaxRates() -> [TaxRate]? {

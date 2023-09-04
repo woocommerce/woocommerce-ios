@@ -107,7 +107,7 @@ private extension TaxStore {
         remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):
-                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates) {
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID) {
                     onCompletion(.success(taxRates))
                 }
             case .failure(let error):
@@ -158,10 +158,10 @@ private extension TaxStore {
     /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], onCompletion: @escaping () -> Void) {
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, in: derivedStorage)
+            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -169,15 +169,23 @@ private extension TaxStore {
         }
     }
 
-    /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities into the Storage Layer.
+    /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities into the Storage Layer.
     ///
     /// - Parameters:
-    ///     - readOnlyTaxClasses: Remote TaxClass to be persisted.
+    ///     - readOnlyTaxRates: Remote TaxRate to be persisted.
+    ///     - siteID: The site id of the tax rate
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], in storage: StorageType) {
+    func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, in storage: StorageType) {
         for readOnlyTaxRate in readOnlyTaxRates {
-            let storageTaxRate = storage.insertNewObject(ofType: Storage.TaxRate.self)
+            let storageTaxRate: Storage.TaxRate = {
+                if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
+                                                         id: readOnlyTaxRate.id) {
+                    return storedTaxRate
+                }
+                return storage.insertNewObject(ofType: Storage.TaxRate.self)
+            }()
+
             storageTaxRate.update(with: readOnlyTaxRate)
         }
     }

@@ -35,6 +35,10 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
 
     func clearPluginSelection()
+
+    /// Sends the `installSitePlugin` action to the dispatcher
+    ///
+    func installCardPresentPlugin()
 }
 
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
@@ -102,6 +106,26 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         } else {
             refresh()
         }
+    }
+
+    func installCardPresentPlugin() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        // Only WCPay is currently supported, so we don't expose a different plugin option
+        let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
+
+        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { result in
+            switch result {
+            case .success:
+                DDLogInfo("Success installing \(pluginSlug)")
+                self.refresh()
+            case .failure(let error):
+                DDLogError("Error installing plugin: \(error)")
+            }
+        })
+        stores.dispatch(installPluginAction)
     }
 
     private func refreshOnboardingState() {

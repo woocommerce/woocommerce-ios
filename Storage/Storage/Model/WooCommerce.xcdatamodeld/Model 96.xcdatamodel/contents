@@ -849,7 +849,7 @@
         <attribute name="slug" attributeType="String"/>
     </entity>
     <entity name="TaxRate" representedClassName="TaxRate" syncable="YES">
-        <attribute name="cities" optional="YES" attributeType="Transformable"/>
+        <attribute name="cities" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="city" optional="YES" attributeType="String"/>
         <attribute name="compound" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="country" optional="YES" attributeType="String"/>
@@ -857,7 +857,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="order" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="postcode" optional="YES" attributeType="String"/>
-        <attribute name="postcodes" optional="YES" attributeType="Transformable"/>
+        <attribute name="postcodes" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData"/>
         <attribute name="priority" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="rate" optional="YES" attributeType="String"/>
         <attribute name="shipping" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>

@@ -116,13 +116,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
-        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { result in
+        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
             switch result {
             case .success:
                 DDLogInfo("Success installing \(pluginSlug)")
                 self.refresh()
             case .failure(let error):
                 self.trackPluginInstallFailed(error)
+                self.state = .genericError
             }
         })
         stores.dispatch(installPluginAction)

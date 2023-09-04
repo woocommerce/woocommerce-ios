@@ -28,7 +28,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     /// View models for placeholder rows.
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
-        TaxRateViewModel(name: "placeholder-" + String(index), rate: "   ")
+        TaxRateViewModel(id: index, name: "placeholder", rate: "10%")
     }
 
     init(siteID: Int64,
@@ -131,7 +131,7 @@ private extension NewTaxRateSelectorViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        taxRateViewModels = resultsController.fetchedObjects.map { TaxRateViewModel(name: $0.name, rate: $0.rate) }
+        taxRateViewModels = resultsController.fetchedObjects.map { TaxRateViewModel(id: $0.id, name: $0.name, rate: $0.rate) }
         transitionToResultsUpdatedState()
     }
 

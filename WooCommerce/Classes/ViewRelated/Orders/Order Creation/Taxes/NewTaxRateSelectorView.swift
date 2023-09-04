@@ -48,7 +48,7 @@ struct NewTaxRateSelectorView: View {
                                                       refreshAction: { completion in
                             viewModel.onRefreshAction(completion: completion)
                         }) {
-                            ForEach(viewModel.taxRateViewModels, id: \.name) { viewModel in
+                            ForEach(viewModel.taxRateViewModels, id: \.id) { viewModel in
                                 TaxRateRow(viewModel: viewModel)
                             }
                             .background(Color(.listForeground(modal: false)))
@@ -61,7 +61,7 @@ struct NewTaxRateSelectorView: View {
                     case .syncingFirstPage:
                         ScrollView {
                             LazyVStack(spacing: 0) {
-                                ForEach(viewModel.placeholderRowViewModels, id: \.name) { rowViewModel in
+                                ForEach(viewModel.placeholderRowViewModels, id: \.id) { rowViewModel in
                                     TaxRateRow(viewModel: rowViewModel)
                                         .redacted(reason: .placeholder)
                                         .shimmering()

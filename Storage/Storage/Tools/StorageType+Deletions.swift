@@ -185,4 +185,10 @@ public extension StorageType {
             deleteObject($0)
         }
     }
+
+    func deleteTaxRates(siteID: Int64) {
+        loadTaxRates(siteID: siteID).forEach {
+            deleteObject($0)
+        }
+    }
 }

@@ -160,7 +160,9 @@ private extension TaxStore {
     ///
     func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        derivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+
             self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
         }
 

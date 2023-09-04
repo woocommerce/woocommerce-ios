@@ -2120,7 +2120,7 @@ final class MigrationTests: XCTestCase {
         let targetContext = targetContainer.viewContext
         XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 0)
 
-        let taxRate = insertTaxRate(to: targetContext)
+        let taxRate = insertTaxRate(to: targetContext, forModel: 95)
 
         // Then
         XCTAssertEqual(try targetContext.count(entityName: "TaxRate"), 1)
@@ -2136,6 +2136,45 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(taxRate.value(forKey: "compound") as? Bool, true)
         XCTAssertEqual(taxRate.value(forKey: "city") as? String, "Miami")
         XCTAssertEqual(taxRate.value(forKey: "cities") as? [String], ["Miami"])
+    }
+
+    func test_migrating_from_95_to_96_adds_new_siteID_attribute_in_taxRate() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 95")
+        let sourceContext = sourceContainer.viewContext
+
+        let taxRate = insertTaxRate(to: sourceContext, forModel: 95)
+        try sourceContext.save()
+
+        XCTAssertNil(taxRate.entity.attributesByName["siteID"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 96")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedTaxRateEntity = try XCTUnwrap(targetContext.first(entityName: "TaxRate"))
+
+        XCTAssertNotNil(migratedTaxRateEntity.entity.attributesByName["siteID"], "Confirm expected property exists")
+    }
+
+    func test_migrating_from_95_to_96_keeps_transformables_in_taxRate_after_changing_transformer() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 95")
+        let sourceContext = sourceContainer.viewContext
+
+        let taxRate = insertTaxRate(to: sourceContext, forModel: 95)
+        try sourceContext.save()
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 96")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedTaxRateEntity = try XCTUnwrap(targetContext.first(entityName: "TaxRate")) as? TaxRate
+
+        XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "postcodes") as? [String], ["1234"])
+        XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "cities") as? [String], ["Miami"])
     }
 }
 
@@ -2809,8 +2848,8 @@ private extension MigrationTests {
     }
 
     @discardableResult
-    func insertTaxRate(to context: NSManagedObjectContext) -> NSManagedObject {
-        context.insert(entityName: "TaxRate", properties: [
+    func insertTaxRate(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let taxRate = context.insert(entityName: "TaxRate", properties: [
             "id": 123123,
             "country": "US",
             "state": "FL",
@@ -2825,5 +2864,11 @@ private extension MigrationTests {
             "city": "Miami",
             "cities": ["Miami"]
         ])
+
+        if modelVersion >= 96 {
+            taxRate.setValue(1, forKey: "siteID")
+        }
+
+        return taxRate
     }
 }

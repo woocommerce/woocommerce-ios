@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.3
+-----
+
+
 15.2
 -----
 - [*] Fixed minor UI issues in the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/10555]

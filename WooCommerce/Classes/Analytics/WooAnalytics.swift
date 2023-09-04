@@ -4,6 +4,7 @@ import UIKit
 import WordPressShared
 import WidgetKit
 import enum Alamofire.AFError
+import Yosemite
 
 public class WooAnalytics: Analytics {
 
@@ -12,6 +13,8 @@ public class WooAnalytics: Analytics {
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
     private(set) var analyticsProvider: AnalyticsProvider
+    
+    private var stores: StoresManager
 
     /// Time when app was opened — used for calculating the time-in-app property
     ///
@@ -35,8 +38,10 @@ public class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
+         stores: StoresManager = ServiceLocator.stores) {
         self.analyticsProvider = analyticsProvider
+        self.stores = stores
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -63,14 +68,14 @@ public extension WooAnalytics {
 
         // Skips refreshing user data when user is authenticated without WPCom
         // since they are still identified with anonymous ID.
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+        if stores.isAuthenticatedWithoutWPCom == false {
             analyticsProvider.refreshUserData()
         }
 
         // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
         // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
         // access.
-        let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
+        let context: ExperimentContext = stores.isAuthenticated ?
             .loggedIn: .loggedOut
         Task { @MainActor in
             await ABTest.start(for: context)
@@ -234,16 +239,17 @@ private extension WooAnalytics {
     /// This function appends any additional properties to the provided properties dict if needed.
     ///
     func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
+        guard stat.shouldSendSiteProperties, stores.isAuthenticated else {
             return properties
         }
 
         var updatedProperties = properties ?? [:]
-        let site = ServiceLocator.stores.sessionManager.defaultSite
+        let site = stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         updatedProperties[PropertyKeys.planKey] = site?.plan
+        updatedProperties[PropertyKeys.siteURL] = site?.url
         return updatedProperties
     }
 
@@ -288,5 +294,6 @@ private extension WooAnalytics {
         static let wpcomStoreKey        = "is_wpcom_store"
         static let ecommerceTrialKey    = "was_ecommerce_trial"
         static let planKey              = "plan"
+        static let siteURL              = "site_url"
     }
 }

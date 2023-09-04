@@ -4,7 +4,7 @@ import WooFoundation
 struct NewTaxRateSelectorView: View {
     @Environment(\.dismiss) var dismiss
 
-    let viewModel: NewTaxRateSelectorViewModel
+    @StateObject var viewModel: NewTaxRateSelectorViewModel
     let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
     let onDismissWpAdminWebView: (() -> Void)
 
@@ -41,31 +41,34 @@ struct NewTaxRateSelectorView: View {
 
                 Divider()
 
-                ForEach(viewModel.demoTaxRates, id: \.title) { taxRate in
-                    HStack {
-                        Button(action: { }) {
-                            AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {
-                                Text(taxRate.title)
-                                    .foregroundColor(Color(.text))
-                                    .multilineTextAlignment(.leading)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                Text(taxRate.value)
-                                    .foregroundColor(Color(.text))
-                                    .multilineTextAlignment(.trailing)
-                                    .frame(width: nil, alignment: .trailing)
-
-                                Image(systemName: "chevron.right")
-                                    .font(.body)
-                                    .font(Font.title.weight(.semibold))
-                                    .foregroundColor(Color(.textTertiary))
-                                    .padding(.leading, Layout.generalPadding)
+                switch viewModel.syncState {
+                    case .results:
+                        RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                                      loadAction: viewModel.onLoadNextPageAction,
+                                                      refreshAction: { completion in
+                            viewModel.onRefreshAction(completion: completion)
+                        }) {
+                            ForEach(viewModel.taxRateViewModels, id: \.name) { viewModel in
+                                TaxRateRow(viewModel: viewModel)
                             }
-                            .padding(Layout.generalPadding)
+                            .background(Color(.listForeground(modal: false)))
                         }
-                    }
-
-                    Divider()
+                    case .empty:
+                        EmptyState(title: "",
+                                   description: "",
+                                   image: .emptyInboxNotesImage)
+                        .frame(maxHeight: .infinity)
+                    case .syncingFirstPage:
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                ForEach(viewModel.placeholderRowViewModels, id: \.name) { rowViewModel in
+                                    TaxRateRow(viewModel: rowViewModel)
+                                        .redacted(reason: .placeholder)
+                                        .shimmering()
+                                }
+                            }
+                        }
+                        .background(Color(.listForeground(modal: false)))
                 }
 
                 Text(Localization.editTaxRatesInWpAdminSectionTitle)
@@ -96,6 +99,9 @@ struct NewTaxRateSelectorView: View {
 
                 Spacer()
 
+            }
+            .onAppear {
+                viewModel.onLoadTrigger.send()
             }
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)

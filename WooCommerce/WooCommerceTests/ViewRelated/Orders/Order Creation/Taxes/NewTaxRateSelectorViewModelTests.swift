@@ -7,7 +7,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let wpAdminTaxSettingsURL = URL(string: "https://www.site.com/wp-admin/mock-taxes-settings")
         let wpAdminTaxSettingsURLProvider = MockWPAdminTaxSettingsURLProvider(wpAdminTaxSettingsURL: wpAdminTaxSettingsURL)
 
-        let viewModel = NewTaxRateSelectorViewModel(wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }

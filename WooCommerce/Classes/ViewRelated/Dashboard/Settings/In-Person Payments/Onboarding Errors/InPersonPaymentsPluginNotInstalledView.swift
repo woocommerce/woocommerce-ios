@@ -2,7 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsPluginNotInstalled: View {
     let analyticReason: String
-    let onRefresh: () -> Void
+    let onInstall: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -16,9 +16,9 @@ struct InPersonPaymentsPluginNotInstalled: View {
             learnMore: true,
             analyticReason: analyticReason,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
-                text: Localization.primaryButton,
+                text: Localization.title,
                 analyticReason: analyticReason,
-                action: onRefresh
+                action: onInstall
             )
         )
     }
@@ -34,15 +34,10 @@ private enum Localization {
         "You’ll need to install the free WooCommerce Payments extension on your store to accept In-Person Payments.",
         comment: "Error message when WooCommerce Payments is not installed"
     )
-
-    static let primaryButton = NSLocalizedString(
-        "Refresh After Installing",
-        comment: "Button to reload plugin data after installing the WooCommerce Payments plugin"
-    )
 }
 
 struct InPersonPaymentsPluginNotInstalled_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotInstalled(analyticReason: "", onRefresh: {})
+        InPersonPaymentsPluginNotInstalled(analyticReason: "", onInstall: {})
     }
 }

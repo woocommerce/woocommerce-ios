@@ -8,6 +8,7 @@ extension TaxRate {
         return NSFetchRequest<TaxRate>(entityName: "TaxRate")
     }
 
+    @NSManaged public var siteID: Int64
     @NSManaged public var id: Int64
     @NSManaged public var country: String?
     @NSManaged public var state: String?

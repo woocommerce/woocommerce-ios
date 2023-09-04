@@ -182,7 +182,7 @@ private extension TaxStore {
         for readOnlyTaxRate in readOnlyTaxRates {
             let storageTaxRate: Storage.TaxRate = {
                 if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
-                                                         id: readOnlyTaxRate.id) {
+                                                           taxRateID: readOnlyTaxRate.id) {
                     return storedTaxRate
                 }
                 return storage.insertNewObject(ofType: Storage.TaxRate.self)

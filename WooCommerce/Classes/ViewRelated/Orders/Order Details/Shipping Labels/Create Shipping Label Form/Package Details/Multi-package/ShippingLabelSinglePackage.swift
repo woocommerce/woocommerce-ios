@@ -115,7 +115,7 @@ struct ShippingLabelSinglePackage: View {
                 }
             }
 
-            HazmatDeclaration(safeAreaInsets: safeAreaInsets, viewModel: viewModel)
+            SinglePackageHazmatDeclaration(safeAreaInsets: safeAreaInsets, viewModel: viewModel)
         }
     }
 }

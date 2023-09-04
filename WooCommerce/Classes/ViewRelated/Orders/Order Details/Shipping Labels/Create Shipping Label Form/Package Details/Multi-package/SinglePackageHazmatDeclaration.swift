@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HazmatDeclaration: View {
+struct SinglePackageHazmatDeclaration: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingHazmatSelection = false
 
@@ -75,7 +75,7 @@ struct HazmatDeclaration: View {
     }
 }
 
-private extension HazmatDeclaration {
+private extension SinglePackageHazmatDeclaration {
     enum Localization {
         static let containsHazmatMaterials = NSLocalizedString("Contains Hazardous Materials",
                                                                comment: "Toggle to declare when a package contains hazardous materials")
@@ -119,6 +119,6 @@ struct HazmatDeclaration_Previews: PreviewProvider {
                                                             onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })
-        HazmatDeclaration(safeAreaInsets: .zero, viewModel: viewModel)
+        SinglePackageHazmatDeclaration(safeAreaInsets: .zero, viewModel: viewModel)
     }
 }

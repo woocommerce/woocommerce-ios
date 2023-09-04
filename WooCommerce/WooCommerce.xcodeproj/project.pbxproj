@@ -1598,7 +1598,7 @@
 		B649BC7E2A1C295B007AB988 /* View+HighlightModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = B649BC7D2A1C295B007AB988 /* View+HighlightModifier.swift */; };
 		B651474527D644FF00C9C4E6 /* CustomerNoteSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */; };
 		B65496342A0B291A003D29E1 /* EUShippingNoticeBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65496332A0B291A003D29E1 /* EUShippingNoticeBanner.swift */; };
-		B65C869A2AA6429700464D5B /* HazmatDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C86992AA6429700464D5B /* HazmatDeclaration.swift */; };
+		B65C869A2AA6429700464D5B /* SinglePackageHazmatDeclaration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B65C86992AA6429700464D5B /* SinglePackageHazmatDeclaration.swift */; };
 		B66D6CEC29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */; };
 		B687940C27699D420092BCA0 /* RefundFeesCalculationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */; };
 		B6930BDA293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6930BD9293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift */; };
@@ -4048,7 +4048,7 @@
 		B649BC7D2A1C295B007AB988 /* View+HighlightModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+HighlightModifier.swift"; sourceTree = "<group>"; };
 		B651474427D644FF00C9C4E6 /* CustomerNoteSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteSection.swift; sourceTree = "<group>"; };
 		B65496332A0B291A003D29E1 /* EUShippingNoticeBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUShippingNoticeBanner.swift; sourceTree = "<group>"; };
-		B65C86992AA6429700464D5B /* HazmatDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HazmatDeclaration.swift; sourceTree = "<group>"; };
+		B65C86992AA6429700464D5B /* SinglePackageHazmatDeclaration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SinglePackageHazmatDeclaration.swift; sourceTree = "<group>"; };
 		B66D6CEB29396A3E0075D4AF /* AnalyticsHubTimeRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRangeData.swift; sourceTree = "<group>"; };
 		B687940B27699D410092BCA0 /* RefundFeesCalculationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesCalculationUseCase.swift; sourceTree = "<group>"; };
 		B6930BD9293FD1EE00C6FFDB /* AnalyticsHubLastQuarterRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubLastQuarterRangeData.swift; sourceTree = "<group>"; };
@@ -10356,7 +10356,7 @@
 				DE279BA526E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift */,
 				DE279BA726E9C8E3002BA963 /* ShippingLabelSinglePackage.swift */,
 				DE279BA926E9C91D002BA963 /* ShippingLabelSinglePackageViewModel.swift */,
-				B65C86992AA6429700464D5B /* HazmatDeclaration.swift */,
+				B65C86992AA6429700464D5B /* SinglePackageHazmatDeclaration.swift */,
 			);
 			path = "Multi-package";
 			sourceTree = "<group>";
@@ -11861,7 +11861,7 @@
 				7E6A019F2725CD76001668D5 /* FilterProductCategoryListViewModel.swift in Sources */,
 				024D4E842A1B4B630090E0E6 /* WooAnalyticsEvent+ProductForm.swift in Sources */,
 				CC53FB3C2757EC7200C4CA4F /* ProductSelectorViewModel.swift in Sources */,
-				B65C869A2AA6429700464D5B /* HazmatDeclaration.swift in Sources */,
+				B65C869A2AA6429700464D5B /* SinglePackageHazmatDeclaration.swift in Sources */,
 				CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */,
 				4569D3C325DC008700CDC3E2 /* SiteAddress.swift in Sources */,
 				02BBD6E729A268F300243BE2 /* StoreOnboardingViewModel.swift in Sources */,

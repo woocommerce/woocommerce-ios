@@ -66,7 +66,21 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
 
     /// Default initializer for TaxClass.
     ///
-    public init(id: Int64, siteID: Int64, name: String, country: String, state: String, postcode: String, postcodes: [String], priority: Int64, rate: String, order: Int64, taxRateClass: String, shipping: Bool, compound: Bool, city: String, cities: [String]) {
+    public init(id: Int64,
+                siteID: Int64,
+                name: String,
+                country: String,
+                state: String,
+                postcode: String,
+                postcodes: [String],
+                priority: Int64,
+                rate: String,
+                order: Int64,
+                taxRateClass: String,
+                shipping: Bool,
+                compound: Bool,
+                city: String,
+                cities: [String]) {
         self.id = id
         self.name = name
         self.country = country
@@ -110,7 +124,21 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         let cities = try container.decode([String].self, forKey: .cities)
 
 
-        self.init(id: id, siteID: siteID, name: name, country: country, state: state, postcode: postcode, postcodes: postcodes, priority: priority, rate: rate, order: order, taxRateClass: taxRateClass, shipping: shipping, compound: compound, city: city, cities: cities)
+        self.init(id: id,
+                  siteID: siteID,
+                  name: name,
+                  country: country,
+                  state: state,
+                  postcode: postcode,
+                  postcodes: postcodes,
+                  priority: priority,
+                  rate: rate,
+                  order: order,
+                  taxRateClass: taxRateClass,
+                  shipping: shipping,
+                  compound: compound,
+                  city: city,
+                  cities: cities)
     }
 }
 

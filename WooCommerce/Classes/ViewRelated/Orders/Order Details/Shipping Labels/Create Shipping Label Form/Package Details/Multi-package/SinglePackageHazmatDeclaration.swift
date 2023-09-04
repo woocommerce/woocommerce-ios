@@ -127,15 +127,21 @@ private extension SinglePackageHazmatDeclaration {
                                                                               comment: "Instructions for hazardous package shipping")
                 static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
                                                                                "USPS® at",
-                                                                               comment: "Instructions for hazardous package shipping")
-                static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat.", comment: "Pending")
+                                                                               comment: "Instructions for hazardous package shipping, the rest of the" +
+                                                                               "phrase is a link that will direct the user to a website")
+                static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat.", comment: "A clickable text link that will" +
+                                                                                   "redirect the user to a website")
                 static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the",
-                                                                              comment: "Instructions for hazardous package shipping")
-                static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool.", comment: "Pending")
+                                                                              comment: "Instructions for hazardous package shipping the rest of the" +
+                                                                              "phrase is a link that will direct the user to a website")
+                static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool.", comment: "A clickable text link that will" +
+                                                                                  "redirect the user to a website")
                 static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
                                                                                + "through",
-                                                                               comment: "Instructions for hazardous package shipping")
-                static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express.", comment: "Pending")
+                                                                               comment: "Instructions for hazardous package shipping the rest of the" +
+                                                                               "phrase is a link that will direct the user to a website")
+                static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express.", comment: "A clickable text link that will" +
+                                                                                   "redirect the user to a website")
     }
 
     enum Constants {

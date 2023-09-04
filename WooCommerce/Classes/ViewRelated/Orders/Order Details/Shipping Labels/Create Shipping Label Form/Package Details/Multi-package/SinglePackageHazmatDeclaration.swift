@@ -107,6 +107,7 @@ private extension SinglePackageHazmatDeclaration {
     }
 }
 
+#if DEBUG
 struct HazmatDeclaration_Previews: PreviewProvider {
     static var previews: some View {
         let order = ShippingLabelSampleData.sampleOrder()
@@ -123,3 +124,4 @@ struct HazmatDeclaration_Previews: PreviewProvider {
         SinglePackageHazmatDeclaration(safeAreaInsets: .zero, viewModel: viewModel)
     }
 }
+#endif

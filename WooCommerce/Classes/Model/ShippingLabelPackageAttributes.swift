@@ -18,6 +18,9 @@ struct ShippingLabelPackageAttributes: Equatable {
 
     /// List of items in the package.
     let items: [ShippingLabelPackageItem]
+
+    /// Selected hazmat category, `nil` if there's no declaration of hazardous materials
+    let selectedHazmatCategory: ShippingLabelHazmatCategory?
 }
 
 extension ShippingLabelPackageAttributes {

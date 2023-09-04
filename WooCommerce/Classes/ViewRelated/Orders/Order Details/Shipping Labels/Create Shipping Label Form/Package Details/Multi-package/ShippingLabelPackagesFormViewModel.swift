@@ -111,7 +111,8 @@ private extension ShippingLabelPackagesFormViewModel {
                                                                       productVariations: productVariations) }
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
-                                                           items: items)]
+                                                           items: items,
+                                                           selectedHazmatCategory: nil)]
     }
 
     /// Set up item view models on change selected packages.
@@ -223,14 +224,16 @@ private extension ShippingLabelPackagesFormViewModel {
                 if updatedItems.isNotEmpty {
                     let updatedPackage = ShippingLabelPackageAttributes(packageID: package.packageID,
                                                                         totalWeight: package.totalWeight,
-                                                                        items: updatedItems)
+                                                                        items: updatedItems,
+                                                                        selectedHazmatCategory: package.selectedHazmatCategory)
                     updatedPackages.append(updatedPackage)
                 }
 
                 // Create a package with original packaging box ID and the matching item.
                 let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
                                                                      totalWeight: "",
-                                                                     items: [matchingItem])
+                                                                     items: [matchingItem],
+                                                                     selectedHazmatCategory: nil)
                 updatedPackages.append(originalPackage)
             } else {
                 updatedPackages.append(package)
@@ -265,21 +268,24 @@ private extension ShippingLabelPackagesFormViewModel {
             if updatedItems.isNotEmpty {
                 let updatedPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
                                                                     totalWeight: "",
-                                                                    items: updatedItems)
+                                                                    items: updatedItems,
+                                                                    selectedHazmatCategory: currentPackage.selectedHazmatCategory)
                 temporaryPackages.append(updatedPackage)
             }
 
             // Create new package with the matching item, using same package ID as current package's
             let newPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
                                                             totalWeight: "",
-                                                            items: [matchingItem])
+                                                            items: [matchingItem],
+                                                            selectedHazmatCategory: currentPackage.selectedHazmatCategory)
             temporaryPackages.append(newPackage)
         } else {
             // Get last selected package ID to use as ID of the new package if possible.
             let selectedPackageID = resultsControllers?.accountSettings?.lastSelectedPackageID ?? ""
             let newPackage = ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                             totalWeight: "",
-                                                            items: currentPackage.items)
+                                                            items: currentPackage.items,
+                                                            selectedHazmatCategory: currentPackage.selectedHazmatCategory)
             temporaryPackages.insert(newPackage, at: packageIndex)
         }
         // This will trigger updating item view models, and therefore updates the package list UI.
@@ -310,7 +316,8 @@ private extension ShippingLabelPackagesFormViewModel {
             if updatedItems.isNotEmpty {
                 updatedCurrentPackage = ShippingLabelPackageAttributes(packageID: currentPackage.packageID,
                                                                        totalWeight: "",
-                                                                       items: updatedItems)
+                                                                       items: updatedItems,
+                                                                       selectedHazmatCategory: currentPackage.selectedHazmatCategory)
             }
         }
 
@@ -332,7 +339,8 @@ private extension ShippingLabelPackagesFormViewModel {
         // Create a copy of the new package with updated items
         let updatedNewPackage = ShippingLabelPackageAttributes(packageID: newPackage.packageID,
                                                                totalWeight: "",
-                                                               items: newItems)
+                                                               items: newItems,
+                                                               selectedHazmatCategory: newPackage.selectedHazmatCategory)
         temporaryPackages[newPackageIndex] = updatedNewPackage
 
         if let updatedCurrentPackage = updatedCurrentPackage {

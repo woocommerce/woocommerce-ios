@@ -80,6 +80,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     /// Attributes of the package if validated.
     ///
     var validatedPackageAttributes: ShippingLabelPackageAttributes? {
+        if containsHazmatMaterials {
+            guard selectedHazmatCategory != .none else {
+                return nil
+            }
+        }
         guard validateTotalWeight(totalWeight) else {
             return nil
         }
@@ -88,7 +93,8 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         }
         return ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                               totalWeight: totalWeight,
-                                              items: orderItems)
+                                              items: orderItems,
+                                              selectedHazmatCategory: selectedHazmatCategory)
     }
 
     /// Whether the Package contains hazmat materials or not
@@ -234,10 +240,12 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
 // MARK: ShippingLabelPackageSelectionDelegate conformance
 extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDelegate {
     func didSelectPackage(id: String) {
+        let hazmatCategory = selectedHazmatCategory != .none ? selectedHazmatCategory : nil
         let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
                                                         totalWeight: newTotalWeight,
-                                                        items: orderItems)
+                                                        items: orderItems,
+                                                        selectedHazmatCategory: hazmatCategory)
 
         onPackageSwitch(newPackage)
     }

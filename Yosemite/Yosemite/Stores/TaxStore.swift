@@ -103,7 +103,7 @@ private extension TaxStore {
     func retrieveTaxRates(siteID: Int64,
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: @escaping (Result<([TaxRate]), Error>) -> Void) {
+                          onCompletion: @escaping (Result<[TaxRate], Error>) -> Void) {
         remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):
@@ -160,7 +160,9 @@ private extension TaxStore {
     ///
     func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, shouldDeleteExistingTaxRates: Bool, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
-        derivedStorage.perform {
+        derivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+
             if shouldDeleteExistingTaxRates {
                 derivedStorage.deleteTaxRates(siteID: siteID)
             }
@@ -184,7 +186,7 @@ private extension TaxStore {
         for readOnlyTaxRate in readOnlyTaxRates {
             let storageTaxRate: Storage.TaxRate = {
                 if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
-                                                         id: readOnlyTaxRate.id) {
+                                                           taxRateID: readOnlyTaxRate.id) {
                     return storedTaxRate
                 }
 

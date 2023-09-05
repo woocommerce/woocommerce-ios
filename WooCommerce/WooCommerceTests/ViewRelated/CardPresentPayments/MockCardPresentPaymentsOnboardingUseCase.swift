@@ -39,6 +39,10 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         clearPluginSelectionWasCalled = true
     }
 
+    func installCardPresentPlugin() {
+        // no-op
+    }
+
     // MARK: Convenience Initializer
     init(initial: CardPresentPaymentOnboardingState, publisher: AnyPublisher<CardPresentPaymentOnboardingState, Never>? = nil) {
         self.state = initial

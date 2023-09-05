@@ -19,5 +19,5 @@ public enum TaxAction: Action {
     case retrieveTaxRates(siteID: Int64,
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: (Result<([TaxRate]), Error>) -> Void)
+                          onCompletion: (Result<[TaxRate], Error>) -> Void)
 }

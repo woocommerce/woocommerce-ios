@@ -2,9 +2,9 @@ import Foundation
 import Networking
 
 
-/// TaxClassAction: Defines all of the Actions supported by the TaxClassStore.
+/// TaxAction: Defines all of the Actions supported by the TaxStore.
 ///
-public enum TaxClassAction: Action {
+public enum TaxAction: Action {
 
     /// Retrieve and synchronizes Tax Classes matching the specified criteria.
     ///
@@ -13,4 +13,11 @@ public enum TaxClassAction: Action {
     /// Request the Tax Class found in a specified Product.
     ///
     case requestMissingTaxClasses(for: TaxClassRequestable, onCompletion: (TaxClass?, Error?) -> Void)
+
+    /// Retrieve and synchronizes Tax Rates matching the specified criteria.
+    ///
+    case retrieveTaxRates(siteID: Int64,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          onCompletion: (Result<[TaxRate], Error>) -> Void)
 }

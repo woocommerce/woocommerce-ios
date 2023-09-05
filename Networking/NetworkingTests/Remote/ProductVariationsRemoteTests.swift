@@ -102,6 +102,28 @@ final class ProductVariationsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_loadAllProductVariations_sends_correct_order_and_orderby_values() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+        let expectation = self.expectation(description: "Load All Product Variations returns error")
+        let orderBy = ProductVariationsRemote.OrderKey.title
+        let order = ProductVariationsRemote.Order.ascending
+
+        // When
+        remote.loadAllProductVariations(for: sampleSiteID, productID: sampleProductID, orderBy: orderBy, order: order) { (productVariations, error) in
+            expectation.fulfill()
+        }
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let orderValue = try XCTUnwrap(request.parameters["order"] as? String)
+        XCTAssertEqual(orderValue, order.rawValue)
+        let orderByValue = try XCTUnwrap(request.parameters["orderby"] as? String)
+        XCTAssertEqual(orderByValue, orderBy.rawValue)
+    }
+
     /// Verifies that loadAllProductVariations properly relays Networking Layer errors.
     ///
     func testLoadAllProductVariationsProperlyRelaysNetwokingErrors() {

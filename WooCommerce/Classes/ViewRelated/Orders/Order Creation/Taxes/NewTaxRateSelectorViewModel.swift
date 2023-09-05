@@ -51,7 +51,6 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 
-    /// Inbox notes ResultsController.
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.id, ascending: true)
@@ -61,13 +60,10 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         return resultsController
     }()
 
-    /// Called when the next page should be loaded.
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
 
-    /// Called when the user pulls down the list to refresh.
-    /// - Parameter completion: called when the refresh completes.
     func onRefreshAction(completion: @escaping () -> Void) {
         paginationTracker.resync(reason: nil) {
             completion()
@@ -148,14 +144,12 @@ private extension NewTaxRateSelectorViewModel {
 // MARK: - State Machine
 
 extension NewTaxRateSelectorViewModel {
-    /// Represents possible states for syncing inbox notes.
     enum SyncState: Equatable {
         case syncingFirstPage
         case results
         case empty
     }
 
-    /// Update states for sync from remote.
     func transitionToSyncingState() {
         shouldShowBottomActivityIndicator = true
         if taxRateViewModels.isEmpty {
@@ -163,7 +157,6 @@ extension NewTaxRateSelectorViewModel {
         }
     }
 
-    /// Update states after sync is complete.
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty

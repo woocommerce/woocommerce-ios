@@ -605,7 +605,7 @@ private extension ProductVariationsViewController {
     @objc func presentSortOptionSheet() {
         // TODO
     }
-    
+
     /// More Options Action Sheet
     ///
     @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {

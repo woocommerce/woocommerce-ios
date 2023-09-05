@@ -36,3 +36,18 @@ extension ProductVariationsSortOrder {
         }
     }
 }
+
+public extension ProductVariationsSortOrder {
+    var sortDescriptors: [NSSortDescriptor] {
+        switch self {
+        case .dateAscending:
+            return [NSSortDescriptor(keyPath: \StorageProduct.date, ascending: true)]
+        case .dateDescending:
+            return [NSSortDescriptor(keyPath: \StorageProduct.date, ascending: false)]
+        case .nameAscending:
+            return [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))]
+        case .nameDescending:
+            return [NSSortDescriptor(key: "name", ascending: false, selector: #selector(NSString.localizedCompare(_:)))]
+        }
+    }
+}

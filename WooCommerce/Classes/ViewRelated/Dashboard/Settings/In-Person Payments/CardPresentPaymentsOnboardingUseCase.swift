@@ -130,7 +130,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 DDLogInfo("Success installing \(pluginSlug)")
                 self.refresh()
             case .failure(let error):
-                self.trackPluginInstallFailed(error)
+                self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
                 self.state = .genericError
             }
         })
@@ -152,7 +152,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 DDLogInfo("Success activating \(pluginName)")
                 self.refresh()
             case .failure(let error):
-                self.trackPluginActivateFailed(error)
+                self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
                 self.state = .genericError
             }
         })
@@ -551,20 +551,17 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
 // MARK: - Analytics
 private extension CardPresentPaymentsOnboardingUseCase {
-    func trackPluginInstallFailed(_ error: Error) {
-        guard let countryCode = self.storeCountryCode else {
-            return
-        }
-        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_install_tapped",
-                                                                                countryCode: countryCode,
-                                                                                error: error))
+    enum PluginFailureTrigger: String {
+        case notInstalled = "plugin_install_tapped"
+        case notActivated = "plugin_activate_tapped"
     }
 
-    func trackPluginActivateFailed(_ error: Error) {
+    func trackCardPresentPluginActionFailed(_ error: Error, trigger: PluginFailureTrigger) {
         guard let countryCode = self.storeCountryCode else {
             return
         }
-        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_activate_tapped",
+
+        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: trigger.rawValue,
                                                                                 countryCode: countryCode,
                                                                                 error: error))
     }

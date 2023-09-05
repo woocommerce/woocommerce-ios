@@ -42,6 +42,9 @@ extension UserDefaults {
 
         // Store profiler answers
         case storeProfilerAnswers
+
+        // Sort order for product variations
+        case productVariationsSortOrder
     }
 }
 

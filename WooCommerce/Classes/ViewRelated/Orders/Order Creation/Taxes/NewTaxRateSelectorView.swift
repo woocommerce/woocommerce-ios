@@ -52,6 +52,9 @@ struct NewTaxRateSelectorView: View {
                                 TaxRateRow(viewModel: viewModel)
                             }
                             .background(Color(.listForeground(modal: false)))
+
+                            bottomNotice
+                            .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
                         }
                     case .empty:
                         EmptyState(title: "",
@@ -70,35 +73,6 @@ struct NewTaxRateSelectorView: View {
                         }
                         .background(Color(.listForeground(modal: false)))
                 }
-
-                Text(Localization.editTaxRatesInWpAdminSectionTitle)
-                    .foregroundColor(Color(.textSubtle))
-                    .footnoteStyle()
-                    .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.leading, .trailing], Layout.generalPadding)
-
-                Button(action: {
-                    showingWPAdminWebview = true
-                }) {
-                    HStack {
-                        Text(Localization.editTaxRatesInWpAdminButtonTitle)
-                            .fontWeight(.semibold)
-                            .font(.footnote)
-                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
-                        Image(systemName: "arrow.up.forward.square")
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
-                .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
-                    onDismissWpAdminWebView()
-                    showingWPAdminWebview = false
-                })
-
-                Spacer()
-
             }
             .onAppear {
                 viewModel.onLoadTrigger.send()
@@ -121,6 +95,36 @@ struct NewTaxRateSelectorView: View {
                 }
         }
         .wooNavigationBarStyle()
+    }
+
+    var bottomNotice: some View {
+        Group {
+            Text(Localization.editTaxRatesInWpAdminSectionTitle)
+                .foregroundColor(Color(.textSubtle))
+                .footnoteStyle()
+                .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding([.leading, .trailing], Layout.generalPadding)
+
+            Button(action: {
+                showingWPAdminWebview = true
+            }) {
+                HStack {
+                    Text(Localization.editTaxRatesInWpAdminButtonTitle)
+                        .fontWeight(.semibold)
+                        .font(.footnote)
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+                    Image(systemName: "arrow.up.forward.square")
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
+            .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
+            .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                onDismissWpAdminWebView()
+                showingWPAdminWebview = false
+            })
+        }
     }
 }
 

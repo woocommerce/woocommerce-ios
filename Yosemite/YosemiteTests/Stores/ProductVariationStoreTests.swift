@@ -1094,6 +1094,7 @@ private extension ProductVariationStoreTests {
               total: "30.00",
               totalTax: "1.20",
               attributes: [],
+              addOns: [],
               parent: nil)
     }
 }

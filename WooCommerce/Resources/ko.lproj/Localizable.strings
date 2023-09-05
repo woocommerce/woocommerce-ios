@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-22 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-08-31 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -1253,6 +1253,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the helper field describing calculated amount for given percentage */
 "Calculated amount" = "계산한 금액";
 
+/* The string to show on order taxes when they are calculated based on the billing address */
+"Calculated on billing address" = "청구 주소에 따라 계산됨";
+
+/* The string to show on order taxes when they are calculated based on the shipping address */
+"Calculated on shipping address" = "배송 주소에 따라 계산됨";
+
+/* The string to show on order taxes when they are calculated based on the shop base address */
+"Calculated on shop base address" = "상점 기준 주소에 따라 계산됨";
+
 /* Call phone number button title */
 "Call" = "전화";
 
@@ -1989,6 +1998,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button on the store creation plan view to purchase the plan. %1$@ is replaced by the monthly price. */
 "Create Store for %1$@\/month" = "월 %1$@에 스토어 생성";
+
+/* Button displayed on the prologue screen of the simplified login flow to create a new store */
+"Create a New Store" = "새 스토어 생성";
 
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "사이트 만들기";
@@ -6934,6 +6946,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the option to create a template product */
 "Start with a template" = "템플릿 시작";
 
+/* Subtitle displayed in the simplified prologue screen */
+"Start with our 15-day free trial, no credit card needed. Join 3.4M stores thriving with Woo, from first sale to millions." = "신용카드가 필요하지 않은 15일 무료 평가판으로 시작해 보세요. 첫 판매부터 수백만 개 판매까지 Woo와 함께 성장하는 340만 개 스토어와 함께하세요.";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
@@ -7296,6 +7311,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "세금";
 
+/* Label for the title row showing the taxes in the order */
+"Taxes Total" = "세금 합계";
+
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "스토어 주소를 기준으로 세금이 자동으로 계산됩니다.";
 
@@ -7465,6 +7483,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Footnote about the domain credit banner in domain settings. */
 "The domain purchased will redirect users to your primary address." = "구매한 도메인에서는 사용자가 기본 주소로 리디렉팅됩니다.";
+
+/* Caption displayed in the simplified prologue screen */
+"The e-commerce platform that grows with you" = "회원님과 함께 성장하는 전자상거래 플랫폼";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "iPhone의 Tap to Pay를 처음 사용할 때 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";

@@ -99,7 +99,7 @@ struct SinglePackageHazmatDeclaration: View {
         .padding(.trailing, Constants.longTextTrailingPadding)
     }
 
-    func createText(withLink linkText: String, url: URL, content: String) -> some View {
+    private func createText(withLink linkText: String, url: URL, content: String) -> some View {
         var attributedText = AttributedString(.init(format: content, linkText))
         if let range = attributedText.range(of: linkText) {
             attributedText[range].mergeAttributes(AttributeContainer().link(url))

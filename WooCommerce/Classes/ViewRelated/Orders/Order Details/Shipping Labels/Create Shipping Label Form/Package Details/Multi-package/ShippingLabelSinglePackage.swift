@@ -110,6 +110,7 @@ struct ShippingLabelSinglePackage: View {
                     Text(Localization.footer)
                         .footnoteStyle()
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.horizontal, Constants.horizontalPadding)
                         .padding(.vertical, Constants.verticalSpacing)
                 } else {

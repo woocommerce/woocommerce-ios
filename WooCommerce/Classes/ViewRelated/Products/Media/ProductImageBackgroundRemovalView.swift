@@ -25,6 +25,7 @@ struct ProductImageBackgroundRemovalView: View {
     var body: some View {
         VStack {
             GeometryReader { geometry in
+                // TODO-jc: loading UI when output is nil
                 OutputView(output: $viewModel.output)
                     .onAppear {
                         outputViewSize = geometry.size
@@ -42,6 +43,18 @@ struct ProductImageBackgroundRemovalView: View {
 //                ImagePicker(pipeline: pipeline)
             }
                 .frame(height: 200)
+        }
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(action: {
+                    Task { @MainActor in
+                        // TODO-jc: loading UI
+                        await viewModel.saveToProduct()
+                    }
+                }, label: {
+                    Text("Save to product")
+                })
+            }
         }
     }
 }

@@ -43,7 +43,9 @@ public class TaxRemote: Remote {
                                      method: .get,
                                      siteID: siteID,
                                      path: path,
-                                     parameters: nil,
+                                     parameters: [
+                                        ParameterKeys.page: String(pageNumber),
+                                        ParameterKeys.perPage: String(pageSize)],
                                      availableAsRESTRequest: true)
         let mapper = TaxRateListMapper(siteID: siteID)
 
@@ -57,5 +59,10 @@ public extension TaxRemote {
 
     private enum Path {
         static let taxes   = "taxes"
+    }
+
+    private enum ParameterKeys {
+        static let page: String             = "page"
+        static let perPage: String          = "per_page"
     }
 }

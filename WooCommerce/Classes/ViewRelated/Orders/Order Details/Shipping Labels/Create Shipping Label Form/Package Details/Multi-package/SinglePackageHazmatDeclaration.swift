@@ -100,7 +100,11 @@ struct SinglePackageHazmatDeclaration: View {
     }
 
     func createText(withLink linkText: String, url: URL, content: String) -> some View {
-        Text(.init("\(content) [\(linkText).](\(url))"))
+        var attributedText = AttributedString(.init(format: content, linkText))
+        if let range = attributedText.range(of: linkText) {
+            attributedText[range].mergeAttributes(AttributeContainer().link(url))
+        }
+        return Text(attributedText)
             .calloutStyle()
             .environment(\.openURL, OpenURLAction { url in
                 destinationURL = url
@@ -126,18 +130,18 @@ private extension SinglePackageHazmatDeclaration {
                                                                               "ship in separate packages.",
                                                                               comment: "Instructions for hazardous package shipping")
                 static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
-                                                                               "USPS® at",
+                                                                               "USPS® at %1$@.",
                                                                                comment: "Instructions for hazardous package shipping, the rest of the" +
                                                                                "phrase is a link that will direct the user to a website")
                 static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat", comment: "A clickable text link that will" +
                                                                                    "redirect the user to a website")
-                static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the",
+                static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the %1$@.",
                                                                               comment: "Instructions for hazardous package shipping the rest of the" +
                                                                               "phrase is a link that will direct the user to a website")
                 static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool", comment: "A clickable text link that will" +
                                                                                   "redirect the user to a website")
                 static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
-                                                                               + "through",
+                                                                               + "through %1$@.",
                                                                                comment: "Instructions for hazardous package shipping the rest of the" +
                                                                                "phrase is a link that will direct the user to a website")
                 static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express", comment: "A clickable text link that will" +

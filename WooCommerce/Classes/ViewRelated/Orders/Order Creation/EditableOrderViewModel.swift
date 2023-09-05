@@ -622,6 +622,10 @@ final class EditableOrderViewModel: ObservableObject {
         }
         stores.dispatch(action)
     }
+
+    func onTaxRateSelected(_ taxRate: TaxRate) {
+        debugPrint("tax rate", taxRate)
+    }
 }
 
 // MARK: - Types

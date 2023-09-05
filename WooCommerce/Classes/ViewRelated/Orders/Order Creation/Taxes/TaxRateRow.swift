@@ -2,10 +2,11 @@ import SwiftUI
 
 struct TaxRateRow: View {
     let viewModel: TaxRateViewModel
+    let onSelect: () -> Void
 
     var body: some View {
         HStack {
-            Button(action: { }) {
+            Button(action: onSelect) {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {
                     Text(viewModel.name)
                         .foregroundColor(Color(.text))

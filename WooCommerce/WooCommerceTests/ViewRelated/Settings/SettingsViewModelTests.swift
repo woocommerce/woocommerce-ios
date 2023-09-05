@@ -1,7 +1,6 @@
 import Codegen
 import XCTest
 import Yosemite
-import class Networking.UserAgent
 
 import protocol Storage.StorageType
 import protocol Storage.StorageManagerType

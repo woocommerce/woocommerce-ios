@@ -52,6 +52,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
+    private let analytics: Analytics
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
@@ -67,7 +68,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared
+        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared,
+        analytics: Analytics = ServiceLocator.analytics
     ) {
         self.storageManager = storageManager
         self.stores = stores
@@ -75,6 +77,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.analytics = analytics
 
         // Rely on cached value if there's any
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
@@ -149,7 +152,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
                 DDLogInfo("Success activating \(pluginName)")
                 self.refresh()
             case .failure(let error):
-                DDLogError("Error activating plugin: \(error)")
+                self.trackPluginActivateFailed(error)
                 self.state = .genericError
             }
         })
@@ -550,12 +553,20 @@ private extension CardPresentPaymentsOnboardingUseCase {
 private extension CardPresentPaymentsOnboardingUseCase {
     func trackPluginInstallFailed(_ error: Error) {
         guard let countryCode = self.storeCountryCode else {
-            DDLogError("Error installing plugin: \(error)")
             return
         }
-        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_install_tapped",
-                                                                                               countryCode: countryCode,
-                                                                                               error: error))
+        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_install_tapped",
+                                                                                countryCode: countryCode,
+                                                                                error: error))
+    }
+
+    func trackPluginActivateFailed(_ error: Error) {
+        guard let countryCode = self.storeCountryCode else {
+            return
+        }
+        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_activate_tapped",
+                                                                                countryCode: countryCode,
+                                                                                error: error))
     }
 }
 

@@ -52,7 +52,7 @@ struct SinglePackageHazmatDeclaration: View {
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
-    func createHazmatInstructionsView() -> some View {
+    private func createHazmatInstructionsView() -> some View {
         VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)

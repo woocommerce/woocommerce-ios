@@ -136,14 +136,18 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             return
         }
         // Only WCPay is currently supported, so we don't expose a different plugin option
-        let pluginName = "woocommerce-payments/woocommerce-payments"
+        let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
 
-        let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { result in
+        let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
             switch result {
             case .success:
-                break
+                DDLogInfo("Success activating \(pluginName)")
+                self.refresh()
             case .failure(let error):
                 DDLogError("Error activating plugin: \(error)")
+                self.state = .genericError
             }
         })
         stores.dispatch(activatePluginAction)

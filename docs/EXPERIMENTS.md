@@ -19,7 +19,7 @@ The project has three build configurations to match the WooCommerce app: `Debug`
 
 - `Debug` build configuration: `DEBUG` value is set. Used for debug builds from Xcode
 - `Release` build configuration: no values are set. Used for release builds for the App Store
-- `Release-Alpha` build configuration: `ALPHA` value is set. Used for one-off installable builds for internal testing, which we can trigger from a commit in a pull request
+- `Release-Alpha` build configuration: `ALPHA` value is set. Used for one-off prototype builds for internal testing, which we can trigger from a commit in a pull request
 
 In the default implementation of `FeatureFlagService`, some of the feature flags are based on build configurations - enabled in `Debug` and `Release-Alpha` configurations, and disabled in `Release` builds.
 

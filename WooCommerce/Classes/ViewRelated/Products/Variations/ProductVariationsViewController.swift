@@ -84,6 +84,19 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         }
     }
 
+    private var sortOrder: ProductVariationsSortOrder {
+        didSet {
+            if sortOrder != oldValue {
+                resultsController.sortDescriptors = sortOrder.sortDescriptors
+
+                /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
+                tableView.reloadData()
+
+                syncingCoordinator.resynchronize {}
+            }
+        }
+    }
+
     private var siteID: Int64 {
         product.siteID
     }
@@ -111,6 +124,7 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     private let noticePresenter: NoticePresenter
     private let analytics: Analytics
     private let featureFlagService: FeatureFlagService
+    private let userDefaults: UserDefaults
 
     /// ViewController that pushed `self`. Needed in order to go back to it when the first variation is created.
     ///
@@ -126,7 +140,8 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         userDefaults: UserDefaults = .standard) {
         self.initialViewController = initialViewController
         self.product = product
         self.viewModel = viewModel
@@ -134,6 +149,8 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         self.analytics = analytics
         self.featureFlagService = featureFlagService
         self.productImageUploader = productImageUploader
+        self.userDefaults = userDefaults
+        self.sortOrder = userDefaults.productVariationsSortOrder
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -172,32 +189,31 @@ private extension ProductVariationsViewController {
         )
     }
 
-    /// Shows or hides the "more" navigation bar button.
+    /// Configures navigation bar buttons.
     ///
-    func showOrHideMoreActionsNavigationBarButton() {
-        guard resultsController.fetchedObjects.isNotEmpty && viewModel.shouldAllowBulkEditing(for: product) else {
-            // Do not display the "more" button with the bulk update option if we do not have any variations
+    func configureNavigationBarButtons() {
+        guard resultsController.fetchedObjects.isNotEmpty else {
+            // Do not display the "sort" and "more" buttons if we do not have any variations
             // or if the view model does not allow it
-            hideMoreActionsNavigationBarButton()
+            navigationItem.rightBarButtonItem = nil
             return
         }
 
-        showMoreActionsNavigationBarButton()
-    }
-
-    /// Hides the "more" navigation bar button.
-    ///
-    func hideMoreActionsNavigationBarButton() {
-        navigationItem.rightBarButtonItem = nil
-    }
-
-    /// Shows the "more" navigation bar button.
-    ///
-    func showMoreActionsNavigationBarButton() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: .moreImage,
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(presentMoreActionSheet(_:)))
+        let sortButtonItem = UIBarButtonItem(title: Localization.sort,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(presentSortOptionSheet))
+        let moreButtonItem = UIBarButtonItem(image: .moreImage,
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(presentMoreActionSheet(_:)))
+        navigationItem.rightBarButtonItems = {
+            if viewModel.shouldAllowBulkEditing(for: product) {
+                return [moreButtonItem, sortButtonItem]
+            } else {
+                return [sortButtonItem]
+            }
+        }()
     }
 
     /// Apply Woo styles.
@@ -353,12 +369,10 @@ private extension ProductVariationsViewController {
     func createResultsController() -> ResultsController<StorageProductVariation> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "product.siteID == %lld AND product.productID == %lld", siteID, productID)
-        let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
-        let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
 
         return ResultsController<StorageProductVariation>(storageManager: storageManager,
                                                           matching: predicate,
-                                                          sortedBy: [menuOrderDescriptor, variationIdDescriptor])
+                                                          sortedBy: sortOrder.sortDescriptors)
     }
 
     func configureResultsController(_ resultsController: ResultsController<StorageProductVariation>) {
@@ -376,7 +390,7 @@ private extension ProductVariationsViewController {
     func configureResultsControllerEventHandling(_ resultsController: ResultsController<StorageProductVariation>) {
         let onReload = { [weak self] in
             self?.tableView.reloadData()
-            self?.showOrHideMoreActionsNavigationBarButton()
+            self?.configureNavigationBarButtons()
         }
 
         resultsController.onDidChangeContent = { [weak tableView] in
@@ -588,6 +602,10 @@ private extension ProductVariationsViewController {
         presentGenerateVariationOptions()
     }
 
+    @objc func presentSortOptionSheet() {
+        // TODO
+    }
+    
     /// More Options Action Sheet
     ///
     @objc func presentMoreActionSheet(_ sender: UIBarButtonItem) {
@@ -734,7 +752,8 @@ private extension ProductVariationsViewController {
         case .syncing(let pageNumber):
             if pageNumber == syncingCoordinator.pageFirstIndex {
                 displayGhostContent(over: tableView)
-                hideMoreActionsNavigationBarButton()
+                // Hides all navigation bar items
+                navigationItem.rightBarButtonItem = nil
             } else {
                 ensureFooterSpinnerIsStarted()
             }
@@ -748,7 +767,7 @@ private extension ProductVariationsViewController {
         case .syncing:
             ensureFooterSpinnerIsStopped()
             removeGhostContent()
-            showOrHideMoreActionsNavigationBarButton()
+            configureNavigationBarButtons()
         case .noResultsPlaceholder, .results:
             break
         }
@@ -826,6 +845,7 @@ private extension ProductVariationsViewController {
         static let generateVariationError = NSLocalizedString("The variation couldn't be generated.",
                                                               comment: "Error title when failing to generate a variation.")
         static let variationCreated = NSLocalizedString("Variation created", comment: "Text for the notice after creating the first variation.")
+        static let sort = NSLocalizedString("Sort", comment: "Button for sorting the items on the product variation list")
     }
 
     /// Localizated strings for the  action sheet options
@@ -833,5 +853,16 @@ private extension ProductVariationsViewController {
     private enum ActionSheetStrings {
         static let bulkUpdate = NSLocalizedString("Bulk Update", comment: "Button title in the action sheet of product variatiosns that shows the bulk update")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title that closes the action sheet in product variations")
+    }
+}
+
+// MARK: UserDefaults helpers
+//
+private extension UserDefaults {
+    var productVariationsSortOrder: ProductVariationsSortOrder {
+        if let rawValue = string(forKey: Key.productVariationsSortOrder.rawValue) {
+            return .init(rawValue: rawValue) ?? .dateDescending
+        }
+        return .dateAscending
     }
 }

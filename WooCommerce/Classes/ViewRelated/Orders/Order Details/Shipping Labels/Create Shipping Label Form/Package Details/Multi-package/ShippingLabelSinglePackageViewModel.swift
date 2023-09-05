@@ -142,6 +142,8 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     ///
     let selectableHazmatCategories = ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
 
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(id: String = UUID().uuidString,
          order: Order,
          orderItems: [ShippingLabelPackageItem],
@@ -231,7 +233,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
     }
 
-    /// Configure previously selected hazmat category and revert it to `.none` when toggle is unchecked
+    /// Configure reaction to hazmat category changes and revert it to `.none` when toggle is unchecked
     ///
     private func configureHazmatCategory(hazmatCategory: ShippingLabelHazmatCategory) {
         if hazmatCategory != .none {
@@ -240,14 +242,12 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         }
 
         $containsHazmatMaterials
-            .map { [weak self] containsHazmat in
-                if let selectedCategory = self?.selectedHazmatCategory,
-                      selectedCategory != .none && containsHazmat {
-                    return selectedCategory
+            .removeDuplicates()
+            .sink { [weak self] containsHazmat in
+                if !containsHazmat {
+                    self?.selectedHazmatCategory = .none
                 }
-                return .none
-            }
-            .assign(to: &$selectedHazmatCategory)
+            }.store(in: &subscriptions)
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
             .map { containsHazmat, selectedCategory -> Bool in

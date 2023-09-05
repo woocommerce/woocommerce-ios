@@ -10,6 +10,8 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
+    private var coordinator: ProductImageEditMenuCoordinator?
+
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImagesGalleryViewController.Deletion
@@ -269,6 +271,15 @@ private extension ProductImagesCollectionViewController {
 private extension ProductImagesCollectionViewController {
     func removeBackground(image: ProductImage) {
         print("\(image)")
+
+        guard let navigationController else {
+            return
+        }
+        let coordinator = ProductImageEditMenuCoordinator(navigationController: navigationController,
+                                                          productImage: image,
+                                                          imageLoader: DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }))
+        self.coordinator = coordinator
+        coordinator.start()
     }
 }
 

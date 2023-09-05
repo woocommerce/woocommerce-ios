@@ -251,7 +251,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
             .map { containsHazmat, selectedCategory -> Bool in
-                selectedCategory != .none && containsHazmat
+                if containsHazmat {
+                    return selectedCategory != .none
+                } else {
+                    return true
+                }
             }
             .assign(to: &$hasValidHazmatDeclaration)
     }

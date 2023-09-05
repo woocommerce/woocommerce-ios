@@ -90,28 +90,36 @@ struct ShippingLabelSinglePackage: View {
                 .renderedIf(viewModel.isOriginalPackaging && !viewModel.hasValidPackageDimensions)
 
             VStack(spacing: 0) {
-                Divider()
-                    .padding(.horizontal, insets: safeAreaInsets)
-                    .padding(.leading, Constants.horizontalPadding)
+                VStack {
+                    Divider()
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.leading, Constants.horizontalPadding)
 
-                TitleAndTextFieldRow(title: Localization.totalPackageWeight,
-                                     placeholder: "0",
-                                     text: $viewModel.totalWeight,
-                                     symbol: viewModel.weightUnit,
-                                     keyboardType: .decimalPad)
-                    .padding(.horizontal, insets: safeAreaInsets)
+                    TitleAndTextFieldRow(title: Localization.totalPackageWeight,
+                                         placeholder: "0",
+                                         text: $viewModel.totalWeight,
+                                         symbol: viewModel.weightUnit,
+                                         keyboardType: .decimalPad)
+                        .padding(.horizontal, insets: safeAreaInsets)
 
-                Divider()
+                    Divider()
+                }
+                .background(Color(.listForeground(modal: false)))
+
+                if viewModel.isValidTotalWeight {
+                    Text(Localization.footer)
+                        .footnoteStyle()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .padding(.vertical, Constants.verticalSpacing)
+                } else {
+                    ValidationErrorRow(errorMessage: Localization.invalidWeight)
+                        .padding(.horizontal, insets: safeAreaInsets)
+                }
             }
-            .background(Color(.listForeground(modal: false)))
 
-            if viewModel.isValidTotalWeight {
-                ListHeaderView(text: Localization.footer, alignment: .left)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            } else {
-                ValidationErrorRow(errorMessage: Localization.invalidWeight)
-                    .padding(.horizontal, insets: safeAreaInsets)
-            }
+            SinglePackageHazmatDeclaration(safeAreaInsets: safeAreaInsets, viewModel: viewModel)
         }
     }
 }
@@ -146,6 +154,7 @@ private extension ShippingLabelSinglePackage {
 
     enum Constants {
         static let horizontalPadding: CGFloat = 16
+        static let verticalSpacing: CGFloat = 8
     }
 }
 

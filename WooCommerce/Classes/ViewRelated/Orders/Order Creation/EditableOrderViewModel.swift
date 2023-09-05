@@ -551,6 +551,13 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
     }
 
+    func addTaxRateAddressToOrder(taxRate: TaxRate) {
+        let address = Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: taxRate.city, state: taxRate.state, postcode: taxRate.postcodes.first ?? "", country: taxRate.country, phone: "", email: "")
+        let input = OrderSyncAddressesInput(billing: address, shipping: address)
+        orderSynchronizer.setAddresses.send(input)
+        resetAddressForm()
+    }
+
     /// Updates the order creation draft with the current set customer note.
     ///
     func updateCustomerNote() {
@@ -624,7 +631,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onTaxRateSelected(_ taxRate: TaxRate) {
-        debugPrint("tax rate", taxRate)
+        addTaxRateAddressToOrder(taxRate: taxRate)
     }
 }
 

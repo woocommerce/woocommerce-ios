@@ -68,7 +68,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, onCompletion):
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
                 onCompletion(.success(false))
             default:
@@ -89,7 +89,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 onCompletion(.success(false))
             default:
@@ -110,7 +110,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 self.insert(self.sampleProductVariation)
                 onCompletion(.success(false))
@@ -134,7 +134,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .results)
                 onCompletion(.success(false))
             default:
@@ -191,7 +191,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")

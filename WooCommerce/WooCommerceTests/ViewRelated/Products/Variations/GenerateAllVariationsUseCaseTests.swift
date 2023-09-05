@@ -14,7 +14,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
             default:
                 break
@@ -46,7 +46,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
             case .createProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
@@ -79,7 +79,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 let variation = ProductVariation.fake().copy(attributes: [.init(id: 1, name: "Size", option: "XS")])
                 onCompletion(.success([variation]))
             case .createProductVariations(_, _, _, let onCompletion):
@@ -114,7 +114,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
             case .createProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
@@ -151,7 +151,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 break
@@ -183,7 +183,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeAllProductVariations(_, _, _, _, let onCompletion):
+            case .synchronizeAllProductVariations(_, _, _, let onCompletion):
                 onCompletion(.success([]))
             case .createProductVariations(_, _, _, let onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))

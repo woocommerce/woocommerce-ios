@@ -467,6 +467,58 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.selectedHazmatCategory, .none)
     }
+
+    func test_package_is_not_valid_when_contains_hazmat_without_category_selected() {
+        // Given
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let item = ShippingLabelPackageItem.fake(dimensions: dimensions)
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "10",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: {},
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+        viewModel.containsHazmatMaterials = true
+        viewModel.selectedHazmatCategory = .none
+
+        // Then
+        XCTAssertFalse(viewModel.isValidPackage)
+    }
+
+    func test_package_is_valid_when_contains_hazmat_with_category_selected() {
+        // Given
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let item = ShippingLabelPackageItem.fake(dimensions: dimensions)
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "10",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: {},
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+        viewModel.containsHazmatMaterials = true
+        viewModel.selectedHazmatCategory = .class1
+
+        // Then
+        XCTAssertTrue(viewModel.isValidPackage)
+    }
 }
 
 // MARK: - Mocks

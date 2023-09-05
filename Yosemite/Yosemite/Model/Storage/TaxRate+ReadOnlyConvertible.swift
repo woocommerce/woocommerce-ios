@@ -9,6 +9,7 @@ extension Storage.TaxRate: ReadOnlyConvertible {
     ///
     public func update(with taxRate: Yosemite.TaxRate) {
         id = taxRate.id
+        siteID = taxRate.siteID
         country = taxRate.country
         state = taxRate.state
         postcode = taxRate.postcode

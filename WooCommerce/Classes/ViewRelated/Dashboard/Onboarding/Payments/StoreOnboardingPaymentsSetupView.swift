@@ -149,7 +149,7 @@ private extension StoreOnboardingPaymentsSetupView.Task {
         switch self {
         case .wcPay:
             return NSLocalizedString(
-                "WooCommerce Payments",
+                "WooPayments",
                 comment: "Highlighted header text on the store onboarding WCPay setup screen."
             )
         case .payments:
@@ -178,7 +178,7 @@ private extension StoreOnboardingPaymentsSetupView.Task {
         switch self {
         case .wcPay:
             return NSLocalizedString(
-                "By using WooCommerce Payments you agree to be bound by our " +
+                "By using WooPayments you agree to be bound by our " +
                 "[Terms of Service](https://wordpress.com/tos) and acknowledge that " +
                 "you have read our [Privacy Policy](https://automattic.com/privacy/).",
                 comment: "Details on the store onboarding WCPay setup screen."

@@ -52,6 +52,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     ///
     @Published private(set) var hasValidPackageDimensions = false
 
+    /// Whether the hazmat declaration is correctly set.
+    ///
+    @Published private(set) var hasValidHazmatDeclaration = false
+
     /// Description of dimensions of the original package.
     ///
     @Published private(set) var originalPackageDimensions: String = ""
@@ -175,6 +179,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         if isOriginalPackaging, let item = orderItems.first {
             configureOriginalPackageDimensions(for: item)
         }
+        configureHazmatCategory(hazmatCategory: hazmatCategory)
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 
@@ -225,7 +230,9 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         originalPackageDimensions = String(format: "%@ x %@ x %@ %@", length, width, height, unit)
         hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
     }
-    
+
+    /// Configure previously selected hazmat category and revert it to `.none` when toggle is unchecked
+    ///
     private func configureHazmatCategory(hazmatCategory: ShippingLabelHazmatCategory) {
         if hazmatCategory != .none {
             containsHazmatMaterials = true
@@ -233,22 +240,29 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         }
 
         $containsHazmatMaterials
-            .map { [weak self] contains in
-                if contains {
-                    return self?.selectedHazmatCategory ?? .none
+            .map { [weak self] containsHazmat in
+                if let selectedCategory = self?.selectedHazmatCategory,
+                      selectedCategory != .none && containsHazmat {
+                    return selectedCategory
                 }
-                return ShippingLabelHazmatCategory.none
+                return .none
             }
             .assign(to: &$selectedHazmatCategory)
+
+        $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
+            .map { containsHazmat, selectedCategory -> Bool in
+                selectedCategory != .none && containsHazmat
+            }
+            .assign(to: &$hasValidHazmatDeclaration)
     }
 
     private func configureValidation(originalPackaging: Bool) {
-        $isValidTotalWeight.combineLatest($hasValidPackageDimensions)
-            .map { validWeight, validDimensions -> Bool in
+        $isValidTotalWeight.combineLatest($hasValidPackageDimensions, $hasValidHazmatDeclaration)
+            .map { validWeight, validDimensions, validHazmat -> Bool in
                 guard originalPackaging else {
-                    return validWeight
+                    return validWeight && validHazmat
                 }
-                return validWeight && validDimensions
+                return validWeight && validDimensions && validHazmat
             }
             .assign(to: &$isValidPackage)
     }

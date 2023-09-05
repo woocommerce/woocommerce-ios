@@ -869,6 +869,8 @@
 		26E7EE7229301EBC00793045 /* AnalyticsProductCardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7129301EBC00793045 /* AnalyticsProductCardViewModel.swift */; };
 		26E7EE7429365F0700793045 /* TopPerformersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26E7EE7329365F0700793045 /* TopPerformersView.swift */; };
 		26ED9660274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26ED965F274328BC00FA00A1 /* SimplePaymentsSummaryViewModel.swift */; };
+		26EE795F2AA795A000857293 /* Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B5C3B5E220D189E60072CB9D /* Networking.framework */; };
+		26EE79602AA795EC00857293 /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
 		26F65C9825DEDAF0008FAE29 /* GenerateVariationUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9725DEDAF0008FAE29 /* GenerateVariationUseCase.swift */; };
 		26F65C9E25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F65C9D25DEDE67008FAE29 /* GenerateVariationUseCaseTests.swift */; };
 		26F94E1C267A3E4500DB6CCF /* ProductAddOnsListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26F94E1B267A3E4500DB6CCF /* ProductAddOnsListViewController.swift */; };
@@ -4879,6 +4881,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26EE795F2AA795A000857293 /* Networking.framework in Frameworks */,
 				2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */,
 				260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */,
 				048074D723A784C0C998FCB8 /* Pods_NotificationExtension.framework in Frameworks */,
@@ -11347,10 +11350,10 @@
 				3F1CA81B26C3542600228BF2 /* XCRemoteSwiftPackageReference "XCUITestHelpers" */,
 				174CA86827D90A6200126524 /* XCRemoteSwiftPackageReference "AutomatticAbout-swift" */,
 				3FFC5EAA2851942F00563C48 /* XCRemoteSwiftPackageReference "Charts" */,
-				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */,
+				4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */,
 				3F2C8A17285B038800B1A5BB /* XCRemoteSwiftPackageReference "test-collector-swift" */,
-				DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI.git" */,
-				26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared.git" */,
+				DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */,
+				26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared" */,
 			);
 			productRefGroup = B56DB3C72049BFAA00D4AA8E /* Products */;
 			projectDirPath = "";
@@ -11862,6 +11865,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2608370E2AA66E4B0004A12B /* NotificationViewController.swift in Sources */,
+				26EE79602AA795EC00857293 /* WooConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -14960,7 +14964,7 @@
 				minimumVersion = 4.1.2;
 			};
 		};
-		26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared.git" */ = {
+		26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/woocommerce/woocommerce-shared.git";
 			requirement = {
@@ -15008,7 +15012,7 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */ = {
+		4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/krzysztofzablocki/Inject.git";
 			requirement = {
@@ -15016,7 +15020,7 @@
 				minimumVersion = 1.1.1;
 			};
 		};
-		DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI.git" */ = {
+		DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/simibac/ConfettiSwiftUI.git";
 			requirement = {
@@ -15047,7 +15051,7 @@
 		};
 		26A8A0BC2A68845E00FAF8BA /* WooCommerceShared */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared.git" */;
+			package = 26A8A0BB2A68845E00FAF8BA /* XCRemoteSwiftPackageReference "woocommerce-shared" */;
 			productName = WooCommerceShared;
 		};
 		3F1CA81C26C3542600228BF2 /* XCUITestHelpers */ = {
@@ -15107,7 +15111,7 @@
 		};
 		4598298028574688003A9AFE /* Inject */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject.git" */;
+			package = 4598297F28574688003A9AFE /* XCRemoteSwiftPackageReference "Inject" */;
 			productName = Inject;
 		};
 		57150E0E24F462C200E81611 /* TestKit */ = {
@@ -15116,7 +15120,7 @@
 		};
 		DE9F2D2B2A1B1F5D004E5957 /* ConfettiSwiftUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI.git" */;
+			package = DE9F2D2A2A1B1F5D004E5957 /* XCRemoteSwiftPackageReference "ConfettiSwiftUI" */;
 			productName = ConfettiSwiftUI;
 		};
 /* End XCSwiftPackageProductDependency section */

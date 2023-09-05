@@ -86,6 +86,8 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
                                   context: String?,
                                   pageNumber: Int,
                                   pageSize: Int,
+                                  orderBy: ProductVariationsRemote.OrderKey = .date,
+                                  order: ProductVariationsRemote.Order = .descending,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void) {
         // no-op
     }

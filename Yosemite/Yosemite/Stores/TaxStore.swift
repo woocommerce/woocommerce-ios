@@ -158,7 +158,10 @@ private extension TaxStore {
     /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, shouldDeleteExistingTaxRates: Bool, onCompletion: @escaping () -> Void) {
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate],
+                                          siteID: Int64,
+                                          shouldDeleteExistingTaxRates: Bool,
+                                          onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }

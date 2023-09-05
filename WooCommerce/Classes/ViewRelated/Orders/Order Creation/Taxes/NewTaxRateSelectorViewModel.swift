@@ -26,7 +26,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
 
-    /// View models for placeholder rows.
+    /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
         TaxRateViewModel(id: index, name: "placeholder", rate: "10%")
     }
@@ -134,7 +134,9 @@ private extension NewTaxRateSelectorViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        taxRateViewModels = resultsController.fetchedObjects.map { TaxRateViewModel(id: $0.id, name: $0.name, rate: $0.rate) }
+        taxRateViewModels = resultsController.fetchedObjects.map {
+            TaxRateViewModel(id: $0.id, name: $0.name, rate: Double($0.rate)?.percentFormatted() ?? "")
+        }
         transitionToResultsUpdatedState()
     }
 

@@ -161,7 +161,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Initialization
 
     func retrieveProductTaxClass(completion: @escaping () -> Void) {
-        let action = TaxClassAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
+        let action = TaxAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
             self?.taxClass = taxClass ?? self?.standardTaxClass
             completion()
         }

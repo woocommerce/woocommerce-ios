@@ -421,6 +421,52 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originalPackageDimensions, "2 x 3 x 5 in")
         XCTAssertTrue(viewModel.hasValidPackageDimensions)
     }
+
+    func test_selectableHazmatCategories_should_never_contains_none_option() {
+        // Given
+        let item = ShippingLabelPackageItem.fake()
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: {},
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertFalse(viewModel.selectableHazmatCategories.contains(.none))
+    }
+
+    func test_default_hazmat_category_should_be_none() {
+        // Given
+        let item = ShippingLabelPackageItem.fake()
+        let order = MockOrders().makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: {},
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg")
+
+        // Then
+        XCTAssertEqual(viewModel.selectedHazmatCategory, .none)
+    }
 }
 
 // MARK: - Mocks

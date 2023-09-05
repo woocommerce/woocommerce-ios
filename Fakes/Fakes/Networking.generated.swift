@@ -1883,6 +1883,29 @@ extension Networking.TaxClass {
         )
     }
 }
+extension Networking.TaxRate {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.TaxRate {
+        .init(
+            id: .fake(),
+            siteID: .fake(),
+            name: .fake(),
+            country: .fake(),
+            state: .fake(),
+            postcode: .fake(),
+            postcodes: .fake(),
+            priority: .fake(),
+            rate: .fake(),
+            order: .fake(),
+            taxRateClass: .fake(),
+            shipping: .fake(),
+            compound: .fake(),
+            city: .fake(),
+            cities: .fake()
+        )
+    }
+}
 extension Networking.TopEarnerStats {
     /// Returns a "ready to use" type filled with fake values.
     ///

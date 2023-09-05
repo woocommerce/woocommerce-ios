@@ -116,13 +116,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
-        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { result in
+        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
             switch result {
             case .success:
                 DDLogInfo("Success installing \(pluginSlug)")
                 self.refresh()
             case .failure(let error):
-                DDLogError("Error installing plugin: \(error)")
+                self.trackPluginInstallFailed(error)
+                self.state = .genericError
             }
         })
         stores.dispatch(installPluginAction)
@@ -515,6 +518,19 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func isNetworkError(_ error: Error) -> Bool {
         (error as NSError).domain == NSURLErrorDomain
+    }
+}
+
+// MARK: - Analytics
+private extension CardPresentPaymentsOnboardingUseCase {
+    func trackPluginInstallFailed(_ error: Error) {
+        guard let countryCode = self.storeCountryCode else {
+            DDLogError("Error installing plugin: \(error)")
+            return
+        }
+        ServiceLocator.analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: "plugin_install_tapped",
+                                                                                               countryCode: countryCode,
+                                                                                               error: error))
     }
 }
 

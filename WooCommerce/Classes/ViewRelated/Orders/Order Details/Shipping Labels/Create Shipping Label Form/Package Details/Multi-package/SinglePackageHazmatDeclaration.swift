@@ -20,11 +20,11 @@ struct SinglePackageHazmatDeclaration: View {
                 Divider()
 
                 TitleAndToggleRow(title: Localization.containsHazmatMaterials, isOn: $viewModel.containsHazmatMaterials)
+                    .padding(.horizontal, insets: safeAreaInsets)
                     .padding(.horizontal, Constants.horizontalPadding)
 
                 VStack {
                     Divider()
-                        .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
 
                     Button(action: {
@@ -53,12 +53,12 @@ struct SinglePackageHazmatDeclaration: View {
                     })
 
                     Divider()
-                        .padding(.horizontal, insets: safeAreaInsets)
                         .padding(.leading, Constants.horizontalPadding)
 
                     createHazmatInstructionsView()
                 }
                 .renderedIf(viewModel.containsHazmatMaterials)
+                .padding(.horizontal, insets: safeAreaInsets)
 
                 Divider()
             }
@@ -66,13 +66,14 @@ struct SinglePackageHazmatDeclaration: View {
 
             Text(Localization.hazmatTooltip)
                 .renderedIf(!viewModel.containsHazmatMaterials)
+                .padding(.horizontal, insets: safeAreaInsets)
                 .padding(.leading, Constants.horizontalPadding)
                 .calloutStyle()
         }
         .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
-    func createHazmatInstructionsView() -> some View {
+    private func createHazmatInstructionsView() -> some View {
         VStack(alignment: .leading) {
             Spacer()
             Text(Localization.hazmatInstructionsFirstSection)

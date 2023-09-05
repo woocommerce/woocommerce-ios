@@ -152,7 +152,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
          selectedPackageID: String,
          totalWeight: String,
          isOriginalPackaging: Bool = false,
-         hazmatCategory: ShippingLabelHazmatCategory,
+         hazmatCategory: ShippingLabelHazmatCategory = .none,
          onItemMoveRequest: @escaping () -> Void,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -275,12 +275,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
 // MARK: ShippingLabelPackageSelectionDelegate conformance
 extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDelegate {
     func didSelectPackage(id: String) {
-        let hazmatCategory = selectedHazmatCategory != .none ? selectedHazmatCategory : nil
         let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
                                                         totalWeight: newTotalWeight,
                                                         items: orderItems,
-                                                        selectedHazmatCategory: hazmatCategory)
+                                                        selectedHazmatCategory: selectedHazmatCategory)
 
         onPackageSwitch(newPackage)
     }

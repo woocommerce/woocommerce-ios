@@ -112,7 +112,7 @@ private extension ShippingLabelPackagesFormViewModel {
         selectedPackages = [ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                                            totalWeight: "",
                                                            items: items,
-                                                           selectedHazmatCategory: nil)]
+                                                           selectedHazmatCategory: .none)]
     }
 
     /// Set up item view models on change selected packages.
@@ -127,7 +127,7 @@ private extension ShippingLabelPackagesFormViewModel {
                          selectedPackageID: details.packageID,
                          totalWeight: details.totalWeight,
                          isOriginalPackaging: details.isOriginalPackaging,
-                         hazmatCategory: details.selectedHazmatCategory ?? .none,
+                         hazmatCategory: details.selectedHazmatCategory,
                          onItemMoveRequest: { [weak self] in
                 self?.itemViewModels.forEach {
                     $0.dismissPopover()
@@ -234,7 +234,7 @@ private extension ShippingLabelPackagesFormViewModel {
                 let originalPackage = ShippingLabelPackageAttributes(packageID: ShippingLabelPackageAttributes.originalPackagingBoxID,
                                                                      totalWeight: "",
                                                                      items: [matchingItem],
-                                                                     selectedHazmatCategory: nil)
+                                                                     selectedHazmatCategory: package.selectedHazmatCategory)
                 updatedPackages.append(originalPackage)
             } else {
                 updatedPackages.append(package)

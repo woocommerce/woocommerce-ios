@@ -44,7 +44,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         // Then
         let action = try XCTUnwrap(storesManager.receivedActions.first as? ProductVariationAction)
 
-        guard case let .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, _) = action else {
+        guard case let .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, _, _, _) = action else {
             XCTFail("Expected \(action) to be \(ProductVariationAction.self).synchronizeProductVariations.")
             return
         }
@@ -97,7 +97,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
                                             storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError.init(domain: "sample error", code: 0, userInfo: nil)))
             default:
                 XCTFail("Unsupported Action")
@@ -121,7 +121,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
                                             storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
@@ -143,7 +143,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[0], on: product)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
@@ -179,7 +179,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1], on: product)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
@@ -217,7 +217,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1], on: product)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
@@ -254,7 +254,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1], on: product)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")
@@ -291,7 +291,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         storageManager.insertSampleProductVariation(readOnlyProductVariation: variations[1], on: product)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action  in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.success(false))
             default:
                 XCTFail("Unsupported Action")

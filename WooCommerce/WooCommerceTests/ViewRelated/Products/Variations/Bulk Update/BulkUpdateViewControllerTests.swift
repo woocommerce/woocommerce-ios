@@ -22,7 +22,7 @@ final class BulkUpdateViewControllerTests: XCTestCase {
                                             storesManager: storesManager)
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariations(_, _, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError.init(domain: "sample error", code: 0, userInfo: nil)))
             default:
                 XCTFail("Unsupported Action")

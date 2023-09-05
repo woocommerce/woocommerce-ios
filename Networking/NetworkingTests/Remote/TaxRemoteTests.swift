@@ -2,7 +2,7 @@ import XCTest
 
 @testable import Networking
 
-final class TaxClassRemoteTests: XCTestCase {
+final class TaxRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -24,7 +24,7 @@ final class TaxClassRemoteTests: XCTestCase {
     /// Verifies that loadAllTaxClasses properly parses the `taxes-classes` sample response.
     ///
     func testLoadAllTaxClassesProperlyReturnsParsedData() {
-        let remote = TaxClassRemote(network: network)
+        let remote = TaxRemote(network: network)
         let expectation = self.expectation(description: "Load All Tax Classes")
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
@@ -55,7 +55,7 @@ final class TaxClassRemoteTests: XCTestCase {
     /// Verifies that loadAllTaxClasses properly relays Networking Layer errors.
     ///
     func testLoadAllTaxClassesProperlyRelaysNetwokingErrors() {
-        let remote = TaxClassRemote(network: network)
+        let remote = TaxRemote(network: network)
         let expectation = self.expectation(description: "Load All Tax Classes returns error")
 
         remote.loadAllTaxClasses(for: sampleSiteID) { (taxClasses, error) in
@@ -67,4 +67,53 @@ final class TaxClassRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_retrieveTaxRates_then_returns_parsed_data() throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: "taxes", filename: "taxes")
+
+        let remote = TaxRemote(network: network)
+
+        // When
+        let result = waitFor { promise in
+            remote.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+        }
+        let rates = try XCTUnwrap(result.get())
+
+        // Then
+        XCTAssertEqual(rates.count, 3)
+        XCTAssertEqual(rates.first?.id, 72)
+        XCTAssertEqual(rates.first?.country, "US")
+        XCTAssertEqual(rates.first?.state, "AL")
+        XCTAssertEqual(rates.first?.postcode, "35041")
+        XCTAssertEqual(rates.first?.city, "Cardiff")
+        XCTAssertEqual(rates.first?.postcodes, ["35014", "35036", "35041"])
+        XCTAssertEqual(rates.first?.rate, "4.0000")
+        XCTAssertEqual(rates.first?.name, "State Tax")
+        XCTAssertEqual(rates.first?.priority, 0)
+        XCTAssertEqual(rates.first?.compound, false)
+        XCTAssertEqual(rates.first?.shipping, false)
+        XCTAssertEqual(rates.first?.order, 1)
+        XCTAssertEqual(rates.first?.taxRateClass, "standard")
+    }
+
+    func test_retrieveTaxRates_then_relays_networking_errors() throws {
+        // Given
+        let remote = TaxRemote(network: network)
+
+        let error = NetworkError.unacceptableStatusCode(statusCode: 403)
+        network.simulateError(requestUrlSuffix: "taxes", error: error)
+
+        // When
+        let result = waitFor { promise in
+            remote.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+        }
+        // Then
+        XCTAssertTrue(result.isFailure)
+        let resultError = try XCTUnwrap(result.failure as? NetworkError)
+        XCTAssertEqual(resultError, .unacceptableStatusCode(statusCode: 403))
+    }
 }

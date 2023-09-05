@@ -40,7 +40,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     ///
     func installCardPresentPlugin()
 
-    ///
+    /// Sends the `activateSitePlugin` action to the dispatcher
     ///
     func activateCardPresentPlugin()
 }
@@ -112,13 +112,10 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         }
     }
 
-    ///
-    ///
     func installCardPresentPlugin() {
         guard let siteID = siteID else {
             return
         }
-
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
@@ -134,15 +131,13 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         stores.dispatch(installPluginAction)
     }
 
-    ///
-    ///
     func activateCardPresentPlugin() {
         guard let siteID = siteID else {
             return
         }
-
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginName = "woocommerce-payments/woocommerce-payments"
+
         let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { result in
             switch result {
             case .success:

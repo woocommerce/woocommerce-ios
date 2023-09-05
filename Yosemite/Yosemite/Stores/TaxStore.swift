@@ -107,7 +107,7 @@ private extension TaxStore {
         remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):
-                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID) {
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID, shouldDeleteExistingTaxRates: pageNumber == 1) {
                     onCompletion(.success(taxRates))
                 }
             case .failure(let error):
@@ -158,10 +158,13 @@ private extension TaxStore {
     /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, shouldDeleteExistingTaxRates: Bool, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            derivedStorage.deleteTaxRates(siteID: siteID)
+            if shouldDeleteExistingTaxRates {
+                derivedStorage.deleteTaxRates(siteID: siteID)
+            }
+
             self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
         }
 

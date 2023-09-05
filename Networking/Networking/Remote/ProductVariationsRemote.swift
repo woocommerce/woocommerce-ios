@@ -10,6 +10,8 @@ public protocol ProductVariationsRemoteProtocol {
                                   context: String?,
                                   pageNumber: Int,
                                   pageSize: Int,
+                                  orderBy: ProductVariationsRemote.OrderKey,
+                                  order: ProductVariationsRemote.Order,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
     func loadProductVariation(for siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func createProductVariation(for siteID: Int64,
@@ -53,11 +55,15 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                          context: String? = nil,
                                          pageNumber: Int = Default.pageNumber,
                                          pageSize: Int = Default.pageSize,
+                                         orderBy: ProductVariationsRemote.OrderKey = .date,
+                                         order: ProductVariationsRemote.Order = .descending,
                                          completion: @escaping ([ProductVariation]?, Error?) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.contextKey: context ?? Default.context
+            ParameterKey.contextKey: context ?? Default.context,
+            ParameterKey.order: order.rawValue,
+            ParameterKey.orderBy: orderBy.rawValue
         ]
 
         let path = "\(Path.products)/\(productID)/variations"
@@ -263,6 +269,16 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 // MARK: - Constants
 //
 public extension ProductVariationsRemote {
+    enum OrderKey: String {
+        case date
+        case title
+    }
+
+    enum Order: String {
+        case ascending = "asc"
+        case descending = "desc"
+    }
+
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = 1
@@ -278,5 +294,7 @@ public extension ProductVariationsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let image: String = "image"
+        static let order: String = "order"
+        static let orderBy: String = "orderby"
     }
 }

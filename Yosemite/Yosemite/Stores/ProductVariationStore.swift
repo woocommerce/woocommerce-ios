@@ -38,10 +38,16 @@ public final class ProductVariationStore: Store {
         }
 
         switch action {
-        case .synchronizeAllProductVariations(let siteID, let productID, let onCompletion):
-            synchronizeAllProductVariations(siteID: siteID, productID: productID, onCompletion: onCompletion)
-        case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
-            synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case let .synchronizeAllProductVariations(siteID, productID, orderBy, order, onCompletion):
+            synchronizeAllProductVariations(siteID: siteID, productID: productID, orderBy: orderBy, order: order, onCompletion: onCompletion)
+        case let .synchronizeProductVariations(siteID, productID, pageNumber, pageSize, orderBy, order, onCompletion):
+            synchronizeProductVariations(siteID: siteID,
+                                         productID: productID,
+                                         pageNumber: pageNumber,
+                                         pageSize: pageSize,
+                                         orderBy: orderBy,
+                                         order: order,
+                                         onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
@@ -69,12 +75,18 @@ private extension ProductVariationStore {
 
     /// Synchronizes all the product reviews associated with a given Site ID (if any!).
     ///
-    func synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
+    func synchronizeAllProductVariations(siteID: Int64,
+                                         productID: Int64,
+                                         orderBy: ProductVariationsRemote.OrderKey,
+                                         order: ProductVariationsRemote.Order,
+                                         onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         let maxPageSize = 100 // API only allows to fetch a max of 100 variations at a time
         recursivelySyncAllVariations(siteID: siteID,
                                      productID: productID,
                                      pageNumber: Default.firstPageNumber,
-                                     pageSize: maxPageSize) { [weak self] result in
+                                     pageSize: maxPageSize,
+                                     orderBy: orderBy,
+                                     order: order) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -90,12 +102,20 @@ private extension ProductVariationStore {
     /// Synchronizes the product reviews associated with a given Site ID (if any!).
     /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
     ///
-    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProductVariations(siteID: Int64,
+                                      productID: Int64,
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      orderBy: ProductVariationsRemote.OrderKey,
+                                      order: ProductVariationsRemote.Order,
+                                      onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
                                         context: nil,
                                         pageNumber: pageNumber,
-                                        pageSize: pageSize) { [weak self] (productVariations, error) in
+                                        pageSize: pageSize,
+                                        orderBy: orderBy,
+                                        order: order) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
                 onCompletion(.failure(error ?? NSError()))
                 return
@@ -350,8 +370,15 @@ private extension ProductVariationStore {
                                               productID: Int64,
                                               pageNumber: Int,
                                               pageSize: Int,
+                                              orderBy: ProductVariationsRemote.OrderKey,
+                                              order: ProductVariationsRemote.Order,
                                               onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        synchronizeProductVariations(siteID: siteID,
+                                     productID: productID,
+                                     pageNumber: pageNumber,
+                                     pageSize: pageSize,
+                                     orderBy: orderBy,
+                                     order: order) { [weak self] result in
             switch result {
             case .success(let hasMoreVariationsToFetch):
                 guard hasMoreVariationsToFetch else {
@@ -361,6 +388,8 @@ private extension ProductVariationStore {
                                                    productID: productID,
                                                    pageNumber: pageNumber + 1,
                                                    pageSize: pageSize,
+                                                   orderBy: orderBy,
+                                                   order: order,
                                                    onCompletion: onCompletion)
             case .failure(let error):
                 onCompletion(.failure(error))

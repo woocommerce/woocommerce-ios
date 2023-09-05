@@ -8,12 +8,22 @@ public enum ProductVariationAction: Action {
 
     /// Synchronizes all the ProductVariation's available in the store.
     ///
-    case synchronizeAllProductVariations(siteID: Int64, productID: Int64, onCompletion: (Result<[ProductVariation], Error>) -> Void)
+    case synchronizeAllProductVariations(siteID: Int64,
+                                         productID: Int64,
+                                         orderBy: ProductVariationsRemote.OrderKey = .date,
+                                         order: ProductVariationsRemote.Order = .descending,
+                                         onCompletion: (Result<[ProductVariation], Error>) -> Void)
 
     /// Synchronizes the ProductVariation's matching the specified criteria.
     /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
     ///
-    case synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Result<Bool, Error>) -> Void)
+    case synchronizeProductVariations(siteID: Int64,
+                                      productID: Int64,
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      orderBy: ProductVariationsRemote.OrderKey = .date,
+                                      order: ProductVariationsRemote.Order = .descending,
+                                      onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified ProductVariation.
     ///

@@ -37,7 +37,7 @@ struct NewTaxRateSelectorView: View {
                     .footnoteStyle()
                     .multilineTextAlignment(.leading)
                     .padding([.leading, .trailing], Layout.generalPadding)
-                    .padding(.bottom, Layout.taxRatesSectionTitleBottomPadding)
+                    .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
 
                 Divider()
 
@@ -50,6 +50,7 @@ struct NewTaxRateSelectorView: View {
                         }) {
                             ForEach(viewModel.taxRateViewModels, id: \.id) { viewModel in
                                 TaxRateRow(viewModel: viewModel)
+                                Divider()
                             }
                             .background(Color(.listForeground(modal: false)))
 
@@ -133,7 +134,7 @@ extension NewTaxRateSelectorView {
         static let generalPadding: CGFloat = 16
         static let explanatoryBoxHorizontalSpacing: CGFloat = 11
         static let explanatoryBoxCornerRadius: CGFloat = 8
-        static let taxRatesSectionTitleBottomPadding: CGFloat = 8
+        static let taxRatesSectionTitleVerticalPadding: CGFloat = 8
         static let editTaxRatesInWpAdminSectionTopPadding: CGFloat = 24
         static let editTaxRatesInWpAdminSectionVerticalSpacing: CGFloat = 8
     }

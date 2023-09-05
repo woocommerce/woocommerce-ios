@@ -10,8 +10,7 @@ public enum ProductVariationAction: Action {
     ///
     case synchronizeAllProductVariations(siteID: Int64,
                                          productID: Int64,
-                                         orderBy: ProductVariationsRemote.OrderKey = .date,
-                                         order: ProductVariationsRemote.Order = .descending,
+                                         order: ProductVariationsSortOrder = .dateDescending,
                                          onCompletion: (Result<[ProductVariation], Error>) -> Void)
 
     /// Synchronizes the ProductVariation's matching the specified criteria.
@@ -21,8 +20,7 @@ public enum ProductVariationAction: Action {
                                       productID: Int64,
                                       pageNumber: Int,
                                       pageSize: Int,
-                                      orderBy: ProductVariationsRemote.OrderKey = .date,
-                                      order: ProductVariationsRemote.Order = .descending,
+                                      order: ProductVariationsSortOrder = .dateDescending,
                                       onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified ProductVariation.

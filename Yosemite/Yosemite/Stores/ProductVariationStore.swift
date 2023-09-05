@@ -38,14 +38,13 @@ public final class ProductVariationStore: Store {
         }
 
         switch action {
-        case let .synchronizeAllProductVariations(siteID, productID, orderBy, order, onCompletion):
-            synchronizeAllProductVariations(siteID: siteID, productID: productID, orderBy: orderBy, order: order, onCompletion: onCompletion)
-        case let .synchronizeProductVariations(siteID, productID, pageNumber, pageSize, orderBy, order, onCompletion):
+        case let .synchronizeAllProductVariations(siteID, productID, order, onCompletion):
+            synchronizeAllProductVariations(siteID: siteID, productID: productID, order: order, onCompletion: onCompletion)
+        case let .synchronizeProductVariations(siteID, productID, pageNumber, pageSize, order, onCompletion):
             synchronizeProductVariations(siteID: siteID,
                                          productID: productID,
                                          pageNumber: pageNumber,
                                          pageSize: pageSize,
-                                         orderBy: orderBy,
                                          order: order,
                                          onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
@@ -77,15 +76,13 @@ private extension ProductVariationStore {
     ///
     func synchronizeAllProductVariations(siteID: Int64,
                                          productID: Int64,
-                                         orderBy: ProductVariationsRemote.OrderKey,
-                                         order: ProductVariationsRemote.Order,
+                                         order: ProductVariationsSortOrder,
                                          onCompletion: @escaping (Result<[ProductVariation], Error>) -> Void) {
         let maxPageSize = 100 // API only allows to fetch a max of 100 variations at a time
         recursivelySyncAllVariations(siteID: siteID,
                                      productID: productID,
                                      pageNumber: Default.firstPageNumber,
                                      pageSize: maxPageSize,
-                                     orderBy: orderBy,
                                      order: order) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -106,16 +103,15 @@ private extension ProductVariationStore {
                                       productID: Int64,
                                       pageNumber: Int,
                                       pageSize: Int,
-                                      orderBy: ProductVariationsRemote.OrderKey,
-                                      order: ProductVariationsRemote.Order,
+                                      order: ProductVariationsSortOrder,
                                       onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
                                         context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize,
-                                        orderBy: orderBy,
-                                        order: order) { [weak self] (productVariations, error) in
+                                        orderBy: order.remoteOrderKey,
+                                        order: order.remoteOrder) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
                 onCompletion(.failure(error ?? NSError()))
                 return
@@ -370,14 +366,12 @@ private extension ProductVariationStore {
                                               productID: Int64,
                                               pageNumber: Int,
                                               pageSize: Int,
-                                              orderBy: ProductVariationsRemote.OrderKey,
-                                              order: ProductVariationsRemote.Order,
+                                              order: ProductVariationsSortOrder,
                                               onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         synchronizeProductVariations(siteID: siteID,
                                      productID: productID,
                                      pageNumber: pageNumber,
                                      pageSize: pageSize,
-                                     orderBy: orderBy,
                                      order: order) { [weak self] result in
             switch result {
             case .success(let hasMoreVariationsToFetch):
@@ -388,7 +382,6 @@ private extension ProductVariationStore {
                                                    productID: productID,
                                                    pageNumber: pageNumber + 1,
                                                    pageSize: pageSize,
-                                                   orderBy: orderBy,
                                                    order: order,
                                                    onCompletion: onCompletion)
             case .failure(let error):

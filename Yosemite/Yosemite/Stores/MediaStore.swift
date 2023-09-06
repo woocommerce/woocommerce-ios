@@ -92,7 +92,7 @@ private extension MediaStore {
                      productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        Task(priority: .background) {
+        Task {
             do {
                 let uploadableMedia = try await mediaExportService.export(mediaAsset)
                 uploadMedia(siteID: siteID,

@@ -2,7 +2,7 @@ import Networking
 
 /// How product variations are sorted in a product list.
 ///
-public enum ProductVariationsSortOrder: String {
+public enum ProductVariationsSortOrder: String, CaseIterable {
     // From the newest to the oldest
     case dateDescending
     // From the oldest to the newest
@@ -41,13 +41,13 @@ public extension ProductVariationsSortOrder {
     var sortDescriptors: [NSSortDescriptor] {
         switch self {
         case .dateAscending:
-            return [NSSortDescriptor(keyPath: \StorageProduct.date, ascending: true)]
+            return [NSSortDescriptor(keyPath: \StorageProductVariation.dateCreated, ascending: true)]
         case .dateDescending:
-            return [NSSortDescriptor(keyPath: \StorageProduct.date, ascending: false)]
+            return [NSSortDescriptor(keyPath: \StorageProductVariation.dateCreated, ascending: false)]
         case .nameAscending:
-            return [NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))]
+            return [NSSortDescriptor(key: "attributes", ascending: true, selector: #selector(NSString.localizedCompare(_:)))]
         case .nameDescending:
-            return [NSSortDescriptor(key: "name", ascending: false, selector: #selector(NSString.localizedCompare(_:)))]
+            return [NSSortDescriptor(key: "attributes", ascending: false, selector: #selector(NSString.localizedCompare(_:)))]
         }
     }
 }

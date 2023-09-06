@@ -24,7 +24,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
     /// Trigger to perform any one time setups.
-    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let onLoadTriggerOnce: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
@@ -98,7 +98,7 @@ private extension NewTaxRateSelectorViewModel {
 
     func configureFirstPageLoad() {
         // Listens only to the first emitted event.
-        onLoadTrigger.first()
+        onLoadTriggerOnce.first()
             .sink { [weak self] in
                 guard let self = self else { return }
                 self.syncFirstPage()

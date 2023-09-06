@@ -28,7 +28,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores)
 
         // When
-        viewModel.onLoadTrigger.send()
+        viewModel.onLoadTriggerOnce.send()
 
         // Then
         XCTAssertTrue(retrieveTaxRatesIsCalled)
@@ -77,7 +77,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
-        viewModel.onLoadTrigger.send()
+        viewModel.onLoadTriggerOnce.send()
 
         // Then
         XCTAssertEqual(viewModel.taxRateViewModels.first?.id, taxRate.id)
@@ -107,7 +107,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             }
         }
 
-        viewModel.onLoadTrigger.send()
+        viewModel.onLoadTriggerOnce.send()
         viewModel.onLoadNextPageAction()
 
         // Then

@@ -80,7 +80,7 @@ struct NewTaxRateSelectorView: View {
                 }
             }
             .onAppear {
-                viewModel.onLoadTrigger.send()
+                viewModel.onLoadTriggerOnce.send()
             }
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)

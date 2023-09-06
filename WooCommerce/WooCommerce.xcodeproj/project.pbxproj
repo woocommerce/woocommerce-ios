@@ -707,7 +707,7 @@
 		2602A64A27BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2602A64927BDC80200B347F1 /* RemoteOrderSynchronizerTests.swift */; };
 		260837092AA66E4B0004A12B /* UserNotifications.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 260837082AA66E4A0004A12B /* UserNotifications.framework */; };
 		2608370B2AA66E4B0004A12B /* UserNotificationsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */; };
-		2608370E2AA66E4B0004A12B /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2608370D2AA66E4B0004A12B /* NotificationViewController.swift */; };
+		2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2608370D2AA66E4B0004A12B /* OrderNotificationViewController.swift */; };
 		260837112AA66E4B0004A12B /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2608370F2AA66E4B0004A12B /* MainInterface.storyboard */; };
 		260837152AA66E4B0004A12B /* NotificationExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 260837072AA66E4A0004A12B /* NotificationExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2608C50628C93AB700C9DFC0 /* WooConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D1AFBF20BC67C200DB0E8C /* WooConstants.swift */; };
@@ -3175,7 +3175,7 @@
 		260837072AA66E4A0004A12B /* NotificationExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		260837082AA66E4A0004A12B /* UserNotifications.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotifications.framework; path = System/Library/Frameworks/UserNotifications.framework; sourceTree = SDKROOT; };
 		2608370A2AA66E4B0004A12B /* UserNotificationsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UserNotificationsUI.framework; path = System/Library/Frameworks/UserNotificationsUI.framework; sourceTree = SDKROOT; };
-		2608370D2AA66E4B0004A12B /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
+		2608370D2AA66E4B0004A12B /* OrderNotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNotificationViewController.swift; sourceTree = "<group>"; };
 		260837102AA66E4B0004A12B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
 		260837122AA66E4B0004A12B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		260979782A12E20900442249 /* PrivacyBannerPresentationUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyBannerPresentationUseCase.swift; sourceTree = "<group>"; };
@@ -6455,7 +6455,7 @@
 			isa = PBXGroup;
 			children = (
 				26EE795E2AA7924700857293 /* NotificationExtension.entitlements */,
-				2608370D2AA66E4B0004A12B /* NotificationViewController.swift */,
+				2608370D2AA66E4B0004A12B /* OrderNotificationViewController.swift */,
 				2608370F2AA66E4B0004A12B /* MainInterface.storyboard */,
 				260837122AA66E4B0004A12B /* Info.plist */,
 			);
@@ -11864,7 +11864,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2608370E2AA66E4B0004A12B /* NotificationViewController.swift in Sources */,
+				2608370E2AA66E4B0004A12B /* OrderNotificationViewController.swift in Sources */,
 				26EE79602AA795EC00857293 /* WooConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -14251,7 +14251,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.alpha.woocommerce.notificationcontentextension;
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.woocommerce.notificationcontentextension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = "WooCommerce Notification Content Exten Development";

@@ -12,8 +12,8 @@
         <!--Notification View Controller-->
         <scene sceneID="cwh-vc-ff4">
             <objects>
-                <viewController id="M4Y-Lb-cyx" userLabel="Notification View Controller" customClass="NotificationViewController" customModule="NotificationExtension" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" ambiguous="YES" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
+                <viewController id="M4Y-Lb-cyx" userLabel="Notification View Controller" customClass="OrderNotificationViewController" customModule="NotificationExtension" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" simulatedAppContext="notificationCenter" id="S3S-Oj-5AN">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="37"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -41,7 +41,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vXp-U4-Rya" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="139" y="-2"/>
+            <point key="canvasLocation" x="138.93129770992365" y="-2.4647887323943665"/>
         </scene>
     </scenes>
     <resources>

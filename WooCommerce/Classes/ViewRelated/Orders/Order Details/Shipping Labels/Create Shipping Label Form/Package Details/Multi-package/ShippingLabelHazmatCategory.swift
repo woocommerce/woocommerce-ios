@@ -2,32 +2,32 @@ import Foundation
 
 enum ShippingLabelHazmatCategory: String, CaseIterable {
     case none
-    case airEligibleEthanol
-    case class1
-    case class3
-    case class4
-    case class5
-    case class6
-    case class7
-    case class8Corrosive
-    case class8WetBattery
-    case class9NewLithiumIndividual
-    case class9UsedLithium
-    case class9newLithiumDevice
-    case class9DryIce
-    case class9UnmarkedLithium
-    case class9Magnitized
-    case division41
-    case division51
-    case division52
-    case division61
-    case division62
-    case exceptedQuantityProvision
-    case groundOnly
-    case id8000
-    case lighters
-    case limitedQuantity
-    case smallQuantityProvision
+    case airEligibleEthanol = "AIR_ELIGIBLE_ETHANOL"
+    case class1 = "CLASS_1"
+    case class3 = "CLASS_3"
+    case class4 = "CLASS_4"
+    case class5 = "CLASS_5"
+    case class6 = "CLASS_6"
+    case class7 = "CLASS_7"
+    case class8Corrosive = "CLASS_8_CORROSIVE"
+    case class8WetBattery = "CLASS_8_WET_BATTERY"
+    case class9NewLithiumIndividual = "CLASS_9_NEW_LITHIUM_INDIVIDUAL"
+    case class9UsedLithium = "CLASS_9_USED_LITHIUM"
+    case class9newLithiumDevice = "CLASS_9_NEW_LITHIUM_DEVICE"
+    case class9DryIce = "CLASS_9_DRY_ICE"
+    case class9UnmarkedLithium = "CLASS_9_UNMARKED_LITHIUM"
+    case class9Magnitized = "CLASS_9_MAGNETIZED"
+    case division41 = "DIVISION_4_1"
+    case division51 = "DIVISION_5_1"
+    case division52 = "DIVISION_5_2"
+    case division61 = "DIVISION_6_1"
+    case division62 = "DIVISION_6_2"
+    case exceptedQuantityProvision = "EXCEPTED_QUANTITY_PROVISION"
+    case groundOnly = "GROUND_ONLY"
+    case id8000 = "ID8000"
+    case lighters = "LIGHTERS"
+    case limitedQuantity = ""
+    case smallQuantityProvision = "SMALL_QUANTITY_PROVISION"
 
     var localizedName: String {
         switch self {

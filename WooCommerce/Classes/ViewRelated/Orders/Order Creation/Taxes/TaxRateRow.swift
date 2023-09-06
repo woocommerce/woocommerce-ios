@@ -8,7 +8,7 @@ struct TaxRateRow: View {
         HStack {
             Button(action: onSelect) {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {
-                    Text(viewModel.name)
+                    Text(viewModel.title)
                         .foregroundColor(Color(.text))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)

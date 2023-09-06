@@ -55,7 +55,9 @@ struct InPersonPaymentsView: View {
             case .pluginUnsupportedVersion(let plugin):
                 InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginNotActivated(let plugin):
-                InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                InPersonPaymentsPluginNotActivated(plugin: plugin,
+                                                   analyticReason: viewModel.state.reasonForAnalytics,
+                                                   onActivate: viewModel.activatePlugin)
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
                 InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
                     viewModel.refresh)

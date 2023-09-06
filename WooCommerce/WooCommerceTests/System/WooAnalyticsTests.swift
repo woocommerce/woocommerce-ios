@@ -1,6 +1,6 @@
 import XCTest
 @testable import WooCommerce
-
+@testable import Yosemite
 
 /// WooAnalytics Unit Tests
 ///
@@ -17,12 +17,29 @@ class WooAnalyticsTests: XCTestCase {
         analytics.analyticsProvider as? MockAnalyticsProvider
     }
 
+    private var stores: MockStoresManager!
+
+    private let sampleSiteID: Int64 = 12345
+
+    private let sampleSiteURL: String = "https://example.com"
+
+    private let originalStores: StoresManager = ServiceLocator.stores
 
     // MARK: - Overridden Methods
 
     override func setUp() {
         super.setUp()
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL)))
+        ServiceLocator.setStores(stores)
         analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
+    }
+
+    override func tearDown() {
+        super.tearDown()
+        ServiceLocator.setStores(originalStores)
     }
 
     /// Verifies basic events are received by the AnalyticsProvider
@@ -49,7 +66,7 @@ class WooAnalyticsTests: XCTestCase {
         if let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] {
             XCTAssertEqual(receivedProperty1, Constants.testProperty1)
         } else {
-            XCTFail()
+            XCTFail("Expected property not found")
         }
 
         analytics.track(.applicationClosed, withProperties: Constants.testProperty2)
@@ -59,7 +76,7 @@ class WooAnalyticsTests: XCTestCase {
         if let receivedProperty2 = testingProvider?.receivedProperties[1] as? [String: String] {
             XCTAssertEqual(receivedProperty2, Constants.testProperty2)
         } else {
-            XCTFail()
+            XCTFail("Expected property not found")
         }
     }
     /// Verifies an event with an error is received by the AnalyticsProvider
@@ -72,7 +89,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider?.receivedEvents.first, WooAnalyticsStat.applicationOpened.rawValue)
 
         guard let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] else {
-            XCTFail()
+            XCTFail("Expected property not found")
             return
         }
 
@@ -107,7 +124,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider?.receivedEvents.first, WooAnalyticsStat.applicationOpened.rawValue)
 
         guard let receivedProperty1 = testingProvider?.receivedProperties[0] as? [String: String] else {
-            XCTFail()
+            XCTFail("Expected property not found")
             return
         }
 
@@ -140,6 +157,74 @@ class WooAnalyticsTests: XCTestCase {
     func testClearAllEvents() {
         testingProvider?.clearEvents()
         XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
+    }
+
+    func test_events_when_logged_in_include_site_properties() {
+        // Given
+        guard let testingProvider = testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL)))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
+        XCTAssertEqual(testingProvider.receivedEvents.first, WooAnalyticsStat.sitePickerContinueTapped.rawValue)
+
+        guard let receivedProperties = testingProvider.receivedProperties.first as? [AnyHashable: AnyHashable] else {
+            return XCTFail("Non-equatable properties found")
+        }
+
+        let expectedProperties: [String: AnyHashable] = [
+            "blog_id": sampleSiteID,
+            "is_wpcom_store": false,
+            "was_ecommerce_trial": false,
+            "plan": "",
+            "site_url": sampleSiteURL,
+            "prop-key1": "prop-value1"
+        ]
+
+        for property in expectedProperties {
+            let receivedPropertyValue = try? XCTUnwrap(receivedProperties[property.key], "Property \(property.key) not found")
+            assertEqual(property.value, receivedPropertyValue)
+        }
+    }
+
+    func test_events_when_logged_out_do_not_include_site_properties() {
+        // Given
+        guard let testingProvider = testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL)))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider)
+
+        // When
+        analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
+        XCTAssertEqual(testingProvider.receivedEvents.first, WooAnalyticsStat.sitePickerContinueTapped.rawValue)
+
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+
+        let expectedToBeAbsentProperties = [
+            "blog_id",
+            "is_wpcom_store",
+            "was_ecommerce_trial",
+            "plan",
+            "site_url"
+        ]
+
+        for property in expectedToBeAbsentProperties {
+            XCTAssertNil(receivedProperties[property])
+        }
     }
 }
 

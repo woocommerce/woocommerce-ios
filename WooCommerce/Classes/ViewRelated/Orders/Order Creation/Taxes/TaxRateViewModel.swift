@@ -1,5 +1,5 @@
 struct TaxRateViewModel {
     let id: Int64
-    let name: String
+    let title: String
     let rate: String
 }

@@ -43,23 +43,28 @@ struct NewTaxRateSelectorView: View {
 
                 switch viewModel.syncState {
                     case .results:
-                        RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                                      loadAction: viewModel.onLoadNextPageAction,
-                                                      refreshAction: { completion in
-                            viewModel.onRefreshAction(completion: completion)
-                        }) {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
                             ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
                                 TaxRateRow(viewModel: taxRateViewModel) {
                                     viewModel.onRowSelected(with: index)
                                     dismiss()
                                 }
+
                                 Divider()
                             }
                             .background(Color(.listForeground(modal: false)))
 
                             bottomNotice
-                            .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+                                .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+
+                            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                                .padding(.top, Layout.generalPadding)
+                                .onAppear {
+                                    viewModel.onLoadNextPageAction()
+                                }
                         }
+                    }
                     case .empty:
                         EmptyState(title: "",
                                    description: "",
@@ -79,7 +84,8 @@ struct NewTaxRateSelectorView: View {
                 }
             }
             .onAppear {
-                viewModel.onLoadTrigger.send()
+                // Even if we are calling this on appear (it might be called multiple times) the view model will only load the first it's called
+                viewModel.onLoadTriggerOnce.send()
             }
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)

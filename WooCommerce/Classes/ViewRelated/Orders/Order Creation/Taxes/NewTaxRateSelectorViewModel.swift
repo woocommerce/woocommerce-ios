@@ -24,13 +24,13 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     @Published private(set) var shouldShowBottomActivityIndicator = false
 
     /// Trigger to perform any one time setups.
-    let onLoadTrigger: PassthroughSubject<Void, Never> = PassthroughSubject()
+    let onLoadTriggerOnce: PassthroughSubject<Void, Never> = PassthroughSubject()
 
     let onTaxRateSelected: (Yosemite.TaxRate) -> Void
 
     /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
-        TaxRateViewModel(id: index, name: "placeholder", rate: "10%")
+        TaxRateViewModel(id: index, title: "placeholder", rate: "10%")
     }
 
     init(siteID: Int64,
@@ -57,7 +57,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.id, ascending: true)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.order, ascending: true)
         let resultsController = ResultsController<StorageTaxRate>(storageManager: storageManager,
                                                                     matching: predicate,
                                                                     sortedBy: [ sortDescriptorByID])
@@ -66,12 +66,6 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
-    }
-
-    func onRefreshAction(completion: @escaping () -> Void) {
-        paginationTracker.resync(reason: nil) {
-            completion()
-        }
     }
 
     func onRowSelected(with index: Int) {
@@ -94,11 +88,11 @@ extension NewTaxRateSelectorViewModel: PaginationTrackerDelegate {
                 let hasNextPage = results.count == pageSize
                 onCompletion?(.success(hasNextPage))
 
-                if taxRateViewModels.isEmpty {
+                if self.taxRateViewModels.isEmpty {
                     self.syncState = .empty
                 } else if results.isEmpty {
                     // We had results previously, but we didn't have any on this page request. Transition to results to stop the syncing visuals.
-                    transitionToResultsUpdatedState()
+                    self.transitionToResultsUpdatedState()
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing tax rates: \(error)")
@@ -116,7 +110,7 @@ private extension NewTaxRateSelectorViewModel {
 
     func configureFirstPageLoad() {
         // Listens only to the first emitted event.
-        onLoadTrigger.first()
+        onLoadTriggerOnce.first()
             .sink { [weak self] in
                 guard let self = self else { return }
                 self.syncFirstPage()
@@ -143,7 +137,14 @@ private extension NewTaxRateSelectorViewModel {
     /// Updates row view models and sync state.
     func updateResults() {
         taxRateViewModels = resultsController.fetchedObjects.map {
-            TaxRateViewModel(id: $0.id, name: $0.name, rate: Double($0.rate)?.percentFormatted() ?? "")
+            var title = $0.name
+            let titleSuffix = "\($0.country) \($0.state) \($0.postcodes.joined(separator: ",")) \($0.cities.joined(separator: ","))"
+
+            if titleSuffix.trimmingCharacters(in: .whitespaces).isNotEmpty {
+                title.append(" • \(titleSuffix)")
+            }
+
+            return TaxRateViewModel(id: $0.id, title: title, rate: Double($0.rate)?.percentFormatted() ?? "")
         }
         transitionToResultsUpdatedState()
     }

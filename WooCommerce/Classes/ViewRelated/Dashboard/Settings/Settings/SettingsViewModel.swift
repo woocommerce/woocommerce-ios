@@ -230,7 +230,8 @@ private extension SettingsViewModel {
     func loadWhatsNewOnWooCommerce() {
         stores.dispatch(AnnouncementsAction.loadSavedAnnouncement(onCompletion: { [weak self] result in
             guard let self = self else { return }
-            guard let (announcement, _) = try? result.get(), announcement.appVersionName == UserAgent.bundleShortVersion else {
+            guard let (announcement, _) = try? result.get(),
+                    announcement.shownInThisAppVersion else {
                 return DDLogInfo("📣 There are no announcements to show!")
             }
 
@@ -471,5 +472,17 @@ private extension SettingsViewModel {
             "Account Settings",
             comment: "My Store > Settings > Account Settings section"
         ).uppercased()
+    }
+}
+
+private extension Yosemite.Announcement {
+    var isForThisAppVersion: Bool {
+        appVersionName == UserAgent.bundleShortVersion
+    }
+
+    var shownInThisAppVersion: Bool {
+        return isForThisAppVersion || VersionHelpers.isVersionSupported(version: UserAgent.bundleShortVersion,
+                                                                        minimumRequired: minimumAppVersion,
+                                                                        maximumPermitted: maximumAppVersion)
     }
 }

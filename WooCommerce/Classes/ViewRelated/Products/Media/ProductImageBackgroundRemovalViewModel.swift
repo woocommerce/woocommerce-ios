@@ -43,14 +43,21 @@ final class ProductImageBackgroundRemovalViewModel: ObservableObject {
 
     private let productImage: ProductImage
     private let imageLoader: ProductUIImageLoader
+    private let actionHandler: ProductImageActionHandlerProtocol
+    private let onSave: () -> Void
+
     private let processingQueue = DispatchQueue(label: "ProductImageBackgroundProcessing")
 
     private var cancellables: [AnyCancellable] = []
 
     init(productImage: ProductImage,
          imageLoader: ProductUIImageLoader) {
+         actionHandler: ProductImageActionHandlerProtocol,
+         onSave: @escaping () -> Void) {
         self.productImage = productImage
         self.imageLoader = imageLoader
+        self.actionHandler = actionHandler
+        self.onSave = onSave
 
         // Regenerates the image when the pipeline input changes.
         Publishers
@@ -75,6 +82,14 @@ final class ProductImageBackgroundRemovalViewModel: ObservableObject {
         }?.store(in: &cancellables)
     }
 
+    func saveToProduct() {
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: output))
+        onSave()
+    }
+}
+
+@available(iOS 17.0, *)
+private extension ProductImageBackgroundRemovalViewModel {
     // Refresh the pipeline and generate a new output.
     private func regenerate(usingInputImage inputImage: CIImage,
                             effect: Effect,

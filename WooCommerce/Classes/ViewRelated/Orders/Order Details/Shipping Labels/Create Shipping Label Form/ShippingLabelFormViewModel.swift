@@ -73,7 +73,7 @@ final class ShippingLabelFormViewModel {
                                                     height: customPackage.getHeight(),
                                                     weight: weight,
                                                     isLetter: customPackage.isLetter,
-                                                    hazmat: package.selectedHazmatCategory.rawValue,
+                                                    hazmatCategory: package.selectedHazmatCategory.rawValue,
                                                     customsForm: customsForm)
             }
 
@@ -87,7 +87,7 @@ final class ShippingLabelFormViewModel {
                                                         height: predefinedPackage.getHeight(),
                                                         weight: weight,
                                                         isLetter: predefinedPackage.isLetter,
-                                                        hazmat: package.selectedHazmatCategory.rawValue,
+                                                        hazmatCategory: package.selectedHazmatCategory.rawValue,
                                                         customsForm: customsForm)
                 }
             }
@@ -100,7 +100,7 @@ final class ShippingLabelFormViewModel {
                                                     height: Double(item.dimensions.height) ?? 0,
                                                     weight: item.weight,
                                                     isLetter: false,
-                                                    hazmat: package.selectedHazmatCategory.rawValue,
+                                                    hazmatCategory: package.selectedHazmatCategory.rawValue,
                                                     customsForm: customsForm)
             }
 

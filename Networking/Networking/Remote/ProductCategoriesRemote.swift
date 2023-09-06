@@ -104,7 +104,8 @@ public final class ProductCategoriesRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        return try await enqueue(request)
+        let mapper = ProductCategoryMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Deletes an existing `ProductCategory`.

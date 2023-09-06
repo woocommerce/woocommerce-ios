@@ -316,6 +316,18 @@ extension WooConstants {
         /// intended for use as a fallback. We should remove this when we fetch plan data from an API.
         case fallbackWooExpressHome = "https://woocommerce.com/express"
 
+        /// URL for USPS Hazmat instructions detailing to the user the possible categories and why declaring hazmat materials is mandatory
+        ///
+        case uspsInstructions = "https://www.uspsdelivers.com/hazmat-shipping-safety"
+
+        /// URL for USPS Search Tool, allowing the user to verify if the content they plan to ship is considered a Hazmat material
+        ///
+        case uspsSearchTool = "https://pe.usps.com/HAZMAT/Index"
+
+        /// URL for DHL Express details over Hazmat material shippings and why the Woo Shipping doesn't currently support it
+        ///
+        case dhlExpressInstructions = "https://www.dhl.com/global-en/home/our-divisions/freight/customer-service/dangerous-goods-and-prohibited-items.html"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

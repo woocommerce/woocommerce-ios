@@ -92,17 +92,17 @@ private extension MediaStore {
                      productID: Int64,
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        mediaExportService.export(mediaAsset,
-                                  onCompletion: { [weak self] (uploadableMedia, error) in
-            guard let uploadableMedia = uploadableMedia, error == nil else {
-                onCompletion(.failure(error ?? MediaActionError.unknown))
-                return
+        Task(priority: .background) {
+            do {
+                let uploadableMedia = try await mediaExportService.export(mediaAsset)
+                uploadMedia(siteID: siteID,
+                            productID: productID,
+                            uploadableMedia: uploadableMedia,
+                            onCompletion: onCompletion)
+            } catch {
+                onCompletion(.failure(error))
             }
-            self?.uploadMedia(siteID: siteID,
-                              productID: productID,
-                              uploadableMedia: uploadableMedia,
-                              onCompletion: onCompletion)
-        })
+        }
     }
 
     func uploadMedia(siteID: Int64,

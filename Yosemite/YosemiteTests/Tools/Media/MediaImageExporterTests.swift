@@ -4,7 +4,7 @@ import UniformTypeIdentifiers
 @testable import Yosemite
 
 final class MediaImageExporterTests: XCTestCase {
-    func testExportingAnImageWithTypeHint() {
+    func testExportingAnImageWithTypeHint() throws {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
@@ -23,18 +23,14 @@ final class MediaImageExporterTests: XCTestCase {
             let expectedImageURL = try exporter.mediaFileManager
                 .createLocalMediaURL(filename: filename,
                                      fileExtension: URL.fileExtensionForUTType(typeHint))
-            let expectation = self.expectation(description: "Export image data")
-            exporter.export { (uploadableMedia, error) in
-                XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
-                expectation.fulfill()
-            }
-            waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+            let _ = try exporter.export()
+            XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
         } catch {
             XCTFail(error.localizedDescription)
         }
     }
 
-    func testExportingAnImageWithAnUnknownTypeHintUsesTheImageDataType() {
+    func testExportingAnImageWithAnUnknownTypeHintUsesTheImageDataType() throws {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
@@ -52,18 +48,14 @@ final class MediaImageExporterTests: XCTestCase {
             let expectedImageURL = try exporter.mediaFileManager
                 .createLocalMediaURL(filename: filename,
                                      fileExtension: "png")
-            let expectation = self.expectation(description: "Export image data")
-            exporter.export { (uploadableMedia, error) in
-                XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
-                expectation.fulfill()
-            }
-            waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+            let _ = try exporter.export()
+            XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
         } catch {
             XCTFail(error.localizedDescription)
         }
     }
 
-    func testExportingNonImageData() {
+    func testExportingNonImageData() throws {
         let mockData = Data()
         let filename = "test"
         let typeHint = UTType.jpeg.identifier
@@ -77,11 +69,10 @@ final class MediaImageExporterTests: XCTestCase {
                                           mediaDirectoryType: .temporary,
                                           imageSourceWriter: mockImageSourceWriter)
 
-        let expectation = self.expectation(description: "Export image data")
-        exporter.export { (uploadableMedia, error) in
+        do {
+            let _ = try exporter.export()
+        } catch {
             XCTAssertEqual(error as? MediaImageExporter.ImageExportError, .imageSourceIsAnUnknownType)
-            expectation.fulfill()
         }
-        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 }

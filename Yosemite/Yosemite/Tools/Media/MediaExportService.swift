@@ -2,10 +2,6 @@ import Foundation
 import CocoaLumberjack
 import Photos
 
-/// Completion handler for a created Media object.
-///
-typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
-
 /// Exports media to the local file system for remote upload.
 ///
 protocol MediaExportService {
@@ -13,30 +9,22 @@ protocol MediaExportService {
     ///
     /// - Parameters:
     ///     - exportable: the exportable resource where data will be read from.
-    ///     - onCompletion: Called when the Media export finishes.
     ///
-    func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion)
+    func export(_ exportable: ExportableAsset) async throws -> UploadableMedia
 }
 
 /// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `UploadableMedia`.
 ///
 final class DefaultMediaExportService: MediaExportService {
-
-    private lazy var exportQueue: DispatchQueue = DispatchQueue(label: "com.woocommerce.mediaExportService",
-                                                                autoreleaseFrequency: .workItem)
-
-    func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion) {
-        exportQueue.async {
-            guard let exporter = self.createExporter(for: exportable) else {
-                preconditionFailure("An exporter needs to be availale for asset: \(exportable)")
-            }
-            exporter.export(onCompletion: { [weak self] (exported, error) in
-                guard let media = exported, error == nil else {
-                    self?.handleExportError(error, onCompletion: onCompletion)
-                    return
-                }
-                onCompletion(media, error)
-            })
+    func export(_ exportable: ExportableAsset) async throws -> UploadableMedia {
+        guard let exporter = createExporter(for: exportable) else {
+            preconditionFailure("An exporter needs to be available for asset: \(exportable)")
+        }
+        do {
+            return try await exporter.export()
+        } catch {
+            DDLogError("Error occurred exporting to Media: \(error)")
+            throw error
         }
     }
 }
@@ -54,21 +42,6 @@ private extension DefaultMediaExportService {
         default:
             return nil
         }
-    }
-}
-
-// MARK: Error handling
-//
-private extension DefaultMediaExportService {
-    /// Handles and logs any error encountered.
-    ///
-    func handleExportError(_ error: Error?, onCompletion: MediaExportCompletion) {
-        guard let error = error else {
-            onCompletion(nil, nil)
-            return
-        }
-        DDLogError("Error occurred exporting to Media: \(error)")
-        onCompletion(nil, error)
     }
 }
 

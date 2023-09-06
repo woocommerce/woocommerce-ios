@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 97 (Release 15.3.0.0)
+- @cvargascasaseca 2023-09-06
+    - Added custom class to Transformables in `TaxRate` entity.
+    
 ## Model 96 (Release 15.3.0.0)
 - @cvargascasaseca 2023-08-30
     - Added `siteID` attribute to `TaxRate` entity`.

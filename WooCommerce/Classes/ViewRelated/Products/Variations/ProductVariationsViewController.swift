@@ -130,6 +130,9 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
     ///
     private weak var initialViewController: UIViewController?
 
+    /// Bottom sheet for selecting sort order
+    private var sortOrderBottomSheetPresenter: BottomSheetPresenter?
+
     /// Assign this closure to get notified when the underlying product changes due to new variations or new attributes.
     ///
     var onProductUpdate: ((Product) -> Void)?
@@ -603,7 +606,14 @@ private extension ProductVariationsViewController {
     }
 
     @objc func presentSortOptionSheet() {
-        // TODO
+        sortOrderBottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = ProductVariationSortOptionHostingController(initialOption: sortOrder) { [weak self] option in
+            guard let self else { return }
+            self.sortOrder = option
+            self.sortOrderBottomSheetPresenter?.dismiss()
+            self.sortOrderBottomSheetPresenter = nil
+        }
+        sortOrderBottomSheetPresenter?.present(controller, from: self)
     }
 
     /// More Options Action Sheet
@@ -812,6 +822,16 @@ extension ProductVariationsViewController {
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
         tableView.tableFooterView = footerEmptyView
+    }
+
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium()]
+        })
     }
 }
 

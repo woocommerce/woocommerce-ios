@@ -552,8 +552,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addTaxRateAddressToOrder(taxRate: TaxRate) {
-        guard let taxBasedOnSetting = taxBasedOnSetting,
-              taxBasedOnSetting != .shopBaseAddress else {
+        guard let taxBasedOnSetting = taxBasedOnSetting else {
             return
         }
 
@@ -565,6 +564,7 @@ final class EditableOrderViewModel: ObservableObject {
         case .customerShippingAddress:
             input = OrderSyncAddressesInput(billing: nil, shipping: address)
         default:
+            // Do not add address if the taxes are not based on the customer's addresses
             return
         }
 

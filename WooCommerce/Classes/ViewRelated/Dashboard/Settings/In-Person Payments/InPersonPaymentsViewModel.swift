@@ -63,7 +63,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
         useCase.installCardPresentPlugin()
     }
 
-    ///
+    /// Sends the action to activate the Card Present plugin
     ///
     func activatePlugin() {
         useCase.activateCardPresentPlugin()

@@ -7,6 +7,7 @@ import Networking
 class OrderNotificationViewController: UIViewController, UNNotificationContentExtension {
 
     @MainActor @IBOutlet var label: UILabel?
+    @MainActor @IBOutlet var loadingIndicator: UIActivityIndicatorView?
 
     let viewModel = OrderNotificationViewModel()
 
@@ -16,9 +17,14 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
     }
 
     func didReceive(_ notification: UNNotification) {
-        self.label?.text = "Loading..."
+        self.loadingIndicator?.isHidden = false
+
         Task {
             do {
+                defer {
+                    self.loadingIndicator?.isHidden = true
+                }
+
                 let note = try await viewModel.loadNotification(notification)
                 self.label?.text = viewModel.formatContent(note)
             } catch {

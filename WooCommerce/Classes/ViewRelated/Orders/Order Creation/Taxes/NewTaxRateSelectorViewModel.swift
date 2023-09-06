@@ -53,7 +53,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.id, ascending: true)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.order, ascending: true)
         let resultsController = ResultsController<StorageTaxRate>(storageManager: storageManager,
                                                                     matching: predicate,
                                                                     sortedBy: [ sortDescriptorByID])

@@ -65,6 +65,39 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxRateViewModels.count, 1)
     }
 
+    func test_onRowSelected_then_calls_onTaxRateSelected_with_right_tax_rate() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        stores.whenReceivingAction(ofType: TaxAction.self) { action in
+            guard case let .retrieveTaxRates(_, _, _, completion) = action else {
+                return
+            }
+
+            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
+            newTaxRate.update(with: taxRate)
+            storageManager.viewStorage.saveIfNeeded()
+            completion(.success([taxRate]))
+        }
+
+        var selectedTaxRate: TaxRate?
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID,
+                                                    onTaxRateSelected: { taxRate in
+            selectedTaxRate = taxRate
+
+        },
+                                                    stores: stores,
+                                                    storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTriggerOnce.send()
+        viewModel.onRowSelected(with: 0)
+
+        // Then
+        XCTAssertEqual(selectedTaxRate, taxRate)
+    }
+
     func test_onLoadNextPageAction_loads_next_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

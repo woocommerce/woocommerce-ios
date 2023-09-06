@@ -80,6 +80,7 @@ struct NewTaxRateSelectorView: View {
                 }
             }
             .onAppear {
+                // Even if we are calling this on appear (it might be called multiple times) the view model will only load the first it's called
                 viewModel.onLoadTriggerOnce.send()
             }
             .navigationTitle(Localization.navigationTitle)

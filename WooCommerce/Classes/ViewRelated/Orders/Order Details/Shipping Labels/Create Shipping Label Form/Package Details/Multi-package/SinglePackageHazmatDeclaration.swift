@@ -135,7 +135,7 @@ private extension SinglePackageHazmatDeclaration {
                                                                        comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link" +
                                                                        "that will direct the user to a website")
         static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the %1$@.",
-                                                                      comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link" +
+                                                                      comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link " +
                                                                       "that will direct the user to a website")
         static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
                                                                        + "through %1$@.",

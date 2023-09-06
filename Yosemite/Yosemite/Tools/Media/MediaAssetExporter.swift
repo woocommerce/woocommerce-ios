@@ -79,8 +79,8 @@ final class MediaAssetExporter: MediaExporter {
         let exporter = MediaImageExporter(data: imageData,
                                           filename: filename,
                                           typeHint: typeHint,
-                                          options: self.imageOptions,
-                                          mediaDirectoryType: self.mediaDirectoryType)
+                                          options: imageOptions,
+                                          mediaDirectoryType: mediaDirectoryType)
         return try exporter.export()
     }
 }

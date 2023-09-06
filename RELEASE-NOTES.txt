@@ -2,6 +2,7 @@
 
 15.3
 -----
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
 
 15.2

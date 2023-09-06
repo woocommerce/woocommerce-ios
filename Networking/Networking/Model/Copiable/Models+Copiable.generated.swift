@@ -1417,6 +1417,30 @@ extension Networking.ProductBundleItem {
     }
 }
 
+extension Networking.ProductCategory {
+    public func copy(
+        categoryID: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        slug: CopiableProp<String> = .copy
+    ) -> Networking.ProductCategory {
+        let categoryID = categoryID ?? self.categoryID
+        let siteID = siteID ?? self.siteID
+        let parentID = parentID ?? self.parentID
+        let name = name ?? self.name
+        let slug = slug ?? self.slug
+
+        return Networking.ProductCategory(
+            categoryID: categoryID,
+            siteID: siteID,
+            parentID: parentID,
+            name: name,
+            slug: slug
+        )
+    }
+}
+
 extension Networking.ProductCompositeComponent {
     public func copy(
         componentID: CopiableProp<String> = .copy,

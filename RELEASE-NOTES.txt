@@ -2,7 +2,7 @@
 
 15.3
 -----
-
+- [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
 
 15.2
 -----

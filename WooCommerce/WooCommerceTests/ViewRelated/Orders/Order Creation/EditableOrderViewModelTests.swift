@@ -1342,6 +1342,75 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.discardOrder()
     }
 
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_resets_addressFormViewModel_fields_with_new_data() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        viewModel.onTaxRateSelected(taxRate)
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.state, taxRate.state)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.country, taxRate.country)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.postcode, taxRate.postcodes.first)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
+    }
+
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_resets_addressFormViewModel_secondaryFields_with_new_data() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerShippingAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        viewModel.onTaxRateSelected(taxRate)
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.state, taxRate.state)
+        XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.country, taxRate.country)
+        XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.postcode, taxRate.postcodes.first)
+        XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.city, taxRate.cities.first)
+    }
+
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_shopBaseAddress_then_it_does_not_reset_addressFormViewModel_with_new_data() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.shopBaseAddress))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        viewModel.onTaxRateSelected(taxRate)
+
+        // Then
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.state.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.country.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.postcode.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.city.isEmpty)
+    }
+
     func test_addCustomerAddressToOrder_resets_addressFormViewModel_with_new_data() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

@@ -10,7 +10,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let wpAdminTaxSettingsURL = URL(string: "https://www.site.com/wp-admin/mock-taxes-settings")
         let wpAdminTaxSettingsURLProvider = MockWPAdminTaxSettingsURLProvider(wpAdminTaxSettingsURL: wpAdminTaxSettingsURL)
 
-        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, onTaxRateSelected: { _ in }, wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
@@ -25,7 +25,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             }
             retrieveTaxRatesIsCalled = true
         }
-        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores)
 
         // When
         viewModel.onLoadTriggerOnce.send()
@@ -50,7 +50,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             completion(.success([taxRate]))
         }
 
-        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.onLoadTriggerOnce.send()
@@ -80,7 +80,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
 
             completion(.success(firstPageTaxRates))
         }
-        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, stores: stores)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, onTaxRateSelected: { _ in }, stores: stores)
 
         // When
         viewModel.onLoadTriggerOnce.send()

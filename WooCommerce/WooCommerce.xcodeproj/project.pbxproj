@@ -1631,6 +1631,8 @@
 		B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */; };
 		B92FF9B027FC7821005C34E3 /* ProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */; };
 		B932847429A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B932847329A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift */; };
+		B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B933CCAF2AA6220E00938F3F /* TaxRateRow.swift */; };
+		B933CCB22AA622AE00938F3F /* TaxRateViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B933CCB12AA622AE00938F3F /* TaxRateViewModel.swift */; };
 		B935D3592A9F44000067B927 /* NewTaxRateSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B935D3582A9F44000067B927 /* NewTaxRateSelectorViewModel.swift */; };
 		B935D35C2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B935D35B2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift */; };
 		B935D35F2A9F4EDA0067B927 /* WPAdminTaxSettingsURLProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B935D35E2A9F4EDA0067B927 /* WPAdminTaxSettingsURLProviderTests.swift */; };
@@ -4079,6 +4081,8 @@
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
 		B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductsViewController.xib; sourceTree = "<group>"; };
 		B932847329A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresher.swift; sourceTree = "<group>"; };
+		B933CCAF2AA6220E00938F3F /* TaxRateRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateRow.swift; sourceTree = "<group>"; };
+		B933CCB12AA622AE00938F3F /* TaxRateViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateViewModel.swift; sourceTree = "<group>"; };
 		B935D3582A9F44000067B927 /* NewTaxRateSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaxRateSelectorViewModel.swift; sourceTree = "<group>"; };
 		B935D35B2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPAdminTaxSettingsURLProvider.swift; sourceTree = "<group>"; };
 		B935D35E2A9F4EDA0067B927 /* WPAdminTaxSettingsURLProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPAdminTaxSettingsURLProviderTests.swift; sourceTree = "<group>"; };
@@ -8868,6 +8872,8 @@
 				B935D3582A9F44000067B927 /* NewTaxRateSelectorViewModel.swift */,
 				B90DDF7B2A9E21DF009CFDA2 /* NewTaxRateSelectorView.swift */,
 				B935D35B2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift */,
+				B933CCAF2AA6220E00938F3F /* TaxRateRow.swift */,
+				B933CCB12AA622AE00938F3F /* TaxRateViewModel.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -12895,6 +12901,7 @@
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
 				B93E03262A94EE63009CA9C1 /* TaxLineViewModel.swift in Sources */,
 				DEC0293A29C41BC500FD0E2F /* ApplicationPasswordAuthorizationViewModel.swift in Sources */,
+				B933CCB22AA622AE00938F3F /* TaxRateViewModel.swift in Sources */,
 				03191AE628E1DF0600670723 /* WooCommercePluginViewModel.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				02BA12852461674B008D8325 /* Optional+String.swift in Sources */,
@@ -13035,6 +13042,7 @@
 				4520A15C2721B2A9001FA573 /* FilterOrderListViewModel.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
+				B933CCB02AA6220E00938F3F /* TaxRateRow.swift in Sources */,
 				57532CAC24BFF4DA0032B84E /* MessageComposerPresenter.swift in Sources */,
 				DE4D23AE29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift in Sources */,
 				0270F47824D006F60005210A /* ProductFormPresentationStyle.swift in Sources */,

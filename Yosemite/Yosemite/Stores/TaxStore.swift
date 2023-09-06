@@ -107,7 +107,7 @@ private extension TaxStore {
         remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let taxRates):
-                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID) {
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID, shouldDeleteExistingTaxRates: pageNumber == 1) {
                     onCompletion(.success(taxRates))
                 }
             case .failure(let error):
@@ -155,13 +155,20 @@ private extension TaxStore {
 //
 private extension TaxStore {
 
-    /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
+    /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate],
+                                          siteID: Int64,
+                                          shouldDeleteExistingTaxRates: Bool,
+                                          onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             guard let self = self else { return }
+
+            if shouldDeleteExistingTaxRates {
+                derivedStorage.deleteTaxRates(siteID: siteID)
+            }
 
             self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
         }
@@ -185,10 +192,12 @@ private extension TaxStore {
                                                            taxRateID: readOnlyTaxRate.id) {
                     return storedTaxRate
                 }
+
                 return storage.insertNewObject(ofType: Storage.TaxRate.self)
             }()
 
             storageTaxRate.update(with: readOnlyTaxRate)
+            storageTaxRate.siteID = siteID
         }
     }
 }

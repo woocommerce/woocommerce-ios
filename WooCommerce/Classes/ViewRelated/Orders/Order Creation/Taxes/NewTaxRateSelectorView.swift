@@ -43,11 +43,8 @@ struct NewTaxRateSelectorView: View {
 
                 switch viewModel.syncState {
                     case .results:
-                        RefreshableInfiniteScrollList(isLoading: viewModel.shouldShowBottomActivityIndicator,
-                                                      loadAction: viewModel.onLoadNextPageAction,
-                                                      refreshAction: { completion in
-                            viewModel.onRefreshAction(completion: completion)
-                        }) {
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
                             ForEach(viewModel.taxRateViewModels, id: \.id) { viewModel in
                                 TaxRateRow(viewModel: viewModel)
                                 Divider()
@@ -55,8 +52,15 @@ struct NewTaxRateSelectorView: View {
                             .background(Color(.listForeground(modal: false)))
 
                             bottomNotice
-                            .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+                                .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+
+                            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                                .padding(.top, Layout.generalPadding)
+                                .onAppear {
+                                    viewModel.onLoadNextPageAction()
+                                }
                         }
+                    }
                     case .empty:
                         EmptyState(title: "",
                                    description: "",

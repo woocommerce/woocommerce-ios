@@ -63,12 +63,6 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
     }
-
-    func onRefreshAction(completion: @escaping () -> Void) {
-        paginationTracker.resync(reason: nil) {
-            completion()
-        }
-    }
 }
 
 extension NewTaxRateSelectorViewModel: PaginationTrackerDelegate {

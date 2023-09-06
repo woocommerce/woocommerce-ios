@@ -552,8 +552,23 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func addTaxRateAddressToOrder(taxRate: TaxRate) {
-        let address = Address(firstName: "", lastName: "", company: "", address1: "", address2: "", city: taxRate.city, state: taxRate.state, postcode: taxRate.postcodes.first ?? "", country: taxRate.country, phone: "", email: "")
-        let input = OrderSyncAddressesInput(billing: address, shipping: address)
+        let address = Address.from(taxRate: taxRate)
+        let input: OrderSyncAddressesInput
+
+        guard let taxBasedOnSetting = taxBasedOnSetting,
+        taxBasedOnSetting != .shopBaseAddress else {
+            return
+        }
+
+        switch taxBasedOnSetting {
+        case .customerBillingAddress:
+            input = OrderSyncAddressesInput(billing: address, shipping: nil)
+        case .customerShippingAddress:
+            input = OrderSyncAddressesInput(billing: nil, shipping: address)
+        default:
+            return
+        }
+
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
     }

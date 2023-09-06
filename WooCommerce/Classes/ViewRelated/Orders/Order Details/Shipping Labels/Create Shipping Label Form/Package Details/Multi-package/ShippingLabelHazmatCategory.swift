@@ -26,7 +26,7 @@ enum ShippingLabelHazmatCategory: String, CaseIterable {
     case groundOnly = "GROUND_ONLY"
     case id8000 = "ID8000"
     case lighters = "LIGHTERS"
-    case limitedQuantity = ""
+    case limitedQuantity = "LIMITED_QUANTITY"
     case smallQuantityProvision = "SMALL_QUANTITY_PROVISION"
 
     var localizedName: String {

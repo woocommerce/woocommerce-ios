@@ -26,15 +26,35 @@ struct SinglePackageHazmatDeclaration: View {
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
 
-                    TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
+                    Button(action: {
                         isShowingHazmatSelection.toggle()
-                    }
+                    }, label: {
+                        HStack(spacing: 0) {
+                            VStack(alignment: .leading) {
+                                Text(Localization.hazmatCategoryTitle)
+                                    .bodyStyle()
+                                Text(viewModel.selectedHazmatCategory.localizedName)
+                                    .calloutStyle()
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            DisclosureIndicator()
+                                .frame(alignment: .trailing)
+                        }
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .sheet(isPresented: $isShowingHazmatSelection) {
+                            SelectionList(title: Localization.selectHazmatCategory,
+                                          items: viewModel.selectableHazmatCategories,
+                                          contentKeyPath: \.localizedName,
+                                          selected: $viewModel.selectedHazmatCategory)
+                        }
+                    })
 
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
 
                     createHazmatInstructionsView()
-
                 }
                 .renderedIf(viewModel.containsHazmatMaterials)
                 .padding(.horizontal, insets: safeAreaInsets)

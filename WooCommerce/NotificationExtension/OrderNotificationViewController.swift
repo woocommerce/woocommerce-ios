@@ -28,9 +28,9 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
                 let note = try await viewModel.loadNotification(notification)
                 self.label?.text = viewModel.formatContent(note)
             } catch {
-                
-                self.label?.text = NSLocalizedString("Unable to load notification",
-                                                     comment: "Text when failing to load a notification after long pressing on it.")
+
+                self.label?.text = AppLocalizedString("Unable to load notification",
+                                                      comment: "Text when failing to load a notification after long pressing on it.")
             }
         }
     }

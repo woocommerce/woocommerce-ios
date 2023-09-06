@@ -12,6 +12,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
     public let height: Double
     public let weight: Double
     public let isLetter: Bool
+    public let hazmat: String
     public let customsForm: ShippingLabelCustomsForm?
 
     public init(id: String,
@@ -21,6 +22,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
                 height: Double,
                 weight: Double,
                 isLetter: Bool,
+                hazmat: String,
                 customsForm: ShippingLabelCustomsForm?) {
         self.id = id
         self.boxID = boxID
@@ -29,6 +31,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
         self.height = height
         self.weight = weight
         self.isLetter = isLetter
+        self.hazmat = hazmat
         self.customsForm = customsForm
     }
 }

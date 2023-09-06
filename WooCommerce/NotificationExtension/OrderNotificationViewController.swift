@@ -28,7 +28,9 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
                 let note = try await viewModel.loadNotification(notification)
                 self.label?.text = viewModel.formatContent(note)
             } catch {
-                self.label?.text = error.localizedDescription
+                
+                self.label?.text = NSLocalizedString("Unable to load notification",
+                                                     comment: "Text when failing to load a notification after long pressing on it.")
             }
         }
     }
@@ -42,7 +44,7 @@ final class OrderNotificationViewModel {
         case noCredentials
         case network(Swift.Error)
         case unavailableNote
-        case unknownNotification
+        case unsupportedNotification
     }
 
     private let remote: NotificationsRemote?
@@ -60,6 +62,12 @@ final class OrderNotificationViewModel {
     ///
     @MainActor
     func loadNotification(_ notification: UNNotification) async throws -> Note {
+
+        /// Only store order notifications are supported.
+        ///
+        guard notification.request.content.categoryIdentifier == "store_order" else {
+            throw Error.unsupportedNotification
+        }
 
         /// Error of we can't find `note_id` in the user info object
         ///

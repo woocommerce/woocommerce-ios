@@ -82,11 +82,11 @@ extension NewTaxRateSelectorViewModel: PaginationTrackerDelegate {
                 let hasNextPage = results.count == pageSize
                 onCompletion?(.success(hasNextPage))
 
-                if taxRateViewModels.isEmpty {
+                if self.taxRateViewModels.isEmpty {
                     self.syncState = .empty
                 } else if results.isEmpty {
                     // We had results previously, but we didn't have any on this page request. Transition to results to stop the syncing visuals.
-                    transitionToResultsUpdatedState()
+                    self.transitionToResultsUpdatedState()
                 }
             case .failure(let error):
                 DDLogError("⛔️ Error synchronizing tax rates: \(error)")

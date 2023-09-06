@@ -14,6 +14,11 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     ///
     private var stores: MockStoresManager!
 
+    /// Mock Analytics
+    ///
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     /// Dummy Site ID
     ///
     private let sampleSiteID: Int64 = 1234
@@ -26,6 +31,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         onboardingStateCache = CardPresentPaymentOnboardingStateCache()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -56,6 +63,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         onboardingStateCache = nil
         storageManager = nil
         stores = nil
+        analyticsProvider = nil
+        analytics = nil
         preferredInPersonPaymentGatewayBySite.removeAll()
         try super.tearDownWithError()
     }
@@ -1124,6 +1133,70 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.refreshIfNecessary()
 
         XCTAssertEqual(useCase.state, onboardingStateCache.value)
+    }
+
+    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() throws {
+        // Given
+        setupCountry(country: .us)
+        let expectedEvent = "card_present_onboarding_cta_failed"
+        let expectedReason = "plugin_install_tapped"
+        let expectedError = NSError(domain: "Dotcom Error: Plugin not found", code: 0)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache, analytics: analytics)
+
+        // When
+        stores.whenReceivingAction(ofType: SitePluginAction.self, thenCall: { action in
+            switch action {
+            case .installSitePlugin(_, _, let onCompletion):
+                onCompletion(.failure(expectedError))
+            default:
+                break
+            }
+        })
+        useCase.installCardPresentPlugin()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+
+        XCTAssertEqual(eventProperties["reason"] as? String, expectedReason)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
+    }
+
+    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() throws {
+        // Given
+        setupCountry(country: .us)
+        let expectedEvent = "card_present_onboarding_cta_failed"
+        let expectedReason = "plugin_activate_tapped"
+        let expectedError = NSError(domain: "Dotcom Error: Plugin not found", code: 0)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache, analytics: analytics)
+
+        // When
+        stores.whenReceivingAction(ofType: SitePluginAction.self, thenCall: { action in
+            switch action {
+            case .activateSitePlugin(_, _, let onCompletion):
+                onCompletion(.failure(expectedError))
+            default:
+                break
+            }
+        })
+        useCase.activateCardPresentPlugin()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
+
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+
+        XCTAssertEqual(eventProperties["reason"] as? String, expectedReason)
+        XCTAssertEqual(eventProperties["country"] as? String, "US")
+        XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
 }
 

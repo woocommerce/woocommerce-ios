@@ -39,6 +39,10 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Sends the `installSitePlugin` action to the dispatcher
     ///
     func installCardPresentPlugin()
+
+    /// Sends the `activateSitePlugin` action to the dispatcher
+    ///
+    func activateCardPresentPlugin()
 }
 
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
@@ -112,7 +116,6 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         guard let siteID = siteID else {
             return
         }
-
         // Only WCPay is currently supported, so we don't expose a different plugin option
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
@@ -129,6 +132,28 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
             }
         })
         stores.dispatch(installPluginAction)
+    }
+
+    func activateCardPresentPlugin() {
+        guard let siteID = siteID else {
+            return
+        }
+        // Only WCPay is currently supported, so we don't expose a different plugin option
+        let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
+
+        let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
+            switch result {
+            case .success:
+                DDLogInfo("Success activating \(pluginName)")
+                self.refresh()
+            case .failure(let error):
+                DDLogError("Error activating plugin: \(error)")
+                self.state = .genericError
+            }
+        })
+        stores.dispatch(activatePluginAction)
     }
 
     private func refreshOnboardingState() {

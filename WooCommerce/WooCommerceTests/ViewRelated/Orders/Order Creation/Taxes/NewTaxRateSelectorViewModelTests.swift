@@ -34,35 +34,11 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(retrieveTaxRatesIsCalled)
     }
 
-    func test_onRefreshAction_then_resyncs_the_first_page() {
-        // Given
-        let stores = MockStoresManager(sessionManager: .testingInstance)
-        var pageNumberCalled = -1
-        stores.whenReceivingAction(ofType: TaxAction.self) { action in
-            guard case let .retrieveTaxRates(_, pageNumber, _, completion) = action else {
-                return
-            }
-            pageNumberCalled = pageNumber
-            completion(.success([]))
-        }
-        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, stores: stores)
-
-        // When
-        waitFor { promise in
-            viewModel.onRefreshAction {
-                promise(())
-            }
-        }
-
-        // Then
-        XCTAssertEqual(pageNumberCalled, 1)
-    }
-
     func test_taxRateViewModels_match_loaded_tax_rates() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
-        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate")
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
         stores.whenReceivingAction(ofType: TaxAction.self) { action in
             guard case let .retrieveTaxRates(_, _, _, completion) = action else {
                 return
@@ -80,8 +56,10 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         viewModel.onLoadTriggerOnce.send()
 
         // Then
+        let expectedTitle = "\(taxRate.name) • \(taxRate.country) \(taxRate.state) " +
+        "\(taxRate.postcodes.joined(separator: ",")) \(taxRate.cities.joined(separator: ","))"
         XCTAssertEqual(viewModel.taxRateViewModels.first?.id, taxRate.id)
-        XCTAssertEqual(viewModel.taxRateViewModels.first?.name, taxRate.name)
+        XCTAssertEqual(viewModel.taxRateViewModels.first?.title, expectedTitle)
         XCTAssertEqual(viewModel.taxRateViewModels.first?.rate, Double(taxRate.rate)?.percentFormatted() ?? "")
         XCTAssertEqual(viewModel.taxRateViewModels.first?.id, taxRate.id)
         XCTAssertEqual(viewModel.taxRateViewModels.count, 1)
@@ -91,25 +69,22 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         var retrieveTaxRatesCallCount = 0
+        let pageSize = 25
+        let firstPageTaxRates = [TaxRate](repeating: .fake().copy(siteID: sampleSiteID), count: pageSize)
+
         stores.whenReceivingAction(ofType: TaxAction.self) { action in
             guard case let .retrieveTaxRates(_, _, _, completion) = action else {
                 return
             }
             retrieveTaxRatesCallCount += 1
-            completion(.success([]))
+
+            completion(.success(firstPageTaxRates))
         }
         let viewModel = NewTaxRateSelectorViewModel(siteID: 1, stores: stores)
 
         // When
-        waitFor { promise in
-            viewModel.onRefreshAction {
-                promise(())
-            }
-        }
-
         viewModel.onLoadTriggerOnce.send()
         viewModel.onLoadNextPageAction()
-
         // Then
         XCTAssertEqual(retrieveTaxRatesCallCount, 2)
     }

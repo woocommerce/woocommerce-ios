@@ -8,9 +8,11 @@ final class MockCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPrese
         self.mode = mode
     }
 
+    var onPresentCalled: ((CardPresentPaymentsModalViewModel) -> Void)? = nil
     var spyPresentedAlertViewModels: [CardPresentPaymentsModalViewModel] = []
     func present(viewModel: CardPresentPaymentsModalViewModel) {
         spyPresentedAlertViewModels.append(viewModel)
+        onPresentCalled?(viewModel)
     }
 
     func foundSeveralReaders(readerIDs: [String],

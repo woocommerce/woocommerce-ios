@@ -40,7 +40,7 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
 
     /// Order to collect.
     ///
-    private let order: Order
+    private var order: Order
 
     /// Order total in decimal number. It is lazy so we avoid multiple conversions.
     /// It can be lazy because the order is a constant and never changes (this class is intended to be
@@ -135,40 +135,35 @@ final class CollectOrderPaymentUseCase: NSObject, CollectOrderPaymentProtocol {
                         onCancel: @escaping () -> Void,
                         onPaymentCompletion: @escaping () -> Void,
                         onCompleted: @escaping () -> Void) {
-        guard isTotalAmountValid() else {
-            let error = totalAmountInvalidError()
-            return handleTotalAmountInvalidError(totalAmountInvalidError(), onCompleted: {
-                onFailure(error)
-            })
-        }
-
         preflightController.readerConnection.sink { [weak self] connectionResult in
             guard let self = self else { return }
             self.analyticsTracker.preflightResultReceived(connectionResult)
             switch connectionResult {
             case .completed(let reader, let paymentGatewayAccount):
                 let paymentAlertProvider = reader.paymentAlertProvider()
-                self.attemptPayment(alertProvider: paymentAlertProvider,
-                                    paymentGatewayAccount: paymentGatewayAccount,
-                                    onCompletion: { [weak self] result in
-                    guard let self = self else { return }
-                    // Inform about the collect payment state
-                    switch result {
-                    case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
-                        self.rootViewController.presentedViewController?.dismiss(animated: true)
-                        return onCancel()
-                    case .failure(let error):
-                        CardPresentPaymentOnboardingStateCache.shared.invalidate()
-                        return onFailure(error)
-                    case .success(let paymentData):
-                        // Handle payment receipt
-                        self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
-                        self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
-                                                 alertProvider: paymentAlertProvider,
-                                                 onCompleted: onCompleted)
-                    }
-                    onPaymentCompletion()
-                })
+                Task { @MainActor in
+                    await self.attemptPayment(alertProvider: paymentAlertProvider,
+                                              paymentGatewayAccount: paymentGatewayAccount,
+                                              onCompletion: { [weak self] result in
+                        guard let self = self else { return }
+                        // Inform about the collect payment state
+                        switch result {
+                        case .failure(CollectOrderPaymentUseCaseError.flowCanceledByUser):
+                            self.rootViewController.presentedViewController?.dismiss(animated: true)
+                            return onCancel()
+                        case .failure(let error):
+                            CardPresentPaymentOnboardingStateCache.shared.invalidate()
+                            return onFailure(error)
+                        case .success(let paymentData):
+                            // Handle payment receipt
+                            self.storeInPersonPaymentsTransactionDateIfFirst(using: reader.readerType)
+                            self.presentReceiptAlert(receiptParameters: paymentData.receiptParameters,
+                                                     alertProvider: paymentAlertProvider,
+                                                     onCompleted: onCompleted)
+                        }
+                        onPaymentCompletion()
+                    })
+                }
             case .canceled(let cancellationSource, _):
                 self.handlePaymentCancellation(from: cancellationSource)
                 onCancel()
@@ -231,11 +226,61 @@ private extension CollectOrderPaymentUseCase {
                                                                              onDismiss: onCompleted))
     }
 
+    func isOrderAwaitingPayment() -> Bool {
+        order.datePaid == nil
+    }
+
+    @MainActor
+    func refreshOrder() async throws -> Order {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
+                guard let order = order else {
+                    DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                    continuation.resume(with: .failure(error ?? CollectOrderPaymentUseCaseError.unknownErrorRefreshingOrder))
+                    return
+                }
+
+                continuation.resume(with: .success(order))
+            }
+
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func checkOrderIsStillEligibleForPayment() async throws {
+        do {
+            order = try await refreshOrder()
+        } catch {
+            throw CollectOrderPaymentUseCaseError.couldNotRefreshOrder(error)
+        }
+
+        guard isTotalAmountValid() else {
+            throw totalAmountInvalidError()
+        }
+
+        guard isOrderAwaitingPayment() else {
+            throw CollectOrderPaymentUseCaseError.orderAlreadyPaid
+        }
+
+    }
+
     /// Attempts to collect payment for an order.
     ///
+
+    @MainActor
     func attemptPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                         paymentGatewayAccount: PaymentGatewayAccount,
-                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+                        onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) async {
+        do {
+            try await checkOrderIsStillEligibleForPayment()
+        } catch {
+            return handlePaymentFailureAndRetryPayment(error,
+                                                       alertProvider: paymentAlerts,
+                                                       paymentGatewayAccount: paymentGatewayAccount,
+                                                       onCompletion: onCompletion)
+        }
+
         guard let orderTotal = orderTotal else {
             onCompletion(.failure(NotValidAmountError.other))
             return
@@ -384,10 +429,11 @@ private extension CollectOrderPaymentUseCase {
                                                    switch result {
                                                    case .success:
                                                        // Retry payment
-                                                       self.attemptPayment(alertProvider: paymentAlerts,
-                                                                           paymentGatewayAccount: paymentGatewayAccount,
-                                                                           onCompletion: onCompletion)
-
+                                                       Task {
+                                                           await self.attemptPayment(alertProvider: paymentAlerts,
+                                                                                     paymentGatewayAccount: paymentGatewayAccount,
+                                                                                     onCompletion: onCompletion)
+                                                       }
                                                    case .failure(let cancelError):
                                                        // Inform that payment can't be retried.
                                                        self.alertsPresenter.present(
@@ -571,4 +617,50 @@ extension CollectOrderPaymentUseCase {
 enum CollectOrderPaymentUseCaseError: Error {
     case flowCanceledByUser
     case paymentGatewayNotFound
+    case unknownErrorRefreshingOrder
+    case couldNotRefreshOrder(Error)
+    case orderAlreadyPaid
+
+    var localizedDescription: String {
+        switch self {
+        case .flowCanceledByUser:
+            return Localization.paymentCancelledLocalizedDescription
+        case .paymentGatewayNotFound:
+            return Localization.paymentGatewayNotFoundLocalizedDescription
+        case .unknownErrorRefreshingOrder:
+            return Localization.unknownErrorWhileRefreshingOrderLocalizedDescription
+        case .couldNotRefreshOrder(let error):
+            return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
+        case .orderAlreadyPaid:
+            return Localization.orderAlreadyPaidLocalizedDescription
+        }
+    }
+}
+
+extension CollectOrderPaymentUseCaseError {
+    enum Localization {
+        static let couldNotRefreshOrderLocalizedDescription = NSLocalizedString(
+            "Unable to process payment. We could not fetch the latest order details. Please check your network " +
+            "connection and try again. Underlying error: %1$@",
+            comment: "Error message when collecting an In-Person Payment and unable to update the order. %!$@ will " +
+            "be replaced with further error details.")
+
+        static let unknownErrorWhileRefreshingOrderLocalizedDescription = NSLocalizedString(
+            "Unable to process payment. We could not fetch the latest order details. Please check your network " +
+            "connection and try again.",
+            comment: "Error message when collecting an In-Person Payment and unable to update the order.")
+
+        static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
+            "Unable to process payment. This order is already paid, taking a further payment would result in the " +
+            "customer being charged twice for their order.",
+            comment: "Error message shown during In-Person Payments when the order is found to be paid after it's refreshed.")
+
+        static let paymentGatewayNotFoundLocalizedDescription = NSLocalizedString(
+            "Unable to process payment. We could not connect to the payment system. Please contact support if this " +
+            "error continues.",
+            comment: "Error message shown during In-Person Payments when the payment gateway is not available.")
+
+        static let paymentCancelledLocalizedDescription = NSLocalizedString(
+            "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
+    }
 }

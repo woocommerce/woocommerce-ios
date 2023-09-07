@@ -8,6 +8,8 @@
 		<dict>
 			<key>UNNotificationExtensionCategory</key>
 			<string>store_order</string>
+			<key>UNNotificationExtensionDefaultContentHidden</key>
+			<true/>
 			<key>UNNotificationExtensionInitialContentSizeRatio</key>
 			<real>1</real>
 		</dict>

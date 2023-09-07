@@ -53,4 +53,8 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
             publisher.assign(to: &$state)
         }
     }
+
+    func activateCardPresentPlugin() {
+        // no-op
+    }
 }

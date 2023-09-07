@@ -453,8 +453,8 @@ public extension StorageType {
 
     /// Retrieves all of the stored TaxRates
     ///
-    func loadTaxRates() -> [TaxRate]? {
-        let predicate = NSPredicate()
+    func loadTaxRates(siteID: Int64) -> [TaxRate] {
+        let predicate = \TaxRate.siteID == siteID
         return allObjects(ofType: TaxRate.self, matching: predicate, sortedBy: nil)
     }
 

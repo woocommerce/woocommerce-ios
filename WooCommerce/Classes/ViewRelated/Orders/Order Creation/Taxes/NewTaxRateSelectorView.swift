@@ -4,7 +4,7 @@ import WooFoundation
 struct NewTaxRateSelectorView: View {
     @Environment(\.dismiss) var dismiss
 
-    let viewModel: NewTaxRateSelectorViewModel
+    @StateObject var viewModel: NewTaxRateSelectorViewModel
     let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
     let onDismissWpAdminWebView: (() -> Void)
 
@@ -37,65 +37,51 @@ struct NewTaxRateSelectorView: View {
                     .footnoteStyle()
                     .multilineTextAlignment(.leading)
                     .padding([.leading, .trailing], Layout.generalPadding)
-                    .padding(.bottom, Layout.taxRatesSectionTitleBottomPadding)
+                    .padding([.top, .bottom], Layout.taxRatesSectionTitleVerticalPadding)
 
                 Divider()
 
-                ForEach(viewModel.demoTaxRates, id: \.title) { taxRate in
-                    HStack {
-                        Button(action: { }) {
-                            AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.generalPadding) {
-                                Text(taxRate.title)
-                                    .foregroundColor(Color(.text))
-                                    .multilineTextAlignment(.leading)
-                                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                                Text(taxRate.value)
-                                    .foregroundColor(Color(.text))
-                                    .multilineTextAlignment(.trailing)
-                                    .frame(width: nil, alignment: .trailing)
-
-                                Image(systemName: "chevron.right")
-                                    .font(.body)
-                                    .font(Font.title.weight(.semibold))
-                                    .foregroundColor(Color(.textTertiary))
-                                    .padding(.leading, Layout.generalPadding)
+                switch viewModel.syncState {
+                    case .results:
+                    ScrollView {
+                        LazyVStack(spacing: 0) {
+                            ForEach(viewModel.taxRateViewModels, id: \.id) { viewModel in
+                                TaxRateRow(viewModel: viewModel)
+                                Divider()
                             }
-                            .padding(Layout.generalPadding)
+                            .background(Color(.listForeground(modal: false)))
+
+                            bottomNotice
+                                .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
+
+                            InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
+                                .padding(.top, Layout.generalPadding)
+                                .onAppear {
+                                    viewModel.onLoadNextPageAction()
+                                }
                         }
                     }
-
-                    Divider()
+                    case .empty:
+                        EmptyState(title: "",
+                                   description: "",
+                                   image: .emptyInboxNotesImage)
+                        .frame(maxHeight: .infinity)
+                    case .syncingFirstPage:
+                        ScrollView {
+                            LazyVStack(spacing: 0) {
+                                ForEach(viewModel.placeholderRowViewModels, id: \.id) { rowViewModel in
+                                    TaxRateRow(viewModel: rowViewModel)
+                                        .redacted(reason: .placeholder)
+                                        .shimmering()
+                                }
+                            }
+                        }
+                        .background(Color(.listForeground(modal: false)))
                 }
-
-                Text(Localization.editTaxRatesInWpAdminSectionTitle)
-                    .foregroundColor(Color(.textSubtle))
-                    .footnoteStyle()
-                    .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding([.leading, .trailing], Layout.generalPadding)
-
-                Button(action: {
-                    showingWPAdminWebview = true
-                }) {
-                    HStack {
-                        Text(Localization.editTaxRatesInWpAdminButtonTitle)
-                            .fontWeight(.semibold)
-                            .font(.footnote)
-                            .foregroundColor(Color(.wooCommercePurple(.shade60)))
-
-                        Image(systemName: "arrow.up.forward.square")
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-                .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
-                .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
-                    onDismissWpAdminWebView()
-                    showingWPAdminWebview = false
-                })
-
-                Spacer()
-
+            }
+            .onAppear {
+                // Even if we are calling this on appear (it might be called multiple times) the view model will only load the first it's called
+                viewModel.onLoadTriggerOnce.send()
             }
             .navigationTitle(Localization.navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
@@ -116,6 +102,36 @@ struct NewTaxRateSelectorView: View {
         }
         .wooNavigationBarStyle()
     }
+
+    var bottomNotice: some View {
+        Group {
+            Text(Localization.editTaxRatesInWpAdminSectionTitle)
+                .foregroundColor(Color(.textSubtle))
+                .footnoteStyle()
+                .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding([.leading, .trailing], Layout.generalPadding)
+
+            Button(action: {
+                showingWPAdminWebview = true
+            }) {
+                HStack {
+                    Text(Localization.editTaxRatesInWpAdminButtonTitle)
+                        .fontWeight(.semibold)
+                        .font(.footnote)
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+
+                    Image(systemName: "arrow.up.forward.square")
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+            }
+            .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
+            .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                onDismissWpAdminWebView()
+                showingWPAdminWebview = false
+            })
+        }
+    }
 }
 
 extension NewTaxRateSelectorView {
@@ -123,7 +139,7 @@ extension NewTaxRateSelectorView {
         static let generalPadding: CGFloat = 16
         static let explanatoryBoxHorizontalSpacing: CGFloat = 11
         static let explanatoryBoxCornerRadius: CGFloat = 8
-        static let taxRatesSectionTitleBottomPadding: CGFloat = 8
+        static let taxRatesSectionTitleVerticalPadding: CGFloat = 8
         static let editTaxRatesInWpAdminSectionTopPadding: CGFloat = 24
         static let editTaxRatesInWpAdminSectionVerticalSpacing: CGFloat = 8
     }

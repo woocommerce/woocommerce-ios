@@ -21,6 +21,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isShareProductAIEnabled: Bool
     private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
+    private let manualTaxesInOrderM2: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -40,7 +41,8 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
-         betterCustomerSelectionInOrder: Bool = false) {
+         betterCustomerSelectionInOrder: Bool = false,
+         manualTaxesInOrderM2: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -60,6 +62,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
+        self.manualTaxesInOrderM2 = manualTaxesInOrderM2
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -100,6 +103,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isJustInTimeMessagesOnDashboardEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
+        case .manualTaxesInOrderM2:
+            return manualTaxesInOrderM2
         default:
             return false
         }

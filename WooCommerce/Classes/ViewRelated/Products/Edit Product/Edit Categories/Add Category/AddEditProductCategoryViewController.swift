@@ -2,9 +2,9 @@ import UIKit
 import Networking
 import Yosemite
 
-/// AddProductCategoryViewController: Add a new category associated to the active site.
+/// Add or edit a new category associated to the active site.
 ///
-final class AddProductCategoryViewController: UIViewController {
+final class AddEditProductCategoryViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -62,7 +62,7 @@ final class AddProductCategoryViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
 
     func configureNavigationBar() {
         title = Strings.titleView
@@ -114,7 +114,7 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Remote Update actions
 //
-extension AddProductCategoryViewController {
+extension AddEditProductCategoryViewController {
 
     @objc private func saveNewCategory() {
         ServiceLocator.analytics.track(.productCategorySettingsSaveNewCategoryTapped)
@@ -143,7 +143,7 @@ extension AddProductCategoryViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension AddProductCategoryViewController: UITableViewDataSource {
+extension AddEditProductCategoryViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -164,7 +164,7 @@ extension AddProductCategoryViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension AddProductCategoryViewController: UITableViewDelegate {
+extension AddEditProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .parentCategory:
@@ -192,7 +192,7 @@ extension AddProductCategoryViewController: UITableViewDelegate {
 
 // MARK: - Keyboard management
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     /// Registers for all of the related Notifications
     ///
     func startListeningToNotifications() {
@@ -200,7 +200,7 @@ private extension AddProductCategoryViewController {
     }
 }
 
-extension AddProductCategoryViewController: KeyboardScrollable {
+extension AddEditProductCategoryViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return tableView
     }
@@ -208,7 +208,7 @@ extension AddProductCategoryViewController: KeyboardScrollable {
 
 // MARK: - Cell configuration
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -244,7 +244,7 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Private Types
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
 
     struct Section: RowIterable {
         let rows: [Row]
@@ -271,7 +271,7 @@ private extension AddProductCategoryViewController {
 
 // MARK: Error handling
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     func displayErrorAlert(error: Error?) {
         let alertController = UIAlertController(title: Strings.errorAlertTitle,
                                                 message: error?.localizedDescription,
@@ -287,7 +287,7 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Constants!
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     enum Strings {
         static let titleView = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")

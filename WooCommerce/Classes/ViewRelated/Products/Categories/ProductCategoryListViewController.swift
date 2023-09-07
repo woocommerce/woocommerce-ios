@@ -221,14 +221,30 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
 
-        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: { _, _, completionHandler in
-            // TODO: show confirmation
+        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: { [weak self] _, _, completionHandler in
+            guard let self,
+                let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }
+            self.showDeleteAlert(for: model)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
         deleteAction.backgroundColor = .error
         deleteAction.image = .init(systemName: "trash")
 
         return UISwipeActionsConfiguration(actions: [deleteAction])
+    }
+
+    func showDeleteAlert(for model: ProductCategoryCellViewModel) {
+        let title = String.localizedStringWithFormat(Localization.DeleteAlert.title, model.name)
+        let alertController = UIAlertController(title: title,
+                                                message: Localization.DeleteAlert.message,
+                                                preferredStyle: .alert)
+        let deleteAction = UIAlertAction(title: Localization.DeleteAlert.delete, style: .destructive) { _ in
+            // TODO: handle action & analytics
+        }
+        let cancelAction = UIAlertAction(title: Localization.DeleteAlert.cancel, style: .cancel)
+        alertController.addAction(cancelAction)
+        alertController.addAction(deleteAction)
+        present(alertController, animated: true)
     }
 }
 
@@ -240,6 +256,15 @@ private extension ProductCategoryListViewController {
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
         static let emptyStateMessage = NSLocalizedString("No product categories found",
                                                          comment: "Message on the empty view when the category list or its search result is empty.")
+        enum DeleteAlert {
+            static let title = NSLocalizedString("Delete %1$@", comment: "Title of the confirmation alert to delete product category. Reads like: Delete Clothing")
+            static let message = NSLocalizedString(
+                "Are you sure you want to delete this category permanently?",
+                comment: "Message on the confirmation alert to delete product category"
+            )
+            static let delete = NSLocalizedString("Delete", comment: "Button to confirm deleting a product category")
+            static let cancel = NSLocalizedString("Cancel", comment: "Button to cancel deleting a product category")
+        }
     }
 }
 

@@ -66,10 +66,8 @@ struct NewTaxRateSelectorView: View {
                         }
                     }
                     case .empty:
-                        EmptyState(title: "",
-                                   description: "",
-                                   image: .emptyInboxNotesImage)
-                        .frame(maxHeight: .infinity)
+                    bottomNotice
+                    Spacer()
                     case .syncingFirstPage:
                         ScrollView {
                             LazyVStack(spacing: 0) {
@@ -109,13 +107,14 @@ struct NewTaxRateSelectorView: View {
 
     var bottomNotice: some View {
         Group {
-            Text(Localization.editTaxRatesInWpAdminSectionTitle)
-                .foregroundColor(Color(.textSubtle))
-                .footnoteStyle()
-                .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding([.leading, .trailing], Layout.generalPadding)
-
+            if let title = viewModel.bottomNoticeTitle {
+                Text(title)
+                    .foregroundColor(Color(.textSubtle))
+                    .footnoteStyle()
+                    .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding([.leading, .trailing], Layout.generalPadding)
+            }
             Button(action: {
                 showingWPAdminWebview = true
             }) {
@@ -153,8 +152,6 @@ extension NewTaxRateSelectorView {
         static let infoText = NSLocalizedString("This will change the customer’s address to the location of the tax rate you select.",
                                                 comment: "Explanatory text for the tax rate selector")
         static let taxRatesSectionTitle = NSLocalizedString("Select a tax rate", comment: "Title for the tax rate selector section")
-        static let editTaxRatesInWpAdminSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
-                                                                         comment: "Text to prompt the user to edit tax rates in the web")
         static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString("Edit tax rates in admin",
                                                                          comment: "Title of the button that prompts the user to edit tax rates in the web")
     }

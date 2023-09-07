@@ -91,6 +91,10 @@ final class ProductCategoryListViewModel {
     ///
     @Published private(set) var syncCategoriesState: SyncingState = .initialized
 
+    /// Any error when deletion fails
+    ///
+    @Published private(set) var deletionFailure: Error?
+
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
@@ -214,6 +218,22 @@ final class ProductCategoryListViewModel {
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
     }
 
+    @MainActor
+    func deleteCategory(id: Int64) async {
+        deletionFailure = nil
+        do {
+            // optimistic deletion
+            categoryViewModels.removeAll(where: { $0.categoryID == id })
+            try await deleteCategoryFromRemote(id: id)
+            // removes the category from the selected list if exists
+            selectedCategories = selectedCategories.filter { $0.categoryID != id }
+        } catch {
+            deletionFailure = error
+        }
+        // fetches list again to update UI
+        synchronizeAllCategories()
+    }
+
     /// Update `selectedCategories` based on initially selected items.
     ///
     private func updateInitialItemsIfNeeded(with categories: [ProductCategory]) {
@@ -284,6 +304,23 @@ private extension ProductCategoryListViewModel {
             DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
         default:
             break
+        }
+    }
+}
+
+// MARK: - Helpers
+private extension ProductCategoryListViewModel {
+    @MainActor
+    func deleteCategoryFromRemote(id: Int64) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            storesManager.dispatch(ProductCategoryAction.deleteProductCategory(siteID: siteID, categoryID: id, onCompletion: { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: Void())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
         }
     }
 }

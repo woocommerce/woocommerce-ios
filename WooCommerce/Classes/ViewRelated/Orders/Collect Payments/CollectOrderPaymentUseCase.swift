@@ -396,14 +396,23 @@ private extension CollectOrderPaymentUseCase {
     }
 
     private func canRetryPayment(with error: Error) -> Bool {
-        guard let serviceError = error as? CardReaderServiceError else {
-            return true
-        }
-        switch serviceError {
-        case .paymentMethodCollection(let underlyingError),
-                .paymentCapture(let underlyingError),
-                .paymentCancellation(let underlyingError):
-            return canRetryPayment(underlyingError: underlyingError)
+        switch error {
+        case let serviceError as CardReaderServiceError:
+            switch serviceError {
+            case .paymentMethodCollection(let underlyingError),
+                    .paymentCapture(let underlyingError),
+                    .paymentCancellation(let underlyingError):
+                return canRetryPayment(underlyingError: underlyingError)
+            default:
+                return true
+            }
+        case let useCaseError as CollectOrderPaymentUseCaseError:
+            switch useCaseError {
+            case .flowCanceledByUser, .orderAlreadyPaid:
+                return false
+            case .paymentGatewayNotFound, .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
+                return true
+            }
         default:
             return true
         }

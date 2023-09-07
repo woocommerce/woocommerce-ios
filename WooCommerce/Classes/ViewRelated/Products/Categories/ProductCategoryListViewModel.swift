@@ -49,7 +49,7 @@ final class ProductCategoryListViewModel {
 
     /// Site Id of the related categories
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     /// Initially selected category IDs.
     /// This is mutable so that we can remove any item when unselecting it manually.

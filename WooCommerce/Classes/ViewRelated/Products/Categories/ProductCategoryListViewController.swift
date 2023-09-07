@@ -241,13 +241,33 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
         let editAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
             guard let self,
                 let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }
-            // TODO: show edit view
+            self.editCategory(model: model)
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
         editAction.backgroundColor = .accent
         editAction.title = Localization.edit
 
         return UISwipeActionsConfiguration(actions: [editAction, deleteAction])
+    }
+
+    func editCategory(model: ProductCategoryCellViewModel) {
+        guard let id = model.categoryID else {
+            return
+        }
+        let category = ProductCategory(categoryID: id,
+                                       siteID: viewModel.siteID,
+                                       parentID: model.categoryID ?? 0,
+                                       name: model.name,
+                                       slug: "")
+        let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID, existingCategory: category) { [weak self] (newCategory) in
+            defer {
+                self?.dismiss(animated: true, completion: nil)
+            }
+            self?.viewModel.performFetch()
+        }
+        let addCategoryViewController = AddEditProductCategoryViewController(viewModel: viewModel)
+        let navController = WooNavigationController(rootViewController: addCategoryViewController)
+        present(navController, animated: true, completion: nil)
     }
 
     func showDeleteAlert(for model: ProductCategoryCellViewModel) {

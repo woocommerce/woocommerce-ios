@@ -17,11 +17,12 @@ final class AddEditProductCategoryViewModel {
     private(set) var editingMode: EditingMode
     private let currentCategory: ProductCategory?
 
-    @Published var categoryTitle: String = "" {
+    @Published var categoryTitle: String {
         didSet {
             updateSaveButton()
         }
     }
+
     @Published var selectedParentCategory: ProductCategory? {
         didSet {
             updateSaveButton()
@@ -39,6 +40,7 @@ final class AddEditProductCategoryViewModel {
         self.stores = stores
         self.editingMode = existingCategory != nil ? .editing : .add
         self.onCompletion = onCompletion
+        self.categoryTitle = existingCategory?.name ?? ""
     }
 
     @MainActor

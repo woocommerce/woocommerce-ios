@@ -45,7 +45,14 @@ final class AddEditProductCategoryViewController: UIViewController {
 private extension AddEditProductCategoryViewController {
 
     func configureNavigationBar() {
-        title = Strings.titleView
+        title = {
+            switch viewModel.editingMode {
+            case .add:
+                return Strings.addCategory
+            case .editing:
+                return Strings.updateCategory
+            }
+        }()
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
         configureRightBarButtonItemAsSave()
@@ -110,7 +117,6 @@ extension AddEditProductCategoryViewController {
             do {
                 try await viewModel.saveCategory()
                 configureRightBarButtonItemAsSave()
-                
             } catch {
                 displayErrorAlert(error: error)
             }
@@ -267,7 +273,8 @@ private extension AddEditProductCategoryViewController {
 //
 private extension AddEditProductCategoryViewController {
     enum Strings {
-        static let titleView = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        static let addCategory = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        static let updateCategory = NSLocalizedString("Update Category", comment: "Product Update Category navigation title")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")
         static let saveButton = NSLocalizedString("Save", comment: "Add Product Category. Save button title in navbar.")
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")

@@ -14,17 +14,20 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private let isDeletionEnabled: Bool
     private let productUIImageLoader: ProductUIImageLoader
+    private let actionHandler: ProductImageActionHandlerProtocol
     private let onDeletion: ProductImagesGalleryViewController.Deletion
     private let onReordering: ReorderingHandler
 
     init(imageStatuses: [ProductImageStatus],
          isDeletionEnabled: Bool,
          productUIImageLoader: ProductUIImageLoader,
+         actionHandler: ProductImageActionHandlerProtocol,
          onDeletion: @escaping ProductImagesGalleryViewController.Deletion,
          onReordering: @escaping ReorderingHandler) {
         self.productImageStatuses = imageStatuses
         self.isDeletionEnabled = isDeletionEnabled
         self.productUIImageLoader = productUIImageLoader
+        self.actionHandler = actionHandler
         self.onDeletion = onDeletion
         self.onReordering = onReordering
         let columnLayout = ColumnFlowLayout(
@@ -105,7 +108,7 @@ private extension ProductImagesCollectionViewController {
         cell.cancellableTask = cancellable
 
         // TODO-jc: editable check
-        if isDeletionEnabled {
+        if #available(iOS 17.0, *), isDeletionEnabled {
             let removeBackgroundAction = UIAction(title: "Remove background",
                                                   image: .sparklesImage) { [weak self] _ in
                 self?.removeBackground(image: productImage)
@@ -289,9 +292,13 @@ private extension ProductImagesCollectionViewController {
         guard let navigationController else {
             return
         }
+        let imageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: {
+            PHImageManager.default()
+        })
         let coordinator = ProductImageEditMenuCoordinator(navigationController: navigationController,
                                                           productImage: image,
-                                                          imageLoader: DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }))
+                                                          imageLoader: imageLoader,
+                                                          actionHandler: actionHandler)
         self.coordinator = coordinator
         coordinator.start()
     }

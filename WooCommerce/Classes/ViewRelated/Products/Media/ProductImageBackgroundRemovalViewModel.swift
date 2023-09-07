@@ -51,7 +51,7 @@ final class ProductImageBackgroundRemovalViewModel: ObservableObject {
     private var cancellables: [AnyCancellable] = []
 
     init(productImage: ProductImage,
-         imageLoader: ProductUIImageLoader) {
+         imageLoader: ProductUIImageLoader,
          actionHandler: ProductImageActionHandlerProtocol,
          onSave: @escaping () -> Void) {
         self.productImage = productImage

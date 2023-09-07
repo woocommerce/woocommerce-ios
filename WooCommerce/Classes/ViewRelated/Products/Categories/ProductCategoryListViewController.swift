@@ -236,9 +236,18 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
             completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
         })
         deleteAction.backgroundColor = .error
-        deleteAction.image = .init(systemName: "trash")
+        deleteAction.title = Localization.delete
 
-        return UISwipeActionsConfiguration(actions: [deleteAction])
+        let editAction = UIContextualAction(style: .normal, title: nil, handler: { [weak self] _, _, completionHandler in
+            guard let self,
+                let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }
+            // TODO: show edit view
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        editAction.backgroundColor = .accent
+        editAction.title = Localization.edit
+
+        return UISwipeActionsConfiguration(actions: [editAction, deleteAction])
     }
 
     func showDeleteAlert(for model: ProductCategoryCellViewModel) {
@@ -291,7 +300,8 @@ private extension ProductCategoryListViewController {
         static let emptyStateMessage = NSLocalizedString("No product categories found",
                                                          comment: "Message on the empty view when the category list or its search result is empty.")
         static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss an alert on the product category list screen")
-        static let delete = NSLocalizedString("Delete", comment: "Button to confirm deleting a product category")
+        static let delete = NSLocalizedString("Delete", comment: "Button to delete a product category")
+        static let edit = NSLocalizedString("Edit", comment: "Button to edit a product category")
 
         enum DeleteAlert {
             static let title = NSLocalizedString(

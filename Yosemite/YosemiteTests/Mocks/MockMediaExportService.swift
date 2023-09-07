@@ -7,8 +7,10 @@ struct MockMediaExportService: MediaExportService {
         self.uploadableMedia = uploadableMedia
     }
 
-    func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion) {
-        let error = uploadableMedia == nil ? NSError(domain: "\(type(of: self))", code: 0, userInfo: nil): nil
-        onCompletion(uploadableMedia, error)
+    func export(_ exportable: ExportableAsset) async throws -> UploadableMedia {
+        guard let uploadableMedia else {
+            throw NSError(domain: "\(type(of: self))", code: 0, userInfo: nil)
+        }
+        return uploadableMedia
     }
 }

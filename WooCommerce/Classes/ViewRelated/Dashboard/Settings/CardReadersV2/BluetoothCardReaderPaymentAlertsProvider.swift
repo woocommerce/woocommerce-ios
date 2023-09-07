@@ -13,6 +13,11 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         self.transactionType = transactionType
     }
 
+    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+        CardPresentModalPreparingReader(bottomTitle: Localization.validatingOrderBottomTitle,
+                                        cancelAction: onCancel)
+    }
+
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingReader(cancelAction: onCancel)
     }
@@ -152,5 +157,10 @@ private extension BluetoothCardReaderPaymentAlertsProvider {
                 return underlyingError.errorDescription
             }
         }
+
+        static let validatingOrderBottomTitle = NSLocalizedString(
+            "Checking order",
+            comment: "Bottom title of the alert presented with a spinner while the order is being validated"
+        )
     }
 }

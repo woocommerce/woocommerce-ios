@@ -272,6 +272,12 @@ private extension CollectOrderPaymentUseCase {
     func attemptPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) async {
+        alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
+            self?.cancelPayment(from: .paymentPreparingReader) {
+                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+            }
+        }))
+
         do {
             try await checkOrderIsStillEligibleForPayment()
         } catch {

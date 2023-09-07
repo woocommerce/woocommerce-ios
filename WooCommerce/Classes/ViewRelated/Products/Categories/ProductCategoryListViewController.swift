@@ -22,6 +22,10 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
     private let configuration: Configuration
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Tracks if the swipe actions have been glanced to the user.
+    ///
+    private var swipeActionsGlanced = false
+
     /// The controller of the view to show if the search results are empty.
     ///
     private lazy var emptyStateViewController: EmptyStateViewController = {
@@ -156,9 +160,20 @@ private extension ProductCategoryListViewController {
                         self.emptyStateViewController.view.isHidden = false
                         self.tableView.isHidden = true
                     }
+                    self.glanceTrailingActionsIfNeeded()
                 }
             }
             .store(in: &subscriptions)
+    }
+
+    /// Slightly reveal swipe actions of the first visible cell that contains at least one swipe action.
+    /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
+    ///
+    func glanceTrailingActionsIfNeeded() {
+        if !swipeActionsGlanced {
+            swipeActionsGlanced = true
+            tableView.glanceTrailingSwipeActions()
+        }
     }
 }
 
@@ -200,6 +215,20 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
         viewModel.selectOrDeselectCategory(index: indexPath.row)
         tableView.reloadData()
         searchBar.resignFirstResponder()
+    }
+
+    /// Provides an implementation to show cell swipe actions. Return `nil` to provide no action.
+    ///
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+
+        let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: { _, _, completionHandler in
+            // TODO: show confirmation
+            completionHandler(true) // Tells the table that the action was performed and forces it to go back to its original state (un-swiped)
+        })
+        deleteAction.backgroundColor = .error
+        deleteAction.image = .init(systemName: "trash")
+
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
 

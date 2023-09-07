@@ -9,12 +9,12 @@ final class BuiltInCardReaderPaymentAlertsProvider: CardReaderTransactionAlertsP
     var amount: String = ""
 
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(bottomTitle: Localization.validatingOrderBottomTitle,
+        CardPresentModalPreparingForPayment(bottomTitle: Localization.validatingOrderBottomTitle,
                                         cancelAction: onCancel)
     }
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(bottomTitle: Localization.preparingReaderBottomTitle,
+        CardPresentModalPreparingForPayment(bottomTitle: Localization.preparingReaderBottomTitle,
                                         cancelAction: onCancel)
     }
 

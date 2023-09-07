@@ -14,12 +14,12 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
     }
 
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(bottomTitle: Localization.validatingOrderBottomTitle,
+        CardPresentModalPreparingForPayment(bottomTitle: Localization.validatingOrderBottomTitle,
                                         cancelAction: onCancel)
     }
 
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
-        CardPresentModalPreparingReader(cancelAction: onCancel)
+        CardPresentModalPreparingForPayment(cancelAction: onCancel)
     }
 
     func tapOrInsertCard(title: String,

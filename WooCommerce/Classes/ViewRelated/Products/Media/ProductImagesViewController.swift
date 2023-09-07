@@ -35,6 +35,7 @@ final class ProductImagesViewController: UIViewController {
     }
     private var productImageStatusesObservationToken: AnyCancellable?
     private var initialProductImageStatusesObservationToken: AnyCancellable?
+    private var hasCheckedInitialProductImageStatuses: Bool = false
 
     private var allowsMultipleImages: Bool {
         product.allowsMultipleImages()
@@ -112,16 +113,19 @@ final class ProductImagesViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard let self else {
-                return
-            }
+        if hasCheckedInitialProductImageStatuses == false {
+            initialProductImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+                guard let self else {
+                    return
+                }
 
-            if productImageStatuses.isEmpty {
-                self.addTapped()
-            }
+                if productImageStatuses.isEmpty {
+                    self.addTapped()
+                }
 
-            self.initialProductImageStatusesObservationToken = nil
+                self.hasCheckedInitialProductImageStatuses = true
+                self.initialProductImageStatusesObservationToken = nil
+            }
         }
     }
 }

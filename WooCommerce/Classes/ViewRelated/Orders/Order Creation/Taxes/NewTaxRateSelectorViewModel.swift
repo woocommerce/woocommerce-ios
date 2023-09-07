@@ -26,16 +26,20 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// Trigger to perform any one time setups.
     let onLoadTriggerOnce: PassthroughSubject<Void, Never> = PassthroughSubject()
 
+    let onTaxRateSelected: (Yosemite.TaxRate) -> Void
+
     /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
         TaxRateViewModel(id: index, title: "placeholder", rate: "10%")
     }
 
     init(siteID: Int64,
+         onTaxRateSelected: @escaping (Yosemite.TaxRate) -> Void,
          wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
+        self.onTaxRateSelected = onTaxRateSelected
         self.wpAdminTaxSettingsURLProvider = wpAdminTaxSettingsURLProvider
         self.stores = stores
         self.storageManager = storageManager
@@ -62,6 +66,14 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     func onLoadNextPageAction() {
         paginationTracker.ensureNextPageIsSynced()
+    }
+
+    func onRowSelected(with index: Int) {
+        guard let taxRate = resultsController.fetchedObjects[safe: index] else {
+            return
+        }
+
+        onTaxRateSelected(taxRate)
     }
 }
 

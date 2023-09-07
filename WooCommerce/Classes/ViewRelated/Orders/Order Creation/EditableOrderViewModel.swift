@@ -551,6 +551,27 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
     }
 
+    func addTaxRateAddressToOrder(taxRate: TaxRate) {
+        guard let taxBasedOnSetting = taxBasedOnSetting else {
+            return
+        }
+
+        let address = Address.from(taxRate: taxRate)
+        let input: OrderSyncAddressesInput
+        switch taxBasedOnSetting {
+        case .customerBillingAddress:
+            input = OrderSyncAddressesInput(billing: address, shipping: nil)
+        case .customerShippingAddress:
+            input = OrderSyncAddressesInput(billing: nil, shipping: address)
+        default:
+            // Do not add address if the taxes are not based on the customer's addresses
+            return
+        }
+
+        orderSynchronizer.setAddresses.send(input)
+        resetAddressForm()
+    }
+
     /// Updates the order creation draft with the current set customer note.
     ///
     func updateCustomerNote() {
@@ -621,6 +642,10 @@ final class EditableOrderViewModel: ObservableObject {
             }
         }
         stores.dispatch(action)
+    }
+
+    func onTaxRateSelected(_ taxRate: TaxRate) {
+        addTaxRateAddressToOrder(taxRate: taxRate)
     }
 }
 

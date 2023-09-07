@@ -11,12 +11,9 @@ protocol MediaExporter {
     ///
     var mediaDirectoryType: MediaDirectory { get }
 
-    /// Export a media to another format
+    /// Export a media to another format.
     ///
-    /// - Parameters:
-    ///   - onCompletion: a callback to invoke when the export finishes.
-    ///
-    func export(onCompletion: @escaping MediaExportCompletion)
+    func export() async throws -> UploadableMedia
 }
 
 /// Extension providing generic helper implementation particular to a MediaExporter.

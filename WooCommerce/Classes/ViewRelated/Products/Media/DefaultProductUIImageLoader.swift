@@ -96,12 +96,17 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
 }
 
 private extension DefaultProductUIImageLoader {
-    func update(from asset: PHAsset, to productImage: ProductImage) {
-        phAssetImageLoader.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
-            guard let image = image else {
-                return
-            }
-            self?.imagesByProductImageID[productImage.imageID] = image
+    func update(from asset: ProductImageAssetType, to productImage: ProductImage) {
+        switch asset {
+            case .phAsset(let asset):
+                phAssetImageLoader.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
+                    guard let image = image else {
+                        return
+                    }
+                    self?.imagesByProductImageID[productImage.imageID] = image
+                }
+            case .uiImage(let image):
+                imagesByProductImageID[productImage.imageID] = image
         }
     }
 }

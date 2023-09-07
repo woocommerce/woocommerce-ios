@@ -4,13 +4,21 @@ import Yosemite
 /// The status of a Product image.
 ///
 enum ProductImageStatus: Equatable {
-    /// A `PHAsset` is being uploaded.
+    /// An image asset is being uploaded.
     ///
-    case uploading(asset: PHAsset)
+    case uploading(asset: ProductImageAssetType)
 
     /// The Product image exists remotely.
     ///
     case remote(image: ProductImage)
+}
+
+enum ProductImageAssetType: Equatable {
+    /// `PHAsset` from device photo library or camera capture.
+    case phAsset(asset: PHAsset)
+
+    /// `UIImage` from image processing.
+    case uiImage(image: UIImage)
 }
 
 extension Collection where Element == ProductImageStatus {
@@ -59,7 +67,12 @@ extension ProductImageStatus {
     var dragItemIdentifier: String {
         switch self {
         case .uploading(let asset):
-            return asset.identifier()
+            switch asset {
+                case let .phAsset(asset):
+                    return asset.identifier()
+                case let .uiImage:
+                    return UUID().uuidString
+            }
         case .remote(let image):
             return "\(image.imageID)"
         }

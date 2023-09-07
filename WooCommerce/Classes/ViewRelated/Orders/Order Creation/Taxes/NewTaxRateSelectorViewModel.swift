@@ -89,6 +89,8 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     }
 
     func onRefreshAction() {
+        taxRateViewModels = []
+        transitionToSyncingState()
         paginationTracker.resync(reason: nil)
     }
 }

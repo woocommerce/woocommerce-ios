@@ -251,15 +251,14 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     }
 
     func editCategory(model: ProductCategoryCellViewModel) {
-        guard let id = model.categoryID else {
+        guard let id = model.categoryID,
+              let category = viewModel.findCategory(with: id) else {
             return
         }
-        let category = ProductCategory(categoryID: id,
-                                       siteID: viewModel.siteID,
-                                       parentID: model.categoryID ?? 0,
-                                       name: model.name,
-                                       slug: "")
-        let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID, existingCategory: category) { [weak self] (newCategory) in
+        let parent = viewModel.findCategory(with: category.parentID)
+        let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID,
+                                                        existingCategory: category,
+                                                        parentCategory: parent) { [weak self] (newCategory) in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }

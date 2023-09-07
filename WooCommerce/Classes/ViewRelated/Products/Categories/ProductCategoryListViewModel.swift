@@ -152,6 +152,10 @@ final class ProductCategoryListViewModel {
         onReloadNeeded?()
     }
 
+    func findCategory(with id: Int64) -> ProductCategory? {
+        resultController.fetchedObjects.first(where: { $0.categoryID == id })
+    }
+
     /// Add a new category added remotely, that will be selected
     ///
     func addAndSelectNewCategory(category: ProductCategory) {

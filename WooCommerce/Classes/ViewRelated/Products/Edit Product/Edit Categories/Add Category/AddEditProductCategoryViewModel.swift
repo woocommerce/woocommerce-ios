@@ -33,6 +33,7 @@ final class AddEditProductCategoryViewModel {
 
     init(siteID: Int64,
          existingCategory: ProductCategory? = nil,
+         parentCategory: ProductCategory? = nil,
          stores: StoresManager = ServiceLocator.stores,
          onCompletion: @escaping Completion) {
         self.siteID = siteID
@@ -41,6 +42,7 @@ final class AddEditProductCategoryViewModel {
         self.editingMode = existingCategory != nil ? .editing : .add
         self.onCompletion = onCompletion
         self.categoryTitle = existingCategory?.name ?? ""
+        self.selectedParentCategory = parentCategory
     }
 
     @MainActor

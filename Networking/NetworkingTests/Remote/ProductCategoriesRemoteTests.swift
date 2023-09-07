@@ -188,7 +188,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
 
         // When
         do {
-            let updatedCategory = try await remote.updateProductCategory(category)
+            _ = try await remote.updateProductCategory(category)
             XCTFail("Request should fail!")
         } catch {
             // Then

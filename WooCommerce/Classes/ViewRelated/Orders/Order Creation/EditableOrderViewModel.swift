@@ -73,11 +73,6 @@ final class EditableOrderViewModel: ObservableObject {
     var shouldShowCancelButton: Bool {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
-
-    var shouldShowNewTaxRateSection: Bool {
-        featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2)
-    }
-
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
@@ -219,6 +214,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Used to open the product details in `ProductInOrder`.
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
+
+    /// Whether it should show the tax rate selector
+    ///
+    @Published private(set) var shouldShowNewTaxRateSection: Bool = false
 
     /// Keeps track of selected/unselected Products, if any
     ///
@@ -1209,13 +1208,17 @@ private extension EditableOrderViewModel {
     func retrieveTaxBasedOnSetting() {
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
-                                                                    switch result {
-                                                                        case .success(let setting):
-                                                                            self?.taxBasedOnSetting = setting
-                                                                        case .failure(let error):
-                                                                        DDLogError("⛔️ Error retrieving tax based on setting: \(error)")
-                                                                    }
-                                                                }))
+            guard let self = self else { return }
+
+            switch result {
+                case .success(let setting):
+                self.shouldShowNewTaxRateSection = featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
+                (setting == .customerBillingAddress || setting == .customerShippingAddress)
+                self.taxBasedOnSetting = setting
+                case .failure(let error):
+                DDLogError("⛔️ Error retrieving tax based on setting: \(error)")
+            }
+        }))
     }
 
     /// Tracks when customer details have been added

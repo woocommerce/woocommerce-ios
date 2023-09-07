@@ -121,4 +121,28 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(retrieveTaxRatesCallCount, 2)
     }
+
+    func test_onRowSelected_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onRowSelected(with: 1)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorTaxRateTapped.rawValue)
+    }
+
+    func test_onShowWebView_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onShowWebView()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorEditInAdminTapped.rawValue)
+    }
 }

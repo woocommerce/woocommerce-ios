@@ -1093,7 +1093,7 @@
 		4590B652261C8D1E00A6FCE0 /* WeightFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */; };
 		4590B6A8261F0F8300A6FCE0 /* SegmentedView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590B6A7261F0F8300A6FCE0 /* SegmentedView.swift */; };
 		4590CEE4249BA46700949F05 /* AddEditProductCategoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4590CEE2249BA46700949F05 /* AddEditProductCategoryViewController.swift */; };
-		4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */; };
+		4590CEE5249BA46700949F05 /* AddEditProductCategoryViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4590CEE3249BA46700949F05 /* AddEditProductCategoryViewController.xib */; };
 		45912FE32526642200982948 /* ProductFormViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45912FE22526642200982948 /* ProductFormViewController+Helpers.swift */; };
 		4592A54B24BF58DD00BC3DE0 /* ProductTagsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */; };
 		4592A54C24BF58DD00BC3DE0 /* ProductTagsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */; };
@@ -3517,7 +3517,7 @@
 		4590B651261C8D1E00A6FCE0 /* WeightFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeightFormatterTests.swift; sourceTree = "<group>"; };
 		4590B6A7261F0F8300A6FCE0 /* SegmentedView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SegmentedView.swift; sourceTree = "<group>"; };
 		4590CEE2249BA46700949F05 /* AddEditProductCategoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditProductCategoryViewController.swift; sourceTree = "<group>"; };
-		4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductCategoryViewController.xib; sourceTree = "<group>"; };
+		4590CEE3249BA46700949F05 /* AddEditProductCategoryViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddEditProductCategoryViewController.xib; sourceTree = "<group>"; };
 		45912FE22526642200982948 /* ProductFormViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormViewController+Helpers.swift"; sourceTree = "<group>"; };
 		4592A54924BF58DD00BC3DE0 /* ProductTagsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTagsViewController.swift; sourceTree = "<group>"; };
 		4592A54A24BF58DD00BC3DE0 /* ProductTagsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductTagsViewController.xib; sourceTree = "<group>"; };
@@ -7270,7 +7270,7 @@
 			children = (
 				4590CEE2249BA46700949F05 /* AddEditProductCategoryViewController.swift */,
 				DEA88F4F2AA9D0100037273B /* AddEditProductCategoryViewModel.swift */,
-				4590CEE3249BA46700949F05 /* AddProductCategoryViewController.xib */,
+				4590CEE3249BA46700949F05 /* AddEditProductCategoryViewController.xib */,
 				45AE150024A23F03005AA948 /* ProductParentCategoriesViewController.swift */,
 				45AE150124A23F03005AA948 /* ProductParentCategoriesViewController.xib */,
 			);
@@ -11341,7 +11341,7 @@
 				FE28F7132684CA29004465C7 /* RoleErrorViewController.xib in Resources */,
 				7E7C5F782719A8F800315B61 /* EditProductCategoryListViewController.xib in Resources */,
 				CE2A9FCF23C4F2C8002BEC1C /* RefundedProductsViewController.xib in Resources */,
-				4590CEE5249BA46700949F05 /* AddProductCategoryViewController.xib in Resources */,
+				4590CEE5249BA46700949F05 /* AddEditProductCategoryViewController.xib in Resources */,
 				B573B1A0219DC2690081C78C /* Localizable.strings in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,

@@ -452,6 +452,11 @@ public enum WooAnalyticsStat: String {
         case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
         case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
 
+    // MARK: Tax Rate selector
+    //
+    case taxRateSelectorTaxRateTapped = "tax_rate_selector_tax_rate_tapped"
+    case taxRateSelectorEditInAdminTapped = "tax_rate_selector_edit_in_admin_tapped"
+
     // MARK: Shipping Labels Events
     //
     case shippingLabelRefundRequested = "shipping_label_refund_requested"

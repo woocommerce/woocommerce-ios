@@ -15,6 +15,10 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// Storage to fetch tax rates
     private let storageManager: StorageManagerType
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     @Published private(set) var taxRateViewModels: [TaxRateViewModel] = []
 
     /// Current sync status; used to determine the view state.
@@ -36,6 +40,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     init(siteID: Int64,
          onTaxRateSelected: @escaping (Yosemite.TaxRate) -> Void,
          wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
+         analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -44,6 +49,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: 1, pageSize: 25)
+        self.analytics = analytics
 
         configureResultsController()
         configurePaginationTracker()
@@ -69,11 +75,17 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     }
 
     func onRowSelected(with index: Int) {
+        analytics.track(.taxRateSelectorTaxRateTapped)
+
         guard let taxRate = resultsController.fetchedObjects[safe: index] else {
             return
         }
 
         onTaxRateSelected(taxRate)
+    }
+
+    func onShowWebView() {
+        analytics.track(.taxRateSelectorEditInAdminTapped)
     }
 }
 

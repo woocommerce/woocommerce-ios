@@ -58,6 +58,7 @@ final class ProductCategoryListViewController: UIViewController, GhostableViewCo
         configureEmptyView()
         configureViewModel()
         handleSwipeBackGesture()
+        configureDeletionError()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -238,12 +239,37 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
         let alertController = UIAlertController(title: title,
                                                 message: Localization.DeleteAlert.message,
                                                 preferredStyle: .alert)
-        let deleteAction = UIAlertAction(title: Localization.DeleteAlert.delete, style: .destructive) { _ in
-            // TODO: handle action & analytics
+        let deleteAction = UIAlertAction(title: Localization.delete, style: .destructive) { [weak self] _ in
+            guard let self, let id = model.categoryID else {
+                return
+            }
+            Task { @MainActor in
+                await self.viewModel.deleteCategory(id: id)
+            }
         }
-        let cancelAction = UIAlertAction(title: Localization.DeleteAlert.cancel, style: .cancel)
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
         alertController.addAction(cancelAction)
         alertController.addAction(deleteAction)
+        present(alertController, animated: true)
+    }
+
+    func configureDeletionError() {
+        viewModel.$deletionFailure
+            .sink { [weak self] error in
+                guard let self, let error else {
+                    return
+                }
+                self.showDeletionFailureAlert(error: error)
+            }
+            .store(in: &subscriptions)
+    }
+
+    func showDeletionFailureAlert(error: Error) {
+        let alertController = UIAlertController(title: nil,
+                                                message: error.localizedDescription,
+                                                preferredStyle: .alert)
+        let cancelAction = UIAlertAction(title: Localization.cancel, style: .cancel)
+        alertController.addAction(cancelAction)
         present(alertController, animated: true)
     }
 }
@@ -256,14 +282,18 @@ private extension ProductCategoryListViewController {
         static let clearSelectionButtonTitle = NSLocalizedString("Clear Selection", comment: "Button to clear selection on the product categories list")
         static let emptyStateMessage = NSLocalizedString("No product categories found",
                                                          comment: "Message on the empty view when the category list or its search result is empty.")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss an alert on the product category list screen")
+        static let delete = NSLocalizedString("Delete", comment: "Button to confirm deleting a product category")
+
         enum DeleteAlert {
-            static let title = NSLocalizedString("Delete %1$@", comment: "Title of the confirmation alert to delete product category. Reads like: Delete Clothing")
+            static let title = NSLocalizedString(
+                "Delete %1$@",
+                comment: "Title of the confirmation alert to delete product category. Reads like: Delete Clothing"
+            )
             static let message = NSLocalizedString(
                 "Are you sure you want to delete this category permanently?",
                 comment: "Message on the confirmation alert to delete product category"
             )
-            static let delete = NSLocalizedString("Delete", comment: "Button to confirm deleting a product category")
-            static let cancel = NSLocalizedString("Cancel", comment: "Button to cancel deleting a product category")
         }
     }
 }

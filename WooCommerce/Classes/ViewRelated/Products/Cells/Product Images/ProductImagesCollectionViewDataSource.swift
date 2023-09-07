@@ -53,7 +53,12 @@ private extension ProductImagesCollectionViewDataSource {
         case .remote(let image):
             configureRemoteImageCell(cell, productImage: image)
         case .uploading(let asset):
-            configureUploadingImageCell(cell, asset: asset)
+            switch asset {
+                case .phAsset(let asset):
+                    configureUploadingImageCell(cell, asset: asset)
+                case .uiImage(let image):
+                    configureUploadingImageCell(cell, image: image)
+            }
         }
     }
 
@@ -86,6 +91,14 @@ private extension ProductImagesCollectionViewDataSource {
         }
     }
 
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, image: UIImage) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .scaleAspectFit
+        cell.imageView.image = image
+    }
 }
 
 enum ProductImagesItem {

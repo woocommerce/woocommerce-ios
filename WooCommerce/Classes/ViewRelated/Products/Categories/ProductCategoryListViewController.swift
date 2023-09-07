@@ -250,6 +250,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
             guard let self, let id = model.categoryID else {
                 return
             }
+            ServiceLocator.analytics.track(.productCategorySettingsDeleteButtonTapped)
             Task { @MainActor in
                 await self.viewModel.deleteCategory(id: id)
             }

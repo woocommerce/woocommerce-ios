@@ -10,7 +10,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         let wpAdminTaxSettingsURL = URL(string: "https://www.site.com/wp-admin/mock-taxes-settings")
         let wpAdminTaxSettingsURLProvider = MockWPAdminTaxSettingsURLProvider(wpAdminTaxSettingsURL: wpAdminTaxSettingsURL)
 
-        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, onTaxRateSelected: { _ in }, wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
@@ -25,7 +25,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             }
             retrieveTaxRatesIsCalled = true
         }
-        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores)
 
         // When
         viewModel.onLoadTriggerOnce.send()
@@ -50,7 +50,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             completion(.success([taxRate]))
         }
 
-        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores, storageManager: storageManager)
 
         // When
         viewModel.onLoadTriggerOnce.send()
@@ -63,6 +63,39 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxRateViewModels.first?.rate, Double(taxRate.rate)?.percentFormatted() ?? "")
         XCTAssertEqual(viewModel.taxRateViewModels.first?.id, taxRate.id)
         XCTAssertEqual(viewModel.taxRateViewModels.count, 1)
+    }
+
+    func test_onRowSelected_then_calls_onTaxRateSelected_with_right_tax_rate() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        stores.whenReceivingAction(ofType: TaxAction.self) { action in
+            guard case let .retrieveTaxRates(_, _, _, completion) = action else {
+                return
+            }
+
+            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
+            newTaxRate.update(with: taxRate)
+            storageManager.viewStorage.saveIfNeeded()
+            completion(.success([taxRate]))
+        }
+
+        var selectedTaxRate: TaxRate?
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID,
+                                                    onTaxRateSelected: { taxRate in
+            selectedTaxRate = taxRate
+
+        },
+                                                    stores: stores,
+                                                    storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTriggerOnce.send()
+        viewModel.onRowSelected(with: 0)
+
+        // Then
+        XCTAssertEqual(selectedTaxRate, taxRate)
     }
 
     func test_onLoadNextPageAction_loads_next_page() {
@@ -80,7 +113,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
 
             completion(.success(firstPageTaxRates))
         }
-        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, stores: stores)
+        let viewModel = NewTaxRateSelectorViewModel(siteID: 1, onTaxRateSelected: { _ in }, stores: stores)
 
         // When
         viewModel.onLoadTriggerOnce.send()

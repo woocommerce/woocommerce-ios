@@ -45,8 +45,12 @@ struct NewTaxRateSelectorView: View {
                     case .results:
                     ScrollView {
                         LazyVStack(spacing: 0) {
-                            ForEach(viewModel.taxRateViewModels, id: \.id) { viewModel in
-                                TaxRateRow(viewModel: viewModel)
+                            ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
+                                TaxRateRow(viewModel: taxRateViewModel) {
+                                    viewModel.onRowSelected(with: index)
+                                    dismiss()
+                                }
+
                                 Divider()
                             }
                             .background(Color(.listForeground(modal: false)))
@@ -70,7 +74,7 @@ struct NewTaxRateSelectorView: View {
                         ScrollView {
                             LazyVStack(spacing: 0) {
                                 ForEach(viewModel.placeholderRowViewModels, id: \.id) { rowViewModel in
-                                    TaxRateRow(viewModel: rowViewModel)
+                                    TaxRateRow(viewModel: rowViewModel, onSelect: {})
                                         .redacted(reason: .placeholder)
                                         .shimmering()
                                 }

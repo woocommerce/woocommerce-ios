@@ -130,6 +130,7 @@ struct NewTaxRateSelectorView: View {
             }
             .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
             .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+                viewModel.onRefreshAction()
                 onDismissWpAdminWebView()
                 showingWPAdminWebview = false
             })

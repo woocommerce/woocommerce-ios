@@ -87,6 +87,10 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
         onTaxRateSelected(taxRate)
     }
+
+    func onRefreshAction() {
+        paginationTracker.resync(reason: nil)
+    }
 }
 
 extension NewTaxRateSelectorViewModel: PaginationTrackerDelegate {

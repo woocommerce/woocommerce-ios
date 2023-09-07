@@ -69,7 +69,8 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     }
 
     func onRowSelected(with index: Int) {
-        guard let taxRate = resultsController.fetchedObjects[safe: index] else {
+        guard let taxRateViewModel = taxRateViewModels[safe: index],
+              let taxRate = resultsController.fetchedObjects.first(where: { $0.id == taxRateViewModel.id }) else {
             return
         }
 
@@ -136,7 +137,11 @@ private extension NewTaxRateSelectorViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        taxRateViewModels = resultsController.fetchedObjects.map {
+        taxRateViewModels = resultsController.fetchedObjects
+            .filter {
+                $0.hasAddress
+            }
+            .map {
             var title = $0.name
             let titleSuffix = "\($0.country) \($0.state) \($0.postcodes.joined(separator: ",")) \($0.cities.joined(separator: ","))"
 
@@ -173,5 +178,11 @@ extension NewTaxRateSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty
+    }
+}
+
+private extension Yosemite.TaxRate {
+    var hasAddress: Bool {
+        city.isNotEmpty || cities.isNotEmpty || postcodes.isNotEmpty || postcodes.isNotEmpty || state.isNotEmpty || country.isNotEmpty
     }
 }

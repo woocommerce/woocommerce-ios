@@ -29,6 +29,8 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
 
                 let note = try await viewModel.loadNotification(notification)
 
+                _ = viewModel.formatContent2(note)
+
                 let content = OrderNotificationView.Content(
                     storeName: "Cool Hats Store",
                     date: "September 5, 2023",
@@ -128,6 +130,38 @@ final class OrderNotificationViewModel {
 
     func formatContent(_ notification: Note) -> String {
         notification.body.compactMap { $0.text }.joined(separator: "\n")
+    }
+
+    func formatContent2(_ notification: Note) -> OrderNotificationView.Content {
+
+        let subtitle = notification.subject.last?.text
+        let storeName = subtitle?.components(separatedBy: "on").last ?? ""
+
+
+        let rawContent = notification.body.flatMap { $0.text?.components(separatedBy: "\n") ?? [] }
+        let rawDictionary = rawContent.reduce(into: [String: String]()) { dict, row in
+            let components = row.components(separatedBy: ":")
+            if components.count == 2 {
+                dict[components[0]] = components[1]
+            }
+        }
+
+
+        let content = OrderNotificationView.Content(
+            storeName: storeName,
+            date: rawDictionary["Date"] ?? "",
+            orderNumber: rawDictionary["Order Number"] ?? "",
+            amount: rawDictionary["Total"] ?? "",
+            paymentMethod: rawDictionary["Payment Method"],
+            shippingMethod: rawDictionary["Shipping Method"],
+            products: [
+                .init(count: "1", name: "Album"),
+                .init(count: "105", name: "Baked beans"),
+                .init(count: "10", name: "Pins"),
+                .init(count: "3", name: "Product with a really really long long name")
+
+            ])
+        return content
     }
 
     /// Fetches WPCom credentials if possible.

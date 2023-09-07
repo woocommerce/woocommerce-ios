@@ -618,55 +618,53 @@ extension CollectOrderPaymentUseCase {
             )
         }
     }
-}
 
-enum CollectOrderPaymentUseCaseError: Error {
-    case flowCanceledByUser
-    case paymentGatewayNotFound
-    case unknownErrorRefreshingOrder
-    case couldNotRefreshOrder(Error)
-    case orderAlreadyPaid
+    enum CollectOrderPaymentUseCaseError: LocalizedError {
+        case flowCanceledByUser
+        case paymentGatewayNotFound
+        case unknownErrorRefreshingOrder
+        case couldNotRefreshOrder(Error)
+        case orderAlreadyPaid
 
-    var localizedDescription: String {
-        switch self {
-        case .flowCanceledByUser:
-            return Localization.paymentCancelledLocalizedDescription
-        case .paymentGatewayNotFound:
-            return Localization.paymentGatewayNotFoundLocalizedDescription
-        case .unknownErrorRefreshingOrder:
-            return Localization.unknownErrorWhileRefreshingOrderLocalizedDescription
-        case .couldNotRefreshOrder(let error):
-            return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
-        case .orderAlreadyPaid:
-            return Localization.orderAlreadyPaidLocalizedDescription
+        var errorDescription: String? {
+            switch self {
+            case .flowCanceledByUser:
+                return Localization.paymentCancelledLocalizedDescription
+            case .paymentGatewayNotFound:
+                return Localization.paymentGatewayNotFoundLocalizedDescription
+            case .unknownErrorRefreshingOrder:
+                return Localization.unknownErrorWhileRefreshingOrderLocalizedDescription
+            case .couldNotRefreshOrder(let error):
+                return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
+            case .orderAlreadyPaid:
+                return Localization.orderAlreadyPaidLocalizedDescription
+            }
         }
-    }
-}
 
-extension CollectOrderPaymentUseCaseError {
-    enum Localization {
-        static let couldNotRefreshOrderLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. We could not fetch the latest order details. Please check your network " +
-            "connection and try again. Underlying error: %1$@",
-            comment: "Error message when collecting an In-Person Payment and unable to update the order. %!$@ will " +
-            "be replaced with further error details.")
+        private enum Localization {
+            static let couldNotRefreshOrderLocalizedDescription = NSLocalizedString(
+                "Unable to process payment. We could not fetch the latest order details. Please check your network " +
+                "connection and try again. Underlying error: %1$@",
+                comment: "Error message when collecting an In-Person Payment and unable to update the order. %!$@ will " +
+                "be replaced with further error details.")
 
-        static let unknownErrorWhileRefreshingOrderLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. We could not fetch the latest order details. Please check your network " +
-            "connection and try again.",
-            comment: "Error message when collecting an In-Person Payment and unable to update the order.")
+            static let unknownErrorWhileRefreshingOrderLocalizedDescription = NSLocalizedString(
+                "Unable to process payment. We could not fetch the latest order details. Please check your network " +
+                "connection and try again.",
+                comment: "Error message when collecting an In-Person Payment and unable to update the order.")
 
-        static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. This order is already paid, taking a further payment would result in the " +
-            "customer being charged twice for their order.",
-            comment: "Error message shown during In-Person Payments when the order is found to be paid after it's refreshed.")
+            static let orderAlreadyPaidLocalizedDescription = NSLocalizedString(
+                "Unable to process payment. This order is already paid, taking a further payment would result in the " +
+                "customer being charged twice for their order.",
+                comment: "Error message shown during In-Person Payments when the order is found to be paid after it's refreshed.")
 
-        static let paymentGatewayNotFoundLocalizedDescription = NSLocalizedString(
-            "Unable to process payment. We could not connect to the payment system. Please contact support if this " +
-            "error continues.",
-            comment: "Error message shown during In-Person Payments when the payment gateway is not available.")
+            static let paymentGatewayNotFoundLocalizedDescription = NSLocalizedString(
+                "Unable to process payment. We could not connect to the payment system. Please contact support if this " +
+                "error continues.",
+                comment: "Error message shown during In-Person Payments when the payment gateway is not available.")
 
-        static let paymentCancelledLocalizedDescription = NSLocalizedString(
-            "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
+            static let paymentCancelledLocalizedDescription = NSLocalizedString(
+                "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
+        }
     }
 }

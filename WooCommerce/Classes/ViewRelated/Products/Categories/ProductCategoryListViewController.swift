@@ -74,6 +74,7 @@ extension ProductCategoryListViewController {
     struct Configuration {
         var searchEnabled = false
         var clearSelectionEnabled = false
+        var updateEnabled = false
     }
 }
 
@@ -171,6 +172,9 @@ private extension ProductCategoryListViewController {
     /// This action is performed only once, using `swipeActionsGlanced` as a control variable.
     ///
     func glanceTrailingActionsIfNeeded() {
+        guard configuration.updateEnabled else {
+            return
+        }
         if !swipeActionsGlanced {
             swipeActionsGlanced = true
             tableView.glanceTrailingSwipeActions()
@@ -221,7 +225,10 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
     /// Provides an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-
+        /// Only enable editing and deleting if update is enabled
+        guard configuration.updateEnabled else {
+            return nil
+        }
         let deleteAction = UIContextualAction(style: .destructive, title: nil, handler: { [weak self] _, _, completionHandler in
             guard let self,
                 let model = self.viewModel.categoryViewModels[safe: indexPath.row] else { return }

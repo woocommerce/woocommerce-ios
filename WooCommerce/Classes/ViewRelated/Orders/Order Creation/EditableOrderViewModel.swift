@@ -1212,7 +1212,7 @@ private extension EditableOrderViewModel {
 
             switch result {
                 case .success(let setting):
-                self.shouldShowNewTaxRateSection = featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
+                self.shouldShowNewTaxRateSection = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
                 self.taxBasedOnSetting = setting
                 case .failure(let error):

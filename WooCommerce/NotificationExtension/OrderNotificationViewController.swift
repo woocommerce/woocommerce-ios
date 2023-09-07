@@ -3,6 +3,7 @@ import UserNotifications
 import UserNotificationsUI
 import KeychainAccess
 import Networking
+import SwiftUI
 
 class OrderNotificationViewController: UIViewController, UNNotificationContentExtension {
 
@@ -10,6 +11,7 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
     @MainActor @IBOutlet var loadingIndicator: UIActivityIndicatorView?
 
     let viewModel = OrderNotificationViewModel()
+    var hostingView: UIHostingController<OrderNotificationView>!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -26,9 +28,33 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
                 }
 
                 let note = try await viewModel.loadNotification(notification)
-                self.label?.text = viewModel.formatContent(note)
-            } catch {
 
+                let content = OrderNotificationView.Content(
+                    storeName: "Cool Hats Store",
+                    date: "September 5, 2023",
+                    orderNumber: "#2322",
+                    amount: "$99.01",
+                    paymentMethod: nil,
+                    shippingMethod: nil,
+                    products: [
+                        .init(count: "1", name: "Album"),
+                        .init(count: "105", name: "Baked beans"),
+                        .init(count: "10", name: "Pins"),
+                        .init(count: "3", name: "Product with a really really long long name")
+
+                    ])
+
+                let orderView = OrderNotificationView(content: content)
+                hostingView = UIHostingController(rootView: orderView)
+
+                self.view.addSubview(hostingView.view)
+                hostingView.view.translatesAutoresizingMaskIntoConstraints = false
+                hostingView.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+                hostingView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+                hostingView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+                hostingView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+
+            } catch {
                 self.label?.text = AppLocalizedString("Unable to load notification",
                                                       comment: "Text when failing to load a notification after long pressing on it.")
             }

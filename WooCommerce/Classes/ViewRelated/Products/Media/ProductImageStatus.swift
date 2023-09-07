@@ -17,8 +17,8 @@ enum ProductImageAssetType: Equatable {
     /// `PHAsset` from device photo library or camera capture.
     case phAsset(asset: PHAsset)
 
-    /// `UIImage` from image processing.
-    case uiImage(image: UIImage)
+    /// `UIImage` from image processing. The filename and alt text need to be provided separately.
+    case uiImage(image: UIImage, filename: String?, altText: String?)
 }
 
 extension Collection where Element == ProductImageStatus {
@@ -70,7 +70,7 @@ extension ProductImageStatus {
             switch asset {
                 case let .phAsset(asset):
                     return asset.identifier()
-                case let .uiImage:
+                case .uiImage:
                     return UUID().uuidString
             }
         case .remote(let image):

@@ -87,7 +87,7 @@ private extension ProductImagesCollectionViewController {
             switch asset {
                 case .phAsset(let asset):
                     configureUploadingImageCell(cell, asset: asset)
-                case .uiImage(let image):
+                case .uiImage(let image, _, _):
                     configureUploadingImageCell(cell, image: image)
             }
         }

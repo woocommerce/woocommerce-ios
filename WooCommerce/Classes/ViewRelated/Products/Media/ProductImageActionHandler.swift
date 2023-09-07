@@ -215,9 +215,19 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
             let action: MediaAction
             switch asset {
                 case .phAsset(let asset):
-                    action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
-                case .uiImage(let image):
-                    action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: image, onCompletion: onCompletion)
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: asset,
+                                                     altText: nil,
+                                                     filename: nil,
+                                                     onCompletion: onCompletion)
+                case .uiImage(let image, let filename, let altText):
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: image,
+                                                     altText: altText,
+                                                     filename: filename,
+                                                     onCompletion: onCompletion)
             }
             self.stores.dispatch(action)
         }

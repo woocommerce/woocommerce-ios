@@ -26,11 +26,16 @@ final class ProductParentCategoriesViewController: UIViewController {
     //
     typealias Completion = (_ category: ProductCategory?) -> Void
     private let onCompletion: Completion
-    private var selectedCategory: ProductCategory?
+    private let childCategory: ProductCategory?
+    private let selectedCategory: ProductCategory?
 
-    init(siteID: Int64, selectedCategory: ProductCategory?, completion: @escaping Completion) {
+    init(siteID: Int64,
+         childCategory: ProductCategory?,
+         selectedCategory: ProductCategory?,
+         completion: @escaping Completion) {
         self.siteID = siteID
         self.onCompletion = completion
+        self.childCategory = childCategory
         self.selectedCategory = selectedCategory
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -47,14 +52,14 @@ final class ProductParentCategoriesViewController: UIViewController {
         configureRemoveButton()
 
         try? resultController.performFetch()
-        let fetchedCategories = resultController.fetchedObjects
-        let selectedCategories: [ProductCategory] = {
-            if let selectedCategory {
-                return [selectedCategory]
-            }
-            return []
-        }()
-        categoryViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: selectedCategories)
+
+        // Filter to not show child category on the list
+        let fetchedCategories = resultController.fetchedObjects.filter { $0.categoryID != childCategory?.categoryID }
+
+        categoryViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(
+            from: fetchedCategories,
+            selectedCategories: [selectedCategory].compactMap { $0 }
+        )
     }
 
 }
@@ -88,7 +93,6 @@ private extension ProductParentCategoriesViewController {
     }
 
     @objc func removeParentCategory() {
-        selectedCategory = nil
         onCompletion(nil)
     }
 }
@@ -117,7 +121,6 @@ extension ProductParentCategoriesViewController: UITableViewDataSource {
 extension ProductParentCategoriesViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModels[indexPath.row].categoryID }) {
-            selectedCategory = category
             onCompletion(category)
         }
     }

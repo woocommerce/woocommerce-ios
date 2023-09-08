@@ -15,7 +15,7 @@ final class AddEditProductCategoryViewModel {
     private let onCompletion: Completion
     private let stores: StoresManager
     private(set) var editingMode: EditingMode
-    private let currentCategory: ProductCategory?
+    private(set) var currentCategory: ProductCategory?
 
     @Published var categoryTitle: String {
         didSet {

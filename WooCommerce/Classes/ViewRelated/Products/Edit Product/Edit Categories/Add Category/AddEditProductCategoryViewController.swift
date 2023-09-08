@@ -151,8 +151,9 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .parentCategory:
-            let parentCategoryViewController = ProductParentCategoriesViewController(
+            let controller = ProductParentCategoriesViewController(
                 siteID: viewModel.siteID,
+                childCategory: viewModel.currentCategory,
                 selectedCategory: viewModel.selectedParentCategory
             ) { [weak self] (parentCategory) in
                 defer {
@@ -161,7 +162,7 @@ extension AddEditProductCategoryViewController: UITableViewDelegate {
                 self?.viewModel.selectedParentCategory = parentCategory
                 self?.tableView.reloadData()
             }
-            navigationController?.pushViewController(parentCategoryViewController, animated: true)
+            navigationController?.pushViewController(controller, animated: true)
         default:
             return
         }

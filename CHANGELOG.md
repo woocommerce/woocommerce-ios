@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.3
+We're excited to announce the latest update to our WooCommerce Mobile App. This version brings a host of general improvements designed to make your experience smoother, faster, and more intuitive. We've worked hard to enhance the performance of the app, streamline functionalities, and squash any pesky bugs that were getting in the way of your seamless mobile commerce.
+
 ## 15.2
 We're excited to introduce a new update for our app! This version includes a fix for minor UI issues in the store creation profiler flow to enhance your user experience. Additionally, you can now see the order tax rates, get more information about them, and even navigate to wp-admin to change them. Update now for a better experience!
 

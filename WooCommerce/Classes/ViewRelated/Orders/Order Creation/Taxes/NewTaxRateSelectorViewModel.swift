@@ -214,7 +214,7 @@ extension NewTaxRateSelectorViewModel {
     enum Localization {
         static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
                                                                          comment: "Text to prompt the user to edit tax rates in the web")
-        static let bottomNoticeEmptySectionTitle = NSLocalizedString("You don't have any tax rate with a location.",
+        static let bottomNoticeEmptySectionTitle = NSLocalizedString("You don't have any tax rates with a location.",
                                                                               comment: "Text to prompt the user to edit tax rates" +
                                                                               "in the web when there are no results")
 

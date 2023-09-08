@@ -646,6 +646,10 @@ final class EditableOrderViewModel: ObservableObject {
     func onTaxRateSelected(_ taxRate: TaxRate) {
         addTaxRateAddressToOrder(taxRate: taxRate)
     }
+
+    func onSetNewTaxRateTapped() {
+        analytics.track(.orderCreationSetNewTaxRateTapped)
+    }
 }
 
 // MARK: - Types

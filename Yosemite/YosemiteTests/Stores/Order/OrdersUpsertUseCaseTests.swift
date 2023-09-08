@@ -1,5 +1,6 @@
 import XCTest
 
+import Fakes
 import Storage
 import Networking
 
@@ -188,6 +189,47 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         // Then
         let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
         XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
+    }
+
+    func test_it_persists_order_item_addons_in_storage() throws {
+        // Given
+        let addOns = [
+            Networking.OrderItemProductAddOn(addOnID: nil, key: "Is a gift", value: "Yes"),
+            Networking.OrderItemProductAddOn(addOnID: 685, key: "Has logo", value: "No")
+        ]
+        let orderItem = OrderItem.fake().copy(itemID: 76, addOns: addOns)
+        let order = Order.fake().copy(siteID: 3, orderID: 98, items: [orderItem])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+
+        // When
+        useCase.upsert([order])
+
+        // Then
+        let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
+        XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
+        XCTAssertEqual(storageOrderItem.toReadOnly().addOns, addOns)
+    }
+
+    func test_it_replaces_existing_order_item_addons_in_storage() throws {
+        // Given
+        let originalAddOns = [Networking.OrderItemProductAddOn(addOnID: 685, key: "Extra cheese", value: "Parmasan")]
+        let originalOrderItem = OrderItem.fake().copy(itemID: 76, addOns: originalAddOns)
+        let order = Order.fake().copy(siteID: 3, orderID: 98, items: [originalOrderItem])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // When
+        let addOns = [
+            Networking.OrderItemProductAddOn(addOnID: nil, key: "Extra cheese", value: "Emmental"),
+            Networking.OrderItemProductAddOn(addOnID: 685, key: "Hot pepper", value: "Yes")
+        ]
+        let orderItem = OrderItem.fake().copy(itemID: 76, addOns: addOns)
+        useCase.upsert([order.copy(items: [orderItem])])
+
+        // Then
+        let storageOrderItem = try XCTUnwrap(viewStorage.loadOrderItem(siteID: 3, orderID: 98, itemID: 76))
+        XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
+        XCTAssertEqual(storageOrderItem.toReadOnly().addOns, addOns)
     }
 
     func test_it_persists_order_custom_field_in_storage() throws {

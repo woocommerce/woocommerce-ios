@@ -688,6 +688,7 @@ public enum WooAnalyticsStat: String {
     case productCategorySettingsAddButtonTapped = "product_category_settings_add_button_tapped"
     case productCategorySettingsSaveNewCategoryTapped = "add_product_category_save_tapped"
     case productCategorySettingsDeleteButtonTapped = "product_category_settings_delete_button_tapped"
+    case productCategorySettingsEditButtonTapped = "product_category_settings_edit_button_tapped"
 
     // Product Tags Events
     //

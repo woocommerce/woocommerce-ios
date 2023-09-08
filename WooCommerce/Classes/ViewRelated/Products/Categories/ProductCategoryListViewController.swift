@@ -255,6 +255,9 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
               let category = viewModel.findCategory(with: id) else {
             return
         }
+
+        ServiceLocator.analytics.track(.productCategorySettingsEditButtonTapped)
+
         let parent = viewModel.findCategory(with: category.parentID)
         let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID,
                                                         existingCategory: category,

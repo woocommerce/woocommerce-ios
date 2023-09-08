@@ -16,13 +16,13 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let name: String
 
-    /// Tax rate state.
-    ///
-    public let state: String
-
     /// Tax rate country.
     ///
     public let country: String
+
+    /// Tax rate state.
+    ///
+    public let state: String
 
     /// Tax rate postcode.  Deprecated in WooCommerce 5.3 (use countries)
     ///
@@ -69,8 +69,8 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     public init(id: Int64,
                 siteID: Int64,
                 name: String,
-                state: String,
                 country: String,
+                state: String,
                 postcode: String,
                 postcodes: [String],
                 priority: Int64,
@@ -127,8 +127,8 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
         self.init(id: id,
                   siteID: siteID,
                   name: name,
-                  state: state,
                   country: country,
+                  state: state,
                   postcode: postcode,
                   postcodes: postcodes,
                   priority: priority,

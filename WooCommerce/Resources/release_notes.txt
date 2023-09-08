@@ -1,5 +1,1 @@
-- [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
-- [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
-- [**] Taxes in orders: Users can now select the tax rate's location to add it to the order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10651]
-- [*] Automatically show the media selector sheet on the product images screen when there are no pre-existing images. [https://github.com/woocommerce/woocommerce-ios/pull/10644]
-
+We're excited to announce the latest update to our WooCommerce Mobile App. This version brings a host of general improvements designed to make your experience smoother, faster, and more intuitive. We've worked hard to enhance the performance of the app, streamline functionalities, and squash any pesky bugs that were getting in the way of your seamless mobile commerce.

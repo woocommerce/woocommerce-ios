@@ -117,6 +117,7 @@ struct NewTaxRateSelectorView: View {
                 .padding([.leading, .trailing], Layout.generalPadding)
 
             Button(action: {
+                viewModel.onShowWebView()
                 showingWPAdminWebview = true
             }) {
                 HStack {

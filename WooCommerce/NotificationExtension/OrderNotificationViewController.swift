@@ -14,22 +14,21 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
     func didReceive(_ notification: UNNotification) {
 
         // Show loading Indicator
-        self.loadingIndicator?.isHidden = false
+        loadingIndicator?.isHidden = false
 
         Task {
             do {
-                // Hide loading indicator after do block is finished.
-                defer {
-                    self.loadingIndicator?.isHidden = true
-                }
 
                 // Load notification, order and render order view.
                 let note = try await viewModel.loadNotification(notification)
                 let order = try await viewModel.loadOrder(for: note)
                 let content = viewModel.formatContent(note: note, order: order)
                 addOrderNotificationView(with: content)
+                loadingIndicator?.isHidden = true
 
             } catch {
+
+                loadingIndicator?.isHidden = true
                 self.label?.text = AppLocalizedString("Unable to load notification",
                                                       comment: "Text when failing to load a notification after long pressing on it.")
             }

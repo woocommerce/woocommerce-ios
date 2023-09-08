@@ -261,7 +261,7 @@ extension ProductCategoryListViewController: UITableViewDataSource, UITableViewD
         let parent = viewModel.findCategory(with: category.parentID)
         let viewModel = AddEditProductCategoryViewModel(siteID: viewModel.siteID,
                                                         existingCategory: category,
-                                                        parentCategory: parent) { [weak self] (newCategory) in
+                                                        parentCategory: parent) { [weak self] _ in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }

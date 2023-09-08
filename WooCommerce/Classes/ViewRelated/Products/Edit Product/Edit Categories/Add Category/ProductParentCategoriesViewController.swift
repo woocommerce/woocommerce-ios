@@ -88,8 +88,16 @@ private extension ProductParentCategoriesViewController {
         guard selectedCategory != nil else {
             return
         }
-        let removeParentButton = UIBarButtonItem(title: Localization.removeParent, style: .plain, target: self, action: #selector(removeParentCategory))
-        navigationItem.rightBarButtonItem = removeParentButton
+        let containerView = UIView(frame: .zero)
+        let removeParentButton = UIButton(frame: .zero)
+        removeParentButton.applySecondaryButtonStyle()
+        removeParentButton.setTitle(Localization.removeParent, for: .normal)
+        removeParentButton.addTarget(self, action: #selector(removeParentCategory), for: .touchUpInside)
+        removeParentButton.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(removeParentButton)
+        containerView.pinSubviewToAllEdges(removeParentButton, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+        tableView.tableHeaderView = containerView
+        tableView.updateHeaderHeight()
     }
 
     @objc func removeParentCategory() {
@@ -129,6 +137,6 @@ extension ProductParentCategoriesViewController: UITableViewDelegate {
 private extension ProductParentCategoriesViewController {
     enum Localization {
         static let title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
-        static let removeParent = NSLocalizedString("No Parent", comment: "Button to remove parent category for the existing category")
+        static let removeParent = NSLocalizedString("No Parent Category", comment: "Button to remove parent category for the existing category")
     }
 }

@@ -106,7 +106,7 @@ private extension OrderNotificationView {
     enum Localization {
         static let newOrder = AppLocalizedString("New order for", comment: "Rich order notification text, will read as: New order for MyCustom store")
         static func paidWith(method: String) -> LocalizedString {
-            let format = AppLocalizedString("Paid width %@", comment: "Rich order notification text, will read as: Paid with Visa credit card")
+            let format = AppLocalizedString("Paid with %@", comment: "Rich order notification text, will read as: Paid with Visa credit card")
             return LocalizedString(format: format, method)
         }
     }

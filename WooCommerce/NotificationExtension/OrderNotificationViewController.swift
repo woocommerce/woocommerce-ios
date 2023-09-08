@@ -13,54 +13,45 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
     let viewModel = OrderNotificationViewModel()
     var hostingView: UIHostingController<OrderNotificationView>!
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any required interface initialization here.
-    }
-
     func didReceive(_ notification: UNNotification) {
+
+        // Show loading Indicator
         self.loadingIndicator?.isHidden = false
 
         Task {
             do {
+                // Hide loading indicator after do block is finished.
                 defer {
                     self.loadingIndicator?.isHidden = true
                 }
 
+                // Load notification, order and render order view.
                 let note = try await viewModel.loadNotification(notification)
-
-                _ = viewModel.formatContent2(note)
-
-                let content = OrderNotificationView.Content(
-                    storeName: "Cool Hats Store",
-                    date: "September 5, 2023",
-                    orderNumber: "#2322",
-                    amount: "$99.01",
-                    paymentMethod: nil,
-                    shippingMethod: nil,
-                    products: [
-                        .init(count: "1", name: "Album"),
-                        .init(count: "105", name: "Baked beans"),
-                        .init(count: "10", name: "Pins"),
-                        .init(count: "3", name: "Product with a really really long long name")
-
-                    ])
-
-                let orderView = OrderNotificationView(content: content)
-                hostingView = UIHostingController(rootView: orderView)
-
-                self.view.addSubview(hostingView.view)
-                hostingView.view.translatesAutoresizingMaskIntoConstraints = false
-                hostingView.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-                hostingView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-                hostingView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-                hostingView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+                let order = try await viewModel.loadOrder(for: note)
+                let content = viewModel.formatContent(note: note, order: order)
+                addOrderNotificationView(with: content)
 
             } catch {
                 self.label?.text = AppLocalizedString("Unable to load notification",
                                                       comment: "Text when failing to load a notification after long pressing on it.")
             }
         }
+    }
+
+    @MainActor
+    private func addOrderNotificationView(with content: OrderNotificationView.Content) {
+        let orderView = OrderNotificationView(content: content)
+        hostingView = UIHostingController(rootView: orderView)
+
+        self.view.addSubview(hostingView.view)
+        hostingView.view.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            hostingView.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingView.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            hostingView.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingView.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
     }
 }
 
@@ -73,16 +64,20 @@ final class OrderNotificationViewModel {
         case network(Swift.Error)
         case unavailableNote
         case unsupportedNotification
+        case unknown
     }
 
-    private let remote: NotificationsRemote?
+    private let notesRemote: NotificationsRemote?
+    private let orderRemote: OrdersRemote?
 
     init() {
         if let credentials = Self.fetchCredentials() {
             let network = AlamofireNetwork(credentials: credentials)
-            self.remote = NotificationsRemote(network: network)
+            self.notesRemote = NotificationsRemote(network: network)
+            self.orderRemote = OrdersRemote(network: network)
         } else {
-            self.remote = nil
+            self.notesRemote = nil
+            self.orderRemote = nil
         }
     }
 
@@ -105,14 +100,14 @@ final class OrderNotificationViewModel {
 
         /// Error if we couldn't create a remote object. This can happen if there are no valid credentials.
         ///
-        guard let remote else {
+        guard let notesRemote else {
             throw Error.noCredentials
         }
 
         /// Load notification from a remote source.
         ///
         return try await withCheckedThrowingContinuation { continuation in
-            remote.loadNotes(noteIDs: [noteID]) { result in
+            notesRemote.loadNotes(noteIDs: [noteID]) { result in
                 switch result {
                 case .success(let notes):
                     if let note = notes.first {
@@ -125,43 +120,77 @@ final class OrderNotificationViewModel {
                 }
             }
         }
-
     }
 
-    func formatContent(_ notification: Note) -> String {
-        notification.body.compactMap { $0.text }.joined(separator: "\n")
-    }
+    /// Loads an Order object from a given Note object.
+    ///
+    func loadOrder(for notification: Note) async throws -> Order {
 
-    func formatContent2(_ notification: Note) -> OrderNotificationView.Content {
-
-        let subtitle = notification.subject.last?.text
-        let storeName = subtitle?.components(separatedBy: "on").last ?? ""
-
-
-        let rawContent = notification.body.flatMap { $0.text?.components(separatedBy: "\n") ?? [] }
-        let rawDictionary = rawContent.reduce(into: [String: String]()) { dict, row in
-            let components = row.components(separatedBy: ":")
-            if components.count == 2 {
-                dict[components[0]] = components[1]
-            }
+        /// Notification must contain order and site ID.
+        ///
+        guard let siteID = notification.meta.identifier(forKey: .site),
+              let orderID = notification.meta.identifier(forKey: .order) else {
+            throw Error.unsupportedNotification
         }
 
+        /// Error if we couldn't create a remote object. This can happen if there are no valid credentials.
+        ///
+        guard let orderRemote else {
+            throw Error.noCredentials
+        }
 
-        let content = OrderNotificationView.Content(
-            storeName: storeName,
-            date: rawDictionary["Date"] ?? "",
-            orderNumber: rawDictionary["Order Number"] ?? "",
-            amount: rawDictionary["Total"] ?? "",
-            paymentMethod: rawDictionary["Payment Method"],
-            shippingMethod: rawDictionary["Shipping Method"],
-            products: [
-                .init(count: "1", name: "Album"),
-                .init(count: "105", name: "Baked beans"),
-                .init(count: "10", name: "Pins"),
-                .init(count: "3", name: "Product with a really really long long name")
+        /// Load notification from a remote source.
+        ///
+        return try await withCheckedThrowingContinuation { continuation in
+            orderRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
+                switch (order, error) {
+                case (let order?, nil):
+                    continuation.resume(returning: order)
+                case (_, let error?):
+                    continuation.resume(throwing: Error.network(error))
+                default:
+                    continuation.resume(throwing: Error.unknown)
+                }
+            }
+        }
+    }
 
-            ])
-        return content
+    /// Formats the information from the provided `Note` and `Order` to build a  `OrderNotificationView.Content` object.
+    ///
+    func formatContent(note: Note, order: Order) -> OrderNotificationView.Content {
+
+        // Extract the store name from the notification subject using the provided store name indices
+        let storeName: String = {
+            guard let subtitle = note.subject.last?.text,
+                  let indices = note.subject.last?.ranges.first?.range else {
+                return AppLocalizedString("My Store", comment: "Placeholder store name on a notification")
+            }
+
+            let storeIndex = subtitle.index(subtitle.startIndex, offsetBy: indices.lowerBound)
+            return String(subtitle.suffix(from: storeIndex))
+        }()
+
+        // Format order paid or order created date
+        let date: String = {
+            let date = order.datePaid ?? order.dateCreated
+
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+
+            return formatter.string(from: date)
+        }()
+
+        // Map order line items into view products.
+        let items = order.items.map { OrderNotificationView.Content.Product(count: "\($0.quantity)", name: $0.name) }
+
+        return OrderNotificationView.Content(storeName: storeName,
+                                             date: date,
+                                             orderNumber: "#\(order.orderID)",
+                                             amount: "\(order.currencySymbol)\(order.total)",
+                                             paymentMethod: order.paymentMethodTitle,
+                                             shippingMethod: order.shippingLines.first?.methodTitle,
+                                             products: items)
     }
 
     /// Fetches WPCom credentials if possible.

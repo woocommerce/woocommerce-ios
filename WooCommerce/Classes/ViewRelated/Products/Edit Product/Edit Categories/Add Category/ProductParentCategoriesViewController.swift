@@ -24,7 +24,7 @@ final class ProductParentCategoriesViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ category: ProductCategory) -> Void
+    typealias Completion = (_ category: ProductCategory?) -> Void
     private let onCompletion: Completion
     private var selectedCategory: ProductCategory?
 
@@ -44,6 +44,7 @@ final class ProductParentCategoriesViewController: UIViewController {
         configureTitle()
         registerTableViewCells()
         configureTableView()
+        configureRemoveButton()
 
         try? resultController.performFetch()
         let fetchedCategories = resultController.fetchedObjects
@@ -63,7 +64,7 @@ final class ProductParentCategoriesViewController: UIViewController {
 private extension ProductParentCategoriesViewController {
 
     func configureTitle() {
-        title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
+        title = Localization.title
     }
 
     func registerTableViewCells() {
@@ -76,6 +77,19 @@ private extension ProductParentCategoriesViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+    }
+
+    func configureRemoveButton() {
+        guard selectedCategory != nil else {
+            return
+        }
+        let removeParentButton = UIBarButtonItem(title: Localization.removeParent, style: .plain, target: self, action: #selector(removeParentCategory))
+        navigationItem.rightBarButtonItem = removeParentButton
+    }
+
+    @objc func removeParentCategory() {
+        selectedCategory = nil
+        onCompletion(nil)
     }
 }
 
@@ -106,5 +120,12 @@ extension ProductParentCategoriesViewController: UITableViewDelegate {
             selectedCategory = category
             onCompletion(category)
         }
+    }
+}
+
+private extension ProductParentCategoriesViewController {
+    enum Localization {
+        static let title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
+        static let removeParent = NSLocalizedString("No Parent", comment: "Button to remove parent category for the existing category")
     }
 }

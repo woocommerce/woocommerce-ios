@@ -172,7 +172,7 @@ final class MediaRemoteTests: XCTestCase {
         let result = waitFor { promise in
             remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
                                               productID: self.sampleProductID,
-                                              mediaItems: []) { result in
+                                              mediaItem: .fake()) { result in
                 promise(result)
             }
         }
@@ -206,7 +206,7 @@ final class MediaRemoteTests: XCTestCase {
         let result = waitFor { promise in
             remote.uploadMediaToWordPressSite(siteID: self.sampleSiteID,
                                               productID: self.sampleProductID,
-                                              mediaItems: []) { result in
+                                              mediaItem: .fake()) { result in
                 promise(result)
             }
         }

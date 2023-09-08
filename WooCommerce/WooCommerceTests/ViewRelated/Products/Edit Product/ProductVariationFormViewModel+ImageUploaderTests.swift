@@ -23,7 +23,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         // Given
         let productVariation = ProductVariation.fake().copy(status: .published)
         let model = EditableProductVariationModel(productVariation: productVariation)
-        let productImageActionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: PHAsset())])
+        let productImageActionHandler = MockProductImageActionHandler(productImageStatuses: [.uploading(asset: .phAsset(asset: PHAsset()))])
         let viewModel = ProductVariationFormViewModel(productVariation: model,
                                                       productImageActionHandler: productImageActionHandler,
                                                       storesManager: storesManager)

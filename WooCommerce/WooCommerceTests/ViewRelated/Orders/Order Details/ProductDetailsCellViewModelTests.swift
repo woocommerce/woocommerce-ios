@@ -246,6 +246,7 @@ private extension ProductDetailsCellViewModelTests {
                            total: total,
                            imageURL: imageURL,
                            attributes: attributes,
+                           addOns: [],
                            parent: parent)
     }
 

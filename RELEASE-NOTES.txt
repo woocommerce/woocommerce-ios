@@ -2,6 +2,7 @@
 
 15.3
 -----
+- [**] Product categories can now be updated when editing product details. [https://github.com/woocommerce/woocommerce-ios/pull/10648]
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
 
 15.2

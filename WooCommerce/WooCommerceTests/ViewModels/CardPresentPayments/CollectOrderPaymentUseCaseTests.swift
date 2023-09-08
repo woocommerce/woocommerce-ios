@@ -5,6 +5,7 @@ import XCTest
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private let defaultSiteID: Int64 = 122
     private let defaultOrderID: Int64 = 322
@@ -66,7 +67,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
-    func test_collectPayment_processing_completion_tracks_payment_success_event() throws {
+    func test_collectPayment_processing_completion_tracks_payment_success_event() async throws {
         // Given
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
         let intent = PaymentIntent.fake().copy(charges: [.fake().copy(paymentMethod: interacPaymentMethod)])

@@ -1638,6 +1638,7 @@ extension WooAnalyticsEvent {
             case searchingForReader = "searching_for_reader"
             case foundReader = "found_reader"
             case foundSeveralReaders = "found_several_readers"
+            case paymentValidatingOrder = "payment_validating_order"
             case paymentPreparingReader = "payment_preparing_reader"
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"

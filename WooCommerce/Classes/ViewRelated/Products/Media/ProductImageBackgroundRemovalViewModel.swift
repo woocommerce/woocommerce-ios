@@ -83,7 +83,7 @@ final class ProductImageBackgroundRemovalViewModel: ObservableObject {
     }
 
     func saveToProduct() {
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: output))
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: output, filename: productImage.name, altText: productImage.alt))
         onSave()
     }
 }

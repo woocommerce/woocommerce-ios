@@ -13,6 +13,7 @@ enum ProductImageStatus: Equatable {
     case remote(image: ProductImage)
 }
 
+/// The type of product image asset.
 enum ProductImageAssetType: Equatable {
     /// `PHAsset` from device photo library or camera capture.
     case phAsset(asset: PHAsset)

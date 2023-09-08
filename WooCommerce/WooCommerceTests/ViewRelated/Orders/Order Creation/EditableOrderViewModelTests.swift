@@ -1420,7 +1420,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", state: "CA", country: "US", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.onTaxRateSelected(taxRate)
 
@@ -1443,7 +1443,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", state: "CA", country: "US", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.onTaxRateSelected(taxRate)
 
@@ -1466,7 +1466,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
-        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", state: "CA", country: "US", postcodes: ["12345"], cities: ["San Diego"])
 
         viewModel.onTaxRateSelected(taxRate)
 

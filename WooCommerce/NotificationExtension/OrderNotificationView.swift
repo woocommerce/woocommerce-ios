@@ -2,10 +2,13 @@ import Foundation
 import SwiftUI
 import WooFoundation
 
+/// Custom order notification view.
+///
 struct OrderNotificationView: View {
 
+    /// Type that represents the necessary information for this view.
+    ///
     struct Content {
-
         struct Product: Hashable {
             let count: String
             let name: String
@@ -23,17 +26,15 @@ struct OrderNotificationView: View {
     let content: Content
 
     var body: some View {
-        VStack {
+        VStack(spacing: .zero) {
 
+            // Notification header
             HStack {
-
                 Image(Layout.iconName)
                     .cornerRadius(Layout.iconRadius)
 
                 VStack(alignment: .leading, spacing: Layout.regularSpacing) {
-
                     Text(Localization.newOrder)
-
                     Text(content.storeName)
                         .bold()
                         .foregroundColor(Color(.text))
@@ -43,19 +44,17 @@ struct OrderNotificationView: View {
                 Spacer()
 
                 VStack(alignment: .trailing, spacing: Layout.regularSpacing) {
-
                     Text(content.date)
-
                     Text(content.orderNumber)
                         .foregroundColor(Color(.text))
                 }
                 .subheadlineStyle()
-
             }
             .padding()
 
             Divider()
 
+            // Total & Payment/Delivery method
             VStack(spacing: Layout.regularSpacing) {
                 Text(content.amount)
                     .bold()
@@ -63,18 +62,21 @@ struct OrderNotificationView: View {
 
                 if let paymentMethod = content.paymentMethod {
                     Text(Localization.paidWith(method: paymentMethod))
-                        .subheadlineStyle()
+                        .foregroundColor(Color(.textSubtle))
+                        .captionStyle()
                 }
 
                 if let shippingMethod = content.shippingMethod {
                     Text(shippingMethod)
-                        .subheadlineStyle()
+                        .foregroundColor(Color(.textSubtle))
+                        .captionStyle()
                 }
             }
             .padding()
 
             Divider()
 
+            // Order Items
             VStack(alignment: .leading, spacing: Layout.productSpacing) {
                 ForEach(content.products, id: \.self) { product in
                     HStack(alignment: .firstTextBaseline) {
@@ -88,8 +90,7 @@ struct OrderNotificationView: View {
             }
             .padding()
             .foregroundColor(Color(.text))
-            .footnoteStyle()
-
+            .subheadlineStyle()
         }
     }
 }

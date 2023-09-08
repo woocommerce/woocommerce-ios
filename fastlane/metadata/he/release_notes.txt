@@ -1,1 +1,1 @@
-Did you know that you can create and use discount coupons in the app? כדאי לנסות! This release includes a fix that ensures coupons can be created on all devices. תודה שבחרת ב-WooCommerce Payments.
+אנחנו שמחים להציג את העדכון החדש של האפליקציה! כדי לשפר את חוויית השימוש, בגרסה הזאת הוספנו תיקון לבעיות קלות בממשק המשתמש שהתגלו בתהליך בונה הפרופיל ביצירת החנות. בנוסף, אפשר כעת לראות את שיעורי המיסים של הזמנות, לקבל מידע נוסף לגביהם ואפילו לנווט אל אזור 'ניהול WP' כדי לשנות אותם. כדאי לעדכן עכשיו לחוויית שימוש טובה יותר!

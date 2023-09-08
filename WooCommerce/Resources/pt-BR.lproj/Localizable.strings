@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-30 18:54:03+0000 */
+/* Translation-Revision-Date: 2023-09-05 21:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -58,6 +58,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
 "%1$@ about domains and how to take domain-related actions." = "%1$@ sobre domínios e como tomar medidas relacionadas a eles.";
+
+/* %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about verifying information for WooPayments. */
+"%1$@ about verifying your information with WooPayments." = "%1$@ sobre como verificar suas informações com o WooPayments.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "Cartão %1$@ com final %2$@";
@@ -300,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
+
+/* Estimated setup time text shown on the Woo payments setup instructions screen. */
+"4-6 minutes" = "4 a 6 minutos";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -1080,6 +1086,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Barbados" = "Barbados";
 
+/* Title for the instructions on the Woo payments setup instructions screen. */
+"Before you start setup" = "Antes de começar a configuração";
+
+/* Title on the action button on the Woo payments setup instructions screen. */
+"Begin Setup" = "Comece a configuração";
+
 /* Country option for a site address. */
 "Belarus" = "Bielorrússia";
 
@@ -1340,6 +1352,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
+   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
@@ -1422,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "Não foi possível verificar a instalação do WooCommerce no seu site.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"Can’t find the rate you’re looking for?" = "Não conseguiu encontrar a taxa que estava procurando?";
 
 /* Country option for a site address. */
 "Cape Verde" = "Cabo Verde";
@@ -1710,6 +1726,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "Parabéns! Você está a um passo de deixar a nova loja pronta.";
+
+/* Subtitle in Woo Payments setup  celebration screen. */
+"Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "Parabéns! Você navegou com sucesso pelo processo de configuração e seu sistema de pagamento está pronto para funcionar.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "Parabéns! O seu leitor está usando o software mais recente";
@@ -2383,12 +2402,14 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "Não mostrar novamente";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
+   Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
@@ -2555,6 +2576,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Editar status";
 
+/* Button title for the edit tax rates button in the tax educational dialog */
+"Edit Tax Rates in Admin" = "Editar taxas de impostos na página de administração";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "Editar e adicionar novos produtos";
 
@@ -2569,6 +2593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Edite o status ou o preço de vários produtos de uma só vez";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"Edit tax rates in admin" = "Editar taxas de impostos na página de administração";
 
 /* Industry option in the store creation category question. */
 "Education and learning" = "Educação e aprendizagem";
@@ -2871,6 +2898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Erro ao atualizar o pedido nº %1$d";
+
+/* Estimated setup time title text shown on the Woo payments setup instructions screen. */
+"Estimated setup time" = "Tempo estimado para configurar:";
 
 /* Country option for a site address. */
 "Estonia" = "Estônia";
@@ -3995,6 +4025,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
+   Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -4309,6 +4340,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of one of the hub menu options */
 "Manage more on admin" = "Gerencie mais na administração";
 
+/* About text shown on the Woo payments setup instructions screen. */
+"Manage payments effortlessly with WooPayments all in one place. Accept cards, Apple Pay, in-person payments, and 135+ currencies, all with zero setup costs or monthly fees." = "Gerencie pagamentos de maneira simples com o WooPayments, tudo em único lugar. Aceite cartões, Apple Pay, pagamentos presenciais e mais de 135 moedas, sem nenhum custo para configurar ou taxas mensais.";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Manage payments seamlessly with WooPayments, free from setup or monthly fees." = "Gerencie pagamentos de forma simplificada com o WooPayments, sem custo para configurar ou taxas mensais.";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "Gerenciar estoque";
 
@@ -4478,6 +4515,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the more privacy options section on the privacy screen */
 "More Privacy Options" = "Mais opções de privacidade";
+
+/* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
+"More details here" = "Confira mais detalhes aqui.";
 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
@@ -6391,6 +6431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "Selecione um tipo de produto";
 
+/* Title for the tax rate selector section */
+"Select a tax rate" = "Selecione uma taxa de imposto";
+
 /* Title of a button that selects all products for bulk update */
 "Select all" = "Selecionar tudo";
 
@@ -6463,6 +6506,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "Pacote de serviços";
+
+/* Button title to set a new tax rate to an order */
+"Set New Tax Rate" = "Definir uma taxa de imposto";
+
+/* Navigation title for the tax rate selector */
+"Set Tax Rate" = "Defina uma taxa de imposto";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Definir e-mail";
@@ -7299,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Classes de imposto";
 
+/* Second paragraph of the body for the tax educational dialog */
+"Tax rates for different locations can be managed in your store’s admin." = "Taxas de impostos para diferentes locais podem ser gerenciadas na página de administração da sua loja.";
+
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Status do imposto";
 
@@ -7311,11 +7363,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "Impostos";
 
+/* Title for the tax educational dialog */
+"Taxes & Tax Rates" = "Taxas e impostos";
+
 /* Label for the title row showing the taxes in the order */
 "Taxes Total" = "Total de impostos";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Os impostos são calculados automaticamente, de acordo com o endereço de sua loja.";
+
+/* First paragraph of the body for the tax educational dialog */
+"Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "As taxas são calculadas combinando o endereço de cobrança ou entrega do seu cliente, ou da sua loja com um local de taxa de imposto.";
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "Conte-nos sobre sua experiência com pagamentos presenciais.";
@@ -7485,7 +7543,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The domain purchased will redirect users to your primary address." = "O domínio comprado redirecionará os usuários para o seu endereço principal.";
 
 /* Caption displayed in the simplified prologue screen */
-"The e-commerce platform that grows with you" = "A plataforma de comércio eletrônico que cresce com você";
+"The ecommerce platform that grows with you" = "A plataforma de comércio eletrônico que cresce com você";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Na primeira vez em que você usar o Tap to Pay on iPhone, talvez seja solicitado que aceite os Termos de serviço da Apple.";
@@ -7782,6 +7840,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "A conta não pode ser encerrada pois possui assinaturas ativas.";
+
+/* Explanatory text for the tax rate selector */
+"This will change the customer’s address to the location of the tax rate you select." = "Isso mudará o endereço do cliente para o local da taxa de imposto selecionada.";
 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "Isso criará uma variação para cada combinação possível de atributos (%d variações).";
@@ -8806,6 +8867,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "Enviamos por e-mail um link de registro para você criar uma nova conta no WordPress.com. Verifique seu e-mail neste dispositivo e toque no link que você recebeu do WordPress.com.";
 
+/* Second instruction on the Woo payments setup instructions screen. */
+"We've partnered with Stripe for WooPayments. You'll be directed to Stripe's site for sign-up. We'll ask you to verify your business and payment details." = "O WooPayments firmou uma parceria com o Stripe. Você será direcionado ao site do Stripe para se inscrever. Vamos pedir para você verificar seus detalhes de pagamento e negócios.";
+
 /* More Privacy Options section title in the privacy screen. */
 "Web Options" = "Opções da Web";
 
@@ -9071,6 +9135,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "No momento, a opção de cupons está desativada para esta loja. Ative-a para começar.";
 
+/* Title in Woo Payments setup celebration screen. */
+"You did it!" = "Você conseguiu!";
+
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Você não tem permissão para gerenciar plugins nesta loja.";
 
@@ -9112,6 +9179,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Your Store" = "Sua loja";
+
+/* First instruction on the Woo payments setup instructions screen. */
+"Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "Suas notificações do WooPayments serão enviadas para seu e-mail da conta do WordPress.com. Prefere outra conta? Confira mais detalhes aqui.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "É necessário atualizar o software do seu leitor de cartão para receber pagamentos. Se você cancelar, bloqueará a conexão do leitor.";
@@ -9193,6 +9263,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "Sua solicitação de suporte chegou com segurança em nossa caixa de entrada. Responderemos por e-mail o mais rápido possível.";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
+"Your tax rate is currently calculated based on the customer billing address:" = "No momento, sua taxa de imposto é calculada com base no endereço de cobrança do cliente:";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer shipping address. */
+"Your tax rate is currently calculated based on the customer shipping address:" = "No momento, sua taxa de imposto é calculada com base no endereço de entrega do cliente:";
+
+/* Educational tax dialog to explain that the rate is calculated based on the shop address.
+   Explanatory text for the tax rates in the tax educational dialog */
+"Your tax rate is currently calculated based on your shop address:" = "No momento, sua taxa de imposto é calculada com base no endereço da sua loja:";
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "Seu período de teste terminou.";

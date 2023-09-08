@@ -434,11 +434,9 @@ private extension CollectOrderPaymentUseCase {
                                                    switch result {
                                                    case .success:
                                                        // Retry payment
-                                                       Task {
-                                                           await self.attemptPayment(alertProvider: paymentAlerts,
+                                                       self.attemptPayment(alertProvider: paymentAlerts,
                                                                                      paymentGatewayAccount: paymentGatewayAccount,
                                                                                      onCompletion: onCompletion)
-                                                       }
                                                    case .failure(let cancelError):
                                                        // Inform that payment can't be retried.
                                                        self.alertsPresenter.present(

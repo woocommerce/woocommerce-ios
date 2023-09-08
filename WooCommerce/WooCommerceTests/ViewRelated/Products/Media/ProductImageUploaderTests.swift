@@ -25,7 +25,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                originalImages: []))
 
         // When
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
                 promise(statuses)
@@ -59,7 +59,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         let uploadedMedia = Media.fake().copy(mediaID: 645)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(uploadedMedia))
             }
         }
@@ -75,7 +75,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                originalImages: []))
 
         // When
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         let statuses = waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
                 promise(statuses)
@@ -129,11 +129,11 @@ final class ProductImageUploaderTests: XCTestCase {
         // Uploads an image and waits for the image upload completion closure to be called later.
         let imageUploadCompletion: ((Result<Media, Error>) -> Void) = waitFor { promise in
             stores.whenReceivingAction(ofType: MediaAction.self) { action in
-                if case let .uploadMedia(_, _, _, onCompletion) = action {
+                if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                     promise(onCompletion)
                 }
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         }
 
         XCTAssertTrue(imageUploader.hasUnsavedChangesOnImages(key: .init(siteID: siteID,
@@ -184,8 +184,8 @@ final class ProductImageUploaderTests: XCTestCase {
         let localProductID: Int64 = 0
         let remoteProductID = productID
         let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: PHAsset()),
-                                                      .uploading(asset: PHAsset())]
+                                                      .uploading(asset: .phAsset(asset: PHAsset())),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -218,8 +218,8 @@ final class ProductImageUploaderTests: XCTestCase {
         let nonExistentProductID: Int64 = 999
         let remoteProductID = productID
         let originalStatuses: [ProductImageStatus] = [.remote(image: ProductImage.fake()),
-                                                      .uploading(asset: PHAsset()),
-                                                      .uploading(asset: PHAsset())]
+                                                      .uploading(asset: .phAsset(asset: PHAsset())),
+                                                      .uploading(asset: .phAsset(asset: PHAsset()))]
         _ = imageUploader.actionHandler(key: .init(siteID: siteID,
                                                    productOrVariationID: .product(id: localProductID),
                                                    isLocalID: true),
@@ -248,7 +248,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
 
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(.fake()))
             }
         }
@@ -259,7 +259,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         // When
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         waitForExpectation { expectation in
             self.assetUploadSubscription = actionHandler.addUpdateObserver(self) { statuses in
                 if statuses.productImageStatuses.hasPendingUpload == false {
@@ -290,7 +290,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(error))
             }
         }
@@ -302,7 +302,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         }
 
         // Then
@@ -323,7 +323,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
 
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(.fake()))
             }
         }
@@ -335,7 +335,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
         // When
         let asset = PHAsset()
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         waitFor { promise in
             actionHandler.addUpdateObserver(self) { statuses in
                 promise(())
@@ -355,7 +355,7 @@ final class ProductImageUploaderTests: XCTestCase {
         // Then
         assertEqual([.init(siteID: siteID,
                            productOrVariationID: .product(id: productID),
-                           productImageStatuses: [.uploading(asset: asset)],
+                           productImageStatuses: [.uploading(asset: .phAsset(asset: asset))],
                            error: .failedSavingProductAfterImageUpload(error: ProductUpdateError.unexpected))],
                     errors)
     }
@@ -369,7 +369,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.success(.fake()))
             }
         }
@@ -380,7 +380,7 @@ final class ProductImageUploaderTests: XCTestCase {
             errors.append(error)
             XCTFail("Image upload update should be emitted: \(error)")
         }
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
 
         // Then
         XCTAssertTrue(errors.isEmpty)
@@ -398,7 +398,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(error))
             }
         }
@@ -414,7 +414,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         }
 
         // Then
@@ -435,7 +435,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(error))
             }
         }
@@ -450,7 +450,7 @@ final class ProductImageUploaderTests: XCTestCase {
             errors.append(error)
             XCTFail("Image upload update should be emitted: \(error)")
         }
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
 
         // Then
         XCTAssertTrue(errors.isEmpty)
@@ -482,11 +482,11 @@ final class ProductImageUploaderTests: XCTestCase {
         }
 
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(MediaActionError.unknown))
             }
         }
-        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
 
         // Then
         XCTAssertTrue(errors.isEmpty)
@@ -504,7 +504,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                         originalStatuses: [])
         let error = NSError(domain: "", code: 6)
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(error))
             }
         }
@@ -523,7 +523,7 @@ final class ProductImageUploaderTests: XCTestCase {
                 errors.append(error)
                 promise(())
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         }
 
         // Then
@@ -545,7 +545,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                    isLocalID: true),
                                                         originalStatuses: [])
         stores.whenReceivingAction(ofType: MediaAction.self) { action in
-            if case let .uploadMedia(_, _, _, onCompletion) = action {
+            if case let .uploadMedia(_, _, _, _, _, onCompletion) = action {
                 onCompletion(.failure(NSError(domain: "", code: 6)))
             }
         }
@@ -565,7 +565,7 @@ final class ProductImageUploaderTests: XCTestCase {
                     promise(())
                 }
             }
-            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+            actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         }
 
         // Then

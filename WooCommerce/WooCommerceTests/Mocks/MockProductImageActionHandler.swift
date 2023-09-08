@@ -6,7 +6,7 @@ import struct Yosemite.ProductImage
 
 final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
-    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+    typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     var productImageStatuses: [ProductImageStatus] {
         allStatuses.productImageStatuses
@@ -16,7 +16,7 @@ final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
     @Published var allStatuses: AllStatuses
 
     // Can be set externally to be emitted in `addAssetUploadObserver`.
-    @Published var assetUploadResults: (asset: PHAsset, result: Result<ProductImage, Error>)?
+    @Published var assetUploadResults: (asset: ProductImageAssetType, result: Result<ProductImage, Error>)?
 
     init(productImageStatuses: [ProductImageStatus]) {
         self.allStatuses = (productImageStatuses: productImageStatuses, error: nil)
@@ -40,7 +40,7 @@ final class MockProductImageActionHandler: ProductImageActionHandlerProtocol {
         // no-op
     }
 
-    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
+    func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType) {
         // no-op
     }
 

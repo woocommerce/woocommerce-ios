@@ -33,7 +33,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
-            [.uploading(asset: mockAsset)] + mockRemoteProductImageStatuses,
+            [.uploading(asset: .phAsset(asset: mockAsset))] + mockRemoteProductImageStatuses,
             [.remote(image: mockUploadedProductImage)] + mockRemoteProductImageStatuses
         ]
 
@@ -55,13 +55,13 @@ final class ProductImageActionHandlerTests: XCTestCase {
                 return XCTFail()
             }
             XCTAssertTrue(Thread.current.isMainThread)
-            XCTAssertEqual(asset, mockAsset)
+            XCTAssertEqual(asset, .phAsset(asset: mockAsset))
             XCTAssertEqual(productImage, mockUploadedProductImage)
             waitForAssetUpload.fulfill()
         }
 
         // When
-        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
@@ -87,7 +87,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
-            [.uploading(asset: mockAsset)] + mockRemoteProductImageStatuses,
+            [.uploading(asset: .phAsset(asset: mockAsset))] + mockRemoteProductImageStatuses,
             mockRemoteProductImageStatuses
         ]
 
@@ -104,7 +104,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         }
 
         // When
-        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: mockAsset))
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 

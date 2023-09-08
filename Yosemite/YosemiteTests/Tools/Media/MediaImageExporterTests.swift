@@ -12,6 +12,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: typeHint,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,
@@ -37,6 +38,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: nil,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,
@@ -62,6 +64,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: typeHint,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,

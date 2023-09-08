@@ -105,7 +105,7 @@ extension MockMediaRemote: MediaRemoteProtocol {
 
     func uploadMediaToWordPressSite(siteID: Int64,
                                     productID: Int64,
-                                    mediaItems: [UploadableMedia],
+                                    mediaItem: UploadableMedia,
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         invocations.append(.uploadMediaToWordPressSite(siteID: siteID))
         guard let result = uploadMediaToWordPressSiteResultsBySiteID[siteID] else {

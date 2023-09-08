@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-31 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-05 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -58,6 +58,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
 "%1$@ about domains and how to take domain-related actions." = "도메인과 도메인 관련 조처 방법에 대해 %1$@.";
+
+/* %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about verifying information for WooPayments. */
+"%1$@ about verifying your information with WooPayments." = "WooPayments를 통해 정보를 확인하는 방법에 대한 %1$@.";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "%2$@(으)로 끝나는 %1$@ 카드";
@@ -300,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3개";
+
+/* Estimated setup time text shown on the Woo payments setup instructions screen. */
+"4-6 minutes" = "4~6분";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50GB";
@@ -1080,6 +1086,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Barbados" = "바베이도스";
 
+/* Title for the instructions on the Woo payments setup instructions screen. */
+"Before you start setup" = "설정을 시작하기 전에";
+
+/* Title on the action button on the Woo payments setup instructions screen. */
+"Begin Setup" = "설정 시작";
+
 /* Country option for a site address. */
 "Belarus" = "벨라루스";
 
@@ -1340,6 +1352,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
+   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
@@ -1422,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "사이트의 우커머스 설치를 확인할 수 없습니다.";
+
+/* Text to prompt the user to edit tax rates in the web */
+"Can’t find the rate you’re looking for?" = "원하는 세율을 찾을 수 없으신가요?";
 
 /* Country option for a site address. */
 "Cape Verde" = "카보베르데";
@@ -1710,6 +1726,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "축하합니다! 새 스토어 준비 완료까지 한 걸음 가까워지셨습니다.";
+
+/* Subtitle in Woo Payments setup  celebration screen. */
+"Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "축하합니다! 설정을 성공적으로 완료했으며 결제 시스템을 사용할 준비가 되었습니다.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "축하합니다! 리더에서 최신 소프트웨어 실행 중";
@@ -2383,12 +2402,14 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "다시 보지 않음";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
+   Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
@@ -2555,6 +2576,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "상태 편집";
 
+/* Button title for the edit tax rates button in the tax educational dialog */
+"Edit Tax Rates in Admin" = "관리자에서 세율 편집";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "어디서나 새 제품 편집 및 추가";
 
@@ -2569,6 +2593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "한 번에 여러 상품의 상태 또는 가격 편집";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"Edit tax rates in admin" = "관리자에서 세율 편집";
 
 /* Industry option in the store creation category question. */
 "Education and learning" = "교육 및 학습";
@@ -2871,6 +2898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "주문 #%1$d 업데이트 중 오류 발생";
+
+/* Estimated setup time title text shown on the Woo payments setup instructions screen. */
+"Estimated setup time" = "예상 설정 시간";
 
 /* Country option for a site address. */
 "Estonia" = "에스토니아";
@@ -3995,6 +4025,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
+   Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -4309,6 +4340,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of one of the hub menu options */
 "Manage more on admin" = "관리자에서 자세히 관리";
 
+/* About text shown on the Woo payments setup instructions screen. */
+"Manage payments effortlessly with WooPayments all in one place. Accept cards, Apple Pay, in-person payments, and 135+ currencies, all with zero setup costs or monthly fees." = "WooPayments를 사용하여 한곳에서 간편하게 결제를 관리하세요. 설정 비용이나 월 수수료 없이 카드, Apple Pay, 직접 결제, 135개 이상의 통화를 사용할 수 있습니다.";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Manage payments seamlessly with WooPayments, free from setup or monthly fees." = "WooPayments를 사용하여 설정이나 월 수수료 없이 결제를 원활하게 관리하세요.";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "재고 관리";
 
@@ -4478,6 +4515,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the more privacy options section on the privacy screen */
 "More Privacy Options" = "추가 개인정보 옵션";
+
+/* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
+"More details here" = "여기에서 자세히 알아보세요.";
 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
@@ -6391,6 +6431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "제품 유형 선택";
 
+/* Title for the tax rate selector section */
+"Select a tax rate" = "세율 선택";
+
 /* Title of a button that selects all products for bulk update */
 "Select all" = "모두 선택";
 
@@ -6463,6 +6506,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "서비스 패키지";
+
+/* Button title to set a new tax rate to an order */
+"Set New Tax Rate" = "새 세율 설정";
+
+/* Navigation title for the tax rate selector */
+"Set Tax Rate" = "세율 설정";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "이메일 설정";
@@ -7299,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "세금 클래스";
 
+/* Second paragraph of the body for the tax educational dialog */
+"Tax rates for different locations can be managed in your store’s admin." = "스토어 관리자에서 다양한 위치의 세율을 관리할 수 있습니다.";
+
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "세금 상태";
 
@@ -7311,11 +7363,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "세금";
 
+/* Title for the tax educational dialog */
+"Taxes & Tax Rates" = "세금 및 세율";
+
 /* Label for the title row showing the taxes in the order */
 "Taxes Total" = "세금 합계";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "스토어 주소를 기준으로 세금이 자동으로 계산됩니다.";
+
+/* First paragraph of the body for the tax educational dialog */
+"Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "세금은 고객의 청구 주소, 배송 주소 또는 상점 주소를 세율 위치와 일치시켜 계산됩니다.";
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "직접 결제를 경험해보니 어떤지 말씀해 주세요.";
@@ -7485,7 +7543,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The domain purchased will redirect users to your primary address." = "구매한 도메인에서는 사용자가 기본 주소로 리디렉팅됩니다.";
 
 /* Caption displayed in the simplified prologue screen */
-"The e-commerce platform that grows with you" = "회원님과 함께 성장하는 전자상거래 플랫폼";
+"The ecommerce platform that grows with you" = "회원님과 함께 성장하는 전자상거래 플랫폼";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "iPhone의 Tap to Pay를 처음 사용할 때 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";
@@ -7782,6 +7840,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "활성 구독이 있는 동안에는 이 사용자 계정을 종료할 수 없습니다.";
+
+/* Explanatory text for the tax rate selector */
+"This will change the customer’s address to the location of the tax rate you select." = "그러면 고객의 주소가 선택한 세율이 적용되는 위치로 변경됩니다.";
 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "각각의 변형과 변형 속성의 가능한 모든 조합이 생성됩니다(%d개 변형).";
@@ -8806,6 +8867,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "새로운 워드프레스닷컴 계정을 만들 수 있는 등록 링크를 이메일로 보내드렸습니다. 이 기기에서 이메일을 확인하고 워드프레스닷컴에서 받은 이메일의 링크를 누르세요.";
 
+/* Second instruction on the Woo payments setup instructions screen. */
+"We've partnered with Stripe for WooPayments. You'll be directed to Stripe's site for sign-up. We'll ask you to verify your business and payment details." = "우커머스는 WooPayments를 위해 Stripe과 파트너십을 맺었습니다. 가입을 위해 Stripe 사이트로 이동됩니다. 다음으로 비즈니스 및 결제 상세 정보를 확인하라는 메시지가 표시됩니다.";
+
 /* More Privacy Options section title in the privacy screen. */
 "Web Options" = "웹 옵션";
 
@@ -9071,6 +9135,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "현재 이 스토어의 쿠폰이 비활성화되어 있습니다. 시작하려면 쿠폰을 활성화하세요.";
 
+/* Title in Woo Payments setup celebration screen. */
+"You did it!" = "훌륭합니다!";
+
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "이 스토어의 플러그인을 관리할 권한이 없습니다.";
 
@@ -9112,6 +9179,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Your Store" = "회원님의 스토어";
+
+/* First instruction on the Woo payments setup instructions screen. */
+"Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "WooPayments 알림은 워드프레스닷컴 계정 이메일로 전송됩니다. 새 계정을 선호하시나요? 여기에서 자세히 알아보세요.";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "결제 대금을 수령하려면 카드 리더 소프트웨어를 업데이트해야 합니다. 취소하면 리더 연결이 차단됩니다.";
@@ -9193,6 +9263,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "회원님의 지원 요청이 받은 편지함에 수신되었습니다. 최대한 빨리 이메일로 회신하겠습니다.";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
+"Your tax rate is currently calculated based on the customer billing address:" = "세율은 현재 고객 청구 주소를 기준으로 계산됨:";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer shipping address. */
+"Your tax rate is currently calculated based on the customer shipping address:" = "세율은 현재 고객 배송 주소를 기준으로 계산됨:";
+
+/* Educational tax dialog to explain that the rate is calculated based on the shop address.
+   Explanatory text for the tax rates in the tax educational dialog */
+"Your tax rate is currently calculated based on your shop address:" = "세율은 현재 상점 주소를 기준으로 계산됨:";
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "평가판이 종료되었습니다.";

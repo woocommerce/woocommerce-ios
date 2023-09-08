@@ -1,5 +1,6 @@
 import Combine
 import Photos
+import TestKit
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
@@ -110,6 +111,56 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
+    }
+
+    func test_uploading_UIImage_passes_filename_and_altText_to_MediaAction() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let model = EditableProductModel(product: .fake())
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: model)
+
+        // When
+        let mediaMetadata: (filename: String?, altText: String?) = waitFor { promise in
+            mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
+                guard case let .uploadMedia(_, _, mediaAsset, altText, filename, _) = action else {
+                    return XCTFail("Unexpected media action: \(action)")
+                }
+                XCTAssertTrue(mediaAsset is UIImage)
+                promise((filename: filename, altText: altText))
+            }
+
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: .init(), filename: "woo.jpg", altText: "cool product"))
+        }
+
+        // Then
+        XCTAssertEqual(mediaMetadata.filename, "woo.jpg")
+        XCTAssertEqual(mediaMetadata.altText, "cool product")
+    }
+
+    func test_uploading_UIImage_adds_uploading_status_with_UIImage_asset_type() {
+        // Given
+        let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
+        let model = EditableProductModel(product: .fake())
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: model)
+        let mockImage = UIImage()
+
+        // When
+        let statuses: [ProductImageStatus] = waitFor { promise in
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .uiImage(image: mockImage, filename: "woo.jpg", altText: "cool product"))
+            self.productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
+                XCTAssertTrue(Thread.current.isMainThread)
+                promise(productImageStatuses)
+            }
+        }
+
+        // Then
+        assertEqual(statuses, [.uploading(asset: .uiImage(image: mockImage, filename: "woo.jpg", altText: "cool product"))])
     }
 
     func testDeletingProductImage() {

@@ -145,7 +145,10 @@ struct OrderForm: View {
                                     shouldShowNewTaxRateSelector = true
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {
-                                    NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID),
+                                    NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
+                                                                                                  onTaxRateSelected: { taxRate in
+                                        viewModel.onTaxRateSelected(taxRate)
+                                    }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
                                                            onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
                                 }

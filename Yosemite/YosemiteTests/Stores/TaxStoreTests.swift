@@ -5,9 +5,9 @@ import Fakes
 @testable import Storage
 
 
-/// TaxClassStore Unit Tests
+/// TaxStore Unit Tests
 ///
-final class TaxClassStoreTests: XCTestCase {
+final class TaxStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
     ///
@@ -23,7 +23,7 @@ final class TaxClassStoreTests: XCTestCase {
 
     /// Store
     ///
-    private var store: TaxClassStore!
+    private var store: TaxStore!
 
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
@@ -42,7 +42,7 @@ final class TaxClassStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
-        store = TaxClassStore(dispatcher: dispatcher,
+        store = TaxStore(dispatcher: dispatcher,
                                 storageManager: storageManager,
                                 network: network)
     }
@@ -57,9 +57,9 @@ final class TaxClassStoreTests: XCTestCase {
     }
 
 
-    // MARK: - TaxClassAction.retrieveTaxClasses
+    // MARK: - TaxAction.retrieveTaxClasses
 
-    /// Verifies that `TaxClassAction.retrieveTaxClasses` effectively persists any retrieved tax class.
+    /// Verifies that `TaxAction.retrieveTaxClasses` effectively persists any retrieved tax class.
     ///
     func testRetrieveTaxClassesEffectivelyPersistsRetrievedTaxClasses() {
         let expectation = self.expectation(description: "Retrieve tax class list")
@@ -67,7 +67,7 @@ final class TaxClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
             XCTAssertNil(error)
 
@@ -78,7 +78,7 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retrieveTaxClasses` effectively persists all of the fields
+    /// Verifies that `TaxAction.retrieveTaxClasses` effectively persists all of the fields
     /// correctly across all of the related `TaxClass` entities
     ///
     func testRetrieveTaxClassesEffectivelyPersistsTaxClassFields() {
@@ -89,7 +89,7 @@ final class TaxClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNil(error)
 
             let storedTaxClass = self.viewStorage.loadTaxClass(slug: remoteTaxClass.slug)
@@ -105,14 +105,14 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns an error whenever there is an error response from the backend.
+    /// Verifies that `TaxAction.retrieveTaxClasses` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveTaxClassesReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve tax class error response")
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "generic_error")
 
-        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -121,12 +121,12 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns an error whenever there is no backend response.
+    /// Verifies that `TaxAction.retrieveTaxClasses` returns an error whenever there is no backend response.
     ///
     func testRetrieveTaxClassesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve tax class empty response")
 
-        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -135,14 +135,14 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns the expected `TaxClass`.
+    /// Verifies that `TaxAction.retrieveTaxClasses` returns the expected `TaxClass`.
     ///
     func testRetrieveTaxClassesReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single tax class")
         let remoteTaxClass = sampleTaxClass()
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(taxClasses?.first)
             XCTAssertEqual(taxClasses?.first, remoteTaxClass)
@@ -154,16 +154,16 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - TaxClassAction.requestMissingTaxClasses
+    // MARK: - TaxAction.requestMissingTaxClasses
 
-    /// Verifies that `TaxClassAction.requestMissingTaxClasses` request the Tax Class found in a specified Product.
+    /// Verifies that `TaxAction.requestMissingTaxClasses` request the Tax Class found in a specified Product.
     ///
     func testRequestMissingTaxClassesEffectivelyReturnMissingTaxClass() {
         let expectation = self.expectation(description: "Return missing tax class")
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 2020, taxClass: "standard")
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
+        let action = TaxAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
 
             XCTAssertEqual(taxClass?.slug, product.taxClass)
@@ -176,9 +176,9 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - TaxClassAction.upsertStoredTaxClass
+    // MARK: - TaxAction.upsertStoredTaxClass
 
-    /// Verifies that `TaxClassAction.upsertStoredTaxClass` does not produce duplicate entries.
+    /// Verifies that `TaxAction.upsertStoredTaxClass` does not produce duplicate entries.
     ///
     func testUpdateStoredTaxClassesEffectivelyUpdatesPreexistantTaxClass() {
 
@@ -191,12 +191,30 @@ final class TaxClassStoreTests: XCTestCase {
         XCTAssertEqual(taxClass1?.toReadOnly(), sampleTaxClassMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 1)
     }
+
+    func test_retrieveTaxRates_then_persists_TaxRates() {
+        network.simulateResponse(requestUrlSuffix: "taxes", filename: "taxes")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 0)
+
+        // When
+        let result: Result<[Yosemite.TaxRate], Error> = waitFor { [weak self] promise in
+            guard let self = self else { return }
+
+            let action = TaxAction.retrieveTaxRates(siteID: self.sampleSiteID, pageNumber: 1, pageSize: 25) { result in
+                promise(result)
+            }
+            self.store.onAction(action)
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 3)
+    }
 }
 
 
 // MARK: - Private Helpers
 //
-private extension TaxClassStoreTests {
+private extension TaxStoreTests {
 
     func sampleTaxClass() -> Networking.TaxClass {
         return Networking.TaxClass(siteID: sampleSiteID,

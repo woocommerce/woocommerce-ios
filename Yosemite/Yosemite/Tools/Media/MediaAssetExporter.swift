@@ -29,19 +29,18 @@ final class MediaAssetExporter: MediaExporter {
         self.mediaDirectoryType = mediaDirectoryType
     }
 
-    func export(onCompletion: @escaping MediaExportCompletion) {
+    func export() async throws -> UploadableMedia {
         switch asset.mediaType {
-        case .image:
-            return exportImage(forAsset: asset, onCompletion: onCompletion)
-        default:
-            onCompletion(nil, AssetExportError.unsupportedPHAssetMediaType)
+            case .image:
+                return try await exportImage(forAsset: asset)
+            default:
+                throw AssetExportError.unsupportedPHAssetMediaType
         }
     }
 
-    private func exportImage(forAsset asset: PHAsset, onCompletion: @escaping MediaExportCompletion) {
+    private func exportImage(forAsset asset: PHAsset) async throws -> UploadableMedia {
         guard asset.mediaType == .image else {
-            onCompletion(nil, AssetExportError.expectedPHAssetImageType)
-            return
+            throw AssetExportError.expectedPHAssetImageType
         }
         var filename = UUID().uuidString + ".jpg"
         var resourceAvailableLocally = false
@@ -52,8 +51,7 @@ final class MediaAssetExporter: MediaExporter {
             filename = resource.originalFilename
             if resource.uniformTypeIdentifier == UTType.gif.identifier {
                 // Handles GIF export differently from images.
-                exportGIF(forAsset: asset, resource: resource, onCompletion: onCompletion)
-                return
+                return try await exportGIF(forAsset: asset, resource: resource)
             }
         }
 
@@ -66,42 +64,37 @@ final class MediaAssetExporter: MediaExporter {
         // If we have a resource object that means we have a local copy of the asset so we can request the image in sync mode.
         options.isSynchronous = resourceAvailableLocally
 
-        // Configure an error handler for the image request.
-        let onImageRequestError: (Error?) -> Void = { (error) in
-            guard let error = error else {
-                onCompletion(nil, AssetExportError.failedLoadingPHImageManagerRequest)
-                return
+        // Request the image.
+        let (data, uti, _, info) = await requestImage(asset: asset, options: options)
+        guard let imageData = data else {
+            guard let error = info?[PHImageErrorKey] as? Error else {
+                throw AssetExportError.failedLoadingPHImageManagerRequest
             }
-            onCompletion(nil, error)
+            throw error
         }
 
-        // Request the image.
-        imageManager.requestImageDataAndOrientation(for: asset,
-                                      options: options,
-                                      resultHandler: { [weak self] (data, uti, orientation, info) in
-                                        guard let self = self else {
-                                            return
-                                        }
+        let typeHint = preferredExportTypeFor(uti: uti)
 
-                                        guard let imageData = data else {
-                                            onImageRequestError(info?[PHImageErrorKey] as? Error)
-                                            return
-                                        }
-
-                                        let typeHint = self.preferredExportTypeFor(uti: uti)
-
-                                        // Hands off the image export to a shared image writer.
-                                        let exporter = MediaImageExporter(data: imageData,
-                                                                          filename: filename,
-                                                                          typeHint: typeHint,
-                                                                          options: self.imageOptions,
-                                                                          mediaDirectoryType: self.mediaDirectoryType)
-                                        exporter.export(onCompletion: onCompletion)
-        })
+        // Hands off the image export to a shared image writer.
+        let exporter = MediaImageExporter(data: imageData,
+                                          filename: filename,
+                                          typeHint: typeHint,
+                                          options: imageOptions,
+                                          mediaDirectoryType: mediaDirectoryType)
+        return try exporter.export()
     }
 }
 
 private extension MediaAssetExporter {
+    func requestImage(asset: PHAsset, options: PHImageRequestOptions?) async -> (Data?, String?, CGImagePropertyOrientation, [AnyHashable: Any]?) {
+        await withCheckedContinuation { continuation in
+            imageManager.requestImageDataAndOrientation(for: asset,
+                                                        options: options) { (data, uti, orientation, info) in
+                continuation.resume(returning: (data, uti, orientation, info))
+            }
+        }
+    }
+
     func preferredExportTypeFor(uti: String?) -> String? {
         guard let uti = uti else {
             return nil
@@ -122,35 +115,38 @@ private extension MediaAssetExporter {
     /// - parameter onCompletion: Called on successful export, with the local file URL of the exported asset.
     /// - parameter onError: Called if an error was encountered during export.
     ///
-    private func exportGIF(forAsset asset: PHAsset, resource: PHAssetResource, onCompletion: @escaping MediaExportCompletion) {
+    func exportGIF(forAsset asset: PHAsset, resource: PHAssetResource) async throws -> UploadableMedia {
         guard resource.uniformTypeIdentifier == UTType.gif.identifier else {
-            onCompletion(nil, AssetExportError.expectedPHAssetGIFType)
-            return
+            throw AssetExportError.expectedPHAssetGIFType
         }
         let url: URL
         do {
             url = try mediaFileManager.createLocalMediaURL(filename: resource.originalFilename,
                                                            fileExtension: "gif")
         } catch {
-            onCompletion(nil, error)
-            return
+            throw error
         }
         let options = PHAssetResourceRequestOptions()
         options.isNetworkAccessAllowed = true
-        let manager = PHAssetResourceManager.default()
-        manager.writeData(for: resource,
-                          toFile: url,
-                          options: options,
-                          completionHandler: { (error) in
-                            guard error == nil else {
-                                onCompletion(nil, error)
-                                return
-                            }
-                            let exported = UploadableMedia(localURL: url,
-                                                           filename: url.lastPathComponent,
-                                                           mimeType: url.mimeTypeForPathExtension)
-                            onCompletion(exported, nil)
-        })
+        return try await writeData(resource: resource, toFile: url, options: options)
+    }
+
+    func writeData(resource: PHAssetResource, toFile url: URL, options: PHAssetResourceRequestOptions) async throws -> UploadableMedia {
+        try await withCheckedThrowingContinuation { continuation in
+            let manager = PHAssetResourceManager.default()
+            manager.writeData(for: resource,
+                              toFile: url,
+                              options: options,
+                              completionHandler: { error in
+                if let error {
+                    return continuation.resume(throwing: error)
+                }
+                let exported = UploadableMedia(localURL: url,
+                                               filename: url.lastPathComponent,
+                                               mimeType: url.mimeTypeForPathExtension)
+                continuation.resume(returning: exported)
+            })
+        }
     }
 }
 

@@ -1,1 +1,1 @@
-Did you know that you can create and use discount coupons in the app? جرّبها! This release includes a fix that ensures coupons can be created on all devices. شكرًا على اختيار مدفوعات WooCommerce.
+هل كنت على دراية بأنه يمكنك إنشاء قسائم خصم واستخدامها في التطبيق؟ جرّبها! يتضمن هذا الإصدار إصلاحًا يضمن إمكانية إنشاء القسائم على كل الأجهزة. شكرًا لك على اختيار WooCommerce!

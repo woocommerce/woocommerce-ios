@@ -2365,6 +2365,60 @@ extension Networking.SystemPlugin {
     }
 }
 
+extension Networking.TaxRate {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        country: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
+        postcode: CopiableProp<String> = .copy,
+        postcodes: CopiableProp<[String]> = .copy,
+        priority: CopiableProp<Int64> = .copy,
+        rate: CopiableProp<String> = .copy,
+        order: CopiableProp<Int64> = .copy,
+        taxRateClass: CopiableProp<String> = .copy,
+        shipping: CopiableProp<Bool> = .copy,
+        compound: CopiableProp<Bool> = .copy,
+        city: CopiableProp<String> = .copy,
+        cities: CopiableProp<[String]> = .copy
+    ) -> Networking.TaxRate {
+        let id = id ?? self.id
+        let siteID = siteID ?? self.siteID
+        let name = name ?? self.name
+        let country = country ?? self.country
+        let state = state ?? self.state
+        let postcode = postcode ?? self.postcode
+        let postcodes = postcodes ?? self.postcodes
+        let priority = priority ?? self.priority
+        let rate = rate ?? self.rate
+        let order = order ?? self.order
+        let taxRateClass = taxRateClass ?? self.taxRateClass
+        let shipping = shipping ?? self.shipping
+        let compound = compound ?? self.compound
+        let city = city ?? self.city
+        let cities = cities ?? self.cities
+
+        return Networking.TaxRate(
+            id: id,
+            siteID: siteID,
+            name: name,
+            country: country,
+            state: state,
+            postcode: postcode,
+            postcodes: postcodes,
+            priority: priority,
+            rate: rate,
+            order: order,
+            taxRateClass: taxRateClass,
+            shipping: shipping,
+            compound: compound,
+            city: city,
+            cities: cities
+        )
+    }
+}
+
 extension Networking.TopEarnerStats {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

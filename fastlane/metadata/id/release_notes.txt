@@ -1,1 +1,1 @@
-Did you know that you can create and use discount coupons in the app? Cobalah! This release includes a fix that ensures coupons can be created on all devices. Terima kasih telah memilih WooCommerce!
+Tahu tidak kalau Anda bisa membuat dan memakai kupon diskon di aplikasi? Yuk, coba! Versi ini juga sudah kami perbaiki agar kupon bisa dibuat dari semua perangkat. Terima kasih telah memilih WooCommerce!

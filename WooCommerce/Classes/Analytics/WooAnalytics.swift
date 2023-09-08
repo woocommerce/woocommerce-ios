@@ -4,6 +4,7 @@ import UIKit
 import WordPressShared
 import WidgetKit
 import enum Alamofire.AFError
+import Yosemite
 
 public class WooAnalytics: Analytics {
 
@@ -244,6 +245,7 @@ private extension WooAnalytics {
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressComStore
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         updatedProperties[PropertyKeys.planKey] = site?.plan
+        updatedProperties[PropertyKeys.siteURL] = site?.url
         return updatedProperties
     }
 
@@ -288,5 +290,6 @@ private extension WooAnalytics {
         static let wpcomStoreKey        = "is_wpcom_store"
         static let ecommerceTrialKey    = "was_ecommerce_trial"
         static let planKey              = "plan"
+        static let siteURL              = "site_url"
     }
 }

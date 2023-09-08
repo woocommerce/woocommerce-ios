@@ -35,6 +35,14 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin)
 
     func clearPluginSelection()
+
+    /// Sends the `installSitePlugin` action to the dispatcher
+    ///
+    func installCardPresentPlugin()
+
+    /// Sends the `activateSitePlugin` action to the dispatcher
+    ///
+    func activateCardPresentPlugin()
 }
 
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
@@ -44,6 +52,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     let featureFlagService: FeatureFlagService
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProvider
     private let cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache
+    private let analytics: Analytics
     private var preferredPluginLocal: CardPresentPaymentsPlugin?
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
@@ -59,7 +68,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         storageManager: StorageManagerType = ServiceLocator.storageManager,
         stores: StoresManager = ServiceLocator.stores,
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared
+        cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = CardPresentPaymentOnboardingStateCache.shared,
+        analytics: Analytics = ServiceLocator.analytics
     ) {
         self.storageManager = storageManager
         self.stores = stores
@@ -67,6 +77,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         self.cardPresentPluginsDataProvider = .init(storageManager: storageManager, stores: stores, configuration: configurationLoader.configuration)
         self.featureFlagService = featureFlagService
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
+        self.analytics = analytics
 
         // Rely on cached value if there's any
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value {
@@ -102,6 +113,50 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         } else {
             refresh()
         }
+    }
+
+    func installCardPresentPlugin() {
+        guard let siteID = siteID else {
+            return
+        }
+        // Only WCPay is currently supported, so we don't expose a different plugin option
+        let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
+
+        let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
+            switch result {
+            case .success:
+                DDLogInfo("Success installing \(pluginSlug)")
+                self.refresh()
+            case .failure(let error):
+                self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
+                self.state = .genericError
+            }
+        })
+        stores.dispatch(installPluginAction)
+    }
+
+    func activateCardPresentPlugin() {
+        guard let siteID = siteID else {
+            return
+        }
+        // Only WCPay is currently supported, so we don't expose a different plugin option
+        let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
+
+        let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.state = .loading
+            switch result {
+            case .success:
+                DDLogInfo("Success activating \(pluginName)")
+                self.refresh()
+            case .failure(let error):
+                self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
+                self.state = .genericError
+            }
+        })
+        stores.dispatch(activatePluginAction)
     }
 
     private func refreshOnboardingState() {
@@ -491,6 +546,24 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func isNetworkError(_ error: Error) -> Bool {
         (error as NSError).domain == NSURLErrorDomain
+    }
+}
+
+// MARK: - Analytics
+private extension CardPresentPaymentsOnboardingUseCase {
+    enum PluginFailureTrigger: String {
+        case notInstalled = "plugin_install_tapped"
+        case notActivated = "plugin_activate_tapped"
+    }
+
+    func trackCardPresentPluginActionFailed(_ error: Error, trigger: PluginFailureTrigger) {
+        guard let countryCode = self.storeCountryCode else {
+            return
+        }
+
+        analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: trigger.rawValue,
+                                                                                countryCode: countryCode,
+                                                                                error: error))
     }
 }
 

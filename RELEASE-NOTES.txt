@@ -1,5 +1,11 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.3
+-----
+- [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
+- [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
+- [*] Automatically show the media selector sheet on the product images screen when there are no pre-existing images. [https://github.com/woocommerce/woocommerce-ios/pull/10644]
+
 15.2
 -----
 - [*] Fixed minor UI issues in the store creation profiler flow. [https://github.com/woocommerce/woocommerce-ios/pull/10555]

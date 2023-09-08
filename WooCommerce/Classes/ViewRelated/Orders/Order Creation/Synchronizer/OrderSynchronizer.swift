@@ -32,8 +32,8 @@ struct OrderSyncProductInput {
 /// Addresses input for an `OrderSynchronizer` type.
 ///
 struct OrderSyncAddressesInput {
-    let billing: Address
-    let shipping: Address
+    let billing: Address?
+    let shipping: Address?
 }
 
 /// A type that  receives "supported" order properties and keeps it synced against another source.

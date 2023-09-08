@@ -1,11 +1,9 @@
 import XCTest
 @testable import WooCommerce
 import Yosemite
-import WooFoundation
 
 final class TaxEducationalDialogViewModelTests: XCTestCase {
     var viewModel: TaxEducationalDialogViewModel!
-    var stores: MockStoresManager!
 
     func test_TaxEducationalDialogViewModelTests_when_we_pass_tax_lines_then_they_are_parsed() {
         // Given
@@ -55,16 +53,14 @@ final class TaxEducationalDialogViewModelTests: XCTestCase {
 
     func test_wpAdminTaxSettingsURL_passes_right_url() {
         // Given
-        let sampleAdminURL = "https://testshop.com/wp-admin/"
-        let sessionManager = SessionManager.testingInstance
-        let site = Site.fake().copy(adminURL: sampleAdminURL)
-        sessionManager.defaultSite = site
-        let stores = MockStoresManager(sessionManager: sessionManager)
+        let wpAdminTaxSettingsURL = URL(string: "https://www.site.com/wp-admin/mock-taxes-settings")
+        let wpAdminTaxSettingsURLProvider = MockWPAdminTaxSettingsURLProvider(wpAdminTaxSettingsURL: wpAdminTaxSettingsURL)
 
-        viewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: .customerShippingAddress, stores: stores)
+        viewModel = TaxEducationalDialogViewModel(orderTaxLines: [],
+                                                  taxBasedOnSetting: .customerShippingAddress,
+                                                  wpAdminTaxSettingsURLProvider: wpAdminTaxSettingsURLProvider)
 
-        let expectedURLString = sampleAdminURL + "admin.php?page=wc-settings&tab=tax"
-        XCTAssertEqual(viewModel.wpAdminTaxSettingsURL?.absoluteString, expectedURLString)
+        XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
 
     func test_onGoToWpAdminButtonTapped_tracks_right_event() {

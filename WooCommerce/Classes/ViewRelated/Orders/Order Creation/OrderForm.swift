@@ -102,6 +102,8 @@ struct OrderForm: View {
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
 
+    @State private var shouldShowNewTaxRateSelector = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -139,7 +141,18 @@ struct OrderForm: View {
 
                         VStack(spacing: Layout.noSpacing) {
                             Group {
-                                NewTaxRateSection()
+                                NewTaxRateSection {
+                                    shouldShowNewTaxRateSelector = true
+                                }
+                                .sheet(isPresented: $shouldShowNewTaxRateSelector) {
+                                    NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
+                                                                                                  onTaxRateSelected: { taxRate in
+                                        viewModel.onTaxRateSelected(taxRate)
+                                    }),
+                                                           taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
+                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                }
+
                                 Spacer(minLength: Layout.sectionSpacing)
                             }
                             .renderedIf(viewModel.shouldShowNewTaxRateSection)
@@ -227,8 +240,10 @@ private struct MultipleLinesMessage: View {
 }
 
 private struct NewTaxRateSection: View {
+    let onButtonTapped: (() -> Void)
+
     var body: some View {
-        Button(action: {},
+        Button(action: onButtonTapped,
                label: {
                     Text(OrderForm.Localization.setNewTaxRate)
                         .multilineTextAlignment(.center)

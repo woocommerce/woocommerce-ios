@@ -85,6 +85,16 @@ extension Address {
     var isEmpty: Bool {
         self == .empty
     }
+
+    /// Generates an Address object from a TaxRate object data
+    ///
+    static func from(taxRate: TaxRate) -> Address {
+        /// We take the first city and postcode to keep it simple, even if they don't match
+        Address.empty.copy(city: taxRate.cities.first ?? "",
+                           state: taxRate.state,
+                           postcode: taxRate.postcodes.first ?? "",
+                           country: taxRate.country)
+    }
 }
 
 

@@ -4,7 +4,7 @@ import Yosemite
 struct InPersonPaymentsPluginNotActivated: View {
     let plugin: CardPresentPaymentsPlugin
     let analyticReason: String
-    let onRefresh: () -> Void
+    let onActivate: () -> Void
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -20,7 +20,7 @@ struct InPersonPaymentsPluginNotActivated: View {
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(
                 text: Localization.primaryButton,
                 analyticReason: analyticReason,
-                action: onRefresh
+                action: onActivate
             )
         )
     }
@@ -38,13 +38,13 @@ private enum Localization {
     )
 
     static let primaryButton = NSLocalizedString(
-        "Refresh After Activating",
-        comment: "Button to reload plugin data after activating a Card Present Payments extension"
+        "Activate plugin",
+        comment: "Button to activate the Card Present Payments plugin"
     )
 }
 
 struct InPersonPaymentsPluginNotActivated_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", onRefresh: {})
+        InPersonPaymentsPluginNotActivated(plugin: .wcPay, analyticReason: "", onActivate: {})
     }
 }

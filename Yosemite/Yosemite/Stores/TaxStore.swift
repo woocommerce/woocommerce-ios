@@ -12,30 +12,30 @@ extension Product: TaxClassRequestable {}
 
 extension ProductVariation: TaxClassRequestable {}
 
-// MARK: - TaxClassStore
+// MARK: - TaxStore
 //
-public class TaxClassStore: Store {
-    private let remote: TaxClassRemote
+public class TaxStore: Store {
+    private let remote: TaxRemote
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
-        self.remote = TaxClassRemote(network: network)
+        self.remote = TaxRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: TaxClassAction.self)
+        dispatcher.register(processor: self, for: TaxAction.self)
     }
 
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {
-        guard let action = action as? TaxClassAction else {
+        guard let action = action as? TaxAction else {
             assertionFailure("TaxClassStore received an unsupported action")
             return
         }
@@ -45,15 +45,16 @@ public class TaxClassStore: Store {
             retrieveTaxClasses(siteID: siteID, onCompletion: onCompletion)
         case .requestMissingTaxClasses(let product, let onCompletion):
             requestMissingTaxClasses(for: product, onCompletion: onCompletion)
+        case let .retrieveTaxRates(siteID, pageNumber, pageSize, onCompletion):
+            retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }
-
     }
 }
 
 
 // MARK: - Services!
 //
-private extension TaxClassStore {
+private extension TaxStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
@@ -98,12 +99,28 @@ private extension TaxClassStore {
             }
         }
     }
+
+    func retrieveTaxRates(siteID: Int64,
+                          pageNumber: Int,
+                          pageSize: Int,
+                          onCompletion: @escaping (Result<[TaxRate], Error>) -> Void) {
+        remote.retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+            switch result {
+            case .success(let taxRates):
+                self?.upsertStoredTaxRatesInBackground(readOnlyTaxRates: taxRates, siteID: siteID, shouldDeleteExistingTaxRates: pageNumber == 1) {
+                    onCompletion(.success(taxRates))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
 }
 
 
 // MARK: - Storage: TaxClass
 //
-private extension TaxClassStore {
+private extension TaxStore {
 
     /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
@@ -132,13 +149,62 @@ private extension TaxClassStore {
             storageTaxClass.update(with: readOnlyTaxClass)
         }
     }
-
 }
 
+// MARK: - Storage: TaxRate
+//
+private extension TaxStore {
+
+    /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    func upsertStoredTaxRatesInBackground(readOnlyTaxRates: [Networking.TaxRate],
+                                          siteID: Int64,
+                                          shouldDeleteExistingTaxRates: Bool,
+                                          onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            guard let self = self else { return }
+
+            if shouldDeleteExistingTaxRates {
+                derivedStorage.deleteTaxRates(siteID: siteID)
+            }
+
+            self.upsertStoredTaxRates(readOnlyTaxRates: readOnlyTaxRates, siteID: siteID, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly TaxRate Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyTaxRates: Remote TaxRate to be persisted.
+    ///     - siteID: The site id of the tax rate
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertStoredTaxRates(readOnlyTaxRates: [Networking.TaxRate], siteID: Int64, in storage: StorageType) {
+        for readOnlyTaxRate in readOnlyTaxRates {
+            let storageTaxRate: Storage.TaxRate = {
+                if let storedTaxRate = storage.loadTaxRate(siteID: siteID,
+                                                           taxRateID: readOnlyTaxRate.id) {
+                    return storedTaxRate
+                }
+
+                return storage.insertNewObject(ofType: Storage.TaxRate.self)
+            }()
+
+            storageTaxRate.update(with: readOnlyTaxRate)
+            storageTaxRate.siteID = siteID
+        }
+    }
+}
 
 // MARK: - Unit Testing Helpers
 //
-extension TaxClassStore {
+extension TaxStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Product in a given Storage Layer.
     ///

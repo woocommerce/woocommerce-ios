@@ -10,6 +10,11 @@ final class VersionHelpers {
         VersionHelpers.compare(version, minimumRequired) != .orderedAscending
     }
 
+    static func isVersionSupported(version: String, minimumRequired: String, maximumPermitted: String) -> Bool {
+        VersionHelpers.compare(version, minimumRequired) != .orderedAscending &&
+        VersionHelpers.compare(version, maximumPermitted) != .orderedDescending
+    }
+
     /// Compares two strings as versions using the same approach as PHP `version_compare`.
     /// https://www.php.net/manual/en/function.version-compare.php
     ///

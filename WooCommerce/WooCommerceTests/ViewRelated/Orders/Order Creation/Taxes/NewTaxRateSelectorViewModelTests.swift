@@ -38,7 +38,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storageManager = MockStorageManager()
-        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", state: "CA", country: "US", postcodes: ["12345"], cities: ["San Diego"])
         stores.whenReceivingAction(ofType: TaxAction.self) { action in
             guard case let .retrieveTaxRates(_, _, _, completion) = action else {
                 return

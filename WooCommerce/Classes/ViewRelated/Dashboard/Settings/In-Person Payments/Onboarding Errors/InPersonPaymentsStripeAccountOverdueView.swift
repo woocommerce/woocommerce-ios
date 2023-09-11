@@ -17,12 +17,12 @@ struct InPersonPaymentsStripeAccountOverdue: View {
             learnMore: true,
             analyticReason: analyticReason,
             buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.primaryButtonTitle,
-                                                                            analyticReason: "",
+                                                                            analyticReason: analyticReason,
                                                                             action: {
                                                                                 presentedSetupURL = setupURL
                                                                             }),
             secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
-                                                                                     analyticReason: "",
+                                                                                     analyticReason: analyticReason,
                                                                                      action: {
                                                                                          onRefresh()
                                                                                      })

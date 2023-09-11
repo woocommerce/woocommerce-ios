@@ -221,6 +221,7 @@ final class ProductCategoryListViewModel {
     @MainActor
     func deleteCategory(id: Int64) async {
         deletionFailure = nil
+        let selectedItem = selectedCategories.first(where: { $0.categoryID != id })
         do {
             // optimistic deletion
             categoryViewModels.removeAll(where: { $0.categoryID == id })
@@ -228,9 +229,15 @@ final class ProductCategoryListViewModel {
             // removes the category from the selected list if exists
             selectedCategories = selectedCategories.filter { $0.categoryID != id }
         } catch {
+            // restore removed items
+            updateViewModelsArray()
+            if let selectedItem {
+                selectedCategories.append(selectedItem)
+            }
             deletionFailure = error
+            onReloadNeeded?()
         }
-        // fetches list again to update UI
+        // fetches list again to update storage
         synchronizeAllCategories()
     }
 

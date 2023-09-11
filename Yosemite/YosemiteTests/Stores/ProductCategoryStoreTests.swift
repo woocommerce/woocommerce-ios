@@ -368,6 +368,86 @@ final class ProductCategoryStoreTests: XCTestCase {
             return
         }
     }
+
+    func test_updateProductCategory_success_returns_product_category() throws {
+        // Given
+        let categoryID: Int64 = 104
+        let category = ProductCategory.fake().copy(categoryID: categoryID, siteID: sampleSiteID)
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let productCategory = try result.get()
+        XCTAssertEqual(productCategory.categoryID, 104)
+        XCTAssertEqual(productCategory.parentID, 0)
+        XCTAssertEqual(productCategory.siteID, sampleSiteID)
+        XCTAssertEqual(productCategory.name, "Dress")
+        XCTAssertEqual(productCategory.slug, "Shirt")
+    }
+
+    func test_updateProductCategory_failure_throws_correct_error() {
+        // Given
+        let categoryID: Int64 = 104
+        let category = ProductCategory.fake().copy(categoryID: categoryID)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound)
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+    }
+
+    func test_deleteProductCategory_does_not_throw_error_upon_success() {
+        // Given
+        let categoryID: Int64 = 104
+        network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "generic_success_data")
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_deleteProductCategory_throws_correct_error_upon_failure() {
+        // Given
+        let categoryID: Int64 = 104
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound)
+
+        // When
+        let result = waitFor { promise in
+            let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                promise(aResult)
+            }
+            self.store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+    }
 }
 
 private extension ProductCategoryStoreTests {

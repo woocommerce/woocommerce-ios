@@ -363,6 +363,7 @@
 		028E1F722833E954001F8829 /* DashboardViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028E1F712833E954001F8829 /* DashboardViewModelTests.swift */; };
 		028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */; };
 		028FA46C257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */; };
+		028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */; };
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E275238E4F8100B5C466 /* PaginatedListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */; };
 		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */; };
@@ -2813,6 +2814,7 @@
 		028E1F712833E954001F8829 /* DashboardViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModelTests.swift; sourceTree = "<group>"; };
 		028FA465257E021100F88A48 /* RefundShippingLabelViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundShippingLabelViewModel.swift; sourceTree = "<group>"; };
 		028FA46B257E0D9F00F88A48 /* PlainTextSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlainTextSectionHeaderView.swift; sourceTree = "<group>"; };
+		028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDetailsCellViewModel+AddOns.swift"; sourceTree = "<group>"; };
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E273238E4F8100B5C466 /* PaginatedListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorCommandTests.swift; sourceTree = "<group>"; };
@@ -9816,6 +9818,7 @@
 				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
 				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
 				D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */,
+				028FF8E22AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -12659,6 +12662,7 @@
 				021A84E0257DFC2A00BC71D1 /* RefundShippingLabelViewController.swift in Sources */,
 				0373A12F2A1D1F2100731236 /* DotView.swift in Sources */,
 				DE279BA826E9C8E3002BA963 /* ShippingLabelSinglePackage.swift in Sources */,
+				028FF8E32AA1E1C60038964F /* ProductDetailsCellViewModel+AddOns.swift in Sources */,
 				DEC2962726C17AD8005A056B /* ShippingLabelCustomsForm+Localization.swift in Sources */,
 				26A630FE253F63C300CBC3B1 /* RefundableOrderItem.swift in Sources */,
 				02FADA9D2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift in Sources */,

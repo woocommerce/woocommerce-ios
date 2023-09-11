@@ -17,7 +17,7 @@ struct NewTaxRateSelectorView: View {
 
     /// Whether the WPAdmin webview is being shown.
     ///
-    @State private var showingWPAdminWebview: Bool = false
+    @State private var showingWPAdminWebView: Bool = false
 
     var body: some View {
         NavigationView {
@@ -75,8 +75,7 @@ struct NewTaxRateSelectorView: View {
                         .padding(Layout.generalPadding)
 
                         Button {
-                            viewModel.onShowWebView()
-                            showingWPAdminWebview = true
+                            tapOnWPAdminWebViewButton()
                         } label: {
                             HStack {
                                 Text(Localization.editTaxRatesInWpAdminButtonTitle)
@@ -124,10 +123,10 @@ struct NewTaxRateSelectorView: View {
                 }
         }
         .wooNavigationBarStyle()
-        .safariSheet(isPresented: $showingWPAdminWebview, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
+        .safariSheet(isPresented: $showingWPAdminWebView, url: viewModel.wpAdminTaxSettingsURL, onDismiss: {
             viewModel.onRefreshAction()
             onDismissWpAdminWebView()
-            showingWPAdminWebview = false
+            showingWPAdminWebView = false
         })
     }
 
@@ -140,8 +139,7 @@ struct NewTaxRateSelectorView: View {
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding([.leading, .trailing], Layout.generalPadding)
             Button(action: {
-                viewModel.onShowWebView()
-                showingWPAdminWebview = true
+                tapOnWPAdminWebViewButton()
             }) {
                 HStack {
                     Text(Localization.editTaxRatesInWpAdminButtonTitle)
@@ -155,6 +153,11 @@ struct NewTaxRateSelectorView: View {
             }
             .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
         }
+    }
+
+    func tapOnWPAdminWebViewButton() {
+        viewModel.onShowWebView()
+        showingWPAdminWebView = true
     }
 }
 

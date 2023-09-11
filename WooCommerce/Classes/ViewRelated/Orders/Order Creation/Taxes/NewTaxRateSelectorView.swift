@@ -60,7 +60,7 @@ struct NewTaxRateSelectorView: View {
                             }
                             .background(Color(.listForeground(modal: false)))
 
-                            bottomNotice
+                            listFooter
                                 .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
 
                             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -144,9 +144,9 @@ struct NewTaxRateSelectorView: View {
         })
     }
 
-    var bottomNotice: some View {
+    var listFooter: some View {
         Group {
-            Text(Localization.bottomNoticeResultsSectionTitle)
+            Text(Localization.listFooterResultsSectionTitle)
                 .foregroundColor(Color(.textSubtle))
                 .footnoteStyle()
                 .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
@@ -198,7 +198,7 @@ extension NewTaxRateSelectorView {
         static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rares selector screen")
         static let emptyStateDescription = NSLocalizedString("Add tax rates in admin. Only tax rates with location information will be shown here.",
                                                              comment: "Description for the empty state on the Tax Rares selector screen")
-        static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
+        static let listFooterResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
                                                                          comment: "Text to prompt the user to edit tax rates in the web")
     }
 }

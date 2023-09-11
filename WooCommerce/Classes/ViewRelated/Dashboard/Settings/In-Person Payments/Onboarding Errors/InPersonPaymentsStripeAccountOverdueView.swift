@@ -2,6 +2,8 @@ import SwiftUI
 
 struct InPersonPaymentsStripeAccountOverdue: View {
     let analyticReason: String
+    let onRefresh: () -> Void
+    @State private var presentedSetupURL: URL? = nil
 
     var body: some View {
         InPersonPaymentsOnboardingError(
@@ -13,9 +15,23 @@ struct InPersonPaymentsStripeAccountOverdue: View {
             ),
             supportLink: true,
             learnMore: true,
-            analyticReason: analyticReason
+            analyticReason: analyticReason,
+            buttonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.primaryButtonTitle,
+                                                                            analyticReason: "",
+                                                                            action: {
+                                                                                presentedSetupURL = setupURL
+                                                                            })
         )
+        .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
      }
+
+    private var setupURL: URL? {
+        guard let pluginSectionURL = ServiceLocator.stores.sessionManager.defaultSite?.cardPresentPluginHasPendingTasksURL() else {
+            return nil
+        }
+
+        return URL(string: pluginSectionURL)
+    }
 }
 
 private enum Localization {
@@ -28,11 +44,15 @@ private enum Localization {
          "You have at least one overdue requirement on your account. Please take care of that to resume In-Person Payments.",
          comment: "Error message when WooCommerce Payments is not supported because the Stripe account has overdue requirements"
      )
+
+    static let primaryButtonTitle = NSLocalizedString(
+        "Resolve Now",
+        comment: "Button to open a web view and resolve pending plugin requirements before using it.")
  }
 
 
 struct InPersonPaymentsStripeAccountOverdue_Previews: PreviewProvider {
     static var previews: some View {
-        InPersonPaymentsStripeAccountOverdue(analyticReason: "")
+        InPersonPaymentsStripeAccountOverdue(analyticReason: "", onRefresh: { })
     }
 }

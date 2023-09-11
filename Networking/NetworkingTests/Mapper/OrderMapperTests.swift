@@ -30,6 +30,7 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.number, "963")
         XCTAssertEqual(order.status, .processing)
         XCTAssertEqual(order.currency, "USD")
+        XCTAssertEqual(order.currencySymbol, "$")
         XCTAssertEqual(order.customerNote, "")
         XCTAssertEqual(order.dateCreated, dateCreated)
         XCTAssertEqual(order.dateModified, dateModified)

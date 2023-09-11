@@ -114,10 +114,10 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
 
         // When
-        let errorAlert: CardPresentModalError = waitFor { [weak self] promise in
+        let errorAlert: CardPresentModalNonRetryableError = waitFor { [weak self] promise in
             guard let self = self else { return }
             self.alertsPresenter.onPresentCalled = { viewModel in
-                guard let viewModel = viewModel as? CardPresentModalError else {
+                guard let viewModel = viewModel as? CardPresentModalNonRetryableError else {
                     return
                 }
                 promise(viewModel)

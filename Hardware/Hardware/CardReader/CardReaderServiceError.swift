@@ -26,7 +26,7 @@ public enum CardReaderServiceError: Error {
 
     /// Error thrown when the order payment fails to be captured with a known payment method.
     /// The payment method is currently used for analytics.
-    case paymentCaptureWithPaymentMethod(underlyingError: Error, paymentMethod: PaymentMethod)
+    case paymentCaptureWithPaymentMethod(underlyingError: UnderlyingError, paymentMethod: PaymentMethod)
 
     /// Error thrown while cancelling a payment
     case paymentCancellation(underlyingError: UnderlyingError = .internalServiceError)
@@ -63,7 +63,7 @@ extension CardReaderServiceError: LocalizedError {
                 .softwareUpdate(let underlyingError, _):
             return underlyingError.errorDescription
         case .paymentCaptureWithPaymentMethod(underlyingError: let underlyingError, paymentMethod: _):
-            return (underlyingError as? UnderlyingError)?.errorDescription ?? underlyingError.localizedDescription
+            return underlyingError.errorDescription ?? underlyingError.localizedDescription
         case .bluetoothDenied:
             return NSLocalizedString(
                 "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",

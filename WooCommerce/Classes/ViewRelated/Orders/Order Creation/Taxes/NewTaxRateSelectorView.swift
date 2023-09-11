@@ -16,6 +16,8 @@ struct NewTaxRateSelectorView: View {
     ///
     @State private var showingWPAdminWebview: Bool = false
 
+    @State private var storeSelectedTaxRate = false
+
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
@@ -65,6 +67,18 @@ struct NewTaxRateSelectorView: View {
                                 }
                         }
                     }
+
+                    Divider()
+
+                    Toggle(isOn: $storeSelectedTaxRate) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Add this rate to all created orders")
+                            Text("This will not affect online orders")
+                                .footnoteStyle()
+                        }
+                    }
+                    .padding(Layout.generalPadding)
+
                     case .empty:
                     bottomNotice
                     Spacer()

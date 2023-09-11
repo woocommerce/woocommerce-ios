@@ -20,7 +20,12 @@ struct InPersonPaymentsStripeAccountOverdue: View {
                                                                             analyticReason: "",
                                                                             action: {
                                                                                 presentedSetupURL = setupURL
-                                                                            })
+                                                                            }),
+            secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
+                                                                                     analyticReason: "",
+                                                                                     action: {
+                                                                                         onRefresh()
+                                                                                     })
         )
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
      }
@@ -48,6 +53,10 @@ private enum Localization {
     static let primaryButtonTitle = NSLocalizedString(
         "Resolve Now",
         comment: "Button to open a web view and resolve pending plugin requirements before using it.")
+
+    static let secondaryButtonTitle = NSLocalizedString(
+        "Refresh",
+        comment: "Button to refresh the state of the in-person payments setup.")
  }
 
 

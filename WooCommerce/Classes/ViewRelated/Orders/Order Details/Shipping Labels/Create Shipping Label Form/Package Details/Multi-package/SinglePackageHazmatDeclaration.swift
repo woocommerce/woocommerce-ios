@@ -3,6 +3,7 @@ import SwiftUI
 struct SinglePackageHazmatDeclaration: View {
     @ObservedObject private var viewModel: ShippingLabelSinglePackageViewModel
     @State private var isShowingHazmatSelection = false
+    @State private var destinationURL: URL?
 
     private let safeAreaInsets: EdgeInsets
 
@@ -26,15 +27,35 @@ struct SinglePackageHazmatDeclaration: View {
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
 
-                    TitleAndValueRow(title: Localization.hazmatCategoryTitle, value: .placeholder(Localization.selectHazmatCategory)) {
+                    Button(action: {
                         isShowingHazmatSelection.toggle()
-                    }
+                    }, label: {
+                        HStack(spacing: 0) {
+                            VStack(alignment: .leading) {
+                                Text(Localization.hazmatCategoryTitle)
+                                    .bodyStyle()
+                                Text(viewModel.selectedHazmatCategory.localizedName)
+                                    .calloutStyle()
+                                    .multilineTextAlignment(.leading)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+
+                            DisclosureIndicator()
+                                .frame(alignment: .trailing)
+                        }
+                        .padding(.horizontal, Constants.horizontalPadding)
+                        .sheet(isPresented: $isShowingHazmatSelection) {
+                            SelectionList(title: Localization.selectHazmatCategory,
+                                          items: viewModel.selectableHazmatCategories,
+                                          contentKeyPath: \.localizedName,
+                                          selected: $viewModel.selectedHazmatCategory)
+                        }
+                    })
 
                     Divider()
                         .padding(.leading, Constants.horizontalPadding)
 
                     createHazmatInstructionsView()
-
                 }
                 .renderedIf(viewModel.containsHazmatMaterials)
                 .padding(.horizontal, insets: safeAreaInsets)
@@ -59,21 +80,38 @@ struct SinglePackageHazmatDeclaration: View {
                 .calloutStyle()
 
             Spacer()
-            Text(Localization.hazmatInstructionsSecondSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsSecondSectionLink,
+                       url: WooConstants.URLs.uspsInstructions.asURL(),
+                       content: Localization.hazmatInstructionsSecondSection)
 
             Spacer()
-            Text(Localization.hazmatInstructionsThirdSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsThirdSectionLink,
+                       url: WooConstants.URLs.uspsSearchTool.asURL(),
+                       content: Localization.hazmatInstructionsThirdSection)
 
             Spacer()
-            Text(Localization.hazmatInstructionsFourthSection)
-                .calloutStyle()
+            createText(withLink: Localization.hazmatInstructionsFourthSectionLink,
+                       url: WooConstants.URLs.dhlExpressInstructions.asURL(),
+                       content: Localization.hazmatInstructionsFourthSection)
 
             Spacer()
         }
         .padding(.leading, Constants.horizontalPadding)
         .padding(.trailing, Constants.longTextTrailingPadding)
+    }
+
+    private func createText(withLink linkText: String, url: URL, content: String) -> some View {
+        var attributedText = AttributedString(.init(format: content, linkText))
+        if let range = attributedText.range(of: linkText) {
+            attributedText[range].mergeAttributes(AttributeContainer().link(url))
+        }
+        return Text(attributedText)
+            .calloutStyle()
+            .environment(\.openURL, OpenURLAction { url in
+                destinationURL = url
+                return .handled
+            })
+            .safariSheet(url: $destinationURL)
     }
 }
 
@@ -93,13 +131,22 @@ private extension SinglePackageHazmatDeclaration {
                                                                       "ship in separate packages.",
                                                                       comment: "Instructions for hazardous package shipping")
         static let hazmatInstructionsSecondSection = NSLocalizedString("Learn how to securely package, label, and ship HAZMAT through " +
-                                                                       "USPS® at www.usps.com/hazmat.",
-                                                                       comment: "Instructions for hazardous package shipping")
-        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the USPS HAZMAT Search Tool.",
-                                                                      comment: "Instructions for hazardous package shipping")
+                                                                       "USPS® at %1$@.",
+                                                                       comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link" +
+                                                                       "that will direct the user to a website")
+        static let hazmatInstructionsThirdSection = NSLocalizedString("Determine your product's mailability using the %1$@.",
+                                                                      comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link " +
+                                                                      "that will direct the user to a website")
         static let hazmatInstructionsFourthSection = NSLocalizedString("WooCommerce Shipping does not currently support HAZMAT shipments "
-                                                                       + "through DHL Express.",
-                                                                       comment: "Instructions for hazardous package shipping")
+                                                                       + "through %1$@.",
+                                                                       comment: "Instructions for hazardous package shipping. The %1$@ is a tappable link" +
+                                                                       "that will direct the user to a website")
+        static let hazmatInstructionsSecondSectionLink = NSLocalizedString("www.usps.com/hazmat", comment: "A clickable text link that will" +
+                                                                           "redirect the user to a website")
+        static let hazmatInstructionsThirdSectionLink = NSLocalizedString("USPS HAZMAT Search Tool", comment: "A clickable text link that will" +
+                                                                          "redirect the user to a website")
+        static let hazmatInstructionsFourthSectionLink = NSLocalizedString("DHL Express", comment: "A clickable text link that will" +
+                                                                           "redirect the user to a website")
     }
 
     enum Constants {
@@ -119,6 +166,7 @@ struct HazmatDeclaration_Previews: PreviewProvider {
                                                             selectedPackageID: "Box 1",
                                                             totalWeight: "",
                                                             isOriginalPackaging: false,
+                                                            hazmatCategory: .none,
                                                             onItemMoveRequest: {},
                                                             onPackageSwitch: { _ in },
                                                             onPackagesSync: { _ in })

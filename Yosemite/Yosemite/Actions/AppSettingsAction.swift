@@ -224,4 +224,9 @@ public enum AppSettingsAction: Action {
     case getLocalAnnouncementVisibility(announcement: LocalAnnouncement, onCompletion: (Bool) -> ())
 
     case setLocalAnnouncementDismissed(announcement: LocalAnnouncement, onCompletion: (Result<Void, Error>) -> Void)
+
+    // MARK: - Tax Rates
+
+    /// Stores the selected tax rate to be applied to orders. This is site-specific.
+    case storeSelectedTaxRate(id: Int64, siteID: Int64)
 }

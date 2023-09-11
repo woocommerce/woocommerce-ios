@@ -196,6 +196,9 @@ public class AppSettingsStore: Store {
             getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
         case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
             setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
+        case .storeSelectedTaxRate(let taxRateID, let siteID):
+            storeSelectedTaxRate(with: taxRateID, siteID: siteID)
+
         }
     }
 }
@@ -859,6 +862,14 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedStatsTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+}
+
+// MARK: - Tax Rate
+
+private extension AppSettingsStore {
+    func storeSelectedTaxRate(with id: Int64, siteID: Int64) {
+
     }
 }
 

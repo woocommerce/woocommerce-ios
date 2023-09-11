@@ -27,6 +27,7 @@ struct InPersonPaymentsOnboardingError: View {
             if let buttonViewModel = buttonViewModel {
                 Button(buttonViewModel.text, action: buttonViewModel.action)
                     .buttonStyle(PrimaryButtonStyle())
+                    .padding(.bottom, secondaryButtonViewModel == nil ? 24.0 : 0)
             }
             if let secondaryButtonViewModel = secondaryButtonViewModel {
                 Button(secondaryButtonViewModel.text, action: secondaryButtonViewModel.action)

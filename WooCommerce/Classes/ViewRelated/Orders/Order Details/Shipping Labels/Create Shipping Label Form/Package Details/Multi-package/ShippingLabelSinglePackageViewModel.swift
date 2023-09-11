@@ -52,6 +52,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     ///
     @Published private(set) var hasValidPackageDimensions = false
 
+    /// Whether the hazmat declaration is correctly set.
+    ///
+    @Published private(set) var hasValidHazmatDeclaration = false
+
     /// Description of dimensions of the original package.
     ///
     @Published private(set) var originalPackageDimensions: String = ""
@@ -80,6 +84,11 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     /// Attributes of the package if validated.
     ///
     var validatedPackageAttributes: ShippingLabelPackageAttributes? {
+        if containsHazmatMaterials {
+            guard selectedHazmatCategory != .none else {
+                return nil
+            }
+        }
         guard validateTotalWeight(totalWeight) else {
             return nil
         }
@@ -88,12 +97,17 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         }
         return ShippingLabelPackageAttributes(packageID: selectedPackageID,
                                               totalWeight: totalWeight,
-                                              items: orderItems)
+                                              items: orderItems,
+                                              selectedHazmatCategory: selectedHazmatCategory)
     }
 
     /// Whether the Package contains hazmat materials or not
     ///
     @Published var containsHazmatMaterials: Bool = false
+
+    /// Currently selected hazmat category
+    ///
+    @Published var selectedHazmatCategory: ShippingLabelHazmatCategory = .none
 
     private let order: Order
     private let orderItems: [ShippingLabelPackageItem]
@@ -124,6 +138,12 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     ///
     @Published private var isPackageWeightEdited: Bool = false
 
+    /// The group of selectable Hazardous materials that can be selected
+    ///
+    let selectableHazmatCategories = ShippingLabelHazmatCategory.allCases.filter { $0 != .none }
+
+    private var subscriptions: Set<AnyCancellable> = []
+
     init(id: String = UUID().uuidString,
          order: Order,
          orderItems: [ShippingLabelPackageItem],
@@ -132,6 +152,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
          selectedPackageID: String,
          totalWeight: String,
          isOriginalPackaging: Bool = false,
+         hazmatCategory: ShippingLabelHazmatCategory = .none,
          onItemMoveRequest: @escaping () -> Void,
          onPackageSwitch: @escaping PackageSwitchHandler,
          onPackagesSync: @escaping PackagesSyncHandler,
@@ -160,6 +181,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         if isOriginalPackaging, let item = orderItems.first {
             configureOriginalPackageDimensions(for: item)
         }
+        configureHazmatCategory(hazmatCategory: hazmatCategory)
         configureValidation(originalPackaging: isOriginalPackaging)
     }
 
@@ -211,13 +233,40 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         hasValidPackageDimensions = item.dimensions.length.isNotEmpty && item.dimensions.width.isNotEmpty && item.dimensions.height.isNotEmpty
     }
 
-    private func configureValidation(originalPackaging: Bool) {
-        $isValidTotalWeight.combineLatest($hasValidPackageDimensions)
-            .map { validWeight, validDimensions -> Bool in
-                guard originalPackaging else {
-                    return validWeight
+    /// Configure reaction to hazmat category changes and revert it to `.none` when toggle is unchecked
+    ///
+    private func configureHazmatCategory(hazmatCategory: ShippingLabelHazmatCategory) {
+        if hazmatCategory != .none {
+            containsHazmatMaterials = true
+            selectedHazmatCategory = hazmatCategory
+        }
+
+        $containsHazmatMaterials
+            .removeDuplicates()
+            .sink { [weak self] containsHazmat in
+                if !containsHazmat {
+                    self?.selectedHazmatCategory = .none
                 }
-                return validWeight && validDimensions
+            }.store(in: &subscriptions)
+
+        $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
+            .map { containsHazmat, selectedCategory -> Bool in
+                if containsHazmat {
+                    return selectedCategory != .none
+                } else {
+                    return true
+                }
+            }
+            .assign(to: &$hasValidHazmatDeclaration)
+    }
+
+    private func configureValidation(originalPackaging: Bool) {
+        $isValidTotalWeight.combineLatest($hasValidPackageDimensions, $hasValidHazmatDeclaration)
+            .map { validWeight, validDimensions, validHazmat -> Bool in
+                guard originalPackaging else {
+                    return validWeight && validHazmat
+                }
+                return validWeight && validDimensions && validHazmat
             }
             .assign(to: &$isValidPackage)
     }
@@ -229,7 +278,8 @@ extension ShippingLabelSinglePackageViewModel: ShippingLabelPackageSelectionDele
         let newTotalWeight = isPackageWeightEdited ? totalWeight : ""
         let newPackage = ShippingLabelPackageAttributes(packageID: id,
                                                         totalWeight: newTotalWeight,
-                                                        items: orderItems)
+                                                        items: orderItems,
+                                                        selectedHazmatCategory: selectedHazmatCategory)
 
         onPackageSwitch(newPackage)
     }

@@ -1,1 +1,1 @@
-Tahu tidak kalau Anda bisa membuat dan memakai kupon diskon di aplikasi? Yuk, coba! Versi ini juga sudah kami perbaiki agar kupon bisa dibuat dari semua perangkat. Terima kasih telah memilih WooCommerce!
+Kami persembahkan update baru untuk aplikasi kami! Versi ini mencakup perbaikan masalah UI minor dalam alur pembuatan profil toko untuk meningkatkan pengalaman pengguna Anda. Kini, Anda juga dapat melihat tarif pajak pesanan, mendapatkan informasi lebih lanjut terkait tarif pajak, dan bahkan membuka admin-wp untuk mengubahnya. Perbarui sekarang untuk pengalaman lebih baik!

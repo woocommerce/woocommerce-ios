@@ -17,6 +17,7 @@ extension WooCommerce.AggregateOrderItem {
         total: NullableCopiableProp<NSDecimalNumber> = .copy,
         imageURL: NullableCopiableProp<URL> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
         parent: NullableCopiableProp<Int64> = .copy
     ) -> WooCommerce.AggregateOrderItem {
         let itemID = itemID ?? self.itemID
@@ -29,6 +30,7 @@ extension WooCommerce.AggregateOrderItem {
         let total = total ?? self.total
         let imageURL = imageURL ?? self.imageURL
         let attributes = attributes ?? self.attributes
+        let addOns = addOns ?? self.addOns
         let parent = parent ?? self.parent
 
         return WooCommerce.AggregateOrderItem(
@@ -42,6 +44,7 @@ extension WooCommerce.AggregateOrderItem {
             total: total,
             imageURL: imageURL,
             attributes: attributes,
+            addOns: addOns,
             parent: parent
         )
     }

@@ -20,6 +20,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
                                                                             analyticReason: analyticReason,
                                                                             action: {
                                                                                 presentedSetupURL = setupURL
+                                                                                trackPluginSetupTappedEvent()
                                                                             }),
             secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
                                                                                      analyticReason: analyticReason,
@@ -36,6 +37,14 @@ struct InPersonPaymentsStripeAccountOverdue: View {
         }
 
         return URL(string: pluginSectionURL)
+    }
+}
+
+private extension InPersonPaymentsStripeAccountOverdue {
+    func trackPluginSetupTappedEvent() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
+            reason: "stripe_account_setup_tapped",
+            countryCode: CardPresentConfigurationLoader().configuration.countryCode))
     }
 }
 

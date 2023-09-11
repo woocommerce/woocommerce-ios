@@ -91,6 +91,12 @@ public struct NoOpCardReaderService: CardReaderService {
         }.eraseToAnyPublisher()
     }
 
+    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+        return Future() { promise in
+            promise(.failure(NSError.init(domain: "noopcardreader", code: 0, userInfo: nil)))
+        }.eraseToAnyPublisher()
+    }
+
     /// Triggers a software update.
     ///
     /// To check the progress of the update, observe the softwareUpdateEvents publisher.

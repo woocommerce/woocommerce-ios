@@ -45,6 +45,18 @@ public enum CardReaderServiceError: Error {
 
     /// The user has denied the app permission to use Bluetooth
     case bluetoothDenied
+
+    case retryNotPossibleNoActivePayment
+
+    case retryNotPossibleActivePaymentCancelled
+
+    case retryNotPossibleActivePaymentCompleted
+
+    case retryNotPossibleActivePaymentSucceeded
+
+    case retryNotPossibleProcessingInProgress
+
+    case retryNotPossibleUnknownCause
 }
 
 extension CardReaderServiceError: LocalizedError {
@@ -69,6 +81,15 @@ extension CardReaderServiceError: LocalizedError {
                 "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
                 comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
             )
+        case .retryNotPossibleNoActivePayment, .retryNotPossibleActivePaymentCancelled, .retryNotPossibleProcessingInProgress, .retryNotPossibleUnknownCause:
+            return NSLocalizedString(
+                "We were unable to retry the payment – please start again.",
+                comment: "Explanation in the alert presented when a retry of a payment fails"
+            )
+        case .retryNotPossibleActivePaymentCompleted, .retryNotPossibleActivePaymentSucceeded:
+            return NSLocalizedString(
+                "This payment has already been completed – please check the order details.",
+                comment: "Explanation in the alert shown when a retry fails because the payment already completed")
         }
     }
 }

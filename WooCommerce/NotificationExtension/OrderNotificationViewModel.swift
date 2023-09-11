@@ -136,7 +136,7 @@ final class OrderNotificationViewModel {
                                              date: date,
                                              orderNumber: "#\(order.orderID)",
                                              amount: "\(order.currencySymbol)\(order.total)",
-                                             paymentMethod: order.paymentMethodTitle,
+                                             paymentMethod: order.paymentMethodTitle.lowercased(),
                                              shippingMethod: order.shippingLines.first?.methodTitle,
                                              products: items)
     }

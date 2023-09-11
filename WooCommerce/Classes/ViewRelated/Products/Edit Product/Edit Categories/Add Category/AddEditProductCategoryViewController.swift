@@ -116,10 +116,10 @@ extension AddEditProductCategoryViewController {
         Task { @MainActor in
             do {
                 try await viewModel.saveCategory()
-                configureRightBarButtonItemAsSave()
             } catch {
                 displayErrorAlert(error: error)
             }
+            configureRightBarButtonItemAsSave()
         }
     }
 }

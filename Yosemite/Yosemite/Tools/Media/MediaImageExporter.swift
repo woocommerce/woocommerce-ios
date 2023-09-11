@@ -41,17 +41,20 @@ final class MediaImageExporter: MediaExporter {
 
     private let data: Data
     private let filename: String?
+    private let altText: String?
     private let typeHint: String?
 
     private let imageSourceWriter: ImageSourceWriter
 
     init(data: Data,
          filename: String?,
+         altText: String?,
          typeHint: String? = nil,
          options: MediaImageExportOptions,
          mediaDirectoryType: MediaDirectory = .uploads,
          imageSourceWriter: ImageSourceWriter = DefaultImageSourceWriter()) {
         self.filename = filename
+        self.altText = altText
         self.data = data
         self.typeHint = typeHint
         self.options = options
@@ -60,7 +63,7 @@ final class MediaImageExporter: MediaExporter {
     }
 
     func export() throws -> UploadableMedia {
-        try exportImage(data: data, fileName: filename, typeHint: typeHint)
+        try exportImage(data: data, fileName: filename, altText: altText, typeHint: typeHint)
     }
 
     /// Exports and writes an image's data, expected as PNG or JPEG format, to a local Media URL.
@@ -72,6 +75,7 @@ final class MediaImageExporter: MediaExporter {
     ///
     private func exportImage(data: Data,
                              fileName: String?,
+                             altText: String?,
                              typeHint: String?) throws -> UploadableMedia {
         do {
             let hint = typeHint ?? UTType.jpeg.identifier
@@ -83,8 +87,9 @@ final class MediaImageExporter: MediaExporter {
                 throw ImageExportError.imageSourceIsAnUnknownType
             }
             return try exportImageSource(source,
-                              filename: fileName,
-                              type: typeHint ?? utType as String)
+                                         filename: fileName,
+                                         altText: altText,
+                                         type: typeHint ?? utType as String)
         } catch {
             throw error
         }
@@ -99,6 +104,7 @@ final class MediaImageExporter: MediaExporter {
     ///
     private func exportImageSource(_ source: CGImageSource,
                                    filename: String?,
+                                   altText: String?,
                                    type: String) throws -> UploadableMedia {
         do {
             let filename = filename ?? defaultImageFilename
@@ -110,7 +116,8 @@ final class MediaImageExporter: MediaExporter {
 
             let exported = UploadableMedia(localURL: url,
                                            filename: url.lastPathComponent,
-                                           mimeType: url.mimeTypeForPathExtension)
+                                           mimeType: url.mimeTypeForPathExtension,
+                                           altText: altText)
             return exported
         } catch {
             throw error

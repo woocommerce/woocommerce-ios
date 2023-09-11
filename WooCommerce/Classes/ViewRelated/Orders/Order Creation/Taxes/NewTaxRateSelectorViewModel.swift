@@ -15,6 +15,10 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// Storage to fetch tax rates
     private let storageManager: StorageManagerType
 
+    /// Analytics engine.
+    ///
+    private let analytics: Analytics
+
     @Published private(set) var taxRateViewModels: [TaxRateViewModel] = []
 
     /// Current sync status; used to determine the view state.
@@ -36,6 +40,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     init(siteID: Int64,
          onTaxRateSelected: @escaping (Yosemite.TaxRate) -> Void,
          wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
+         analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -44,6 +49,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         self.stores = stores
         self.storageManager = storageManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: 1, pageSize: 25)
+        self.analytics = analytics
 
         configureResultsController()
         configurePaginationTracker()
@@ -53,6 +59,17 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// WPAdmin URL to navigate user to edit the tax settings
     var wpAdminTaxSettingsURL: URL? {
         wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
+    }
+
+    var bottomNoticeTitle: String? {
+        switch syncState {
+        case .syncingFirstPage:
+            return nil
+        case .results:
+            return Localization.bottomNoticeResultsSectionTitle
+        case .empty:
+            return Localization.bottomNoticeEmptySectionTitle
+        }
     }
 
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
@@ -69,11 +86,24 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     }
 
     func onRowSelected(with index: Int) {
-        guard let taxRate = resultsController.fetchedObjects[safe: index] else {
+        analytics.track(.taxRateSelectorTaxRateTapped)
+
+        guard let taxRateViewModel = taxRateViewModels[safe: index],
+              let taxRate = resultsController.fetchedObjects.first(where: { $0.id == taxRateViewModel.id }) else {
             return
         }
 
         onTaxRateSelected(taxRate)
+    }
+
+    func onRefreshAction() {
+        taxRateViewModels = []
+        transitionToSyncingState()
+        paginationTracker.resync(reason: nil)
+    }
+
+    func onShowWebView() {
+        analytics.track(.taxRateSelectorEditInAdminTapped)
     }
 }
 
@@ -136,7 +166,11 @@ private extension NewTaxRateSelectorViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        taxRateViewModels = resultsController.fetchedObjects.map {
+        taxRateViewModels = resultsController.fetchedObjects
+            .filter {
+                $0.hasAddress
+            }
+            .map {
             var title = $0.name
             let titleSuffix = "\($0.country) \($0.state) \($0.postcodes.joined(separator: ",")) \($0.cities.joined(separator: ","))"
 
@@ -173,5 +207,22 @@ extension NewTaxRateSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty
+    }
+}
+
+extension NewTaxRateSelectorViewModel {
+    enum Localization {
+        static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
+                                                                         comment: "Text to prompt the user to edit tax rates in the web")
+        static let bottomNoticeEmptySectionTitle = NSLocalizedString("You don't have any tax rates with a location.",
+                                                                              comment: "Text to prompt the user to edit tax rates" +
+                                                                              "in the web when there are no results")
+
+    }
+}
+
+private extension Yosemite.TaxRate {
+    var hasAddress: Bool {
+        city.isNotEmpty || cities.isNotEmpty || postcodes.isNotEmpty || postcodes.isNotEmpty || state.isNotEmpty || country.isNotEmpty
     }
 }

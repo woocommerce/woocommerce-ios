@@ -142,6 +142,7 @@ struct OrderForm: View {
                         VStack(spacing: Layout.noSpacing) {
                             Group {
                                 NewTaxRateSection {
+                                    viewModel.onSetNewTaxRateTapped()
                                     shouldShowNewTaxRateSelector = true
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {

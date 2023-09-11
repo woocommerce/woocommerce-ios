@@ -37,6 +37,10 @@ public final class ProductCategoryStore: Store {
             addProductCategory(siteID: siteID, name: name, parentID: parentID, onCompletion: onCompletion)
         case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
             synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
+        case let .updateProductCategory(category, onCompletion):
+            updateProductCategory(category, onCompletion: onCompletion)
+        case let .deleteProductCategory(siteID, categoryID, onCompletion):
+            deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: onCompletion)
         }
     }
 }
@@ -138,6 +142,34 @@ private extension ProductCategoryStore {
         let storage = storageManager.viewStorage
         storage.deleteUnusedProductCategories(siteID: siteID)
         storage.saveIfNeeded()
+    }
+
+    /// Updates an existing product category.
+    ///
+    func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let updatedCategory = try await remote.updateProductCategory(category)
+                upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
+                    onCompletion(.success(updatedCategory))
+                }
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Deletes an existing product category.
+    ///
+    func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+                onCompletion(.success(()))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
     }
 }
 

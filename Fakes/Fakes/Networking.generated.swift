@@ -1487,6 +1487,7 @@ extension Networking.ShippingLabelPackageSelected {
             height: .fake(),
             weight: .fake(),
             isLetter: .fake(),
+            hazmatCategory: .fake(),
             customsForm: .fake()
         )
     }
@@ -1941,7 +1942,8 @@ extension Networking.UploadableMedia {
         .init(
             localURL: .fake(),
             filename: .fake(),
-            mimeType: .fake()
+            mimeType: .fake(),
+            altText: .fake()
         )
     }
 }

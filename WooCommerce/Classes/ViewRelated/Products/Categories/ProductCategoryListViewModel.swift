@@ -228,6 +228,8 @@ final class ProductCategoryListViewModel {
             try await deleteCategoryFromRemote(id: id)
             // removes the category from the selected list if exists
             selectedCategories = selectedCategories.filter { $0.categoryID != id }
+            // fetches list again to update storage
+            synchronizeAllCategories()
         } catch {
             // restore removed items
             updateViewModelsArray()
@@ -237,8 +239,6 @@ final class ProductCategoryListViewModel {
             deletionFailure = error
             onReloadNeeded?()
         }
-        // fetches list again to update storage
-        synchronizeAllCategories()
     }
 
     /// Update `selectedCategories` based on initially selected items.

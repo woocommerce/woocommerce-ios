@@ -1487,6 +1487,7 @@ extension Networking.ShippingLabelPackageSelected {
             height: .fake(),
             weight: .fake(),
             isLetter: .fake(),
+            hazmatCategory: .fake(),
             customsForm: .fake()
         )
     }

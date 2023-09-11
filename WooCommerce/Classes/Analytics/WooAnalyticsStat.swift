@@ -393,6 +393,7 @@ public enum WooAnalyticsStat: String {
     case orderCreationProductSelectorConfirmButtonTapped = "order_creation_product_selector_confirm_button_tapped"
     case orderCreationProductSelectorClearSelectionButtonTapped = "order_creation_product_selector_clear_selection_button_tapped"
     case orderCreationProductSelectorSearchTriggered = "order_creation_product_selector_search_triggered"
+    case orderCreationSetNewTaxRateTapped = "order_creation_set_new_tax_rate_tapped"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -450,6 +451,11 @@ public enum WooAnalyticsStat: String {
         case barcodeScanningFailure = "barcode_scanning_failure"
         case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
         case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
+
+    // MARK: Tax Rate selector
+    //
+    case taxRateSelectorTaxRateTapped = "tax_rate_selector_tax_rate_tapped"
+    case taxRateSelectorEditInAdminTapped = "tax_rate_selector_edit_in_admin_tapped"
 
     // MARK: Shipping Labels Events
     //

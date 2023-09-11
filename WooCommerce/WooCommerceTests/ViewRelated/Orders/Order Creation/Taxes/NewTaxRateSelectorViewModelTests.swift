@@ -65,6 +65,31 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxRateViewModels.count, 1)
     }
 
+    func test_taxRateViewModels_when_taxRate_does_not_have_location_then_it_is_filtered() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate")
+        stores.whenReceivingAction(ofType: TaxAction.self) { action in
+            guard case let .retrieveTaxRates(_, _, _, completion) = action else {
+                return
+            }
+
+            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
+            newTaxRate.update(with: taxRate)
+            storageManager.viewStorage.saveIfNeeded()
+            completion(.success([taxRate]))
+        }
+
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.onLoadTriggerOnce.send()
+
+        // Then
+        XCTAssertTrue(viewModel.taxRateViewModels.isEmpty)
+    }
+
     func test_onRowSelected_then_calls_onTaxRateSelected_with_right_tax_rate() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -120,5 +145,29 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         viewModel.onLoadNextPageAction()
         // Then
         XCTAssertEqual(retrieveTaxRatesCallCount, 2)
+    }
+
+    func test_onRowSelected_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onRowSelected(with: 1)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorTaxRateTapped.rawValue)
+    }
+
+    func test_onShowWebView_then_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onShowWebView()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorEditInAdminTapped.rawValue)
     }
 }

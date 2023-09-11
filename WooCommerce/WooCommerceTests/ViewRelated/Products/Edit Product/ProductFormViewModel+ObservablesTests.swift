@@ -233,7 +233,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         }
 
         // When
-        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
 
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

@@ -2,7 +2,7 @@
 
 15.4
 -----
-
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 
 15.3
 -----

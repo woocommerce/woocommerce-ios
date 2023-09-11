@@ -1942,7 +1942,8 @@ extension Networking.UploadableMedia {
         .init(
             localURL: .fake(),
             filename: .fake(),
-            mimeType: .fake()
+            mimeType: .fake(),
+            altText: .fake()
         )
     }
 }

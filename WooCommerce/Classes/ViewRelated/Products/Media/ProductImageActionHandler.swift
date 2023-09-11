@@ -6,7 +6,7 @@ import Yosemite
 protocol ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
-    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+    typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     var productImageStatuses: [ProductImageStatus] { get }
 
@@ -19,7 +19,7 @@ protocol ProductImageActionHandlerProtocol {
 
     func addSiteMediaLibraryImagesToProduct(mediaItems: [Media])
 
-    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset)
+    func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType)
 
     func updateProductID(_ remoteProductID: ProductOrVariationID)
 
@@ -35,7 +35,7 @@ protocol ProductImageActionHandlerProtocol {
 final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias AllStatuses = (productImageStatuses: [ProductImageStatus], error: Error?)
     typealias OnAllStatusesUpdate = (AllStatuses) -> Void
-    typealias OnAssetUpload = (PHAsset, Result<ProductImage, Error>) -> Void
+    typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
 
     private let siteID: Int64
     private var productOrVariationID: ProductOrVariationID
@@ -172,7 +172,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
     }
 
-    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
+    func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType) {
         queue.async { [weak self] in
             guard let self = self else {
                 return
@@ -209,10 +209,26 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
     }
 
-    private func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset, onCompletion: @escaping (Result<Media, Error>) -> Void) {
+    private func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType, onCompletion: @escaping (Result<Media, Error>) -> Void) {
         DispatchQueue.main.async { [weak self] in
             guard let self = self else { return }
-            let action = MediaAction.uploadMedia(siteID: self.siteID, productID: self.productOrVariationID.id, mediaAsset: asset, onCompletion: onCompletion)
+            let action: MediaAction
+            switch asset {
+                case .phAsset(let asset):
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: asset,
+                                                     altText: nil,
+                                                     filename: nil,
+                                                     onCompletion: onCompletion)
+                case .uiImage(let image, let filename, let altText):
+                    action = MediaAction.uploadMedia(siteID: self.siteID,
+                                                     productID: self.productOrVariationID.id,
+                                                     mediaAsset: image,
+                                                     altText: altText,
+                                                     filename: filename,
+                                                     onCompletion: onCompletion)
+            }
             self.stores.dispatch(action)
         }
     }
@@ -268,7 +284,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
 }
 
 private extension ProductImageActionHandler {
-    func index(of asset: PHAsset) -> Int? {
+    func index(of asset: ProductImageAssetType) -> Int? {
         return allStatuses.productImageStatuses.firstIndex(where: { status -> Bool in
             switch status {
             case .uploading(let uploadingAsset):

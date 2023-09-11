@@ -47,7 +47,7 @@
 - [Internal] New default property `plan` is tracked in every event for logged-in users. [https://github.com/woocommerce/woocommerce-ios/pull/10356]
 - [Internal] Google sign in now defaults to bypassing the Google SDK [https://github.com/woocommerce/woocommerce-ios/pull/10341]
 - [*] Product list filter (Products tab and order creation > add products > filter): product types from extensions supported in the app are now available for product filtering - subscription, variable subscription, bundle, and composite. [https://github.com/woocommerce/woocommerce-ios/pull/10382]
-
+ 
 14.7
 -----
 - [*] Local notifications: Add a reminder to purchase a plan is scheduled 6hr after a free trial subscription. [https://github.com/woocommerce/woocommerce-ios/pull/10268]

@@ -6,6 +6,10 @@ import Yosemite
 /// a card present transaction (payment or refund.)
 ///
 protocol CardReaderTransactionAlertsProviding {
+    /// A cancellable alert indicating that we are checking the order at the start of a payment flow
+    ///
+    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel
+
     /// A cancellable alert indicating we are preparing a reader to collect card details
     ///
     func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel

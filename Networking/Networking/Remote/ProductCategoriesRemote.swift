@@ -94,7 +94,10 @@ public final class ProductCategoriesRemote: Remote {
     /// - Parameter category: Details to be updated for a category.
     ///
     public func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory {
-        let parameters = try category.toDictionary()
+        let parameters: [String: Any] = [
+            ParameterKey.name: category.name,
+            ParameterKey.parent: category.parentID
+        ]
         let categoryID = category.categoryID
         let siteID = category.siteID
         let path = Path.categories + "/\(categoryID)"

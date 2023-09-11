@@ -261,7 +261,8 @@ private extension AddEditProductCategoryViewController {
 //
 private extension AddEditProductCategoryViewController {
     func displayErrorAlert(error: Error?) {
-        let alertController = UIAlertController(title: Strings.errorAlertTitle,
+        let title = viewModel.editingMode == .add ? Strings.errorAddingTitle : Strings.errorUpdatingTitle
+        let alertController = UIAlertController(title: title,
                                                 message: error?.localizedDescription,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Strings.okErrorAlertButton,
@@ -284,8 +285,10 @@ private extension AddEditProductCategoryViewController {
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
         static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
         static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
-        static let errorAlertTitle = NSLocalizedString("Cannot Add Category",
-                                                       comment: "Title of the alert when there is an error creating a new product category")
+        static let errorAddingTitle = NSLocalizedString("Cannot Add Category",
+                                                        comment: "Title of the alert when there is an error creating a new product category")
+        static let errorUpdatingTitle = NSLocalizedString("Cannot Update Category",
+                                                          comment: "Title of the alert when there is an error creating a new product category")
         static let okErrorAlertButton = NSLocalizedString("OK",
                                                           comment: "Dismiss button on the alert when there is an error creating a new product category")
     }

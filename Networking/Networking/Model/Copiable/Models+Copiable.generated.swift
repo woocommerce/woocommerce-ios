@@ -2397,8 +2397,8 @@ extension Networking.TaxRate {
         id: CopiableProp<Int64> = .copy,
         siteID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
-        state: CopiableProp<String> = .copy,
         country: CopiableProp<String> = .copy,
+        state: CopiableProp<String> = .copy,
         postcode: CopiableProp<String> = .copy,
         postcodes: CopiableProp<[String]> = .copy,
         priority: CopiableProp<Int64> = .copy,
@@ -2413,8 +2413,8 @@ extension Networking.TaxRate {
         let id = id ?? self.id
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
-        let state = state ?? self.state
         let country = country ?? self.country
+        let state = state ?? self.state
         let postcode = postcode ?? self.postcode
         let postcodes = postcodes ?? self.postcodes
         let priority = priority ?? self.priority

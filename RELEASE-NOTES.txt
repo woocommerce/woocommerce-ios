@@ -2,11 +2,10 @@
 
 15.4
 -----
-
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 
 15.3
 -----
-- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
 - [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
 - [**] Taxes in orders: Users can now select the tax rate's location to add it to the order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10651]

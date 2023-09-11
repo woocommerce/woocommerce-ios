@@ -373,4 +373,15 @@ post_install do |installer|
     end
   end
   # rubocop:enable Style/CombinableLoops
+
+  # Xcode 15 beta 8 Cocoapods issue:
+  # https://github.com/CocoaPods/CocoaPods/issues/12012
+  installer.pods_project.targets.each do |target|
+    target.build_configurations.each do |config|
+      xcconfig_path = config.base_configuration_reference.real_path
+      xcconfig = File.read(xcconfig_path)
+      xcconfig_mod = xcconfig.gsub(/DT_TOOLCHAIN_DIR/, "TOOLCHAIN_DIR")
+      File.open(xcconfig_path, "w") { |file| file << xcconfig_mod }
+    end
+  end
 end

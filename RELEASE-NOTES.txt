@@ -4,6 +4,7 @@
 -----
 - [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 - [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
+- [*] Improved retry handling for In-Person Payments that fail [https://github.com/woocommerce/woocommerce-ios/pull/10673]
 
 15.3
 -----

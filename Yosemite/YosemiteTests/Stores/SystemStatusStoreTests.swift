@@ -101,6 +101,31 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(systemPluginResult?.name, "Plugin 3") // number of systemPlugins in storage
     }
 
+    func test_fetchSystemPluginsList_return_systemPlugins_correctly() {
+        // Given
+        let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "Plugin 1"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin3 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin3.name = "Plugin 3"
+        systemPlugin3.siteID = sampleSiteID
+
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let systemPluginResult: Yosemite.SystemPlugin? = waitFor { promise in
+            let action = SystemStatusAction.fetchSystemPluginList(siteID: self.sampleSiteID,
+                                                                  systemPluginNameList: ["Plugin 2", "Plugin 3"]) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(systemPluginResult?.name, "Plugin 3")
+    }
+
     func test_fetchSystemStatusReport_returns_systemStatus_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")

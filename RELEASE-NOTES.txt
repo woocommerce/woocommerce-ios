@@ -1,9 +1,16 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.4
+-----
+
+
 15.3
 -----
 - [**] Product categories can now be updated when editing product details. [https://github.com/woocommerce/woocommerce-ios/pull/10648]
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]
+- [Internal] Some internal changes were made to the image upload feature to support image processing in the app, no app changes are expected. [https://github.com/woocommerce/woocommerce-ios/pull/10631]
+- [**] Taxes in orders: Users can now select the tax rate's location to add it to the order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10651]
+- [*] Automatically show the media selector sheet on the product images screen when there are no pre-existing images. [https://github.com/woocommerce/woocommerce-ios/pull/10644]
 
 15.2
 -----

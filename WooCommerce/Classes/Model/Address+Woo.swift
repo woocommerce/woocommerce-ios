@@ -85,6 +85,17 @@ extension Address {
     var isEmpty: Bool {
         self == .empty
     }
+
+    /// Generates an Address object from a TaxRate object data
+    ///
+    static func from(taxRate: TaxRate) -> Address {
+        // We take the first city and postcode to keep it simple, even if they don't match
+        // If cities and postcodes are empty we try to use the deprecated properties `city`, `postcode` in case they have an older Woo version
+        Address.empty.copy(city: taxRate.cities.first ?? taxRate.city,
+                           state: taxRate.state,
+                           postcode: taxRate.postcodes.first ?? taxRate.postcode,
+                           country: taxRate.country)
+    }
 }
 
 

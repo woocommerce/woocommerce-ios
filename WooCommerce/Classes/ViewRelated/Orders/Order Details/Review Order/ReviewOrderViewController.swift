@@ -284,9 +284,11 @@ private extension ReviewOrderViewController {
 
         let itemViewModel = viewModel.productDetailsCellViewModel(for: item)
         cell.configure(item: itemViewModel, imageService: imageService)
+
+        let addOns = viewModel.addOns(for: item)
         cell.onViewAddOnsTouchUp = { [weak self] in
             guard let self = self else { return }
-            self.itemAddOnsButtonTapped(addOns: self.viewModel.filterAddons(for: item))
+            self.itemAddOnsButtonTapped(addOns: addOns)
         }
     }
 
@@ -388,8 +390,8 @@ private extension ReviewOrderViewController {
 private extension ReviewOrderViewController {
     /// Show addon list screen
     ///
-    func itemAddOnsButtonTapped(addOns: [OrderItemAttribute]) {
-        let addOnsViewModel = OrderAddOnListI1ViewModel(attributes: addOns)
+    func itemAddOnsButtonTapped(addOns: [OrderItemProductAddOn]) {
+        let addOnsViewModel = OrderAddOnListI1ViewModel(addOns: addOns)
         let addOnsController = OrderAddOnsListViewController(viewModel: addOnsViewModel)
         let navigationController = WooNavigationController(rootViewController: addOnsController)
         present(navigationController, animated: true, completion: nil)

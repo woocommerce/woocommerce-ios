@@ -154,7 +154,9 @@ struct NewTaxRateSelectorView: View {
             .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
         }
     }
+}
 
+private extension NewTaxRateSelectorView {
     func tapOnWPAdminWebViewButton() {
         viewModel.onShowWebView()
         showingWPAdminWebView = true

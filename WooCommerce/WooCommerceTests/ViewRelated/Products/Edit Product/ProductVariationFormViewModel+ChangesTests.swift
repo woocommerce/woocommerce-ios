@@ -70,7 +70,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
                     expectation.fulfill()
                 }
             }
-            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: PHAsset())
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: PHAsset()))
         }
 
         // Assert

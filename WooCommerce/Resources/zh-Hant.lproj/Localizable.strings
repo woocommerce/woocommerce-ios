@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-08-31 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-05 11:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -58,6 +58,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Learn more format at the bottom of the domain settings screen. %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about domains. */
 "%1$@ about domains and how to take domain-related actions." = "%1$@關於網域的資訊，以及如何採取網域相關操作。";
+
+/* %1$@ is a tappable link like \"Learn more\" that opens a webview for the user to learn more about verifying information for WooPayments. */
+"%1$@ about verifying your information with WooPayments." = "%1$@如何向 WooPayments 驗證個人資訊。";
 
 /* Accessibility description for a card payment method, used by assistive technologies such as screen reader. %1$@ is a placeholder for the card brand, %2$@ is a placeholder for the last 4 digits of the card number */
 "%1$@ card ending %2$@" = "卡號結尾是 %2$@ 的 %1$@ 卡";
@@ -300,6 +303,9 @@ which should be translated separately and considered part of this sentence. */
 /* Settings > Manage Card Reader > Connect > Help hint number 3
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
+
+/* Estimated setup time text shown on the Woo payments setup instructions screen. */
+"4-6 minutes" = "4-6 分鐘";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -1080,6 +1086,12 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Barbados" = "巴貝多";
 
+/* Title for the instructions on the Woo payments setup instructions screen. */
+"Before you start setup" = "在開始設定之前";
+
+/* Title on the action button on the Woo payments setup instructions screen. */
+"Begin Setup" = "開始設定";
+
 /* Country option for a site address. */
 "Belarus" = "白俄羅斯";
 
@@ -1340,6 +1352,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button on the alert when the user is cancelling the action on moving a product to the trash
    Cancel button on the error alert when fetching system status report fails
    Cancel button title
+   Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
@@ -1422,6 +1435,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message displayed when failed to check for WooCommerce in a site. */
 "Cannot verify your site's WooCommerce installation." = "無法驗證你在網站上安裝的 WooCommerce。";
+
+/* Text to prompt the user to edit tax rates in the web */
+"Can’t find the rate you’re looking for?" = "找不到正在尋找的稅率嗎？";
 
 /* Country option for a site address. */
 "Cape Verde" = "佛得角";
@@ -1710,6 +1726,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "恭喜！ 你離新商店正式開幕更近一步了。";
+
+/* Subtitle in Woo Payments setup  celebration screen. */
+"Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "恭喜！ 你已成功完成此設定流程，而付款系統也已準備就緒。";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
 "Congratulations! Your reader is running the latest software" = "恭喜！ 你的讀卡機已在執行最新的軟體";
@@ -2383,12 +2402,14 @@ which should be translated separately and considered part of this sentence. */
 "Don't show again" = "不要再顯示";
 
 /* Action title to select products to add to a grouped product from search results
+   Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
    Button to submit selection on Select Categories screen
    Button to submit the product selector without any product selected.
+   Dismiss button title in Woo Payments setup celebration screen.
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
@@ -2555,6 +2576,9 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "編輯狀態";
 
+/* Button title for the edit tax rates button in the tax educational dialog */
+"Edit Tax Rates in Admin" = "在管理員中編輯稅率";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Edit and add new products from anywhere" = "從任何地方編輯和新增新產品";
 
@@ -2569,6 +2593,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "一次編輯多個產品的狀態或價格";
+
+/* Title of the button that prompts the user to edit tax rates in the web */
+"Edit tax rates in admin" = "在管理員中編輯稅率";
 
 /* Industry option in the store creation category question. */
 "Education and learning" = "教育和學習";
@@ -2871,6 +2898,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "更新訂單 (編號：%1$d) 時發生錯誤";
+
+/* Estimated setup time title text shown on the Woo payments setup instructions screen. */
+"Estimated setup time" = "預估設定時間";
 
 /* Country option for a site address. */
 "Estonia" = "愛沙尼亞";
@@ -3995,6 +4025,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button title in the shipping label creation info screen
    Button to open the legal page for AI-generated contents on the product sharing message generation screen
    Label for the banner Learn more button
+   Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
    The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
@@ -4309,6 +4340,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Description of one of the hub menu options */
 "Manage more on admin" = "以管理員身分管理更多功能";
 
+/* About text shown on the Woo payments setup instructions screen. */
+"Manage payments effortlessly with WooPayments all in one place. Accept cards, Apple Pay, in-person payments, and 135+ currencies, all with zero setup costs or monthly fees." = "運用 WooPayments，在同一處輕鬆集中管理付款。 接受卡片、Apple Pay、親自收款選項，以及超過 135 種不同貨幣，完全免設定費或月費。";
+
+/* Subtitle of the store onboarding task to get paid. */
+"Manage payments seamlessly with WooPayments, free from setup or monthly fees." = "運用 WooPayments 流暢管理付款，免設定費或月費。";
+
 /* Title of the cell in Product Inventory Settings > Manage stock */
 "Manage stock" = "庫存管理";
 
@@ -4478,6 +4515,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the more privacy options section on the privacy screen */
 "More Privacy Options" = "其他隱私權選項";
+
+/* Tappable text in the instructions of store onboarding payments setup screen that opens a webview. */
+"More details here" = "詳情請見此處";
 
 /* Accessibility label for the Edit Product More Options action sheet
    Accessibility label to show the More Options action sheet */
@@ -6391,6 +6431,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message subtitle of bottom sheet for selecting a product type to create a product */
 "Select a product type" = "請選取商品類型";
 
+/* Title for the tax rate selector section */
+"Select a tax rate" = "選取稅率";
+
 /* Title of a button that selects all products for bulk update */
 "Select all" = "全部選取";
 
@@ -6463,6 +6506,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Service Package menu in Shipping Label Add New Package flow */
 "Service Package" = "服務包裹";
+
+/* Button title to set a new tax rate to an order */
+"Set New Tax Rate" = "設定新的稅率";
+
+/* Navigation title for the tax rate selector */
+"Set Tax Rate" = "設定稅率";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "設定電子郵件";
@@ -7299,6 +7348,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "稅金類別";
 
+/* Second paragraph of the body for the tax educational dialog */
+"Tax rates for different locations can be managed in your store’s admin." = "你可以在商店管理員中管理不同位置的稅率。";
+
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "稅金狀態";
 
@@ -7311,11 +7363,17 @@ This part is the link to the website, and forms part of a longer sentence which 
    Taxes label for payment view */
 "Taxes" = "稅金";
 
+/* Title for the tax educational dialog */
+"Taxes & Tax Rates" = "稅金與稅率";
+
 /* Label for the title row showing the taxes in the order */
 "Taxes Total" = "稅金總計";
 
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "稅金會根據你的商店地址自動計算。";
+
+/* First paragraph of the body for the tax educational dialog */
+"Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "稅金計算方式乃根據顧客帳單或運送地址的比對結果，或你稅率位置的商店地址。";
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "告訴我們你親自收款的體驗。";
@@ -7485,7 +7543,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "The domain purchased will redirect users to your primary address." = "購買的網域會將使用者重新導向至你的主要位址。";
 
 /* Caption displayed in the simplified prologue screen */
-"The e-commerce platform that grows with you" = "我們的電子商務平台會與你一同成長";
+"The ecommerce platform that grows with you" = "我們的電子商務平台會與你一同成長";
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "第一次使用「iPhone 卡緊收」時，系統可能會提示你接受 Apple 的服務條款。";
@@ -7782,6 +7840,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message displayed when unable to close user account due to having active subscriptions. */
 "This user account cannot be closed while it has active subscriptions." = "由於這個使用者帳號仍有使用中的訂購項目，因此無法關閉。";
+
+/* Explanatory text for the tax rate selector */
+"This will change the customer’s address to the location of the tax rate you select." = "這會將顧客地址變更至你選擇稅率的地點。";
 
 /* Alert description to allow the user confirm if they want to generate all variations */
 "This will create a variation for each and every possible combination of variation attributes (%d variations)." = "這將為每個可能的款式屬性組合建立款式 (%d 個款式)。";
@@ -8806,6 +8867,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instruction text after a signup Magic Link was requested. */
 "We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com." = "我們已透過電子郵件傳送註冊連結給你，使用此連結即可建立新的 WordPress.com 帳號。 請使用此裝置查看電子郵件，並點選 WordPress.com 所傳送電子郵件中的連結。";
 
+/* Second instruction on the Woo payments setup instructions screen. */
+"We've partnered with Stripe for WooPayments. You'll be directed to Stripe's site for sign-up. We'll ask you to verify your business and payment details." = "我們已與 Stripe 合作，為 WooPayments 提供支援。 系統會將你導入 Stripe 的網站進行註冊。 我們會要求你驗證商家和付款詳細資料。";
+
 /* More Privacy Options section title in the privacy screen. */
 "Web Options" = "網頁選項";
 
@@ -9071,6 +9135,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The description on the placeholder overlay on the coupon list screen when coupons are disabled for the store. */
 "You currently have Coupons disabled for this store. Enable coupons to get started." = "你目前在此商店中停用優惠券。 啟用優惠券即可開始使用。";
 
+/* Title in Woo Payments setup celebration screen. */
+"You did it!" = "你辦到了！";
+
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "你無權管理此商店的外掛程式。";
 
@@ -9112,6 +9179,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Your Store" = "你的商店";
+
+/* First instruction on the Woo payments setup instructions screen. */
+"Your WooPayments notifications will be sent to your WordPress.com account email. Prefer a new account? More details here." = "WooPayments 通知會傳送至您的 WordPress.com 帳號電子郵件信箱。 想要使用新帳號嗎？ 詳情請見此處。";
 
 /* Label that displays when a mandatory software update is happening */
 "Your card reader software needs to be updated to collect payments. Cancelling will block your reader connection." = "你的讀卡機軟體需要更新才能收取款項。 取消更新將會封鎖你的讀卡機連線。";
@@ -9193,6 +9263,16 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message for the alert after the support request is created. */
 "Your support request has landed safely in our inbox. We will reply via email as quickly as we can." = "我們已收到你的支援請求， 並會盡快透過電子郵件回覆你。";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer billing address. */
+"Your tax rate is currently calculated based on the customer billing address:" = "您的稅率目前是以顧客帳單地址計算：";
+
+/* Educational tax dialog to explain that the rate is calculated based on the customer shipping address. */
+"Your tax rate is currently calculated based on the customer shipping address:" = "您的稅率目前是以顧客運送地址計算：";
+
+/* Educational tax dialog to explain that the rate is calculated based on the shop address.
+   Explanatory text for the tax rates in the tax educational dialog */
+"Your tax rate is currently calculated based on your shop address:" = "您的稅率目前是以商店地址計算：";
 
 /* Message of the free trial banner when there are no days left */
 "Your trial has ended." = "你的試用已結束。";

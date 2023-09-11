@@ -1,5 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.4
+-----
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
+- [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
+
 15.3
 -----
 - [internal] Add `site_url` to Tracks events [https://github.com/woocommerce/woocommerce-ios/pull/10610]

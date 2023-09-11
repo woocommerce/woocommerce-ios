@@ -18,7 +18,7 @@ public protocol MediaRemoteProtocol {
                      completion: @escaping (Result<[Media], Error>) -> Void)
     func uploadMediaToWordPressSite(siteID: Int64,
                                     productID: Int64,
-                                    mediaItems: [UploadableMedia],
+                                    mediaItem: UploadableMedia,
                                     completion: @escaping (Result<WordPressMedia, Error>) -> Void)
     func updateProductID(siteID: Int64,
                          productID: Int64,
@@ -121,6 +121,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
 
         let formParameters: [String: String] = [Int](0..<mediaItems.count).reduce(into: [:]) { (parentIDsByKey, index) in
             parentIDsByKey["attrs[\(index)][parent_id]"] = "\(productID)"
+            parentIDsByKey["attrs[\(index)][\(ParameterKey.altText)]"] = mediaItems[index].altText
         }
 
         let path = "sites/\(siteID)/media/new"
@@ -144,22 +145,24 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
         }, completion: completion)
     }
 
-    /// Uploads an array of media in the local file system to the WordPress site.via WordPress site API
+    /// Uploads a media item in the local file system to the WordPress site via WordPress site API.
+    /// The API does not support multiple media items unlike the WPCOM version in `uploadMedia`.
     /// API reference: https://developer.wordpress.org/rest-api/reference/media/#create-a-media-item
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll upload the media to.
     ///   - productID: Product for which the media items are first added to.
-    ///   - mediaItems: An array of uploadable media items.
+    ///   - mediaItem: The media item to upload.
     ///   - completion: Closure to be executed upon completion.
     public func uploadMediaToWordPressSite(siteID: Int64,
                                            productID: Int64,
-                                           mediaItems: [UploadableMedia],
+                                           mediaItem: UploadableMedia,
                                            completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
         let formParameters: [String: String] = [
             ParameterKey.wordPressMediaPostID: "\(productID)",
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-        ]
+            ParameterKey.wordPressAltText: mediaItem.altText
+        ].compactMapValues { $0 }
         let path = "sites/\(siteID)/media"
         do {
             let request = try DotcomRequest(wordpressApiVersion: .wpMark2, method: .post, path: path, parameters: nil, availableAsRESTRequest: true)
@@ -170,12 +173,10 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                     multipartFormData.append(Data(value.utf8), withName: key)
                 }
 
-                mediaItems.forEach { mediaItem in
-                    multipartFormData.append(mediaItem.localURL,
-                                             withName: ParameterValue.mediaUploadName,
-                                             fileName: mediaItem.filename,
-                                             mimeType: mediaItem.mimeType)
-                }
+                multipartFormData.append(mediaItem.localURL,
+                                         withName: ParameterValue.mediaUploadName,
+                                         fileName: mediaItem.filename,
+                                         mimeType: mediaItem.mimeType)
             }, completion: completion)
         } catch {
             completion(.failure(error))
@@ -251,6 +252,8 @@ public extension MediaRemote {
         static let pageNumber: String = "page"
         static let pageSize: String   = "number"
         static let wordPressMediaPostID: String = "post"
+        static let altText: String = "alt"
+        static let wordPressAltText: String = "alt_text"
         static let fields: String     = "fields"
         static let fieldsWordPressSite: String = "_fields"
         static let mimeType: String   = "mime_type"

@@ -78,6 +78,7 @@ final class MediaAssetExporter: MediaExporter {
         // Hands off the image export to a shared image writer.
         let exporter = MediaImageExporter(data: imageData,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: typeHint,
                                           options: imageOptions,
                                           mediaDirectoryType: mediaDirectoryType)
@@ -143,7 +144,8 @@ private extension MediaAssetExporter {
                 }
                 let exported = UploadableMedia(localURL: url,
                                                filename: url.lastPathComponent,
-                                               mimeType: url.mimeTypeForPathExtension)
+                                               mimeType: url.mimeTypeForPathExtension,
+                                               altText: nil)
                 continuation.resume(returning: exported)
             })
         }

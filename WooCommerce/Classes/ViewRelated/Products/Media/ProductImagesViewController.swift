@@ -298,7 +298,7 @@ extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
     }
 }
 

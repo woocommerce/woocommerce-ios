@@ -323,7 +323,7 @@ private extension ProductDownloadListViewController {
         guard let asset = assets.first else {
             return
         }
-        productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        productImageActionHandler?.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
         loadingView.showLoader(in: view)
     }
 }

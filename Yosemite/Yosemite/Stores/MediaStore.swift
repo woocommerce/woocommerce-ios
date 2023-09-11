@@ -53,8 +53,8 @@ public final class MediaStore: Store {
         switch action {
         case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
             retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .uploadMedia(let siteID, let productID, let mediaAsset, let onCompletion):
-            uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, onCompletion: onCompletion)
+        case .uploadMedia(let siteID, let productID, let mediaAsset, let altText, let filename, let onCompletion):
+            uploadMedia(siteID: siteID, productID: productID, mediaAsset: mediaAsset, altText: altText, filename: filename, onCompletion: onCompletion)
         case .updateProductID(let siteID,
                             let productID,
                              let mediaID,
@@ -91,12 +91,15 @@ private extension MediaStore {
     func uploadMedia(siteID: Int64,
                      productID: Int64,
                      mediaAsset: ExportableAsset,
+                     altText: String?,
+                     filename: String?,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         Task {
             do {
-                let uploadableMedia = try await mediaExportService.export(mediaAsset)
+                let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
                 uploadMedia(siteID: siteID,
                             productID: productID,
+                            altText: altText,
                             uploadableMedia: uploadableMedia,
                             onCompletion: onCompletion)
             } catch {
@@ -107,12 +110,13 @@ private extension MediaStore {
 
     func uploadMedia(siteID: Int64,
                      productID: Int64,
+                     altText: String?,
                      uploadableMedia media: UploadableMedia,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         if isLoggedInWithoutWPCOMCredentials(siteID) || isSiteJetpackJCPConnected(siteID) {
             remote.uploadMediaToWordPressSite(siteID: siteID,
                                               productID: productID,
-                                              mediaItems: [media]) { result in
+                                              mediaItem: media) { result in
                 // Removes local media after the upload API request.
                 do {
                     try MediaFileManager().removeLocalMedia(at: media.localURL)
@@ -130,9 +134,9 @@ private extension MediaStore {
             }
         } else {
             remote.uploadMedia(for: siteID,
-                                  productID: productID,
-                                  context: nil,
-                                  mediaItems: [media]) { result in
+                               productID: productID,
+                               context: nil,
+                               mediaItems: [media]) { result in
                 // Removes local media after the upload API request.
                 do {
                     try MediaFileManager().removeLocalMedia(at: media.localURL)

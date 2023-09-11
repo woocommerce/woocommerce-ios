@@ -55,7 +55,13 @@ struct InPersonPaymentsView: View {
             case .pluginUnsupportedVersion(let plugin):
                 InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginNotActivated(let plugin):
-                InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
+                switch plugin {
+                case .wcPay:
+                    InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onActivate: viewModel.activatePlugin)
+                case .stripe:
+                    // Show WCPay install flow when only Stripe is installed, but not active
+                    InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onInstall: viewModel.installPlugin)
+                }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
                 InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:
                     viewModel.refresh)

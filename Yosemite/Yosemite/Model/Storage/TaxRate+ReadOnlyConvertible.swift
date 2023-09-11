@@ -9,10 +9,11 @@ extension Storage.TaxRate: ReadOnlyConvertible {
     ///
     public func update(with taxRate: Yosemite.TaxRate) {
         id = taxRate.id
+        siteID = taxRate.siteID
         country = taxRate.country
         state = taxRate.state
         postcode = taxRate.postcode
-        postcodes = taxRate.postcodes as NSObject
+        postcodes = taxRate.postcodes
         priority = taxRate.priority
         rate = taxRate.rate
         name = taxRate.name
@@ -21,26 +22,26 @@ extension Storage.TaxRate: ReadOnlyConvertible {
         shipping = taxRate.shipping
         compound = taxRate.compound
         city = taxRate.city
-        cities = taxRate.cities as NSObject
+        cities = taxRate.cities
     }
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.TaxRate {
-        return TaxRate(id: id,
-                       siteID: siteID,
-                       name: name ?? "",
-                       country: country ?? "",
-                       state: state ?? "",
-                       postcode: postcode ?? "",
-                       postcodes: postcodes as? [String] ?? [],
-                       priority: priority,
-                       rate: rate ?? "",
-                       order: order,
-                       taxRateClass: taxRateClass ?? "",
-                       shipping: shipping,
-                       compound: compound,
-                       city: city ?? "",
-                       cities: cities as? [String] ?? [])
+        .init(id: id,
+              siteID: siteID,
+              name: name ?? "",
+              country: country ?? "",
+              state: state ?? "",
+              postcode: postcode ?? "",
+              postcodes: postcodes ?? [],
+              priority: priority,
+              rate: rate ?? "",
+              order: order,
+              taxRateClass: taxRateClass ?? "",
+              shipping: shipping,
+              compound: compound,
+              city: city ?? "",
+              cities: cities ?? [])
     }
 }

@@ -6,7 +6,7 @@ import protocol Storage.StorageManagerType
 
 @testable import WooCommerce
 
-class ReviewOrderViewModelTests: XCTestCase {
+final class ReviewOrderViewModelTests: XCTestCase {
 
     private let orderID: Int64 = 396
     private let productID: Int64 = 1_00
@@ -63,7 +63,21 @@ class ReviewOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productCellModel.hasAddOns, false)
     }
 
-    func test_productDetailsCellViewModel_returns_correct_hasAddOns_if_view_model_receives_showAddOns_as_true_and_there_are_valid_addons() {
+    func test_productDetailsCellViewModel_returns_correct_hasAddOns_if_view_model_receives_showAddOns_as_true_and_there_are_valid_addons() throws {
+        // Given
+        let item = OrderItem.fake().copy(productID: productID, quantity: 1, addOns: [.init(addOnID: nil, key: "Extra cheese", value: "Yes")])
+        let order = Order.fake().copy(siteID: siteID, status: .processing, items: [item])
+
+        // When
+        let viewModel = ReviewOrderViewModel(order: order, products: [], showAddOns: true, storageManager: storageManager)
+
+        // Then
+        let aggregateItem = try XCTUnwrap(viewModel.aggregateOrderItems.first)
+        let productCellModel = viewModel.productDetailsCellViewModel(for: aggregateItem)
+        XCTAssertEqual(productCellModel.hasAddOns, true)
+    }
+
+    func test_productDetailsCellViewModel_returns_correct_hasAddOns_if_view_model_receives_showAddOns_as_true_and_there_are_valid_addons_from_attributes() {
         // Given
         let addOnName = "Test"
         let itemAttribute = OrderItemAttribute.fake().copy(name: addOnName)

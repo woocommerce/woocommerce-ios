@@ -814,7 +814,12 @@ private extension OrderDetailsDataSource {
             return URL(string: encodedImageURLString)
         }()
 
-        let addOns = filterAddOns(of: aggregateItem)
+        let addOns: [OrderItemProductAddOn] = {
+            guard showAddOns else {
+                return []
+            }
+            return aggregateItem.addOns.isNotEmpty ? aggregateItem.addOns: filterAddOns(of: aggregateItem)
+        }()
         let isChildWithParent = AggregateDataHelper.isChildItemWithParent(aggregateItem, in: aggregateOrderItems)
         let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem.copy(imageURL: imageURL),
                                                         currency: order.currency,
@@ -976,13 +981,13 @@ private extension OrderDetailsDataSource {
     }
 
     /// Returns attributes that can be categorized as `Add-ons`.
-    /// Returns an `empty` array if we can't find the product associated with order item or if the `addOns` feature is disabled.
+    /// Returns an `empty` array if we can't find the product associated with order item.
     ///
-    private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemAttribute] {
+    private func filterAddOns(of item: AggregateOrderItem) -> [OrderItemProductAddOn] {
         guard let product = products.first(where: { $0.productID == item.productID }), showAddOns else {
             return []
         }
-        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOnsAttributes()
+        return AddOnCrossreferenceUseCase(orderItemAttributes: item.attributes, product: product, addOnGroups: addOnGroups).addOns()
     }
 }
 
@@ -1703,7 +1708,7 @@ extension OrderDetailsDataSource {
         case reprintShippingLabel(shippingLabel: ShippingLabel)
         case createShippingLabel
         case shippingLabelTrackingMenu(shippingLabel: ShippingLabel, sourceView: UIView)
-        case viewAddOns(addOns: [OrderItemAttribute])
+        case viewAddOns(addOns: [OrderItemProductAddOn])
         case editCustomerNote
         case editShippingAddress
     }

@@ -30,18 +30,18 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
 
     /// Member-wise initializer, useful for `SwiftUI` previews
     ///
-    init(addOns: [OrderAddOnI1ViewModel], analytics: Analytics = ServiceLocator.analytics) {
-        self.addOns = addOns
+    init(addOnViewModels: [OrderAddOnI1ViewModel], analytics: Analytics = ServiceLocator.analytics) {
+        self.addOns = addOnViewModels
         self.analytics = analytics
     }
 
     /// Initializer: Converts order item attributes into add-on view models
     ///
-    init(attributes: [OrderItemAttribute], analytics: Analytics = ServiceLocator.analytics) {
-        self.addOns = attributes.map { attribute in
-            let name = Self.addOnName(from: attribute)
-            let price = Self.addOnPrice(from: attribute, withDecodedName: name)
-            return OrderAddOnI1ViewModel(id: attribute.metaID, title: name, content: attribute.value, price: price)
+    init(addOns: [OrderItemProductAddOn], analytics: Analytics = ServiceLocator.analytics) {
+        self.addOns = addOns.map { addOn in
+            let name = Self.addOnName(from: addOn.key)
+            let price = Self.addOnPrice(from: addOn.key, withDecodedName: name)
+            return OrderAddOnI1ViewModel(addOnID: addOn.addOnID, title: name, content: addOn.value, price: price)
         }
         self.analytics = analytics
     }
@@ -49,12 +49,12 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     /// Decodes the name of the add-on from the `attribute.name` property.
     /// The `attribute.name` comes in the form of "add-on-title (add-on-price)". EG: "Topping (Spicy) ($30.00)"
     ///
-    private static func addOnName(from attribute: OrderItemAttribute) -> String {
-        let components = attribute.name.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
+    private static func addOnName(from key: String) -> String {
+        let components = key.components(separatedBy: " (") // "Topping (Spicy) ($30.00)" -> ["Topping", "Spicy)", "$30.00)"]
 
         // If name does not match our format assumptions, return the raw name.
         guard components.count > 1 else {
-            return attribute.name
+            return key
         }
 
         return components.dropLast() // ["Topping", "Spicy)", "$30.00)"] -> ["Topping", "Spicy)"]
@@ -64,8 +64,8 @@ final class OrderAddOnListI1ViewModel: ObservableObject {
     /// Decodes the price of the add-on from the `attribute.name` property using an already decoded add-on name.
     /// The `attribute.name` comes in the form of "add-on-title (add-on-price)". EG: "Topping (Spicy) ($30.00)"
     ///
-    private static func addOnPrice(from attribute: OrderItemAttribute, withDecodedName name: String) -> String {
-        attribute.name.replacingOccurrences(of: name, with: "")     // "Topping (Spicy) ($30.00)" -> " ($30.00)"
+    private static func addOnPrice(from key: String, withDecodedName name: String) -> String {
+        key.replacingOccurrences(of: name, with: "")     // "Topping (Spicy) ($30.00)" -> " ($30.00)"
             .trimmingCharacters(in: CharacterSet([" ", "(", ")"]))  // " ($30.00)" -> "$30.00"
     }
 }
@@ -95,9 +95,13 @@ private extension OrderAddOnListI1ViewModel {
 ///
 struct OrderAddOnI1ViewModel: Identifiable, Equatable {
     /// Unique identifier, required by `SwiftUI`
-    /// Discussion: Not using `UUID()` to not having to write a custom equality function.
+    /// Discussion: The add-on ID can be `nil`,  and `0` is used in this case to have elements with unique title and content.
     ///
-    let id: Int64
+    var id: String {
+        "\(addOnID ?? 0)-\(title)-\(content)"
+    }
+
+    let addOnID: Int64?
 
     /// Add-on title
     ///

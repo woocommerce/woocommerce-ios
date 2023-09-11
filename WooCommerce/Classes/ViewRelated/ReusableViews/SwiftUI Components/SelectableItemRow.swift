@@ -25,6 +25,7 @@ struct SelectableItemRow: View {
             VStack(alignment: .leading) {
                 Text(title)
                     .bodyStyle(isEnabled)
+                    .multilineTextAlignment(.leading)
                 subtitle.map {
                     Text($0)
                         .footnoteStyle(isEnabled: isEnabled)

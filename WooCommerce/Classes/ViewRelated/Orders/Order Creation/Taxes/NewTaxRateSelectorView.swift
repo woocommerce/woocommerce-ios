@@ -72,6 +72,7 @@ struct NewTaxRateSelectorView: View {
                     }
 
                     resultsFixedBottomPanel
+                        .renderedIf(viewModel.showFixedBottomPanel)
                     case .empty:
                     EmptyState(title: Localization.emptyStateTitle,
                                    description: Localization.emptyStateDescription,

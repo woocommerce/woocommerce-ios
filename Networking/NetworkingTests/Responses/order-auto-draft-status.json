@@ -6,6 +6,7 @@
         "status": "auto-draft",
         "order_key": "abc123",
         "currency": "USD",
+        "currency_symbol": "$",
         "date_created_gmt": "2018-04-03T23:05:12",
         "date_modified_gmt": "2018-04-03T23:05:14",
         "discount_total": "30.00",

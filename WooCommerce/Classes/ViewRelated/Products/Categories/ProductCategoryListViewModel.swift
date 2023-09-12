@@ -49,7 +49,7 @@ final class ProductCategoryListViewModel {
 
     /// Site Id of the related categories
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     /// Initially selected category IDs.
     /// This is mutable so that we can remove any item when unselecting it manually.
@@ -90,6 +90,10 @@ final class ProductCategoryListViewModel {
     /// Current  category synchronization state
     ///
     @Published private(set) var syncCategoriesState: SyncingState = .initialized
+
+    /// Any error when deletion fails
+    ///
+    @Published private(set) var deletionFailure: Error?
 
     private lazy var resultController: ResultsController<StorageProductCategory> = {
         let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
@@ -146,6 +150,10 @@ final class ProductCategoryListViewModel {
     ///
     func reloadData() {
         onReloadNeeded?()
+    }
+
+    func findCategory(with id: Int64) -> ProductCategory? {
+        resultController.fetchedObjects.first(where: { $0.categoryID == id })
     }
 
     /// Add a new category added remotely, that will be selected
@@ -212,6 +220,33 @@ final class ProductCategoryListViewModel {
         }
 
         categoryViewModels = enrichingDataSource?.enrichCategoryViewModels(baseViewModels) ?? baseViewModels
+    }
+
+    @MainActor
+    func deleteCategory(id: Int64) async {
+        deletionFailure = nil
+        let selectedItem = selectedCategories.first(where: { $0.categoryID != id })
+        do {
+            // optimistic deletion
+            categoryViewModels.removeAll(where: { $0.categoryID == id })
+            // removes the category from the selected list if exists
+            selectedCategories = selectedCategories.filter { $0.categoryID != id }
+            initiallySelectedIDs = initiallySelectedIDs.filter { $0 != id }
+
+            try await deleteCategoryFromRemote(id: id)
+
+            // fetches list again to update storage
+            synchronizeAllCategories()
+        } catch {
+            // restore removed items
+            updateViewModelsArray()
+            if let selectedItem {
+                selectedCategories.append(selectedItem)
+                initiallySelectedIDs.append(selectedItem.categoryID)
+            }
+            deletionFailure = error
+            onReloadNeeded?()
+        }
     }
 
     /// Update `selectedCategories` based on initially selected items.
@@ -284,6 +319,23 @@ private extension ProductCategoryListViewModel {
             DDLogError("⛔️ Error fetching product categories: \(rawError.localizedDescription)")
         default:
             break
+        }
+    }
+}
+
+// MARK: - Helpers
+private extension ProductCategoryListViewModel {
+    @MainActor
+    func deleteCategoryFromRemote(id: Int64) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            storesManager.dispatch(ProductCategoryAction.deleteProductCategory(siteID: siteID, categoryID: id, onCompletion: { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: Void())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }))
         }
     }
 }

@@ -524,6 +524,7 @@ extension Networking.Order {
         number: CopiableProp<String> = .copy,
         status: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
+        currencySymbol: CopiableProp<String> = .copy,
         customerNote: NullableCopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         dateModified: CopiableProp<Date> = .copy,
@@ -561,6 +562,7 @@ extension Networking.Order {
         let number = number ?? self.number
         let status = status ?? self.status
         let currency = currency ?? self.currency
+        let currencySymbol = currencySymbol ?? self.currencySymbol
         let customerNote = customerNote ?? self.customerNote
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
@@ -599,6 +601,7 @@ extension Networking.Order {
             number: number,
             status: status,
             currency: currency,
+            currencySymbol: currencySymbol,
             customerNote: customerNote,
             dateCreated: dateCreated,
             dateModified: dateModified,

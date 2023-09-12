@@ -208,6 +208,7 @@ extension NewTaxRateSelectorView {
         static let listFooterResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
                                                                          comment: "Text to prompt the user to edit tax rates in the web")
         static let fixedBottomPanelBody = NSLocalizedString("Add this rate to all created orders", comment: "Body for the action to store selected tax rate")
-        static let fixedBottomPanelFootnote = NSLocalizedString("This will not affect online orders", comment: "Footnote for the action to store selected tax rate")
+        static let fixedBottomPanelFootnote = NSLocalizedString("This will not affect online orders",
+                                                                comment: "Footnote for the action to store selected tax rate")
     }
 }

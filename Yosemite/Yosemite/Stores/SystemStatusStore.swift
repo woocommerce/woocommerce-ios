@@ -30,7 +30,9 @@ public final class SystemStatusStore: Store {
         case .synchronizeSystemPlugins(let siteID, let onCompletion):
             synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
-            fetchSystemPlugin(siteID: siteID, systemPluginName: systemPluginName, completionHandler: onCompletion)
+            fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
+        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
+            fetchSystemPlugin(siteID: siteID, systemPluginNameList: systemPluginNameList, completionHandler: onCompletion)
         case .fetchSystemStatusReport(let siteID, let onCompletion):
             fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
         }
@@ -101,11 +103,16 @@ private extension SystemStatusStore {
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
     }
 
-    /// Retrieve `SystemPlugin` entitie of a specified storage by siteID and systemPluginName
+    /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.
+    /// Useful when a plugin has had multiple names.
     ///
-    func fetchSystemPlugin(siteID: Int64, systemPluginName: String, completionHandler: @escaping (SystemPlugin?) -> Void) {
+    func fetchSystemPlugin(siteID: Int64, systemPluginNameList: [String], completionHandler: @escaping (SystemPlugin?) -> Void) {
         let viewStorage = storageManager.viewStorage
-        let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly()
-        completionHandler(systemPlugin)
+        for systemPluginName in systemPluginNameList {
+            if let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly() {
+                return completionHandler(systemPlugin)
+            }
+        }
+        completionHandler(nil)
     }
 }

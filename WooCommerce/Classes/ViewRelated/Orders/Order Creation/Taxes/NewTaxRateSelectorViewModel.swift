@@ -92,11 +92,11 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
             return
         }
 
-        onTaxRateSelected(taxRate)
-
         if storeSelectedTaxRate {
             stores.dispatch(AppSettingsAction.storeSelectedTaxRateID(id: taxRate.id, siteID: siteID))
         }
+
+        onTaxRateSelected(taxRate)
     }
 
     func onRefreshAction() {

@@ -475,6 +475,7 @@ extension Networking.Order {
             number: .fake(),
             status: .fake(),
             currency: .fake(),
+            currencySymbol: .fake(),
             customerNote: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),

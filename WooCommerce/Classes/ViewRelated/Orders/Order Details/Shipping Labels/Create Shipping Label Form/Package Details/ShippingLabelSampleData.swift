@@ -17,6 +17,7 @@ enum ShippingLabelSampleData {
                      number: "963",
                      status: .processing,
                      currency: "USD",
+                     currencySymbol: "",
                      customerNote: "",
                      dateCreated: date(with: "2018-04-03T23:05:12"),
                      dateModified: date(with: "2018-04-03T23:05:14"),

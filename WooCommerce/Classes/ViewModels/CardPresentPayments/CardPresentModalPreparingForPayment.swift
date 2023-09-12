@@ -3,7 +3,7 @@ import UIKit
 /// Modal presented when the reader is being prepared to take payment.
 /// In practice, this is shown while the PaymentIntent is being created.
 ///
-final class CardPresentModalPreparingReader: CardPresentPaymentsModalViewModel {
+final class CardPresentModalPreparingForPayment: CardPresentPaymentsModalViewModel {
     let cancelAction: (() -> Void)
 
     let textMode: PaymentsModalTextMode = .reducedTopInfo
@@ -48,7 +48,7 @@ final class CardPresentModalPreparingReader: CardPresentPaymentsModalViewModel {
     func didTapAuxiliaryButton(in viewController: UIViewController?) { }
 }
 
-private extension CardPresentModalPreparingReader {
+private extension CardPresentModalPreparingForPayment {
     enum Localization {
         static let title = NSLocalizedString(
             "Getting ready to collect payment",

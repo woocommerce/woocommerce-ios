@@ -165,6 +165,7 @@ private extension ProductCategoryStore {
         Task { @MainActor in
             do {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+                deleteUnusedStoredProductCategories(siteID: siteID)
                 onCompletion(.success(()))
             } catch {
                 onCompletion(.failure(error))

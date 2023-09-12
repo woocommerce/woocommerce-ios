@@ -154,8 +154,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// 
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
+    /// Selected tax rate to apply to the order
+    ///
     @Published private var selectedTaxRate: TaxRate? = nil
 
+    /// Text to show on entry point for selecting a tax rate
+    /// 
     var taxRateRowText: String {
         selectedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
     }

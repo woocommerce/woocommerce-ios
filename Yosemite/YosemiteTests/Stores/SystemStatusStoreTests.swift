@@ -115,8 +115,8 @@ final class SystemStatusStoreTests: XCTestCase {
 
         // When
         let systemPluginResult: Yosemite.SystemPlugin? = waitFor { promise in
-            let action = SystemStatusAction.fetchSystemPluginList(siteID: self.sampleSiteID,
-                                                                  systemPluginNameList: ["Plugin 2", "Plugin 3"]) { result in
+            let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: self.sampleSiteID,
+                                                                              systemPluginNameList: ["Plugin 2", "Plugin 3"]) { result in
                 promise(result)
             }
             store.onAction(action)

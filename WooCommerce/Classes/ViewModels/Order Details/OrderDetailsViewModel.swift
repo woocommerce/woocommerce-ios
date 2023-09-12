@@ -736,7 +736,7 @@ extension OrderDetailsViewModel {
             return completion(false)
         }
 
-        let action = SystemStatusAction.fetchSystemPluginList(siteID: order.siteID, systemPluginNameList: plugins) { plugin in
+        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: plugins) { plugin in
             completion(plugin?.active == true)
         }
         stores.dispatch(action)

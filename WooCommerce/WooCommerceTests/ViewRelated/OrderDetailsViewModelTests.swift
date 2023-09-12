@@ -108,7 +108,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginList(siteID, systemPluginNameList, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
@@ -186,7 +186,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         // SystemStatusAction.fetchSystemPlugin
         let firstAction = try XCTUnwrap(storesManager.receivedActions.first as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginList(siteID, systemPluginNameList, _) = firstAction else {
+        guard case let SystemStatusAction.fetchSystemPluginListWithNameList(siteID, systemPluginNameList, _) = firstAction else {
             XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
             return
         }
@@ -407,7 +407,7 @@ private extension OrderDetailsViewModelTests {
             switch action {
             case let .fetchSystemPlugin(_, _, onCompletion):
                 onCompletion(plugin)
-            case let .fetchSystemPluginList(_, _, onCompletion):
+            case let .fetchSystemPluginListWithNameList(_, _, onCompletion):
                 onCompletion(plugin)
                 default:
                     break

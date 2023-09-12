@@ -30,8 +30,8 @@ public final class SystemStatusStore: Store {
         case .synchronizeSystemPlugins(let siteID, let onCompletion):
             synchronizeSystemPlugins(siteID: siteID, completionHandler: onCompletion)
         case .fetchSystemPlugin(let siteID, let systemPluginName, let onCompletion):
-            fetchSystemPlugin(siteID: siteID, systemPluginName: systemPluginName, completionHandler: onCompletion)
-        case .fetchSystemPluginList(let siteID, let systemPluginNameList, let onCompletion):
+            fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
+        case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
             fetchSystemPlugin(siteID: siteID, systemPluginNameList: systemPluginNameList, completionHandler: onCompletion)
         case .fetchSystemStatusReport(let siteID, let onCompletion):
             fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
@@ -101,14 +101,6 @@ private extension SystemStatusStore {
         // remove stale system plugins
         let currentSystemPlugins = readonlySystemPlugins.map(\.name)
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
-    }
-
-    /// Retrieve `SystemPlugin` entity of a specified storage by siteID and systemPluginName
-    ///
-    func fetchSystemPlugin(siteID: Int64, systemPluginName: String, completionHandler: @escaping (SystemPlugin?) -> Void) {
-        let viewStorage = storageManager.viewStorage
-        let systemPlugin = viewStorage.loadSystemPlugin(siteID: siteID, name: systemPluginName)?.toReadOnly()
-        completionHandler(systemPlugin)
     }
 
     /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.

@@ -635,22 +635,22 @@ private extension StripeCardReaderService {
                         self.activePaymentIntent = paymentIntent
                         if paymentIntent.status == .requiresCapture {
                             // This payment intent can be used, we lost context to get an error with a PI that requires capture
-                            promise(.success(paymentIntent))
                             self.activePaymentIntent = nil
+                            return promise(.success(paymentIntent))
                         }
                     }
 
                     if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
-                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                        return promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
                                                                                                 paymentMethod: paymentMethod)))
                     } else {
-                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
                 }
 
                 if let intent = intent {
-                    promise(.success(intent))
                     self.activePaymentIntent = nil
+                    return promise(.success(intent))
                 }
             }
         }

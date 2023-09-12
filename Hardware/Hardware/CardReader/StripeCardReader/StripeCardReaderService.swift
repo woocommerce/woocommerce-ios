@@ -355,7 +355,7 @@ extension StripeCardReaderService: CardReaderService {
         return Future() { [weak self] promise in
             guard let self = self,
                   let activePaymentIntent = self.activePaymentIntent else {
-                promise(.failure(CardReaderServiceError.paymentCancellation()))
+                promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
                 return
             }
 

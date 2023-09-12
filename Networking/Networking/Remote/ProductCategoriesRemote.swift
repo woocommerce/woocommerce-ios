@@ -94,7 +94,10 @@ public final class ProductCategoriesRemote: Remote {
     /// - Parameter category: Details to be updated for a category.
     ///
     public func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory {
-        let parameters = try category.toDictionary()
+        let parameters: [String: Any] = [
+            ParameterKey.name: category.name,
+            ParameterKey.parent: category.parentID
+        ]
         let categoryID = category.categoryID
         let siteID = category.siteID
         let path = Path.categories + "/\(categoryID)"
@@ -116,7 +119,12 @@ public final class ProductCategoriesRemote: Remote {
     ///
     public func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws {
         let path = "\(Path.categories)/\(categoryID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: ["force": "true"],
+                                     availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
         try await enqueue(request)
     }

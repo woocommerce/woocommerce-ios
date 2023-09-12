@@ -93,6 +93,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .refreshOrderBeforeInPersonPayment:
             return true
+        case .manualTaxesInOrderM3:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

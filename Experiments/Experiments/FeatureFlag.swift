@@ -186,6 +186,10 @@ public enum FeatureFlag: Int {
     ///
     case manualTaxesInOrderM2
 
+    /// Enables storing the selected tax rate locally and applying to future orders (Manual Taxes Milestone 3)
+    ///
+    case manualTaxesInOrderM3
+
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping

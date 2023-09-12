@@ -234,7 +234,7 @@ private extension CollectOrderPaymentUseCase {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refreshOrderBeforeInPersonPayment) else {
             return onCheckCompletion(.success(()))
         }
-        
+
         alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
             self?.cancelPayment(from: .paymentValidatingOrder) {
                 onPaymentCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))

@@ -722,7 +722,6 @@ extension CardReaderServiceError: CardPaymentErrorProtocol {
                 .retryNotPossibleNoActivePayment,
                 .retryNotPossibleProcessingInProgress,
                 .retryNotPossibleActivePaymentCancelled,
-                .retryNotPossibleActivePaymentCompleted,
                 .retryNotPossibleActivePaymentSucceeded,
                 .paymentCancellation:
             return .dontRetry

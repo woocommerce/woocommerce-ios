@@ -50,8 +50,6 @@ public enum CardReaderServiceError: Error {
 
     case retryNotPossibleActivePaymentCancelled
 
-    case retryNotPossibleActivePaymentCompleted
-
     case retryNotPossibleActivePaymentSucceeded
 
     case retryNotPossibleProcessingInProgress
@@ -86,7 +84,7 @@ extension CardReaderServiceError: LocalizedError {
                 "We were unable to retry the payment – please start again.",
                 comment: "Explanation in the alert presented when a retry of a payment fails"
             )
-        case .retryNotPossibleActivePaymentCompleted, .retryNotPossibleActivePaymentSucceeded:
+        case .retryNotPossibleActivePaymentSucceeded:
             return NSLocalizedString(
                 "This payment has already been completed – please check the order details.",
                 comment: "Explanation in the alert shown when a retry fails because the payment already completed")

@@ -332,7 +332,9 @@ extension StripeCardReaderService: CardReaderService {
                 .map(PaymentIntent.init(intent:))
                 .eraseToAnyPublisher()
         case .requiresCapture:
-            return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentCompleted)
+            return Just(PaymentIntent(intent: activePaymentIntent))
+                .setFailureType(to: CardReaderServiceError.self)
+                .mapError({ $0 as Error })
                 .eraseToAnyPublisher()
         case .processing:
             return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
@@ -631,6 +633,11 @@ private extension StripeCardReaderService {
 
                     if let paymentIntent = error.paymentIntent {
                         self.activePaymentIntent = paymentIntent
+                        if paymentIntent.status == .requiresCapture {
+                            // This payment intent can be used, we lost context to get an error with a PI that requires capture
+                            promise(.success(paymentIntent))
+                            self.activePaymentIntent = nil
+                        }
                     }
 
                     if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {

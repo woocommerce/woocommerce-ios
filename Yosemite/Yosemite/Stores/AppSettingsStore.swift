@@ -198,7 +198,8 @@ public class AppSettingsStore: Store {
             setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
         case .storeSelectedTaxRateID(let taxRateId, let siteID):
             storeSelectedTaxRateID(with: taxRateId, siteID: siteID)
-
+        case .loadSelectedTaxRateID(let siteID, let onCompletion):
+            loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -872,6 +873,10 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedSettings = storeSettings.copy(selectedTaxRateID: id)
         setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadSelectedTaxRateID(with siteID: Int64, onCompletion: (Int64?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).selectedTaxRateID)
     }
 }
 

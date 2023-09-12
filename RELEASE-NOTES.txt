@@ -3,8 +3,8 @@
 15.4
 -----
 - [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
-- [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
 - [*] Taxes in orders: Add empty state design for the Tax Rate selector. [https://github.com/woocommerce/woocommerce-ios/pull/10665]
+- [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
 - [*] Order details: product add-ons for a line item are shown in separate lines for better readability. [https://github.com/woocommerce/woocommerce-ios/pull/10661]
 - [**] Product categories now can be deleted as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10643#event-10331866935]
 - [**] Product categories can now be updated as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10648]

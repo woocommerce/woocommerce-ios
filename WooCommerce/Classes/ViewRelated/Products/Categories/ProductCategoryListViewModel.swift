@@ -49,7 +49,7 @@ final class ProductCategoryListViewModel {
 
     /// Site Id of the related categories
     ///
-    private let siteID: Int64
+    let siteID: Int64
 
     /// Initially selected category IDs.
     /// This is mutable so that we can remove any item when unselecting it manually.
@@ -150,6 +150,10 @@ final class ProductCategoryListViewModel {
     ///
     func reloadData() {
         onReloadNeeded?()
+    }
+
+    func findCategory(with id: Int64) -> ProductCategory? {
+        resultController.fetchedObjects.first(where: { $0.categoryID == id })
     }
 
     /// Add a new category added remotely, that will be selected

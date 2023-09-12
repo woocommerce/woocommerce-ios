@@ -120,12 +120,13 @@ extension EditProductCategoryListViewController {
 
     @objc private func addButtonTapped() {
         ServiceLocator.analytics.track(.productCategorySettingsAddButtonTapped)
-        let addCategoryViewController = AddProductCategoryViewController(siteID: siteID) { [weak self] (newCategory) in
+        let viewModel = AddEditProductCategoryViewModel(siteID: siteID) { [weak self] (newCategory) in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }
             self?.viewModel.addAndSelectNewCategory(category: newCategory)
         }
+        let addCategoryViewController = AddEditProductCategoryViewController(viewModel: viewModel)
         let navController = WooNavigationController(rootViewController: addCategoryViewController)
         present(navController, animated: true, completion: nil)
     }

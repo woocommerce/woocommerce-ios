@@ -1,34 +1,17 @@
 import UIKit
 import Networking
 import Yosemite
+import Combine
 
-/// AddProductCategoryViewController: Add a new category associated to the active site.
+/// Add or edit a new category associated to the active site.
 ///
-final class AddProductCategoryViewController: UIViewController {
+final class AddEditProductCategoryViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
-
-    private let siteID: Int64
 
     /// Table Sections to be rendered
     ///
     private let sections: [Section] = [Section(rows: [.title]), Section(rows: [.parentCategory])]
-
-    /// New category title
-    ///
-    private var newCategoryTitle: String? {
-        didSet {
-            navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle?.isNotEmpty == true
-        }
-    }
-
-    /// Selected parent category
-    ///
-    private var selectedParentCategory: ProductCategory? {
-        didSet {
-            tableView.reloadData()
-        }
-    }
 
     /// Keyboard management
     ///
@@ -36,14 +19,11 @@ final class AddProductCategoryViewController: UIViewController {
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
-    // Completion callback
-    //
-    typealias Completion = (_ category: ProductCategory) -> Void
-    private let onCompletion: Completion
+    private let viewModel: AddEditProductCategoryViewModel
+    private var saveButtonSubscription: AnyCancellable?
 
-    init(siteID: Int64, completion: @escaping Completion) {
-        self.siteID = siteID
-        onCompletion = completion
+    init(viewModel: AddEditProductCategoryViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -62,10 +42,17 @@ final class AddProductCategoryViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
 
     func configureNavigationBar() {
-        title = Strings.titleView
+        title = {
+            switch viewModel.editingMode {
+            case .add:
+                return Strings.addCategory
+            case .editing:
+                return Strings.updateCategory
+            }
+        }()
 
         addCloseNavigationBarButton(title: Strings.cancelButton)
         configureRightBarButtonItemAsSave()
@@ -75,9 +62,13 @@ private extension AddProductCategoryViewController {
         navigationItem.setRightBarButton(UIBarButtonItem(title: Strings.saveButton,
                                                          style: .done,
                                                          target: self,
-                                                         action: #selector(saveNewCategory)),
+                                                         action: #selector(saveCategory)),
                                          animated: true)
-        navigationItem.rightBarButtonItem?.isEnabled = newCategoryTitle?.isNotEmpty == true
+
+        saveButtonSubscription = viewModel.$saveEnabled
+            .sink { [weak self] enabled in
+                self?.navigationItem.rightBarButtonItem?.isEnabled = enabled
+            }
     }
 
     func configureRightButtonItemAsSpinner() {
@@ -114,36 +105,28 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Remote Update actions
 //
-extension AddProductCategoryViewController {
+extension AddEditProductCategoryViewController {
 
-    @objc private func saveNewCategory() {
+    @objc private func saveCategory() {
         ServiceLocator.analytics.track(.productCategorySettingsSaveNewCategoryTapped)
 
         titleCategoryTextFieldResignFirstResponder()
         configureRightButtonItemAsSpinner()
 
-        guard let categoryName = newCategoryTitle else {
-            return
-        }
-
-        let action = ProductCategoryAction.addProductCategory(siteID: siteID,
-                                                              name: categoryName,
-                                                              parentID: selectedParentCategory?.categoryID) { [weak self] (result) in
-            self?.configureRightBarButtonItemAsSave()
-            switch result {
-            case .success(let category):
-                self?.onCompletion(category)
-            case .failure(let error):
-                self?.displayErrorAlert(error: error)
+        Task { @MainActor in
+            do {
+                try await viewModel.saveCategory()
+            } catch {
+                displayErrorAlert(error: error)
             }
+            configureRightBarButtonItemAsSave()
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension AddProductCategoryViewController: UITableViewDataSource {
+extension AddEditProductCategoryViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -164,17 +147,22 @@ extension AddProductCategoryViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension AddProductCategoryViewController: UITableViewDelegate {
+extension AddEditProductCategoryViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch sections[indexPath.section].rows[indexPath.row] {
         case .parentCategory:
-            let parentCategoryViewController = ProductParentCategoriesViewController(siteID: siteID) { [weak self] (parentCategory) in
+            let controller = ProductParentCategoriesViewController(
+                siteID: viewModel.siteID,
+                childCategory: viewModel.currentCategory,
+                selectedCategory: viewModel.selectedParentCategory
+            ) { [weak self] (parentCategory) in
                 defer {
                     self?.navigationController?.popViewController(animated: true)
                 }
-                self?.selectedParentCategory = parentCategory
+                self?.viewModel.selectedParentCategory = parentCategory
+                self?.tableView.reloadData()
             }
-            navigationController?.pushViewController(parentCategoryViewController, animated: true)
+            navigationController?.pushViewController(controller, animated: true)
         default:
             return
         }
@@ -192,7 +180,7 @@ extension AddProductCategoryViewController: UITableViewDelegate {
 
 // MARK: - Keyboard management
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     /// Registers for all of the related Notifications
     ///
     func startListeningToNotifications() {
@@ -200,7 +188,7 @@ private extension AddProductCategoryViewController {
     }
 }
 
-extension AddProductCategoryViewController: KeyboardScrollable {
+extension AddEditProductCategoryViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return tableView
     }
@@ -208,7 +196,7 @@ extension AddProductCategoryViewController: KeyboardScrollable {
 
 // MARK: - Cell configuration
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -224,10 +212,10 @@ private extension AddProductCategoryViewController {
     }
 
     func configureTitle(cell: TextFieldTableViewCell) {
-        let viewModel = TextFieldTableViewCell.ViewModel(text: newCategoryTitle,
+        let viewModel = TextFieldTableViewCell.ViewModel(text: viewModel.categoryTitle,
                                                          placeholder: Strings.titleCellPlaceholder,
                                                          onTextChange: { [weak self] newCategoryName in
-                                                            self?.newCategoryTitle = newCategoryName
+                                                            self?.viewModel.categoryTitle = newCategoryName ?? ""
 
             }, onTextDidBeginEditing: {
         }, onTextDidReturn: nil, inputFormatter: nil, keyboardType: .default)
@@ -236,7 +224,7 @@ private extension AddProductCategoryViewController {
     }
 
     func configureParentCategory(cell: TitleAndValueTableViewCell) {
-        cell.updateUI(title: Strings.parentCellTitle, value: selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
+        cell.updateUI(title: Strings.parentCellTitle, value: viewModel.selectedParentCategory?.name ?? Strings.parentCellPlaceholder)
         cell.selectionStyle = .none
         cell.accessoryType = .disclosureIndicator
     }
@@ -244,7 +232,7 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Private Types
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
 
     struct Section: RowIterable {
         let rows: [Row]
@@ -271,9 +259,10 @@ private extension AddProductCategoryViewController {
 
 // MARK: Error handling
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     func displayErrorAlert(error: Error?) {
-        let alertController = UIAlertController(title: Strings.errorAlertTitle,
+        let title = viewModel.editingMode == .add ? Strings.errorAddingTitle : Strings.errorUpdatingTitle
+        let alertController = UIAlertController(title: title,
                                                 message: error?.localizedDescription,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Strings.okErrorAlertButton,
@@ -287,16 +276,19 @@ private extension AddProductCategoryViewController {
 
 // MARK: - Constants!
 //
-private extension AddProductCategoryViewController {
+private extension AddEditProductCategoryViewController {
     enum Strings {
-        static let titleView = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        static let addCategory = NSLocalizedString("Add Category", comment: "Product Add Category navigation title")
+        static let updateCategory = NSLocalizedString("Update Category", comment: "Product Update Category navigation title")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Add Product Category. Cancel button title in navbar.")
         static let saveButton = NSLocalizedString("Save", comment: "Add Product Category. Save button title in navbar.")
         static let titleCellPlaceholder = NSLocalizedString("Title", comment: "Add Product Category. Placeholder of cell presenting the title of the category.")
         static let parentCellTitle = NSLocalizedString("Parent Category", comment: "Add Product Category. Title of cell presenting the parent category.")
         static let parentCellPlaceholder = NSLocalizedString("Optional", comment: "Add Product Category. Placeholder of cell presenting the parent category.")
-        static let errorAlertTitle = NSLocalizedString("Cannot Add Category",
-                                                       comment: "Title of the alert when there is an error creating a new product category")
+        static let errorAddingTitle = NSLocalizedString("Cannot Add Category",
+                                                        comment: "Title of the alert when there is an error creating a new product category")
+        static let errorUpdatingTitle = NSLocalizedString("Cannot Update Category",
+                                                          comment: "Title of the alert when there is an error creating a new product category")
         static let okErrorAlertButton = NSLocalizedString("OK",
                                                           comment: "Dismiss button on the alert when there is an error creating a new product category")
     }

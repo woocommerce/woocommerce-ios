@@ -117,7 +117,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
 
         // When
         viewModel.onLoadTriggerOnce.send()
-        viewModel.onRowSelected(with: 0)
+        viewModel.onRowSelected(with: 0, storeSelectedTaxRate: false)
 
         // Then
         XCTAssertEqual(selectedTaxRate, taxRate)
@@ -153,10 +153,48 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
 
         // When
         let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
-        viewModel.onRowSelected(with: 1)
+        viewModel.onRowSelected(with: 1, storeSelectedTaxRate: false)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorTaxRateTapped.rawValue)
+    }
+
+    func test_onRowSelected_when_storeSelectedTaxRate_is_true_then_stores_tax_rate_id() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let storageManager = MockStorageManager()
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        stores.whenReceivingAction(ofType: TaxAction.self) { action in
+            guard case let .retrieveTaxRates(_, _, _, completion) = action else {
+                return
+            }
+
+            let newTaxRate = storageManager.viewStorage.insertNewObject(ofType: StorageTaxRate.self)
+            newTaxRate.update(with: taxRate)
+            storageManager.viewStorage.saveIfNeeded()
+            completion(.success([taxRate]))
+        }
+
+        var storeSelectedTaxRateIDCalledSiteID: Int64?
+        var storingTaxRateID: Int64?
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let .storeSelectedTaxRateID(taxRateID, siteID) = action else {
+                return
+            }
+
+            storingTaxRateID = taxRateID
+            storeSelectedTaxRateIDCalledSiteID = siteID
+        }
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, stores: stores, storageManager: storageManager)
+        viewModel.onLoadTriggerOnce.send()
+        viewModel.onRowSelected(with: 0, storeSelectedTaxRate: true)
+
+        // Then
+        XCTAssertEqual(storeSelectedTaxRateIDCalledSiteID, sampleSiteID)
+        XCTAssertEqual(storingTaxRateID, taxRate.id)
     }
 
     func test_onShowWebView_then_tracks_event() {

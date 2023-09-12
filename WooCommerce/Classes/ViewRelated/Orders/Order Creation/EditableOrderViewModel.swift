@@ -154,6 +154,12 @@ final class EditableOrderViewModel: ObservableObject {
     /// 
     @Published private var taxBasedOnSetting: TaxBasedOnSetting?
 
+    @Published private var selectedTaxRate: TaxRate? = nil
+
+    var taxRateRowText: String {
+        selectedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
+    }
+
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
@@ -753,6 +759,7 @@ extension EditableOrderViewModel {
         let taxLineViewModels: [TaxLineViewModel]
         let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
         let taxBasedOnSetting: TaxBasedOnSetting?
+        let shouldShowTaxRateAddedAutomaticallyRow: Bool
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -788,6 +795,7 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
+             shouldShowTaxRateAddedAutomaticallyRow: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
              taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
              couponCode: String = "",
@@ -820,6 +828,7 @@ extension EditableOrderViewModel {
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
             self.taxBasedOnSetting = taxBasedOnSetting
+            self.shouldShowTaxRateAddedAutomaticallyRow = shouldShowTaxRateAddedAutomaticallyRow
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
@@ -1145,6 +1154,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
+                                            shouldShowTaxRateAddedAutomaticallyRow: order.taxes.isNotEmpty && selectedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
                                                                                                          taxBasedOnSetting: taxBasedOnSetting),
@@ -1216,13 +1226,35 @@ private extension EditableOrderViewModel {
 
             switch result {
                 case .success(let setting):
-                self.shouldShowNewTaxRateSection = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
+                let canApplyTaxRates = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
+                self.shouldShowNewTaxRateSection = canApplyTaxRates
+
+                if canApplyTaxRates {
+                    applySelectedStoredTaxRateIfAny()
+                }
+
                 self.taxBasedOnSetting = setting
                 case .failure(let error):
                 DDLogError("⛔️ Error retrieving tax based on setting: \(error)")
             }
         }))
+    }
+
+    func applySelectedStoredTaxRateIfAny() {
+        stores.dispatch(AppSettingsAction.loadSelectedTaxRateID(siteID: siteID) { [weak self] taxRateID in
+            guard let taxRateID = taxRateID,
+                  let self = self else {
+                return
+            }
+
+            stores.dispatch(TaxAction.retrieveTaxRate(siteID: self.siteID, taxRateID: taxRateID) { result in
+                if case let .success(taxRate) = result {
+                    self.addTaxRateAddressToOrder(taxRate: taxRate)
+                    self.selectedTaxRate = taxRate
+                }
+            })
+        })
     }
 
     /// Tracks when customer details have been added
@@ -1700,6 +1732,8 @@ private extension EditableOrderViewModel {
         static let couponsErrorNoticeMessage = NSLocalizedString("Sorry, this coupon is not applicable to selected products.",
                                                                  comment: "Info message when the user tries to add a coupon" +
                                                                  "that is not applicated to the products")
+        static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
+        static let editTaxRateSetting = NSLocalizedString("Edit Tax Rate Setting", comment: "Button title to edit the selected tax rate to apply to the order")
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

@@ -126,6 +126,9 @@ struct OrderPaymentSection: View {
         .background(Color(.listForeground(modal: true)))
 
         Divider()
+
+        taxRateAddedAutomaticallyRow
+            .renderedIf(viewModel.shouldShowTaxRateAddedAutomaticallyRow)
     }
 
     @ViewBuilder private var shippingRow: some View {
@@ -223,6 +226,25 @@ struct OrderPaymentSection: View {
             .footnoteStyle()
             .multilineTextAlignment(.leading)
     }
+
+    @ViewBuilder private var taxRateAddedAutomaticallyRow: some View {
+        VStack {
+            HStack(alignment: .top, spacing: Constants.taxRateAddedAutomaticallyRowHorizontalSpacing) {
+                Image(systemName: "info.circle")
+                    .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                Text(Localization.taxRateAddedAutomaticallyRowText)
+                    .subheadlineStyle()
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .frame(minHeight: Constants.rowMinHeight)
+
+            Divider()
+        }
+        .background(Color(.listForeground(modal: true)))
+    }
 }
 
 // MARK: Constants
@@ -246,12 +268,16 @@ private extension OrderPaymentSection {
                                                                comment: "Confirm message for navigating to coupons when creating a new order")
         static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm button title for navigating to coupons when creating a new order")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
+        static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate added automatically",
+                                                                        comment: "Notice in editable order details when the tax rate was added to the order")
     }
 
     enum Constants {
         static let taxesSectionVerticalSpacing: CGFloat = 8
+        static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
         static let taxesAdaptativeStacksSpacing: CGFloat = 4
         static let sectionPadding: CGFloat = 16
+        static let rowMinHeight: CGFloat = 44
     }
 }
 

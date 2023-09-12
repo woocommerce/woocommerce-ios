@@ -52,7 +52,7 @@ struct NewTaxRateSelectorView: View {
                         LazyVStack(spacing: 0) {
                             ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
                                 TaxRateRow(viewModel: taxRateViewModel) {
-                                    viewModel.onRowSelected(with: index)
+                                    viewModel.onRowSelected(with: index, storeSelectedTaxRate: storeSelectedTaxRate)
                                     dismiss()
                                 }
 

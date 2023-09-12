@@ -84,7 +84,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         paginationTracker.ensureNextPageIsSynced()
     }
 
-    func onRowSelected(with index: Int) {
+    func onRowSelected(with index: Int, storeSelectedTaxRate: Bool) {
         analytics.track(.taxRateSelectorTaxRateTapped)
 
         guard let taxRateViewModel = taxRateViewModels[safe: index],
@@ -93,6 +93,10 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         }
 
         onTaxRateSelected(taxRate)
+
+        if storeSelectedTaxRate {
+            stores.dispatch(AppSettingsAction.storeSelectedTaxRateID(id: taxRate.id, siteID: siteID))
+        }
     }
 
     func onRefreshAction() {

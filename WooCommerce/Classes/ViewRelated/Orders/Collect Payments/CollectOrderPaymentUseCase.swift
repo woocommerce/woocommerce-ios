@@ -410,7 +410,7 @@ private extension CollectOrderPaymentUseCase {
                                                    guard let self = self else { return }
 
                                                    switch result {
-                                                   case .success:
+                                                   case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
                                                        // Retry payment
                                                        self.attemptPayment(alertProvider: paymentAlerts,
                                                                            paymentGatewayAccount: paymentGatewayAccount,

@@ -8,6 +8,7 @@ import Combine
 
 /// Tests for `ProductCategoryListViewModel`.
 ///
+@MainActor
 final class ProductCategoryListViewModelTests: XCTestCase {
 
     private var storesManager: MockProductCategoryStoresManager!
@@ -247,6 +248,53 @@ final class ProductCategoryListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.categoryViewModels.count, 1)
+    }
+
+    func test_deleteCategory_removes_item_from_selectedCategories_upon_success() async {
+        // Given
+        let category = ProductCategory.fake().copy(categoryID: 123, siteID: 98)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, onCompletion):
+                onCompletion(nil)
+            case let .deleteProductCategory(_, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+        let viewModel = ProductCategoryListViewModel(siteID: category.siteID, selectedCategories: [category], storesManager: stores)
+
+        // When
+        await viewModel.deleteCategory(id: 123)
+
+        // Then
+        XCTAssertTrue(viewModel.selectedCategories.isEmpty)
+    }
+
+    func test_deleteCategory_updates_deletionFailure_upon_failure() async {
+        // Given
+        let error = NSError(domain: "Test", code: 404)
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, onCompletion):
+                onCompletion(nil)
+            case let .deleteProductCategory(_, _, onCompletion):
+                onCompletion(.failure(error))
+            default:
+                break
+            }
+        }
+        let viewModel = ProductCategoryListViewModel(siteID: 98, storesManager: stores)
+        XCTAssertNil(viewModel.deletionFailure)
+
+        // When
+        await viewModel.deleteCategory(id: 123)
+
+        // Then
+        XCTAssertEqual(viewModel.deletionFailure as? NSError, error)
     }
 }
 

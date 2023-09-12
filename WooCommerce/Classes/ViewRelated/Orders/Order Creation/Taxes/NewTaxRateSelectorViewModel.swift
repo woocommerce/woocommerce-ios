@@ -61,17 +61,6 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 
-    var bottomNoticeTitle: String? {
-        switch syncState {
-        case .syncingFirstPage:
-            return nil
-        case .results:
-            return Localization.bottomNoticeResultsSectionTitle
-        case .empty:
-            return Localization.bottomNoticeEmptySectionTitle
-        }
-    }
-
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.order, ascending: true)
@@ -207,17 +196,6 @@ extension NewTaxRateSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty
-    }
-}
-
-extension NewTaxRateSelectorViewModel {
-    enum Localization {
-        static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
-                                                                         comment: "Text to prompt the user to edit tax rates in the web")
-        static let bottomNoticeEmptySectionTitle = NSLocalizedString("You don't have any tax rates with a location.",
-                                                                              comment: "Text to prompt the user to edit tax rates" +
-                                                                              "in the web when there are no results")
-
     }
 }
 

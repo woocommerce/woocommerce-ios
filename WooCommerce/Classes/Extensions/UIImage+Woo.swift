@@ -318,6 +318,12 @@ extension UIImage {
         UIImage(named: "woo-empty-inbox-notes")!
     }
 
+    /// Empty Tax Rates Icon
+    ///
+    static var emptyTaxRatesImage: UIImage {
+        UIImage(named: "woo-empty-tax-rates")!
+    }
+
     /// Empty Products Icon
     ///
     static var emptyProductsImage: UIImage {

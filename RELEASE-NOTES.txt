@@ -4,6 +4,7 @@
 -----
 - [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
 - [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
+- [*] Order details: product add-ons for a line item are shown in separate lines for better readability. [https://github.com/woocommerce/woocommerce-ios/pull/10661]
 
 15.3
 -----

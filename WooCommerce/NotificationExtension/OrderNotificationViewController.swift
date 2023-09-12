@@ -3,10 +3,10 @@ import UserNotifications
 import UserNotificationsUI
 import SwiftUI
 
-class OrderNotificationViewController: UIViewController, UNNotificationContentExtension {
+final class OrderNotificationViewController: UIViewController, UNNotificationContentExtension {
 
-    @MainActor @IBOutlet var label: UILabel?
-    @MainActor @IBOutlet var loadingIndicator: UIActivityIndicatorView?
+    @MainActor @IBOutlet private var label: UILabel?
+    @MainActor @IBOutlet private var loadingIndicator: UIActivityIndicatorView?
 
     let viewModel = OrderNotificationViewModel()
     var hostingView: UIHostingController<OrderNotificationView>!
@@ -29,8 +29,8 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
             } catch {
 
                 loadingIndicator?.isHidden = true
-                self.label?.text = AppLocalizedString("Unable to load notification",
-                                                      comment: "Text when failing to load a notification after long pressing on it.")
+                label?.text = AppLocalizedString("Unable to load notification",
+                                                 comment: "Text when failing to load a notification after long pressing on it.")
             }
         }
     }
@@ -40,7 +40,7 @@ class OrderNotificationViewController: UIViewController, UNNotificationContentEx
         let orderView = OrderNotificationView(content: content)
         hostingView = UIHostingController(rootView: orderView)
 
-        self.view.addSubview(hostingView.view)
+        view.addSubview(hostingView.view)
         hostingView.view.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([

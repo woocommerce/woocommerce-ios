@@ -631,19 +631,20 @@ private extension StripeCardReaderService {
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
 
-                    if let paymentIntent = error.paymentIntent {
-                        self.activePaymentIntent = paymentIntent
-                        if paymentIntent.status == .requiresCapture {
-                            // This payment intent can be used, we lost context to get an error with a PI that requires capture
-                            self.activePaymentIntent = nil
-                            return promise(.success(paymentIntent))
-                        }
+                    guard let paymentIntent = error.paymentIntent else {
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
 
-                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
+                    self.activePaymentIntent = paymentIntent
+                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    case (.requiresCapture, _):
+                        // This payment intent can be used, we lost context to get an error with a PI that requires capture
+                        self.activePaymentIntent = nil
+                        return promise(.success(paymentIntent))
+                    case (_, .some(let paymentMethod)):
                         return promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
-                                                                                                paymentMethod: paymentMethod)))
-                    } else {
+                                                                                                       paymentMethod: paymentMethod)))
+                    default:
                         return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
                 }

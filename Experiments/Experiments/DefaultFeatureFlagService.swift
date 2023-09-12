@@ -91,6 +91,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .reusePaymentIntentOnRetryInPersonPayment:
             return true
+        case .refreshOrderBeforeInPersonPayment:
+            return true
         default:
             return true
         }

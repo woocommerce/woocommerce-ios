@@ -225,9 +225,12 @@ final class ProductCategoryListViewModel {
         do {
             // optimistic deletion
             categoryViewModels.removeAll(where: { $0.categoryID == id })
-            try await deleteCategoryFromRemote(id: id)
             // removes the category from the selected list if exists
             selectedCategories = selectedCategories.filter { $0.categoryID != id }
+            initiallySelectedIDs = initiallySelectedIDs.filter { $0 != id }
+
+            try await deleteCategoryFromRemote(id: id)
+
             // fetches list again to update storage
             synchronizeAllCategories()
         } catch {
@@ -235,6 +238,7 @@ final class ProductCategoryListViewModel {
             updateViewModelsArray()
             if let selectedItem {
                 selectedCategories.append(selectedItem)
+                initiallySelectedIDs.append(selectedItem.categoryID)
             }
             deletionFailure = error
             onReloadNeeded?()

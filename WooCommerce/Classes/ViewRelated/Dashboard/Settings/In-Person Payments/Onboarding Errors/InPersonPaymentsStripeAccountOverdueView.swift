@@ -23,9 +23,7 @@ struct InPersonPaymentsStripeAccountOverdue: View {
                                                                             }),
             secondaryButtonViewModel: InPersonPaymentsOnboardingErrorButtonViewModel(text: Localization.secondaryButtonTitle,
                                                                                      analyticReason: analyticReason,
-                                                                                     action: {
-                                                                                         onRefresh()
-                                                                                     })
+                                                                                     action: onRefresh)
         )
         .safariSheet(url: $presentedSetupURL, onDismiss: onRefresh)
      }

@@ -89,6 +89,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
+        case .reusePaymentIntentOnRetryInPersonPayment:
+            return true
         default:
             return true
         }

@@ -116,7 +116,12 @@ public final class ProductCategoriesRemote: Remote {
     ///
     public func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws {
         let path = "\(Path.categories)/\(categoryID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .delete, siteID: siteID, path: path, parameters: nil, availableAsRESTRequest: true)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: ["force": "true"],
+                                     availableAsRESTRequest: true)
         let mapper = ProductMapper(siteID: siteID)
         try await enqueue(request)
     }

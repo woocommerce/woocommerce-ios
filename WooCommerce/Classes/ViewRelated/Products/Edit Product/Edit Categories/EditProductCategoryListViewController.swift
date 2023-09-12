@@ -26,7 +26,8 @@ final class EditProductCategoryListViewController: UIViewController {
 
         let productCategoryListViewModel = ProductCategoryListViewModel(siteID: product.siteID,
                                                                         selectedCategories: product.categories)
-        productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel)
+        let configuration = ProductCategoryListViewController.Configuration(updateEnabled: true)
+        productCategoryListViewController = ProductCategoryListViewController(viewModel: productCategoryListViewModel, configuration: configuration)
         viewModel = EditProductCategoryListViewModel(product: product,
                                                      baseProductCategoryListViewModel: productCategoryListViewController.viewModel,
                                                      completion: completion)
@@ -69,7 +70,8 @@ private extension EditProductCategoryListViewController {
     }
 
     func configureTitle() {
-        title = viewModel.addCategoryButtonTitle
+        title = viewModel.screenTitle
+        view.backgroundColor = .listBackground
     }
 
     func configureProductCategoryListView() {

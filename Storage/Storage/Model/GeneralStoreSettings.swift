@@ -44,7 +44,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     public let firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date]
 
     /// The selected tax rate to apply to the orders
-    public let selectedTaxRate: Int64?
+    public let selectedTaxRateID: Int64?
 
     public init(isTelemetryAvailable: Bool = false,
                 telemetryLastReportedTime: Date? = nil,
@@ -53,7 +53,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 skippedCashOnDeliveryOnboardingStep: Bool = false,
                 lastSelectedStatsTimeRange: String = "",
                 firstInPersonPaymentsTransactionsByReaderType: [CardReaderType: Date] = [:],
-                selectedTaxRate: Int64? = nil) {
+                selectedTaxRateID: Int64? = nil) {
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
         self.areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled
@@ -61,7 +61,7 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.skippedCashOnDeliveryOnboardingStep = skippedCashOnDeliveryOnboardingStep
         self.lastSelectedStatsTimeRange = lastSelectedStatsTimeRange
         self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
-        self.selectedTaxRate = selectedTaxRate
+        self.selectedTaxRateID = selectedTaxRateID
     }
 }
 
@@ -80,7 +80,7 @@ extension GeneralStoreSettings {
         self.lastSelectedStatsTimeRange = try container.decodeIfPresent(String.self, forKey: .lastSelectedStatsTimeRange) ?? ""
         self.firstInPersonPaymentsTransactionsByReaderType = try container.decodeIfPresent([CardReaderType: Date].self,
                                                                                            forKey: .firstInPersonPaymentsTransactionsByReaderType) ?? [:]
-        self.selectedTaxRate = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRate)
+        self.selectedTaxRateID = try container.decodeIfPresent(Int64.self, forKey: .selectedTaxRateID)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

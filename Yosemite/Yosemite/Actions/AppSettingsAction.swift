@@ -228,5 +228,5 @@ public enum AppSettingsAction: Action {
     // MARK: - Tax Rates
 
     /// Stores the selected tax rate to be applied to orders. This is site-specific.
-    case storeSelectedTaxRate(id: Int64, siteID: Int64)
+    case storeSelectedTaxRateID(id: Int64, siteID: Int64)
 }

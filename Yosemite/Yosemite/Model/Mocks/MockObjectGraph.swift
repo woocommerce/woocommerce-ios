@@ -347,6 +347,7 @@ extension MockObjectGraph {
             number: "\(number)",
             status: status,
             currency: "USD",
+            currencySymbol: "$",
             customerNote: nil,
             dateCreated: Calendar.current.date(byAdding: .day, value: daysOld * -1, to: Date()) ?? Date(),
             dateModified: Date(),

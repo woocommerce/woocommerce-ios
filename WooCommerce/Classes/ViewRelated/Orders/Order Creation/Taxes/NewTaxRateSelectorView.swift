@@ -181,9 +181,9 @@ extension NewTaxRateSelectorView {
         static let taxRatesSectionTitle = NSLocalizedString("Select a tax rate", comment: "Title for the tax rate selector section")
         static let editTaxRatesInWpAdminButtonTitle = NSLocalizedString("Edit tax rates in admin",
                                                                          comment: "Title of the button that prompts the user to edit tax rates in the web")
-        static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rares selector screen")
+        static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rates selector screen")
         static let emptyStateDescription = NSLocalizedString("Add tax rates in admin. Only tax rates with location information will be shown here.",
-                                                             comment: "Description for the empty state on the Tax Rares selector screen")
+                                                             comment: "Description for the empty state on the Tax Rates selector screen")
         static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
                                                                          comment: "Text to prompt the user to edit tax rates in the web")
     }

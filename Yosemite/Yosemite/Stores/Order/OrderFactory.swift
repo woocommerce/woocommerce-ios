@@ -19,6 +19,7 @@ public enum OrderFactory {
               number: "",
               status: status,
               currency: "",
+              currencySymbol: "",
               customerNote: "",
               dateCreated: Date(),
               dateModified: Date(),

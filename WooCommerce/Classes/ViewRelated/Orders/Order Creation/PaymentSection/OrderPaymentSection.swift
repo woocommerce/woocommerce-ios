@@ -128,7 +128,7 @@ struct OrderPaymentSection: View {
         Divider()
 
         taxRateAddedAutomaticallyRow
-            .renderedIf(viewModel.shouldShowTaxRateAddedAutomaticallyRow)
+            .renderedIf(viewModel.storedTaxRateNoticeText != nil)
     }
 
     @ViewBuilder private var shippingRow: some View {
@@ -232,7 +232,7 @@ struct OrderPaymentSection: View {
             HStack(alignment: .top, spacing: Constants.taxRateAddedAutomaticallyRowHorizontalSpacing) {
                 Image(systemName: "info.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                Text(Localization.taxRateAddedAutomaticallyRowText)
+                Text(viewModel.storedTaxRateNoticeText ?? "")
                     .subheadlineStyle()
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer()

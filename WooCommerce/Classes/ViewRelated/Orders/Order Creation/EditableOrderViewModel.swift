@@ -762,7 +762,7 @@ extension EditableOrderViewModel {
         let taxLineViewModels: [TaxLineViewModel]
         let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
         let taxBasedOnSetting: TaxBasedOnSetting?
-        let shouldShowTaxRateAddedAutomaticallyRow: Bool
+        let storedTaxRateNoticeText: String?
         let couponCode: String
         var discountTotal: String
         let shouldShowDiscountTotal: Bool
@@ -798,7 +798,7 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
-             shouldShowTaxRateAddedAutomaticallyRow: Bool = false,
+             storedTaxRateNoticeText: String? = nil,
              taxLineViewModels: [TaxLineViewModel] = [],
              taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
              couponCode: String = "",
@@ -831,7 +831,7 @@ extension EditableOrderViewModel {
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
             self.taxBasedOnSetting = taxBasedOnSetting
-            self.shouldShowTaxRateAddedAutomaticallyRow = shouldShowTaxRateAddedAutomaticallyRow
+            self.storedTaxRateNoticeText = storedTaxRateNoticeText
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
             self.couponCode = couponCode
@@ -1157,7 +1157,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
-                                            shouldShowTaxRateAddedAutomaticallyRow: order.taxes.isNotEmpty && storedTaxRate != nil,
+                                            storedTaxRateNoticeText: storedTaxRate?.orderDetailsApplicabilityText(to: order),
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
                                                                                                          taxBasedOnSetting: taxBasedOnSetting),
@@ -1247,9 +1247,11 @@ private extension EditableOrderViewModel {
     }
 
     func applySelectedStoredTaxRateIfAny() async {
-        if let taxRate = await SelectedStoredTaxRateFetcher().fetchSelectedStoredTaxRate(siteID: siteID) {
-            addTaxRateAddressToOrder(taxRate: taxRate)
-            storedTaxRate = taxRate
+        if let taxRate = await SelectedStoredTaxRateFetcher(stores: stores).fetchSelectedStoredTaxRate(siteID: siteID) {
+            Task { @MainActor in
+                addTaxRateAddressToOrder(taxRate: taxRate)
+                storedTaxRate = taxRate
+            }
         }
     }
 

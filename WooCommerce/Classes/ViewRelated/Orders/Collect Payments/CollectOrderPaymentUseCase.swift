@@ -446,7 +446,8 @@ private extension CollectOrderPaymentUseCase {
                                                                             paymentGatewayAccount: paymentGatewayAccount,
                                                                             onCompletion: onCompletion)
                         case .success:
-                            self.paymentOrchestrator.retryPayment(for: self.order) { result in
+                            self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
+                                guard let self = self else { return }
                                 switch result {
                                 case .success(let capturedPaymentData):
                                     self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)

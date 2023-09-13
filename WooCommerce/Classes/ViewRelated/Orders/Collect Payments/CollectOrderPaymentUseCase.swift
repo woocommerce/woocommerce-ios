@@ -438,7 +438,7 @@ private extension CollectOrderPaymentUseCase {
                 error: error,
                 tryAgain: { [weak self] in
                     guard let self = self else { return }
-                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion ) { result in
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
                         switch result {
                         case .failure(let error):
                             return self.handlePaymentFailureAndRetryPayment(error,

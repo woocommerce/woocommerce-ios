@@ -105,8 +105,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
-                default:
-                    break
+                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                    DDLogInfo("💳 Unhandled card reader event received: \(event)")
                 }
             },
             onProcessingCompletion: { intent in
@@ -144,8 +144,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     handlers.onProcessingMessage()
-                default:
-                    break
+                case .cardInserted, .cardRemoved, .lowBattery, .lowBatteryResolved, .disconnected:
+                    DDLogInfo("💳 Unhandled card reader event received during retry: \(event)")
                 }
             },
             onProcessingCompletion: { intent in
@@ -364,17 +364,5 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
-
-//        init(onPreparingReader: @escaping (() -> Void),
-//             onWaitingForInput: @escaping ((CardReaderInput) -> Void),
-//             onProcessingMessage: @escaping (() -> Void),
-//             onDisplayMessage: @escaping ((String) -> Void),
-//             onProcessingCompletion: @escaping ((PaymentIntent) -> Void)) {
-//            self.onPreparingReader = onPreparingReader
-//            self.onWaitingForInput = onWaitingForInput
-//            self.onProcessingMessage = onProcessingMessage
-//            self.onDisplayMessage = onDisplayMessage
-//            self.onProcessingCompletion = onProcessingCompletion
-//        }
     }
 }

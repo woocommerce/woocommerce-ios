@@ -321,7 +321,7 @@ extension StripeCardReaderService: CardReaderService {
         }
         switch activePaymentIntent.status {
         case .requiresPaymentMethod:
-            return self.collectPaymentMethod(intent: activePaymentIntent)
+            return collectPaymentMethod(intent: activePaymentIntent)
                 .flatMap { intent in
                     self.processPayment(intent: intent)
                 }

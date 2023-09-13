@@ -124,7 +124,7 @@ extension CardPresentPaymentOnboardingState {
 
     public var shouldTrackOnboardingStepEvents: Bool {
         switch self {
-        case .completed(_), .loading:
+        case .loading:
             return false
         default:
             return true

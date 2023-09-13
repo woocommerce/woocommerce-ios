@@ -580,6 +580,7 @@
 		B93E032E2A9613CB009CA9C1 /* setting-tax-based-on-parse-error.json in Resources */ = {isa = PBXBuildFile; fileRef = B93E032D2A9613CA009CA9C1 /* setting-tax-based-on-parse-error.json */; };
 		B963A5CC2853870000EFADA0 /* OrderItemRefundMetaData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */; };
 		B990FA922AA1EBC600496375 /* TaxRate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B990FA912AA1EBC600496375 /* TaxRate.swift */; };
+		B9CA4F332AB213DF00285AB9 /* tax.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CA4F322AB213DF00285AB9 /* tax.json */; };
 		B9CB14DE2A42DE60005912C2 /* products-sku-search-non-purchasable.json in Resources */ = {isa = PBXBuildFile; fileRef = B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */; };
 		B9CFF6522AB2118900C2F616 /* TaxRateMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CFF6512AB2118900C2F616 /* TaxRateMapper.swift */; };
 		B9DFE4BE2AA2057B00174004 /* TaxRateListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */; };
@@ -1552,6 +1553,7 @@
 		B93E032D2A9613CA009CA9C1 /* setting-tax-based-on-parse-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "setting-tax-based-on-parse-error.json"; sourceTree = "<group>"; };
 		B963A5CB2853870000EFADA0 /* OrderItemRefundMetaData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefundMetaData.swift; sourceTree = "<group>"; };
 		B990FA912AA1EBC600496375 /* TaxRate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRate.swift; sourceTree = "<group>"; };
+		B9CA4F322AB213DF00285AB9 /* tax.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = tax.json; sourceTree = "<group>"; };
 		B9CB14DD2A42DE60005912C2 /* products-sku-search-non-purchasable.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-sku-search-non-purchasable.json"; sourceTree = "<group>"; };
 		B9CFF6512AB2118900C2F616 /* TaxRateMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateMapper.swift; sourceTree = "<group>"; };
 		B9DFE4BD2AA2057B00174004 /* TaxRateListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateListMapper.swift; sourceTree = "<group>"; };
@@ -2781,6 +2783,7 @@
 				CE12AE9A29F2AC3C0056DD17 /* subscription-without-data.json */,
 				CCE5F38E29EFFE3800087332 /* subscription-list.json */,
 				CCE5F39429F0034400087332 /* subscription-list-without-data.json */,
+				B9CA4F322AB213DF00285AB9 /* tax.json */,
 				B9DFE4C12AA22B6F00174004 /* taxes.json */,
 				45ED4F11239E8C57004F1BE3 /* taxes-classes.json */,
 				EE57C1492980CE4B00BC31E7 /* taxes-classes-without-data.json */,
@@ -3708,6 +3711,7 @@
 				CE12AE9529F29F4F0056DD17 /* order-with-subscription-renewal.json in Resources */,
 				CEE9188129F7DC23004B23FF /* order-with-gift-cards.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
+				B9CA4F332AB213DF00285AB9 /* tax.json in Resources */,
 				456930AD2652AF00009ED69D /* shipping-label-carriers-and-rates-success.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
 				6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */,

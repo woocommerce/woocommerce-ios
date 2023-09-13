@@ -48,7 +48,7 @@ public class TaxStore: Store {
         case let .retrieveTaxRates(siteID, pageNumber, pageSize, onCompletion):
             retrieveTaxRates(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveTaxRate(siteID: let siteID, taxRateID: let taxRateID, onCompletion: let onCompletion):
-                    retrieveTaxRates(siteID: siteID, taxRateID: taxRateID, onCompletion: onCompletion)
+            retrieveTaxRate(siteID: siteID, taxRateID: taxRateID, onCompletion: onCompletion)
         }
     }
 }
@@ -118,7 +118,7 @@ private extension TaxStore {
         }
     }
 
-    func retrieveTaxRates(siteID: Int64,
+    func retrieveTaxRate(siteID: Int64,
                           taxRateID: Int64,
                           onCompletion: @escaping (Result<TaxRate, Error>) -> Void) {
         remote.retrieveTaxRate(siteID: siteID, taxRateID: taxRateID) { [weak self] result in

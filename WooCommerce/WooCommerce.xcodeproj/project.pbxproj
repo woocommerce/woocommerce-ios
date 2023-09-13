@@ -1651,7 +1651,8 @@
 		B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
 		B9512FEA2AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */; };
-		B9512FEC2AB1DB3500FDA716 /* TaxRateOrderApplicabilityDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9512FEB2AB1DB3500FDA716 /* TaxRateOrderApplicabilityDeterminer.swift */; };
+		B9512FEC2AB1DB3500FDA716 /* TaxRate+OrderApplicability.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9512FEB2AB1DB3500FDA716 /* TaxRate+OrderApplicability.swift */; };
+		B9512FEE2AB2015800FDA716 /* TaxRateOrderApplicabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9512FED2AB2015800FDA716 /* TaxRateOrderApplicabilityTests.swift */; };
 		B95700AC2A72C1E4001BADF2 /* CustomerSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */; };
 		B95700AE2A72C39C001BADF2 /* CustomerSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */; };
 		B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */; };
@@ -4108,7 +4109,8 @@
 		B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Spotlight.swift"; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
 		B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedStoredTaxRateFetcher.swift; sourceTree = "<group>"; };
-		B9512FEB2AB1DB3500FDA716 /* TaxRateOrderApplicabilityDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateOrderApplicabilityDeterminer.swift; sourceTree = "<group>"; };
+		B9512FEB2AB1DB3500FDA716 /* TaxRate+OrderApplicability.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxRate+OrderApplicability.swift"; sourceTree = "<group>"; };
+		B9512FED2AB2015800FDA716 /* TaxRateOrderApplicabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRateOrderApplicabilityTests.swift; sourceTree = "<group>"; };
 		B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewController.swift; sourceTree = "<group>"; };
 		B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorView.swift; sourceTree = "<group>"; };
 		B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListViewController.swift; sourceTree = "<group>"; };
@@ -8892,7 +8894,7 @@
 				B933CCAF2AA6220E00938F3F /* TaxRateRow.swift */,
 				B933CCB12AA622AE00938F3F /* TaxRateViewModel.swift */,
 				B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */,
-				B9512FEB2AB1DB3500FDA716 /* TaxRateOrderApplicabilityDeterminer.swift */,
+				B9512FEB2AB1DB3500FDA716 /* TaxRate+OrderApplicability.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -8974,6 +8976,7 @@
 			isa = PBXGroup;
 			children = (
 				B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */,
+				B9512FED2AB2015800FDA716 /* TaxRateOrderApplicabilityTests.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -12978,7 +12981,7 @@
 				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
 				262EB5AE298C70EF009DCC36 /* SupportFormViewModel.swift in Sources */,
 				45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */,
-				B9512FEC2AB1DB3500FDA716 /* TaxRateOrderApplicabilityDeterminer.swift in Sources */,
+				B9512FEC2AB1DB3500FDA716 /* TaxRate+OrderApplicability.swift in Sources */,
 				DEF13C522963D0B20024A02B /* PostSiteCredentialLoginChecker.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				023D692E2588BF0900F7DA72 /* ShippingLabelPaperSizeListSelectorCommand.swift in Sources */,
@@ -13696,6 +13699,7 @@
 				039B7E6729F2855B00E21EF4 /* InPersonPaymentsViewModelTests.swift in Sources */,
 				03EF250428C6283B006A033E /* InPersonPaymentsMenuViewModelTests.swift in Sources */,
 				45DB706C26161F970064A6CF /* DecimalWooTests.swift in Sources */,
+				B9512FEE2AB2015800FDA716 /* TaxRateOrderApplicabilityTests.swift in Sources */,
 				CCE4CD172667EBB100E09FD4 /* ShippingLabelPaymentMethodsViewModelTests.swift in Sources */,
 				45AF9DA5265CEA89001EB794 /* ShippingLabelCarriersViewModelTests.swift in Sources */,
 				DEF8CF0D29A76F7E00800A60 /* JetpackSetupCoordinatorTests.swift in Sources */,

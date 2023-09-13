@@ -2,6 +2,8 @@ import Foundation
 import Yosemite
 
 extension TaxRate {
+    /// Returns the string to show in the notice of the Editable Order Details depending on whether the tax rate applies to the order or not.
+    /// 
     func orderDetailsApplicabilityText(to order: Order) -> String? {
         orderApplicabilityStatus(order: order).orderDetailsText
     }

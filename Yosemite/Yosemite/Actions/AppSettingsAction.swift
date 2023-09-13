@@ -229,7 +229,7 @@ public enum AppSettingsAction: Action {
 
     /// Stores the selected tax rate to be applied to orders. Passing a `nil` value removes it from storage. This is site-specific.
     ///
-    case storeSelectedTaxRateID(id: Int64?, siteID: Int64)
+    case setSelectedTaxRateID(id: Int64?, siteID: Int64)
 
     /// Loads the selected tax rate to be applied to orders. This is site-specific.
     ///

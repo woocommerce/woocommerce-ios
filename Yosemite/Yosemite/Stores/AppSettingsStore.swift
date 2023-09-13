@@ -196,8 +196,8 @@ public class AppSettingsStore: Store {
             getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
         case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
             setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
-        case .storeSelectedTaxRateID(let taxRateId, let siteID):
-            storeSelectedTaxRateID(with: taxRateId, siteID: siteID)
+        case .setSelectedTaxRateID(let taxRateId, let siteID):
+            setSelectedTaxRateID(with: taxRateId, siteID: siteID)
         case .loadSelectedTaxRateID(let siteID, let onCompletion):
             loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
         }
@@ -869,7 +869,7 @@ private extension AppSettingsStore {
 // MARK: - Tax Rate
 
 private extension AppSettingsStore {
-    func storeSelectedTaxRateID(with id: Int64?, siteID: Int64) {
+    func setSelectedTaxRateID(with id: Int64?, siteID: Int64) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedSettings = id == nil ? storeSettings.removingSelectedTaxRateID() : storeSettings.copy(selectedTaxRateID: id)
 

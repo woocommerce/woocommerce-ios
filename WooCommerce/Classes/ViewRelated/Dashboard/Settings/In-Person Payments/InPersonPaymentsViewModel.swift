@@ -151,10 +151,16 @@ private extension InPersonPaymentsViewModel {
         guard state.shouldTrackOnboardingStepEvents else {
             return
         }
-        ServiceLocator.analytics
-            .track(event: .InPersonPayments
-                .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
-                                                   countryCode: countryCode))
+        switch state {
+        case .completed, .enabled:
+            ServiceLocator.analytics
+                .track(.cardPresentOnboardingCompleted)
+        default:
+            ServiceLocator.analytics
+                .track(event: .InPersonPayments
+                    .cardPresentOnboardingNotCompleted(reason: state.reasonForAnalytics,
+                                                       countryCode: countryCode))
+        }
     }
 
     func trackSkipped(state: CardPresentPaymentOnboardingState, remindLater: Bool) {

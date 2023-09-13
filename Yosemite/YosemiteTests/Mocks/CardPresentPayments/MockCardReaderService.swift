@@ -139,6 +139,12 @@ final class MockCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    func retryActivePaymentIntent() -> AnyPublisher<Hardware.PaymentIntent, Error> {
+        Just(.fake())
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher()
+    }
+
     func cancelPaymentIntent() -> Future<Void, Error> {
         Future() { [weak self] promise in
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {

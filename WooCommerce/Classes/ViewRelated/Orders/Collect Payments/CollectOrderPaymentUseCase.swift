@@ -228,7 +228,19 @@ private extension CollectOrderPaymentUseCase {
         order.datePaid == nil
     }
 
-    func checkOrderIsStillEligibleForPayment(onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func checkOrderIsStillEligibleForPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                                             onPaymentCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> (),
+                                             onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refreshOrderBeforeInPersonPayment) else {
+            return onCheckCompletion(.success(()))
+        }
+
+        alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
+            self?.cancelPayment(from: .paymentValidatingOrder) {
+                onPaymentCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
+            }
+        }))
+
         let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { [weak self] (order, error) in
             guard let self = self else { return }
             guard let order = order else {
@@ -261,13 +273,7 @@ private extension CollectOrderPaymentUseCase {
     func attemptPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
-            self?.cancelPayment(from: .paymentValidatingOrder) {
-                onCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))
-            }
-        }))
-
-        checkOrderIsStillEligibleForPayment { [weak self] result in
+        checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .failure(let error):
@@ -369,74 +375,57 @@ private extension CollectOrderPaymentUseCase {
                                              alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                                              paymentGatewayAccount: PaymentGatewayAccount,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reusePaymentIntentOnRetryInPersonPayment) else {
+            return legacyHandlePaymentFailureAndRetryPayment(error,
+                                                             alertProvider: paymentAlerts,
+                                                             paymentGatewayAccount: paymentGatewayAccount,
+                                                             onCompletion: onCompletion)
+        }
+
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         analyticsTracker.trackPaymentFailure(with: error)
 
-        if canRetryPayment(with: error) {
-            presentRetryableError(error: error,
-                                  paymentAlerts: paymentAlerts,
-                                  paymentGatewayAccount: paymentGatewayAccount,
-                                  onCompletion: onCompletion)
-        } else {
+        guard let retryableError = error as? CardPaymentErrorProtocol else {
+            return presentNonRetryableError(error: error,
+                                            paymentAlerts: paymentAlerts,
+                                            onCompletion: onCompletion)
+        }
+        switch retryableError.retryApproach {
+        case .restart:
+            presentRetryByRestartingError(error: error,
+                                          paymentAlerts: paymentAlerts,
+                                          paymentGatewayAccount: paymentGatewayAccount,
+                                          onCompletion: onCompletion)
+        case .reuseIntent:
+            presentRetryWithoutRestartingError(error: error,
+                                               paymentAlerts: paymentAlerts,
+                                               paymentGatewayAccount: paymentGatewayAccount,
+                                               onCompletion: onCompletion)
+        case .dontRetry:
             presentNonRetryableError(error: error,
                                      paymentAlerts: paymentAlerts,
                                      onCompletion: onCompletion)
         }
     }
 
-    private func canRetryPayment(with error: Error) -> Bool {
-        switch error {
-        case let serviceError as CardReaderServiceError:
-            switch serviceError {
-            case .paymentMethodCollection(let underlyingError),
-                    .paymentCapture(let underlyingError),
-                    .paymentCancellation(let underlyingError):
-                return canRetryPayment(underlyingError: underlyingError)
-            default:
-                return true
-            }
-        case let useCaseError as CollectOrderPaymentUseCaseError:
-            switch useCaseError {
-            case .flowCanceledByUser, .orderAlreadyPaid:
-                return false
-            case .paymentGatewayNotFound, .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
-                return true
-            }
-        default:
-            return true
-        }
-    }
-
-    private func canRetryPayment(underlyingError: UnderlyingError) -> Bool {
-        switch underlyingError {
-        case .notConnectedToReader,
-                .commandNotAllowedDuringCall,
-                .featureNotAvailableWithConnectedReader:
-            return false
-        default:
-            return true
-        }
-    }
-
-    private func presentRetryableError(error: Error,
-                                       paymentAlerts: CardReaderTransactionAlertsProviding,
-                                       paymentGatewayAccount: PaymentGatewayAccount,
-                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+    private func presentRetryByRestartingError(error: Error,
+                                               paymentAlerts: CardReaderTransactionAlertsProviding,
+                                               paymentGatewayAccount: PaymentGatewayAccount,
+                                               onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
         alertsPresenter.present(
             viewModel: paymentAlerts.error(error: error,
                                            tryAgain: { [weak self] in
-
                                                // Cancel current payment
                                                self?.paymentOrchestrator.cancelPayment() { [weak self] result in
                                                    guard let self = self else { return }
 
                                                    switch result {
-                                                   case .success:
+                                                   case .success, .failure(CardReaderServiceError.paymentCancellation(.noActivePaymentIntent)):
                                                        // Retry payment
                                                        self.attemptPayment(alertProvider: paymentAlerts,
-                                                                                     paymentGatewayAccount: paymentGatewayAccount,
-                                                                                     onCompletion: onCompletion)
+                                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                                           onCompletion: onCompletion)
                                                    case .failure(let cancelError):
                                                        // Inform that payment can't be retried.
                                                        self.alertsPresenter.present(
@@ -448,6 +437,52 @@ private extension CollectOrderPaymentUseCase {
                                            }, dismissCompletion: {
                                                onCompletion(.failure(error))
                                            })
+        )
+    }
+
+    private func presentRetryWithoutRestartingError(error: Error,
+                                                    paymentAlerts: CardReaderTransactionAlertsProviding,
+                                                    paymentGatewayAccount: PaymentGatewayAccount,
+                                                    onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(
+                error: error,
+                tryAgain: { [weak self] in
+                    guard let self = self else { return }
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { result in
+                        switch result {
+                        case .failure(let error):
+                            return self.handlePaymentFailureAndRetryPayment(error,
+                                                                            alertProvider: paymentAlerts,
+                                                                            paymentGatewayAccount: paymentGatewayAccount,
+                                                                            onCompletion: onCompletion)
+                        case .success:
+                            self.paymentOrchestrator.retryPayment(for: self.order) { [weak self] result in
+                                guard let self = self else { return }
+                                switch result {
+                                case .success(let capturedPaymentData):
+                                    self.handleSuccessfulPayment(capturedPaymentData: capturedPaymentData)
+                                    onCompletion(.success(capturedPaymentData))
+                                case .failure(CardReaderServiceError.paymentMethodCollection(.commandCancelled(let cancellationSource))):
+                                    switch cancellationSource {
+                                    case .reader:
+                                        self.handlePaymentCancellationFromReader(alertProvider: paymentAlerts)
+                                    default:
+                                        self.handlePaymentCancellation(from: .other)
+                                    }
+                                case .failure(let error):
+                                    let retryError = CollectOrderPaymentUseCaseError.alreadyRetried(error)
+                                    self.handlePaymentFailureAndRetryPayment(retryError,
+                                                                             alertProvider: paymentAlerts,
+                                                                             paymentGatewayAccount: paymentGatewayAccount,
+                                                                             onCompletion: onCompletion)
+                                }
+                            }
+                        }
+                    }
+                }, dismissCompletion: {
+                    onCompletion(.failure(error))
+                })
         )
     }
 
@@ -522,6 +557,95 @@ private extension CollectOrderPaymentUseCase {
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
         stores.dispatch(AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: order.siteID,
                                                                                   cardReaderType: cardReaderType))
+    }
+}
+
+// MARK: Legacy retry payment handling
+// Remove when reusePaymentIntentOnRetryInPersonPayment feature flag is removed
+private extension CollectOrderPaymentUseCase {
+    func legacyHandlePaymentFailureAndRetryPayment(_ error: Error,
+                                                   alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
+                                                   paymentGatewayAccount: PaymentGatewayAccount,
+                                                   onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        DDLogError("Failed to collect payment: \(error.localizedDescription)")
+
+        analyticsTracker.trackPaymentFailure(with: error)
+
+        if canRetryPayment(with: error) {
+            presentRetryByRestartingError(error: error,
+                                          paymentAlerts: paymentAlerts,
+                                          paymentGatewayAccount: paymentGatewayAccount,
+                                          onCompletion: onCompletion)
+        } else {
+            presentNonRetryableError(error: error,
+                                     paymentAlerts: paymentAlerts,
+                                     onCompletion: onCompletion)
+        }
+    }
+
+    private func canRetryPayment(with error: Error) -> Bool {
+        switch error {
+        case let serviceError as CardReaderServiceError:
+            switch serviceError {
+            case .paymentMethodCollection(let underlyingError),
+                    .paymentCapture(let underlyingError),
+                    .paymentCancellation(let underlyingError):
+                return canRetryPayment(underlyingError: underlyingError)
+            default:
+                return true
+            }
+        case let useCaseError as CollectOrderPaymentUseCaseError:
+            switch useCaseError {
+            case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried:
+                return false
+            case .paymentGatewayNotFound, .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
+                return true
+            }
+        default:
+            return true
+        }
+    }
+
+    private func canRetryPayment(underlyingError: UnderlyingError) -> Bool {
+        switch underlyingError {
+        case .notConnectedToReader,
+                .commandNotAllowedDuringCall,
+                .featureNotAvailableWithConnectedReader:
+            return false
+        default:
+            return true
+        }
+    }
+
+    private func presentRetryableError(error: Error,
+                                           paymentAlerts: CardReaderTransactionAlertsProviding,
+                                           paymentGatewayAccount: PaymentGatewayAccount,
+                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
+        alertsPresenter.present(
+            viewModel: paymentAlerts.error(error: error,
+                                           tryAgain: { [weak self] in
+                                               // Cancel current payment
+                                               self?.paymentOrchestrator.cancelPayment() { [weak self] result in
+                                                   guard let self = self else { return }
+
+                                                   switch result {
+                                                   case .success:
+                                                       // Retry payment
+                                                       self.attemptPayment(alertProvider: paymentAlerts,
+                                                                           paymentGatewayAccount: paymentGatewayAccount,
+                                                                           onCompletion: onCompletion)
+                                                   case .failure(let cancelError):
+                                                       // Inform that payment can't be retried.
+                                                       self.alertsPresenter.present(
+                                                        viewModel: paymentAlerts.nonRetryableError(error: cancelError) {
+                                                            onCompletion(.failure(error))
+                                                        })
+                                                   }
+                                               }
+                                           }, dismissCompletion: {
+                                               onCompletion(.failure(error))
+                                           })
+        )
     }
 }
 
@@ -622,6 +746,7 @@ extension CollectOrderPaymentUseCase {
         case unknownErrorRefreshingOrder
         case couldNotRefreshOrder(Error)
         case orderAlreadyPaid
+        case alreadyRetried(Error)
 
         var errorDescription: String? {
             switch self {
@@ -631,10 +756,16 @@ extension CollectOrderPaymentUseCase {
                 return Localization.paymentGatewayNotFoundLocalizedDescription
             case .unknownErrorRefreshingOrder:
                 return Localization.unknownErrorWhileRefreshingOrderLocalizedDescription
+            case .couldNotRefreshOrder(let error as LocalizedError):
+                return error.errorDescription
             case .couldNotRefreshOrder(let error):
                 return String.localizedStringWithFormat(Localization.couldNotRefreshOrderLocalizedDescription, error.localizedDescription)
             case .orderAlreadyPaid:
                 return Localization.orderAlreadyPaidLocalizedDescription
+            case .alreadyRetried(let error as LocalizedError):
+                return error.errorDescription
+            case .alreadyRetried(let error):
+                return String.localizedStringWithFormat(Localization.couldNotRetryPaymentLocalizedDescription, error.localizedDescription)
             }
         }
 
@@ -662,6 +793,65 @@ extension CollectOrderPaymentUseCase {
 
             static let paymentCancelledLocalizedDescription = NSLocalizedString(
                 "The payment was cancelled.", comment: "Message shown if a payment cancellation is shown as an error.")
+
+            static let couldNotRetryPaymentLocalizedDescription = NSLocalizedString(
+                "Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@",
+                comment: "Error message when retrying an In-Person Payment and an unknown error is received.")
+        }
+    }
+}
+
+enum CardPaymentRetryApproach {
+    case reuseIntent
+    case restart
+    case dontRetry
+}
+
+protocol CardPaymentErrorProtocol {
+    var retryApproach: CardPaymentRetryApproach { get }
+}
+
+extension CardReaderServiceError: CardPaymentErrorProtocol {
+    var retryApproach: CardPaymentRetryApproach {
+        switch self {
+        case .paymentMethodCollection(let underlyingError), .paymentCapture(let underlyingError), .paymentCaptureWithPaymentMethod(let underlyingError, _):
+            guard canRetryPayment(underlyingError: underlyingError) else {
+                return .dontRetry
+            }
+            return .reuseIntent
+        case .retryNotPossibleUnknownCause,
+                .retryNotPossibleNoActivePayment,
+                .retryNotPossibleProcessingInProgress,
+                .retryNotPossibleActivePaymentCancelled,
+                .retryNotPossibleActivePaymentSucceeded,
+                .paymentCancellation:
+            return .dontRetry
+        default:
+            return .restart
+        }
+    }
+
+    private func canRetryPayment(underlyingError: UnderlyingError) -> Bool {
+        switch underlyingError {
+        case .notConnectedToReader,
+                .commandNotAllowedDuringCall,
+                .featureNotAvailableWithConnectedReader:
+            return false
+        default:
+            return true
+        }
+    }
+}
+
+extension CollectOrderPaymentUseCase.CollectOrderPaymentUseCaseError: CardPaymentErrorProtocol {
+    var retryApproach: CardPaymentRetryApproach {
+        switch self {
+        case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried:
+            return .dontRetry
+        case .paymentGatewayNotFound:
+            return .restart
+        case .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
+            return .reuseIntent
         }
     }
 }

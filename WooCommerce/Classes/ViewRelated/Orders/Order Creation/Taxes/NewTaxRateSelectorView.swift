@@ -60,7 +60,7 @@ struct NewTaxRateSelectorView: View {
                             }
                             .background(Color(.listForeground(modal: false)))
 
-                            listFooter
+                            resultsListFooter
                                 .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
 
                             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -71,7 +71,7 @@ struct NewTaxRateSelectorView: View {
                         }
                     }
 
-                    resultsFixedBottomPanel
+                    storeTaxRateBotomView
                         .renderedIf(viewModel.showFixedBottomPanel)
                     case .empty:
                     EmptyState(title: Localization.emptyStateTitle,
@@ -135,7 +135,7 @@ struct NewTaxRateSelectorView: View {
         })
     }
 
-    var listFooter: some View {
+    private var resultsListFooter: some View {
         Group {
             Text(Localization.listFooterResultsSectionTitle)
                 .foregroundColor(Color(.textSubtle))
@@ -160,7 +160,7 @@ struct NewTaxRateSelectorView: View {
         }
     }
 
-    var resultsFixedBottomPanel: some View {
+    private var storeTaxRateBotomView: some View {
         VStack {
             Divider()
 

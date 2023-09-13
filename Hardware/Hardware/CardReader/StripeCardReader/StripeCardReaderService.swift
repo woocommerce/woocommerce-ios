@@ -314,11 +314,48 @@ extension StripeCardReaderService: CardReaderService {
             .eraseToAnyPublisher()
     }
 
+    public func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error> {
+        guard let activePaymentIntent = activePaymentIntent else {
+            return Fail(error: CardReaderServiceError.retryNotPossibleNoActivePayment)
+                .eraseToAnyPublisher()
+        }
+        switch activePaymentIntent.status {
+        case .requiresPaymentMethod:
+            return collectPaymentMethod(intent: activePaymentIntent)
+                .flatMap { intent in
+                    self.processPayment(intent: intent)
+                }
+                .map(PaymentIntent.init(intent:))
+                .eraseToAnyPublisher()
+        case .requiresConfirmation:
+            return processPayment(intent: activePaymentIntent)
+                .map(PaymentIntent.init(intent:))
+                .eraseToAnyPublisher()
+        case .requiresCapture:
+            return Just(PaymentIntent(intent: activePaymentIntent))
+                .setFailureType(to: CardReaderServiceError.self)
+                .mapError({ $0 as Error })
+                .eraseToAnyPublisher()
+        case .processing:
+            return Fail(error: CardReaderServiceError.retryNotPossibleProcessingInProgress)
+                .eraseToAnyPublisher()
+        case .canceled:
+            return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentCancelled)
+                .eraseToAnyPublisher()
+        case .succeeded:
+            return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentSucceeded)
+                .eraseToAnyPublisher()
+        @unknown default:
+            return Fail(error: CardReaderServiceError.retryNotPossibleUnknownCause)
+                .eraseToAnyPublisher()
+        }
+    }
+
     public func cancelPaymentIntent() -> Future<Void, Error> {
         return Future() { [weak self] promise in
             guard let self = self,
                   let activePaymentIntent = self.activePaymentIntent else {
-                promise(.failure(CardReaderServiceError.paymentCancellation()))
+                promise(.failure(CardReaderServiceError.paymentCancellation(underlyingError: .noActivePaymentIntent)))
                 return
             }
 
@@ -590,19 +627,31 @@ private extension StripeCardReaderService {
     func processPayment(intent: StripeTerminal.PaymentIntent) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
             Terminal.shared.processPayment(intent) { (intent, error) in
+                guard let self = self else { return }
                 if let error = error {
                     let underlyingError = UnderlyingError(with: error)
-                    if let paymentMethod = error.paymentIntent.map({ PaymentIntent(intent: $0) })?.paymentMethod() {
-                        promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
-                                                                                                paymentMethod: paymentMethod)))
-                    } else {
-                        promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+
+                    guard let paymentIntent = error.paymentIntent else {
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
+                    }
+
+                    self.activePaymentIntent = paymentIntent
+                    switch (paymentIntent.status, PaymentIntent(intent: paymentIntent).paymentMethod()) {
+                    case (.requiresCapture, _):
+                        // This payment intent can be used, we lost context to get an error with a PI that requires capture
+                        self.activePaymentIntent = nil
+                        return promise(.success(paymentIntent))
+                    case (_, .some(let paymentMethod)):
+                        return promise(.failure(CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: underlyingError,
+                                                                                                       paymentMethod: paymentMethod)))
+                    default:
+                        return promise(.failure(CardReaderServiceError.paymentCapture(underlyingError: underlyingError)))
                     }
                 }
 
                 if let intent = intent {
-                    promise(.success(intent))
-                    self?.activePaymentIntent = nil
+                    self.activePaymentIntent = nil
+                    return promise(.success(intent))
                 }
             }
         }

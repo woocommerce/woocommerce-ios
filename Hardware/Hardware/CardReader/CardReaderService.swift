@@ -49,6 +49,12 @@ public protocol CardReaderService {
     /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
     func capturePayment(_ parameters: PaymentIntentParameters) -> AnyPublisher<PaymentIntent, Error>
 
+    /// Retries the most recent payment intent attempted.
+    /// The returned publisher will behave as a Future, eventually producing a single value and finishing, or failing.
+    /// This action continues at the appropriate place in the `capturePayment` flow, but parameters cannot be changed.
+    /// If the payment cannot be retried, an appropriate error will immediately return.
+    func retryActivePaymentIntent() -> AnyPublisher<PaymentIntent, Error>
+
     /// Cancels a PaymentIntent
     func cancelPaymentIntent() -> Future<Void, Error>
 

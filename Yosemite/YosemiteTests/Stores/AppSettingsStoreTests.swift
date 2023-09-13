@@ -1207,7 +1207,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(isVisible)
     }
 
-    func test_storeSelectedTaxRateID_works_correctly() throws {
+    func test_setSelectedTaxRateID_works_correctly() throws {
         // Given
         let siteID: Int64 = 1234
         let storedTaxRateID: Int64 = 4321
@@ -1216,7 +1216,7 @@ extension AppSettingsStoreTests {
         try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
 
         // When
-        let action = AppSettingsAction.storeSelectedTaxRateID(id: storedTaxRateID, siteID: siteID)
+        let action = AppSettingsAction.setSelectedTaxRateID(id: storedTaxRateID, siteID: siteID)
         subject?.onAction(action)
 
         // Then

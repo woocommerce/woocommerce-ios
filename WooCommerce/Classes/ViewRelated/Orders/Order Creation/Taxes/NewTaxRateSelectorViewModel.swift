@@ -93,7 +93,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         }
 
         if storeSelectedTaxRate {
-            stores.dispatch(AppSettingsAction.storeSelectedTaxRateID(id: taxRate.id, siteID: siteID))
+            stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: taxRate.id, siteID: siteID))
         }
 
         onTaxRateSelected(taxRate)

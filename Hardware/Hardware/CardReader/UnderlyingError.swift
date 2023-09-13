@@ -152,6 +152,10 @@ public enum UnderlyingError: Error, Equatable {
     /// Connection attempt invalidated while it was in progress – e.g. the store was changed during a connection
     case connectionAttemptInvalidated
 
+    /// Errors that originate because there's no active payment intent, so the operation is invalid, e.g. cancelling the active PI when there isn't one.
+    /// 
+    case noActivePaymentIntent
+
     // MARK: - Tap to Pay on iPhone related errors
 
     /// The device must have a passcode in order to use Tap to Pay on iPhone
@@ -414,6 +418,11 @@ extension UnderlyingError: LocalizedError {
         case .connectionAttemptInvalidated:
             return NSLocalizedString("Sorry, we could not connect to the reader. Please try again.",
                                      comment: "Error message shown when an in-progress connection is cancelled by the system")
+
+        case .noActivePaymentIntent:
+            return NSLocalizedString("Sorry, we could not complete this action, as no active payment was found.",
+                                     comment: "Underlying error message for actions which require an active payment, " +
+                                     "such as cancellation, when none is found. Unlikely to be shown.")
 
             // MARK: - Tap to Pay on iPhone errors
         case .passcodeNotEnabled:

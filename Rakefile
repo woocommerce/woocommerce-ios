@@ -28,7 +28,7 @@ namespace :dependencies do
     task :install do
       puts 'Bundler not found in PATH, installing to vendor'
       ENV['GEM_HOME'] = File.join(PROJECT_DIR, 'vendor', 'gems')
-      ENV['PATH'] = File.join(PROJECT_DIR, 'vendor', 'gems', 'bin') + ":#{ENV['PATH']}"
+      ENV['PATH'] = File.join(PROJECT_DIR, 'vendor', 'gems', 'bin') + ":#{ENV.fetch('PATH', nil)}"
       sh 'gem install bundler' unless command?('bundler')
     end
     CLOBBER << 'vendor/gems'
@@ -252,9 +252,7 @@ def xcodebuild(*build_cmds)
   cmd += " -configuration #{xcode_configuration}"
   cmd += ' '
   cmd += build_cmds.map(&:to_s).join(' ')
-  unless ENV['verbose']
-    cmd += ' | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}'
-  end
+  cmd += ' | bundle exec xcpretty -f `bundle exec xcpretty-travis-formatter` && exit ${PIPESTATUS[0]}' unless ENV['verbose']
   sh(cmd)
 end
 

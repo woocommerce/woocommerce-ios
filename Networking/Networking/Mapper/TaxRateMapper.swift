@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: TaxRate
 ///
 struct TaxRateMapper: Mapper {

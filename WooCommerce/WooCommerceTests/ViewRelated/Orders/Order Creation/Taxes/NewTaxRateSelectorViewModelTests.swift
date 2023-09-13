@@ -176,15 +176,15 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
             completion(.success([taxRate]))
         }
 
-        var storeSelectedTaxRateIDCalledSiteID: Int64?
+        var setSelectedTaxRateIDCalledSiteID: Int64?
         var storingTaxRateID: Int64?
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
-            guard case let .storeSelectedTaxRateID(taxRateID, siteID) = action else {
+            guard case let .setSelectedTaxRateID(taxRateID, siteID) = action else {
                 return
             }
 
             storingTaxRateID = taxRateID
-            storeSelectedTaxRateIDCalledSiteID = siteID
+            setSelectedTaxRateIDCalledSiteID = siteID
         }
 
         // When
@@ -193,7 +193,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         viewModel.onRowSelected(with: 0, storeSelectedTaxRate: true)
 
         // Then
-        XCTAssertEqual(storeSelectedTaxRateIDCalledSiteID, sampleSiteID)
+        XCTAssertEqual(setSelectedTaxRateIDCalledSiteID, sampleSiteID)
         XCTAssertEqual(storingTaxRateID, taxRate.id)
     }
 

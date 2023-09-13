@@ -193,4 +193,12 @@ public enum FeatureFlag: Int {
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping
+
+    /// Enables the reuse of Payment Intents when retrying a failed payment
+    /// 
+    case reusePaymentIntentOnRetryInPersonPayment
+
+    /// Enables a required refresh of the order before each IPP payment (or retry)
+    ///
+    case refreshOrderBeforeInPersonPayment
 }

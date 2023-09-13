@@ -49,6 +49,9 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     /// The requested resourced does not exist remotely
     case resourceDoesNotExist
 
+    /// The requested resource id is invalid
+    case invalidResourceID
+
     /// Decodable Initializer.
     ///
     public init(from decoder: Decoder) throws {
@@ -74,6 +77,8 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
         case Constants.unknownToken,
             Constants.invalidBlog where message == ErrorMessages.jetpackNotConnected:
             self = .jetpackNotConnected
+        case Constants.invalidResourceID:
+            self = .invalidResourceID
         default:
             self = .unknown(code: error, message: message)
         }
@@ -83,13 +88,14 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     /// Constants for Possible Error Identifiers
     ///
     private enum Constants {
-        static let unauthorized     = "unauthorized"
-        static let invalidBlog      = "invalid_blog"
-        static let invalidToken     = "invalid_token"
-        static let requestFailed    = "http_request_failed"
-        static let noRestRoute      = "rest_no_route"
-        static let restTermInvalid  = "woocommerce_rest_term_invalid"
-        static let unknownToken     = "unknown_token"
+        static let unauthorized         = "unauthorized"
+        static let invalidBlog          = "invalid_blog"
+        static let invalidToken         = "invalid_token"
+        static let requestFailed        = "http_request_failed"
+        static let noRestRoute          = "rest_no_route"
+        static let restTermInvalid      = "woocommerce_rest_term_invalid"
+        static let unknownToken         = "unknown_token"
+        static let invalidResourceID    = "woocommerce_rest_invalid_id"
     }
 
     /// Coding Keys
@@ -134,6 +140,8 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Resource does not exist", comment: "WordPress.com error thrown when a requested resource does not exist remotely.")
         case .jetpackNotConnected:
             return NSLocalizedString("Jetpack Not Connected", comment: "WordPress.com error thrown when Jetpack is not connected.")
+        case .invalidResourceID:
+            return NSLocalizedString("Dotcom Invalid resource ID.", comment: "WordPress.com error thrown when the requested id is invalid.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
             let messageFormat = NSLocalizedString(

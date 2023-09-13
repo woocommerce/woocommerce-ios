@@ -307,6 +307,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
+    case cardPresentOnboardingCompleted = "card_present_onboarding_completed"
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"
     case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
     case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"

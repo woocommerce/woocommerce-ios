@@ -19,6 +19,8 @@ struct NewTaxRateSelectorView: View {
     ///
     @State private var showingWPAdminWebView: Bool = false
 
+    @State private var storeSelectedTaxRate = false
+
     var body: some View {
         NavigationView {
             VStack(alignment: .leading, spacing: 0) {
@@ -50,7 +52,7 @@ struct NewTaxRateSelectorView: View {
                         LazyVStack(spacing: 0) {
                             ForEach(Array(viewModel.taxRateViewModels.enumerated()), id: \.offset) { index, taxRateViewModel in
                                 TaxRateRow(viewModel: taxRateViewModel) {
-                                    viewModel.onRowSelected(with: index)
+                                    viewModel.onRowSelected(with: index, storeSelectedTaxRate: storeSelectedTaxRate)
                                     dismiss()
                                 }
 
@@ -58,7 +60,7 @@ struct NewTaxRateSelectorView: View {
                             }
                             .background(Color(.listForeground(modal: false)))
 
-                            bottomNotice
+                            resultsListFooter
                                 .renderedIf(!viewModel.shouldShowBottomActivityIndicator)
 
                             InfiniteScrollIndicator(showContent: viewModel.shouldShowBottomActivityIndicator)
@@ -68,6 +70,9 @@ struct NewTaxRateSelectorView: View {
                                 }
                         }
                     }
+
+                    storeTaxRateBotomView
+                        .renderedIf(viewModel.showFixedBottomPanel)
                     case .empty:
                     EmptyState(title: Localization.emptyStateTitle,
                                    description: Localization.emptyStateDescription,
@@ -130,9 +135,9 @@ struct NewTaxRateSelectorView: View {
         })
     }
 
-    var bottomNotice: some View {
+    private var resultsListFooter: some View {
         Group {
-            Text(Localization.bottomNoticeResultsSectionTitle)
+            Text(Localization.listFooterResultsSectionTitle)
                 .foregroundColor(Color(.textSubtle))
                 .footnoteStyle()
                 .padding(.top, Layout.editTaxRatesInWpAdminSectionTopPadding)
@@ -154,6 +159,21 @@ struct NewTaxRateSelectorView: View {
             .padding(.top, Layout.editTaxRatesInWpAdminSectionVerticalSpacing)
         }
     }
+
+    private var storeTaxRateBotomView: some View {
+        VStack {
+            Divider()
+
+            Toggle(isOn: $storeSelectedTaxRate) {
+                VStack(alignment: .leading, spacing: Layout.fixedBottomPanelVerticalSpace) {
+                    Text(Localization.fixedBottomPanelBody)
+                    Text(Localization.fixedBottomPanelFootnote)
+                        .footnoteStyle()
+                }
+            }
+            .padding(Layout.generalPadding)
+        }
+    }
 }
 
 private extension NewTaxRateSelectorView {
@@ -172,6 +192,7 @@ extension NewTaxRateSelectorView {
         static let editTaxRatesInWpAdminSectionTopPadding: CGFloat = 24
         static let editTaxRatesInWpAdminSectionVerticalSpacing: CGFloat = 8
         static let externalLinkImageSize: CGFloat = 18
+        static let fixedBottomPanelVerticalSpace: CGFloat = 4
     }
     enum Localization {
         static let navigationTitle = NSLocalizedString("Set Tax Rate", comment: "Navigation title for the tax rate selector")
@@ -184,7 +205,10 @@ extension NewTaxRateSelectorView {
         static let emptyStateTitle = NSLocalizedString("We couldn’t find any tax rates", comment: "Title for the empty state on the Tax Rates selector screen")
         static let emptyStateDescription = NSLocalizedString("Add tax rates in admin. Only tax rates with location information will be shown here.",
                                                              comment: "Description for the empty state on the Tax Rates selector screen")
-        static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
+        static let listFooterResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
                                                                          comment: "Text to prompt the user to edit tax rates in the web")
+        static let fixedBottomPanelBody = NSLocalizedString("Add this rate to all created orders", comment: "Body for the action to store selected tax rate")
+        static let fixedBottomPanelFootnote = NSLocalizedString("This will not affect online orders",
+                                                                comment: "Footnote for the action to store selected tax rate")
     }
 }

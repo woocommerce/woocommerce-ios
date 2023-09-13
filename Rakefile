@@ -109,7 +109,7 @@ namespace :dependencies do
             Dir.chdir(tmpdir) do
               sh "git checkout --quiet #{SWIFTLINT_VERSION}"
               sh 'git submodule --quiet update --init --recursive'
-              FileUtils.remove_entry_secure(swiftlint_path) if Dir.exist?(swiftlint_path)
+              FileUtils.rm_rf(swiftlint_path)
               FileUtils.mkdir_p(swiftlint_path)
               sh "make prefix_install PREFIX='#{swiftlint_path}'"
             end

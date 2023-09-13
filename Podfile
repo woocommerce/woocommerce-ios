@@ -125,6 +125,15 @@ target 'StoreWidgetsExtension' do
   keychain
 end
 
+# Notification Content Target
+# ==========
+#
+target 'NotificationExtension' do
+  project 'WooCommerce/WooCommerce.xcodeproj'
+  tracks
+  keychain
+end
+
 # Yosemite Layer:
 # ===============
 #

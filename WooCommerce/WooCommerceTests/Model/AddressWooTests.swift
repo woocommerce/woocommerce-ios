@@ -30,7 +30,7 @@ class AddressWooTests: XCTestCase {
     ///
     func test_from_taxRate_when_tax_rate_has_location_but_array_properties_are_empty_then_ressorts_to_single_properties() {
         // Given
-        let taxRate = TaxRate.fake().copy( country: "US", state: "CA", postcode: "12345", postcodes: [], city: "Miami", cities: [])
+        let taxRate = TaxRate.fake().copy(country: "US", state: "CA", postcode: "12345", postcodes: [], city: "Miami", cities: [])
 
         // When
         let address = Address.from(taxRate: taxRate)

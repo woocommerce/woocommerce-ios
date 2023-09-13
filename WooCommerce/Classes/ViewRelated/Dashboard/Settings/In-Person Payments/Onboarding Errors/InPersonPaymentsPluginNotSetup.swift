@@ -30,6 +30,7 @@ struct InPersonPaymentsPluginNotSetup: View {
                     event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaTapped(
                         reason: analyticReason,
                         countryCode: cardPresentConfiguration.countryCode))
+                trackPluginSetupTappedEvent()
             } label: {
                 HStack {
                     Text(Localization.primaryButton)
@@ -88,5 +89,11 @@ private extension InPersonPaymentsPluginNotSetup {
     var learnMoreAnalyticEvent: WooAnalyticsEvent? {
         WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingLearnMoreTapped(reason: analyticReason,
                                                                                 countryCode: cardPresentConfiguration.countryCode)
+    }
+
+    private func trackPluginSetupTappedEvent() {
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.InPersonPayments.cardPresentOnboardingCtaFailed(
+            reason: "plugin_setup_tapped",
+            countryCode: cardPresentConfiguration.countryCode))
     }
 }

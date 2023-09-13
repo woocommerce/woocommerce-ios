@@ -1829,9 +1829,9 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step)
         ///   - countryCode: the country code of the store
-        ///   - error: the logged error
+        ///   - error: the logged error response from the API, if any.
         ///
-        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
                               properties: [
                                 Keys.countryCode: countryCode,

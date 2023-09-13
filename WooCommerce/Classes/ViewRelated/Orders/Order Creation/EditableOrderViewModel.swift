@@ -156,12 +156,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Selected tax rate to apply to the order
     ///
-    @Published private var selectedTaxRate: TaxRate? = nil
+    @Published private var storedTaxRate: TaxRate? = nil
 
     /// Text to show on entry point for selecting a tax rate
-    /// 
     var taxRateRowText: String {
-        selectedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
+        storedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
     }
 
     /// Defines the multiple lines info message to show.
@@ -381,7 +380,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureMultipleLinesMessage()
         resetAddressForm()
         syncInitialSelectedState()
-        retrieveTaxBasedOnSetting()
+        configureTaxRates()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -1158,7 +1157,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             taxBasedOnSetting: taxBasedOnSetting,
-                                            shouldShowTaxRateAddedAutomaticallyRow: order.taxes.isNotEmpty && selectedTaxRate != nil,
+                                            shouldShowTaxRateAddedAutomaticallyRow: order.taxes.isNotEmpty && storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
                                                                                                          taxBasedOnSetting: taxBasedOnSetting),
@@ -1179,7 +1178,7 @@ private extension EditableOrderViewModel {
                                                 self?.analytics.track(event: WooAnalyticsEvent.Orders.orderTaxHelpButtonTapped())
                                             },
                                             onDismissWpAdminWebViewClosure: { [weak self] in
-                                                self?.retrieveTaxBasedOnSetting()
+                                                self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
                                             },
                                             currencyFormatter: self.currencyFormatter)
@@ -1223,7 +1222,7 @@ private extension EditableOrderViewModel {
             .assign(to: &$multipleLinesMessage)
     }
 
-    func retrieveTaxBasedOnSetting() {
+    func configureTaxRates() {
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -1232,10 +1231,12 @@ private extension EditableOrderViewModel {
                 case .success(let setting):
                 let canApplyTaxRates = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
-                self.shouldShowNewTaxRateSection = canApplyTaxRates
 
                 if canApplyTaxRates {
-                    applySelectedStoredTaxRateIfAny()
+                    applySelectedStoredTaxRateIfAny {
+                        // Now that we have all the necessary information related to tax rates, show the tax rate selector entry point
+                        self.shouldShowNewTaxRateSection = true
+                    }
                 }
 
                 self.taxBasedOnSetting = setting
@@ -1245,18 +1246,22 @@ private extension EditableOrderViewModel {
         }))
     }
 
-    func applySelectedStoredTaxRateIfAny() {
+    func applySelectedStoredTaxRateIfAny(completion: @escaping () -> Void) {
         stores.dispatch(AppSettingsAction.loadSelectedTaxRateID(siteID: siteID) { [weak self] taxRateID in
             guard let taxRateID = taxRateID,
                   let self = self else {
+                completion()
+                
                 return
             }
 
             stores.dispatch(TaxAction.retrieveTaxRate(siteID: self.siteID, taxRateID: taxRateID) { result in
                 if case let .success(taxRate) = result {
                     self.addTaxRateAddressToOrder(taxRate: taxRate)
-                    self.selectedTaxRate = taxRate
+                    self.storedTaxRate = taxRate
                 }
+
+                completion()
             })
         })
     }

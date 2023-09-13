@@ -1650,6 +1650,7 @@
 		B946881829B8DDC2000646B0 /* ProductsViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */; };
 		B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */; };
 		B95112DA28BF79CA00D9578D /* PaymentsRoute.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95112D928BF79CA00D9578D /* PaymentsRoute.swift */; };
+		B9512FEA2AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */; };
 		B95700AC2A72C1E4001BADF2 /* CustomerSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */; };
 		B95700AE2A72C39C001BADF2 /* CustomerSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */; };
 		B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */; };
@@ -4105,6 +4106,7 @@
 		B946881729B8DDC2000646B0 /* ProductsViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsViewController+Activity.swift"; sourceTree = "<group>"; };
 		B946881929BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+Spotlight.swift"; sourceTree = "<group>"; };
 		B95112D928BF79CA00D9578D /* PaymentsRoute.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRoute.swift; sourceTree = "<group>"; };
+		B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedStoredTaxRateFetcher.swift; sourceTree = "<group>"; };
 		B95700AB2A72C1E4001BADF2 /* CustomerSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewController.swift; sourceTree = "<group>"; };
 		B95700AD2A72C39C001BADF2 /* CustomerSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorView.swift; sourceTree = "<group>"; };
 		B95864072A657D2F002C4C6E /* EnhancedCouponListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedCouponListViewController.swift; sourceTree = "<group>"; };
@@ -8887,6 +8889,7 @@
 				B935D35B2A9F44C60067B927 /* WPAdminTaxSettingsURLProvider.swift */,
 				B933CCAF2AA6220E00938F3F /* TaxRateRow.swift */,
 				B933CCB12AA622AE00938F3F /* TaxRateViewModel.swift */,
+				B9512FE92AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -12458,6 +12461,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				B9512FEA2AB19FC200FDA716 /* SelectedStoredTaxRateFetcher.swift in Sources */,
 				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				DE8FCD1A2A80FBBD00CB707D /* StoreCreationProfilerQuestionContainerView.swift in Sources */,

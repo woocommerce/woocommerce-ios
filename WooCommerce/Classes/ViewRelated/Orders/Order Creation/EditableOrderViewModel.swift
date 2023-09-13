@@ -1233,8 +1233,8 @@ private extension EditableOrderViewModel {
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
 
                 if canApplyTaxRates {
-                    applySelectedStoredTaxRateIfAny {
-                        // Now that we have all the necessary information related to tax rates, show the tax rate selector entry point
+                    Task { @MainActor in
+                        await self.applySelectedStoredTaxRateIfAny()
                         self.shouldShowNewTaxRateSection = true
                     }
                 }
@@ -1246,24 +1246,11 @@ private extension EditableOrderViewModel {
         }))
     }
 
-    func applySelectedStoredTaxRateIfAny(completion: @escaping () -> Void) {
-        stores.dispatch(AppSettingsAction.loadSelectedTaxRateID(siteID: siteID) { [weak self] taxRateID in
-            guard let taxRateID = taxRateID,
-                  let self = self else {
-                completion()
-                
-                return
-            }
-
-            stores.dispatch(TaxAction.retrieveTaxRate(siteID: self.siteID, taxRateID: taxRateID) { result in
-                if case let .success(taxRate) = result {
-                    self.addTaxRateAddressToOrder(taxRate: taxRate)
-                    self.storedTaxRate = taxRate
-                }
-
-                completion()
-            })
-        })
+    func applySelectedStoredTaxRateIfAny() async {
+        if let taxRate = await SelectedStoredTaxRateFetcher().fetchSelectedStoredTaxRate(siteID: siteID) {
+            addTaxRateAddressToOrder(taxRate: taxRate)
+            storedTaxRate = taxRate
+        }
     }
 
     /// Tracks when customer details have been added

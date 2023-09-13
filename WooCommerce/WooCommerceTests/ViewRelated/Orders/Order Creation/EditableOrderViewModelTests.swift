@@ -1430,6 +1430,50 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
     }
 
+    func test_viewModel_when_taxRate_is_stored_then_resets_addressFormViewModel_fields_with_new_data() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        })
+
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        stores.whenReceivingAction(ofType: TaxAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxRate(_, _, let onCompletion):
+                onCompletion(.success(taxRate))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        waitUntil {
+            viewModel.addressFormViewModel.fields.state.isNotEmpty
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.state, taxRate.state)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.country, taxRate.country)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.postcode, taxRate.postcodes.first)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
+    }
+
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_resets_addressFormViewModel_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in

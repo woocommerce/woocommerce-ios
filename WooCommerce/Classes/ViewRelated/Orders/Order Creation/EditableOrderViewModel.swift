@@ -42,6 +42,11 @@ final class EditableOrderViewModel: ObservableObject {
         case selector
     }
 
+    enum TaxRateRowAction {
+        case taxSelector
+        case storedTaxSelectorSheet
+    }
+
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
     let flow: Flow
@@ -157,6 +162,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Selected tax rate to apply to the order
     ///
     @Published private var storedTaxRate: TaxRate? = nil
+
+    var taxRateRowAction: TaxRateRowAction {
+        storedTaxRate == nil ? .taxSelector : .storedTaxSelectorSheet
+    }
 
     /// Text to show on entry point for selecting a tax rate
     var taxRateRowText: String {

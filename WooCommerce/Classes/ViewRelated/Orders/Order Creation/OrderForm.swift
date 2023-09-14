@@ -103,6 +103,7 @@ struct OrderForm: View {
     @State private var navigationButtonID = UUID()
 
     @State private var shouldShowNewTaxRateSelector = false
+    @State private var shouldShowStoredTaxSelectorSheet = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -143,7 +144,13 @@ struct OrderForm: View {
                             Group {
                                 NewTaxRateSection(text: viewModel.taxRateRowText) {
                                     viewModel.onSetNewTaxRateTapped()
-                                    shouldShowNewTaxRateSelector = true
+                                    switch viewModel.taxRateRowAction {
+                                    case .storedTaxSelectorSheet:
+                                        shouldShowStoredTaxSelectorSheet = true
+                                    case .taxSelector:
+                                        shouldShowNewTaxRateSelector = true
+                                    }
+
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                     NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -152,6 +159,17 @@ struct OrderForm: View {
                                     }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
                                                            onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                }
+                                .adaptiveSheet(isPresented: $shouldShowStoredTaxSelectorSheet) {
+                                    Rectangle()
+                                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                                        .foregroundColor(.clear)
+                                        .border(Color.blue, width: 3)
+                                        .overlay(Text("Stored Tax Rate").frame(maxWidth: .infinity, maxHeight: .infinity)
+                                            .onTapGesture {
+                                                shouldShowStoredTaxSelectorSheet.toggle()
+                                            }
+                                        )
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)

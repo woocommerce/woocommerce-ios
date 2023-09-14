@@ -36,7 +36,7 @@ struct AddProductWithAIActionSheet: View {
             VStack(alignment: .leading, spacing: Constants.margin) {
                 Text(Localization.title)
                     .subheadlineStyle()
-                    .padding(.vertical, Constants.margin)
+                    .padding(.top, Constants.margin)
 
                 // AI option
                 HStack(alignment: .top, spacing: Constants.margin) {
@@ -44,7 +44,7 @@ struct AddProductWithAIActionSheet: View {
                         .renderingMode(.template)
                         .resizable()
                         .foregroundColor(.accentColor)
-                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale)
+                        .frame(width: Constants.sparkleIconSize * scale, height: Constants.sparkleIconSize * scale)
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.aiTitle)
                             .bodyStyle()
@@ -73,9 +73,8 @@ struct AddProductWithAIActionSheet: View {
                 // Manual option
                 HStack(alignment: .top, spacing: Constants.margin) {
                     Image(systemName: "plus.circle")
-                        .resizable()
+                        .font(.title3)
                         .foregroundColor(.secondary)
-                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale)
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.manualTitle)
                             .bodyStyle()
@@ -98,8 +97,8 @@ struct AddProductWithAIActionSheet: View {
 
 private extension AddProductWithAIActionSheet {
     enum Constants {
-        static let iconSize: CGFloat = 17
-        static let verticalSpacing: CGFloat = 8
+        static let sparkleIconSize: CGFloat = 24
+        static let verticalSpacing: CGFloat = 4
         static let margin: CGFloat = 16
         static let legalURL = "https://automattic.com/ai-guidelines/"
     }

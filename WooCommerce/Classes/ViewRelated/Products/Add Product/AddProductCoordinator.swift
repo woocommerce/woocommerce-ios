@@ -290,7 +290,7 @@ private extension AddProductCoordinator {
             }
         })
 
-        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.35)
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
     }
 

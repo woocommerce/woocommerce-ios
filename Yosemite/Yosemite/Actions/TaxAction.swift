@@ -20,4 +20,8 @@ public enum TaxAction: Action {
                           pageNumber: Int,
                           pageSize: Int,
                           onCompletion: (Result<[TaxRate], Error>) -> Void)
+
+    /// Retrieves the specified Tax Rate.
+    ///
+    case retrieveTaxRate(siteID: Int64, taxRateID: Int64, onCompletion: (Result<TaxRate, Error>) -> Void)
 }

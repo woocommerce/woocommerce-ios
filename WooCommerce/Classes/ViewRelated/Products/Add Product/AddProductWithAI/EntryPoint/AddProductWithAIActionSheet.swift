@@ -18,7 +18,6 @@ final class AddProductWithAIActionSheetHostingController: UIHostingController<Ad
 /// View to show options for adding a new product including one with AI assistance.
 ///
 struct AddProductWithAIActionSheet: View {
-    @Environment(\.customOpenURL) private var customOpenURL
     @State private var legalURL: URL?
 
     private let onAIOption: () -> Void
@@ -47,14 +46,17 @@ struct AddProductWithAIActionSheet: View {
                             .bodyStyle()
                         Text(Localization.aiDescription)
                             .subheadlineStyle()
-                        Text(.init(Localization.legalText))
-                            .font(.caption)
-                            .foregroundColor(Color(.secondaryLabel))
-                            .padding(.top, Constants.margin)
-                            .environment(\.customOpenURL) { url in
-                                legalURL = url
-                            }
-                            .safariSheet(url: $legalURL)
+                        Group {
+                            Text(Localization.legalText) + Text(" ") +
+                            Text(.init(Localization.learnMore)).underline()
+                        }
+                        .environment(\.openURL, OpenURLAction { url in
+                            legalURL = url
+                            return .handled
+                        })
+                        .font(.caption)
+                        .foregroundColor(Color(.secondaryLabel))
+                        .padding(.top, Constants.margin)
                     }
                     Spacer()
                 }
@@ -84,6 +86,7 @@ struct AddProductWithAIActionSheet: View {
                 Spacer()
             }
             .padding(Constants.margin)
+            .safariSheet(url: $legalURL)
         }
     }
 }
@@ -109,9 +112,13 @@ private extension AddProductWithAIActionSheet {
             comment: "Description of the option to add new product with AI assistance"
         )
         static let legalText = NSLocalizedString(
-            "Powered by AI. [Learn more.](https://automattic.com/ai-guidelines/)",
-            comment: "Markdown content for the label to indicate AI-generated content on the product creation action sheet. " +
-            "Please translate the words while keeping the markdown format and URL"
+            "Powered by AI.",
+            comment: "Label to indicate AI-generated content on the product creation action sheet."
+        )
+        static let learnMore = NSLocalizedString(
+            "[Learn more.](https://automattic.com/ai-guidelines/)",
+            comment: "Markdown content learn more link on the product creation action sheet. " +
+            "Please translate the words while keeping the markdown format and URL."
         )
         static let manualTitle = NSLocalizedString(
             "Add manually",

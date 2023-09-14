@@ -106,7 +106,7 @@ struct OrderForm: View {
     @State private var navigationButtonID = UUID()
 
     @State private var shouldShowNewTaxRateSelector = false
-    @State private var shouldShowStoredTaxSelectorSheet = false
+    @State private var shouldShowStoredTaxRateSheet = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -149,7 +149,7 @@ struct OrderForm: View {
                                     viewModel.onSetNewTaxRateTapped()
                                     switch viewModel.taxRateRowAction {
                                     case .storedTaxSelectorSheet:
-                                        shouldShowStoredTaxSelectorSheet = true
+                                        shouldShowStoredTaxRateSheet = true
                                     case .taxSelector:
                                         shouldShowNewTaxRateSelector = true
                                     }
@@ -163,56 +163,9 @@ struct OrderForm: View {
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
                                                            onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
                                 }
-                                .adaptiveSheet(isPresented: $shouldShowStoredTaxSelectorSheet) {
-                                    VStack (alignment: .leading) {
-                                        // your sheet content here
-                                        Text(Localization.storedTaxRateBottomSheetTitle)
-                                            .bodyStyle()
-                                            .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)
-                                            .padding([.leading, .trailing, .bottom])
-                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    storedTaxRateBottomSheetContent
 
-                                        if let taxRateViewModel = viewModel.storedTaxRateViewModel {
-                                            TaxRateRow(viewModel: taxRateViewModel) {}
-                                                .overlay(
-                                                    RoundedRectangle(cornerRadius: Layout.storedTaxRateBottomSheetRowCornerRadius)
-                                                        .stroke(Color(.separator), lineWidth: 1)
-                                                )
-                                                .padding()
-                                        }
-
-                                        Button {
-                                        } label: {
-                                            Label {
-                                                Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)
-                                                    .bodyStyle()
-                                            } icon: {
-                                                Image(systemName: "pencil")
-                                                    .resizable()
-                                                    .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
-                                                           height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
-                                                    .foregroundColor(Color(.secondaryLabel))
-                                            }
-                                        }
-                                        .padding()
-
-                                        Button {
-                                        } label: {
-                                            Label {
-                                                Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)
-                                            } icon: {
-                                                Image(systemName: "x.circle")
-                                                    .resizable()
-                                                    .font(Font.title2.weight(.semibold))
-                                                    .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
-                                                           height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
-                                            }
-                                        }
-                                        .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
-                                        .padding()
-
-                                        Spacer()
-                                    }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -265,6 +218,58 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+    }
+
+    @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
+        VStack (alignment: .leading) {
+            // your sheet content here
+            Text(Localization.storedTaxRateBottomSheetTitle)
+                .bodyStyle()
+                .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)
+                .padding([.leading, .trailing, .bottom])
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let taxRateViewModel = viewModel.storedTaxRateViewModel {
+                TaxRateRow(viewModel: taxRateViewModel) {}
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Layout.storedTaxRateBottomSheetRowCornerRadius)
+                            .stroke(Color(.separator), lineWidth: 1)
+                    )
+                    .padding()
+            }
+
+            Button {
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)
+                        .bodyStyle()
+                } icon: {
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                        .foregroundColor(Color(.secondaryLabel))
+                }
+            }
+            .padding()
+
+            Button {
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)
+                } icon: {
+                    Image(systemName: "x.circle")
+                        .resizable()
+                        .font(Font.title2.weight(.semibold))
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                }
+            }
+            .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
+            .padding()
+
+            Spacer()
+        }
     }
 }
 

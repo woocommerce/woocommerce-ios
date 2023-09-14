@@ -4,7 +4,42 @@ import SwiftUI
 ///
 struct AddProductWithAIActionSheet: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack(alignment: .leading, spacing: Layout.margin) {
+            Text(Localization.title)
+                .subheadlineStyle()
+                .padding(.vertical, Layout.margin)
+
+            // AI option
+            HStack(alignment: .top, spacing: Layout.margin) {
+                Image(uiImage: .sparklesImage)
+                    .renderingMode(.template)
+                    .foregroundColor(.accentColor)
+                VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    Text(Localization.aiTitle)
+                        .bodyStyle()
+                    Text(Localization.aiDescription)
+                        .subheadlineStyle()
+                }
+                Spacer()
+            }
+
+            Divider()
+
+            // Manual option
+            HStack(alignment: .top, spacing: Layout.margin) {
+                Image(systemName: "plus.circle")
+                    .font(.title3)
+                    .foregroundColor(.secondary)
+                VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                    Text(Localization.manualTitle)
+                        .bodyStyle()
+                    Text(Localization.manualDescription)
+                        .subheadlineStyle()
+                }
+                Spacer()
+            }
+        }
+        .padding(.horizontal, Layout.margin)
     }
 }
 

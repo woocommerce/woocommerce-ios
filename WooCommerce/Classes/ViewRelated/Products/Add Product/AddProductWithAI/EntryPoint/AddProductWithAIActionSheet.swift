@@ -1,10 +1,34 @@
 import SwiftUI
 
+/// Hosting controller for `AddProductWithAIActionSheet`.
+///
+final class AddProductWithAIActionSheetHostingController: UIHostingController<AddProductWithAIActionSheet> {
+    init(onAIOption: @escaping () -> Void,
+         onManualOption: @escaping () -> Void) {
+        let rootView = AddProductWithAIActionSheet(onAIOption: onAIOption, onManualOption: onManualOption)
+        super.init(rootView: rootView)
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// View to show options for adding a new product including one with AI assistance.
 ///
 struct AddProductWithAIActionSheet: View {
     @Environment(\.customOpenURL) private var customOpenURL
     @State private var legalURL: URL?
+
+    private let onAIOption: () -> Void
+    private let onManualOption: () -> Void
+
+    init(onAIOption: @escaping () -> Void,
+         onManualOption: @escaping () -> Void) {
+        self.onAIOption = onAIOption
+        self.onManualOption = onManualOption
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: Constants.margin) {
@@ -33,6 +57,9 @@ struct AddProductWithAIActionSheet: View {
                 }
                 Spacer()
             }
+            .onTapGesture {
+                onAIOption()
+            }
 
             Divider()
 
@@ -48,6 +75,9 @@ struct AddProductWithAIActionSheet: View {
                         .subheadlineStyle()
                 }
                 Spacer()
+            }
+            .onTapGesture {
+                onManualOption()
             }
         }
         .padding(.horizontal, Constants.margin)
@@ -92,6 +122,6 @@ private extension AddProductWithAIActionSheet {
 
 struct AddProductWithAIActionSheet_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductWithAIActionSheet()
+        AddProductWithAIActionSheet(onAIOption: {}, onManualOption: {})
     }
 }

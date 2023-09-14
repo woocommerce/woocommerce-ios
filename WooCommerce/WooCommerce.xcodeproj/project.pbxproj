@@ -1700,6 +1700,7 @@
 		B9C4AB2728002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2628002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift */; };
 		B9C4AB29280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB28280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift */; };
 		B9C4AB2B28003481007008B8 /* MockPaymentsPluginsDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9C4AB2A28003481007008B8 /* MockPaymentsPluginsDataProvider.swift */; };
+		B9CA4F352AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CA4F342AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift */; };
 		B9CB14DC2A41FACD005912C2 /* BarcodeSKUScannerErrorNoticeFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CB14DB2A41FACD005912C2 /* BarcodeSKUScannerErrorNoticeFactory.swift */; };
 		B9CB14E02A42E246005912C2 /* BarcodeSKUScannerErrorNoticeFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CB14DF2A42E246005912C2 /* BarcodeSKUScannerErrorNoticeFactoryTests.swift */; };
 		B9DA153C280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */; };
@@ -4176,6 +4177,7 @@
 		B9C4AB2628002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReceiptEmailParameterDeterminer.swift; sourceTree = "<group>"; };
 		B9C4AB28280031AB007008B8 /* PaymentReceiptEmailParameterDeterminerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentReceiptEmailParameterDeterminerTests.swift; sourceTree = "<group>"; };
 		B9C4AB2A28003481007008B8 /* MockPaymentsPluginsDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockPaymentsPluginsDataProvider.swift; sourceTree = "<group>"; };
+		B9CA4F342AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectedStoredTaxRateFetcher.swift; sourceTree = "<group>"; };
 		B9CB14DB2A41FACD005912C2 /* BarcodeSKUScannerErrorNoticeFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSKUScannerErrorNoticeFactory.swift; sourceTree = "<group>"; };
 		B9CB14DF2A42E246005912C2 /* BarcodeSKUScannerErrorNoticeFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeSKUScannerErrorNoticeFactoryTests.swift; sourceTree = "<group>"; };
 		B9DA153B280EC7D700FC67DD /* OrderRefundsOptionsDeterminer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsOptionsDeterminer.swift; sourceTree = "<group>"; };
@@ -9057,6 +9059,7 @@
 				B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */,
 				B998DF472A989BE100D1C6E8 /* TaxEducationalDialogView.swift */,
 				B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */,
+				B9CA4F342AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift */,
 			);
 			path = Taxes;
 			sourceTree = "<group>";
@@ -12597,6 +12600,7 @@
 				DEC2962326BD4E6E005A056B /* ShippingLabelCustomsFormInput.swift in Sources */,
 				E1E649EB28461EDF0070B194 /* BetaFeaturesConfiguration.swift in Sources */,
 				26309F17277D0AEA0012797F /* SafeAreaInsetsKey.swift in Sources */,
+				B9CA4F352AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift in Sources */,
 				DE4D23AA29B1B0CA003A4B5D /* WPCom2FALoginView.swift in Sources */,
 				023D1DD124AB2D05002B03A3 /* ProductListSelectorViewController.swift in Sources */,
 				DE8FCD1A2A80FBBD00CB707D /* StoreCreationProfilerQuestionContainerView.swift in Sources */,

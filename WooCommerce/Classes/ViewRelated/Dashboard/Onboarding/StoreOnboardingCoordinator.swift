@@ -220,6 +220,8 @@ private extension StoreOnboardingCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
+            // Sets custom height if possible.
+            // Default detents are used otherwise. Large detent is necessary for large font sizes.
             if #available(iOS 16.0, *), let height {
                 let customHeight = UISheetPresentationController.Detent.custom { _ in
                     height

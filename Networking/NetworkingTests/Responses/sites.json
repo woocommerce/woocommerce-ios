@@ -34,7 +34,14 @@
       "was_ecommerce_trial": true,
       "plan": {
           "product_id": 1008,
-          "product_slug": "business-bundle"
+          "product_slug": "business-bundle",
+          "features": {
+              "active": [
+                  "akismet",
+                  "donations",
+                  "ai-assistant"
+              ]
+          }
       },
       "options": {
         "timezone": "",
@@ -203,7 +210,13 @@
       "was_ecommerce_trial": false,
       "plan": {
           "product_id": 1008,
-          "product_slug": "business-bundle"
+          "product_slug": "business-bundle",
+          "features": {
+              "active": [
+                  "akismet",
+                  "donations"
+              ]
+          }
       },
       "options": {
         "timezone": "",

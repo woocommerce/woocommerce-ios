@@ -23,6 +23,7 @@ struct TaxRateRow: View {
                         .font(Font.title.weight(.semibold))
                         .foregroundColor(Color(.textTertiary))
                         .padding(.leading, Layout.generalPadding)
+                        .renderedIf(viewModel.showChevron)
                 }
                 .padding(Layout.generalPadding)
             }

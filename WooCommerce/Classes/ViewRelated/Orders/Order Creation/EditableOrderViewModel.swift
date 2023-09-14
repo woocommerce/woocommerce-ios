@@ -172,6 +172,12 @@ final class EditableOrderViewModel: ObservableObject {
         storedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
     }
 
+    var storedTaxRateViewModel: TaxRateViewModel? {
+        guard let storedTaxRate = storedTaxRate else { return nil }
+
+        return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
+    }
+
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil

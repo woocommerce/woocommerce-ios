@@ -43,6 +43,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     isSiteOwner: isSiteOwner,
                     frameNonce: frameNonce ?? "",
                     plan: plan ?? "",
+                    activeFeatures: [], // TODO: 10688 - Add `activeFeatures` to core data model
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,

@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import SwiftUI
 import UIKit
 import struct Yosemite.Site
@@ -184,7 +183,7 @@ private extension StoreOnboardingCoordinator {
 // MARK: Bottom sheet helpers
 //
 private extension StoreOnboardingCoordinator {
-    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
         BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true

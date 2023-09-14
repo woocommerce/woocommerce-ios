@@ -17,10 +17,8 @@ final class StoreOnboardingCoordinator: Coordinator {
     private var launchStoreCoordinator: StoreOnboardingLaunchStoreCoordinator?
     private var paymentsSetupCoordinator: StoreOnboardingPaymentsSetupCoordinator?
     private var wooPaySetupCelebrationViewBottomSheetPresenter: BottomSheetPresenter?
-    private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
     private let site: Site
-    private let featureFlagService: FeatureFlagService
     private let onTaskCompleted: (_ task: TaskType) -> Void
     private let reloadTasks: () -> Void
     private let onUpgradePlan: (() -> Void)?
@@ -33,13 +31,11 @@ final class StoreOnboardingCoordinator: Coordinator {
 
     init(navigationController: UINavigationController,
          site: Site,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onTaskCompleted: @escaping (_ task: TaskType) -> Void,
          reloadTasks: @escaping () -> Void,
          onUpgradePlan: (() -> Void)? = nil) {
         self.navigationController = navigationController
         self.site = site
-        self.featureFlagService = featureFlagService
         self.onTaskCompleted = onTaskCompleted
         self.reloadTasks = reloadTasks
         self.onUpgradePlan = onUpgradePlan
@@ -93,37 +89,11 @@ private extension StoreOnboardingCoordinator {
     }
 
     func addProduct() {
-        // TODO-10688: Replace this with eligibility check
-        if featureFlagService.isFeatureFlagEnabled(.productCreationAI) {
-            showAddProductWithAIActionSheet()
-        } else {
-            startRegularProductCreationFlow(showsTemplateOption: true)
-        }
-    }
-
-    func showAddProductWithAIActionSheet() {
-        let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.addProductWithAIBottomSheetPresenter = nil
-                // TODO-10688: start AI flow
-            }
-        }, onManualOption: { [weak self] in
-            self?.addProductWithAIBottomSheetPresenter?.dismiss {
-                self?.addProductWithAIBottomSheetPresenter = nil
-                self?.startRegularProductCreationFlow(showsTemplateOption: false)
-            }
-        })
-
-        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.35)
-        addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
-    }
-
-    func startRegularProductCreationFlow(showsTemplateOption: Bool) {
         let coordinator = AddProductCoordinator(siteID: site.siteID,
                                                 source: .storeOnboarding,
                                                 sourceView: nil,
                                                 sourceNavigationController: navigationController,
-                                                isFirstProduct: showsTemplateOption)
+                                                isFirstProduct: true)
         self.addProductCoordinator = coordinator
         coordinator.onProductCreated = { [weak self] _ in
             self?.onTaskCompleted(.addFirstProduct)
@@ -220,16 +190,7 @@ private extension StoreOnboardingCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
-            // Sets custom height if possible.
-            // Default detents are used otherwise. Large detent is necessary for large font sizes.
-            if #available(iOS 16.0, *), let height {
-                let customHeight = UISheetPresentationController.Detent.custom { _ in
-                    height
-                }
-                sheet.detents = [.large(), .medium(), customHeight]
-            } else {
-                sheet.detents = [.large(), .medium()]
-            }
+            sheet.detents = [.medium()]
         })
     }
 }

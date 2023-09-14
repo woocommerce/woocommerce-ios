@@ -52,6 +52,7 @@ final class AddProductCoordinator: Coordinator {
 
     private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
     init(siteID: Int64,
          source: Source,
@@ -102,6 +103,11 @@ final class AddProductCoordinator: Coordinator {
         ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
+        // TODO-10688: Replace this with eligibility check
+        let isEligibleForAI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productCreationAI)
+        guard !isEligibleForAI else {
+            return presentActionSheetWithAI()
+        }
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldPresentProductCreationBottomSheet() {
@@ -269,6 +275,25 @@ private extension AddProductCoordinator {
         presentProduct(product)
     }
 
+    /// Presents an action sheet with the option to start product creation with AI
+    ///
+    func presentActionSheetWithAI() {
+        let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
+            self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.addProductWithAIBottomSheetPresenter = nil
+                // TODO-10688: start AI flow
+            }
+        }, onManualOption: { [weak self] in
+            self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.addProductWithAIBottomSheetPresenter = nil
+                self?.presentProductTypeBottomSheet(creationType: .manual)
+            }
+        })
+
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.35)
+        addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
     /// Presents a product onto the current navigation stack.
     ///
     func presentProduct(_ product: Product) {
@@ -359,5 +384,24 @@ private extension AddProductCoordinator {
                                                                   productDescription: productDescription,
                                                                   showShareProductButton: showShareProductButton)
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
+    }
+
+    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            // Sets custom height if possible.
+            // Default detents are used otherwise. Large detent is necessary for large font sizes.
+            if #available(iOS 16.0, *), let height {
+                let customHeight = UISheetPresentationController.Detent.custom { _ in
+                    height
+                }
+                sheet.detents = [.large(), .medium(), customHeight]
+            } else {
+                sheet.detents = [.large(), .medium()]
+            }
+        })
     }
 }

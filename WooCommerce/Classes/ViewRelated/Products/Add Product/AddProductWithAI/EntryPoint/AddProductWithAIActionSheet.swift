@@ -31,56 +31,60 @@ struct AddProductWithAIActionSheet: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Constants.margin) {
-            Text(Localization.title)
-                .subheadlineStyle()
-                .padding(.vertical, Constants.margin)
+        ScrollView {
+            VStack(alignment: .leading, spacing: Constants.margin) {
+                Text(Localization.title)
+                    .subheadlineStyle()
+                    .padding(.vertical, Constants.margin)
 
-            // AI option
-            HStack(alignment: .top, spacing: Constants.margin) {
-                Image(uiImage: .sparklesImage)
-                    .renderingMode(.template)
-                    .foregroundColor(.accentColor)
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    Text(Localization.aiTitle)
-                        .bodyStyle()
-                    Text(Localization.aiDescription)
-                        .subheadlineStyle()
-                    Text(.init(Localization.legalText))
-                        .font(.caption)
-                        .foregroundColor(Color(.secondaryLabel))
-                        .padding(.top, Constants.margin)
-                        .environment(\.customOpenURL) { url in
-                            legalURL = url
-                        }
-                        .safariSheet(url: $legalURL)
+                // AI option
+                HStack(alignment: .top, spacing: Constants.margin) {
+                    Image(uiImage: .sparklesImage)
+                        .renderingMode(.template)
+                        .foregroundColor(.accentColor)
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        Text(Localization.aiTitle)
+                            .bodyStyle()
+                        Text(Localization.aiDescription)
+                            .subheadlineStyle()
+                        Text(.init(Localization.legalText))
+                            .font(.caption)
+                            .foregroundColor(Color(.secondaryLabel))
+                            .padding(.top, Constants.margin)
+                            .environment(\.customOpenURL) { url in
+                                legalURL = url
+                            }
+                            .safariSheet(url: $legalURL)
+                    }
+                    Spacer()
                 }
+                .onTapGesture {
+                    onAIOption()
+                }
+
+                Divider()
+
+                // Manual option
+                HStack(alignment: .top, spacing: Constants.margin) {
+                    Image(systemName: "plus.circle")
+                        .font(.title3)
+                        .foregroundColor(.secondary)
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        Text(Localization.manualTitle)
+                            .bodyStyle()
+                        Text(Localization.manualDescription)
+                            .subheadlineStyle()
+                    }
+                    Spacer()
+                }
+                .onTapGesture {
+                    onManualOption()
+                }
+
                 Spacer()
             }
-            .onTapGesture {
-                onAIOption()
-            }
-
-            Divider()
-
-            // Manual option
-            HStack(alignment: .top, spacing: Constants.margin) {
-                Image(systemName: "plus.circle")
-                    .font(.title3)
-                    .foregroundColor(.secondary)
-                VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
-                    Text(Localization.manualTitle)
-                        .bodyStyle()
-                    Text(Localization.manualDescription)
-                        .subheadlineStyle()
-                }
-                Spacer()
-            }
-            .onTapGesture {
-                onManualOption()
-            }
+            .padding(Constants.margin)
         }
-        .padding(.horizontal, Constants.margin)
     }
 }
 

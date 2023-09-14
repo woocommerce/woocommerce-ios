@@ -18,6 +18,8 @@ final class AddProductWithAIActionSheetHostingController: UIHostingController<Ad
 /// View to show options for adding a new product including one with AI assistance.
 ///
 struct AddProductWithAIActionSheet: View {
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
     @State private var legalURL: URL?
 
     private let onAIOption: () -> Void
@@ -40,7 +42,9 @@ struct AddProductWithAIActionSheet: View {
                 HStack(alignment: .top, spacing: Constants.margin) {
                     Image(uiImage: .sparklesImage)
                         .renderingMode(.template)
+                        .resizable()
                         .foregroundColor(.accentColor)
+                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale)
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.aiTitle)
                             .bodyStyle()
@@ -69,8 +73,9 @@ struct AddProductWithAIActionSheet: View {
                 // Manual option
                 HStack(alignment: .top, spacing: Constants.margin) {
                     Image(systemName: "plus.circle")
-                        .font(.title3)
+                        .resizable()
                         .foregroundColor(.secondary)
+                        .frame(width: Constants.iconSize * scale, height: Constants.iconSize * scale)
                     VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                         Text(Localization.manualTitle)
                             .bodyStyle()
@@ -93,6 +98,7 @@ struct AddProductWithAIActionSheet: View {
 
 private extension AddProductWithAIActionSheet {
     enum Constants {
+        static let iconSize: CGFloat = 17
         static let verticalSpacing: CGFloat = 8
         static let margin: CGFloat = 16
         static let legalURL = "https://automattic.com/ai-guidelines/"

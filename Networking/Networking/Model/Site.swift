@@ -39,11 +39,9 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     ///
     public let plan: String
 
-    /// Active features for current site plan.
+    /// Whether the site has AI assistant feature active.
     ///
-    /// Contains list of active features (e.g. ["akismet", "donations", "support", "ai-assistant"])
-    ///
-    public let activeFeatures: [String]
+    public let isAIAssitantFeatureActive: Bool
 
     /// Whether the site has Jetpack-the-plugin installed.
     ///
@@ -120,12 +118,12 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let planContainer = try siteContainer.nestedContainer(keyedBy: PlanInfo.self, forKey: .plan)
         let plan = try planContainer.decode(String.self, forKey: .slug)
 
-        let activeFeatures: [String] = {
+        let isAIAssitantFeatureActive: Bool = {
             guard let featuresContainer = try? planContainer.nestedContainer(keyedBy: Features.self, forKey: .features),
                   let activeFeatures = try? featuresContainer.decode([String].self, forKey: .active)else {
-                return []
+                return false
             }
-            return activeFeatures
+            return activeFeatures.contains { $0 == Constants.aiAssistantFeature}
         }()
 
         self.init(siteID: siteID,
@@ -137,7 +135,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   isSiteOwner: isSiteOwner,
                   frameNonce: frameNonce,
                   plan: plan,
-                  activeFeatures: activeFeatures,
+                  isAIAssitantFeatureActive: isAIAssitantFeatureActive,
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
@@ -162,7 +160,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 isSiteOwner: Bool,
                 frameNonce: String,
                 plan: String,
-                activeFeatures: [String],
+                isAIAssitantFeatureActive: Bool,
                 isJetpackThePluginInstalled: Bool,
                 isJetpackConnected: Bool,
                 isWooCommerceActive: Bool,
@@ -183,7 +181,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.isSiteOwner = isSiteOwner
         self.frameNonce = frameNonce
         self.plan = plan
-        self.activeFeatures = activeFeatures
+        self.isAIAssitantFeatureActive = isAIAssitantFeatureActive
         self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
         self.isJetpackConnected = isJetpackConnected
         self.isWordPressComStore = isWordPressComStore
@@ -286,4 +284,10 @@ public extension Site {
         return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
     }
 
+}
+
+private extension Site {
+    enum Constants {
+        static let aiAssistantFeature = "ai-assistant"
+    }
 }

@@ -49,7 +49,7 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.canBlaze, true)
         XCTAssertEqual(first.isAdmin, true)
         XCTAssertTrue(first.wasEcommerceTrial)
-        XCTAssertEqual(first.activeFeatures, ["akismet", "donations", "ai-assistant"])
+        XCTAssertTrue(first.isAIAssitantFeatureActive)
 
         // The second site is a Jetpack CP site (connected to Jetpack without Jetpack-the-plugin).
         let second = sites!.last!
@@ -73,7 +73,7 @@ final class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.canBlaze, false)
         XCTAssertEqual(second.isAdmin, false)
         XCTAssertFalse(second.wasEcommerceTrial)
-        XCTAssertEqual(second.activeFeatures, [])
+        XCTAssertFalse(second.isAIAssitantFeatureActive)
     }
 
     /// Verifies that the Plan field for Site is properly parsed.

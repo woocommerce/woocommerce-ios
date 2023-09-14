@@ -4,7 +4,6 @@ import enum Yosemite.ProductAction
 
 @testable import WooCommerce
 
-@MainActor
 final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
 
@@ -18,40 +17,40 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_isEligible_is_true_for_wpcom_store() async throws {
+    func test_isEligible_is_true_for_wpcom_store() throws {
         // Given
         updateDefaultStore(isWPCOMStore: true)
-        updateHasProducts(hasProducts: false)
-        let checker = ProductCreationAIEligibilityChecker(stores: stores)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          storeHasProducts: false)
 
         // When
-        let isEligible = try await checker.isEligible()
+        let isEligible = checker.isEligible()
 
         // Then
         XCTAssertTrue(isEligible)
     }
 
-    func test_isEligible_is_false_for_non_wpcom_store() async throws {
+    func test_isEligible_is_false_for_non_wpcom_store() throws {
         // Given
         updateDefaultStore(isWPCOMStore: false)
-        updateHasProducts(hasProducts: false)
-        let checker = ProductCreationAIEligibilityChecker(stores: stores)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          storeHasProducts: false)
 
         // When
-        let isEligible = try await checker.isEligible()
+        let isEligible = checker.isEligible()
 
         // Then
         XCTAssertFalse(isEligible)
     }
 
-    func test_isEligible_is_false_for_wpcom_store_when_store_already_has_products() async throws {
+    func test_isEligible_is_false_for_wpcom_store_when_store_already_has_products() throws {
         // Given
         updateDefaultStore(isWPCOMStore: true)
-        updateHasProducts(hasProducts: true)
-        let checker = ProductCreationAIEligibilityChecker(stores: stores)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          storeHasProducts: true)
 
         // When
-        let isEligible = try await checker.isEligible()
+        let isEligible = checker.isEligible()
 
         // Then
         XCTAssertFalse(isEligible)
@@ -62,16 +61,5 @@ private extension ProductCreationAIEligibilityCheckerTests {
     func updateDefaultStore(isWPCOMStore: Bool) {
         stores.updateDefaultStore(storeID: 134)
         stores.updateDefaultStore(.fake().copy(siteID: 134, isWordPressComStore: isWPCOMStore))
-    }
-
-    func updateHasProducts(hasProducts: Bool) {
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case let .checkIfStoreHasProducts(_, _, completion):
-                completion(.success(hasProducts))
-            default:
-                XCTFail("Received unsupported action: \(action)")
-            }
-        }
     }
 }

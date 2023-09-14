@@ -148,7 +148,7 @@ struct OrderForm: View {
                                 NewTaxRateSection(text: viewModel.taxRateRowText) {
                                     viewModel.onSetNewTaxRateTapped()
                                     switch viewModel.taxRateRowAction {
-                                    case .storedTaxSelectorSheet:
+                                    case .storedTaxRateSheet:
                                         shouldShowStoredTaxRateSheet = true
                                     case .taxSelector:
                                         shouldShowNewTaxRateSelector = true

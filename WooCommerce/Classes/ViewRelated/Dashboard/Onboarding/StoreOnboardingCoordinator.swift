@@ -224,9 +224,9 @@ private extension StoreOnboardingCoordinator {
                 let customHeight = UISheetPresentationController.Detent.custom { _ in
                     height
                 }
-                sheet.detents = [.medium(), customHeight]
+                sheet.detents = [.large(), .medium(), customHeight]
             } else {
-                sheet.detents = [.medium()]
+                sheet.detents = [.large(), .medium()]
             }
         })
     }

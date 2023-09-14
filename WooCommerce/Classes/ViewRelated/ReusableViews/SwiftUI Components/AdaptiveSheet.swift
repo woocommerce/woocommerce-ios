@@ -73,7 +73,6 @@ struct AdaptiveSheetViewControllerRepresentable<Content: View>: UIViewController
 class AdaptiveSheetViewController<Content: View>: UIViewController {
     let content: Content
     let coordinator: AdaptiveSheetViewControllerRepresentable<Content>.Coordinator
-    private var isLandscape: Bool = UIDevice.current.orientation.isLandscape
 
     init(coordinator: AdaptiveSheetViewControllerRepresentable<Content>.Coordinator,
          @ViewBuilder content: @escaping () -> Content) {
@@ -94,12 +93,15 @@ class AdaptiveSheetViewController<Content: View>: UIViewController {
         hostingController.modalPresentationStyle = .popover
         hostingController.presentationController?.delegate = coordinator as UIAdaptivePresentationControllerDelegate
         hostingController.modalTransitionStyle = .coverVertical
+
         if let hostPopover = hostingController.popoverPresentationController {
             hostPopover.sourceView = super.view
             let sheet = hostPopover.adaptiveSheetPresentationController
-            sheet.detents = (isLandscape ? [.large()] : [.medium()])
-
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.prefersGrabberVisible = true
+            sheet.detents = ( UIDevice.current.orientation.isLandscape ? [.large()] : [.medium()])
         }
+
         if presentedViewController == nil {
             present(hostingController, animated: true, completion: nil)
         }
@@ -107,12 +109,8 @@ class AdaptiveSheetViewController<Content: View>: UIViewController {
 
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
-        if UIDevice.current.orientation.isLandscape {
-            isLandscape = true
-            self.presentedViewController?.popoverPresentationController?.adaptiveSheetPresentationController.detents = [.large()]
-        } else {
-            isLandscape = false
-            self.presentedViewController?.popoverPresentationController?.adaptiveSheetPresentationController.detents = [.medium()]
-        }
+
+        let detents: [UISheetPresentationController.Detent] = UIDevice.current.orientation.isLandscape ? [.large()] : [.medium()]
+        presentedViewController?.popoverPresentationController?.adaptiveSheetPresentationController.detents = detents
     }
 }

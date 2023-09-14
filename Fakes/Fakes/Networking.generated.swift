@@ -1671,6 +1671,7 @@ extension Networking.Site {
             isSiteOwner: .fake(),
             frameNonce: .fake(),
             plan: .fake(),
+            activeFeatures: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),

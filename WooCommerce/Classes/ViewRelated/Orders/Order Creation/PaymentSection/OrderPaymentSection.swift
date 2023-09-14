@@ -268,7 +268,7 @@ private extension OrderPaymentSection {
                                                                comment: "Confirm message for navigating to coupons when creating a new order")
         static let goToCouponsAlertButtonTitle = NSLocalizedString("Go", comment: "Confirm button title for navigating to coupons when creating a new order")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
-        static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate added automatically",
+        static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate location added automatically",
                                                                         comment: "Notice in editable order details when the tax rate was added to the order")
     }
 

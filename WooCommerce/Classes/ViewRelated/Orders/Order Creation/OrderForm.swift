@@ -230,7 +230,7 @@ struct OrderForm: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             if let taxRateViewModel = viewModel.storedTaxRateViewModel {
-                TaxRateRow(viewModel: taxRateViewModel) {}
+                TaxRateRow(viewModel: taxRateViewModel, onSelect: nil)
                     .overlay(
                         RoundedRectangle(cornerRadius: Layout.storedTaxRateBottomSheetRowCornerRadius)
                             .stroke(Color(.separator), lineWidth: 1)

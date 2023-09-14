@@ -210,13 +210,7 @@
       "was_ecommerce_trial": false,
       "plan": {
           "product_id": 1008,
-          "product_slug": "business-bundle",
-          "features": {
-              "active": [
-                  "akismet",
-                  "donations"
-              ]
-          }
+          "product_slug": "business-bundle"
       },
       "options": {
         "timezone": "",

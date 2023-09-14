@@ -2163,7 +2163,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 95")
         let sourceContext = sourceContainer.viewContext
 
-        let taxRate = insertTaxRate(to: sourceContext, forModel: 95)
+        _ = insertTaxRate(to: sourceContext, forModel: 95)
         try sourceContext.save()
 
         // When
@@ -2182,7 +2182,7 @@ final class MigrationTests: XCTestCase {
         let sourceContainer = try startPersistentContainer("Model 96")
         let sourceContext = sourceContainer.viewContext
 
-        let taxRate = insertTaxRate(to: sourceContext, forModel: 96)
+        _ = insertTaxRate(to: sourceContext, forModel: 96)
         try sourceContext.save()
 
         // When

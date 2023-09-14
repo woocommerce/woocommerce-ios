@@ -1365,11 +1365,22 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        })
+
         let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertTrue(viewModel.shouldShowNewTaxRateSection)
+        waitUntil {
+            viewModel.shouldShowNewTaxRateSection
+        }
     }
 
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_then_returns_true() {
@@ -1383,11 +1394,22 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        })
+
         let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
 
         // Then
-        XCTAssertTrue(viewModel.shouldShowNewTaxRateSection)
+        waitUntil {
+            viewModel.shouldShowNewTaxRateSection
+        }
     }
 
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_then_returns_true() {

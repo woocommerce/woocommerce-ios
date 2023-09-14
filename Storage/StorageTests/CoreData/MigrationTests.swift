@@ -2195,6 +2195,27 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "postcodes") as? [String], ["1234"])
         XCTAssertEqual(migratedTaxRateEntity?.value(forKey: "cities") as? [String], ["Miami"])
     }
+
+    func test_migrating_from_97_to_98_adds_new_isAIAssitantFeatureActive_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 97")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["isAIAssitantFeatureActive"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 98")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedSiteEntity = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        let isAIAssitantFeatureActive = try XCTUnwrap(migratedSiteEntity.value(forKey: "isAIAssitantFeatureActive") as? Bool)
+        XCTAssertFalse(isAIAssitantFeatureActive, "Confirm expected property exists, and is false by default.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

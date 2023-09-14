@@ -1210,6 +1210,11 @@ private extension EditableOrderViewModel {
     }
 
     func retrieveTaxBasedOnSetting() {
+        if case let .editing(order) = flow,
+           !order.isEditable {
+            return
+        }
+
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
             guard let self = self else { return }

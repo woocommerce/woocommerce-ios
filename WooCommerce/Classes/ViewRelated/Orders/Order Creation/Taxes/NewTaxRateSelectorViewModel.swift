@@ -176,7 +176,6 @@ private extension NewTaxRateSelectorViewModel {
         .map {
             TaxRateViewModel(taxRate: $0)
         }
-        
         transitionToResultsUpdatedState()
     }
 

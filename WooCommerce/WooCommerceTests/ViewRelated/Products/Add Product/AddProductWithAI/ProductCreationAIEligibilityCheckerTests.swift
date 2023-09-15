@@ -20,10 +20,10 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         // Given
         updateDefaultStore(isWPCOMStore: true)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: false)
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
 
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertTrue(isEligible)
@@ -33,10 +33,9 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         // Given
         updateDefaultStore(isWPCOMStore: false)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: false)
-
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertFalse(isEligible)
@@ -46,10 +45,21 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         // Given
         updateDefaultStore(isWPCOMStore: true)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: true)
-
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: true)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_false_when_feature_flag_is_false() throws {
+        // Given
+        updateDefaultStore(isWPCOMStore: true)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: false))
+        // When
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertFalse(isEligible)

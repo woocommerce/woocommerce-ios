@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-06 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-15 21:32:11+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "WP 管理画面で Jetpack を有効化";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "プラグインを有効化";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "有効化中";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "アフガニスタン";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "航空便適合エタノールパッケージ - (認可されたフレグランスおよび手指消毒剤の配送)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "「Jetpack をインストール」ボタンをタップすると、当社の%1$@および WordPress.com に%2$@ことに同意したものとみなされます。";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooCommerce Payments を使用することで、お客様は弊社の [利用規約](https:\/\/wordpress.com\/tos) に拘束されることに同意し、弊社 [プライバシーポリシー](https:\/\/automattic.com\/privacy\/) を読んだものとみなされます。";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooPayments を使用することで、お客様は弊社の [利用規約](https:\/\/wordpress.com\/tos) に拘束されることに同意し、弊社 [プライバシーポリシー](https:\/\/automattic.com\/privacy\/) を読んだものとみなされます。";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "国";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "無料ドメインを取得";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "クラス1 – 玩具用推進剤\/安全ヒューズパッケージ";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "クラス3 - パッケージ (手指消毒剤、消毒用アルコール、エタノールベース製品、引火性液体など)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "クラス4 - パッケージ (可燃性固体)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "クラス5 - パッケージ (酸化剤)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "クラス6 - パッケージ (毒性物質)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "クラス7 – 放射性物質パッケージ (例: 煙感知器、鉱物、銃の照準器など)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "クラス8 – 腐食性物質パッケージ - 航空便適合腐食性物質 (特定の洗浄剤または樹木\/除草剤など)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "クラス8 – 防漏型湿電池パッケージ - 密閉型鉛酸蓄電池";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "クラス9 - ラベル付きリチウム電池 – 陸送便専用パッケージ - 新品の個別または予備のリチウム電池 (UN3480または UN3090のラベル付き)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "クラス9 - リチウム電池 –返品パッケージ - リチウム電池が内蔵された使用済み電子機器 (ラベル必須)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "クラス9 - リチウム電池、ラベル付きパッケージ - リチウム電池が内蔵された新しい電子機器 (UN3481または UN3091のラベル付き)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "クラス9 – ドライアイスパッケージ (航空便で発送する場合は5ポンドまで)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "クラス9 – リチウム電池、ラベルのないパッケージ - リチウム電池が内蔵された新しい電子機器 (ラベルなし)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "クラス9 – 磁化物質パッケージ";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "フィルターをクリア";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "こちらから問い合わせ";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "有害物質を含む";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "中身の詳細";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "詳細";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "説明";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "%1$@ を使用して商品が郵送可能かわかります。";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "カタログ内の製品の位置を決定します。数字の値が小さいほど、アイテムは商品リストの上の方に表示されます。マイナスの値も利用できます";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "メッセージをすべて非表示にする";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "区分4.1 – 郵送可能な可燃性固体および安全マッチパッケージ - 安全なボックスマッチ、ブックマッチ、郵送可能な可燃性固体";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "区分5.1 – 酸化剤パッケージ - 過酸化水素 (濃度8～20％)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "区分5.2 – 有機過酸化物パッケージ";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "区分6.1 – 有毒物質パッケージ (LD50が50mg\/kg 以下) - (殺虫剤、除草剤など)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "区分6.2 - 危険物 - 生体物質 (例: 臨床検査キット、認可された COVID 検査キットの返却)";
 
 /* Country option for a site address. */
 "Djibouti" = "ジブチ";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "例: 鉢植え、サボテン、植物、観賞用、お手入れ簡単";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "例外数量提供パッケージ (例: 少量の可燃性液体、腐食性物質、毒性物質、環境に有害な物質 - ラベル必須)";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d件のカテゴリーを除外";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "グレナダ";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "陸送便専用危険物 (リストに記載されていないが、陸送のみに制限される品目)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "一組の数量";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "ストアのログイン情報を用意してください。";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "有害物質カテゴリー";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "ヘッダー1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "サポートが必要な領域";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000日用品パッケージ - 航空便適合 ID8000日用品 (不燃性エアゾール、可燃性液体、有毒物質、その他の危険物)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "処理するアイテム";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "キルギスタン";
 
+/* A hazardous material description stating when a package can fit into this category */
+"LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limite" = "数量限定の陸送便パッケージ - エアゾール、スプレー消毒剤、スプレー塗料、ヘアスプレー、プロパン、ブタン、洗浄剤など - フレグランス、マニキュア、除光液、溶剤、手指消毒剤、消毒用アルコール、エタノールベース製品など - その他数量限定の陸送物質 (化粧品、洗浄剤、塗料など)";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "ラベル (4 x 6インチ)";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "さらに詳しく";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "USPS® (%1$@) で危険物を安全に梱包、ラベル付け、発送する方法についてご確認ください。";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "リヒテンシュタイン";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "ライターパッケージ - 認可されたライター";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X個に利用を制限";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "郵便番号がありません";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "危険性が高いと考えられる資源には、電池、ドライアイス、可燃性液体、エアロゾル、弾薬、花火、マニキュア、香水、塗料、溶剤などがあります。 危険物は個別に梱包して発送する必要があります。";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "提供";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "リファラルプログラム";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "更新";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "アクティベート後に再度読み込む";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "インストール後に再度読み込む";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "タイプを選択";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "カテゴリーを選択";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "荷物を選択";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "アイテム配送時の梱包の種類を選択";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "荷物に危険物または有害物質が含まれる場合はこれを選択してください";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "アップロード方法を選択";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "スラッグ";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "少量提供パッケージ (ラベル必須)";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "ソーシャル広告";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS 危険物検索ツール";
+
 /* Country option for a site address. */
 "Uganda" = "ウガンダ";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce モバイルアプリで、どこからでもストアを運営";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce の送料";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping は現在、%1$@ による危険物の発送には対応していません。";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "WooCommerce モバイルアプリ";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "WooCommerce ストア";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "手続きがすべて完了しました。";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "所在地には税率はありません。";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "このストアのプラグインを管理する権限がありません。";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 商品, カテゴリー, 新商品, 商品を検索";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "年";

@@ -52,6 +52,7 @@ extension Storage.Product: ReadOnlyConvertible {
         taxStatusKey = product.taxStatusKey
         taxClass = product.taxClass
         manageStock = product.manageStock
+        isSampleItem = product.isSampleItem
 
         var quantity: String? = nil
         if let stockQuantity = product.stockQuantity {
@@ -177,7 +178,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
                        addOns: addOnsArray.map { $0.toReadOnly() },
-                       isSampleItem: false, // TODO-10711: update storage
+                       isSampleItem: isSampleItem,
                        bundleStockStatus: productBundleStockStatus,
                        bundleStockQuantity: bundleStockQuantity as? Int64,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },

@@ -38,35 +38,15 @@ final class AddProductCoordinatorTests: XCTestCase {
         // Assert
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
-
-    func test_it_presents_bottom_sheet_on_start_when_eligible_for_AddProductFromImage() throws {
-        throw XCTSkip("TODO-10688: enable this test after eligibility check is updated")
-
-        // Given
-        let coordinator = makeAddProductCoordinator(
-            addProductFromImageEligibilityChecker: MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true, isEligible: true)
-        )
-
-        // When
-        coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
-
-        // Then
-        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
-    }
 }
 
 private extension AddProductCoordinatorTests {
-    func makeAddProductCoordinator(addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol =
-                                   MockAddProductFromImageEligibilityChecker()) -> AddProductCoordinator {
+    func makeAddProductCoordinator() -> AddProductCoordinator {
         let view = UIView()
         return AddProductCoordinator(siteID: 100,
                                      source: .productsTab,
                                      sourceView: view,
                                      sourceNavigationController: navigationController,
-                                     addProductFromImageEligibilityChecker: addProductFromImageEligibilityChecker,
                                      isFirstProduct: false)
     }
 }

@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 98 (Release 15.4.0.0)
+- @selanthiraiyan 2023-09-14
+    - - Added `isAIAssitantFeatureActive` attribute to `Site` entity.
+    
 ## Model 97 (Release 15.3.0.0)
 - @cvargascasaseca 2023-09-06
     - Added custom class to Transformables in `TaxRate` entity.

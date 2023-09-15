@@ -43,6 +43,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     isSiteOwner: isSiteOwner,
                     frameNonce: frameNonce ?? "",
                     plan: plan ?? "",
+                    isAIAssitantFeatureActive: isAIAssitantFeatureActive,
                     isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                     isJetpackConnected: isJetpackConnected,
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21513" systemVersion="21G419" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -401,6 +401,7 @@
         <attribute name="fullDescription" optional="YES" attributeType="String"/>
         <attribute name="groupedProducts" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="groupOfQuantity" optional="YES" attributeType="String"/>
+        <attribute name="isSampleItem" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="manageStock" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="maxAllowedQuantity" optional="YES" attributeType="String"/>
         <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

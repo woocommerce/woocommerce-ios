@@ -2178,6 +2178,7 @@
 		DE7B479527A38B8F0018742E /* CouponDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479427A38B8F0018742E /* CouponDetailsViewModel.swift */; };
 		DE7B479727A3C4980018742E /* CouponDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */; };
 		DE85E4E32AB2E79F008789E1 /* AddProductWithAIActionSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */; };
+		DE85E4E52AB407BF008789E1 /* AddProductWithAICoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE85E4E42AB407BF008789E1 /* AddProductWithAICoordinator.swift */; };
 		DE86E9272A4BEA2500A89A5B /* FeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */; };
 		DE86E9292A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */; };
 		DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE8C94652646990000C94823 /* PluginListViewController.swift */; };
@@ -4668,6 +4669,7 @@
 		DE7B479427A38B8F0018742E /* CouponDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModel.swift; sourceTree = "<group>"; };
 		DE7B479627A3C4980018742E /* CouponDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CouponDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		DE85E4E22AB2E79F008789E1 /* AddProductWithAIActionSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAIActionSheet.swift; sourceTree = "<group>"; };
+		DE85E4E42AB407BF008789E1 /* AddProductWithAICoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductWithAICoordinator.swift; sourceTree = "<group>"; };
 		DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackView.swift; sourceTree = "<group>"; };
 		DE86E9282A4C213A00A89A5B /* WooAnalyticsEvent+AIFeedback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AIFeedback.swift"; sourceTree = "<group>"; };
 		DE8C94652646990000C94823 /* PluginListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PluginListViewController.swift; sourceTree = "<group>"; };
@@ -10588,6 +10590,7 @@
 			isa = PBXGroup;
 			children = (
 				DE85E4E12AB2E76C008789E1 /* EntryPoint */,
+				DE85E4E42AB407BF008789E1 /* AddProductWithAICoordinator.swift */,
 			);
 			path = AddProductWithAI;
 			sourceTree = "<group>";
@@ -13195,6 +13198,7 @@
 				DEF8CF1D29AC84BC00800A60 /* WPComEmailLoginView.swift in Sources */,
 				CC6923AC26010D8D002FB669 /* LoginProloguePageViewController.swift in Sources */,
 				02D29A9029F7C2DA00473D6D /* AztecAIViewFactory.swift in Sources */,
+				DE85E4E52AB407BF008789E1 /* AddProductWithAICoordinator.swift in Sources */,
 				4515C88D25D6BE540099C8E3 /* ShippingLabelAddressFormViewController.swift in Sources */,
 				CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */,
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,

@@ -350,10 +350,7 @@
 		028B68B82A573FF400FE03A8 /* AddProductFromImageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */; };
 		028B68BA2A57410500FE03A8 /* AddProductFromImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */; };
 		028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */; };
-		028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */; };
-		028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */; };
 		028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */; };
-		028B68C52A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */; };
 		028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */; };
 		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		028CB70F290138EF00331C09 /* Publisher+Concurrency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */; };
@@ -2830,10 +2827,7 @@
 		028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageCoordinator.swift; sourceTree = "<group>"; };
 		028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageView.swift; sourceTree = "<group>"; };
 		028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModel.swift; sourceTree = "<group>"; };
-		028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
-		028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
 		028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModelTests.swift; sourceTree = "<group>"; };
-		028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityCheckerTests.swift; sourceTree = "<group>"; };
 		028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		028CB70E290138EF00331C09 /* Publisher+Concurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Publisher+Concurrency.swift"; sourceTree = "<group>"; };
@@ -5870,7 +5864,6 @@
 				028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */,
 				028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */,
 				028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */,
-				028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */,
 				02B60DF62A586C7F004C47FF /* AddProductFromImageFormImageView.swift */,
 				02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */,
 				02FADA9E2A5F34BD00FE8683 /* AddProductFromImageTextFieldView.swift */,
@@ -5884,7 +5877,6 @@
 			isa = PBXGroup;
 			children = (
 				028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */,
-				028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */,
 				02FADAA02A6052BF00FE8683 /* AddProductFromImageTextFieldViewModelTests.swift */,
 				02FADAA62A608F6B00FE8683 /* ImageTextScannerTests.swift */,
 			);
@@ -7938,7 +7930,6 @@
 				B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */,
 				026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */,
 				02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */,
-				028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */,
 				02FADAA42A607CEE00FE8683 /* MockImageTextScanner.swift */,
 				DEBAB70E2A7A6F3800743185 /* MockConnectivityObserver.swift */,
 				DEBAB70C2A7A6F1100743185 /* MockStorePlanSynchronizer.swift */,
@@ -13167,7 +13158,6 @@
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
-				028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,
@@ -13465,7 +13455,6 @@
 				EEB221A529B97F8400662A12 /* CouponInputTransformerTests.swift in Sources */,
 				45AF9DAF265CFAB4001EB794 /* MockShippingLabelCarrierRate.swift in Sources */,
 				CC593A6726EA116300EF0E04 /* ShippingLabelAddNewPackageViewModelTests.swift in Sources */,
-				028B68C52A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift in Sources */,
 				DE68B84326FAF17A00C86CFB /* DefaultConnectivityObserver.swift in Sources */,
 				455A2FDB246B1349000CA72C /* ProductVisibilityTests.swift in Sources */,
 				0215C6FC2518A3CD005240CD /* ProductFormViewModel+SaveTests.swift in Sources */,
@@ -13606,7 +13595,6 @@
 				0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */,
 				7E6A01A12725DEDE001668D5 /* FilterProductCategoryListViewModelTests.swift in Sources */,
 				02BF9BAF2851E7EA008CE2DD /* MockAppleIDCredentialChecker.swift in Sources */,
-				028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */,
 				E17E3BFB266917E20009D977 /* CardPresentModalBluetoothRequiredTests.swift in Sources */,
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,

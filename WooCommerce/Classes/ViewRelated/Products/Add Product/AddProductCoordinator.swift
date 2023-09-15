@@ -50,9 +50,6 @@ final class AddProductCoordinator: Coordinator {
         !productsResultsController.isEmpty
     }
 
-    private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
-    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
-
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
     private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
@@ -61,7 +58,6 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -71,7 +67,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -80,7 +75,6 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -90,7 +84,6 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -248,26 +241,6 @@ private extension AddProductCoordinator {
     /// Presents a new product based on the provided bottom sheet type.
     ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
-        if bottomSheetProductType.productType == .simple,
-           bottomSheetProductType.isVirtual == false,
-           shouldSkipBottomSheet() == false,
-           addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
-            // Exposure event of the A/B experiment.
-            ServiceLocator.analytics.track(.addProductFromImageEligible)
-
-            if addProductFromImageEligibilityChecker.isEligible() {
-                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                                 source: source,
-                                                                 sourceNavigationController: navigationController,
-                                                                 onProductCreated: { [weak self] product in
-                    self?.onProductCreated(product)
-                })
-                self.addProductFromImageCoordinator = coordinator
-                coordinator.start()
-                return
-            }
-        }
-
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
                                                               siteID: siteID) else {

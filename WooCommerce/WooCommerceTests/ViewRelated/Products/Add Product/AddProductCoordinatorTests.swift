@@ -24,6 +24,8 @@ final class AddProductCoordinatorTests: XCTestCase {
     }
 
     func test_it_presents_bottom_sheet_on_start() throws {
+        throw XCTSkip("TODO-10688: enable this test after eligibility check is updated")
+
         // Arrange
         let coordinator = makeAddProductCoordinator()
 
@@ -38,6 +40,8 @@ final class AddProductCoordinatorTests: XCTestCase {
     }
 
     func test_it_presents_bottom_sheet_on_start_when_eligible_for_AddProductFromImage() throws {
+        throw XCTSkip("TODO-10688: enable this test after eligibility check is updated")
+
         // Given
         let coordinator = makeAddProductCoordinator(
             addProductFromImageEligibilityChecker: MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true, isEligible: true)

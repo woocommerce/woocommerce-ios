@@ -52,6 +52,7 @@ extension Storage.Product: ReadOnlyConvertible {
         taxStatusKey = product.taxStatusKey
         taxClass = product.taxClass
         manageStock = product.manageStock
+        isSampleItem = product.isSampleItem
 
         var quantity: String? = nil
         if let stockQuantity = product.stockQuantity {

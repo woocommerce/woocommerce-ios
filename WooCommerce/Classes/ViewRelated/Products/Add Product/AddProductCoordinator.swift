@@ -50,6 +50,7 @@ final class AddProductCoordinator: Coordinator {
         !productsResultsController.isEmpty
     }
 
+    private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
     private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
@@ -58,6 +59,7 @@ final class AddProductCoordinator: Coordinator {
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -67,6 +69,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -75,6 +78,7 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -84,6 +88,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -98,8 +103,7 @@ final class AddProductCoordinator: Coordinator {
         ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
-        // TODO-10688: Replace this with eligibility check
-        let isEligibleForAI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productCreationAI)
+        let isEligibleForAI = addProductWithAIEligibilityChecker.isEligible(storeHasProducts: storeHasProducts)
         guard !isEligibleForAI && !shouldSkipBottomSheet() else {
             return presentActionSheetWithAI()
         }

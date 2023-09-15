@@ -20,10 +20,10 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         // Given
         updateDefaultStore(isWPCOMStore: true)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: false)
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
 
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertTrue(isEligible)
@@ -33,23 +33,45 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
         // Given
         updateDefaultStore(isWPCOMStore: false)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: false)
-
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_true_for_non_wpcom_store_when_ai_assistant_feature_is_active() throws {
+        // Given
+        updateDefaultStore(isWPCOMStore: false, isAIAssistantActive: true)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
+        // When
+        let isEligible = checker.isEligible(storeHasProducts: false)
+
+        // Then
+        XCTAssertTrue(isEligible)
     }
 
     func test_isEligible_is_false_for_wpcom_store_when_store_already_has_products() throws {
         // Given
         updateDefaultStore(isWPCOMStore: true)
         let checker = ProductCreationAIEligibilityChecker(stores: stores,
-                                                          storeHasProducts: true)
-
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: true))
         // When
-        let isEligible = checker.isEligible()
+        let isEligible = checker.isEligible(storeHasProducts: true)
+
+        // Then
+        XCTAssertFalse(isEligible)
+    }
+
+    func test_isEligible_is_false_when_feature_flag_is_false() throws {
+        // Given
+        updateDefaultStore(isWPCOMStore: true)
+        let checker = ProductCreationAIEligibilityChecker(stores: stores,
+                                                          featureFlagService: MockFeatureFlagService(productCreationAI: false))
+        // When
+        let isEligible = checker.isEligible(storeHasProducts: false)
 
         // Then
         XCTAssertFalse(isEligible)
@@ -57,8 +79,11 @@ final class ProductCreationAIEligibilityCheckerTests: XCTestCase {
 }
 
 private extension ProductCreationAIEligibilityCheckerTests {
-    func updateDefaultStore(isWPCOMStore: Bool) {
+    func updateDefaultStore(isWPCOMStore: Bool,
+                            isAIAssistantActive: Bool = false) {
         stores.updateDefaultStore(storeID: 134)
-        stores.updateDefaultStore(.fake().copy(siteID: 134, isWordPressComStore: isWPCOMStore))
+        stores.updateDefaultStore(.fake().copy(siteID: 134,
+                                               isAIAssitantFeatureActive: isAIAssistantActive,
+                                               isWordPressComStore: isWPCOMStore))
     }
 }

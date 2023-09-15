@@ -1128,6 +1128,7 @@ extension Networking.Product {
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
         addOns: CopiableProp<[ProductAddOn]> = .copy,
+        isSampleItem: CopiableProp<Bool> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
@@ -1201,6 +1202,7 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
+        let isSampleItem = isSampleItem ?? self.isSampleItem
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
@@ -1275,6 +1277,7 @@ extension Networking.Product {
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
             addOns: addOns,
+            isSampleItem: isSampleItem,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,

@@ -861,6 +861,7 @@ extension Networking.Product {
             groupedProducts: .fake(),
             menuOrder: .fake(),
             addOns: .fake(),
+            isSampleItem: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),

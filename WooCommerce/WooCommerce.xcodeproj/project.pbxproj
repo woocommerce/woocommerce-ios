@@ -350,7 +350,6 @@
 		028B68B82A573FF400FE03A8 /* AddProductFromImageCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */; };
 		028B68BA2A57410500FE03A8 /* AddProductFromImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */; };
 		028B68BC2A57419700FE03A8 /* AddProductFromImageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */; };
-		028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */; };
 		028B68C02A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */; };
 		028B68C32A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */; };
 		028B68C52A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */; };
@@ -2827,7 +2826,6 @@
 		028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageCoordinator.swift; sourceTree = "<group>"; };
 		028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageView.swift; sourceTree = "<group>"; };
 		028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModel.swift; sourceTree = "<group>"; };
-		028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
 		028B68BF2A574BE200FE03A8 /* MockAddProductFromImageEligibilityChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockAddProductFromImageEligibilityChecker.swift; sourceTree = "<group>"; };
 		028B68C22A574DC500FE03A8 /* AddProductFromImageViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageViewModelTests.swift; sourceTree = "<group>"; };
 		028B68C42A57566300FE03A8 /* AddProductFromImageEligibilityCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductFromImageEligibilityCheckerTests.swift; sourceTree = "<group>"; };
@@ -5861,7 +5859,6 @@
 				028B68B72A573FF400FE03A8 /* AddProductFromImageCoordinator.swift */,
 				028B68B92A57410500FE03A8 /* AddProductFromImageView.swift */,
 				028B68BB2A57419700FE03A8 /* AddProductFromImageViewModel.swift */,
-				028B68BD2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift */,
 				02B60DF62A586C7F004C47FF /* AddProductFromImageFormImageView.swift */,
 				02FADA9C2A5F20B000FE8683 /* AddProductFromImageScannedTextView.swift */,
 				02FADA9E2A5F34BD00FE8683 /* AddProductFromImageTextFieldView.swift */,
@@ -13143,7 +13140,6 @@
 				77E53EC52510C193003D385F /* ProductDownloadListViewController+Droppable.swift in Sources */,
 				3F50FE4328CAEBA800C89201 /* AppLocalizedString.swift in Sources */,
 				0259D5F92581F0E6003B1CD6 /* ShippingLabelPaperSizeOptionView.swift in Sources */,
-				028B68BE2A57479A00FE03A8 /* AddProductFromImageEligibilityChecker.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				684AB83C2873DF04003DFDD1 /* CardReaderManualsViewModel.swift in Sources */,
 				575472812452185300A94C3C /* PushNotification.swift in Sources */,

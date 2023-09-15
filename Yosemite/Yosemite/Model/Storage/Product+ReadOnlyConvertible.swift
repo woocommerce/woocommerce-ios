@@ -177,6 +177,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder),
                        addOns: addOnsArray.map { $0.toReadOnly() },
+                       isSampleItem: false, // TODO-10711: update storage
                        bundleStockStatus: productBundleStockStatus,
                        bundleStockQuantity: bundleStockQuantity as? Int64,
                        bundledItems: bundledItemsArray.map { $0.toReadOnly() },

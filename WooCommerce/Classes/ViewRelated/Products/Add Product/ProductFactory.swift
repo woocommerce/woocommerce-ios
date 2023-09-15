@@ -95,6 +95,7 @@ private extension ProductFactory {
                 groupedProducts: [],
                 menuOrder: 0,
                 addOns: [],
+                isSampleItem: false,
                 bundleStockStatus: nil,
                 bundleStockQuantity: nil,
                 bundledItems: [],

@@ -52,6 +52,22 @@ final class AddProductCoordinatorTests: XCTestCase {
         // Then
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
+
+    func test_it_presents_AddProductWithAIActionSheet_on_start_when_eligible_for_ProductCreationAI() throws {
+        // Given
+        let coordinator = makeAddProductCoordinator(
+            addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
+        )
+
+        // When
+        coordinator.start()
+        waitUntil {
+            coordinator.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: AddProductWithAIActionSheetHostingController.self)
+    }
 }
 
 private extension AddProductCoordinatorTests {

@@ -602,8 +602,6 @@ public enum WooAnalyticsStat: String {
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
-    // Exposure event for the A/B experiment.
-    case addProductFromImageEligible = "add_product_from_image_eligible"
 
     // MARK: Add product from image events
     case addProductFromImageDisplayed = "add_product_from_image_displayed"

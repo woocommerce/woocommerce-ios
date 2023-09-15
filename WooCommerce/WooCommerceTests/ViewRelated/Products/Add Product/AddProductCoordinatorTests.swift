@@ -37,22 +37,6 @@ final class AddProductCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
-    func test_it_presents_bottom_sheet_on_start_when_eligible_for_AddProductFromImage() throws {
-        // Given
-        let coordinator = makeAddProductCoordinator(
-            addProductFromImageEligibilityChecker: MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true, isEligible: true)
-        )
-
-        // When
-        coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
-
-        // Then
-        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
-    }
-
     func test_it_presents_AddProductWithAIActionSheet_on_start_when_eligible_for_ProductCreationAI() throws {
         // Given
         let coordinator = makeAddProductCoordinator(
@@ -71,16 +55,14 @@ final class AddProductCoordinatorTests: XCTestCase {
 }
 
 private extension AddProductCoordinatorTests {
-    func makeAddProductCoordinator(addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol =
-                                   MockAddProductFromImageEligibilityChecker(),
-                                   addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = MockProductCreationAIEligibilityChecker()
+    func makeAddProductCoordinator(
+        addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = MockProductCreationAIEligibilityChecker()
     ) -> AddProductCoordinator {
         let view = UIView()
         return AddProductCoordinator(siteID: 100,
                                      source: .productsTab,
                                      sourceView: view,
                                      sourceNavigationController: navigationController,
-                                     addProductFromImageEligibilityChecker: addProductFromImageEligibilityChecker,
                                      addProductWithAIEligibilityChecker: addProductWithAIEligibilityChecker,
                                      isFirstProduct: false)
     }

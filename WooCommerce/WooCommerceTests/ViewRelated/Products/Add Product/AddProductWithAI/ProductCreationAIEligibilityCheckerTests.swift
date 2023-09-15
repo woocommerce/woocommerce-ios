@@ -1,6 +1,5 @@
 import TestKit
 import XCTest
-import enum Yosemite.ProductAction
 
 @testable import WooCommerce
 

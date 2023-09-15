@@ -2115,6 +2115,7 @@ extension Networking.Site {
         isSiteOwner: CopiableProp<Bool> = .copy,
         frameNonce: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
+        isAIAssitantFeatureActive: CopiableProp<Bool> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
@@ -2136,6 +2137,7 @@ extension Networking.Site {
         let isSiteOwner = isSiteOwner ?? self.isSiteOwner
         let frameNonce = frameNonce ?? self.frameNonce
         let plan = plan ?? self.plan
+        let isAIAssitantFeatureActive = isAIAssitantFeatureActive ?? self.isAIAssitantFeatureActive
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
@@ -2158,6 +2160,7 @@ extension Networking.Site {
             isSiteOwner: isSiteOwner,
             frameNonce: frameNonce,
             plan: plan,
+            isAIAssitantFeatureActive: isAIAssitantFeatureActive,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,

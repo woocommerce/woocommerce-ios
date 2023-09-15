@@ -120,10 +120,10 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
         let isAIAssitantFeatureActive: Bool = {
             guard let featuresContainer = try? planContainer.nestedContainer(keyedBy: Features.self, forKey: .features),
-                  let activeFeatures = try? featuresContainer.decode([String].self, forKey: .active)else {
+                  let activeFeatures = try? featuresContainer.decode([String].self, forKey: .active) else {
                 return false
             }
-            return activeFeatures.contains { $0 == Constants.aiAssistantFeature}
+            return activeFeatures.contains { $0 == Constants.aiAssistantFeature }
         }()
 
         self.init(siteID: siteID,

@@ -105,7 +105,7 @@ final class AddProductCoordinator: Coordinator {
 
         // TODO-10688: Replace this with eligibility check
         let isEligibleForAI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productCreationAI)
-        guard !isEligibleForAI else {
+        guard !isEligibleForAI && !shouldSkipBottomSheet() else {
             return presentActionSheetWithAI()
         }
         if shouldSkipBottomSheet() {

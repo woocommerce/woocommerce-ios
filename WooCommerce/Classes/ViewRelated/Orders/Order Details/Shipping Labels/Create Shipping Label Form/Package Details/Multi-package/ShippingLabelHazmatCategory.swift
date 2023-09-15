@@ -131,7 +131,7 @@ extension ShippingLabelHazmatCategory {
         static let division41 = NSLocalizedString("Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, " +
                                                   "book matches, mailable flammable solids",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
-        static let division51 = NSLocalizedString("Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)",
+        static let division51 = NSLocalizedString("Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let division52 = NSLocalizedString("Division 5.2 – Organic Peroxides Package",
                                                   comment: "A hazardous material description stating when a package can fit into this category")

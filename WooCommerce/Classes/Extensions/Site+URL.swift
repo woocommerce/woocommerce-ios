@@ -30,7 +30,7 @@ extension Site {
     /// Both WCPay and Stripe use the same URL.
     ///
     func cardPresentPluginHasPendingTasksURL() -> String {
-        return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Fconnect"
+        return adminURL + "admin.php?page=wc-admin&path=%2Fpayments%2Foverview"
     }
 
     /// Returns the WooCommerce admin URL, or attempts to construct it from the site URL.

@@ -60,13 +60,16 @@ final class AddProductCoordinatorTests: XCTestCase {
 
 private extension AddProductCoordinatorTests {
     func makeAddProductCoordinator(addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol =
-                                   MockAddProductFromImageEligibilityChecker()) -> AddProductCoordinator {
+                                   MockAddProductFromImageEligibilityChecker(),
+                                   addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = MockProductCreationAIEligibilityChecker()
+    ) -> AddProductCoordinator {
         let view = UIView()
         return AddProductCoordinator(siteID: 100,
                                      source: .productsTab,
                                      sourceView: view,
                                      sourceNavigationController: navigationController,
                                      addProductFromImageEligibilityChecker: addProductFromImageEligibilityChecker,
+                                     addProductWithAIEligibilityChecker: addProductWithAIEligibilityChecker,
                                      isFirstProduct: false)
     }
 }

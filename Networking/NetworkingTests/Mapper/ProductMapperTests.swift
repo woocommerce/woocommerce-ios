@@ -101,6 +101,7 @@ final class ProductMapperTests: XCTestCase {
 
             XCTAssertEqual(product.menuOrder, 0)
             XCTAssertEqual(product.productType, ProductType(rawValue: "booking"))
+            XCTAssertTrue(product.isSampleItem)
         }
     }
 

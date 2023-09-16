@@ -12,6 +12,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: typeHint,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,
@@ -37,6 +38,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: nil,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,
@@ -62,6 +64,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData,
                                           filename: filename,
+                                          altText: nil,
                                           typeHint: typeHint,
                                           options: MediaImageExportOptions(maximumImageSize: nil,
                                                                            imageCompressionQuality: 1.0,
@@ -73,6 +76,28 @@ final class MediaImageExporterTests: XCTestCase {
             let _ = try exporter.export()
         } catch {
             XCTAssertEqual(error as? MediaImageExporter.ImageExportError, .imageSourceIsAnUnknownType)
+        }
+    }
+
+    func test_export_sets_filename_and_altText_in_output_media() throws {
+        // Loads the test image into png data.
+        let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
+        let exporter = MediaImageExporter(data: mockData!,
+                                          filename: "test.png",
+                                          altText: "cool-image",
+                                          typeHint: nil,
+                                          options: MediaImageExportOptions(maximumImageSize: nil,
+                                                                           imageCompressionQuality: 1.0,
+                                                                           stripsGeoLocationIfNeeded: true),
+                                          mediaDirectoryType: .temporary,
+                                          imageSourceWriter: MockImageSourceWriter())
+
+        do {
+            let media = try exporter.export()
+            XCTAssertEqual(media.filename, "test.png")
+            XCTAssertEqual(media.altText, "cool-image")
+        } catch {
+            XCTFail(error.localizedDescription)
         }
     }
 }

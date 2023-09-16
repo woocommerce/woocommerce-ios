@@ -24,13 +24,19 @@ final class ProductParentCategoriesViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ category: ProductCategory) -> Void
+    typealias Completion = (_ category: ProductCategory?) -> Void
     private let onCompletion: Completion
+    private let childCategory: ProductCategory?
+    private let selectedCategory: ProductCategory?
 
-
-    init(siteID: Int64, completion: @escaping Completion) {
+    init(siteID: Int64,
+         childCategory: ProductCategory?,
+         selectedCategory: ProductCategory?,
+         completion: @escaping Completion) {
         self.siteID = siteID
-        onCompletion = completion
+        self.onCompletion = completion
+        self.childCategory = childCategory
+        self.selectedCategory = selectedCategory
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -43,10 +49,17 @@ final class ProductParentCategoriesViewController: UIViewController {
         configureTitle()
         registerTableViewCells()
         configureTableView()
+        configureRemoveButton()
 
         try? resultController.performFetch()
-        let fetchedCategories = resultController.fetchedObjects
-        categoryViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(from: fetchedCategories, selectedCategories: [])
+
+        // Filter to not show child category on the list
+        let fetchedCategories = resultController.fetchedObjects.filter { $0.categoryID != childCategory?.categoryID }
+
+        categoryViewModels = ProductCategoryListViewModel.CellViewModelBuilder.viewModels(
+            from: fetchedCategories,
+            selectedCategories: [selectedCategory].compactMap { $0 }
+        )
     }
 
 }
@@ -56,7 +69,7 @@ final class ProductParentCategoriesViewController: UIViewController {
 private extension ProductParentCategoriesViewController {
 
     func configureTitle() {
-        title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
+        title = Localization.title
     }
 
     func registerTableViewCells() {
@@ -69,6 +82,26 @@ private extension ProductParentCategoriesViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.removeLastCellSeparator()
+    }
+
+    func configureRemoveButton() {
+        guard selectedCategory != nil else {
+            return
+        }
+        let containerView = UIView(frame: .zero)
+        let removeParentButton = UIButton(frame: .zero)
+        removeParentButton.applySecondaryButtonStyle()
+        removeParentButton.setTitle(Localization.removeParent, for: .normal)
+        removeParentButton.addTarget(self, action: #selector(removeParentCategory), for: .touchUpInside)
+        removeParentButton.translatesAutoresizingMaskIntoConstraints = false
+        containerView.addSubview(removeParentButton)
+        containerView.pinSubviewToAllEdges(removeParentButton, insets: .init(top: 16, left: 16, bottom: 16, right: 16))
+        tableView.tableHeaderView = containerView
+        tableView.updateHeaderHeight()
+    }
+
+    @objc func removeParentCategory() {
+        onCompletion(nil)
     }
 }
 
@@ -98,5 +131,12 @@ extension ProductParentCategoriesViewController: UITableViewDelegate {
         if let category = resultController.fetchedObjects.first(where: { $0.categoryID == categoryViewModels[indexPath.row].categoryID }) {
             onCompletion(category)
         }
+    }
+}
+
+private extension ProductParentCategoriesViewController {
+    enum Localization {
+        static let title = NSLocalizedString("Select Parent Category", comment: "Select parent category screen - Screen title")
+        static let removeParent = NSLocalizedString("No Parent Category", comment: "Button to remove parent category for the existing category")
     }
 }

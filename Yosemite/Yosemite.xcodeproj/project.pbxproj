@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0202B690238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */; };
 		0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */; };
 		0202B6992387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */; };
+		02031DF42AA6DDBF00D13669 /* MediaUIImageExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02031DF32AA6DDBF00D13669 /* MediaUIImageExporter.swift */; };
 		020B2F9623BDE4DD00BD79AD /* ProductStoreTests+Validation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */; };
 		020C907D24C729D6001E2BEB /* MockProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C907C24C729D6001E2BEB /* MockProductVariation.swift */; };
 		020C908124C7D71D001E2BEB /* MockProductVariationsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */; };
@@ -466,6 +467,7 @@
 		0202B68F238790E200F3EBE0 /* ProductsFeatureSwitchPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsFeatureSwitchPListWrapper.swift; sourceTree = "<group>"; };
 		0202B6962387AFBF00F3EBE0 /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsFeatureSwitch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+ProductsFeatureSwitch.swift"; sourceTree = "<group>"; };
+		02031DF32AA6DDBF00D13669 /* MediaUIImageExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaUIImageExporter.swift; sourceTree = "<group>"; };
 		020B2F9523BDE4DD00BD79AD /* ProductStoreTests+Validation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductStoreTests+Validation.swift"; sourceTree = "<group>"; };
 		020C907C24C729D6001E2BEB /* MockProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductVariation.swift; sourceTree = "<group>"; };
 		020C908024C7D71D001E2BEB /* MockProductVariationsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProductVariationsRemote.swift; sourceTree = "<group>"; };
@@ -1071,6 +1073,7 @@
 				0218B4ED242E08B20083A847 /* MediaType.swift */,
 				0218B4EF242E091C0083A847 /* Media+MediaType.swift */,
 				02124DAD2431C11500980D74 /* Media+ProductImage.swift */,
+				02031DF32AA6DDBF00D13669 /* MediaUIImageExporter.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -2128,6 +2131,7 @@
 				B56C1EC220EAE2E500D749F9 /* ReadOnlyConvertible.swift in Sources */,
 				D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */,
 				D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */,
+				02031DF42AA6DDBF00D13669 /* MediaUIImageExporter.swift in Sources */,
 				E16C59BD28F9394F007D55BB /* InAppPurchaseAction.swift in Sources */,
 				744A321B216D57D40051439B /* SiteVisitStats+ReadOnlyType.swift in Sources */,
 				02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */,

@@ -568,7 +568,7 @@ final class ProductStoreTests: XCTestCase {
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product")
@@ -638,7 +638,7 @@ final class ProductStoreTests: XCTestCase {
         let expectedShippingClass = sampleProductShippingClass(remoteID: 134, siteID: sampleSiteID)
         storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: expectedShippingClass)
 
-        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true)
+        let remoteProduct = sampleProduct(productShippingClass: expectedShippingClass, downloadable: true, isSampleItem: true)
 
         // Action
         network.simulateResponse(requestUrlSuffix: "products/282", filename: "product")
@@ -2415,7 +2415,8 @@ private extension ProductStoreTests {
                        productShippingClass: Networking.ProductShippingClass? = nil,
                        tags: [Networking.ProductTag]? = nil,
                        downloadable: Bool = false,
-                       addOns: [Networking.ProductAddOn]? = nil) -> Networking.Product {
+                       addOns: [Networking.ProductAddOn]? = nil,
+                       isSampleItem: Bool = false) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -2486,6 +2487,7 @@ private extension ProductStoreTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: addOns ?? sampleAddOns(),
+                       isSampleItem: isSampleItem,
                        bundleStockStatus: .inStock,
                        bundleStockQuantity: nil,
                        bundledItems: [],
@@ -2651,6 +2653,7 @@ private extension ProductStoreTests {
                        groupedProducts: [111, 222, 333],
                        menuOrder: 0,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: .insufficientStock,
                        bundleStockQuantity: 0,
                        bundledItems: [.fake(), .fake()],
@@ -2790,6 +2793,7 @@ private extension ProductStoreTests {
                        groupedProducts: [],
                        menuOrder: 2,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],

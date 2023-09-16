@@ -89,6 +89,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
+        case .reusePaymentIntentOnRetryInPersonPayment:
+            return true
+        case .refreshOrderBeforeInPersonPayment:
+            return true
+        case .manualTaxesInOrderM3:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productCreationAI:
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         default:
             return true
         }

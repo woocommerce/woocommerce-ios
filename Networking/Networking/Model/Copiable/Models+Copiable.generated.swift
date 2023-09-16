@@ -524,6 +524,7 @@ extension Networking.Order {
         number: CopiableProp<String> = .copy,
         status: CopiableProp<OrderStatusEnum> = .copy,
         currency: CopiableProp<String> = .copy,
+        currencySymbol: CopiableProp<String> = .copy,
         customerNote: NullableCopiableProp<String> = .copy,
         dateCreated: CopiableProp<Date> = .copy,
         dateModified: CopiableProp<Date> = .copy,
@@ -561,6 +562,7 @@ extension Networking.Order {
         let number = number ?? self.number
         let status = status ?? self.status
         let currency = currency ?? self.currency
+        let currencySymbol = currencySymbol ?? self.currencySymbol
         let customerNote = customerNote ?? self.customerNote
         let dateCreated = dateCreated ?? self.dateCreated
         let dateModified = dateModified ?? self.dateModified
@@ -599,6 +601,7 @@ extension Networking.Order {
             number: number,
             status: status,
             currency: currency,
+            currencySymbol: currencySymbol,
             customerNote: customerNote,
             dateCreated: dateCreated,
             dateModified: dateModified,
@@ -1125,6 +1128,7 @@ extension Networking.Product {
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
         addOns: CopiableProp<[ProductAddOn]> = .copy,
+        isSampleItem: CopiableProp<Bool> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
@@ -1198,6 +1202,7 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
+        let isSampleItem = isSampleItem ?? self.isSampleItem
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
@@ -1272,6 +1277,7 @@ extension Networking.Product {
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
             addOns: addOns,
+            isSampleItem: isSampleItem,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
@@ -1413,6 +1419,30 @@ extension Networking.ProductBundleItem {
             menuOrder: menuOrder,
             title: title,
             stockStatus: stockStatus
+        )
+    }
+}
+
+extension Networking.ProductCategory {
+    public func copy(
+        categoryID: CopiableProp<Int64> = .copy,
+        siteID: CopiableProp<Int64> = .copy,
+        parentID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        slug: CopiableProp<String> = .copy
+    ) -> Networking.ProductCategory {
+        let categoryID = categoryID ?? self.categoryID
+        let siteID = siteID ?? self.siteID
+        let parentID = parentID ?? self.parentID
+        let name = name ?? self.name
+        let slug = slug ?? self.slug
+
+        return Networking.ProductCategory(
+            categoryID: categoryID,
+            siteID: siteID,
+            parentID: parentID,
+            name: name,
+            slug: slug
         )
     }
 }
@@ -2088,6 +2118,7 @@ extension Networking.Site {
         isSiteOwner: CopiableProp<Bool> = .copy,
         frameNonce: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
+        isAIAssitantFeatureActive: CopiableProp<Bool> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
@@ -2109,6 +2140,7 @@ extension Networking.Site {
         let isSiteOwner = isSiteOwner ?? self.isSiteOwner
         let frameNonce = frameNonce ?? self.frameNonce
         let plan = plan ?? self.plan
+        let isAIAssitantFeatureActive = isAIAssitantFeatureActive ?? self.isAIAssitantFeatureActive
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
@@ -2131,6 +2163,7 @@ extension Networking.Site {
             isSiteOwner: isSiteOwner,
             frameNonce: frameNonce,
             plan: plan,
+            isAIAssitantFeatureActive: isAIAssitantFeatureActive,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,

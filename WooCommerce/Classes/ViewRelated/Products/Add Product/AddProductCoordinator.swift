@@ -50,15 +50,16 @@ final class AddProductCoordinator: Coordinator {
         !productsResultsController.isEmpty
     }
 
-    private let addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol
-    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
+    private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
+    private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -68,7 +69,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -77,7 +78,7 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
-         addProductFromImageEligibilityChecker: AddProductFromImageEligibilityCheckerProtocol = AddProductFromImageEligibilityChecker(),
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          isFirstProduct: Bool) {
         self.siteID = siteID
@@ -87,7 +88,7 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
-        self.addProductFromImageEligibilityChecker = addProductFromImageEligibilityChecker
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.isFirstProduct = isFirstProduct
     }
 
@@ -102,6 +103,10 @@ final class AddProductCoordinator: Coordinator {
         ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
+        let isEligibleForAI = addProductWithAIEligibilityChecker.isEligible(storeHasProducts: storeHasProducts)
+        guard !isEligibleForAI && !shouldSkipBottomSheet() else {
+            return presentActionSheetWithAI()
+        }
         if shouldSkipBottomSheet() {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
         } else if shouldPresentProductCreationBottomSheet() {
@@ -240,26 +245,6 @@ private extension AddProductCoordinator {
     /// Presents a new product based on the provided bottom sheet type.
     ///
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
-        if bottomSheetProductType.productType == .simple,
-           bottomSheetProductType.isVirtual == false,
-           shouldSkipBottomSheet() == false,
-           addProductFromImageEligibilityChecker.isEligibleToParticipateInABTest() {
-            // Exposure event of the A/B experiment.
-            ServiceLocator.analytics.track(.addProductFromImageEligible)
-
-            if addProductFromImageEligibilityChecker.isEligible() {
-                let coordinator = AddProductFromImageCoordinator(siteID: siteID,
-                                                                 source: source,
-                                                                 sourceNavigationController: navigationController,
-                                                                 onProductCreated: { [weak self] product in
-                    self?.onProductCreated(product)
-                })
-                self.addProductFromImageCoordinator = coordinator
-                coordinator.start()
-                return
-            }
-        }
-
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
                                                               siteID: siteID) else {
@@ -267,6 +252,36 @@ private extension AddProductCoordinator {
             return
         }
         presentProduct(product)
+    }
+
+    /// Presents an action sheet with the option to start product creation with AI
+    ///
+    func presentActionSheetWithAI() {
+        let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
+            self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.addProductWithAIBottomSheetPresenter = nil
+                self?.startProductCreationWithAI()
+            }
+        }, onManualOption: { [weak self] in
+            self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.addProductWithAIBottomSheetPresenter = nil
+                self?.presentProductTypeBottomSheet(creationType: .manual)
+            }
+        })
+
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
+        addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    func startProductCreationWithAI() {
+        let coordinator = AddProductWithAICoordinator(siteID: siteID,
+                                                      source: source,
+                                                      sourceNavigationController: navigationController,
+                                                      onProductCreated: { [weak self] product in
+            self?.onProductCreated(product)
+        })
+        self.addProductWithAICoordinator = coordinator
+        coordinator.start()
     }
 
     /// Presents a product onto the current navigation stack.
@@ -359,5 +374,24 @@ private extension AddProductCoordinator {
                                                                   productDescription: productDescription,
                                                                   showShareProductButton: showShareProductButton)
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
+    }
+
+    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            // Sets custom height if possible.
+            // Default detents are used otherwise. Large detent is necessary for large font sizes.
+            if #available(iOS 16.0, *), let height {
+                let customHeight = UISheetPresentationController.Detent.custom { _ in
+                    height
+                }
+                sheet.detents = [.large(), .medium(), customHeight]
+            } else {
+                sheet.detents = [.large(), .medium()]
+            }
+        })
     }
 }

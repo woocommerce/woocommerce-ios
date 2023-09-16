@@ -51,6 +51,28 @@ public class TaxRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: onCompletion)
     }
+
+    /// Retrieves the tax rate identified by the tax rate id
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote tax classes.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func retrieveTaxRate(siteID: Int64,
+                                taxRateID: Int64,
+                                onCompletion: @escaping (Result<TaxRate, Error>) -> Void) {
+
+        let path = "\(Path.taxes)/\(taxRateID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: nil,
+                                     availableAsRESTRequest: true)
+        let mapper = TaxRateMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: onCompletion)
+    }
 }
 
 // MARK: - Constants

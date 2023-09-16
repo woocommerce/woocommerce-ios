@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.4
+In this update, we've prioritized improving our WooCommerce Mobile App experience. You can now delete and update product categories as part of the product editing flow. We've enhanced the In-Person Payments feature with better retry handling for failed transactions and protection against accidental double-charging in poor network conditions. Minor updates include editing product details from the order detail screen and an empty state design for the Tax Rate selector. Enjoy a more efficient WooCommerce app.
+
 ## 15.3
 We're excited to announce the latest update to our WooCommerce Mobile App. This version brings a host of general improvements designed to make your experience smoother, faster, and more intuitive. We've worked hard to enhance the performance of the app, streamline functionalities, and squash any pesky bugs that were getting in the way of your seamless mobile commerce.
 

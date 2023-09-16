@@ -83,7 +83,7 @@ private extension AddProductFromImageCoordinator {
         if let image {
             switch image.source {
                 case let .asset(asset):
-                    productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+                    productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
                 case let .media(media):
                     productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
             }

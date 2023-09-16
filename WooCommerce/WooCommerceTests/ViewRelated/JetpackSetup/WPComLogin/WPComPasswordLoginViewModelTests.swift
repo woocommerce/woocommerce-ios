@@ -86,7 +86,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         assertEqual(email, loginFields?.username)
         assertEqual(password, loginFields?.password)
         assertEqual(siteURL, loginFields?.siteAddress)
-        assertEqual(true, loginFields?.meta.userIsDotCom)
+        assertEqual(true, loginFields?.userIsDotCom)
     }
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {

@@ -141,7 +141,7 @@ struct OrderForm: View {
 
                         VStack(spacing: Layout.noSpacing) {
                             Group {
-                                NewTaxRateSection {
+                                NewTaxRateSection(text: viewModel.taxRateRowText) {
                                     viewModel.onSetNewTaxRateTapped()
                                     shouldShowNewTaxRateSelector = true
                                 }
@@ -241,12 +241,13 @@ private struct MultipleLinesMessage: View {
 }
 
 private struct NewTaxRateSection: View {
+    let text: String
     let onButtonTapped: (() -> Void)
 
     var body: some View {
         Button(action: onButtonTapped,
                label: {
-                    Text(OrderForm.Localization.setNewTaxRate)
+                    Text(text)
                         .multilineTextAlignment(.center)
                         .padding(OrderForm.Layout.sectionSpacing)
                         .frame(maxWidth: .infinity)
@@ -435,7 +436,6 @@ private extension OrderForm {
                                                           "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
-        static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
     }
 
     enum Accessibility {

@@ -97,6 +97,7 @@ public extension WordPressSite {
               isSiteOwner: false,
               frameNonce: "",
               plan: "",
+              isAIAssitantFeatureActive: false,
               isJetpackThePluginInstalled: false,
               isJetpackConnected: false,
               isWooCommerceActive: isWooCommerceActive,

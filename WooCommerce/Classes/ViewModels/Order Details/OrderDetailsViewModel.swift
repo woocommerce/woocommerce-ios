@@ -429,7 +429,7 @@ extension OrderDetailsViewModel {
             let item = dataSource.aggregateOrderItems[indexPath.row]
             let loaderViewController = ProductLoaderViewController(model: .init(aggregateOrderItem: item),
                                                                    siteID: order.siteID,
-                                                                   forceReadOnly: true)
+                                                                   forceReadOnly: false)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .shippingLabelCreationInfo:

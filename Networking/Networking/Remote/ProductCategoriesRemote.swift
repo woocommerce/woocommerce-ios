@@ -88,6 +88,46 @@ public final class ProductCategoriesRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Updates an existing `ProductCategory`.
+    ///
+    /// - Parameter category: Details to be updated for a category.
+    ///
+    public func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory {
+        let parameters: [String: Any] = [
+            ParameterKey.name: category.name,
+            ParameterKey.parent: category.parentID
+        ]
+        let categoryID = category.categoryID
+        let siteID = category.siteID
+        let path = Path.categories + "/\(categoryID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductCategoryMapper(siteID: siteID)
+        return try await enqueue(request, mapper: mapper)
+    }
+
+    /// Deletes an existing `ProductCategory`.
+    ///
+    /// - Parameters:
+    ///   - siteID: Site that the category belongs to.
+    ///   - categoryID: ID of the category to be deleted.
+    ///
+    public func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws {
+        let path = "\(Path.categories)/\(categoryID)"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .delete,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: ["force": "true"],
+                                     availableAsRESTRequest: true)
+        let mapper = ProductMapper(siteID: siteID)
+        try await enqueue(request)
+    }
 }
 
 

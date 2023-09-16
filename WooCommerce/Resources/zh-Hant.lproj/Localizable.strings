@@ -1372,7 +1372,7 @@ which should be translated separately and considered part of this sentence. */
    Close Account error alert button title - dismisses error alert.
    Close the action sheet
    Dismiss button on the alert when the user taps to delete a Product image
-   Label for a button that when tapped, cancels the process of connecting to a card reader 
+   Label for a button that when tapped, cancels the process of connecting to a card reader
    Label for a cancel button
    Option to cancel the email app selection when logging in with magic links
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
@@ -4047,7 +4047,7 @@ which should be translated separately and considered part of this sentence. */
 "Kyrgyzstan" = "吉爾吉斯斯坦";
 
 /* A hazardous material description stating when a package can fit into this category */
-"LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limite" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
+"limited_quantity_category" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
 
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "標籤 (4 x 6 吋)";
@@ -4117,7 +4117,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
-   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
+   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout.
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -9633,4 +9633,3 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 還在探索 WooCommerce 嗎？";
-

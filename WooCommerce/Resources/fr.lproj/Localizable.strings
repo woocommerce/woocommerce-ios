@@ -4047,7 +4047,7 @@ which should be translated separately and considered part of this sentence. */
 "Kyrgyzstan" = "Kirghizstan";
 
 /* A hazardous material description stating when a package can fit into this category */
-"LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limite" = "Colis expédiés par voie terrestre en quantités limitées : aérosols, spray désinfectants, peinture en aérosol, laque pour cheveux, propane, butane, produits d’entretien, etc. - Parfums, vernis à ongles, dissolvant, solvants, désinfectant pour les mains, alcool à friction, produits à base d’éthanol, etc. - Autres matériaux de surface en quantités limitées (cosmétiques, produits d’entretien, peintures, etc.)";
+"limited_quantity_category" = "Colis expédiés par voie terrestre en quantités limitées : aérosols, spray désinfectants, peinture en aérosol, laque pour cheveux, propane, butane, produits d’entretien, etc. - Parfums, vernis à ongles, dissolvant, solvants, désinfectant pour les mains, alcool à friction, produits à base d’éthanol, etc. - Autres matériaux de surface en quantités limitées (cosmétiques, produits d’entretien, peintures, etc.)";
 
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Étiquette (4 x 6 po)";

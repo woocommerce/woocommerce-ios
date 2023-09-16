@@ -152,10 +152,10 @@ extension ShippingLabelHazmatCategory {
                                                 comment: "A hazardous material description stating when a package can fit into this category")
         // NSLocalizedStrings that are longer than 255 characters need a separate "key" value due to GlotPress's key character limit
         static let limitedQuantity = NSLocalizedString("limited_quantity_category",
-                                                       value: "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, " +
-                                                       "cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, " +
-                                                       "rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, " +
-                                                       "cleaning products, paints, etc.)",
+                                                       value: "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, " +
+                                                       "butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, " +
+                                                       "hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface " +
+                                                       "materials (cosmetics, cleaning products, paints, etc.)",
                                                        comment: "A hazardous material description stating when a package can fit into this category")
         static let smallQuantityProvision = NSLocalizedString("Small Quantity Provision Package (markings required)",
                                                               comment: "A hazardous material description stating when a package can fit into this category")

@@ -23,7 +23,7 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+  pod 'WordPress-Editor-iOS', '~> 1.19.9'
 end
 
 def tracks

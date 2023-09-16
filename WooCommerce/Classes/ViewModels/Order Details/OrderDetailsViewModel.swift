@@ -722,13 +722,21 @@ extension OrderDetailsViewModel {
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
     private func isPluginActive(_ plugin: String, completion: @escaping (Bool) -> (Void)) {
+        isPluginActive([plugin], completion: completion)
+    }
+
+    /// Helper function that returns `true` in its callback if any of the the provided plugin names are active on the order's store.
+    /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
+    /// Useful for when a plugin has had many names.
+    ///
+    private func isPluginActive(_ plugins: [String], completion: @escaping (Bool) -> (Void)) {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins acceded without being in sync.")
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.pluginsNotSyncedYet())
             return completion(false)
         }
 
-        let action = SystemStatusAction.fetchSystemPlugin(siteID: order.siteID, systemPluginName: plugin) { plugin in
+        let action = SystemStatusAction.fetchSystemPluginListWithNameList(siteID: order.siteID, systemPluginNameList: plugins) { plugin in
             completion(plugin?.active == true)
         }
         stores.dispatch(action)

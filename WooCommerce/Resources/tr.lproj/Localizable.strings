@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 13:54:14+0000 */
+/* Translation-Revision-Date: 2023-09-12 13:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Jetpack'i WP-Admin'den etkinleştir";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "Eklentiyi etkinleştir";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Etkinleştiriliyor";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "Afganistan";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Hava Yoluna Uygun Etanol Paketi - (onaylı parfüm ve el dezenfektanı gönderileri)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Yükle düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooCommerce Payments'ı kullanarak [Hizmet Koşullarımıza](https:\/\/wordpress.com\/tos) bağlı kalmayı ve [Gizlilik Politikamızı](https:\/\/automattic.com\/privacy\/) okuduğunuzu kabul etmiş olursunuz.";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooPayments'ı kullanarak [Hizmet Koşullarımıza](https:\/\/wordpress.com\/tos) bağlı kalmayı ve [Gizlilik Politikamızı](https:\/\/automattic.com\/privacy\/) okuduğunuzu kabul etmiş olursunuz.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "ÜLKELER";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "Ücretsiz alan adınızı talep edin";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Sınıf 1 - Oyuncak İtici\/Güvenlik Fünyesi Paketi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Sınıf 3 - Paket (El dezenfektanı, ispirto, etanol bazlı ürünler, yanıcı sıvılar vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Sınıf 4 - Paket (Yanıcı katı maddeler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Sınıf 5 - Paket (Oksitleyiciler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Sınıf 6 - Paket (Zehirli maddeler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Sınıf 7 - Radyoaktif Madde Paketi (ör. duman dedektörleri, mineraller, silah nişangahları vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Sınıf 8 - Aşındırıcı Malzemeler Paketi - Hava Yoluna Uygun Aşındırıcı Malzemeler (belirli temizlik veya ağaç\/ot öldürücü bileşikler vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Sınıf 8 - Dökülebilir Olmayan Sıvı Pil Paketi - Sızdırmaz kurşun asit piller";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Sınıf 9 - Lityum Pil İşaretli - Yalnızca Kara Paketi - Yeni tekli veya yedek lityum piller (UN3480 veya UN3090 işaretli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "Sınıf 9 - Lityum Pil - İade Paketi - Lityum pil içeren veya onunla paketlenmiş kullanılmış elektronik cihazlar (işaretlemeler gerekli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Sınıf 9 - Lityum piller, işaretlenmiş paket - Lityum pillerle paketlenmiş yeni elektronik cihazlar (UN3481 veya UN3091 işaretli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Sınıf 9 - Kuru Buz Paketi (Hava yoluyla gönderiliyorsa 5 lbs. ile sınırlıdır)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Sınıf 9 - Lityum piller, işaretlenmemiş paket - Lityum piller takılmış veya onlarla paketlenmiş yeni elektronik cihazlar (işaretleme yok)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Sınıf 9 - Manyetize Edilmiş Malzeme Paketi";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Filtreleri Temizle";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Buradan bize ulaşın";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "Tehlikeli Maddeler İçerir";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "İçerik Ayrıntıları";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "AYRINTILAR";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Tanım";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "%1$@ kullanarak ürününüzün postayla gönderilebilir olup olmadığını öğrenin. ";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Ürünlerin katalogdaki konumlandırmasını belirler. Sayı ne kadar küçükse öğe, ürün listesinde o kadar üstte olacaktır. Negatif değerler de kullanabilirsiniz";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Tüm mesajları önemseme";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Bölüm 4.1 - Postayla gönderilebilen yanıcı katılar ve Emniyet Kibritleri Paketi - Kutu kibritler, kitap kibritleri, postayla gönderilebilir yanıcı katılar üzerinde güvenlik\/çakma testi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Bölüm 5.1 - Oksitleyici Paketi - Hidrojen peroksit (8 ila 20 konsantrasyon)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Bölüm 5.2 - Organik Peroksitler Paketi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Bölüm 6.1 - Toksik Maddeler Paketi (LD50 değeri 50 mg\/kg veya daha az olan) - (pestisitler, herbisitler vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Bölüm 6.2 - Tehlikeli Maddeler - Biyolojik Maddeler (ör. laboratuvar test kitleri, onaylı COVID test kiti iadeleri)";
 
 /* Country option for a site address. */
 "Djibouti" = "Cibuti";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Örneğin: Saksıda yetişir, kaktüs, bitki, dekoratif, bakımı kolay";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "İstisnai Miktarda Tedarik Paketi (örneğin, küçük hacimlerde yanıcı sıvılar, aşındırıcı, toksik veya çevreye zararlı maddeler - işaretleme gereklidir)";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d Kategoriyi Hariç Tut";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Yalnızca Karaya Uygun Tehlikeli Maddeler (Listede yer almayan ancak yalnızca yüzeyle sınırlı olan maddeler için)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "Grup adedi";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Mağaza kimlik bilgilerinizi hazırlayın.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "Tehlikeli maddeler kategorisi";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Başlık 1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Şu konuda yardıma ihtiyacım var";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 Tüketici Malları Paketi - Hava Yoluna Uygun ID8000 Tüketici Malları (Yanıcı olmayan aerosoller, Alev alabilen ve yanabilen sıvılar, Toksik Madde, Çeşitli tehlikeli maddeler)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "TAMAMLANACAK ÖĞELER";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "Kırgızistan";
 
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "SINIRLI MİKTARDA Kara Paketi - Aerosoller, sprey dezenfektanlar, sprey boya, saç spreyi, propan, bütan, temizlik ürünleri vb. - Parfümler, oje, oje çıkarıcı, çözücüler, el dezenfektanı, ispirto, etanol bazlı ürünler vb. - Diğer sınırlı miktardaki yüzey malzemeleri (kozmetikler, temizlik ürünleri, boyalar vb.)";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiket (4 x 6 inç)";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "Daha fazla öğren";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@ adresinden USPS® yoluyla Tehlikeli Maddelerin nasıl güvenli bir şekilde paketleneceğini, etiketleneceğini ve gönderileceğini öğrenin. ";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "Lihtenştayn";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "Çakmak Paketi - Onaylı Çakmaklar";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Kullanımı X Öğe ile Sınırla";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Posta kodu eksik";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "Potansiyel olarak tehlikeli maddeler arasında piller, kuru buz, yanıcı sıvılar, aerosoller, mühimmat, havai fişekler, oje, parfüm, boya, çözücüler ve daha fazlası yer almaktadır. Tehlikeli maddeler ayrı paketlerde gönderilmelidir.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Destekleyen:";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "Yönlendirme programları";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "Yenile";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "Etkinleştirdikten sonra yenileyin";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "Kurulumdan sonra yenileyin";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "Tür Seç";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "Bir kategori seçin";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Paket seç";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "Ürünlerinizi göndermek için kullanmak istediğiniz ambalaj türünü seçin";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "Paketiniz tehlikeli mallar veya tehlikeli maddeler içeriyorsa bu seçeneği belirleyin.";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Karşıya yükleme yöntemi seç";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Kısaltma";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "Küçük Miktarda Tedarik Paketi (işaretleme gerekli)";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Sosyal reklam";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "Adres";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS Tehlikeli Madde Arama Aracı";
+
 /* Country option for a site address. */
 "Uganda" = "Uganda";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobil Uygulaması - Mağazanızı her yerden işletin";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Ödemeler";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping, şu anda %1$@ yoluyla Tehlikeli Madde gönderimlerini desteklemiyor.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "WooCommerce mobil uygulaması";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "WooCommerce mağazası";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "Başardınız!";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "Bu konum için belirlenmiş bir vergi oranı yok.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Bu mağazada eklentileri yönetme izniniz yok.";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, ürünler, kategoriler, yeni ürün, ürün arama";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "yıl";

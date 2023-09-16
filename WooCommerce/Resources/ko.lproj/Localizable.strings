@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-15 21:32:33+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "WP 관리자에서 젯팩 활성화";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "플러그인 활성화";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "활성화 중";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "아프가니스탄";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "항공 적격 에탄올 패키지 - (승인된 향수 및 손 소독제 배송)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "젯팩 설치 버튼을 클릭하면 워드프레스닷컴의 %1$@ 및 %2$@에 동의하는 것입니다.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "우커머스 결제를 사용하면 [서비스 약관(https:\/\/wordpress.com\/tos) 적용에 동의하고 [개인정보 취급방침](https:\/\/automattic.com\/privacy\/)을 읽었다고 인정하는 것입니다.";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooPayments를 사용하면 [서비스 약관(https:\/\/wordpress.com\/tos) 적용에 동의하고 [개인정보 취급방침](https:\/\/automattic.com\/privacy\/)을 읽었다는 것을 확인하는 것입니다.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "국가";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "무료 도메인 신청";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Class 1 - 장난감 추진제\/안전 도화선 패키지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Class 3 - 패키지(손 소독제, 소독용 알코올, 에탄올 주성분 제품, 인화성 액체 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Class 4 - 패키지(가연성 고체)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Class 5 - 패키지(산화제)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Class 6 - 패키지(유독물질)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Class 7 - (예: 연기 감지기, 무기질, 사격 조준기 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Class 8 - 부식성 물질 패키지 - 항공 적격 부식성 물질(특정 세정 또는 나무\/잡초 제거 화합물 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Class 8 - 비누출형 습식 배터리 패키지 - 밀폐형 납 축전지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Class 9 - 리튬 배터리 표시 - 육상 전용 패키지 - 새 개별 또는 예비 리튬 배터리(UN3480 또는 UN3090 표시)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "클래스 9 - 리튬 배터리 - 반품 패키지 - 리튬 배터리가 포함되어 있거나 포장된 중고 전자 기기(표시 필수)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Class 9 - 리튬 배터리, 표시된 패키지 - 리튬 배터리가 포장된 새 전자 기기(UN3481 또는 UN3091 표시)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Class 9 - 드라이아이스 패키지(항공 배송 시 5파운드로 제한)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Class 9 - 리튬 배터리, 표시 없는 패키지 - 리튬 배터리가 장착되거나 포장된 새 전자 기기(표시 없음)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Class 9 - 자성물질 패키지";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "필터 지우기";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "여기에서 문의하세요.";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "유해물질 있음";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "내용물 상세 정보";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "상세 정보";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "%1$@을(를) 사용하여 상품의 우송 가능성을 결정합니다.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "카탈로그에서 제품 위치를 결정합니다. 숫자 값이 낮을수록 아이템이 제품 목록에서 더 위에 옵니다. 음수 값도 사용할 수 있습니다";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "모든 메시지 무시";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Division 4.1 - 우송 가능한 가연성 고체 및 안전성냥 패키지 - 곽성냥, 성냥첩, 우송 가능한 가연성 고체에 대한 안전성\/타격";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Division 5.1 - 산화제 패키지 - 과산화수소(농도 8~20％)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Division 5.2 - 유기과산화물 패키지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Division 6.1 - 독성 물질 패키지(50mg\/kg 이하 LD50 포함) - (살충제, 제초제 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Division 6.2 - 위험물질 - 생물학적 물질(예: 실험실 테스트 키트, 승인된 코로나19 진단 키트 반품)";
 
 /* Country option for a site address. */
 "Djibouti" = "지부티";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "예: 화분, 선인장, 식물, 장식용, 손쉬운 관리";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "예외 수량 제공 패키지(예: 소량의 인화성 액체, 부식성, 독성 또는 환경적으로 유해한 물질 - 표시 필수)";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d개 카테고리 제외";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "그레나다";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "육상 전용 유해물질(목록에 없지만 표면으로만 제한된 아이템의 경우)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "그룹";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "스토어 자격 증명을 준비하세요.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "유해물질 카테고리";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "헤더 1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "도움말이 필요한 영역";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 소비자 상품 패키지 - 항공 적격 ID8000 소비자 상품(비인화성 에어로졸, 인화성 가연성 액체, 독성 물질, 기타 유해물질)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "주문을 처리할 아이템";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "키르기스스탄";
 
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "한정 수량 육상 패키지 - 에어로졸, 스프레이 소독제, 스프레이 페인트, 헤어스프레이, 프로판, 부탄, 세정제 등 - 향료, 매니큐어, 매니큐어 제거제, 용제, 손 소독제, 소독용 알코올, 에탄올 주성분 제품 등 - 기타 한정 수량 표면재(화장품, 세정제, 도료 등)";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "레이블(4 x 6in)";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "더 알아보기";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "리히텐슈타인";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "라이터 패키지 - 승인된 라이터";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X개 아이템으로 사용 제한";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "우편번호 누락";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "잠재적 유해물질에는 배터리, 드라이아이스, 가연성 액체, 에어로졸, 탄약, 폭죽, 매니큐어, 향수, 페인트, 용제 등과 같은 품목이 포함됩니다. 유해 아이템은 별도의 패키지로 배송되어야 합니다.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "제공:";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "추천 프로그램";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "새로 고침";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "활성화 후 새로 고침";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "설치 후 새로 고침";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "유형 선택";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "카테고리 선택";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "패키지 선택";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "아이템을 배송할 포장 유형 선택";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "패키지에 위험물 또는 유해물질이 있는 경우 선택";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "업로드 방법 선택";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "슬러그";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "소량 제공 패키지(표시 필수)";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "소셜 광고";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS HAZMAT 검색 도구";
+
 /* Country option for a site address. */
 "Uganda" = "우간다";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "우커머스 모바일 앱 - 어디에서나 스토어 실행";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce 배송에서는 현재 %1$@을(를) 통한 HAZMAT 배송이 지원되지 않습니다.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "우커머스 모바일 앱";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "우커머스 스토어";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "워드프레스";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "훌륭합니다!";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "위치가 포함된 세율이 없습니다.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "이 스토어의 플러그인을 관리할 권한이 없습니다.";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "연";

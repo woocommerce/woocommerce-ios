@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 21:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-15 21:32:51+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Ativar o Jetpack no Painel WP Admin";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "Ativar plugin";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Ativando";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "Afeganistão";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Pacote com etanol elegível para envio aéreo - (envios de higienizador para mãos e fragrância autorizados)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Ao tocar no botão Instalar Jetpack, você concorda com nossos %1$@ e em %2$@ com o WordPress.com.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Ao usar o WooCommerce Payments, você concorda em aderir aos nossos [Termos de serviço](https:\/\/wordpress.com\/tos) e confirma que leu a nossa [Política de privacidade](https:\/\/automattic.com\/privacy\/).";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Ao usar o WooCommerce, você concorda em aderir aos nossos [Termos de serviço](https:\/\/wordpress.com\/tos) e confirma que leu a nossa [Política de privacidade](https:\/\/automattic.com\/privacy\/).";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "PAÍSES";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "Resgatar seu domínio gratuito";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Classe 1 - Pacote com fusível\/propulsor de brinquedo";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Classe 3 - Pacote (higienizador para mãos, álcool isopropílico, produtos à base de etanol, líquidos inflamáveis etc.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Classe 4 - Pacote (sólidos inflamáveis)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Classe 5 - Pacote (oxidadores)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Classe 6 - Pacote (materiais venenosos)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Classe 7 - Pacote com materiais radioativos (como detectores de fumaça, minerais, mira de arma etc.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Classe 8 - Pacote com materiais corrosivos - Materiais corrosivos elegíveis a envio por via aérea (determinados produtos de limpeza ou componentes de controle de ervas daninhas\/florestal etc.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Classe 8 - Pacote com bateria úmida sem riscos de derramamento - Baterias de chumbo-ácido seladas";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Classe 9 - Bateria de lítio identificada - Pacote apenas para envio terrestre - Novas baterias de lítio de substituição ou individuais (identificação UN3480 ou UN3090)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "Classe 9 - Bateria de lítio - Pacote de devolução - Dispositivos eletrônicos usados contendo ou embalados com baterias de lítio (identificação obrigatória)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Classe 9 - Baterias de lítio, pacote identificado - Novos dispositivos eletrônicos embalados com baterias de lítio (identificação UN3481 ou UN3091)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Classe 9 - Pacote com gelo seco (limitado a 2,27 kg em envio aéreo)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Classe 9 - Baterias de lítio, pacote não identificado - Novos dispositivos eletrônicos instalados ou embalados com baterias de lítio (sem identificação)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Classe 9 - Pacote de materiais magnéticos";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Limpar filtros";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Fale conosco aqui";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "Contém materiais perigosos";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "Detalhes do conteúdo";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "DETALHES";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Descrição";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "Determine a adequação do seu produto para envio usando o %1$@.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Determina a posição dos produtos no catálogo. Quanto menor for o valor do número, maior será a posição do item na lista de produtos. Também é possível usar valores negativos.";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Dispensar todas as mensagens";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Divisão 4.1 - Sólidos inflamáveis que podem ser enviados por correio e pacote com caixas de fósforo - Caixas de fósforo, sólidos inflamáveis que podem ser enviados por correio";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Divisão 5.1 - Pacote com oxidadores - Peróxido de hidrogênio (concentração de 8 a 20％)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Divisão 5.2 - Pacote com peróxidos orgânicos";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Divisão 6.1 - Pacote com materiais tóxicos (com LD50 de 50 mg\/kg ou menos) - (pesticidas, herbicidas etc.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Divisão 6.2 - Materiais perigosos - Materiais biológicos (como kits de teste em laboratório, resultados de kit de teste de covid autorizados)";
 
 /* Country option for a site address. */
 "Djibouti" = "Djibuti";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Por exemplo: vaso, cacto, planta, decorativa, fácil de cuidar";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "Pacote com provisão em quantidade muito pequena (como pequenos volumes de líquidos inflamáveis ou materiais perigosos para o meio ambiente, corrosivos ou tóxicos; com identificação obrigatória)";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Excluir %1$d categorias";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Granada";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Materiais perigosos apenas para envio terrestre (para itens que não estejam listados, mas sejam restritos a superfícies)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "Grupo de";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Deixe as credenciais da sua loja prontas.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "Categoria de materiais perigosos";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Cabeçalho 1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Preciso de ajuda com";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "Pacote com artigo de consumo (ID8000) - Artigo de consumo (ID8000) elegível para envio aéreo (aerossol não inflamável, líquidos combustíveis inflamáveis, substâncias tóxicas, outros materiais perigosos)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ITENS PARA PREENCHER";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "Quirguistão";
 
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "Pacote para envio por via terrestre em quantidade limitada - Desinfetantes, tintas e fixadores de cabelo em spray, aerossol, propano, butano, produtos de limpeza etc. - Fragrâncias, esmalte de unha e removedor de esmalte, solventes, higienizador para mãos, álcool isopropílico, produtos à base de etanol etc. - Outros materiais em quantidade limitada usados em superfícies (cosméticos, produtos de limpeza, tintas etc.)";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiqueta (10 x 15 cm)";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "Saiba Mais";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Saiba como embalar, etiquetar e enviar produtos HAZMAT com segurança pelo USPS® em %1$@.";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "Liechtenstein";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "Pacote de isqueiros - Isqueiros autorizados";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Limitar o uso a X itens";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Informe o código postal";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "Os materiais que podem ser perigosos incluem itens como baterias, gelo seco, líquidos inflamáveis, aerossol, munição, fogos de artifício, esmalte de unha, perfume, tinta, solventes, entre outros. Itens perigosos devem ser transportados em embalagens separadas.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Com tecnologia";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "Programas de indicação";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "Atualizar";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "Recarregar a página depois de ativar";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "Recarregar a página depois de instalar";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "Selecione o tipo";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "Selecione uma categoria";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Selecione um pacote";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "Selecione o tipo de pacote em que você gostaria de enviar seus itens";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "Selecione esta opção se seu pacote contiver mercadorias ou materiais perigosos";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Selecionar método de upload";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Slug";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "Pacote de provisão em pequenas quantidades (identificação obrigatória)";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Publicidade social";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "Ferramenta de pesquisa de HAZMAT da USPS";
+
 /* Country option for a site address. */
 "Uganda" = "Uganda";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "Aplicativo móvel do WooCommerce: gerencie sua loja de onde estiver";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "No momento, o WooCommerce Shipping não oferece suporte a envios de materiais perigosos (HAZMAT) pelo %1$@.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "Aplicativo móvel do WooCommerce";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "Loja do WooCommerce";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "Você conseguiu!";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "Você não tem nenhuma taxa de imposto com um local.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Você não tem permissão para gerenciar plugins nesta loja.";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produtos, categorias, novo produto, pesquisar produtos";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "https:\/\/www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "ano";

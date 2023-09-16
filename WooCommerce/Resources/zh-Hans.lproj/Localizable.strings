@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 11:54:03+0000 */
+/* Translation-Revision-Date: 2023-09-15 21:29:06+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "在 WP-Admin 中启用 Jetpack";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "激活插件";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "激活";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "阿富汗";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "符合空气条件的乙醇包装 —（获授权的芳香剂及洗手液装运）";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "轻点“安装 Jetpack”按钮，即表示您同意我们的%1$@并同意与 WordPress.com %2$@。";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "使用 WooCommerce Payments 即表示，您同意遵守我们的[服务条款](https:\/\/wordpress.com\/tos)，并确认您已阅读我们的[隐私政策](https:\/\/automattic.com\/privacy\/)。";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "使用 WooPayments 即表示，您同意遵守我们的 [服务条款](https:\/\/wordpress.com\/tos)，并确认您已阅读我们的 [隐私政策](https:\/\/automattic.com\/privacy\/)。";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "国家\/地区";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "声明您的免费域";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "第 1 类 — 玩具推进燃料\/安全导火索包装";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "第 3 类 — 包装（洗手液、擦洗酒精、乙醇基产品、易燃液体等）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "第 4 类 — 包装（易燃固体）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "第 5 类 — 包装（氧化剂）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "第 6 类 — 包装（有毒物质）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "第 7 类 — 放射性物质包装（如烟雾探测器、矿物、射击瞄准具等）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "第 8 类 — 腐蚀性物质包装 — 符合空气条件的腐蚀性物质（某些清洁剂或除杂\/除草剂等）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "第 8 类 — 非溢漏式湿电池包装 — 密封铅酸电池";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "第 9 类 — 已标记的锂电池 — 仅基础包装 — 新的单体或备用锂电池（标有 UN3480 或 UN3090）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "第 9 类 — 锂电池 — 退货包装 — 含有或包装有锂电池的二手电子设备（必须标记）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "第 9 类 — 锂电池，有标记包装 — 包装有锂电池的新电子设备（标有 UN3481 或 UN3091）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "第 9 类 — 干冰包装（如果空运，重量不得超过 5 磅）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "第 9 类 — 锂电池，无标记包装 — 安装或包装有锂电池的新电子设备（无标记）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "第 9 类 — 磁性物质包装";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "清除过滤器";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "点击此处联系我们";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "含危险物质";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "内容详细信息";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "详细信息";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "描述";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "使用 %1$@ 确定产品的可邮寄性。";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "确定产品在目录中的位置。数值越低，相关产品在产品列表中的位置越靠前。您还可以使用负数";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "忽略全部消息";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "类别 4.1 — 可邮寄的易燃固体和安全火柴包装 — 安全\/火柴盒、卡纸夹式火柴、可邮寄的易燃固体";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "类别 5.1 — 氧化剂包装 — 过氧化氢（8-20％ 浓度）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "类别 5.2 — 有机过氧化物包装";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "类别 6.1 — 有毒物质包装（LD50 小于等于 50mg\/kg）—（杀虫剂、除草剂等）";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "类别 6.2 — 危险物质 — 生物材料（如实验室检测试剂盒、获授权的 COVID 检测试剂盒返回包）";
 
 /* Country option for a site address. */
 "Djibouti" = "吉布提";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "示例：盆栽、仙人掌、植物、装饰、易打理";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "例外数量供应包装（如少量易燃液体、腐蚀性、有毒或对环境有害的物质 — 必须标记）";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "排除 %1$d 个分类";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "格林纳达";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "仅适用于基础包装的危险物质（仅适用于未列出但仅限用于表面的物品)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "组数";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "准备好您的商店凭据。";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "危险物质类别";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "标题 1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "我需要帮助";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 消费品包装 — 符合空气条件的 ID8000 消费品（不易燃气雾剂、易燃可燃液体、有毒物质、各种危险物质）";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "要履单的商品";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "吉尔吉斯斯坦";
 
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "有限数量基础包装 — 气雾剂、喷雾消毒剂、喷漆、定型喷雾、丙烷、丁烷、清洁产品等。 - 芳香剂、指甲油、洗甲水、溶剂、洗手液、擦洗酒精、乙醇基产品等 - 其他有限数量表面物质（化妆品、清洁产品、油漆等）";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "标签（4 x 6 英寸）";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "了解更多";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "访问 %1$@，了解如何通过 USPS® 安全包装、标记和运输危险品。";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "列支敦士登";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "打火机包装 — 获授权的打火机";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "限制 X 个物品的使用";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "缺少邮编";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "潜在危险物质包括电池、干冰、易燃液体、气雾剂、弹药、烟花、指甲油、香水、油漆和溶剂等。 危险物品必须以单独包装运输。";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "提供支持：";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "推荐计划";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "刷新";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "激活后刷新";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "安装后刷新";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "选择类型";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "选择一个类别";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "选定包裹";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "选择您想用来配送商品的包装类型";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "如果您的包装中包含危险物品或危险物质，请选择此项";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "选择上传方法";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "数据域";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "小批量供应包装（必须标记）";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "社交广告";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS 危险品搜索工具";
+
 /* Country option for a site address. */
 "Uganda" = "乌干达";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce 移动应用程序，随时随地经营商店";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping 目前不支持通过 %1$@ 运输危险品。";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "WooCommerce 移动应用";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "WooCommerce 商店";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "您做到了！";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "不同位置的税率不同。";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "您没有在此商店中管理插件的权限。";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 产品, 分类, 新产品, 搜索产品";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "年";

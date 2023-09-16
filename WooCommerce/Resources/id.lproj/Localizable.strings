@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-15 21:31:13+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Aktifkan Jetpack di WP-Admin";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "Aktifkan plugin";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Mengaktifkan";
 
@@ -704,6 +707,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "Afghanistan";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Paket Etanol yang Memenuhi Syarat Jalur Udara - (pengiriman parfum dan penyanitasi tangan resmi)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -1251,7 +1257,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Dengan mengetuk tombol Instal Jetpack, Anda menyetujui %1$@ kami dan bersedia %2$@ dengan WordPress.com.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Dengan menggunakan WooCommerce Payments, Anda terikat oleh [Ketentuan Layanan] kami (https:\/\/wordpress.com\/tos) dan menyatakan bahwa Anda telah membaca [Kebijakan Privasi] kami (https:\/\/automattic.com\/privacy\/).";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Dengan menggunakan WooPayments, Anda terikat oleh [Ketentuan Layanan] kami (https:\/\/wordpress.com\/tos) dan menyatakan bahwa Anda telah membaca [Kebijakan Privasi] kami (https:\/\/automattic.com\/privacy\/).";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "NEGARA";
@@ -1591,6 +1597,48 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "Klaim domain gratis Anda";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Kelas 1 – Paket Murang\/Propelan Mainan";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Kelas 3 - Paket (Penyanitasi tangan, alkohol medis, produk-produk berbahan dasar etanol, cairan mudah terbakar, dll.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Kelas 4 - Paket (Zat padat mudah terbakar)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Kelas 5 - Paket (Oksidator)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Kelas 6 - Paket (Bahan-bahan beracun)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Kelas 7 – Paket Bahan-Bahan Radioaktif (mis. pendeteksi kebakaran, mineral, alat bidik senjata, dll.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Kelas 8 – Paket Bahan-Bahan Korosif - Bahan-Bahan Korosif yang Memenuhi Syarat Jalur Udara (senyawa tertentu pembasmi tanaman\/rumput liar atau pembersih, dll.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Kelas 8 – Paket Baterai Basah Antitumpah - Baterai asam timbal tersegel";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Kelas 9 - Tertandai Baterai Litium – Paket Khusus Jalur Darat - Baterai litium terpisah atau cadangan baru (ditandai UN3480 atau UN3090)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "Kelas 9 - Baterai Litium – Paket Kembali - Perangkat elektronik bekas yang mengandung atau berisi baterai litium (wajib ditandai)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Kelas 9 - Baterai litium, paket yang ditandai - Perangkat elektronik baru dengan baterai litium (ditandai UN3481 atau UN3091)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Kelas 9 – Paket Es Kering (terbatas hingga seberat 5 pon jika dikirim melalui Jalur Udara)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Kelas 9 – Baterai litium, paket yang tidak ditandai - Perangkat elektronik baru yang dipasangi atau berisi baterai litium (tidak ditandai)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Kelas 9 – Paket Bahan-Bahan Bermagnet";
+
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
 "Clear Filters" = "Hapus Penyaring";
@@ -1833,6 +1881,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Hubungi kami di sini";
+
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "Mengandung Bahan Berbahaya";
 
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "Detail Isi";
@@ -2218,6 +2269,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "RINCIAN";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2268,6 +2322,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Deskripsi";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "Gunakan %1$@ untuk mencari tahu apakah produk Anda dapat dikirim.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Menentukan posisi produk di katalog. Semakin rendah nilai angka, semakin posisi tinggi item di daftar produk. Anda juga dapat menggunakan nilai negatif";
@@ -2359,6 +2416,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Abaikan semua pesan";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Bagian 4.1 – Zat padat mudah terbakar yang bisa dikirim dan Paket Korek Api - Korek api bungkus kotak, korek api bungkus lipat, zat padat mudah terbakar yang bisa dikirim";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Bagian 5.1 – Paket Oksidator - Hidrogen peroksida (konsentrasi 8 hingga 20％)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Bagian 5.2 – Paket Peroksida Organik";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Bagian 6.1 – Paket Bahan-Bahan Beracun (dengan LD50 sebanyak 50 mg\/kg atau kurang) - (pestisida, herbisida, dll.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Bagian 6.2 - Bahan-Bahan Berbahaya - Bahan-Bahan Biologis (mis. perlengkapan uji laboratorium, paket kembali alat uji COVID terpakai dengan izin resmi)";
 
 /* Country option for a site address. */
 "Djibouti" = "Djibouti";
@@ -2921,6 +2993,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Contoh: Dalam pot, kaktus, tanaman, dekoratif, mudah dirawat";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "Paket Pengadaan Kuantitas Pengecualian (mis. cairan mudah terbakar, bahan-bahan berbahaya bagi lingkungan, beracun, atau korosif dalam volume kecil - wajib ditandai)";
+
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Kecualikan %1$d Kategori";
 
@@ -3378,6 +3453,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Bahan-Bahan Berbahaya Khusus Jalur Darat (Untuk item yang tidak masuk dalam daftar, tetapi terbatas hanya untuk jalur darat)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "Kelipatan";
 
@@ -3451,6 +3529,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Siapkan kredensial toko Anda.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "Kategori bahan berbahaya";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Header 1";
@@ -3582,6 +3663,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Saya butuh bantuan untuk";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "Paket Barang Konsumen ID8000 - Barang Konsumen ID8000 yang Memenuhi Syarat Pengiriman Jalur Udara (Aerosol yang tidak mudah terbakar, Cairan yang mudah terbakar, Zat Beracun, Aneka bahan berbahaya)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ITEM YANG PERLU DIISI";
@@ -3962,6 +4046,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "Kyrgyzstan";
 
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "Paket Jalur Darat Kuantitas Terbatas - Aerosol, disinfektan semprot, cat semprot, hair spray, propana, butana, produk-produk kebersihan, dll. - Parfum, cat kuku, pembersih cat kuku, pelarut, penyanitasi tangan, alkohol medis, produk-produk berbahan dasar etanol, dll. - Bahan-bahan jalur darat kuantitas terbatas lainnya (kosmetik, produk-produk kebersihan, cat, dll.)";
+
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Label (4 x 6 inci)";
 
@@ -4019,6 +4106,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the secondary button on the store onboarding payments setup screen.
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "Pelajari Lebih Lanjut";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Pelajari cara mengemas, melabeli, dan mengirim HAZMAT secara aman dengan USPS® di %1$@.";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -4102,6 +4192,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "Liechtenstein";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "Paket Pemantik Api - Pemantik Api Resmi";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Batasi Penggunaan hingga X Barang";
@@ -5520,6 +5613,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Kode pos belum diisi";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "Bahan berbahaya meliputi item-item seperti baterai, es kering, cairan yang mudah terbakar, aerosol, amunisi, kembang api, cat kuku, parfum, cat, pelarut, dan lain-lain. Item-item yang berbahaya harus dikirimkan dalam paket-paket terpisah.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Didukung oleh";
@@ -5880,14 +5976,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "Program referensi";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup */
 "Refresh" = "Muat ulang";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "Segarkan Setelah Mengaktifkan";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "Segarkan Setelah Menginstal";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6422,6 +6513,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "Pilih Tipe";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "Pilih kategori";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Pilih Paket";
 
@@ -6472,6 +6567,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "Pilih jenis kemasan yang digunakan untuk mengirim item Anda";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "Pilih ini jika paket Anda berisi barang atau bahan berbahaya";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Pilih metode pengunggahan";
@@ -6812,6 +6910,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Product Slug navigation title
    Slug label in Product Settings */
 "Slug" = "Slug";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "Paket Pengadaan Kuantitas Kecil (wajib ditandai)";
 
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Iklan sosial";
@@ -8148,6 +8249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "Alat Pencarian USPS HAZMAT";
+
 /* Country option for a site address. */
 "Uganda" = "Uganda";
 
@@ -8986,9 +9090,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "Aplikasi Seluler WooCommerce - Jalankan toko dari mana saja";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "Pembayaran WooCommerce";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9105,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "Pengiriman WooCommerce";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping saat ini tidak menyediakan pengiriman HAZMAT melalui %1$@.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "Aplikasi seluler WooCommerce";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "Toko WooCommerce";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9137,6 +9246,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "Anda berhasil!";
+
+/* Text to prompt the user to edit tax ratesin the web when there are no results */
+"You don't have any tax rates with a location." = "Anda tidak memiliki tarif pajak di lokasi mana pun.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Anda tidak memiliki izin untuk mengelola plugin di toko ini.";
@@ -9475,6 +9587,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, produk, kategori, produk baru, cari produk";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "tahun";

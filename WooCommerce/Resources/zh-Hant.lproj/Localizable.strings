@@ -2421,7 +2421,7 @@ which should be translated separately and considered part of this sentence. */
 "Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "第 4.1 類：可郵寄的易燃固體和安全火柴包裹。可安全擦劃盒裝火柴、紙板火柴、可郵寄的易燃固體";
 
 /* A hazardous material description stating when a package can fit into this category */
-"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "第 5.1 類：氧化劑包裹 - 過氧化氫 (濃度為 8％ 到 20％)";
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "第 5.1 類：氧化劑包裹 - 過氧化氫 (濃度為 8％ 到 20％)";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Division 5.2 – Organic Peroxides Package" = "第 5.2 類：有機過氧化物包裹";

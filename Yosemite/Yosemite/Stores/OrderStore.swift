@@ -62,14 +62,14 @@ public class OrderStore: Store {
         case .updateOrderStatus(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, status: statusKey, onCompletion: onCompletion)
 
-        case let .updateOrder(siteID, order, fields, onCompletion):
-            updateOrder(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
+        case let .updateOrder(siteID, order, giftCard, fields, onCompletion):
+            updateOrder(siteID: siteID, order: order, giftCard: giftCard, fields: fields, onCompletion: onCompletion)
         case let .updateOrderOptimistically(siteID, order, fields, onCompletion):
             updateOrderOptimistically(siteID: siteID, order: order, fields: fields, onCompletion: onCompletion)
         case let .createSimplePaymentsOrder(siteID, status, amount, taxable, onCompletion):
             createSimplePaymentsOrder(siteID: siteID, status: status, amount: amount, taxable: taxable, onCompletion: onCompletion)
-        case let .createOrder(siteID, order, onCompletion):
-            createOrder(siteID: siteID, order: order, onCompletion: onCompletion)
+        case let .createOrder(siteID, order, giftCard, onCompletion):
+            createOrder(siteID: siteID, order: order, giftCard: giftCard, onCompletion: onCompletion)
 
         case let .updateSimplePaymentsOrder(siteID, orderID, feeID, status, amount, taxable, orderNote, email, onCompletion):
             updateSimplePaymentsOrder(siteID: siteID,
@@ -333,7 +333,7 @@ private extension OrderStore {
                                    taxable: Bool,
                                    onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let order = OrderFactory.simplePaymentsOrder(status: status, amount: amount, taxable: taxable)
-        remote.createOrder(siteID: siteID, order: order, fields: [.status, .feeLines]) { [weak self] result in
+        remote.createOrder(siteID: siteID, order: order, giftCard: nil, fields: [.status, .feeLines]) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -383,12 +383,12 @@ private extension OrderStore {
         let updatedOrder = originalOrder.copy(orderID: orderID, customerNote: orderNote, billingAddress: newBillingAddress, fees: [newFee])
         let updateFields: [OrderUpdateField] = [.customerNote, .billingAddress, .fees, .status]
 
-        updateOrder(siteID: siteID, order: updatedOrder, fields: updateFields, onCompletion: onCompletion)
+        updateOrder(siteID: siteID, order: updatedOrder, giftCard: nil, fields: updateFields, onCompletion: onCompletion)
     }
 
     /// Creates a manual order with the provided order details.
     ///
-    func createOrder(siteID: Int64, order: Order, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func createOrder(siteID: Int64, order: Order, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
         let fields: [OrdersRemote.CreateOrderField] = [.status,
                                                        .items,
                                                        .billingAddress,
@@ -399,6 +399,7 @@ private extension OrderStore {
                                                        .customerNote]
         remote.createOrder(siteID: siteID,
                            order: order,
+                           giftCard: giftCard,
                            fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
@@ -437,8 +438,8 @@ private extension OrderStore {
 
     /// Updates the specified fields from an order.
     ///
-    func updateOrder(siteID: Int64, order: Order, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+    func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        remote.updateOrder(from: siteID, order: order, giftCard: giftCard, fields: fields) { [weak self] result in
             switch result {
             case .success(let order):
                 // Auto-draft orders are temporary and should not be stored
@@ -462,7 +463,7 @@ private extension OrderStore {
         // Optimistically update the stored order.
         let backupOrder = upsertStoredOrder(readOnlyOrder: order)
 
-        remote.updateOrder(from: siteID, order: order, fields: fields) { [weak self] result in
+        remote.updateOrder(from: siteID, order: order, giftCard: nil, fields: fields) { [weak self] result in
             guard case .failure = result else {
                 onCompletion(.success(order))
                 return

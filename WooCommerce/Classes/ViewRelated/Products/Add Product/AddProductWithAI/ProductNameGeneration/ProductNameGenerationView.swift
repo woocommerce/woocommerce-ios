@@ -104,7 +104,7 @@ struct ProductNameGenerationView: View {
             HStack(spacing: Constants.horizontalSpacing) {
                 // Action button to generate message
                 Button(action: {
-                    // TODO
+                    viewModel.generateProductName()
                 }, label: {
                     Label {
                         Text(viewModel.generateButtonTitle)
@@ -118,7 +118,7 @@ struct ProductNameGenerationView: View {
                 Spacer()
 
                 Button(Localization.apply) {
-                    // TODO
+                    viewModel.applyGeneratedName()
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .fixedSize(horizontal: true, vertical: false)
@@ -126,7 +126,7 @@ struct ProductNameGenerationView: View {
             .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
 
             Button(action: {
-                // TODO
+                viewModel.generateProductName()
             }, label: {
                 Label {
                     Text(viewModel.generateButtonTitle)
@@ -139,6 +139,7 @@ struct ProductNameGenerationView: View {
             .disabled(viewModel.detailContent.isEmpty)
             .renderedIf(viewModel.hasGeneratedMessage == false)
         }
+        .notice($copyTextNotice, autoDismiss: true)
     }
 }
 
@@ -190,6 +191,6 @@ private extension ProductNameGenerationView {
 
 struct ProductNameAIBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ProductNameGenerationView(viewModel: .init(siteID: 123, detailContent: ""))
+        ProductNameGenerationView(viewModel: .init(siteID: 123, detailContent: "Thai essential oil"))
     }
 }

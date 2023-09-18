@@ -37,6 +37,14 @@ final class ProductNameGenerationViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
     }
+
+    func applyGeneratedName() {
+        // TODO-10688
+    }
+
+    func generateProductName() {
+        // TODO-10688
+    }
 }
 
 extension ProductNameGenerationViewModel {

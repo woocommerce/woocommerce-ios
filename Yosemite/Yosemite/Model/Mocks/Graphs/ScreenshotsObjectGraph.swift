@@ -42,7 +42,7 @@ struct ScreenshotObjectGraph: MockObjectGraph {
         isSiteOwner: false,
         frameNonce: "",
         plan: "",
-        isAIAssitantFeatureActive: false,
+        isAIAssistantFeatureActive: false,
         isJetpackThePluginInstalled: true,
         isJetpackConnected: true,
         isWooCommerceActive: true,

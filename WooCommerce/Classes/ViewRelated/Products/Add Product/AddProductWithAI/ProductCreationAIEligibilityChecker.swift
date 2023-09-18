@@ -28,6 +28,6 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
-        return site.isWordPressComStore || site.isAIAssitantFeatureActive
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

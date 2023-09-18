@@ -71,7 +71,7 @@ private extension ProductCreationAIEligibilityCheckerTests {
                             isAIAssistantActive: Bool = false) {
         stores.updateDefaultStore(storeID: 134)
         stores.updateDefaultStore(.fake().copy(siteID: 134,
-                                               isAIAssitantFeatureActive: isAIAssistantActive,
+                                               isAIAssistantFeatureActive: isAIAssistantActive,
                                                isWordPressComStore: isWPCOMStore))
     }
 }

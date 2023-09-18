@@ -147,6 +147,7 @@ private extension AddProductNameWithAIView {
                         .bodyStyle()
 
                     Text(Localization.usePackagePhoto)
+                        .multilineTextAlignment(.leading)
                         .bodyStyle()
                 }
             }

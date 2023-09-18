@@ -142,7 +142,7 @@ private extension AddProductNameWithAIView {
             Button {
                 viewModel.didTapUsePackagePhoto()
             } label: {
-                HStack(spacing: Layout.UsePackagePhoto.spacing) {
+                HStack(alignment: .top, spacing: Layout.UsePackagePhoto.spacing) {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .bodyStyle()
 

@@ -7,6 +7,13 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     private let onUsePackagePhoto: (String?) -> Void
     private let onContinueWithProductName: (String) -> Void
 
+    private var productName: String? {
+        guard productNameContent.isNotEmpty else {
+            return nil
+        }
+        return productNameContent
+    }
+
     init(siteID: Int64,
          onUsePackagePhoto: @escaping (String?) -> Void,
          onContinueWithProductName: @escaping (String) -> Void) {
@@ -15,12 +22,6 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     }
 
     func didTapUsePackagePhoto() {
-        let productName: String? = {
-            guard productNameContent.isNotEmpty else {
-                return nil
-            }
-            return productNameContent
-        }()
         onUsePackagePhoto(productName)
     }
 

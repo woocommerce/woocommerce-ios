@@ -48,7 +48,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         // TODO: Launch UsePackagePhoto flow
     }
 
-    func backtrackOrDismissProfiler() {
+    func backtrackOrDismiss() {
         if let previousStep = currentStep.previousStep {
             currentStep = previousStep
         } else {

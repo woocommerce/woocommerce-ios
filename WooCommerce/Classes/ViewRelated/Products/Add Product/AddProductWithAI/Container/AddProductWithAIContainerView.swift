@@ -48,7 +48,7 @@ struct AddProductWithAIContainerView: View {
             ToolbarItem(placement: .cancellationAction) {
                 Button(action: {
                     withAnimation {
-                        viewModel.backtrackOrDismissProfiler()
+                        viewModel.backtrackOrDismiss()
                     }
                 }, label: {
                     if viewModel.currentStep.previousStep == nil {

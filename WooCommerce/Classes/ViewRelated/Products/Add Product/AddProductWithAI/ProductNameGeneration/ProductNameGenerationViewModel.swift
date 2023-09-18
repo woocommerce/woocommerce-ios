@@ -13,7 +13,7 @@ final class ProductNameGenerationViewModel: ObservableObject {
         hasGeneratedMessage ? UIImage(systemName: "arrow.counterclockwise")! : .sparklesImage
     }
 
-    @Published var detailContent: String = ""
+    @Published var keywords: String = ""
     @Published private(set) var suggestedText: String?
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?
@@ -29,11 +29,11 @@ final class ProductNameGenerationViewModel: ObservableObject {
     }
 
     init(siteID: Int64,
-         detailContent: String,
+         keywords: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.detailContent = detailContent
+        self.keywords = keywords
         self.stores = stores
         self.analytics = analytics
     }

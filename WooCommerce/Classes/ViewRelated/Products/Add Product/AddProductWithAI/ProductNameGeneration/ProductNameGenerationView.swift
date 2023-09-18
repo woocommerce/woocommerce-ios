@@ -34,7 +34,7 @@ struct ProductNameGenerationView: View {
             VStack(alignment: .leading, spacing: Constants.textVerticalSpacing) {
                 // Product keyword text field
                 ZStack(alignment: .topLeading) {
-                    TextEditor(text: $viewModel.detailContent)
+                    TextEditor(text: $viewModel.keywords)
                         .bodyStyle()
                         .disabled(viewModel.generationInProgress)
                         .opacity(viewModel.generationInProgress ? 0 : 1)
@@ -51,7 +51,7 @@ struct ProductNameGenerationView: View {
                         .padding(insets: Constants.placeholderInsets)
                     // Allows gestures to pass through to the `TextEditor`.
                         .allowsHitTesting(false)
-                        .renderedIf(viewModel.detailContent.isEmpty &&
+                        .renderedIf(viewModel.keywords.isEmpty &&
                                     viewModel.generationInProgress == false)
                 }
 
@@ -102,7 +102,7 @@ struct ProductNameGenerationView: View {
                 .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
 
             HStack(spacing: Constants.horizontalSpacing) {
-                // Action button to generate message
+                // Action button to regenerate product name
                 Button(action: {
                     viewModel.generateProductName()
                 }, label: {
@@ -117,6 +117,7 @@ struct ProductNameGenerationView: View {
 
                 Spacer()
 
+                // Action button to apply product name
                 Button(Localization.apply) {
                     viewModel.applyGeneratedName()
                 }
@@ -125,6 +126,7 @@ struct ProductNameGenerationView: View {
             }
             .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
 
+            // Action button to generate product name - displayed initially.
             Button(action: {
                 viewModel.generateProductName()
             }, label: {
@@ -136,7 +138,7 @@ struct ProductNameGenerationView: View {
                 }
             })
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
-            .disabled(viewModel.detailContent.isEmpty)
+            .disabled(viewModel.keywords.isEmpty)
             .renderedIf(viewModel.hasGeneratedMessage == false)
         }
         .notice($copyTextNotice, autoDismiss: true)
@@ -191,6 +193,6 @@ private extension ProductNameGenerationView {
 
 struct ProductNameAIBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ProductNameGenerationView(viewModel: .init(siteID: 123, detailContent: "Thai essential oil"))
+        ProductNameGenerationView(viewModel: .init(siteID: 123, keywords: "Thai essential oil"))
     }
 }

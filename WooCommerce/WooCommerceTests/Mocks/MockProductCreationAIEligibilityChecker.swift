@@ -9,7 +9,7 @@ final class MockProductCreationAIEligibilityChecker: ProductCreationAIEligibilit
         self.eligible = isEligible
     }
 
-    func isEligible(storeHasProducts: Bool) -> Bool {
+    var isEligible: Bool {
         eligible
     }
 }

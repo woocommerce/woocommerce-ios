@@ -323,7 +323,9 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
         // Then
         let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11))
-        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard1, giftCard2])
+        // `appliedGiftCards` is a Set and sorting is required to guarantee the order.
+        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }.sorted(by: { $0.amount > $1.amount }),
+                       [giftCard1, giftCard2])
     }
 }
 

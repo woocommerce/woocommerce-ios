@@ -278,7 +278,7 @@ private extension SettingsViewModel {
 
         // Store settings
         let storeSettingsSection: Section? = {
-            var rows: [Row] = [.storeName, .shippingZones]
+            var rows: [Row] = [.storeName]
 
             let site = stores.sessionManager.defaultSite
             if site?.isJetpackCPConnected == true ||

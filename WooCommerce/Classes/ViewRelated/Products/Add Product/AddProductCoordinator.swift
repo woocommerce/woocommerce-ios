@@ -116,12 +116,13 @@ final class AddProductCoordinator: Coordinator {
     }
 }
 
-// MARK: Navigation checks
-extension AddProductCoordinator {
+// MARK: Navigation
+private extension AddProductCoordinator {
+
     /// Whether the action sheet with the option for product creation with AI should be presented.
     ///
     var shouldShowAIActionSheet: Bool {
-        addProductWithAIEligibilityChecker.isEligible(storeHasProducts: storeHasProducts)
+        !storeHasProducts && addProductWithAIEligibilityChecker.isEligible
     }
 
     /// Defines if the product creation bottom sheet should be presented.
@@ -143,10 +144,6 @@ extension AddProductCoordinator {
     var shouldShowGroupedProductType: Bool {
         storeHasProducts
     }
-}
-
-// MARK: Navigation
-private extension AddProductCoordinator {
 
     /// Returns `true` when the number of non-sample products is fewer than 3.
     ///

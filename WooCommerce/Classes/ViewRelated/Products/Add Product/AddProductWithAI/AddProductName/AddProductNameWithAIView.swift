@@ -28,6 +28,8 @@ private extension AddProductNameWithAIHostingController {
     }
 }
 
+/// View for setting name for a new product with AI.
+///
 struct AddProductNameWithAIView: View {
     @ObservedObject private var viewModel: AddProductNameWithAIViewModel
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -76,7 +78,7 @@ struct AddProductNameWithAIView: View {
                                     .padding(insets: Layout.suggestButtonInsets)
                             }
                             .overlay(
-                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.brand))
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
                             )
 
                             // Placeholder text
@@ -115,6 +117,7 @@ private extension AddProductNameWithAIView {
                         .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
                     Text(Localization.suggestName)
+                        .fontWeight(.semibold)
                         .foregroundColor(Color(.brand))
                         .bodyStyle()
                 }
@@ -139,11 +142,12 @@ private extension AddProductNameWithAIView {
             Button {
                 viewModel.didTapUsePackagePhoto()
             } label: {
-                HStack(spacing: Layout.UsePackagePhoto.spacing) {
+                HStack(alignment: .top, spacing: Layout.UsePackagePhoto.spacing) {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
                         .bodyStyle()
 
                     Text(Localization.usePackagePhoto)
+                        .multilineTextAlignment(.leading)
                         .bodyStyle()
                 }
             }

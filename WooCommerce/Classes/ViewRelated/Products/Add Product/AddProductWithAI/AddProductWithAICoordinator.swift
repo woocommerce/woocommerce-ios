@@ -24,6 +24,20 @@ final class AddProductWithAICoordinator: Coordinator {
     }
 
     func start() {
-        // TODO-10688: present form for adding product name
+        showAddProductNameWithAIView()
+    }
+}
+
+private extension AddProductWithAICoordinator {
+    /// Presents the Add  product name with AI view.
+    ///
+    func showAddProductNameWithAIView() {
+        let viewController = AddProductNameWithAIHostingController(viewModel: .init(siteID: siteID,
+                                                                                    onUsePackagePhoto: { _ in
+            // TODO: Launch UsePackagePhoto flow
+        }, onContinueWithProductName: { _ in
+            // TODO: Continue to About your product screen
+        }))
+        navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 }

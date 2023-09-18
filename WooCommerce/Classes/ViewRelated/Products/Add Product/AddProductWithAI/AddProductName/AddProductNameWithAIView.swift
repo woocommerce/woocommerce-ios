@@ -78,7 +78,7 @@ struct AddProductNameWithAIView: View {
                                     .padding(insets: Layout.suggestButtonInsets)
                             }
                             .overlay(
-                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(Color(.brand))
+                                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
                             )
 
                             // Placeholder text

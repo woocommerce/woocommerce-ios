@@ -131,7 +131,13 @@ extension ShippingLabelHazmatCategory {
         static let division41 = NSLocalizedString("Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, " +
                                                   "book matches, mailable flammable solids",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
-        static let division51 = NSLocalizedString("Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)",
+        // Note: We're specifically using the `FULLWIDTH PERCENT SIGN` (U+FF05) character instead of the regular`%`
+        // To avoid issues with our string linter detecting a false positive of this string having a `% c` placeholder in it
+        // See https://github.com/woocommerce/woocommerce-ios/pull/5580
+        // See p8Qyks-2co-p2#comment-753
+        // See p1641398973203300-slack-C02AED43D
+        // See p1694580825965539-slack-C02KLTL3MKM
+        static let division51 = NSLocalizedString("Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)",
                                                   comment: "A hazardous material description stating when a package can fit into this category")
         static let division52 = NSLocalizedString("Division 5.2 – Organic Peroxides Package",
                                                   comment: "A hazardous material description stating when a package can fit into this category")

@@ -2421,7 +2421,7 @@ which should be translated separately and considered part of this sentence. */
 "Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Bagian 4.1 – Zat padat mudah terbakar yang bisa dikirim dan Paket Korek Api - Korek api bungkus kotak, korek api bungkus lipat, zat padat mudah terbakar yang bisa dikirim";
 
 /* A hazardous material description stating when a package can fit into this category */
-"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Bagian 5.1 – Paket Oksidator - Hidrogen peroksida (konsentrasi 8 hingga 20％)";
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "Bagian 5.1 – Paket Oksidator - Hidrogen peroksida (konsentrasi 8 hingga 20％)";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Division 5.2 – Organic Peroxides Package" = "Bagian 5.2 – Paket Peroksida Organik";

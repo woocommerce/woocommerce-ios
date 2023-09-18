@@ -117,6 +117,7 @@ private extension AddProductNameWithAIView {
                         .frame(width: Layout.sparkleIconSize * scale, height: Layout.sparkleIconSize * scale)
 
                     Text(Localization.suggestName)
+                        .fontWeight(.semibold)
                         .foregroundColor(Color(.brand))
                         .bodyStyle()
                 }

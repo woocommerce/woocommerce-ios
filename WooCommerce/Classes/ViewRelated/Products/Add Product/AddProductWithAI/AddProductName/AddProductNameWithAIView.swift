@@ -28,6 +28,8 @@ private extension AddProductNameWithAIHostingController {
     }
 }
 
+/// View for setting name for a new product with AI.
+///
 struct AddProductNameWithAIView: View {
     @ObservedObject private var viewModel: AddProductNameWithAIViewModel
     @ScaledMetric private var scale: CGFloat = 1.0

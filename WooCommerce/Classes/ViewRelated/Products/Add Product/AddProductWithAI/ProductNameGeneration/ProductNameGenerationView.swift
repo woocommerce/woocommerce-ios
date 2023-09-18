@@ -12,46 +12,56 @@ struct ProductNameGenerationView: View {
     var body: some View {
         ScrollableVStack(alignment: .leading, spacing: Constants.defaultSpacing) {
 
-            // View title
-            Text(Localization.title)
-                .headlineStyle()
+            // View title and subtitle
+            VStack(alignment: .leading, spacing: Constants.textVerticalSpacing) {
+                Text(Localization.title)
+                    .headlineStyle()
+                Text(Localization.subtitle)
+                    .subheadlineStyle()
+            }
 
             Divider()
 
-            // Generated message text field
-            ZStack(alignment: .topLeading) {
-                TextEditor(text: $viewModel.messageContent)
-                    .bodyStyle()
-                    .foregroundColor(.secondary)
-                    .disabled(viewModel.generationInProgress)
-                    .opacity(viewModel.generationInProgress ? 0 : 1)
-                    .padding(insets: Constants.messageContentInsets)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
-                    )
-
-                // Placeholder text
-                Text(Localization.placeholder)
-                    .foregroundColor(Color(.placeholderText))
-                    .bodyStyle()
-                    .padding(insets: Constants.placeholderInsets)
-                    // Allows gestures to pass through to the `TextEditor`.
-                    .allowsHitTesting(false)
-                    .renderedIf(viewModel.messageContent.isEmpty &&
-                                viewModel.generationInProgress == false)
-            }
-            .overlay(
-                VStack {
-                    // Skeleton view for loading state
-                    Text(Constants.dummyText)
+            VStack(alignment: .leading, spacing: Constants.textVerticalSpacing) {
+                // Generated message text field
+                ZStack(alignment: .topLeading) {
+                    TextEditor(text: $viewModel.messageContent)
                         .bodyStyle()
-                        .redacted(reason: .placeholder)
-                        .shimmering()
+                        .foregroundColor(.secondary)
+                        .disabled(viewModel.generationInProgress)
+                        .opacity(viewModel.generationInProgress ? 0 : 1)
+                        .padding(insets: Constants.messageContentInsets)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
+                        )
+                    
+                    // Placeholder text
+                    Text(Localization.placeholder)
+                        .foregroundColor(Color(.placeholderText))
+                        .bodyStyle()
                         .padding(insets: Constants.placeholderInsets)
-                        .renderedIf(viewModel.generationInProgress)
-                    Spacer()
+                    // Allows gestures to pass through to the `TextEditor`.
+                        .allowsHitTesting(false)
+                        .renderedIf(viewModel.messageContent.isEmpty &&
+                                    viewModel.generationInProgress == false)
                 }
-            )
+                .overlay(
+                    VStack {
+                        // Skeleton view for loading state
+                        Text(Constants.dummyText)
+                            .bodyStyle()
+                            .redacted(reason: .placeholder)
+                            .shimmering()
+                            .padding(insets: Constants.placeholderInsets)
+                            .renderedIf(viewModel.generationInProgress)
+                        Spacer()
+                    }
+                )
+
+                Text(Localization.detailDescription)
+                    .footnoteStyle()
+                    .multilineTextAlignment(.leading)
+            }
 
             // Error message
             viewModel.errorMessage.map { message in
@@ -88,6 +98,7 @@ struct ProductNameGenerationView: View {
 private extension ProductNameGenerationView {
     enum Constants {
         static let defaultSpacing: CGFloat = 16
+        static let textVerticalSpacing: CGFloat = 4
         static let cornerRadius: CGFloat = 8
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
@@ -102,23 +113,27 @@ private extension ProductNameGenerationView {
     enum Localization {
         static let title = NSLocalizedString(
             "Product name",
-            comment: "Title on the product title generation screen"
+            comment: "Title on the product name generation screen"
+        )
+        static let subtitle = NSLocalizedString(
+            "Let AI generate captivating titles for you.",
+            comment: "Subtitle on the product name generation screen"
         )
         static let generateInProgress = NSLocalizedString(
             "Generating...",
-            comment: "Text to show the loading state on the product title generation screen"
+            comment: "Text to show the loading state on the product name generation screen"
         )
         static let apply = NSLocalizedString(
             "Apply",
-            comment: "Action button to apply the generated title for the new product"
+            comment: "Action button to apply the generated name for the new product"
         )
         static let detailDescription = NSLocalizedString(
-            "For example, Soft fabric, durable stitching, unique design",
-            comment: "Placeholder text on the product title generation screen"
+            "Tell us what your product is and what makes it unique!",
+            comment: "Description text on the product name generation screen"
         )
         static let placeholder = NSLocalizedString(
             "For example, Soft fabric, durable stitching, unique design",
-            comment: "Placeholder text on the product title generation screen"
+            comment: "Placeholder text on the product name generation screen"
         )
     }
 }

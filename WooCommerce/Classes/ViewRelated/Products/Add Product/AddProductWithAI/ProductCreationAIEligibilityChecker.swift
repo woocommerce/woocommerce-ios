@@ -28,11 +28,6 @@ final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityChe
             return false
         }
 
-        // Should be a new user with zero products
-        guard storeHasProducts == false else {
-            return false
-        }
-
-        return site.isWordPressComStore || site.isAIAssitantFeatureActive
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

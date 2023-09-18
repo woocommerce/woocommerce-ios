@@ -41,7 +41,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Whether the site has AI assistant feature active.
     ///
-    public let isAIAssitantFeatureActive: Bool
+    public let isAIAssistantFeatureActive: Bool
 
     /// Whether the site has Jetpack-the-plugin installed.
     ///
@@ -118,7 +118,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let planContainer = try siteContainer.nestedContainer(keyedBy: PlanInfo.self, forKey: .plan)
         let plan = try planContainer.decode(String.self, forKey: .slug)
 
-        let isAIAssitantFeatureActive: Bool = {
+        let isAIAssistantFeatureActive: Bool = {
             guard let featuresContainer = try? planContainer.nestedContainer(keyedBy: Features.self, forKey: .features),
                   let activeFeatures = try? featuresContainer.decode([String].self, forKey: .active) else {
                 return false
@@ -135,7 +135,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                   isSiteOwner: isSiteOwner,
                   frameNonce: frameNonce,
                   plan: plan,
-                  isAIAssitantFeatureActive: isAIAssitantFeatureActive,
+                  isAIAssistantFeatureActive: isAIAssistantFeatureActive,
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
                   isWooCommerceActive: isWooCommerceActive,
@@ -160,7 +160,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
                 isSiteOwner: Bool,
                 frameNonce: String,
                 plan: String,
-                isAIAssitantFeatureActive: Bool,
+                isAIAssistantFeatureActive: Bool,
                 isJetpackThePluginInstalled: Bool,
                 isJetpackConnected: Bool,
                 isWooCommerceActive: Bool,
@@ -181,7 +181,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         self.isSiteOwner = isSiteOwner
         self.frameNonce = frameNonce
         self.plan = plan
-        self.isAIAssitantFeatureActive = isAIAssitantFeatureActive
+        self.isAIAssistantFeatureActive = isAIAssistantFeatureActive
         self.isJetpackThePluginInstalled = isJetpackThePluginInstalled
         self.isJetpackConnected = isJetpackConnected
         self.isWordPressComStore = isWordPressComStore

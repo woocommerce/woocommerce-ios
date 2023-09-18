@@ -1,5 +1,7 @@
 import Foundation
 
+/// View model for `AddProductNameWithAIView`.
+///
 final class AddProductNameWithAIViewModel: ObservableObject {
     @Published var productNameContent: String = ""
     private let onUsePackagePhoto: (String?) -> Void

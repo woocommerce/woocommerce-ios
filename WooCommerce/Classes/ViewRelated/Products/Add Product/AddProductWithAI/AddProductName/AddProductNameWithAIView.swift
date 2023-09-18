@@ -1,33 +1,5 @@
 import SwiftUI
 
-final class AddProductNameWithAIHostingController: UIHostingController<AddProductNameWithAIView> {
-    init(viewModel: AddProductNameWithAIViewModel) {
-        super.init(rootView: AddProductNameWithAIView(viewModel: viewModel))
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        configureTransparentNavigationBar()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: Localization.cancel, style: .plain, target: self, action: #selector(dismissView))
-    }
-
-    @objc
-    private func dismissView() {
-        dismiss(animated: true)
-    }
-}
-
-private extension AddProductNameWithAIHostingController {
-    enum Localization {
-        static let cancel = NSLocalizedString("Cancel", comment: "Button to dismiss Add product name screen")
-    }
-}
-
 /// View for setting name for a new product with AI.
 ///
 struct AddProductNameWithAIView: View {

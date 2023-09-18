@@ -47,7 +47,8 @@ final class AddProductCoordinator: Coordinator {
     var onProductCreated: (Product) -> Void = { _ in }
 
     private var storeHasProducts: Bool {
-        !productsResultsController.isEmpty
+        let objects = productsResultsController.fetchedObjects
+        return objects.contains(where: { $0.isSampleItem == false })
     }
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
@@ -127,10 +128,10 @@ private extension AddProductCoordinator {
         isTemplateOptionsEligible()
     }
 
-    /// Returns `true` when the number of products is fewer than 3.
+    /// Returns `true` when the number of non-sample products is fewer than 3.
     ///
     func isTemplateOptionsEligible() -> Bool {
-        productsResultsController.numberOfObjects < 3
+        productsResultsController.fetchedObjects.filter { $0.isSampleItem == false }.count < 3
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.

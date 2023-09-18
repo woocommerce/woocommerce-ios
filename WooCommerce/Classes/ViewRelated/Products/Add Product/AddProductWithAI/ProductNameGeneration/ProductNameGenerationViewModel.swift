@@ -3,7 +3,7 @@ import Yosemite
 
 /// View model for `ProductNameGenerationView`.
 ///
-final class ProductNameGenerationViewModel {
+final class ProductNameGenerationViewModel: ObservableObject {
 
     var generateButtonTitle: String {
         hasGeneratedMessage ? Localization.regenerate : Localization.generate
@@ -23,7 +23,7 @@ final class ProductNameGenerationViewModel {
 
     /// Whether a message has been successfully generated.
     /// This is needed to identify whether the next request is a retry.
-    private var hasGeneratedMessage = false
+    private(set) var hasGeneratedMessage = false
 
     /// Language used in product identified by AI
     ///

@@ -101,15 +101,6 @@
         }
       },
       {
-        "package": "WooCommerceShared",
-        "repositoryURL": "https://github.com/woocommerce/woocommerce-shared.git",
-        "state": {
-          "branch": null,
-          "revision": "b68d4c71a2a2b7ba1af2e683f04dffe563fc6194",
-          "version": "0.6.0"
-        }
-      },
-      {
         "package": "XCUITestHelpers",
         "repositoryURL": "https://github.com/Automattic/XCUITestHelpers",
         "state": {

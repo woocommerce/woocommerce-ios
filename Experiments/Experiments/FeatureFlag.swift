@@ -205,4 +205,8 @@ public enum FeatureFlag: Int {
     /// Enables product creation with AI.
     ///
     case productCreationAI
+
+    /// Enables gift card support in order creation
+    ///
+    case giftCardInOrderCreation
 }

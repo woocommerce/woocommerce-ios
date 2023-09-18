@@ -96,7 +96,7 @@ final class AddProductCoordinator: Coordinator {
     func start() {
         switch source {
         case .productsTab, .productOnboarding:
-            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
         }
@@ -129,7 +129,7 @@ private extension AddProductCoordinator {
     /// Currently returns `true` when the store is eligible for displaying template options.
     ///
     var shouldPresentProductCreationBottomSheet: Bool {
-        isTemplateOptionsEligible()
+        isTemplateOptionsEligible
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.
@@ -147,7 +147,7 @@ private extension AddProductCoordinator {
 
     /// Returns `true` when the number of non-sample products is fewer than 3.
     ///
-    func isTemplateOptionsEligible() -> Bool {
+    var isTemplateOptionsEligible: Bool {
         productsResultsController.fetchedObjects.filter { $0.isSampleItem == false }.count < 3
     }
 

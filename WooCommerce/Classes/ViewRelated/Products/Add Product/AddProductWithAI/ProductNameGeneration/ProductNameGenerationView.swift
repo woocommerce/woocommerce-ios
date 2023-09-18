@@ -4,6 +4,8 @@ import SwiftUI
 ///
 struct ProductNameGenerationView: View {
     @ObservedObject private var viewModel: ProductNameGenerationViewModel
+    @FocusState private var isDetailInFocus: Bool
+    @State private var copyTextNotice: Notice?
 
     init(viewModel: ProductNameGenerationViewModel) {
         self.viewModel = viewModel
@@ -14,8 +16,15 @@ struct ProductNameGenerationView: View {
 
             // View title and subtitle
             VStack(alignment: .leading, spacing: Constants.textVerticalSpacing) {
-                Text(Localization.title)
-                    .headlineStyle()
+                Label {
+                    Text(Localization.title)
+                        .headlineStyle()
+                } icon: {
+                    Image(uiImage: .sparklesImage)
+                        .renderingMode(.template)
+                        .foregroundColor(.accentColor)
+                }
+
                 Text(Localization.subtitle)
                     .subheadlineStyle()
             }
@@ -23,18 +32,18 @@ struct ProductNameGenerationView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: Constants.textVerticalSpacing) {
-                // Generated message text field
+                // Product keyword text field
                 ZStack(alignment: .topLeading) {
-                    TextEditor(text: $viewModel.messageContent)
+                    TextEditor(text: $viewModel.detailContent)
                         .bodyStyle()
-                        .foregroundColor(.secondary)
                         .disabled(viewModel.generationInProgress)
                         .opacity(viewModel.generationInProgress ? 0 : 1)
                         .padding(insets: Constants.messageContentInsets)
+                        .focused($isDetailInFocus)
                         .overlay(
-                            RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(.separator))
+                            RoundedRectangle(cornerRadius: Constants.cornerRadius).stroke(Color(uiColor: isDetailInFocus ? .accent : .separator))
                         )
-                    
+
                     // Placeholder text
                     Text(Localization.placeholder)
                         .foregroundColor(Color(.placeholderText))
@@ -42,31 +51,55 @@ struct ProductNameGenerationView: View {
                         .padding(insets: Constants.placeholderInsets)
                     // Allows gestures to pass through to the `TextEditor`.
                         .allowsHitTesting(false)
-                        .renderedIf(viewModel.messageContent.isEmpty &&
+                        .renderedIf(viewModel.detailContent.isEmpty &&
                                     viewModel.generationInProgress == false)
                 }
-                .overlay(
-                    VStack {
-                        // Skeleton view for loading state
-                        Text(Constants.dummyText)
-                            .bodyStyle()
-                            .redacted(reason: .placeholder)
-                            .shimmering()
-                            .padding(insets: Constants.placeholderInsets)
-                            .renderedIf(viewModel.generationInProgress)
-                        Spacer()
-                    }
-                )
 
                 Text(Localization.detailDescription)
                     .footnoteStyle()
                     .multilineTextAlignment(.leading)
             }
 
+            /// Suggested name
+            if let suggestedText = viewModel.suggestedText {
+                VStack(alignment: .leading, spacing: Constants.defaultSpacing) {
+                    Text(suggestedText)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .textSelection(.enabled)
+                        .redacted(reason: viewModel.generationInProgress ? .placeholder : [])
+                        .shimmering(active: viewModel.generationInProgress)
+
+                    HStack {
+                        Spacer()
+                        // CTA to copy the generated text.
+                        Button {
+                            UIPasteboard.general.string = suggestedText
+                            copyTextNotice = .init(title: Localization.textCopiedNotice)
+                        } label: {
+                            Label(Localization.copy, systemImage: "doc.on.doc")
+                                .secondaryBodyStyle()
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .fixedSize(horizontal: true, vertical: false)
+                    }
+                    .renderedIf(viewModel.generationInProgress == false)
+                }
+                .padding(Constants.defaultSpacing)
+                .background(
+                    Color(uiColor: .secondarySystemBackground)
+                        .cornerRadius(Constants.cornerRadius)
+                )
+            }
+
             // Error message
             viewModel.errorMessage.map { message in
                 Text(message).errorStyle()
             }
+
+            Spacer()
+
+            Divider()
+                .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
 
             HStack(spacing: Constants.horizontalSpacing) {
                 // Action button to generate message
@@ -80,7 +113,7 @@ struct ProductNameGenerationView: View {
                             .renderingMode(.template)
                     }
                 })
-                .buttonStyle(SecondaryLoadingButtonStyle(isLoading: viewModel.generationInProgress, loadingText: Localization.generateInProgress))
+                .buttonStyle(.plain)
 
                 Spacer()
 
@@ -88,9 +121,23 @@ struct ProductNameGenerationView: View {
                     // TODO
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .renderedIf(viewModel.hasGeneratedMessage)
+                .fixedSize(horizontal: true, vertical: false)
             }
-            .renderedIf(viewModel.generationInProgress == false)
+            .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
+
+            Button(action: {
+                // TODO
+            }, label: {
+                Label {
+                    Text(viewModel.generateButtonTitle)
+                } icon: {
+                    Image(uiImage: viewModel.generateButtonImage)
+                        .renderingMode(.template)
+                }
+            })
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.generationInProgress))
+            .disabled(viewModel.detailContent.isEmpty)
+            .renderedIf(viewModel.hasGeneratedMessage == false)
         }
     }
 }
@@ -103,11 +150,6 @@ private extension ProductNameGenerationView {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)
         static let placeholderInsets: EdgeInsets = .init(top: 18, leading: 16, bottom: 18, trailing: 16)
-        static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit," +
-        "sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam," +
-        "quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat." +
-        "nisi ut aliquip ex ea commodo consequat."
-        static let dummyTextInsets: EdgeInsets = .init(top: 12, leading: 16, bottom: 12, trailing: 16)
         static let horizontalSpacing: CGFloat = 8
     }
     enum Localization {
@@ -122,6 +164,14 @@ private extension ProductNameGenerationView {
         static let generateInProgress = NSLocalizedString(
             "Generating...",
             comment: "Text to show the loading state on the product name generation screen"
+        )
+        static let copy = NSLocalizedString(
+            "Copy",
+            comment: "Action button to copy the generated name for the new product"
+        )
+        static let textCopiedNotice = NSLocalizedString(
+            "Copied!",
+            comment: "Text in the notice after copying the generated text on the product name generation screen."
         )
         static let apply = NSLocalizedString(
             "Apply",
@@ -140,6 +190,6 @@ private extension ProductNameGenerationView {
 
 struct ProductNameAIBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ProductNameGenerationView(viewModel: .init(siteID: 123))
+        ProductNameGenerationView(viewModel: .init(siteID: 123, detailContent: ""))
     }
 }

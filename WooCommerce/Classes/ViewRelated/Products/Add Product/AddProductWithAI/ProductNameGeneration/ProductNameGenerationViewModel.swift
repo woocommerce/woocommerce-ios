@@ -13,7 +13,8 @@ final class ProductNameGenerationViewModel: ObservableObject {
         hasGeneratedMessage ? UIImage(systemName: "arrow.counterclockwise")! : .sparklesImage
     }
 
-    @Published var messageContent: String = ""
+    @Published var detailContent: String = ""
+    @Published private(set) var suggestedText: String?
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?
 
@@ -23,16 +24,16 @@ final class ProductNameGenerationViewModel: ObservableObject {
 
     /// Whether a message has been successfully generated.
     /// This is needed to identify whether the next request is a retry.
-    private(set) var hasGeneratedMessage = false
-
-    /// Language used in product identified by AI
-    ///
-    private var languageIdentifiedUsingAI: String?
+    var hasGeneratedMessage: Bool {
+        suggestedText != nil
+    }
 
     init(siteID: Int64,
+         detailContent: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.detailContent = detailContent
         self.stores = stores
         self.analytics = analytics
     }

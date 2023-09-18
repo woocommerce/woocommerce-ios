@@ -89,7 +89,6 @@ struct AddProductNameWithAIView: View {
             }
             .padding(insets: Layout.insets)
         }
-        .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // CTA to continue to next screen.

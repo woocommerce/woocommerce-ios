@@ -90,15 +90,32 @@ final class AddProductCoordinatorTests: XCTestCase {
         // Then
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
+
+    func test_it_presents_product_form_on_start_when_the_source_is_announcement_modal() {
+        // Given
+        let coordinator = makeAddProductCoordinator(
+            source: .productDescriptionAIAnnouncementModal,
+            addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
+        )
+
+        // When
+        coordinator.start()
+
+        // Then
+        waitUntil {
+            coordinator.navigationController.topViewController is ProductFormViewController<ProductFormViewModel>
+        }
+    }
 }
 
 private extension AddProductCoordinatorTests {
     func makeAddProductCoordinator(
+        source: AddProductCoordinator.Source = .productsTab,
         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = MockProductCreationAIEligibilityChecker()
     ) -> AddProductCoordinator {
         let view = UIView()
         return AddProductCoordinator(siteID: sampleSiteID,
-                                     source: .productsTab,
+                                     source: source,
                                      sourceView: view,
                                      sourceNavigationController: navigationController,
                                      storage: storageManager,

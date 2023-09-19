@@ -7,6 +7,8 @@ struct AddProductNameWithAIView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @FocusState private var editorIsFocused: Bool
 
+    @State private var showingNameGeneratingView: Bool = false
+
     init(viewModel: AddProductNameWithAIViewModel) {
         self.viewModel = viewModel
     }
@@ -71,6 +73,13 @@ struct AddProductNameWithAIView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .sheet(isPresented: $showingNameGeneratingView) {
+            if #available(iOS 16, *) {
+                productNameGeneratingView.presentationDetents([.medium, .large])
+            } else {
+                productNameGeneratingView
+            }
+        }
     }
 }
 
@@ -79,7 +88,7 @@ private extension AddProductNameWithAIView {
         HStack {
             // Suggest a name
             Button {
-                viewModel.didTapSuggestName()
+                showingNameGeneratingView = true
             } label: {
                 HStack(alignment: .top) {
                     Image(uiImage: .sparklesImage)
@@ -137,6 +146,13 @@ private extension AddProductNameWithAIView {
         }
         .buttonStyle(PrimaryButtonStyle())
         .disabled(viewModel.productNameContent.isEmpty)
+    }
+
+    var productNameGeneratingView: some View {
+        ProductNameGenerationView(viewModel: .init(siteID: viewModel.siteID, keywords: viewModel.productNameContent)) { suggestedName in
+            viewModel.productNameContent = suggestedName
+            showingNameGeneratingView = false
+        }
     }
 }
 private extension AddProductNameWithAIView {

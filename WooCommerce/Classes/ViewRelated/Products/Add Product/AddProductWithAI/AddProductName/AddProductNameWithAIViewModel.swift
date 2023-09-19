@@ -4,6 +4,8 @@ import Foundation
 ///
 final class AddProductNameWithAIViewModel: ObservableObject {
     @Published var productNameContent: String = ""
+    
+    let siteID: Int64
     private let onUsePackagePhoto: (String?) -> Void
     private let onContinueWithProductName: (String) -> Void
 
@@ -17,16 +19,13 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     init(siteID: Int64,
          onUsePackagePhoto: @escaping (String?) -> Void,
          onContinueWithProductName: @escaping (String) -> Void) {
+        self.siteID = siteID
         self.onUsePackagePhoto = onUsePackagePhoto
         self.onContinueWithProductName = onContinueWithProductName
     }
 
     func didTapUsePackagePhoto() {
         onUsePackagePhoto(productName)
-    }
-
-    func didTapSuggestName() {
-        // TODO: Present suggest name sheet
     }
 
     func didTapContinue() {

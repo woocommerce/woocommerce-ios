@@ -47,7 +47,8 @@ final class AddProductCoordinator: Coordinator {
     var onProductCreated: (Product) -> Void = { _ in }
 
     private var storeHasProducts: Bool {
-        !productsResultsController.isEmpty
+        let objects = productsResultsController.fetchedObjects
+        return objects.contains(where: { $0.isSampleItem == false })
     }
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
@@ -95,7 +96,7 @@ final class AddProductCoordinator: Coordinator {
     func start() {
         switch source {
         case .productsTab, .productOnboarding:
-            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
         }
@@ -103,13 +104,11 @@ final class AddProductCoordinator: Coordinator {
         ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
-        let isEligibleForAI = addProductWithAIEligibilityChecker.isEligible(storeHasProducts: storeHasProducts)
-        guard !isEligibleForAI && !shouldSkipBottomSheet() else {
-            return presentActionSheetWithAI()
-        }
-        if shouldSkipBottomSheet() {
+        if shouldSkipBottomSheet {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
-        } else if shouldPresentProductCreationBottomSheet() {
+        } else if shouldShowAIActionSheet {
+            presentActionSheetWithAI()
+        } else if shouldPresentProductCreationBottomSheet {
             presentProductCreationTypeBottomSheet()
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
@@ -120,30 +119,36 @@ final class AddProductCoordinator: Coordinator {
 // MARK: Navigation
 private extension AddProductCoordinator {
 
+    /// Whether the action sheet with the option for product creation with AI should be presented.
+    ///
+    var shouldShowAIActionSheet: Bool {
+        !storeHasProducts && addProductWithAIEligibilityChecker.isEligible
+    }
+
     /// Defines if the product creation bottom sheet should be presented.
     /// Currently returns `true` when the store is eligible for displaying template options.
     ///
-    func shouldPresentProductCreationBottomSheet() -> Bool {
-        isTemplateOptionsEligible()
-    }
-
-    /// Returns `true` when the number of products is fewer than 3.
-    ///
-    func isTemplateOptionsEligible() -> Bool {
-        productsResultsController.numberOfObjects < 3
+    var shouldPresentProductCreationBottomSheet: Bool {
+        isTemplateOptionsEligible
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.
     /// Currently returns `true` when the source is product description AI announcement modal.
     ///
-    func shouldSkipBottomSheet() -> Bool {
+    var shouldSkipBottomSheet: Bool {
         source == .productDescriptionAIAnnouncementModal
     }
 
     /// Returns `true` when there are existing products.
     ///
-    func shouldShowGroupedProductType() -> Bool {
+    var shouldShowGroupedProductType: Bool {
         storeHasProducts
+    }
+
+    /// Returns `true` when the number of non-sample products is fewer than 3.
+    ///
+    var isTemplateOptionsEligible: Bool {
+        productsResultsController.fetchedObjects.filter { $0.isSampleItem == false }.count < 3
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.

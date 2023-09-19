@@ -4,7 +4,7 @@ import Foundation
 ///
 final class AddProductNameWithAIViewModel: ObservableObject {
     @Published var productNameContent: String = ""
-    
+
     let siteID: Int64
     private let onUsePackagePhoto: (String?) -> Void
     private let onContinueWithProductName: (String) -> Void

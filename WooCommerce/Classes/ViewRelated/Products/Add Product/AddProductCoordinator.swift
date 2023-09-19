@@ -53,7 +53,6 @@ final class AddProductCoordinator: Coordinator {
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
     init(siteID: Int64,
          source: Source,
@@ -279,14 +278,15 @@ private extension AddProductCoordinator {
     }
 
     func startProductCreationWithAI() {
-        let coordinator = AddProductWithAICoordinator(siteID: siteID,
-                                                      source: source,
-                                                      sourceNavigationController: navigationController,
-                                                      onProductCreated: { [weak self] product in
-            self?.onProductCreated(product)
-        })
-        self.addProductWithAICoordinator = coordinator
-        coordinator.start()
+        let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
+                                                                                         source: source,
+                                                                                         onCancel: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        },
+                                                                                         onCompletion: {
+            // TODO: Product saved
+        }))
+        navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
     /// Presents a product onto the current navigation stack.

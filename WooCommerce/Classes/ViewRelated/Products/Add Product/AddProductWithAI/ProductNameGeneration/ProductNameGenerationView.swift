@@ -7,8 +7,11 @@ struct ProductNameGenerationView: View {
     @FocusState private var isDetailInFocus: Bool
     @State private var copyTextNotice: Notice?
 
-    init(viewModel: ProductNameGenerationViewModel) {
+    private let onCompletion: (String) -> Void
+
+    init(viewModel: ProductNameGenerationViewModel, onCompletion: @escaping (String) -> Void) {
         self.viewModel = viewModel
+        self.onCompletion = onCompletion
     }
 
     var body: some View {
@@ -98,33 +101,33 @@ struct ProductNameGenerationView: View {
 
             Spacer()
 
-            Divider()
-                .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
-
-            HStack(spacing: Constants.horizontalSpacing) {
-                // Action button to regenerate product name
-                Button(action: {
-                    viewModel.generateProductName()
-                }, label: {
-                    Label {
-                        Text(viewModel.generateButtonTitle)
-                    } icon: {
-                        Image(uiImage: viewModel.generateButtonImage)
-                            .renderingMode(.template)
+            if let suggestedText = viewModel.suggestedText,
+               viewModel.generationInProgress == false {
+                Divider()
+                HStack(spacing: Constants.horizontalSpacing) {
+                    // Action button to regenerate product name
+                    Button(action: {
+                        viewModel.generateProductName()
+                    }, label: {
+                        Label {
+                            Text(viewModel.generateButtonTitle)
+                        } icon: {
+                            Image(uiImage: viewModel.generateButtonImage)
+                                .renderingMode(.template)
+                        }
+                    })
+                    .buttonStyle(.plain)
+                    
+                    Spacer()
+                    
+                    // Action button to apply product name
+                    Button(Localization.apply) {
+                        onCompletion(suggestedText)
                     }
-                })
-                .buttonStyle(.plain)
-
-                Spacer()
-
-                // Action button to apply product name
-                Button(Localization.apply) {
-                    viewModel.applyGeneratedName()
+                    .buttonStyle(PrimaryButtonStyle())
+                    .fixedSize(horizontal: true, vertical: false)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .fixedSize(horizontal: true, vertical: false)
             }
-            .renderedIf(viewModel.generationInProgress == false && viewModel.hasGeneratedMessage)
 
             // Action button to generate product name - displayed initially.
             Button(action: {
@@ -193,6 +196,6 @@ private extension ProductNameGenerationView {
 
 struct ProductNameAIBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ProductNameGenerationView(viewModel: .init(siteID: 123, keywords: "Thai essential oil"))
+        ProductNameGenerationView(viewModel: .init(siteID: 123, keywords: "Thai essential oil")) { _ in }
     }
 }

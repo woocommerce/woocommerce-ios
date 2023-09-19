@@ -38,10 +38,6 @@ final class ProductNameGenerationViewModel: ObservableObject {
         self.analytics = analytics
     }
 
-    func applyGeneratedName() {
-        // TODO-10688
-    }
-
     func generateProductName() {
         // TODO-10688
     }

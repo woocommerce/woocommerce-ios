@@ -330,23 +330,16 @@ struct OrdersUpsertUseCase {
     /// Updates, inserts, or prunes the provided `storageOrder`'s applied gift cards using the provided `readOnlyOrder`'s custom fields
     ///
     private func handleOrderGiftCards(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
-        // Upsert the `appliedGiftCards` from the `readOnlyOrder`
-        readOnlyOrder.appliedGiftCards.forEach { readOnlyGiftCard in
-            if let existingStorageGiftCard = storage.loadOrderGiftCard(siteID: readOnlyOrder.siteID, giftCardID: readOnlyGiftCard.giftCardID) {
-                existingStorageGiftCard.update(with: readOnlyGiftCard)
-            } else {
-                let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
-                newStorageGiftCard.update(with: readOnlyGiftCard)
-                storageOrder.addToAppliedGiftCards(newStorageGiftCard)
-            }
+        // Remove any objects that exist in `storageOrder.appliedGiftCards` first
+        storageOrder.appliedGiftCards?.forEach { existingStorageGiftCard in
+            storage.deleteObject(existingStorageGiftCard)
         }
 
-        // Now, remove any objects that exist in `storageOrder.appliedGiftCards` but not in `readOnlyOrder.appliedGiftCards`
-        storageOrder.appliedGiftCards?.forEach { storageGiftCard in
-            if readOnlyOrder.appliedGiftCards.first(where: { $0.giftCardID == storageGiftCard.giftCardID } ) == nil {
-                storageOrder.removeFromAppliedGiftCards(storageGiftCard)
-                storage.deleteObject(storageGiftCard)
-            }
+        // Upsert the `appliedGiftCards` from the `readOnlyOrder`
+        readOnlyOrder.appliedGiftCards.forEach { readOnlyGiftCard in
+            let newStorageGiftCard = storage.insertNewObject(ofType: Storage.OrderGiftCard.self)
+            newStorageGiftCard.update(with: readOnlyGiftCard)
+            storageOrder.addToAppliedGiftCards(newStorageGiftCard)
         }
     }
 }

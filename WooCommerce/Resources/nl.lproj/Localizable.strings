@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-15 21:30:01+0000 */
+/* Translation-Revision-Date: 2023-09-19 00:55:33+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9110,7 +9110,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
-"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping ondersteunt op dit moment geen verzendingen met gevaarlijke goederen via %$1@.";
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping ondersteunt op dit moment geen verzendingen met gevaarlijke goederen via %1$@.";
 
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "Mobiele WooCommerce-app";

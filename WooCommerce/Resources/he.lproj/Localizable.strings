@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-12 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-19 01:03:45+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -2328,7 +2328,7 @@ which should be translated separately and considered part of this sentence. */
 "Description" = "תיאור";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
-"Determine your product's mailability using the %1$@." = "להבין את אפשרויות השליחה של המוצר שלך בדואר באמצעות ";
+"Determine your product's mailability using the %1$@." = "להבין את אפשרויות השליחה של המוצר שלך בדואר באמצעות %1$@.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "ההגדרה קובעת את המיקום של המוצרים בקטלוג. ככל שהערך המספרי נמוך יותר, הפריט יופיע במקום גבוה יותר ברשימת המוצרים. ניתן להשתמש גם בערכים שליליים";
@@ -4110,7 +4110,7 @@ which should be translated separately and considered part of this sentence. */
 "Learn More" = "מידע נוסף";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
-"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "ללמוד איך לארוז חבילות HAZMAT, להכין תוויות עבורן ולשלוח אותן דרך USPS®‎ בכתובת ";
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "ללמוד איך לארוז חבילות HAZMAT, להכין תוויות עבורן ולשלוח אותן דרך USPS®‎ בכתובת %1$@.";
 
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
@@ -9110,7 +9110,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
-"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "השירות של WooCommerce Shipping כרגע לא תומך במשלוחי HAZMAT דרך ";
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "השירות של WooCommerce Shipping כרגע לא תומך במשלוחי HAZMAT דרך %1$@.";
 
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "האפליקציה של WooCommerce לנייד";

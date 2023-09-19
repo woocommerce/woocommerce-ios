@@ -556,7 +556,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "Adicionar um produto";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -607,7 +608,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Adicione cada opção e pressione Return";
 
-/* Title for the option to create product manually */
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "Adicionar manualmente";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -1330,6 +1332,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
@@ -2298,6 +2301,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Excluir";
 
@@ -2613,6 +2617,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -4046,9 +4051,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "Quirguistão";
 
-/* A hazardous material description stating when a package can fit into this category */
-"limited_quantity_category" = "Pacote para envio por via terrestre em quantidade limitada - Desinfetantes, tintas e fixadores de cabelo em spray, aerossol, propano, butano, produtos de limpeza etc. - Fragrâncias, esmalte de unha e removedor de esmalte, solventes, higienizador para mãos, álcool isopropílico, produtos à base de etanol etc. - Outros materiais em quantidade limitada usados em superfícies (cosméticos, produtos de limpeza, tintas etc.)";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etiqueta (10 x 15 cm)";
 
@@ -4649,7 +4651,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Várias opções de pagamento";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Minha loja";
 
@@ -5977,7 +5980,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Referral programs" = "Programas de indicação";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "Atualizar";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -9246,9 +9250,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "Você conseguiu!";
-
-/* Text to prompt the user to edit tax ratesin the web when there are no results */
-"You don't have any tax rates with a location." = "Você não tem nenhuma taxa de imposto com um local.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Você não tem permissão para gerenciar plugins nesta loja.";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-15 21:33:42+0000 */
+/* Translation-Revision-Date: 2023-09-18 09:29:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -556,7 +556,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "Lägg till en produkt";
 
 /* Cell text in Add / Edit product when there are no images. */
@@ -607,7 +608,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Lägg till respektive alternativ och tryck på returtangenten";
 
-/* Title for the option to create product manually */
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "Lägg till manuellt";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -942,6 +944,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Är du säker på att du vill ändra produkttypen?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "Är du säker på att du vill ta bort denna kategori permanent?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "Är du säker på att du vill ta bort denna rabattkod?";
@@ -1330,6 +1335,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
@@ -1409,6 +1415,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Kan inte lägga till etiketter";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "Kan inte uppdatera kategori";
 
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "Det går inte komma åt webbplatsen på den här adressen. Dubbelkolla och försök igen.";
@@ -1538,6 +1547,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Kontrollera din e-post!";
+
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "Kontrollerar beställning";
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Kassa";
@@ -2087,6 +2099,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Skapa en procentuell rabatt för utvalda produkter";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "Skapa en produkt med AI";
+
 /* Title of the store creation web view. */
 "Create a store" = "Skapa en butik";
 
@@ -2298,8 +2313,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Ta bort";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "Ta bort %1$@";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "Ta bort rabattkod";
@@ -2613,6 +2632,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -4046,9 +4066,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Kyrgyzstan" = "Kyrgyzstan";
 
-/* A hazardous material description stating when a package can fit into this category */
-"limited_quantity_category" = "LTD QTY-markpaket – Aerosoler, spraydesinfektionsmedel, sprayfärg, hårspray, propan, butan, rengöringsprodukter, osv. - Parfymer, nagellack, nagellackborttagningsmedel, lösningsmedel, handsprit, tvättsprit, etanolbaserade produkter, osv. - Andra ytmaterial i begränsad mängd (kosmetika, rengöringsprodukter, färger, osv.)";
-
 /* Title of label paper size option for printing a shipping label */
 "Label (4 x 6 in)" = "Etikett (4 x 6 tum)";
 
@@ -4649,7 +4666,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Flera betalningsalternativ";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Min butik";
 
@@ -4745,6 +4763,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Nya funktioner tillgängliga!";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "Ny beställning för";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "Ny beställning för 13.98 USD i din WooCommerce-butik";
 
@@ -4772,6 +4793,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "Inga (godkända) recensioner";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "Ingen överordnad kategori";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Inga begränsningar";
@@ -5225,6 +5249,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Betald";
 
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "Betald med %@";
+
 /* Country option for a site address. */
 "Pakistan" = "Pakistan";
 
@@ -5620,6 +5647,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Drivs med";
 
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "Drivs med AI.";
+
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Drivs med AI. %1$@.";
 
@@ -5977,7 +6007,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Referral programs" = "Hänvisningsprogram";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "Ladda om";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -6166,6 +6197,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Återställ ditt lösenord";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "Lös nu";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Begränsad till kunder med följande e-postadresser: %1$@";
@@ -8532,6 +8566,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "Uppdatera adress";
 
+/* Product Update Category navigation title */
+"Update Category" = "Uppdatera kategori";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Uppdatera instruktioner";
 
@@ -9247,9 +9284,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "Du gjorde det.";
 
-/* Text to prompt the user to edit tax ratesin the web when there are no results */
-"You don't have any tax rates with a location." = "Du har inte några momssatser med en plats.";
-
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "Du har inte behörighet att hantera tillägg på denna butik.";
 
@@ -9406,6 +9440,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
+
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Lär dig mer.](https:\/\/automattic.com\/ai-guidelines\/)";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Starta WooCommerce snabbt";

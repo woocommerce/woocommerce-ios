@@ -103,7 +103,9 @@ struct ProductNameGenerationView: View {
 
             if let suggestedText = viewModel.suggestedText,
                viewModel.generationInProgress == false {
+
                 Divider()
+
                 HStack(spacing: Constants.horizontalSpacing) {
                     // Action button to regenerate product name
                     Button(action: {
@@ -117,9 +119,9 @@ struct ProductNameGenerationView: View {
                         }
                     })
                     .buttonStyle(.plain)
-                    
+
                     Spacer()
-                    
+
                     // Action button to apply product name
                     Button(Localization.apply) {
                         onCompletion(suggestedText)

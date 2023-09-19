@@ -2,6 +2,7 @@
 
 15.5
 -----
+- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
 - [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
 
 

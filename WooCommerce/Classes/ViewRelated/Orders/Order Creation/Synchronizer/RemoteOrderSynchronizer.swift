@@ -358,7 +358,7 @@ private extension RemoteOrderSynchronizer {
         Future<Order, Error> { [weak self] promise in
             guard let self = self else { return }
 
-            let giftCard = includesGiftCard ? giftCardToApply: nil
+            let giftCard = includesGiftCard ? self.giftCardToApply: nil
 
             let apiOrderStatus = self.orderStatus(for: type)
             let draftOrder = order.copy(status: apiOrderStatus).sanitizingLocalItems()
@@ -391,7 +391,7 @@ private extension RemoteOrderSynchronizer {
 
             let operationUpdateFields = self.orderUpdateFields(for: type)
             let orderToSubmit = order.sanitizingLocalItems()
-            let giftCard = includesGiftCard ? giftCardToApply: nil
+            let giftCard = includesGiftCard ? self.giftCardToApply: nil
             let action = OrderAction.updateOrder(siteID: self.siteID,
                                                  order: orderToSubmit,
                                                  giftCard: giftCard,

@@ -115,26 +115,10 @@ struct OrderPaymentSection: View {
                 }
 
             if viewModel.isGiftCardEnabled {
-                if let giftCard = viewModel.giftCardToApply {
-                    HStack {
-                        TitleAndValueRow(title: Localization.giftCard, value: .content(giftCard))
-                        Button {
-                            viewModel.setGiftCardClosure(nil)
-                        } label: {
-                            Image(uiImage: .closeButton)
-                        }
-                        .padding()
-                    }
+                if let giftCard = viewModel.giftCardToApply, giftCard.isNotEmpty {
+                    editGiftCardRow(giftCard: giftCard)
                 } else {
                     addGiftCardRow
-                        .sheet(isPresented: $shouldShowAddGiftCard) {
-                            GiftCardInputView(viewModel: .init(addGiftCard: { code in
-                                viewModel.setGiftCardClosure(code)
-                                shouldShowAddGiftCard = false
-                            }, dismiss: {
-                                shouldShowAddGiftCard = false
-                            }))
-                        }
                 }
             }
 
@@ -206,6 +190,38 @@ struct OrderPaymentSection: View {
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-gift-card-button")
+        .sheet(isPresented: $shouldShowAddGiftCard) {
+            giftCardInput
+        }
+    }
+
+    @ViewBuilder private func editGiftCardRow(giftCard: String) -> some View {
+        HStack {
+            TitleAndValueRow(title: Localization.giftCard, value: .content(giftCard))
+                .onTapGesture {
+                    shouldShowAddGiftCard = true
+                }
+                .sheet(isPresented: $shouldShowAddGiftCard) {
+                    giftCardInput
+                }
+
+            Button {
+                viewModel.setGiftCardClosure(nil)
+            } label: {
+                Image(uiImage: .closeButton)
+            }
+            .padding()
+        }
+    }
+
+    @ViewBuilder private var giftCardInput: some View {
+        GiftCardInputView(viewModel: .init(code: viewModel.giftCardToApply ?? "",
+                                           addGiftCard: { code in
+            viewModel.setGiftCardClosure(code)
+            shouldShowAddGiftCard = false
+        }, dismiss: {
+            shouldShowAddGiftCard = false
+        }))
     }
 
     @ViewBuilder private var taxesSection: some View {

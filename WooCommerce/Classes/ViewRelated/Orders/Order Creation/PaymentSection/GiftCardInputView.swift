@@ -48,6 +48,6 @@ private extension GiftCardInputView {
 
 struct GiftCardInputView_Previews: PreviewProvider {
     static var previews: some View {
-        GiftCardInputView(viewModel: .init(addGiftCard: { _ in }, dismiss: {}))
+        GiftCardInputView(viewModel: .init(code: "", addGiftCard: { _ in }, dismiss: {}))
     }
 }

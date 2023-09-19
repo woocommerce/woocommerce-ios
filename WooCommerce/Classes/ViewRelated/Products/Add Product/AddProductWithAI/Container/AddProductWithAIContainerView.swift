@@ -10,6 +10,8 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         siteID = viewModel.siteID
         source = viewModel.source
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
+
+        viewModel.presentPackageFlow = presentPackageFlow
     }
 
     @available(*, unavailable)

@@ -22,7 +22,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let siteID: Int64
     let source: AddProductCoordinator.Source
 
-    var presentPackageFlow: ((@escaping (AddProductFromImageData?) -> Void) -> Void)?
+    var presentPackageFlow: ((_ productName: String?, @escaping (AddProductFromImageData?) -> Void) -> Void)?
 
     private let analytics: Analytics
     private let onCancel: () -> Void
@@ -51,7 +51,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onUsePackagePhoto(_ name: String?) {
-        presentPackageFlow? { data in
+        presentPackageFlow?(name) { data in
             // TODO: Present preview
         }
     }

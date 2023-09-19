@@ -29,12 +29,14 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
 private extension AddProductWithAIContainerHostingController {
     /// Presents the image to product flow to detect product details from image using AI
     ///
-    func presentPackageFlow(onAIGenerationCompleted: @escaping (AddProductFromImageData?) -> Void) {
+    func presentPackageFlow(productName: String?,
+                            onAIGenerationCompleted: @escaping (AddProductFromImageData?) -> Void) {
         guard let navigationController else {
             return
         }
         let coordinator = AddProductFromImageCoordinator(siteID: siteID,
                                                          source: source,
+                                                         productName: productName,
                                                          sourceNavigationController: navigationController,
                                                          onAIGenerationCompleted: onAIGenerationCompleted)
         self.addProductFromImageCoordinator = coordinator

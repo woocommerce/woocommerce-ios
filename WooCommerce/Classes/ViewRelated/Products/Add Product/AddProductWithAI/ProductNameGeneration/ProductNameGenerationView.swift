@@ -148,7 +148,7 @@ struct ProductNameGenerationView: View {
 private extension ProductNameGenerationView {
     enum Constants {
         static let defaultSpacing: CGFloat = 16
-        static let textVerticalSpacing: CGFloat = 4
+        static let textVerticalSpacing: CGFloat = 8
         static let cornerRadius: CGFloat = 8
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
         static let messageContentInsets: EdgeInsets = .init(top: 10, leading: 10, bottom: 10, trailing: 10)

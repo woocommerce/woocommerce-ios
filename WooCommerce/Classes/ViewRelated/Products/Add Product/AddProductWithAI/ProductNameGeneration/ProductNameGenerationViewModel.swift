@@ -13,7 +13,7 @@ final class ProductNameGenerationViewModel: ObservableObject {
         hasGeneratedMessage ? UIImage(systemName: "arrow.counterclockwise")! : .sparklesImage
     }
 
-    @Published var keywords: String = ""
+    @Published var keywords: String
     @Published private(set) var suggestedText: String?
     @Published private(set) var generationInProgress: Bool = false
     @Published private(set) var errorMessage: String?

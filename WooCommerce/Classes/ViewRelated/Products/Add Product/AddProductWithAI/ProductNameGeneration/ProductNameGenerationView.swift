@@ -66,8 +66,6 @@ struct ProductNameGenerationView: View {
                     Text(suggestedText)
                         .fixedSize(horizontal: false, vertical: true)
                         .textSelection(.enabled)
-                        .redacted(reason: viewModel.generationInProgress ? .placeholder : [])
-                        .shimmering(active: viewModel.generationInProgress)
 
                     HStack {
                         Spacer()
@@ -81,10 +79,12 @@ struct ProductNameGenerationView: View {
                         }
                         .buttonStyle(PlainButtonStyle())
                         .fixedSize(horizontal: true, vertical: false)
+                        .renderedIf(viewModel.generationInProgress == false)
                     }
-                    .renderedIf(viewModel.generationInProgress == false)
                 }
                 .padding(Constants.defaultSpacing)
+                .redacted(reason: viewModel.generationInProgress ? .placeholder : [])
+                .shimmering(active: viewModel.generationInProgress)
                 .background(
                     Color(uiColor: .secondarySystemBackground)
                         .cornerRadius(Constants.cornerRadius)

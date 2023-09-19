@@ -182,7 +182,7 @@ public class OrdersRemote: Remote {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [["code": giftCard].toDictionary()]
+                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
                 return params
@@ -268,7 +268,7 @@ public class OrdersRemote: Remote {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [["code": giftCard].toDictionary()]
+                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
                 }
 
                 return params
@@ -398,6 +398,10 @@ public extension OrdersRemote {
             "is_editable", "needs_payment", "needs_processing", "gift_cards"
         ]
         static let dateModifiedField = "date_modified_gmt"
+    }
+
+    enum NestedFieldKeys {
+        static let giftCardCode = "code"
     }
 
     /// Order fields supported for update

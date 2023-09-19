@@ -24,6 +24,22 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
     }
 }
 
+private extension AddProductWithAIContainerHostingController {
+    /// Presents the image to product flow to detect product details from image using AI
+    ///
+    func presentPackageFlow(onAIGenerationCompleted: @escaping (AddProductFromImageData?) -> Void) {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = AddProductFromImageCoordinator(siteID: siteID,
+                                                         source: source,
+                                                         sourceNavigationController: navigationController,
+                                                         onAIGenerationCompleted: onAIGenerationCompleted)
+        self.addProductFromImageCoordinator = coordinator
+        coordinator.start()
+    }
+}
+
 /// Container view for the product creation with AI flow.
 struct AddProductWithAIContainerView: View {
 

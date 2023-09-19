@@ -1177,7 +1177,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             // TODO: 10518 - check plugins
-                                            isGiftCardEnabled: featureFlagService.isFeatureFlagEnabled(.giftCardInOrderCreation),
+                                            isGiftCardEnabled: featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm),
                                             giftCardToApply: giftCardToApply,
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,

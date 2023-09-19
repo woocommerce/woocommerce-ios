@@ -206,7 +206,7 @@ public enum FeatureFlag: Int {
     ///
     case productCreationAI
 
-    /// Enables gift card support in order creation
+    /// Enables gift card support in order creation/editing
     ///
-    case giftCardInOrderCreation
+    case giftCardInOrderForm
 }

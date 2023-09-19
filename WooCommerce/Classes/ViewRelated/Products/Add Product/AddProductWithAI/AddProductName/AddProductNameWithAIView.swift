@@ -61,7 +61,29 @@ struct AddProductNameWithAIView: View {
                             .foregroundColor(Color(.label))
                             .subheadlineStyle()
 
-                        textEditor
+                        VStack(spacing: 0) {
+                            ZStack(alignment: .topLeading) {
+                                TextEditor(text: $viewModel.productNameContent)
+                                    .bodyStyle()
+                                    .foregroundColor(.secondary)
+                                    .padding(insets: Layout.messageContentInsets)
+                                    .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
+                                    .focused($editorIsFocused)
+
+                                // Placeholder text
+                                placeholderText
+                            }
+
+                            Divider()
+                                .frame(height: Layout.dividerHeight)
+                                .foregroundColor(Color(.separator))
+
+                            suggestNameField
+                                .padding(insets: Layout.suggestButtonInsets)
+                        }
+                        .overlay(
+                            RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
+                        )
                     }
 
                     usePackagePhoto
@@ -81,55 +103,6 @@ struct AddProductNameWithAIView: View {
 }
 
 private extension AddProductNameWithAIView {
-    @ViewBuilder
-    var textEditor: some View {
-        if #available(iOS 16.0, *) {
-            VStack(spacing: 0) {
-                TextField(Localization.placeholder, text: $viewModel.productNameContent, axis: .vertical)
-                .lineLimit(3...)
-                .bodyStyle()
-                .foregroundColor(.secondary)
-                .textFieldStyle(.plain)
-                .focused($editorIsFocused)
-                .padding(insets: Layout.messageContentInsets)
-
-                Divider()
-                    .frame(height: Layout.dividerHeight)
-                    .foregroundColor(Color(.separator))
-
-                suggestNameField
-                    .padding(insets: Layout.suggestButtonInsets)
-            }
-            .overlay(
-                RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
-            )
-        } else {
-            ZStack(alignment: .topLeading) {
-                VStack(spacing: 0) {
-                    TextEditor(text: $viewModel.productNameContent)
-                        .bodyStyle()
-                        .foregroundColor(.secondary)
-                        .padding(insets: Layout.messageContentInsets)
-                        .frame(minHeight: Layout.minimumEditorHeight, maxHeight: .infinity)
-                        .focused($editorIsFocused)
-
-                    Divider()
-                        .frame(height: Layout.dividerHeight)
-                        .foregroundColor(Color(.separator))
-
-                    suggestNameField
-                        .padding(insets: Layout.suggestButtonInsets)
-                }
-                .overlay(
-                    RoundedRectangle(cornerRadius: Layout.cornerRadius).stroke(editorIsFocused ? Color(.brand) : Color(.separator))
-                )
-
-                // Placeholder text
-                placeholderText
-            }
-        }
-    }
-
     var suggestNameField: some View {
         HStack {
             // Suggest a name

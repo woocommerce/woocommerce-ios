@@ -17,21 +17,21 @@ final class AddProductFromImageCoordinator: Coordinator {
     private let productImageUploader: ProductImageUploaderProtocol
     private let productImageLoader: ProductUIImageLoader
 
-    /// Invoked when a new product is saved remotely.
-    private let onProductCreated: (Product) -> Void
+    /// Invoked when AI generates product data from image
+    private let onAIGenerationCompleted: (AddProductFromImageData?) -> Void
 
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
          sourceNavigationController: UINavigationController,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
-         onProductCreated: @escaping (Product) -> Void) {
+         onAIGenerationCompleted: @escaping (AddProductFromImageData?) -> Void) {
         self.siteID = siteID
         self.source = source
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.productImageLoader = productImageLoader
-        self.onProductCreated = onProductCreated
+        self.onAIGenerationCompleted = onAIGenerationCompleted
     }
 
     func start() {
@@ -43,13 +43,7 @@ final class AddProductFromImageCoordinator: Coordinator {
             guard let self else { return }
             Task { @MainActor in
                 await self.navigationController.dismiss(animated: true)
-                guard let data else {
-                    return
-                }
-                guard let product = self.createProduct(name: data.name, description: data.description) else {
-                    return
-                }
-                self.showProduct(product, image: data.image)
+                self.onAIGenerationCompleted(data)
             }
         })
         let formNavigationController = UINavigationController(rootViewController: addProductFromImage)

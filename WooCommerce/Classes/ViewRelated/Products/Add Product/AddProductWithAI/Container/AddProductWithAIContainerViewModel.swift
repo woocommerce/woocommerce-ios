@@ -20,6 +20,10 @@ enum AddProductWithAIStep: Int, CaseIterable {
 final class AddProductWithAIContainerViewModel: ObservableObject {
 
     let siteID: Int64
+    let source: AddProductCoordinator.Source
+
+    var presentPackageFlow: ((@escaping (AddProductFromImageData?) -> Void) -> Void)?
+
     private let analytics: Analytics
     private let onCancel: () -> Void
     private let completionHandler: () -> Void
@@ -27,10 +31,12 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          analytics: Analytics = ServiceLocator.analytics,
          onCancel: @escaping () -> Void,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
+        self.source = source
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
@@ -45,7 +51,9 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onUsePackagePhoto(_ name: String?) {
-        // TODO: Launch UsePackagePhoto flow
+        presentPackageFlow? { data in
+            // TODO: Present preview
+        }
     }
 
     func backtrackOrDismiss() {

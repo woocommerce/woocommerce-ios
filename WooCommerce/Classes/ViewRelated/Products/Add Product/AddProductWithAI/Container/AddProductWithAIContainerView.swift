@@ -2,7 +2,13 @@ import SwiftUI
 
 /// Hosting controller for `AddProductWithAIContainerView`
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
+    private let siteID: Int64
+    private let source: AddProductCoordinator.Source
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+
     init(viewModel: AddProductWithAIContainerViewModel) {
+        siteID = viewModel.siteID
+        source = viewModel.source
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
     }
 
@@ -89,6 +95,7 @@ private extension AddProductWithAIContainerView {
 struct AddProductWithAIContainerView_Previews: PreviewProvider {
     static var previews: some View {
         AddProductWithAIContainerView(viewModel: .init(siteID: 123,
+                                                       source: .productOnboarding,
                                                        onCancel: { },
                                                        onCompletion: { }))
     }

@@ -34,6 +34,7 @@ private extension AddProductWithAIContainerHostingController {
         }
         let coordinator = AddProductFromImageCoordinator(siteID: viewModel.siteID,
                                                          source: viewModel.source,
+                                                         productName: productName,
                                                          sourceNavigationController: navigationController,
                                                          onAIGenerationCompleted: { [weak self] data in
             self?.viewModel.didGenerateDataFromPackage(data)

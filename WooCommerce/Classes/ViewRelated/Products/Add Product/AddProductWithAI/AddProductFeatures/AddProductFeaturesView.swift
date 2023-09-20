@@ -4,6 +4,11 @@ import SwiftUI
 ///
 struct AddProductFeaturesView: View {
     @FocusState private var editorIsFocused: Bool
+    @ObservedObject private var viewModel: AddProductFeaturesViewModel
+
+    init(viewModel: AddProductFeaturesViewModel) {
+        self.viewModel = viewModel
+    }
 
     var body: some View {
         ScrollView {
@@ -28,7 +33,7 @@ struct AddProductFeaturesView: View {
                             .subheadlineStyle()
 
                         ZStack(alignment: .topLeading) {
-                            TextEditor(text: .constant("Test"))
+                            TextEditor(text: $viewModel.productFeatures)
                                 .bodyStyle()
                                 .foregroundColor(.secondary)
                                 .padding(insets: Layout.textFieldContentInsets)
@@ -42,6 +47,7 @@ struct AddProductFeaturesView: View {
                                 .padding(insets: Layout.placeholderInsets)
                                 // Allows gestures to pass through to the `TextEditor`.
                                 .allowsHitTesting(false)
+                                .renderedIf(viewModel.productFeatures.isEmpty)
 
                         }
                         .overlay(
@@ -63,7 +69,7 @@ struct AddProductFeaturesView: View {
                     Text(Localization.continueText)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-//                .disabled(viewModel.productNameContent.isEmpty)
+                .disabled(viewModel.productFeatures.isEmpty)
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
@@ -112,6 +118,6 @@ private extension AddProductFeaturesView {
 
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFeaturesView()
+        AddProductFeaturesView(viewModel: .init(siteID: 123, onProductDetailsCreated: {}))
     }
 }

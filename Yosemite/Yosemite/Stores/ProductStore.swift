@@ -651,7 +651,7 @@ private extension ProductStore {
                              completion: @escaping (Result<String, Error>) -> Void) {
         let prompt = [
             "You are a WooCommerce SEO and marketing expert.",
-            "Provide a product title to enhance the store's SEO performance and sales ",
+            "Provide a product title to enhance the store's SEO performance and sales " +
             "based on the following product keywords: \(keywords).",
             "Your response should be in language \(language).",
             "Do not explain the suggestion, strictly return the product name only."

@@ -40,7 +40,6 @@ struct ProductNameGenerationView: View {
                     TextEditor(text: $viewModel.keywords)
                         .bodyStyle()
                         .disabled(viewModel.generationInProgress)
-                        .opacity(viewModel.generationInProgress ? 0 : 1)
                         .padding(insets: Constants.messageContentInsets)
                         .focused($isDetailInFocus)
                         .overlay(

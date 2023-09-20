@@ -659,7 +659,7 @@ private extension ProductStore {
 
         Task { @MainActor in
             let result = await Result {
-                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName)
                 return description
             }
             completion(result)

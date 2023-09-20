@@ -82,7 +82,7 @@ private extension ProductNameGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: keywords,
-                                                               feature: .productCreation,
+                                                               feature: .productName,
                                                                completion: { result in
                     continuation.resume(with: result)
                 }))

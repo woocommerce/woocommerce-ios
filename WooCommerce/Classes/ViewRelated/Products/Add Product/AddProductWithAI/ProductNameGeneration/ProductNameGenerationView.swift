@@ -109,7 +109,9 @@ struct ProductNameGenerationView: View {
                 HStack(spacing: Constants.horizontalSpacing) {
                     // Action button to regenerate product name
                     Button(action: {
-                        viewModel.generateProductName()
+                        Task {
+                            await viewModel.generateProductName()
+                        }
                     }, label: {
                         Label {
                             Text(viewModel.generateButtonTitle)
@@ -133,7 +135,9 @@ struct ProductNameGenerationView: View {
 
             // Action button to generate product name - displayed initially.
             Button(action: {
-                viewModel.generateProductName()
+                Task {
+                    await viewModel.generateProductName()
+                }
             }, label: {
                 Label {
                     Text(viewModel.generateButtonTitle)

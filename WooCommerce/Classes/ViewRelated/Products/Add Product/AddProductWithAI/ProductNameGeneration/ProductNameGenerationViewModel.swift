@@ -28,6 +28,10 @@ final class ProductNameGenerationViewModel: ObservableObject {
         suggestedText != nil
     }
 
+    /// Language used in product identified by AI
+    ///
+    private var languageIdentifiedUsingAI: String?
+
     init(siteID: Int64,
          keywords: String,
          stores: StoresManager = ServiceLocator.stores,
@@ -38,8 +42,57 @@ final class ProductNameGenerationViewModel: ObservableObject {
         self.analytics = analytics
     }
 
-    func generateProductName() {
-        // TODO-10688
+    @MainActor
+    func generateProductName() async {
+        generationInProgress = true
+        errorMessage = nil
+        do {
+            suggestedText = try await generateProductName(from: keywords)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        generationInProgress = false
+    }
+}
+
+private extension ProductNameGenerationViewModel {
+    @MainActor
+    func generateProductName(from keywords: String) async throws -> String {
+        let language = try await identifyLanguage(from: keywords)
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.generateProductName(siteID: siteID, keywords: keywords, language: language) { result in
+                switch result {
+                case .success(let name):
+                    continuation.resume(returning: name)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            })
+        }
+    }
+
+    @MainActor
+    func identifyLanguage(from keywords: String) async throws -> String {
+        if let languageIdentifiedUsingAI,
+           languageIdentifiedUsingAI.isNotEmpty {
+            return languageIdentifiedUsingAI
+        }
+
+        do {
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: keywords,
+                                                               feature: .productCreation,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            // TODO: analytics if needed
+            self.languageIdentifiedUsingAI = language
+            return language
+        } catch {
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
+        }
     }
 }
 
@@ -54,4 +107,8 @@ extension ProductNameGenerationViewModel {
             comment: "Action button to regenerate title for a new product with AI."
         )
     }
+}
+
+private enum IdentifyLanguageError: Error {
+    case failedToIdentifyLanguage(underlyingError: Error)
 }

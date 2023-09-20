@@ -1312,7 +1312,7 @@ private extension EditableOrderViewModel {
 
     func configureGiftCardSupport() {
         Task { @MainActor in
-            isGiftCardSupported = try await checkIfGiftCardsPluginIsActive()
+            isGiftCardSupported = await checkIfGiftCardsPluginIsActive()
         }
     }
 

@@ -6,10 +6,6 @@ import AutomatticAbout
 import Yosemite
 import SwiftUI
 
-import KeychainAccess
-import WooCommerceShared
-import struct Networking.ApplicationPasswordEncoder
-
 protocol SettingsViewPresenter: AnyObject {
     func refreshViewContent()
 }
@@ -152,8 +148,6 @@ private extension SettingsViewController {
             configureInstallJetpack(cell: cell)
         case let cell as SwitchTableViewCell where row == .storeSetupList:
             configureStoreSetupList(cell: cell)
-        case let cell as BasicTableViewCell where row == .shippingZones:
-            configureShippingZones(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
             configureStoreName(cell: cell)
         case let cell as BasicTableViewCell where row == .support:
@@ -229,12 +223,6 @@ private extension SettingsViewController {
                 await self?.viewModel.updateStoreSetupListVisibility(value)
             }
         }
-    }
-
-    func configureShippingZones(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-        cell.textLabel?.text = Localization.shippingZones
     }
 
     func configureStoreName(cell: BasicTableViewCell) {
@@ -420,27 +408,6 @@ private extension SettingsViewController {
             self?.viewModel.onJetpackInstallDismiss()
         }
         present(installJetpackController, animated: true, completion: nil)
-    }
-
-    func shippingZonesWasPressed() {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return DDLogError("⛔️ Cannot find SiteID to present shipping zones")
-        }
-
-        let tracksProvider = ReactNativeAnalyticsProvider()
-        let viewController: WCReactNativeViewController = {
-
-            if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
-                let url = ServiceLocator.stores.sessionManager.defaultSite?.url ?? ""
-                let password = ApplicationPasswordEncoder().encodedPassword() ?? ""
-                return WCReactNativeViewController(analyticsProvider: tracksProvider, siteUrl: url, appPassword: password)
-            } else {
-                let token = Keychain(service: WooConstants.keychainServiceName).currentAuthToken ?? ""
-                return WCReactNativeViewController(analyticsProvider: tracksProvider, blogID: "\(siteID)", apiToken: token)
-            }
-        }()
-
-        show(viewController, sender: self)
     }
 
     func storeNameWasPressed() {
@@ -642,8 +609,6 @@ extension SettingsViewController: UITableViewDelegate {
             domainWasPressed()
         case .installJetpack:
             installJetpackWasPressed()
-        case .shippingZones:
-            shippingZonesWasPressed()
         case .storeName:
             storeNameWasPressed()
         case .privacy:
@@ -722,7 +687,6 @@ extension SettingsViewController {
         case domain
         case installJetpack
         case storeSetupList
-        case shippingZones
         case storeName
 
         // Help & Feedback
@@ -774,8 +738,6 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .storeSetupList:
                 return SwitchTableViewCell.self
-            case .shippingZones:
-                return BasicTableViewCell.self
             case .logout, .accountSettings:
                 return BasicTableViewCell.self
             case .privacy:
@@ -854,11 +816,6 @@ private extension SettingsViewController {
         static let storeSetupList = NSLocalizedString(
             "Store Setup List",
             comment: "Controls store onboarding setup list visibility."
-        )
-
-        static let shippingZones = NSLocalizedString(
-            "Shipping Zones",
-            comment: "Access the store shipping zones."
         )
 
         static let storeName = NSLocalizedString(

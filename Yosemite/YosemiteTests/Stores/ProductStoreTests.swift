@@ -2370,7 +2370,6 @@ final class ProductStoreTests: XCTestCase {
 
     func test_generateProductName_returns_product_details_on_success() throws {
         // Given
-        // swiftlint:disable:next line_length
         let text = "iPhone 15 Smart Phone"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(text))

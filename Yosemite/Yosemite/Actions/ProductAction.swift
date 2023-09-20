@@ -125,7 +125,7 @@ public enum ProductAction: Action {
                           feature: GenerativeContentRemoteFeature,
                           completion: (Result<String, Error>) -> Void)
 
-    /// Generates a product description with Jetpack AI given the keywords
+    /// Generates a product name with Jetpack AI given the keywords
     ///
     case generateProductName(siteID: Int64,
                              keywords: String,

@@ -41,7 +41,7 @@ final class AddProductCoordinatorTests: XCTestCase {
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
-    func test_it_presents_AddProductWithAIActionSheet_on_start_when_eligible_for_ProductCreationAI_and_store_has_no_products() {
+    func test_it_presents_AddProductWithAIActionSheet_on_start_when_eligible_for_ProductCreationAI() {
         // Given
         let coordinator = makeAddProductCoordinator(
             addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
@@ -55,40 +55,6 @@ final class AddProductCoordinatorTests: XCTestCase {
 
         // Then
         assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: AddProductWithAIActionSheetHostingController.self)
-    }
-
-    func test_it_presents_AddProductWithAIActionSheet_on_start_when_eligible_for_ProductCreationAI_and_store_has_only_sample_products() {
-        // Given
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID, isSampleItem: true))
-        let coordinator = makeAddProductCoordinator(
-            addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
-        )
-
-        // When
-        coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
-
-        // Then
-        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: AddProductWithAIActionSheetHostingController.self)
-    }
-
-    func test_it_presents_other_bottom_sheet_on_start_when_eligible_for_ProductCreationAI_but_store_has_non_sample_products() {
-        // Given
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID, isSampleItem: false))
-        let coordinator = makeAddProductCoordinator(
-            addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
-        )
-
-        // When
-        coordinator.start()
-        waitUntil {
-            coordinator.navigationController.presentedViewController != nil
-        }
-
-        // Then
-        assertThat(coordinator.navigationController.presentedViewController, isAnInstanceOf: BottomSheetViewController.self)
     }
 
     func test_it_presents_product_form_on_start_when_the_source_is_announcement_modal() {

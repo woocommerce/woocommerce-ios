@@ -2344,8 +2344,8 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
-        XCTAssertTrue(base.contains("\(scannedTexts)"))
-        XCTAssertTrue(base.contains("\(productName)"))
+        let combinedKeywords = scannedTexts + [productName]
+        XCTAssertTrue(base.contains("\(combinedKeywords)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {

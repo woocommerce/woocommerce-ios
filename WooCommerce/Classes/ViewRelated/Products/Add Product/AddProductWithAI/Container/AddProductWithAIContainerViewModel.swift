@@ -27,6 +27,8 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private let onCancel: () -> Void
     private let completionHandler: (Product) -> Void
 
+    private var productName: String = ""
+
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
     init(siteID: Int64,
@@ -46,7 +48,12 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onContinueWithProductName(name: String) {
-        // TODO: Continue to About your product screen
+        productName = name
+        currentStep = .aboutProduct
+    }
+
+    func onProductDetailsCreated() {
+        currentStep = .preview
     }
 
     func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {

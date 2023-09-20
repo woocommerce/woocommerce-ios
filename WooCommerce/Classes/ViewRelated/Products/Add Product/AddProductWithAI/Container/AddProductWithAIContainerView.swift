@@ -64,7 +64,9 @@ struct AddProductWithAIContainerView: View {
                 AddProductNameWithAIView(viewModel: .init(siteID: viewModel.siteID,
                                                           onUsePackagePhoto: onUsePackagePhoto,
                                                           onContinueWithProductName: viewModel.onContinueWithProductName))
-            default:
+            case .aboutProduct:
+                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID, onProductDetailsCreated: viewModel.onProductDetailsCreated))
+            case .preview:
                 // TODO: Add other AI views
                Text("Add other AI views")
             }

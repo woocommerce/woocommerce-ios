@@ -2,10 +2,10 @@ import SwiftUI
 
 /// Allows the user to enter a gift card code.
 struct GiftCardInputView: View {
-    @ObservedObject private var viewModel: GiftCardInputViewModel
+    @StateObject private var viewModel: GiftCardInputViewModel
 
     init(viewModel: GiftCardInputViewModel) {
-        self.viewModel = viewModel
+        self._viewModel = .init(wrappedValue: viewModel)
     }
 
     var body: some View {

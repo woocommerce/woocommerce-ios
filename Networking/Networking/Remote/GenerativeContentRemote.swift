@@ -5,6 +5,7 @@ public enum GenerativeContentRemoteFeature: String {
     case productDescription = "woo_ios_product_description"
     case productSharing = "woo_ios_share_product"
     case productDetailsFromScannedTexts = "woo_ios_product_details_from_scanned_texts"
+    case productCreation = "woo_ios_product_creation"
 }
 
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.

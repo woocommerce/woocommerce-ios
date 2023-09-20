@@ -163,6 +163,10 @@ final class EditableOrderViewModel: ObservableObject {
         storedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
     }
 
+    /// Whether gift card is supported in order form.
+    ///
+    @Published private var isGiftCardSupported: Bool = false
+
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
@@ -381,6 +385,7 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
         syncInitialSelectedState()
         configureTaxRates()
+        configureGiftCardSupport()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -1148,12 +1153,15 @@ private extension EditableOrderViewModel {
                                                            orderSynchronizer.statePublisher,
                                                            $shouldShowNonEditableIndicators,
                                                            $taxBasedOnSetting),
-                                 orderSynchronizer.giftCardToApplyPublisher)
-            .map { [weak self] combinedPublisher, giftCardToApply in
+                                 Publishers.CombineLatest(orderSynchronizer.giftCardToApplyPublisher,
+                                                          $isGiftCardSupported))
+            .map { [weak self] combinedPublisher, giftCardPublisher in
                 let order = combinedPublisher.0
                 let state = combinedPublisher.1
                 let showNonEditableIndicators = combinedPublisher.2
                 let taxBasedOnSetting = combinedPublisher.3
+                let giftCardToApply = giftCardPublisher.0
+                let isGiftCardEnabled = giftCardPublisher.1
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -1196,8 +1204,7 @@ private extension EditableOrderViewModel {
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
-                                            // TODO: 10518 - check plugins
-                                            isGiftCardEnabled: self.featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm),
+                                            isGiftCardEnabled: isGiftCardEnabled,
                                             giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
@@ -1300,6 +1307,24 @@ private extension EditableOrderViewModel {
                 addTaxRateAddressToOrder(taxRate: taxRate)
                 storedTaxRate = taxRate
             }
+        }
+    }
+
+    func configureGiftCardSupport() {
+        Task { @MainActor in
+            isGiftCardSupported = try await checkIfGiftCardsPluginIsActive()
+        }
+    }
+
+    @MainActor
+    func checkIfGiftCardsPluginIsActive() async -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm) else {
+            return false
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: SystemPluginPaths.giftCards) { plugin in
+                continuation.resume(returning: plugin?.active == true)
+            })
         }
     }
 
@@ -1789,6 +1814,10 @@ private extension EditableOrderViewModel {
             static let plural = NSLocalizedString("Coupons (%1$@)",
                                                    comment: "The plural coupon summary. Reads like: Coupon (code1, code2)")
         }
+    }
+
+    enum SystemPluginPaths {
+        static let giftCards = "woocommerce-gift-cards/woocommerce-gift-cards.php"
     }
 }
 

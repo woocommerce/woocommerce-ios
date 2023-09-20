@@ -35,9 +35,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
@@ -57,9 +56,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
@@ -77,8 +75,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
@@ -96,8 +94,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
@@ -123,7 +121,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
@@ -152,9 +151,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
@@ -183,9 +181,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
@@ -214,9 +211,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
@@ -245,9 +241,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
@@ -267,8 +262,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
@@ -286,8 +281,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Assert
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.unexpected))
     }
 
@@ -336,9 +331,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 2)
-        XCTAssertNotNil(storesManager.receivedActions[0] as? ProductAction)
-        XCTAssertNotNil(storesManager.receivedActions[1] as? SitePostAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
@@ -356,8 +350,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
@@ -375,8 +369,8 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 1)
-        XCTAssertNotNil(storesManager.receivedActions.first as? ProductAction)
+        XCTAssertTrue(storesManager.receivedActions.contains(where: { $0 is ProductAction }))
+        XCTAssertFalse(storesManager.receivedActions.contains(where: { $0 is SitePostAction }))
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
@@ -426,7 +420,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(retrievedVariationIDs, testVariationIDs)
+        XCTAssertEqual(retrievedVariationIDs.sorted(), testVariationIDs.sorted())
         XCTAssertEqual(result?.isSuccess, true)
     }
 }

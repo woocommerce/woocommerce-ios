@@ -1286,11 +1286,13 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
+                                                                                status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails,
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

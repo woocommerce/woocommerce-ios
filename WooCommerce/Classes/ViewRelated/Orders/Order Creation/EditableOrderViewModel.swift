@@ -738,6 +738,12 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        /// Contains necessary info to render an applied gift card in the order form.
+        struct AppliedGiftCard: Hashable {
+            let code: String
+            let amount: String
+        }
+
         let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
@@ -769,6 +775,9 @@ extension EditableOrderViewModel {
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
+        /// Gift cards that have been applied to the order.
+        let appliedGiftCards: [AppliedGiftCard]
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -797,6 +806,7 @@ extension EditableOrderViewModel {
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
+             appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
@@ -830,6 +840,7 @@ extension EditableOrderViewModel {
             self.shouldShowCoupon = shouldShowCoupon
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
+            self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
@@ -1141,6 +1152,16 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
+                let appliedGiftCards: [PaymentDataViewModel.AppliedGiftCard] = {
+                    order.appliedGiftCards.compactMap { giftCard in
+                        let negativeAmount = -giftCard.amount
+                        guard let formattedAmount = self.currencyFormatter.formatAmount(negativeAmount.description) else {
+                            return nil
+                        }
+                        return .init(code: giftCard.code, amount: formattedAmount)
+                    }
+                }()
+
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
@@ -1156,6 +1177,7 @@ private extension EditableOrderViewModel {
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
+                                            appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),

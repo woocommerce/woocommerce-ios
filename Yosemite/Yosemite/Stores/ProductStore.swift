@@ -130,6 +130,8 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductDetails(siteID, scannedTexts, completion):
             generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductName(siteID, keywords, language, completion):
+            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
         }
@@ -640,6 +642,27 @@ private extension ProductStore {
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    func generateProductName(siteID: Int64,
+                             keywords: String,
+                             language: String,
+                             completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = [
+            "You are a WooCommerce SEO and marketing expert.",
+            "Provide a product title to enhance the store's SEO performance and sales ",
+            "based on the following product keywords: \(keywords).",
+            "Your response should be in language \(language).",
+            "Do not explain the suggestion, strictly return the product name only."
+        ].joined(separator: "\n")
+
+        Task { @MainActor in
+            let result = await Result {
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productDescription)
+                return description
+            }
+            completion(result)
         }
     }
 

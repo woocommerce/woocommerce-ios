@@ -2176,6 +2176,26 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.postcode, taxRate.postcodes.first)
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
+
+    func test_appliedGiftCards_have_negative_formatted_amount() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, appliedGiftCards: [
+            .init(giftCardID: 1, code: "AAAA-BBBB-AAAA-BBBB", amount: 15.3333),
+            .init(giftCardID: 1, code: "AAAA-BBBB-AAAA-BBBB", amount: 2),
+            .init(giftCardID: 2, code: "BBBB-AAAA-BBBB-AAAA", amount: 5.6)
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        let expectedGiftCards: [EditableOrderViewModel.PaymentDataViewModel.AppliedGiftCard] = [
+            .init(code: "AAAA-BBBB-AAAA-BBBB", amount: "-$15.33"),
+            .init(code: "AAAA-BBBB-AAAA-BBBB", amount: "-$2.00"),
+            .init(code: "BBBB-AAAA-BBBB-AAAA", amount: "-$5.60")
+        ]
+        assertEqual(expectedGiftCards, viewModel.paymentDataViewModel.appliedGiftCards)
+    }
 }
 
 private extension MockStorageManager {

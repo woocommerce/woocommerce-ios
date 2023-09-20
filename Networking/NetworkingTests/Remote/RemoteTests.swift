@@ -188,7 +188,7 @@ final class RemoteTests: XCTestCase {
             XCTAssertEqual(error, .requestFailed)
         }
 
-        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
@@ -590,7 +590,7 @@ final class RemoteTests: XCTestCase {
         do {
             _ = try await remote.enqueue(request, mapper: mapper)
         } catch {
-            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+            await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -620,7 +620,7 @@ final class RemoteTests: XCTestCase {
         do {
             let _: [String] = try await remote.enqueue(request)
         } catch {
-            wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+            await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
             let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
@@ -654,7 +654,7 @@ final class RemoteTests: XCTestCase {
                 promise(result)
             }
         }
-        wait(for: [expectationForNotification], timeout: Constants.expectationTimeout)
+        await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertTrue(result.isFailure)

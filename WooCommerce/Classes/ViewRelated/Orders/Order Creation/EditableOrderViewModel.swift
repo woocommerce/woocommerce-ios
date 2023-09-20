@@ -738,6 +738,12 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        /// Contains necessary info to render an applied gift card in the order form.
+        struct AppliedGiftCard: Hashable {
+            let code: String
+            let amount: String
+        }
+
         let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
@@ -773,6 +779,8 @@ extension EditableOrderViewModel {
         let isGiftCardEnabled: Bool
         /// Optional gift card code to apply to the order.
         let giftCardToApply: String?
+        /// Gift cards that have been applied to the order.
+        let appliedGiftCards: [AppliedGiftCard]
 
         /// Whether payment data is being reloaded (during remote sync)
         ///
@@ -805,6 +813,7 @@ extension EditableOrderViewModel {
              couponLineViewModels: [CouponLineViewModel] = [],
              isGiftCardEnabled: Bool = false,
              giftCardToApply: String? = nil,
+             appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
@@ -841,6 +850,7 @@ extension EditableOrderViewModel {
             self.couponLineViewModels = couponLineViewModels
             self.isGiftCardEnabled = isGiftCardEnabled
             self.giftCardToApply = giftCardToApply
+            self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
@@ -1161,6 +1171,16 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
+                let appliedGiftCards: [PaymentDataViewModel.AppliedGiftCard] = {
+                    order.appliedGiftCards.compactMap { giftCard in
+                        let negativeAmount = -giftCard.amount
+                        guard let formattedAmount = self.currencyFormatter.formatAmount(negativeAmount.description) else {
+                            return nil
+                        }
+                        return .init(code: giftCard.code, amount: formattedAmount)
+                    }
+                }()
+
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
@@ -1179,6 +1199,7 @@ private extension EditableOrderViewModel {
                                             // TODO: 10518 - check plugins
                                             isGiftCardEnabled: self.featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm),
                                             giftCardToApply: giftCardToApply,
+                                            appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
@@ -1312,11 +1333,13 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
+                                                                                status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails,
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                products: Array(allProducts)))
     }
 
     /// Tracks an order creation success

@@ -138,7 +138,7 @@ private extension ProductDescriptionGenerationViewModel {
             let language = try await withCheckedThrowingContinuation { continuation in
                 stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
                                                                string: name + " " + features,
-                                                               feature: .productSharing,
+                                                               feature: .productDescription,
                                                                completion: { result in
                     continuation.resume(with: result)
                 }))

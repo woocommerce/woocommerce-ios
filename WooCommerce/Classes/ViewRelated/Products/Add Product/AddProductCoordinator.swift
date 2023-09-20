@@ -285,6 +285,7 @@ private extension AddProductCoordinator {
         },
                                                                                          onCompletion: {
             // TODO: Product saved
+            self?.onProductCreated(product)
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }

@@ -121,7 +121,7 @@ private extension AddProductCoordinator {
     /// Whether the action sheet with the option for product creation with AI should be presented.
     ///
     var shouldShowAIActionSheet: Bool {
-        !storeHasProducts && addProductWithAIEligibilityChecker.isEligible
+        addProductWithAIEligibilityChecker.isEligible
     }
 
     /// Defines if the product creation bottom sheet should be presented.

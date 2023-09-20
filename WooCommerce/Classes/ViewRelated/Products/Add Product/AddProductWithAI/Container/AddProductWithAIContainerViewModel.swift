@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 
 enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1
@@ -20,17 +21,21 @@ enum AddProductWithAIStep: Int, CaseIterable {
 final class AddProductWithAIContainerViewModel: ObservableObject {
 
     let siteID: Int64
+    let source: AddProductCoordinator.Source
+
     private let analytics: Analytics
     private let onCancel: () -> Void
-    private let completionHandler: () -> Void
+    private let completionHandler: (Product) -> Void
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
     init(siteID: Int64,
+         source: AddProductCoordinator.Source,
          analytics: Analytics = ServiceLocator.analytics,
          onCancel: @escaping () -> Void,
-         onCompletion: @escaping () -> Void) {
+         onCompletion: @escaping (Product) -> Void) {
         self.siteID = siteID
+        self.source = source
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
@@ -44,8 +49,8 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         // TODO: Continue to About your product screen
     }
 
-    func onUsePackagePhoto(_ name: String?) {
-        // TODO: Launch UsePackagePhoto flow
+    func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {
+        // TODO: Show preview
     }
 
     func backtrackOrDismiss() {
@@ -59,6 +64,6 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
 
 private extension AddProductWithAIContainerViewModel {
     func handleCompletion() {
-        completionHandler()
+        // TODO: Fire completion handler with created product
     }
 }

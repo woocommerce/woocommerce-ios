@@ -401,18 +401,7 @@ private extension OrderStore {
                            order: order,
                            giftCard: giftCard,
                            fields: fields) { [weak self] result in
-            switch result {
-            case .success(let order):
-                // Auto-draft orders are temporary and should not be stored
-                guard order.status != .autoDraft else {
-                    return onCompletion(result)
-                }
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
-                    onCompletion(result)
-                })
-            case .failure:
-                onCompletion(result)
-            }
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
 
@@ -440,18 +429,7 @@ private extension OrderStore {
     ///
     func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
         remote.updateOrder(from: siteID, order: order, giftCard: giftCard, fields: fields) { [weak self] result in
-            switch result {
-            case .success(let order):
-                // Auto-draft orders are temporary and should not be stored
-                guard order.status != .autoDraft else {
-                    return onCompletion(result)
-                }
-                self?.upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
-                    onCompletion(result)
-                })
-            case .failure:
-                onCompletion(result)
-            }
+            self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }
 
@@ -654,6 +632,36 @@ private extension OrderStore {
 // MARK: - Storage: Orders
 //
 private extension OrderStore {
+    func handleCreateOrUpdateOrderResult(_ result: Result<Order, Error>, giftCard: String?, onCompletion: @escaping (Result<Order, Error>) -> Void) {
+        switch result {
+            case .success(let order):
+                // Auto-draft orders are temporary and should not be stored
+                guard order.status != .autoDraft else {
+                    return onCompletion(result)
+                }
+
+                if let giftCard, order.appliedGiftCards.contains(where: { $0.code == giftCard }) == false {
+                    return onCompletion(.failure(GiftCardError.notApplied))
+                }
+
+                upsertStoredOrdersInBackground(readOnlyOrders: [order], onCompletion: {
+                    onCompletion(result)
+                })
+            case .failure(let error):
+                if let dotcomError = error as? DotcomError,
+                   case let .unknown(code, message) = dotcomError {
+                    switch code {
+                        case "woocommerce_rest_gift_card_cannot_apply":
+                            return onCompletion(.failure(GiftCardError.cannotApply(reason: message)))
+                        case "woocommerce_rest_gift_card_cannot_parse_data":
+                            return onCompletion(.failure(GiftCardError.invalid(reason: message)))
+                        default:
+                            return onCompletion(result)
+                    }
+                }
+                onCompletion(result)
+        }
+    }
 
     /// Updates (OR Inserts) the specified ReadOnly Order Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
@@ -690,5 +698,15 @@ private extension OrderStore {
 extension OrderStore {
     enum MarkOrderAsPaidLocallyError: Error {
         case orderNotFoundInStorage
+    }
+
+    public enum GiftCardError: Error {
+        /// When the gift card cannot be applied (e.g. the order total is 0).
+        case cannotApply(reason: String?)
+        /// When the gift card is invalid (e.g. invalid code).
+        case invalid(reason: String?)
+        /// When the input gift card code isn't included in the updated order response while the request is successful.
+        /// This can happen when the gift card has 0 balance and the order total is positive.
+        case notApplied
     }
 }

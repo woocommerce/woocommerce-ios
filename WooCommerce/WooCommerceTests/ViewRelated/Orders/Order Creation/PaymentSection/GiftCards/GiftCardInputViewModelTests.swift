@@ -76,4 +76,38 @@ final class GiftCardInputViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.errorMessage)
     }
+
+    // MARK: - `apply`
+
+    func test_apply_invokes_addGiftCard_with_code() throws {
+        let code = waitFor { promise in
+            // Given
+            let viewModel = GiftCardInputViewModel(code: "", addGiftCard: { code in
+                promise(code)
+            }, dismiss: {})
+
+            // When
+            viewModel.code = "a7WP"
+            viewModel.apply()
+        }
+
+        // Then
+        XCTAssertEqual(code, "a7WP")
+    }
+
+    // MARK: - `cancel`
+
+    func test_cancel_invokes_dismiss() throws {
+        waitFor { promise in
+            // Given
+            let viewModel = GiftCardInputViewModel(code: "", addGiftCard: { _ in }, dismiss: {
+                // Then
+                promise(())
+            })
+
+            // When
+            viewModel.code = "a7WP"
+            viewModel.cancel()
+        }
+    }
 }

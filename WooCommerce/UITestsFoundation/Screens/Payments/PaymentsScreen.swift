@@ -33,11 +33,16 @@ public final class PaymentsScreen: ScreenObject {
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["Getting started with In-Person Payments with WooPayments"]
     }
+    
+    private let paymentsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
+        $0.navigationBars["Payments"]
+    }
 
     private var collectPaymentButton: XCUIElement { collectPaymentButtonGetter(app) }
     private var cardReaderManualsButton: XCUIElement { cardReaderManualsButtonGetter(app) }
     private var learnMoreButton: XCUIElement { learnMoreButtonGetter(app) }
     private var nextButton: XCUIElement { nextButtonGetter(app) }
+    private var paymentsNavigationBar: XCUIElement { paymentsNavigationBarGetter(app) }
     private var takePaymentButton: XCUIElement { takePaymentButtonGetter(app) }
     private var cashPaymentButton: XCUIElement { cashPaymentButtonGetter(app) }
     private var markAsPaidButton: XCUIElement { markAsPaidButtonGetter(app) }
@@ -45,7 +50,11 @@ public final class PaymentsScreen: ScreenObject {
 
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ collectPaymentButtonGetter, cardReaderManualsButtonGetter ],
+            expectedElementGetters: [
+                paymentsNavigationBarGetter,
+                collectPaymentButtonGetter,
+                cardReaderManualsButtonGetter
+            ],
             app: app
         )
     }
@@ -90,8 +99,7 @@ public final class PaymentsScreen: ScreenObject {
 
     @discardableResult
     public func verifyPaymentsScreenLoaded() throws -> PaymentsScreen {
-        collectPaymentButton.waitForExistence(timeout: 15)
-        XCTAssertTrue(isLoaded)
+        XCTAssertTrue(collectPaymentButton.waitForExistence(timeout: 5))
         return self
     }
 

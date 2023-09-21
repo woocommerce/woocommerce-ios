@@ -45,6 +45,15 @@ final class AIToneVoiceViewModelTests: XCTestCase {
     }
 
     // MARK: - AI tone helpers
+    func test_nil_is_returned_when_no_tone_stored() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+
+        // Then
+        XCTAssertNil(defaults.aiTone(for: siteID))
+    }
+
     func test_stored_tone_is_restored_as_expected() throws {
         // Given
         let uuid = UUID().uuidString

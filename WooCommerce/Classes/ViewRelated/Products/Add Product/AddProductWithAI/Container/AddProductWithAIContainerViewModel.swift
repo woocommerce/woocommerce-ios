@@ -27,7 +27,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private let onCancel: () -> Void
     private let completionHandler: (Product) -> Void
 
-    private var productName: String = ""
+    private(set) var productName: String = ""
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 

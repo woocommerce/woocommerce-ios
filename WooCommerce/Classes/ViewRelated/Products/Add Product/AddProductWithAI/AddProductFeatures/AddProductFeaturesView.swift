@@ -12,7 +12,7 @@ struct AddProductFeaturesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Layout.blockBottomPadding) {
+            VStack(alignment: .leading, spacing: Layout.blockVerticalSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
                     // Title label.
                     Text(Localization.title)
@@ -26,7 +26,7 @@ struct AddProductFeaturesView: View {
                 }
 
                 VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
-                    Text(Localization.textFieldTitle)
+                    Text(viewModel.productName)
                         .foregroundColor(Color(.label))
                         .subheadlineStyle()
 
@@ -89,7 +89,7 @@ private extension AddProductFeaturesView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
 
-        static let blockBottomPadding: CGFloat = 40
+        static let blockVerticalSpacing: CGFloat = 40
         static let titleBlockSpacing: CGFloat = 16
 
         static let editorBlockSpacing: CGFloat = 8
@@ -106,10 +106,6 @@ private extension AddProductFeaturesView {
         static let subtitle = NSLocalizedString(
             "Highlight what makes your product unique, and let AI do the magic.",
             comment: "Subtitle on the add product features screen."
-        )
-        static let textFieldTitle = NSLocalizedString(
-            "My Product",
-            comment: "Text field's label on the add product features screen."
         )
         static let placeholder = NSLocalizedString(
             "For example, Soft fabric, durable stitching, unique design",
@@ -133,6 +129,7 @@ private extension AddProductFeaturesView {
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
         AddProductFeaturesView(viewModel: .init(siteID: 123,
+                                                productName: "iPhone 15",
                                                 onSetToneAndVoice: {},
                                                 onProductDetailsCreated: {}))
     }

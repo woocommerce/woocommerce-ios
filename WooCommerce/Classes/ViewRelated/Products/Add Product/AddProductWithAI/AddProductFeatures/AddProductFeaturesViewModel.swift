@@ -10,6 +10,7 @@ final class AddProductFeaturesViewModel: ObservableObject {
     let onSetToneAndVoice: () -> Void
 
     @Published var productFeatures: String = ""
+    let productName: String
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -19,11 +20,13 @@ final class AddProductFeaturesViewModel: ObservableObject {
 
 
     init(siteID: Int64,
+         productName: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onSetToneAndVoice: @escaping () -> Void,
          onProductDetailsCreated: @escaping () -> Void) {
         self.siteID = siteID
+        self.productName = productName
         self.stores = stores
         self.analytics = analytics
         self.onSetToneAndVoice = onSetToneAndVoice

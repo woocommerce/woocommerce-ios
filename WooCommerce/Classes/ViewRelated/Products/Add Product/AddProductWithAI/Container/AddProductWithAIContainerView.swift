@@ -2,8 +2,15 @@ import SwiftUI
 
 /// Hosting controller for `AddProductWithAIContainerView`
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
+    private let viewModel: AddProductWithAIContainerViewModel
+    private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+
     init(viewModel: AddProductWithAIContainerViewModel) {
+        self.viewModel = viewModel
         super.init(rootView: AddProductWithAIContainerView(viewModel: viewModel))
+        rootView.onUsePackagePhoto = { [weak self] productName in
+            self?.presentPackageFlow(productName: productName)
+        }
     }
 
     @available(*, unavailable)
@@ -18,8 +25,30 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
     }
 }
 
+private extension AddProductWithAIContainerHostingController {
+    /// Presents the image to product flow to detect product details from image using AI
+    ///
+    func presentPackageFlow(productName: String?) {
+        guard let navigationController else {
+            return
+        }
+        let coordinator = AddProductFromImageCoordinator(siteID: viewModel.siteID,
+                                                         source: viewModel.source,
+                                                         productName: productName,
+                                                         sourceNavigationController: navigationController,
+                                                         onAIGenerationCompleted: { [weak self] data in
+            self?.viewModel.didGenerateDataFromPackage(data)
+        })
+        self.addProductFromImageCoordinator = coordinator
+        coordinator.start()
+    }
+}
+
 /// Container view for the product creation with AI flow.
 struct AddProductWithAIContainerView: View {
+    /// Closure invoked when the close button is pressed
+    ///
+    var onUsePackagePhoto: (String?) -> Void = { _ in }
 
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
@@ -34,7 +63,7 @@ struct AddProductWithAIContainerView: View {
             switch viewModel.currentStep {
             case .productName:
                 AddProductNameWithAIView(viewModel: .init(siteID: viewModel.siteID,
-                                                          onUsePackagePhoto: viewModel.onUsePackagePhoto,
+                                                          onUsePackagePhoto: onUsePackagePhoto,
                                                           onContinueWithProductName: viewModel.onContinueWithProductName))
             default:
                 // TODO: Add other AI views
@@ -89,7 +118,8 @@ private extension AddProductWithAIContainerView {
 struct AddProductWithAIContainerView_Previews: PreviewProvider {
     static var previews: some View {
         AddProductWithAIContainerView(viewModel: .init(siteID: 123,
+                                                       source: .productOnboarding,
                                                        onCancel: { },
-                                                       onCompletion: { }))
+                                                       onCompletion: { _ in }))
     }
 }

@@ -4,6 +4,12 @@ import SwiftUI
 ///
 struct ProductDetailPreviewView: View {
 
+    @ObservedObject private var viewModel: ProductDetailPreviewViewModel
+
+    init(viewModel: ProductDetailPreviewViewModel) {
+        self.viewModel = viewModel
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.blockVerticalSpacing) {
@@ -18,9 +24,22 @@ struct ProductDetailPreviewView: View {
                         .foregroundColor(Color(.secondaryLabel))
                         .bodyStyle()
                 }
-
             }
             .padding(insets: Layout.insets)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    if viewModel.isGeneratingDetails {
+                        ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                    } else {
+                        Button("Save as draft") {
+                            viewModel.saveProductAsDraft()
+                        }
+                    }
+                }
+            }
+            .onAppear {
+                viewModel.generateProductDetails()
+            }
         }
     }
 }
@@ -47,6 +66,6 @@ private extension ProductDetailPreviewView {
 
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductDetailPreviewView()
+        ProductDetailPreviewView(viewModel: .init(siteID: 123))
     }
 }

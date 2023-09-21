@@ -14,13 +14,20 @@ struct GiftCardInputView: View {
                 Section {
                     TextField(Localization.placeholder, text: $viewModel.code)
                         .focused()
+
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(.footnote)
+                            .foregroundColor(Color(.error))
+                    }
+
                     Button {
                         viewModel.apply()
                     } label: {
                         Text(Localization.apply)
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .disabled(viewModel.code.isEmpty)
+                    .disabled(!viewModel.isValid)
                 }
             }
             .toolbar {

@@ -12,6 +12,7 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
         }
+        rootView.onSetToneAndVoice = presentSetToneAndVoice
     }
 
     @available(*, unavailable)
@@ -74,6 +75,10 @@ struct AddProductWithAIContainerView: View {
     ///
     var onUsePackagePhoto: (String?) -> Void = { _ in }
 
+    /// Closure invoked when the "Set tone and voice" button is pressed
+    ///
+    var onSetToneAndVoice: () -> Void = {  }
+
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
     init(viewModel: AddProductWithAIContainerViewModel) {
@@ -94,7 +99,8 @@ struct AddProductWithAIContainerView: View {
                     }
                 }))
             case .aboutProduct:
-                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID) {
+                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
+                                                        onSetToneAndVoice: onSetToneAndVoice) {
                     withAnimation {
                         viewModel.onProductDetailsCreated()
                     }

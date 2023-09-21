@@ -12,7 +12,7 @@ struct AddProductFeaturesView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Layout.blockBottomPadding) {
+            VStack(alignment: .leading, spacing: Layout.blockVerticalSpacing) {
                 VStack(alignment: .leading, spacing: Layout.titleBlockSpacing) {
                     // Title label.
                     Text(Localization.title)
@@ -89,7 +89,7 @@ private extension AddProductFeaturesView {
     enum Layout {
         static let insets: EdgeInsets = .init(top: 24, leading: 16, bottom: 16, trailing: 16)
 
-        static let blockBottomPadding: CGFloat = 40
+        static let blockVerticalSpacing: CGFloat = 40
         static let titleBlockSpacing: CGFloat = 16
 
         static let editorBlockSpacing: CGFloat = 8

@@ -4,6 +4,7 @@ import SwiftUI
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
+    private var setToneAndVoiceBottomSheetPresenter: BottomSheetPresenter?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel
@@ -41,6 +42,29 @@ private extension AddProductWithAIContainerHostingController {
         })
         self.addProductFromImageCoordinator = coordinator
         coordinator.start()
+    }
+
+    /// Presents the tone and voice sheet
+    /// 
+    func presentSetToneAndVoice() {
+        guard let navigationController else {
+            return
+        }
+        setToneAndVoiceBottomSheetPresenter = buildBottomSheetPresenter()
+        let controller = AIToneVoiceHostingController(viewModel: .init(siteID: viewModel.siteID))
+        setToneAndVoiceBottomSheetPresenter?.present(controller, from: navigationController)
+    }
+
+    // MARK: Bottom sheet helpers
+    //
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { bottomSheet in
+            var sheet = bottomSheet
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.largestUndimmedDetentIdentifier = .none
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.medium(), .large()]
+        })
     }
 }
 

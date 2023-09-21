@@ -6,7 +6,7 @@ import Yosemite
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
-    
+
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
@@ -20,11 +20,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 
     func generateProductDetails() {
-        isGeneratingDetails = true
         // TODO
     }
 
     func saveProductAsDraft() {
+        // TODO
+    }
+
+    func handleFeedback(_ vote: FeedbackView.Vote) {
         // TODO
     }
 }

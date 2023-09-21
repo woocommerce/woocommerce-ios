@@ -24,6 +24,15 @@ struct ProductDetailPreviewView: View {
                         .foregroundColor(Color(.secondaryLabel))
                         .bodyStyle()
                 }
+
+                // Feedback banner
+                FeedbackView(title: Localization.feedbackQuestion,
+                             backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
+                                                                   dark: .systemGray6)),
+                             onVote: { vote in
+                    viewModel.handleFeedback(vote)
+                })
+                .renderedIf(viewModel.isGeneratingDetails == false)
             }
             .padding(insets: Layout.insets)
             .toolbar {
@@ -59,6 +68,10 @@ private extension ProductDetailPreviewView {
         static let subtitle = NSLocalizedString(
             "Don't worry. You can always change those details later.",
             comment: "Subtitle on the add product with AI Preview screen."
+        )
+        static let feedbackQuestion = NSLocalizedString(
+            "Is the result helpful?",
+            comment: "Question to ask for feedback for the AI-generated content on the add product with AI Preview screen."
         )
     }
 }

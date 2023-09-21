@@ -128,10 +128,10 @@ public class ProductStore: Store {
             generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
         case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
-        case let .generateProductDetails(siteID, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
         case let .generateProductName(siteID, keywords, language, completion):
             generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
         }
@@ -618,9 +618,18 @@ private extension ProductStore {
         }
     }
 
-    func generateProductDetails(siteID: Int64, scannedTexts: [String], completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+    func generateProductDetails(siteID: Int64,
+                                productName: String?,
+                                scannedTexts: [String],
+                                completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+        let keywords: [String] = {
+            guard let productName else {
+                return scannedTexts
+            }
+            return scannedTexts + [productName]
+        }()
         let prompt = [
-            "Write a name and description of a product for an online store given the array of scanned text strings from a packaging photo at the end.",
+            "Write a name and description of a product for an online store given the keywords at the end.",
             "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
             "and the detected language as the locale identifier in `language` field.",
             "The output should be in valid JSON format.",
@@ -629,7 +638,7 @@ private extension ProductStore {
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
             "and use them in your sentences without listing them out." +
-            "\(scannedTexts)"
+            "\(keywords)"
         ].joined(separator: "\n")
         Task { @MainActor in
             do {

@@ -20,6 +20,16 @@ final class DefaultShareProductAIEligibilityCheckerTests: XCTestCase {
         XCTAssertFalse(checker.canGenerateShareProductMessageUsingAI)
     }
 
+    func test_canGenerateShareProductMessageUsingAI_is_enabled_when_site_is_not_wpcom_and_ai_assistant_feature_is_active() throws {
+        // Given
+        let featureFlagService = MockFeatureFlagService(isShareProductAIEnabled: true)
+        let checker = DefaultShareProductAIEligibilityChecker(site: .fake().copy(isAIAssistantFeatureActive: true, isWordPressComStore: false),
+                                                              featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertTrue(checker.canGenerateShareProductMessageUsingAI)
+    }
+
     func test_canGenerateShareProductMessageUsingAI_is_disabled_when_site_is_nil() {
         // Given
         let featureFlagService = MockFeatureFlagService(isShareProductAIEnabled: true)

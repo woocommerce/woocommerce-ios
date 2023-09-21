@@ -700,7 +700,7 @@ extension OrderStore {
         case orderNotFoundInStorage
     }
 
-    public enum GiftCardError: Error {
+    public enum GiftCardError: Error, Equatable {
         /// When the gift card cannot be applied (e.g. the order total is 0).
         case cannotApply(reason: String?)
         /// When the gift card is invalid (e.g. invalid code).

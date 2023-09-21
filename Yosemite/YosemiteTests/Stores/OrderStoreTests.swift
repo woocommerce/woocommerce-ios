@@ -1028,6 +1028,59 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNotNil(storedOrder)
     }
 
+    func test_create_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
+    }
+
+    func test_create_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-gift-card-cannot-apply-error")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError,
+                       .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
+    }
+
+    func test_create_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order-gift-card-invalid-error")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError,
+                       .invalid(reason: "Gift card code Z not found."))
+    }
+
     func test_update_simple_payments_order_sends_correct_values() throws {
         // Given
         let feeID: Int64 = 1234
@@ -1182,6 +1235,59 @@ final class OrderStoreTests: XCTestCase {
             "gift_cards"
         ]
         assertEqual(expectedKeys, receivedKeys)
+    }
+
+    func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
+    }
+
+    func test_update_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-gift-card-cannot-apply-error")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError,
+                       .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
+    }
+
+    func test_update_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order-gift-card-invalid-error")
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: "134", fields: []) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? OrderStore.GiftCardError,
+                       .invalid(reason: "Gift card code Z not found."))
     }
 
     // MARK: Tests for `markOrderAsPaidLocally`

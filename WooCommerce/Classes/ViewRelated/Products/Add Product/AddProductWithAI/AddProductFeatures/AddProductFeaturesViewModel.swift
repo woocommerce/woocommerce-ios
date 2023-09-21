@@ -6,6 +6,7 @@ import Yosemite
 final class AddProductFeaturesViewModel: ObservableObject {
 
     @Published var productFeatures: String = ""
+    let productName: String
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -14,10 +15,12 @@ final class AddProductFeaturesViewModel: ObservableObject {
     private let onProductDetailsCreated: () -> Void
 
     init(siteID: Int64,
+         productName: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onProductDetailsCreated: @escaping () -> Void) {
         self.siteID = siteID
+        self.productName = productName
         self.stores = stores
         self.analytics = analytics
         self.onProductDetailsCreated = onProductDetailsCreated

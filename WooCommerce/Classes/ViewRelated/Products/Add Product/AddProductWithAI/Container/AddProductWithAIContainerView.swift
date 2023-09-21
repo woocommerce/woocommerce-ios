@@ -69,7 +69,8 @@ struct AddProductWithAIContainerView: View {
                     }
                 }))
             case .aboutProduct:
-                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID) {
+                AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
+                                                        productName: viewModel.productName) {
                     withAnimation {
                         viewModel.onProductDetailsCreated()
                     }

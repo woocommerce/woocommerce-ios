@@ -26,7 +26,7 @@ struct AddProductFeaturesView: View {
                 }
 
                 VStack(alignment: .leading, spacing: Layout.editorBlockSpacing) {
-                    Text(Localization.textFieldTitle)
+                    Text(viewModel.productName)
                         .foregroundColor(Color(.label))
                         .subheadlineStyle()
 
@@ -107,10 +107,6 @@ private extension AddProductFeaturesView {
             "Highlight what makes your product unique, and let AI do the magic.",
             comment: "Subtitle on the add product features screen."
         )
-        static let textFieldTitle = NSLocalizedString(
-            "My Product",
-            comment: "Text field's label on the add product features screen."
-        )
         static let placeholder = NSLocalizedString(
             "For example, Soft fabric, durable stitching, unique design",
             comment: "Placeholder text on the product features field"
@@ -132,6 +128,6 @@ private extension AddProductFeaturesView {
 
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFeaturesView(viewModel: .init(siteID: 123, onProductDetailsCreated: {}))
+        AddProductFeaturesView(viewModel: .init(siteID: 123, productName: "iPhone 15", onProductDetailsCreated: {}))
     }
 }

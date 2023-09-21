@@ -18,7 +18,7 @@ final class AIToneVoiceHostingController: UIHostingController<AIToneVoiceView> {
 struct AIToneVoiceView: View {
     @StateObject private var viewModel: AIToneVoiceViewModel
 
-    @Environment(\.presentationMode) var presentation
+    @Environment(\.presentationMode) private var presentation
 
     init(viewModel: AIToneVoiceViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)

@@ -33,7 +33,7 @@ public final class PaymentsScreen: ScreenObject {
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["Getting started with In-Person Payments with WooPayments"]
     }
-    
+
     private let paymentsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
         $0.navigationBars["Payments"]
     }

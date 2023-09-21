@@ -5,13 +5,13 @@ enum AddProductWithAIStep: Int, CaseIterable {
     case productName = 1
     case aboutProduct
     case preview
-
+    
     /// Progress to display
     var progress: Double {
         let incrementBy = 1.0 / Double(Self.allCases.count)
         return Double(self.rawValue) * incrementBy
     }
-
+    
     var previousStep: AddProductWithAIStep? {
         .init(rawValue: self.rawValue - 1)
     }
@@ -28,6 +28,9 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private let completionHandler: (Product) -> Void
 
     private(set) var productName: String = ""
+    private var productFeatures: String = ""
+    private var productDescription: String?
+    private var packagingImage: MediaPickerImage?
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
@@ -52,12 +55,16 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         currentStep = .aboutProduct
     }
 
-    func onProductDetailsCreated() {
+    func onProductFeaturesAdded(features: String) {
+        productFeatures = features
         currentStep = .preview
     }
 
     func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {
-        // TODO: Show preview
+        productName = data?.name ?? ""
+        productDescription = data?.description
+        packagingImage = data?.image
+        currentStep = .preview
     }
 
     func backtrackOrDismiss() {

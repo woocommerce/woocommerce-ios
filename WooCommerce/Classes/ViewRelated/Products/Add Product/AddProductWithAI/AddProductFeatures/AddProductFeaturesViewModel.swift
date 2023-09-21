@@ -12,17 +12,22 @@ final class AddProductFeaturesViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     // TODO: add new type for product details and return it here.
-    private let onProductDetailsCreated: () -> Void
+    private let onCompletion: (String) -> Void
 
     init(siteID: Int64,
          productName: String,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onProductDetailsCreated: @escaping () -> Void) {
+         onCompletion: @escaping (String) -> Void) {
         self.siteID = siteID
         self.productName = productName
         self.stores = stores
         self.analytics = analytics
-        self.onProductDetailsCreated = onProductDetailsCreated
+        self.onCompletion = onCompletion
+    }
+
+    func proceedToPreview() {
+        // TODO: analytics
+        onCompletion(productFeatures)
     }
 }

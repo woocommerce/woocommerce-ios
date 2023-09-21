@@ -57,7 +57,7 @@ struct AddProductFeaturesView: View {
                 }
 
                 Button(action: {
-                    // TODO: show tone bottom sheet
+                    viewModel.onSetToneAndVoice()
                 }, label: {
                     Text(Localization.setToneButton)
                         .foregroundColor(.accentColor)
@@ -132,6 +132,8 @@ private extension AddProductFeaturesView {
 
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFeaturesView(viewModel: .init(siteID: 123, onProductDetailsCreated: {}))
+        AddProductFeaturesView(viewModel: .init(siteID: 123,
+                                                onSetToneAndVoice: {},
+                                                onProductDetailsCreated: {}))
     }
 }

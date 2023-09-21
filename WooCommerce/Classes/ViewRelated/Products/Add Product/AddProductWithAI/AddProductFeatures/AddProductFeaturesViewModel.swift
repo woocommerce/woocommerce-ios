@@ -5,6 +5,10 @@ import Yosemite
 ///
 final class AddProductFeaturesViewModel: ObservableObject {
 
+    /// Closure fired when tapping "Set tone and voice" to launch the AI tone sheet
+    ///
+    let onSetToneAndVoice: () -> Void
+
     @Published var productFeatures: String = ""
 
     private let siteID: Int64
@@ -13,13 +17,16 @@ final class AddProductFeaturesViewModel: ObservableObject {
     // TODO: add new type for product details and return it here.
     private let onProductDetailsCreated: () -> Void
 
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         onSetToneAndVoice: @escaping () -> Void,
          onProductDetailsCreated: @escaping () -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
+        self.onSetToneAndVoice = onSetToneAndVoice
         self.onProductDetailsCreated = onProductDetailsCreated
     }
 }

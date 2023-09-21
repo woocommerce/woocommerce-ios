@@ -53,7 +53,6 @@ final class AddProductCoordinator: Coordinator {
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
     init(siteID: Int64,
          source: Source,
@@ -122,7 +121,7 @@ private extension AddProductCoordinator {
     /// Whether the action sheet with the option for product creation with AI should be presented.
     ///
     var shouldShowAIActionSheet: Bool {
-        !storeHasProducts && addProductWithAIEligibilityChecker.isEligible
+        addProductWithAIEligibilityChecker.isEligible
     }
 
     /// Defines if the product creation bottom sheet should be presented.
@@ -279,14 +278,16 @@ private extension AddProductCoordinator {
     }
 
     func startProductCreationWithAI() {
-        let coordinator = AddProductWithAICoordinator(siteID: siteID,
-                                                      source: source,
-                                                      sourceNavigationController: navigationController,
-                                                      onProductCreated: { [weak self] product in
+        let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
+                                                                                         source: source,
+                                                                                         onCancel: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        },
+                                                                                         onCompletion: { [weak self] product in
+            // TODO: Product saved
             self?.onProductCreated(product)
-        })
-        self.addProductWithAICoordinator = coordinator
-        coordinator.start()
+        }))
+        navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
     /// Presents a product onto the current navigation stack.

@@ -2284,6 +2284,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { result in
                 promise(result)
             })
@@ -2309,6 +2310,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { result in
                 promise(result)
             })
@@ -2322,6 +2324,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let scannedTexts = ["onion", "chives"]
+        let productName = "food"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -2333,6 +2336,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: productName,
                                                                        scannedTexts: scannedTexts) { _ in
                 promise(())
             })
@@ -2340,7 +2344,8 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
-        XCTAssertTrue(base.contains("\(scannedTexts)"))
+        let combinedKeywords = scannedTexts + [productName]
+        XCTAssertTrue(base.contains("\(combinedKeywords)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {
@@ -2356,6 +2361,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { _ in
                 promise(())
             })

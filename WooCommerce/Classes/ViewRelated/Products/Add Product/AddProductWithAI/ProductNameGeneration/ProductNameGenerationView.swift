@@ -40,7 +40,6 @@ struct ProductNameGenerationView: View {
                     TextEditor(text: $viewModel.keywords)
                         .bodyStyle()
                         .disabled(viewModel.generationInProgress)
-                        .opacity(viewModel.generationInProgress ? 0 : 1)
                         .padding(insets: Constants.messageContentInsets)
                         .focused($isDetailInFocus)
                         .overlay(
@@ -109,7 +108,9 @@ struct ProductNameGenerationView: View {
                 HStack(spacing: Constants.horizontalSpacing) {
                     // Action button to regenerate product name
                     Button(action: {
-                        viewModel.generateProductName()
+                        Task {
+                            await viewModel.generateProductName()
+                        }
                     }, label: {
                         Label {
                             Text(viewModel.generateButtonTitle)
@@ -133,7 +134,9 @@ struct ProductNameGenerationView: View {
 
             // Action button to generate product name - displayed initially.
             Button(action: {
-                viewModel.generateProductName()
+                Task {
+                    await viewModel.generateProductName()
+                }
             }, label: {
                 Label {
                     Text(viewModel.generateButtonTitle)

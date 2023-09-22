@@ -58,6 +58,12 @@ protocol OrderSynchronizer {
     ///
     var orderPublisher: Published<Order>.Publisher { get }
 
+    /// Gift card code to apply to the order.
+    var giftCardToApply: String? { get }
+
+    /// Publisher for the gift card code to apply to the order.
+    var giftCardToApplyPublisher: Published<String?>.Publisher { get }
+
     // MARK: Inputs
 
     /// Changes the underlaying order status.
@@ -93,6 +99,9 @@ protocol OrderSynchronizer {
     /// Removes an order coupon.
     ///
     var removeCoupon: PassthroughSubject<String, Never> { get }
+
+    /// Sets the gift card applied to the order.
+    var setGiftCard: PassthroughSubject<String?, Never> { get }
 
     /// Sets or removes an order customer note.
     ///

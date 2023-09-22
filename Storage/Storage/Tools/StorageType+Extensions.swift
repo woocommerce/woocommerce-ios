@@ -658,6 +658,13 @@ public extension StorageType {
         return firstObject(ofType: SystemPlugin.self, matching: predicate)
     }
 
+    /// Returns a system plugin with a specified `siteID` and `path`.
+    ///
+    func loadSystemPlugin(siteID: Int64, path: String) -> SystemPlugin? {
+        let predicate = \SystemPlugin.siteID == siteID && \SystemPlugin.plugin == path
+        return firstObject(ofType: SystemPlugin.self, matching: predicate)
+    }
+
     // MARK: - Inbox Notes
 
     /// Returns a single Inbox Note given a `siteID` and `id`

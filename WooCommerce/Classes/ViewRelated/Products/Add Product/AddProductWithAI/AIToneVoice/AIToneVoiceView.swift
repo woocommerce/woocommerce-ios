@@ -12,49 +12,68 @@ struct AIToneVoiceView: View {
     }
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(alignment: .leading, spacing: Layout.blockVerticalSpacing) {
-                    // Subtitle label.
-                    Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
-                        .bodyStyle()
-                        .padding(.horizontal, Layout.subtitleExtraHorizontalPadding)
+        ScrollView {
+            VStack(alignment: .leading, spacing: Layout.blockVerticalSpacing) {
+                titleBlock
 
-                    // List of AI tones.
-                    ForEach(viewModel.tones, id: \.self) { tone in
-                        VStack(alignment: .leading, spacing: 0) {
-                            SelectableItemRow(
-                                title: tone.rawValue,
-                                selected: tone == viewModel.selectedTone,
-                                displayMode: .compact,
-                                alignment: .trailing)
-                            .onTapGesture {
-                                viewModel.onSelectTone(tone)
-                            }
+                // Subtitle label.
+                Text(Localization.subtitle)
+                    .foregroundColor(Color(.secondaryLabel))
+                    .bodyStyle()
+                    .padding(.horizontal, Layout.subtitleExtraHorizontalPadding)
 
-                            Divider()
+                // List of AI tones.
+                ForEach(viewModel.tones, id: \.self) { tone in
+                    VStack(alignment: .leading, spacing: 0) {
+                        SelectableItemRow(
+                            title: tone.rawValue,
+                            selected: tone == viewModel.selectedTone,
+                            displayMode: .compact,
+                            alignment: .trailing)
+                        .onTapGesture {
+                            viewModel.onSelectTone(tone)
                         }
+
+                        Divider()
                     }
+                }
+
+                Spacer()
+            }
+            .padding(Layout.defaultPadding)
+        }
+    }
+}
+
+private extension AIToneVoiceView {
+    var titleBlock: some View {
+        ZStack {
+            HStack {
+                Button(action: {
+                    presentation.wrappedValue.dismiss()
+                }, label: {
+                    Image(systemName: "chevron.backward")
+                        .headlineLinkStyle()
+                })
+
+                Spacer()
+            }
+            .padding(.horizontal, Layout.backButtonHorizontalPadding)
+
+            VStack(spacing: 0) {
+                HStack {
+                    Spacer()
+
+                    Text(Localization.title)
+                        .fontWeight(.semibold)
+                        .headlineStyle()
 
                     Spacer()
                 }
-                .padding(Layout.defaultPadding)
+                .padding(.vertical, Layout.titleVerticalPadding)
+
+                Divider()
             }
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar(content: {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(action: {
-                        presentation.wrappedValue.dismiss()
-                    }, label: {
-                        Image(systemName: "chevron.backward")
-                            .headlineLinkStyle()
-                    })
-                }
-            })
-            .navigationViewStyle(StackNavigationViewStyle())
-            .wooNavigationBarStyle()
         }
     }
 }
@@ -69,6 +88,8 @@ private extension AIToneVoiceView {
     }
 
     enum Layout {
+        static let backButtonHorizontalPadding: CGFloat = 16
+        static let titleVerticalPadding: CGFloat = 16
         static let blockVerticalSpacing: CGFloat = 16
         static let defaultPadding: EdgeInsets = .init(top: 16, leading: 8, bottom: 16, trailing: 8)
         static let subtitleExtraHorizontalPadding: CGFloat = 8

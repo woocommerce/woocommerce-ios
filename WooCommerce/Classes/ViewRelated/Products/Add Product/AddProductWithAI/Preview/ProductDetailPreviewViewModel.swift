@@ -6,6 +6,7 @@ import Yosemite
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var generatedProduct: Product?
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -21,6 +22,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     func generateProductDetails() {
         // TODO
+        isGeneratingDetails = true
     }
 
     func saveProductAsDraft() {

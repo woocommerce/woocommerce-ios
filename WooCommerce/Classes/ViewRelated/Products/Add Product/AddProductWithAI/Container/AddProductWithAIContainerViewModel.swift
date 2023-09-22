@@ -28,6 +28,9 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private let completionHandler: (Product) -> Void
 
     private(set) var productName: String = ""
+    private var productFeatures: String = ""
+    private var productDescription: String?
+    private var packagingImage: MediaPickerImage?
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
@@ -52,12 +55,16 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         currentStep = .aboutProduct
     }
 
-    func onProductDetailsCreated() {
+    func onProductFeaturesAdded(features: String) {
+        productFeatures = features
         currentStep = .preview
     }
 
     func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {
-        // TODO: Show preview
+        productName = data?.name ?? ""
+        productDescription = data?.description
+        packagingImage = data?.image
+        currentStep = .preview
     }
 
     func backtrackOrDismiss() {

@@ -1,1 +1,5 @@
-In this update, we've prioritized improving our WooCommerce Mobile App experience. You can now delete and update product categories as part of the product editing flow. We've enhanced the In-Person Payments feature with better retry handling for failed transactions and protection against accidental double-charging in poor network conditions. Minor updates include editing product details from the order detail screen and an empty state design for the Tax Rate selector. Enjoy a more efficient WooCommerce app.
+- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
+- [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
+- [*] Enabled product description and product sharing AI features for self-hosted sites with Jetpack AI plugin. [https://github.com/woocommerce/woocommerce-ios/pull/10747]
+- [*] Order form: the applied gift cards are shown below the coupon section. [https://github.com/woocommerce/woocommerce-ios/pull/10743]
+

@@ -3,12 +3,12 @@ import SwiftUI
 /// View to select AI tone and voice
 ///
 struct AIToneVoiceView: View {
-    @StateObject private var viewModel: AIToneVoiceViewModel
+    @ObservedObject private var viewModel: AIToneVoiceViewModel
 
     @Environment(\.dismiss) private var dismiss
 
     init(viewModel: AIToneVoiceViewModel) {
-        self._viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
     }
 
     var body: some View {

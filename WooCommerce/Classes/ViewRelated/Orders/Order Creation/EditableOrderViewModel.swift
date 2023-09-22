@@ -1693,6 +1693,11 @@ extension EditableOrderViewModel {
             guard !isEmailError(error, order: order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
+
+            if let giftCardErrorNotice = giftCardErrorNotice(from: error) {
+                return giftCardErrorNotice
+            }
+
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
@@ -1721,6 +1726,10 @@ extension EditableOrderViewModel {
                         // Syncs the order without the failing coupon
                         orderSynchronizer.retryTrigger.send()
                 }
+            }
+
+            if let giftCardErrorNotice = giftCardErrorNotice(from: error) {
+                return giftCardErrorNotice
             }
 
             let errorMessage: String
@@ -1754,6 +1763,13 @@ extension EditableOrderViewModel {
             }
 
             return false
+        }
+
+        private static func giftCardErrorNotice(from error: Error) -> Notice? {
+            guard let giftCardError = error as? OrderStore.GiftCardError else {
+                return nil
+            }
+            return Notice(title: giftCardError.noticeTitle, message: giftCardError.noticeMessage, feedbackType: .error)
         }
     }
 }

@@ -499,6 +499,7 @@ extension WooAnalyticsEvent {
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
             static let hasShippingMethod = "has_shipping_method"
+            static let isGiftCardRemoved = "removed"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
             static let to = "to"
@@ -771,6 +772,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductSelectorClearSelectionButtonTapped, properties: [
                 Keys.source: productType.rawValue + "_selector"
             ])
+        }
+
+        static func orderFormAddGiftCardCTAShown(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTAShown, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormAddGiftCardCTATapped(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTATapped, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormGiftCardSet(flow: Flow, isRemoved: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormGiftCardSet, properties: [Keys.flow: flow.rawValue, Keys.isGiftCardRemoved: isRemoved])
         }
 
         /// Tracked when the user taps to collect a payment

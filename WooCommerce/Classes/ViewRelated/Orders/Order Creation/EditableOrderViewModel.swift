@@ -401,6 +401,7 @@ final class EditableOrderViewModel: ObservableObject {
         syncInitialSelectedState()
         configureTaxRates()
         configureGiftCardSupport()
+        observeGiftCardStatesForAnalytics()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -816,6 +817,7 @@ extension EditableOrderViewModel {
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
+        let addGiftCardClosure: () -> Void
         let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
@@ -852,6 +854,7 @@ extension EditableOrderViewModel {
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
+             addGiftCardClosure: @escaping () -> Void = {},
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
@@ -895,6 +898,7 @@ extension EditableOrderViewModel {
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
+            self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
         }
     }
@@ -1254,8 +1258,15 @@ private extension EditableOrderViewModel {
                                                 self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
                                             },
+                                            addGiftCardClosure: { [weak self] in
+                                                guard let self else { return }
+                                                self.analytics.track(event: .Orders.orderFormAddGiftCardCTATapped(flow: self.flow.analyticsFlow))
+                                            },
                                             setGiftCardClosure: { [weak self] code in
-                                                self?.orderSynchronizer.setGiftCard.send(code)
+                                                guard let self else { return }
+                                                self.orderSynchronizer.setGiftCard.send(code)
+                                                self.analytics.track(event: .Orders.orderFormGiftCardSet(flow: self.flow.analyticsFlow,
+                                                                                                         isRemoved: code == nil))
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }
@@ -1348,6 +1359,16 @@ private extension EditableOrderViewModel {
                 continuation.resume(returning: plugin?.active == true)
             })
         }
+    }
+
+    func observeGiftCardStatesForAnalytics() {
+        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
+            .first()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
+            }
+            .store(in: &cancellables)
     }
 
     /// Tracks when customer details have been added

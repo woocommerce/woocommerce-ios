@@ -171,7 +171,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         )
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -272,7 +272,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, _, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -298,7 +298,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, _, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -323,7 +323,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, _, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -365,7 +365,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, fields, _):
+                case let .updateOrder(_, order, _, fields, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -385,7 +385,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrder(_, order, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -408,7 +408,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -453,7 +453,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -480,7 +480,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let shippingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _, _):
                     promise(order.shippingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -507,7 +507,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _):
+                case let .updateOrder(_, order, _, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -546,7 +546,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrder(_, order, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -574,7 +574,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, onCompletion):
+            case let .updateOrder(_, order, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -602,7 +602,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -630,7 +630,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")

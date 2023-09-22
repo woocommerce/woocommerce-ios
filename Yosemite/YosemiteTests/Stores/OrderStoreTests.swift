@@ -1017,7 +1017,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder()) { _ in
+            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil) { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -1085,7 +1085,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
 
         // When
-        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder()) { _ in }
+        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder(), giftCard: nil) { _ in }
         store.onAction(action)
 
         // Then
@@ -1104,6 +1104,32 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedKeys, receivedKeys)
     }
 
+    func test_create_order_with_giftCard_sends_expected_fields() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.createOrder(siteID: sampleSiteID, order: sampleOrder(), giftCard: "GEM") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedKeys = Array(request.parameters.keys).sorted()
+        let expectedKeys = [
+            "billing",
+            "coupon_lines",
+            "customer_note",
+            "fee_lines",
+            "gift_cards",
+            "line_items",
+            "shipping",
+            "shipping_lines",
+            "status"
+        ]
+        assertEqual(expectedKeys, receivedKeys)
+    }
+
     func test_create_order_does_not_upsert_autodrafts() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1111,7 +1137,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder()) { result in
+            let action = OrderAction.createOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1129,7 +1155,7 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let result: Result<Yosemite.Order, Error> = waitFor { promise in
-            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), fields: []) { result in
+            let action = OrderAction.updateOrder(siteID: self.sampleSiteID, order: self.sampleOrder(), giftCard: nil, fields: []) { result in
                 promise(result)
             }
             store.onAction(action)
@@ -1138,6 +1164,24 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
+    }
+
+    func test_update_order_with_giftCard_sends_expected_fields() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateOrder(siteID: sampleSiteID, order: sampleOrder(), giftCard: "AEJE", fields: []) { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let receivedKeys = Array(request.parameters.keys).sorted()
+        let expectedKeys = [
+            "gift_cards"
+        ]
+        assertEqual(expectedKeys, receivedKeys)
     }
 
     // MARK: Tests for `markOrderAsPaidLocally`

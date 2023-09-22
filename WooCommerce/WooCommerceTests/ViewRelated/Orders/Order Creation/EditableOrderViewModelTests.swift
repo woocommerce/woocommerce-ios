@@ -132,7 +132,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.updateOrderStatus(newStatus: .processing)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, order, onCompletion):
+            case let .createOrder(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -152,7 +152,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, _, onCompletion):
+            case let .createOrder(_, _, _, onCompletion):
                 onCompletion(.failure(error))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -174,7 +174,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(error))
                     expectation.fulfill()
                 default:
@@ -198,7 +198,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: "")))
                     expectation.fulfill()
                 default:
@@ -827,7 +827,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let isLoadingDuringSync: Bool = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     promise(self.viewModel.paymentDataViewModel.isLoading)
                     onCompletion(.success(.fake()))
                 default:
@@ -875,7 +875,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, _, onCompletion):
+            case let .createOrder(_, _, _, onCompletion):
                 let order = Order.fake().copy(siteID: self.sampleSiteID, totalTax: "2.50")
                 onCompletion(.success(order))
                 expectation.fulfill()
@@ -1275,7 +1275,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     expectation.fulfill()
                 default:
@@ -1315,7 +1315,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, let completion):
+                case .createOrder(_, let order, _, let completion):
                     completion(.success(order.copy(orderID: 12)))
                     expectation.fulfill()
                 default:
@@ -1616,7 +1616,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, order, onCompletion):
+            case let .createOrder(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Received unsupported action: \(action)")

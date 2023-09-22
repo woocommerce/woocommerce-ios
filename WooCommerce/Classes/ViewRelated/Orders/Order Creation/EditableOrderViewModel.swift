@@ -775,6 +775,10 @@ extension EditableOrderViewModel {
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
+        /// Enabled when gift cards plugin is active (woocommerce-gift-cards/woocommerce-gift-cards.php).
+        let isGiftCardEnabled: Bool
+        /// Optional gift card code to apply to the order.
+        let giftCardToApply: String?
         /// Gift cards that have been applied to the order.
         let appliedGiftCards: [AppliedGiftCard]
 
@@ -790,6 +794,7 @@ extension EditableOrderViewModel {
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
+        let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -806,6 +811,8 @@ extension EditableOrderViewModel {
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
+             isGiftCardEnabled: Bool = false,
+             giftCardToApply: String? = nil,
              appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
@@ -822,6 +829,7 @@ extension EditableOrderViewModel {
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
+             setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -840,6 +848,8 @@ extension EditableOrderViewModel {
             self.shouldShowCoupon = shouldShowCoupon
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
+            self.isGiftCardEnabled = isGiftCardEnabled
+            self.giftCardToApply = giftCardToApply
             self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
@@ -861,6 +871,7 @@ extension EditableOrderViewModel {
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
+            self.setGiftCardClosure = setGiftCardClosure
         }
     }
 
@@ -1133,8 +1144,16 @@ private extension EditableOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators, $taxBasedOnSetting)
-            .map { [weak self] order, state, showNonEditableIndicators, taxBasedOnSetting in
+        Publishers.CombineLatest(Publishers.CombineLatest4(orderSynchronizer.orderPublisher,
+                                                           orderSynchronizer.statePublisher,
+                                                           $shouldShowNonEditableIndicators,
+                                                           $taxBasedOnSetting),
+                                 orderSynchronizer.giftCardToApplyPublisher)
+            .map { [weak self] combinedPublisher, giftCardToApply in
+                let order = combinedPublisher.0
+                let state = combinedPublisher.1
+                let showNonEditableIndicators = combinedPublisher.2
+                let taxBasedOnSetting = combinedPublisher.3
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -1177,6 +1196,9 @@ private extension EditableOrderViewModel {
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
+                                            // TODO: 10518 - check plugins
+                                            isGiftCardEnabled: self.featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm),
+                                            giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
@@ -1202,6 +1224,9 @@ private extension EditableOrderViewModel {
                                             onDismissWpAdminWebViewClosure: { [weak self] in
                                                 self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
+                                            },
+                                            setGiftCardClosure: { [weak self] code in
+                                                self?.orderSynchronizer.setGiftCard.send(code)
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }

@@ -2177,6 +2177,78 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
+    func test_isGiftCardEnabled_becomes_true_when_gift_cards_plugin_is_active() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(.fake().copy(active: true))
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, true)
+    }
+
+    func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_active() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(.fake().copy(active: false))
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+    }
+
+    func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_installed() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(nil)
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+    }
+
     func test_appliedGiftCards_have_negative_formatted_amount() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID, appliedGiftCards: [

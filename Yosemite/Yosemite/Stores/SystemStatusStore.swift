@@ -33,6 +33,10 @@ public final class SystemStatusStore: Store {
             fetchSystemPlugin(siteID: siteID, systemPluginNameList: [systemPluginName], completionHandler: onCompletion)
         case .fetchSystemPluginListWithNameList(let siteID, let systemPluginNameList, let onCompletion):
             fetchSystemPlugin(siteID: siteID, systemPluginNameList: systemPluginNameList, completionHandler: onCompletion)
+        case .fetchSystemPluginWithPath(let siteID, let pluginPath, let onCompletion):
+            fetchSystemPluginWithPath(siteID: siteID,
+                                      pluginPath: pluginPath,
+                                      onCompletion: onCompletion)
         case .fetchSystemStatusReport(let siteID, let onCompletion):
             fetchSystemStatusReport(siteID: siteID, completionHandler: onCompletion)
         }
@@ -114,5 +118,10 @@ private extension SystemStatusStore {
             }
         }
         completionHandler(nil)
+    }
+
+    func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {
+        let viewStorage = storageManager.viewStorage
+        onCompletion(viewStorage.loadSystemPlugin(siteID: siteID, path: pluginPath)?.toReadOnly())
     }
 }

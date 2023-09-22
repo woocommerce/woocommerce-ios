@@ -105,7 +105,7 @@ struct ProductDetailPreviewView: View {
                     if viewModel.isGeneratingDetails {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Button("Save as draft") {
+                        Button(Localization.saveAsDraft) {
                             viewModel.saveProductAsDraft()
                         }
                     }
@@ -243,6 +243,10 @@ fileprivate extension ProductDetailPreviewView {
         static let shipping = NSLocalizedString(
             "Shipping",
             comment: "Title of the shipping field on the add product with AI Preview screen."
+        )
+        static let saveAsDraft = NSLocalizedString(
+            "Save as draft",
+            comment: "Button to save product details on the add product with AI Preview screen."
         )
     }
 }

@@ -5,7 +5,7 @@ import SwiftUI
 struct AIToneVoiceView: View {
     @StateObject private var viewModel: AIToneVoiceViewModel
 
-    @Environment(\.presentationMode) private var presentation
+    @Environment(\.dismiss) private var dismiss
 
     init(viewModel: AIToneVoiceViewModel) {
         self._viewModel = StateObject(wrappedValue: viewModel)
@@ -50,7 +50,7 @@ private extension AIToneVoiceView {
         ZStack {
             HStack {
                 Button(action: {
-                    presentation.wrappedValue.dismiss()
+                    dismiss()
                 }, label: {
                     Image(systemName: "chevron.backward")
                         .headlineLinkStyle()

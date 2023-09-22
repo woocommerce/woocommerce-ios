@@ -42,6 +42,9 @@ extension UserDefaults {
 
         // Store profiler answers
         case storeProfilerAnswers
+
+        // AI prompt tone
+        case aiPromptTone
     }
 }
 

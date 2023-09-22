@@ -4,11 +4,11 @@ import Yosemite
 /// View model for `AddProductFeaturesView`.
 ///
 final class AddProductFeaturesViewModel: ObservableObject {
-
-    @Published var productFeatures: String = ""
+    let siteID: Int64
     let productName: String
 
-    private let siteID: Int64
+    @Published var productFeatures: String = ""
+
     private let stores: StoresManager
     private let analytics: Analytics
     // TODO: add new type for product details and return it here.

@@ -5,6 +5,7 @@ import SwiftUI
 struct AddProductFeaturesView: View {
     @FocusState private var editorIsFocused: Bool
     @ObservedObject private var viewModel: AddProductFeaturesViewModel
+    @State private var showingAIToneVoiceView: Bool = false
 
     init(viewModel: AddProductFeaturesViewModel) {
         self.viewModel = viewModel
@@ -57,7 +58,7 @@ struct AddProductFeaturesView: View {
                 }
 
                 Button(action: {
-                    // TODO: show tone bottom sheet
+                    showingAIToneVoiceView = true
                 }, label: {
                     Text(Localization.setToneButton)
                         .foregroundColor(.accentColor)
@@ -82,6 +83,19 @@ struct AddProductFeaturesView: View {
             }
             .background(Color(uiColor: .systemBackground))
         }
+        .sheet(isPresented: $showingAIToneVoiceView) {
+            if #available(iOS 16, *) {
+                aiToneVoiceView.presentationDetents([.medium, .large])
+            } else {
+                aiToneVoiceView
+            }
+        }
+    }
+}
+
+private extension AddProductFeaturesView {
+    var aiToneVoiceView: some View {
+        AIToneVoiceView(viewModel: AIToneVoiceViewModel.init(siteID: viewModel.siteID))
     }
 }
 

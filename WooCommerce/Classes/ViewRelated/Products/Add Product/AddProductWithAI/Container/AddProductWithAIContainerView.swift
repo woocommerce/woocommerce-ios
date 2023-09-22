@@ -12,7 +12,6 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         rootView.onUsePackagePhoto = { [weak self] productName in
             self?.presentPackageFlow(productName: productName)
         }
-        rootView.onSetToneAndVoice = presentSetToneAndVoice
     }
 
     @available(*, unavailable)
@@ -44,29 +43,6 @@ private extension AddProductWithAIContainerHostingController {
         self.addProductFromImageCoordinator = coordinator
         coordinator.start()
     }
-
-    /// Presents the tone and voice sheet
-    /// 
-    func presentSetToneAndVoice() {
-        guard let navigationController else {
-            return
-        }
-        setToneAndVoiceBottomSheetPresenter = buildBottomSheetPresenter()
-        let controller = AIToneVoiceHostingController(viewModel: .init(siteID: viewModel.siteID))
-        setToneAndVoiceBottomSheetPresenter?.present(controller, from: navigationController)
-    }
-
-    // MARK: Bottom sheet helpers
-    //
-    func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
-            var sheet = bottomSheet
-            sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            sheet.detents = [.medium(), .large()]
-        })
-    }
 }
 
 /// Container view for the product creation with AI flow.
@@ -74,10 +50,6 @@ struct AddProductWithAIContainerView: View {
     /// Closure invoked when the close button is pressed
     ///
     var onUsePackagePhoto: (String?) -> Void = { _ in }
-
-    /// Closure invoked when the "Set tone and voice" button is pressed
-    ///
-    var onSetToneAndVoice: () -> Void = {  }
 
     @ObservedObject private var viewModel: AddProductWithAIContainerViewModel
 
@@ -100,8 +72,7 @@ struct AddProductWithAIContainerView: View {
                 }))
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
-                                                        productName: viewModel.productName,
-                                                        onSetToneAndVoice: onSetToneAndVoice) {
+                                                        productName: viewModel.productName) {
                     withAnimation {
                         viewModel.onProductDetailsCreated()
                     }

@@ -782,6 +782,8 @@ extension EditableOrderViewModel {
 
         /// Enabled when gift cards plugin is active (woocommerce-gift-cards/woocommerce-gift-cards.php).
         let isGiftCardEnabled: Bool
+        /// Whether the Add Gift Card CTA is enabled, when the order total is greater than zero.
+        let isAddGiftCardActionEnabled: Bool
         /// Optional gift card code to apply to the order.
         let giftCardToApply: String?
         /// Gift cards that have been applied to the order.
@@ -817,6 +819,7 @@ extension EditableOrderViewModel {
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
              isGiftCardEnabled: Bool = false,
+             isAddGiftCardActionEnabled: Bool = false,
              giftCardToApply: String? = nil,
              appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
@@ -854,6 +857,7 @@ extension EditableOrderViewModel {
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
             self.isGiftCardEnabled = isGiftCardEnabled
+            self.isAddGiftCardActionEnabled = isAddGiftCardActionEnabled
             self.giftCardToApply = giftCardToApply
             self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
@@ -1189,6 +1193,8 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
+                let isAddGiftCardActionEnabled = currencyFormatter.convertToDecimal(order.total)?.compare(NSDecimalNumber.zero) == .orderedDescending
+
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
@@ -1205,6 +1211,7 @@ private extension EditableOrderViewModel {
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             isGiftCardEnabled: isGiftCardEnabled,
+                                            isAddGiftCardActionEnabled: isAddGiftCardActionEnabled,
                                             giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,

@@ -2249,6 +2249,28 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
     }
 
+    func test_isAddGiftCardActionEnabled_is_false_when_order_total_is_zero() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.isAddGiftCardActionEnabled, false)
+    }
+
+    func test_isAddGiftCardActionEnabled_is_true_when_order_total_is_positive() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, total: "0.01")
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.isAddGiftCardActionEnabled, true)
+    }
+
     func test_appliedGiftCards_have_negative_formatted_amount() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID, appliedGiftCards: [

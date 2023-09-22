@@ -194,6 +194,7 @@ struct OrderPaymentSection: View {
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-gift-card-button")
+        .disabled(!viewModel.isAddGiftCardActionEnabled)
         .sheet(isPresented: $shouldShowAddGiftCard) {
             giftCardInput
         }

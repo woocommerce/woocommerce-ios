@@ -26,7 +26,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_initial_name_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in nil })
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, productName: nil, onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.name, "")
@@ -34,7 +34,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_initial_description_is_empty() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in nil })
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, productName: nil, onAddImage: { _ in nil })
 
         // Then
         XCTAssertEqual(viewModel.description, "")
@@ -44,7 +44,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_imageState_is_reverted_to_empty_when_addImage_returns_nil() {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, productName: nil, onAddImage: { _ in
             nil
         })
         XCTAssertEqual(viewModel.imageState, .empty)
@@ -63,7 +63,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         var imageToReturn: MediaPickerImage? = image
-        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, productName: nil, onAddImage: { _ in
             imageToReturn
         })
         XCTAssertEqual(viewModel.imageState, .empty)
@@ -95,6 +95,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in
@@ -122,6 +123,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         mockGenerateProductDetails(result: .failure(SampleError.first))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in
@@ -158,6 +160,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         }
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      onAddImage: { _ in nil })
 
@@ -171,6 +174,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success(["", "Product", ""]))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      onAddImage: { _ in
@@ -178,7 +182,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         })
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, scannedTexts, _) = action else {
+            guard case let .generateProductDetails(_, _, scannedTexts, _) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
             // Then
@@ -207,6 +211,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
                                                           language: "en")))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -243,7 +248,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 
     func test_textDetectionErrorMessage_is_nil_initially() throws {
         // Given
-        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, onAddImage: { _ in
+        let viewModel = AddProductFromImageViewModel(siteID: 6, source: .productsTab, productName: nil, onAddImage: { _ in
             nil
         })
 
@@ -257,6 +262,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success([]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -280,6 +286,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .failure(error))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -308,6 +315,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success([]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -340,9 +348,10 @@ final class AddProductFromImageViewModelTests: XCTestCase {
     func test_displayed_event_is_tracked_when_the_view_model_is_init() throws {
         // When
         _ = AddProductFromImageViewModel(siteID: 123,
-                                                     source: .productsTab,
-                                                     analytics: analytics,
-                                                     onAddImage: { _ in nil })
+                                         source: .productsTab,
+                                         productName: nil,
+                                         analytics: analytics,
+                                         onAddImage: { _ in nil })
 
         // Then
         let eventName = "add_product_from_image_displayed"
@@ -359,6 +368,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -387,6 +397,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         let imageTextScanner = MockImageTextScanner(result: .failure(error))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -416,6 +427,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -451,6 +463,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         mockGenerateProductDetails(result: .failure(error))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      stores: stores,
                                                      imageTextScanner: imageTextScanner,
                                                      analytics: analytics,
@@ -482,6 +495,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
+                                                     productName: nil,
                                                      analytics: analytics,
                                                      onAddImage: { _ in nil })
 
@@ -507,7 +521,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
-                                                     onAddImage: { _ in nil })
+                                                     productName: nil, onAddImage: { _ in nil })
         let firstText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "peach tea", isSelected: true)
         let secondText: AddProductFromImageViewModel.ScannedTextViewModel = .init(text: "sweet", isSelected: true)
 
@@ -536,7 +550,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 private extension AddProductFromImageViewModelTests {
     func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, _, completion) = action else {
+            guard case let .generateProductDetails(_, _, _, completion) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
             completion(result)

@@ -2284,6 +2284,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { result in
                 promise(result)
             })
@@ -2309,6 +2310,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { result in
                 promise(result)
             })
@@ -2322,6 +2324,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let scannedTexts = ["onion", "chives"]
+        let productName = "food"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -2333,6 +2336,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: productName,
                                                                        scannedTexts: scannedTexts) { _ in
                 promise(())
             })
@@ -2340,7 +2344,8 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
-        XCTAssertTrue(base.contains("\(scannedTexts)"))
+        let combinedKeywords = scannedTexts + [productName]
+        XCTAssertTrue(base.contains("\(combinedKeywords)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {
@@ -2356,6 +2361,7 @@ final class ProductStoreTests: XCTestCase {
         // When
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
+                                                                       productName: nil,
                                                                        scannedTexts: [""]) { _ in
                 promise(())
             })
@@ -2364,6 +2370,98 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
+    }
+
+    // MARK: - `generateProductName`
+
+    func test_generateProductName_returns_product_details_on_success() throws {
+        // Given
+        let text = "iPhone 15 Smart Phone"
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(text))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "iPhone 15", language: "en") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let name = try XCTUnwrap(result.get())
+        XCTAssertEqual(name, text)
+    }
+
+    func test_generateProductName_returns_error_on_failure() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        let result = waitFor { promise in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "iPhone 15", language: "en") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+    }
+
+    func test_generateProductName_includes_parameters_in_remote_base_parameter() throws {
+        // Given
+        let keyword = "iPhone 15"
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: keyword, language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
+        XCTAssertTrue(base.contains("\(keyword)"))
+    }
+
+    func test_generateProductName_uses_correct_feature() throws {
+        // Given
+        let generativeContentRemote = MockGenerativeContentRemote()
+        generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
+        let productStore = ProductStore(dispatcher: dispatcher,
+                                        storageManager: storageManager,
+                                        network: network,
+                                        remote: MockProductsRemote(),
+                                        generativeContentRemote: generativeContentRemote)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.generateProductName(siteID: 123, keywords: "keyword", language: "en") { _ in
+                promise(())
+            })
+        }
+
+        // Then
+        let feature = try XCTUnwrap(generativeContentRemote.generateTextFeature)
+        XCTAssertEqual(feature, GenerativeContentRemoteFeature.productName)
     }
 
     // MARK: - `fetchNumberOfProducts`

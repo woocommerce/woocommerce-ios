@@ -12,9 +12,10 @@ struct AddProductFromImageData {
 final class AddProductFromImageHostingController: UIHostingController<AddProductFromImageView> {
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
+         productName: String?,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          completion: @escaping (AddProductFromImageData?) -> Void) {
-        super.init(rootView: AddProductFromImageView(siteID: siteID, source: source, addImage: addImage, completion: completion))
+        super.init(rootView: AddProductFromImageView(siteID: siteID, source: source, productName: productName, addImage: addImage, completion: completion))
     }
 
     required dynamic init?(coder aDecoder: NSCoder) {
@@ -29,11 +30,16 @@ struct AddProductFromImageView: View {
 
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
+         productName: String?,
          addImage: @escaping (MediaPickingSource) async -> MediaPickerImage?,
          stores: StoresManager = ServiceLocator.stores,
          completion: @escaping (AddProductFromImageData?) -> Void) {
         self.completion = completion
-        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID, source: source, stores: stores, onAddImage: addImage))
+        self._viewModel = .init(wrappedValue: AddProductFromImageViewModel(siteID: siteID,
+                                                                           source: source,
+                                                                           productName: productName,
+                                                                           stores: stores,
+                                                                           onAddImage: addImage))
     }
 
     var body: some View {
@@ -133,6 +139,6 @@ private extension AddProductFromImageView {
 
 struct AddProductFromImageView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFromImageView(siteID: 134, source: .productsTab, addImage: { _ in nil }, completion: { _ in })
+        AddProductFromImageView(siteID: 134, source: .productsTab, productName: nil, addImage: { _ in nil }, completion: { _ in })
     }
 }

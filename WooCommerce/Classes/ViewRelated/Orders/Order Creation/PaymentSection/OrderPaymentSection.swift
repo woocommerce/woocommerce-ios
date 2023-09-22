@@ -23,6 +23,10 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
 
+    /// Indicates if the gift card code input sheet should be shown or not.
+    ///
+    @State private var shouldShowAddGiftCard: Bool = false
+
     /// Indicates if the tax educational dialog should be shown or not.
     ///
     @State private var shouldShowTaxEducationalDialog: Bool = false
@@ -110,6 +114,16 @@ struct OrderPaymentSection: View {
                     }
                 }
 
+            if viewModel.isGiftCardEnabled {
+                if let giftCard = viewModel.giftCardToApply, giftCard.isNotEmpty {
+                    editGiftCardRow(giftCard: giftCard)
+                } else {
+                    addGiftCardRow
+                }
+            }
+
+            appliedGiftCardsSection
+
             taxesSection
                 .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
                     TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
@@ -117,10 +131,12 @@ struct OrderPaymentSection: View {
                         .background(FullScreenCoverClearBackgroundView())
                     }
 
-            TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
-                .renderedIf(viewModel.shouldShowDiscountTotal)
+            VStack(alignment: .leading, spacing: .zero) {
+                TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+                    .renderedIf(viewModel.shouldShowDiscountTotal)
 
-            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+            }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
@@ -169,6 +185,56 @@ struct OrderPaymentSection: View {
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .disabled(viewModel.shouldDisableAddingCoupons)
+    }
+
+    @ViewBuilder private var addGiftCardRow: some View {
+        Button(Localization.addGiftCard) {
+            shouldShowAddGiftCard = true
+        }
+        .buttonStyle(PlusButtonStyle())
+        .padding()
+        .accessibilityIdentifier("add-gift-card-button")
+        .sheet(isPresented: $shouldShowAddGiftCard) {
+            giftCardInput
+        }
+    }
+
+    @ViewBuilder private func editGiftCardRow(giftCard: String) -> some View {
+        HStack {
+            TitleAndValueRow(title: Localization.giftCard, value: .content(giftCard))
+                .onTapGesture {
+                    shouldShowAddGiftCard = true
+                }
+                .sheet(isPresented: $shouldShowAddGiftCard) {
+                    giftCardInput
+                }
+
+            Button {
+                viewModel.setGiftCardClosure(nil)
+            } label: {
+                Image(uiImage: .closeButton)
+            }
+            .padding()
+        }
+    }
+
+    @ViewBuilder private var giftCardInput: some View {
+        GiftCardInputView(viewModel: .init(code: viewModel.giftCardToApply ?? "",
+                                           addGiftCard: { code in
+            viewModel.setGiftCardClosure(code)
+            shouldShowAddGiftCard = false
+        }, dismiss: {
+            shouldShowAddGiftCard = false
+        }))
+    }
+
+    @ViewBuilder private var appliedGiftCardsSection: some View {
+        VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
+            ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
+                TitleAndValueRow(title: giftCard.code, value: .content(giftCard.amount), selectionStyle: .none)
+            }
+        }
+        .renderedIf(viewModel.appliedGiftCards.isNotEmpty)
     }
 
     @ViewBuilder private var taxesSection: some View {
@@ -256,6 +322,8 @@ private extension OrderPaymentSection {
         static let discountTotal = NSLocalizedString("Discount Total", comment: "Label for the the row showing the total discount of the order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
+        static let addGiftCard = NSLocalizedString("Add Gift Card", comment: "Title text of the button that adds shipping line when creating a new order")
+        static let giftCard = NSLocalizedString("Gift Card", comment: "Label for the the row showing the gift card to apply to the order")
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
@@ -273,6 +341,7 @@ private extension OrderPaymentSection {
     }
 
     enum Constants {
+        static let giftCardsSectionVerticalSpacing: CGFloat = 8
         static let taxesSectionVerticalSpacing: CGFloat = 8
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
         static let taxesAdaptativeStacksSpacing: CGFloat = 4

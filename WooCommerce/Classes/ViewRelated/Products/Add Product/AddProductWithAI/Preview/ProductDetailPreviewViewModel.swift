@@ -22,7 +22,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     func generateProductDetails() {
         // TODO
-        isGeneratingDetails = true
     }
 
     func saveProductAsDraft() {

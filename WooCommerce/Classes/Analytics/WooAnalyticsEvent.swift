@@ -517,6 +517,7 @@ extension WooAnalyticsEvent {
             static let reason = "reason"
             static let couponsCount = "coupons_count"
             static let type = "type"
+            static let usesGiftCard = "use_gift_card"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -717,8 +718,8 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -727,16 +728,18 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
-        static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderCreationFailed(usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
         }
 
-        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
                 Keys.flow: flow.rawValue,
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])

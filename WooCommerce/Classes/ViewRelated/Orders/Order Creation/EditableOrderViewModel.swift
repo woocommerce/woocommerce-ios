@@ -614,17 +614,17 @@ final class EditableOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        orderSynchronizer.commitAllChanges { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
             switch result {
             case .success(let newOrder):
                 self.onFinished(newOrder)
-                self.trackCreateOrderSuccess()
+                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
             case .failure(let error):
                 self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(error: error)
+                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -957,9 +957,9 @@ private extension EditableOrderViewModel {
             .map { [weak self] state in
                 guard let self = self else { return nil }
                 switch state {
-                case .error(let error):
+                case let .error(error, usesGiftCard):
                     DDLogError("⛔️ Error syncing order remotely: \(error)")
-                    self.trackSyncOrderFailure(error: error)
+                    self.trackSyncOrderFailure(usesGiftCard: usesGiftCard, error: error)
                     return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
@@ -1412,23 +1412,26 @@ private extension EditableOrderViewModel {
 
     /// Tracks an order creation success
     ///
-    func trackCreateOrderSuccess() {
+    func trackCreateOrderSuccess(usesGiftCard: Bool) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
                                                                                 try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count),
+                                                                             usesGiftCard: usesGiftCard))
     }
 
     /// Tracks an order creation failure
     ///
-    func trackCreateOrderFailure(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+    func trackCreateOrderFailure(usesGiftCard: Bool, error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(usesGiftCard: usesGiftCard,
+                                                                            errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
     }
 
     /// Tracks an order remote sync failure
     ///
-    func trackSyncOrderFailure(error: Error) {
+    func trackSyncOrderFailure(usesGiftCard: Bool, error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(flow: flow.analyticsFlow,
+                                                                        usesGiftCard: usesGiftCard,
                                                                         errorContext: String(describing: error),
                                                                         errorDescription: error.localizedDescription))
     }

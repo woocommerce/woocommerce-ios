@@ -99,7 +99,8 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     /// Commits all changes to the remote order.
     ///
-    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void) {
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>, _ usesGiftCard: Bool) -> Void) {
+        let usesGiftCard = giftCardToApply != nil
         Just(order)
             .flatMap { order -> AnyPublisher<Order, Error> in
                 if order.orderID == .zero {
@@ -111,10 +112,10 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
             .sink { finished in
                 // We can let the whole chain fail because a new one is created in each `commitAllChanges` call.
                 if case .failure(let error) = finished {
-                    onCompletion(.failure(error))
+                    onCompletion(.failure(error), usesGiftCard)
                 }
             } receiveValue: { order in
-                onCompletion(.success(order))
+                onCompletion(.success(order), usesGiftCard)
             }
             .store(in: &subscriptions)
     }
@@ -307,7 +308,7 @@ private extension RemoteOrderSynchronizer {
 
                 return self.createOrderRemotely(order, type: .sync, includesGiftCard: false)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                        self?.state = .error(error)
+                        self?.state = .error(error, usesGiftCard: false)
                         return Empty().eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()
@@ -336,9 +337,11 @@ private extension RemoteOrderSynchronizer {
                 guard let self = self else { return Empty().eraseToAnyPublisher() }
 
                 let syncType: OperationType = flow == .creation ? .sync : .commit
+                let includesGiftCard = flow != .creation
+                let hasGiftCard = giftCardToApply != nil
                 return self.updateOrderRemotely(order, type: syncType, includesGiftCard: flow != .creation)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
-                        self?.state = .error(error)
+                        self?.state = .error(error, usesGiftCard: includesGiftCard && hasGiftCard)
                         return Empty().eraseToAnyPublisher()
                     }
                     .eraseToAnyPublisher()

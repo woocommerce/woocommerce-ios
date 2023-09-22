@@ -1,5 +1,1 @@
-- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
-- [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
-- [*] Enabled product description and product sharing AI features for self-hosted sites with Jetpack AI plugin. [https://github.com/woocommerce/woocommerce-ios/pull/10747]
-- [*] Order form: the applied gift cards are shown below the coupon section. [https://github.com/woocommerce/woocommerce-ios/pull/10743]
-
+We're excited to announce the latest updates to WooCommerce for iOS! Now, you can start creating your store immediately after signing up for a new WPCOM account. We've also improved visibility for gift card information across multiple orders. Additionally, we've enabled AI features for product description and sharing for self-hosted sites with the Jetpack AI plugin. Lastly, applied gift cards will now appear below the coupon section on the order form, making tracking discounts easier. Enjoy these enhancements!

@@ -1,18 +1,5 @@
 import SwiftUI
 
-/// Hosting controller for `AIToneVoiceView`.
-///
-final class AIToneVoiceHostingController: UIHostingController<AIToneVoiceView> {
-    init(viewModel: AIToneVoiceViewModel) {
-        super.init(rootView: AIToneVoiceView(viewModel: viewModel))
-    }
-
-    @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-}
-
 /// View to select AI tone and voice
 ///
 struct AIToneVoiceView: View {

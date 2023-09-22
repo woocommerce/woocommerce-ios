@@ -110,6 +110,8 @@ struct OrderPaymentSection: View {
                     }
                 }
 
+            appliedGiftCardsSection
+
             taxesSection
                 .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
                     TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
@@ -117,10 +119,12 @@ struct OrderPaymentSection: View {
                         .background(FullScreenCoverClearBackgroundView())
                     }
 
-            TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
-                .renderedIf(viewModel.shouldShowDiscountTotal)
+            VStack(alignment: .leading, spacing: .zero) {
+                TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+                    .renderedIf(viewModel.shouldShowDiscountTotal)
 
-            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+            }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
@@ -169,6 +173,15 @@ struct OrderPaymentSection: View {
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .disabled(viewModel.shouldDisableAddingCoupons)
+    }
+
+    @ViewBuilder private var appliedGiftCardsSection: some View {
+        VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
+            ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
+                TitleAndValueRow(title: giftCard.code, value: .content(giftCard.amount), selectionStyle: .none)
+            }
+        }
+        .renderedIf(viewModel.appliedGiftCards.isNotEmpty)
     }
 
     @ViewBuilder private var taxesSection: some View {
@@ -273,6 +286,7 @@ private extension OrderPaymentSection {
     }
 
     enum Constants {
+        static let giftCardsSectionVerticalSpacing: CGFloat = 8
         static let taxesSectionVerticalSpacing: CGFloat = 8
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
         static let taxesAdaptativeStacksSpacing: CGFloat = 4

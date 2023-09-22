@@ -50,6 +50,8 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.details)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
+
+                    // Product type
                     TitleAndValueDetailRow(title: Localization.productType,
                                            value: "Physical",
                                            image: UIImage.productImage,
@@ -58,30 +60,39 @@ struct ProductDetailPreviewView: View {
                     .padding(.bottom, Layout.contentPadding)
 
                     VStack(spacing: 0) {
+                        // Price
                         TitleAndValueDetailRow(title: Localization.price,
                                                value: "Regular price: $15",
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
                             .background(Color(.separator))
+
+                        // Inventory
                         TitleAndValueDetailRow(title: Localization.inventory,
                                                value: Localization.inStock,
                                                image: UIImage.inventoryImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
                             .background(Color(.separator))
+
+                        // Categories
                         TitleAndValueDetailRow(title: Localization.categories,
                                                value: "Food, snack, sweet",
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
                             .background(Color(.separator))
+
+                        // Tags
                         TitleAndValueDetailRow(title: Localization.tags,
                                                value: "yummy, candy, chocolate",
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
                             .background(Color(.separator))
+
+                        // Shipping details
                         TitleAndValueDetailRow(title: Localization.shipping,
                                                value: "Weight: 1kg\nDimension: 15 x 10 x 3 cm",
                                                image: UIImage.shippingImage,

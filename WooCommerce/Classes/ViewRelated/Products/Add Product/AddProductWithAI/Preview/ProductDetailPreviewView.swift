@@ -124,9 +124,10 @@ private extension ProductDetailPreviewView {
     struct BasicDetailRow: View {
         let content: String?
         let isLoading: Bool
-        let dummyText = ProductDetailPreviewView.Constants.dummyText
+        let dummyText = Constants.dummyText
 
         typealias Layout = ProductDetailPreviewView.Layout
+        typealias Constants = ProductDetailPreviewView.Constants
 
         var body: some View {
             Text(content ?? dummyText)
@@ -134,7 +135,7 @@ private extension ProductDetailPreviewView {
                 .multilineTextAlignment(.leading)
                 .padding(Layout.contentPadding)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(.init(light: .systemGray6, dark: .tertiarySystemBackground)))
+                .background(Constants.detailRowColor)
                 .cornerRadius(Layout.cornerRadius)
                 .redacted(reason: isLoading ? .placeholder : [])
                 .shimmering(active: isLoading)
@@ -148,9 +149,10 @@ private extension ProductDetailPreviewView {
         let image: UIImage
         let isLoading: Bool
         var cornerRadius: CGFloat = 0
-        let dummyText = ProductDetailPreviewView.Constants.dummyText
+        let dummyText = Constants.dummyText
 
         typealias Layout = ProductDetailPreviewView.Layout
+        typealias Constants = ProductDetailPreviewView.Constants
 
         var body: some View {
             HStack(alignment: .top, spacing: Layout.contentPadding) {
@@ -167,7 +169,7 @@ private extension ProductDetailPreviewView {
             }
             .padding(Layout.contentPadding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(.init(light: .systemGray6, dark: .tertiarySystemBackground)))
+            .background(Constants.detailRowColor)
             .cornerRadius(cornerRadius)
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
@@ -187,6 +189,7 @@ fileprivate extension ProductDetailPreviewView {
     }
     enum Constants {
         static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
+        static let detailRowColor = Color(.init(light: .systemGray6, dark: .tertiarySystemBackground))
     }
     enum Localization {
         static let title = NSLocalizedString(

@@ -4,7 +4,6 @@ import SwiftUI
 final class AddProductWithAIContainerHostingController: UIHostingController<AddProductWithAIContainerView> {
     private let viewModel: AddProductWithAIContainerViewModel
     private var addProductFromImageCoordinator: AddProductFromImageCoordinator?
-    private var setToneAndVoiceBottomSheetPresenter: BottomSheetPresenter?
 
     init(viewModel: AddProductWithAIContainerViewModel) {
         self.viewModel = viewModel

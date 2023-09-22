@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-15 21:29:43+0000 */
+/* Translation-Revision-Date: 2023-09-21 13:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "新增商品";
 
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "手動新增商品及詳細資料";
+
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "請新增產品圖片";
 
@@ -640,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "遠端新增商品的「可下載檔案」資訊";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "使用管理員新增稅率。 僅有附帶國家\/地區資訊的稅率會顯示於此。";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "新增優惠券說明。";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "將此稅率新增至所有已建立的訂單";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "加入新包裹";
@@ -944,6 +953,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "你確定要變更商品類型？";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "你確定要永久刪除此類別？";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "確定要刪除此優惠券嗎？";
@@ -1413,6 +1425,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "無法新增標籤";
 
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "無法更新類別";
+
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "無法使用此地址存取網站。 請重新檢查，然後再試一次。";
 
@@ -1541,6 +1556,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "請檢查你的電子郵件！";
+
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "訂單檢查中";
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "結帳";
@@ -2090,6 +2108,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "為選取的產品建立百分比折扣";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "使用 AI 建立商品";
+
 /* Title of the store creation web view. */
 "Create a store" = "建立商店";
 
@@ -2304,6 +2325,9 @@ which should be translated separately and considered part of this sentence. */
    Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "刪除";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "刪除 %1$@";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "刪除優惠券";
@@ -2652,6 +2676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "編輯狀態";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "編輯稅率設定";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "在管理員中編輯稅率";
@@ -4748,6 +4775,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "現已推出新功能！";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "新訂單：";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "你的 WooCommerce 商店有一筆 $13.98 的新訂單 ";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "沒有 (已核准的) 評論";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "無上層類別";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "無限制";
@@ -5228,6 +5261,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "已付費";
 
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "支付方法：%@";
+
 /* Country option for a site address. */
 "Pakistan" = "巴基斯坦";
 
@@ -5623,6 +5659,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "技術支援：";
 
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "AI 技術支援。";
+
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "AI 技術支援。%1$@。";
 
@@ -5936,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "季度初至今";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "立即為你產生詳細資料";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "快速上手並透過精美的線上商店銷售。";
 
@@ -6170,6 +6212,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "重設密碼";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "立即解決";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "限用於以下電子郵件的顧客：%1$@";
@@ -7028,6 +7073,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "抱歉，我們目前無法建立支援請求，請稍後再試一次。";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "很抱歉，我們找不到任何進行中的付款，無法完成此動作。";
+
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "抱歉，我們無法連線至閱讀器。 請再試一次。";
 
@@ -7453,6 +7501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "稅金類別";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "已自動新增稅率的國家\/地區";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "你可以在商店管理員中管理不同位置的稅率。";
 
@@ -7674,6 +7725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "在讀卡機上取消了該次付款";
 
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "此付款已取消。";
+
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "收款中斷，無法繼續。你可以從訂單畫面重試收款。";
 
@@ -7829,6 +7883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "核發退款時發生錯誤";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "重試此付款時發生錯誤。 請返回並再試一次。";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "儲存你的隱私權設定時發生錯誤。";
 
@@ -7922,6 +7979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "此訂單使用延伸模組計算運送資訊。顯示的運送方式可能不完整。";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "此付款已完成，請確認訂單詳細資料。";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "無法載入此產品";
 
@@ -7954,6 +8014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "如果你在 WooCommerce 以外收到 (總額)，這麼做會將你的訂單標示為完成";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "這不會影響線上訂單";
 
 /* Country option for a site address. */
 "Timor-Leste" = "東帝汶";
@@ -8334,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "無法載入目錄";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "無法載入通知";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "無法載入訂單分析";
 
@@ -8390,6 +8456,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "無法處理付款。 訂單總金額無效。";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "無法處理付款。 此訂單已付款，若再次收款，將造成顧客訂單重複收款。";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "無法處理付款。 我們無法在重試時完成此付款。 潛在錯誤：%1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "無法處理付款。 我們無法連線至付款系統。 如果持續發生此錯誤，請聯絡支援團隊。";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "無法處理付款。 我們無法擷取最新的訂單詳細資料。 請檢查你的連線並再試一次。";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "無法處理付款。 我們無法擷取最新的訂單詳細資料。 請檢查你的連線並再試一次。 潛在錯誤：%1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "無法讀卡 - 系統逾時 - 請再試一次";
@@ -8535,6 +8616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "更新地址";
+
+/* Product Update Category navigation title */
+"Update Category" = "更新類別";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "更新指示";
@@ -8873,6 +8957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "無法載入你的網站";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "我們找不到任何稅率";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "我們無法更新你的讀卡機軟體";
 
@@ -8938,6 +9025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "我們無法自動驗證運送地址。 請檢視 Apple 地圖，確認地址是否正確。";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "我們無法重試付款，請重頭再試一次。";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "我們目前無法寄送電子郵件給你。請稍後再試一次。";
@@ -9408,6 +9498,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[留言]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[瞭解更多。](https:\/\/automattic.com\/ai-guidelines\/)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "快速啟動 WooCommerce";
 
@@ -9476,6 +9569,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "今日稍晚";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "有運送量限制的陸運包裹：氣溶膠、噴霧消毒劑、噴漆、髮膠、丙烷、丁烷、清潔產品等。 - 香氛、指甲油、去光水、溶劑、乾洗手、外用酒精、乙醇類產品等。 - 有運送量限制的陸運物品 (化妝品、清潔用品、塗料等)。";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";

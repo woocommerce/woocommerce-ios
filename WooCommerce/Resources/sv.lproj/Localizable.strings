@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-18 09:29:21+0000 */
+/* Translation-Revision-Date: 2023-09-21 09:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "Lägg till en produkt";
 
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "Lägg till en produkt och detaljerna manuellt";
+
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Lägg till en produktbild";
 
@@ -640,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Lägg till produktinformation för nedladdningsbara filer på distans";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "Lägg till momssatser i adminpanelen. Endast momssatser med platsinformation kommer att visas här.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Lägg till beskrivningen för rabattkoden";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "Lägg till den här momssatsen till alla skapade beställningar";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Lägg till i nytt paket";
@@ -2667,6 +2676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Redigera status";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "Redigera momssatsinställning";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Redigera momssatser i adminpanelen";
@@ -5963,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Kvartal till datum";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "Snabbgenerera information för dig";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Kom igång och börja sälj snabbt med en vacker onlinebutik.";
 
@@ -7058,6 +7073,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Vi kan tyvärr inte skapa supportförfrågningar för tillfället. Försök igen senare.";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Vi kunde inte slutföra den här åtgärden, eftersom ingen aktiv betalning hittades.";
+
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Det gick inte att ansluta till läsaren. Försök igen.";
 
@@ -7483,6 +7501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Momsgrupper";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "Momssatsplatsen lades till automatiskt";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Momssatser för olika platser kan hanteras i din butiks adminpanel.";
 
@@ -7704,6 +7725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Betalningen avbröts på läsaren";
 
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "Betalningen har avbrutits.";
+
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Betalningen avbröts och kan inte återupptas. Du kan försöka genomföra betalningen igen från beställningsskärmen.";
 
@@ -7859,6 +7883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Det gick inte att utfärda återbetalningen";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "Det uppstod ett fel när vi gjorde ett nytt betalningsförsök med den här betalningen. Gå tillbaka och börja om igen.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Det uppstod ett fel när dina integritetsval skulle sparas.";
 
@@ -7952,6 +7979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Den här beställningen använder tillägg för att beräkna frakten. De fraktmetoder som visas kan vara ofullständiga.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "Den här betalningen har redan slutförts – kontrollera beställningsinformationen.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Det gick inte att hämta produkten";
 
@@ -7984,6 +8014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Detta kommer att markera din beställning som slutförd om du har mottagit (totalbelopp) utanför WooCommerce";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "Detta kommer inte att påverka onlinebeställningar";
 
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
@@ -8364,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Kan inte ladda kategorier";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "Det gick inte att läsa in notisen";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "Det gick inte att ladda beställningsanalysen";
 
@@ -8420,6 +8456,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Det gick inte att bearbeta betalningen. Det totala beloppet för beställningen är inte giltigt.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Det gick inte att behandla betalningen. Den här beställningen är redan betald. Att ta emot ytterligare betalning skulle resultera i att kunden debiteras två gånger för sin beställning.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Det gick inte att behandla betalningen. Vi kunde inte slutföra den här betalningen när vi gjorde ett nytt betalningsförsök. Underliggande fel: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Det gick inte att behandla betalningen. Vi kunde inte ansluta till betalningssystemet. Kontakta supporten om problemet kvarstår.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Det gick inte att behandla betalningen. Vi kunde inte hämta den senaste beställningsinformationen. Kontrollera din nätverksanslutning och försök igen.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Det gick inte att behandla betalningen. Vi kunde inte hämta den senaste beställningsinformationen. Kontrollera din nätverksanslutning och försök igen. Underliggande fel: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "Det gick inte att läsa kortet – systemets tidsgräns uppnåddes – försök igen";
@@ -8906,6 +8957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Vi kunde inte ladda din webbplats";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "Vi kunde inte hitta några momssatser";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Vi kunde inte uppdatera din läsares programvara";
 
@@ -8971,6 +9025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Vi kunde inte verifiera leveransadressen automatiskt. Visa i Apple Maps för att verifiera att adressen stämmer.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "Vi kunde inte göra ett nytt betalningsförsök – börja om igen.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Vi lyckades inte skicka dig något e-postmeddelande just nu. Försök igen senare.";
@@ -9512,6 +9569,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "senare idag";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "LTD QTY-markpaket – Aerosoler, spraydesinfektionsmedel, sprayfärg, hårspray, propan, butan, rengöringsprodukter, osv. - Parfymer, nagellack, nagellackborttagningsmedel, lösningsmedel, handsprit, tvättsprit, etanolbaserade produkter, osv. - Andra ytmaterial i begränsad mängd (kosmetika, rengöringsprodukter, färger, osv.)";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";

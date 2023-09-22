@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-15 21:33:05+0000 */
+/* Translation-Revision-Date: 2023-09-21 15:54:22+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -560,6 +560,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the action sheet to select an option for adding new product */
 "Add a product" = "Добавить продукт";
 
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "Добавьте товар и сведения вручную";
+
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
 
@@ -640,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Добавляйте информацию о загружаемых файлах удаленно";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "Добавьте налоговые ставки в консоли. Будут показаны только налоговые ставки с информацией о местоположении.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Добавьте описание купона.";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "Добавить эту ставку ко всем созданным заказам";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Добавить в новую упаковку";
@@ -944,6 +953,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Вы уверены, что хотите изменить тип товара?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "Вы уверены, что хотите навсегда удалить эту рубрику?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "Действительно удалить этот купон?";
@@ -1413,6 +1425,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Не удалось добавить метки";
 
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "Не удалось обновить рубрику";
+
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "Невозможно открыть сайт по этому адресу. Проверьте данные и повторите попытку.";
 
@@ -1541,6 +1556,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Проверьте электронную почту!";
+
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "Проверка заказа";
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Оформление заказа";
@@ -2090,6 +2108,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Создайте скидку в процентах на выбранные товары";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "Создать товар с помощью ИИ";
+
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
 
@@ -2304,6 +2325,9 @@ which should be translated separately and considered part of this sentence. */
    Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Удалить";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "Удалить %1$@";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "Удалить купон";
@@ -2652,6 +2676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Изменить статус";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "Редактировать настройки налоговой ставки";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Изменить налоговые ставки в консоли";
@@ -4748,6 +4775,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Доступны новые функции!";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "Новый заказ на";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "Новый заказ на 13,98 долл. в магазине WooCommerce";
 
@@ -4775,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "Нет (подтверждённых) отзывов";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "Нет родительской рубрики";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Нет ограничений";
@@ -5228,6 +5261,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Платно";
 
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "Оплачено с помощью %@";
+
 /* Country option for a site address. */
 "Pakistan" = "Пакистан";
 
@@ -5623,6 +5659,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "При поддержке";
 
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "На основе ИИ.";
+
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "На основе ИИ. %1$@.";
 
@@ -5936,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "С начала квартала до текущего дня";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "Быстро сгенерировать подробную информацию для вас";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Создайте онлайн-магазин и начните продажи в кротчайшие сроки.";
 
@@ -6170,6 +6212,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Сбросить пароль";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "Исправить";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Только для клиентов с почтовыми адресами: %1$@";
@@ -7028,6 +7073,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Не удалось выполнить действие, поскольку активный платёж не найден.";
+
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Не удалось подключиться к устройству чтения. Повторите попытку.";
 
@@ -7453,6 +7501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Налоговые классы";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "Местоположение налоговой ставки добавлено автоматически";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Налоговые ставки для разных мест можно изменить в консоли магазина.";
 
@@ -7674,6 +7725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Платёж аннулирован на Читалке";
 
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "Платёж был отменён.";
+
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Оплата была прервана и не может быть продолжена. Повторите попытку оплаты на экране заказа.";
 
@@ -7829,6 +7883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "При возврате средств произошла ошибка";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "При повторной попытке платежа произошла ошибка. Вернитесь назад и начните сначала.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "При сохранении параметров конфиденциальности произошла ошибка.";
 
@@ -7922,6 +7979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "В этом заказе используются расширения для расчета суммы доставки. Возможно, показаны не все способы доставки.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "Этот платёж уже завершён, проверьте детали заказа.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Этот продукт не может быть загружен";
 
@@ -7954,6 +8014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Заказ будет отмечен как выполненный, если вы получили (всего) не через WooCommerce";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "Это не затронет онлайн-заказы";
 
 /* Country option for a site address. */
 "Timor-Leste" = "Восточный Тимор";
@@ -8334,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Не удается загрузить категории";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "Не удалось загрузить уведомление";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "Не удалось загрузить данные анализа заказов";
 
@@ -8390,6 +8456,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Не удалось обработать платеж. Недопустимая общая сумма заказа.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Не удалось обработать платёж. Этот заказ уже оплачен. Дальнейшие платёжные действия могут привести к тому, что с клиента будет дважды списана плата за заказ.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось завершить платёж при повторной попытке. Основная ошибка: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Не удалось обработать платёж. Не удалось подключиться к платёжной системе. Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдёт снова.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Не удалось обработать платёж. Не удалось получить сведения о последнем заказе. Проверьте подключение к сети и повторите попытку.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось получить сведения о последнем заказе. Проверьте подключение к сети и повторите попытку. Основная ошибка: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "Не удалось прочитать карту: истекло время ожидания. Повторите попытку";
@@ -8535,6 +8616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "Изменить адрес";
+
+/* Product Update Category navigation title */
+"Update Category" = "Обновить рубрику";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Инструкции по обновлению";
@@ -8873,6 +8957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Не удалось загрузить сайт";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "Налоговые ставки не найдены";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Не удалось обновить ПО вашего платёжного терминала";
 
@@ -8938,6 +9025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Не удалось автоматически проверить почтовый адрес. Укажите его на Apple Maps и убедитесь, что адрес указан верно.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "Не удалось повторить платёж. Начните заново.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Мы не смогли отправить вам сообщение по эл.почте. Попробуйте еще раз позже.";
@@ -9408,6 +9498,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[КОММЕНТАРИЙ]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Подробнее](https:\/\/automattic.com\/ai-guidelines\/)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Быстрый запуск WooCommerce";
 
@@ -9476,6 +9569,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "позже сегодня";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "Наземное отправление, ограниченное количество: аэрозоли, дезинфицирующие спреи, аэрозольная краска, спреи для волос, пропан, бутан, чистящие средства и т. д. - Духи, лак для ногтей, жидкость для снятия лака для ногтей, растворители, антисептики для рук, медицинский спирт, продукты на основе этанола и т. д. - Другие поверхностные вещества в ограниченном количестве (косметика, бытовая химия, краски и т. д.)";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "возврат вручную";

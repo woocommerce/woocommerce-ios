@@ -21,7 +21,7 @@ struct ProductDetailPreviewView: View {
 
                     // Subtitle label.
                     Text(Localization.subtitle)
-                        .foregroundColor(Color(.secondaryLabel))
+                        .foregroundColor(.secondary)
                         .bodyStyle()
                 }
                 .padding(.bottom, Layout.titleBlockBottomSpacing)
@@ -63,21 +63,25 @@ struct ProductDetailPreviewView: View {
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
+                            .background(Color(.separator))
                         TitleAndValueDetailRow(title: Localization.inventory,
                                                value: Localization.inStock,
                                                image: UIImage.inventoryImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
+                            .background(Color(.separator))
                         TitleAndValueDetailRow(title: Localization.categories,
                                                value: "Food, snack, sweet",
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
+                            .background(Color(.separator))
                         TitleAndValueDetailRow(title: Localization.tags,
                                                value: "yummy, candy, chocolate",
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
+                            .background(Color(.separator))
                         TitleAndValueDetailRow(title: Localization.shipping,
                                                value: "Weight: 1kg\nDimension: 15 x 10 x 3 cm",
                                                image: UIImage.shippingImage,

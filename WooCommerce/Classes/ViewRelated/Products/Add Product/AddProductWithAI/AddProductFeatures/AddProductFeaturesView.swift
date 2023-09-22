@@ -72,7 +72,7 @@ struct AddProductFeaturesView: View {
             VStack {
                 // CTA to continue to next screen.
                 Button {
-                    // TODO: start product detail generation
+                    viewModel.proceedToPreview()
                     editorIsFocused = false
                 } label: {
                     Text(Localization.continueText)
@@ -142,8 +142,6 @@ private extension AddProductFeaturesView {
 
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFeaturesView(viewModel: .init(siteID: 123,
-                                                productName: "iPhone 15",
-                                                onProductDetailsCreated: {}))
+        AddProductFeaturesView(viewModel: .init(siteID: 123, productName: "iPhone 15", onCompletion: { _ in }))
     }
 }

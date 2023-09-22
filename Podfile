@@ -354,9 +354,7 @@ post_install do |installer|
     end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
-      if pod_ios_deployment_target <= app_ios_deployment_target
-        configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
-      end
+      configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
     end
   end
 

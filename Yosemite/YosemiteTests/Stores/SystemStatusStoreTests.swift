@@ -126,6 +126,54 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(systemPluginResult?.name, "Plugin 3")
     }
 
+    func test_fetchSystemPluginWithPath_returns_plugin_when_matching_plugin_is_in_storage() {
+        // Given
+        let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin1.name = "WCPay"
+        systemPlugin1.plugin = "woocommerce-payments/woocommerce-payments.php"
+        systemPlugin1.siteID = sampleSiteID
+
+        let systemPlugin2 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin2.name = "Gift Cards"
+        systemPlugin2.plugin = "woocommerce-gift-cards/woocommerce-gift-cards.php"
+        systemPlugin2.siteID = sampleSiteID
+
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let fetchedPlugin = waitFor { promise in
+            store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
+                                                                      pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(fetchedPlugin?.name, "Gift Cards")
+        XCTAssertEqual(fetchedPlugin?.plugin, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+    }
+
+    func test_fetchSystemPluginWithPath_returns_nil_when_no_matching_plugin() {
+        // Given
+        let systemPlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
+        systemPlugin.name = "WCPay"
+        systemPlugin.plugin = "woocommerce-payments/woocommerce-payments.php"
+        systemPlugin.siteID = sampleSiteID
+
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let fetchedPlugin = waitFor { promise in
+            store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
+                                                                      pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertNil(fetchedPlugin)
+    }
+
     func test_fetchSystemStatusReport_returns_systemStatus_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")

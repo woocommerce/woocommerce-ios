@@ -394,7 +394,7 @@ private extension FilterListViewController {
             configuration.cornerStyle = .small
             configuration.baseForegroundColor = .primary
             configuration.baseBackgroundColor = .primary
-            configuration.buttonSize = .small
+            configuration.buttonSize = .mini
             configuration.title = NSLocalizedString("Explore!", comment: "Button title to explore an extension that isn't installed")
 
             let action = UIAction { action in

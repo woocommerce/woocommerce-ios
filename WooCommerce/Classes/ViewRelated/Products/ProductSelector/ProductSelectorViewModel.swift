@@ -362,7 +362,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                        pageSize: pageSize,
                                                        stockStatus: filtersSubject.value.stockStatus,
                                                        productStatus: filtersSubject.value.productStatus,
-                                                       productType: filtersSubject.value.productType,
+                                                       productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
                                                        shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
@@ -396,7 +396,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                   pageSize: pageSize,
                                                   stockStatus: filtersSubject.value.stockStatus,
                                                   productStatus: filtersSubject.value.productStatus,
-                                                  productType: filtersSubject.value.productType,
+                                                  productType: filtersSubject.value.promotableProductType?.productType,
                                                   productCategory: filtersSubject.value.productCategory) { [weak self] result in
             // Don't continue if this isn't the latest search.
             guard let self = self, keyword == self.searchTerm else {
@@ -579,7 +579,7 @@ private extension ProductSelectorViewModel {
         productsResultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.productType)
+                                                  productType: filters.promotableProductType?.productType)
         if searchTerm.isNotEmpty {
             // When the search query changes, also includes the original results predicate in addition to the search keyword and filter key.
             let searchResultsPredicate = NSPredicate(format: "SUBQUERY(searchResults, $result, $result.keyword = %@ AND $result.filterKey = %@).@count > 0",

@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Experiments
+import WooFoundation
 
 /// `FilterListViewModel` for filtering a list of products.
 final class FilterProductListViewModel: FilterListViewModel {
@@ -10,7 +11,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     struct Filters: Equatable {
         let stockStatus: ProductStockStatus?
         let productStatus: ProductStatus?
-        let productType: ProductType?
+        let promotableProductType: PromotableProductType?
         let productCategory: ProductCategory?
 
         let numberOfActiveFilters: Int
@@ -18,26 +19,26 @@ final class FilterProductListViewModel: FilterListViewModel {
         init() {
             stockStatus = nil
             productStatus = nil
-            productType = nil
+            promotableProductType = nil
             productCategory = nil
             numberOfActiveFilters = 0
         }
 
         init(stockStatus: ProductStockStatus?,
              productStatus: ProductStatus?,
-             productType: ProductType?,
+             promotableProductType: PromotableProductType?,
              productCategory: ProductCategory?,
              numberOfActiveFilters: Int) {
             self.stockStatus = stockStatus
             self.productStatus = productStatus
-            self.productType = productType
+            self.promotableProductType = promotableProductType
             self.productCategory = productCategory
             self.numberOfActiveFilters = numberOfActiveFilters
         }
 
         // Generate a string based on populated filters, like "instock,publish,simple,clothes"
         var analyticsDescription: String {
-            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, productType?.rawValue, productCategory?.slug]
+            let elements: [String?] = [stockStatus?.rawValue, productStatus?.rawValue, promotableProductType?.productType.rawValue, productCategory?.slug]
             return elements.compactMap { $0 }.joined(separator: ",")
         }
     }
@@ -56,7 +57,7 @@ final class FilterProductListViewModel: FilterListViewModel {
     init(filters: Filters, siteID: Int64) {
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
-        self.productTypeFilterViewModel = ProductListFilter.productType.createViewModel(filters: filters)
+        self.productTypeFilterViewModel = ProductListFilter.productType(siteID: siteID).createViewModel(filters: filters)
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
 
         self.filterTypeViewModels = [
@@ -70,14 +71,14 @@ final class FilterProductListViewModel: FilterListViewModel {
     var criteria: Filters {
         let stockStatus = stockStatusFilterViewModel.selectedValue as? ProductStockStatus ?? nil
         let productStatus = productStatusFilterViewModel.selectedValue as? ProductStatus ?? nil
-        let productType = productTypeFilterViewModel.selectedValue as? ProductType ?? nil
+        let promotableProductType = productTypeFilterViewModel.selectedValue as? PromotableProductType ?? nil
         let productCategory = productCategoryFilterViewModel.selectedValue as? ProductCategory ?? nil
 
         let numberOfActiveFilters = filterTypeViewModels.numberOfActiveFilters
 
         return Filters(stockStatus: stockStatus,
                        productStatus: productStatus,
-                       productType: productType,
+                       promotableProductType: promotableProductType,
                        productCategory: productCategory,
                        numberOfActiveFilters: numberOfActiveFilters)
     }
@@ -89,7 +90,7 @@ final class FilterProductListViewModel: FilterListViewModel {
         let clearedProductStatus: ProductStatus? = nil
         productStatusFilterViewModel.selectedValue = clearedProductStatus
 
-        let clearedProductType: ProductType? = nil
+        let clearedProductType: PromotableProductType? = nil
         productTypeFilterViewModel.selectedValue = clearedProductType
 
         let clearedProductCategory: ProductCategory? = nil
@@ -103,7 +104,7 @@ extension FilterProductListViewModel {
     enum ProductListFilter {
         case stockStatus
         case productStatus
-        case productType
+        case productType(siteID: Int64)
         case productCategory(siteID: Int64)
     }
 }
@@ -136,15 +137,53 @@ extension FilterProductListViewModel.ProductListFilter {
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productStatus)
-        case .productType:
-            let options: [ProductType?] = [nil, .simple, .variable, .grouped, .affiliate, .subscription, .variableSubscription, .bundle, .composite]
+        case let .productType(siteID):
+            let options = buildPromotableTypes(siteID: siteID)
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
-                                       selectedValue: filters.productType)
+                                       selectedValue: filters.promotableProductType)
         case let .productCategory(siteID):
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .productCategories(siteID: siteID),
                                        selectedValue: filters.productCategory)
         }
+    }
+
+    /// Builds the products types filter array identifying which extension is available or not.
+    ///
+    private func buildPromotableTypes(siteID: Int64) -> [PromotableProductType?] {
+        let activePluginNames = fetchActivePluginNames(siteID: siteID)
+        let isSubscriptionsAvailable = Set(activePluginNames).intersection(SitePlugin.SupportedPlugin.WCSubscriptions).count > 0
+        let isCompositeProductsAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCCompositeProducts)
+        let isProductBundlesAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCProductBundles)
+
+        return [nil,
+                .init(productType: .simple, isAvailable: true, promoteUrl: nil),
+                .init(productType: .variable, isAvailable: true, promoteUrl: nil),
+                .init(productType: .grouped, isAvailable: true, promoteUrl: nil),
+                .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
+                .init(productType: .subscription,
+                      isAvailable: isSubscriptionsAvailable,
+                      promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
+                .init(productType: .variableSubscription,
+                      isAvailable: isSubscriptionsAvailable,
+                      promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
+                .init(productType: .bundle,
+                      isAvailable: isProductBundlesAvailable,
+                      promoteUrl: WooConstants.URLs.productBundlesExtensionUrl.asURL()),
+                .init(productType: .composite,
+                      isAvailable: isCompositeProductsAvailable,
+                      promoteUrl: WooConstants.URLs.compositeProductsExtensionUrl.asURL())]
+    }
+
+    /// Fetches the active plugin names for the provided site IDs using a `ResultsController`
+    ///
+    private func fetchActivePluginNames(siteID: Int64) -> [String] {
+        let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: ServiceLocator.storageManager, sortedBy: [])
+        resultsController.predicate = predicate
+
+        try? resultsController.performFetch()
+        return resultsController.fetchedObjects.map { $0.name }
     }
 }

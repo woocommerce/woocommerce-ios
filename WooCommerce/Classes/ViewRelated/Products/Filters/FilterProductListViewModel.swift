@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Experiments
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// `FilterListViewModel` for filtering a list of products.
 final class FilterProductListViewModel: FilterListViewModel {
@@ -125,7 +126,8 @@ private extension FilterProductListViewModel.ProductListFilter {
 }
 
 extension FilterProductListViewModel.ProductListFilter {
-    func createViewModel(filters: FilterProductListViewModel.Filters) -> FilterTypeViewModel {
+    func createViewModel(filters: FilterProductListViewModel.Filters,
+                         storageManager: StorageManagerType = ServiceLocator.storageManager) -> FilterTypeViewModel {
         switch self {
         case .stockStatus:
             let options: [ProductStockStatus?] = [nil, .inStock, .outOfStock, .onBackOrder]
@@ -138,7 +140,7 @@ extension FilterProductListViewModel.ProductListFilter {
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.productStatus)
         case let .productType(siteID):
-            let options = buildPromotableTypes(siteID: siteID)
+            let options = buildPromotableTypes(siteID: siteID, storageManager: storageManager)
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
                                        selectedValue: filters.promotableProductType)
@@ -151,8 +153,8 @@ extension FilterProductListViewModel.ProductListFilter {
 
     /// Builds the products types filter array identifying which extension is available or not.
     ///
-    private func buildPromotableTypes(siteID: Int64) -> [PromotableProductType?] {
-        let activePluginNames = fetchActivePluginNames(siteID: siteID)
+    private func buildPromotableTypes(siteID: Int64, storageManager: StorageManagerType) -> [PromotableProductType?] {
+        let activePluginNames = fetchActivePluginNames(siteID: siteID, storageManager: storageManager)
         let isSubscriptionsAvailable = Set(activePluginNames).intersection(SitePlugin.SupportedPlugin.WCSubscriptions).count > 0
         let isCompositeProductsAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCCompositeProducts)
         let isProductBundlesAvailable = activePluginNames.contains(SitePlugin.SupportedPlugin.WCProductBundles)
@@ -178,9 +180,9 @@ extension FilterProductListViewModel.ProductListFilter {
 
     /// Fetches the active plugin names for the provided site IDs using a `ResultsController`
     ///
-    private func fetchActivePluginNames(siteID: Int64) -> [String] {
+    private func fetchActivePluginNames(siteID: Int64, storageManager: StorageManagerType) -> [String] {
         let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true
-        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: ServiceLocator.storageManager, sortedBy: [])
+        let resultsController = ResultsController<StorageSystemPlugin>(storageManager: storageManager, sortedBy: [])
         resultsController.predicate = predicate
 
         try? resultsController.performFetch()

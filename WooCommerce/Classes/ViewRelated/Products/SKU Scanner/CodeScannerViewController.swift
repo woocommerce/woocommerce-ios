@@ -12,7 +12,7 @@ struct ScannedBarcode: Equatable, Hashable {
 /// Format of the code scanning result with a completion handler of the corresponding return type.
 enum ScannedCodeFormat {
     case barcode(completion: (Result<[ScannedBarcode], Error>) -> Void)
-    case text(completion: (Result<[String], Error>) -> Void)
+    case text(recognitionLevel: VNRequestTextRecognitionLevel?, completion: (Result<[String], Error>) -> Void)
 }
 
 /// Starts live stream video for scanning codes (barcodes or text codes).
@@ -177,9 +177,12 @@ private extension CodeScannerViewController {
                     self?.handleBarcodeDetectionResults(request: request, error: error, completion: completion)
                 }
                 requests = [barcodeRequest]
-            case let .text(completion):
+            case let .text(recognitionLevel, completion):
                 let textRequest = VNRecognizeTextRequest { [weak self] request, error in
                     self?.handleTextDetectionResults(request: request, error: error, completion: completion)
+                }
+                if let recognitionLevel {
+                    textRequest.recognitionLevel = recognitionLevel
                 }
                 requests = [textRequest]
         }

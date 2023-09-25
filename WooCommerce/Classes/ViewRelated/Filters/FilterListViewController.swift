@@ -400,6 +400,7 @@ private extension FilterListViewController {
             let action = UIAction { action in
                 if let url = promotableType.promoteUrl, let viewController = self.hostViewController {
                     WebviewHelper.launch(url, with: viewController)
+                    ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListExploreButtonTapped(type: promotableType))
                 }
             }
 

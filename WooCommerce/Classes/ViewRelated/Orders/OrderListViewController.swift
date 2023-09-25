@@ -101,7 +101,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: (OrderDetailsViewModel?) -> Void
+    private var switchDetailsHandler: ([OrderDetailsViewModel], Int) -> Void
 
     /// Currently selected index path in the table view
     ///
@@ -137,7 +137,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping (OrderDetailsViewModel?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -522,11 +522,11 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler(nil)
+            return switchDetailsHandler([], 0)
         }
         selectedOrderID = orderDetailsViewModel.order.orderID
         selectedIndexPath = firstIndexPath
-        switchDetailsHandler(orderDetailsViewModel)
+        switchDetailsHandler([orderDetailsViewModel], 0)
         highlightSelectedRowIfNeeded()
     }
 }
@@ -694,11 +694,29 @@ extension OrderListViewController: UITableViewDelegate {
         selectedOrderID = order.orderID
 
         if isSplitViewInOrdersTabEnabled {
-            switchDetailsHandler(orderDetailsViewModel)
+            splitViewController?.isCollapsed ?? true ? switchDetailsHandler(allViewModels(), indexPath.row) :
+            switchDetailsHandler([orderDetailsViewModel], 0)
         } else {
-            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            let viewController = OrderDetailsViewController(viewModels: allViewModels(), currentIndex: indexPath.row)
             navigationController?.pushViewController(viewController, animated: true)
         }
+    }
+
+    func allViewModels() -> [OrderDetailsViewModel] {
+        let ids = (0...tableView.numberOfSections - 1)
+            .map { section in
+                (0...tableView.numberOfRows(inSection: section) - 1)
+                    .compactMap { row in
+                        dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
+                    }
+            }
+        
+        return ids
+            .flatMap { rows in
+                rows.compactMap { id in
+                    viewModel.detailsViewModel(withID: id)
+                }
+            }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

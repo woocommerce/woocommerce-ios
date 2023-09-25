@@ -29,6 +29,14 @@ extension UINavigationController {
         popToRootViewController(animated: animated)
         CATransaction.commit()
     }
+
+    /// Replaces the top view controller of the view controllers stack
+    /// 
+    func replaceTopViewController(with viewController: UIViewController, animated: Bool) {
+        var helperViewControllers = viewControllers
+        helperViewControllers[helperViewControllers.count - 1] = viewController
+        setViewControllers(helperViewControllers, animated: animated)
+    }
 }
 
 // MARK: - Handle UINavigationBar's 'Back' button action

@@ -50,14 +50,27 @@ final class OrderDetailsViewController: UIViewController {
 
     /// Order to be rendered!
     ///
-    private let viewModel: OrderDetailsViewModel
+    private let viewModels: [OrderDetailsViewModel]
+
+    private var viewModel: OrderDetailsViewModel {
+        viewModels[currentIndex]
+    }
 
     private let notices = OrderDetailsNotices()
 
+    private let currentIndex: Int
+
+    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+
     // MARK: - View Lifecycle
-    init(viewModel: OrderDetailsViewModel) {
-        self.viewModel = viewModel
+    init(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+        self.viewModels = viewModels
+        self.currentIndex = currentIndex
         super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    convenience init(viewModel: OrderDetailsViewModel) {
+        self.init(viewModels: [viewModel], currentIndex: 0)
     }
 
     required init?(coder: NSCoder) {
@@ -98,10 +111,7 @@ final class OrderDetailsViewController: UIViewController {
     }
 
     override var shouldShowOfflineBanner: Bool {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) {
-            return false
-        }
-        return true
+        !isSplitViewInOrdersTabEnabled
     }
 }
 
@@ -140,7 +150,49 @@ private extension OrderDetailsViewController {
                                          action: #selector(editOrder))
         editButton.accessibilityIdentifier = "order-details-edit-button"
         editButton.isEnabled = viewModel.editButtonIsEnabled
-        navigationItem.rightBarButtonItem = editButton
+        navigationItem.rightBarButtonItems = [editButton] + orderNavigationRightBarButtonItems()
+    }
+
+    func orderNavigationRightBarButtonItems() -> [UIBarButtonItem] {
+        guard viewModels.count > 1 else { return [] }
+
+        let upArrowButon = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.up"),
+            style: .plain,
+            target: self,
+            action: #selector(loadPreviousOrder)
+        )
+
+        upArrowButon.isEnabled = viewModels[safe: currentIndex - 1] != nil
+
+        let downArrowButon = UIBarButtonItem(
+            image: UIImage(systemName: "chevron.down"),
+            style: .plain,
+            target: self,
+            action: #selector(loadNextOrder)
+        )
+
+        downArrowButon.isEnabled = viewModels[safe: currentIndex + 1] != nil
+
+        return [downArrowButon, upArrowButon]
+    }
+
+    @objc func loadPreviousOrder() {
+        loadOrder(with: currentIndex - 1)
+    }
+
+    @objc func loadNextOrder() {
+        loadOrder(with: currentIndex + 1)
+    }
+
+    func loadOrder(with index: Int) {
+        guard let navigationController = isSplitViewInOrdersTabEnabled ?
+                splitViewController?.viewControllers.first as? UINavigationController : navigationController else {
+            return
+        }
+
+        let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index)
+        navigationController.replaceTopViewController(with: viewController, animated: false)
     }
 
     /// Setup: EntityListener

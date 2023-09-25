@@ -61,10 +61,17 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productDescription = productDescription
         self.productFeatures = productFeatures
         self.packagingImage = packagingImage
+
+        observeGeneratedProduct()
     }
 
-    func generateProductDetails() {
-        // TODO
+    @MainActor
+    func generateProductDetails() async {
+        // TODO - update this with actual implementation
+        isGeneratingDetails = true
+        try? await Task.sleep(nanoseconds: 1_000_000_000)
+        generatedProduct = Product.swiftUIPreviewSample()
+        isGeneratingDetails = false
     }
 
     func saveProductAsDraft() {

@@ -122,7 +122,9 @@ struct ProductDetailPreviewView: View {
                 }
             }
             .onAppear {
-                viewModel.generateProductDetails()
+                Task {
+                    await viewModel.generateProductDetails()
+                }
             }
         }
     }

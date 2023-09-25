@@ -87,10 +87,10 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
             .init(productType: .variable, isAvailable: true, promoteUrl: nil),
             .init(productType: .grouped, isAvailable: true, promoteUrl: nil),
             .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
-            .init(productType: .subscription, isAvailable: false, promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
-            .init(productType: .variableSubscription, isAvailable: false, promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
-            .init(productType: .bundle, isAvailable: false, promoteUrl: WooConstants.URLs.productBundlesExtensionUrl.asURL()),
-            .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtensionUrl.asURL())
+            .init(productType: .subscription, isAvailable: false, promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
+            .init(productType: .variableSubscription, isAvailable: false, promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
+            .init(productType: .bundle, isAvailable: false, promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()),
+            .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())
         ])
     }
 
@@ -130,10 +130,10 @@ final class FilterProductListViewModelProductListFilterTests: XCTestCase {
             .init(productType: .variable, isAvailable: true, promoteUrl: nil),
             .init(productType: .grouped, isAvailable: true, promoteUrl: nil),
             .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
-            .init(productType: .subscription, isAvailable: true, promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
-            .init(productType: .variableSubscription, isAvailable: true, promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
-            .init(productType: .bundle, isAvailable: true, promoteUrl: WooConstants.URLs.productBundlesExtensionUrl.asURL()),
-            .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtensionUrl.asURL())
+            .init(productType: .subscription, isAvailable: true, promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
+            .init(productType: .variableSubscription, isAvailable: true, promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
+            .init(productType: .bundle, isAvailable: true, promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()),
+            .init(productType: .composite, isAvailable: false, promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())
         ])
     }
 }

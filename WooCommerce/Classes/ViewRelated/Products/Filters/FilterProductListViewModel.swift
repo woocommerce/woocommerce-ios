@@ -166,16 +166,16 @@ extension FilterProductListViewModel.ProductListFilter {
                 .init(productType: .affiliate, isAvailable: true, promoteUrl: nil),
                 .init(productType: .subscription,
                       isAvailable: isSubscriptionsAvailable,
-                      promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
+                      promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
                 .init(productType: .variableSubscription,
                       isAvailable: isSubscriptionsAvailable,
-                      promoteUrl: WooConstants.URLs.subscriptionsExtensionURL.asURL()),
+                      promoteUrl: WooConstants.URLs.subscriptionsExtension.asURL()),
                 .init(productType: .bundle,
                       isAvailable: isProductBundlesAvailable,
-                      promoteUrl: WooConstants.URLs.productBundlesExtensionUrl.asURL()),
+                      promoteUrl: WooConstants.URLs.productBundlesExtension.asURL()),
                 .init(productType: .composite,
                       isAvailable: isCompositeProductsAvailable,
-                      promoteUrl: WooConstants.URLs.compositeProductsExtensionUrl.asURL())]
+                      promoteUrl: WooConstants.URLs.compositeProductsExtension.asURL())]
     }
 
     /// Fetches the active plugin names for the provided site IDs using a `ResultsController`

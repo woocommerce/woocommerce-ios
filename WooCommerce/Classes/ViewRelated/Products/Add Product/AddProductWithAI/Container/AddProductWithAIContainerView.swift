@@ -81,7 +81,9 @@ struct AddProductWithAIContainerView: View {
                                                           productName: viewModel.productName,
                                                           productDescription: viewModel.productDescription,
                                                           productFeatures: viewModel.productFeatures,
-                                                          packagingImage: viewModel.packagingImage))
+                                                          packagingImage: viewModel.packagingImage) { product in
+                    viewModel.didCreateProduct(product)
+                })
             }
         }
         .onAppear() {

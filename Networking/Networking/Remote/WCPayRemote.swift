@@ -119,14 +119,14 @@ extension WCPayRemote {
 // MARK: - Deposits
 //
 extension WCPayRemote {
-    public func loadDepositsOverview(for siteID: Int64) async throws -> WCPayDepositsOverview {
+    public func loadDepositsOverview(for siteID: Int64) async throws -> WooPaymentsDepositsOverview {
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: siteID,
                                      path: Path.depositsOverview,
                                      availableAsRESTRequest: true)
 
-        let mapper = WCPayDepositsOverviewMapper()
+        let mapper = WooPaymentsDepositsOverviewMapper()
 
         return try await enqueue(request, mapper: mapper)
     }

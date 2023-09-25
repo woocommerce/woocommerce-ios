@@ -11,6 +11,12 @@ public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, Generated
     public let lastPaid: [WooPaymentsDeposit]
     public let nextScheduled: [WooPaymentsDeposit]
     public let lastManualDeposits: [WooPaymentsDeposit]
+
+    enum CodingKeys: String, CodingKey {
+        case lastPaid = "last_paid"
+        case nextScheduled = "next_scheduled"
+        case lastManualDeposits = "last_manual_deposits"
+    }
 }
 
 public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -19,12 +25,26 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     public let type: WooPaymentsDepositType
     public let amount: Int
     public let status: WooPaymentsDepositStatus
-    public let bankAccount: String
+    public let bankAccount: String?
     public let currency: String
     public let automatic: Bool
     public let fee: Int
     public let feePercentage: Int
     public let created: Int
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case date
+        case type
+        case amount
+        case status
+        case bankAccount = "bank_account"
+        case currency
+        case automatic
+        case fee
+        case feePercentage = "fee_percentage"
+        case created
+    }
 }
 
 /// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
@@ -85,6 +105,11 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
 public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let delayDays: Int
     public let interval: WooPaymentsDepositInterval
+
+    enum CodingKeys: String, CodingKey {
+        case delayDays = "delay_days"
+        case interval
+    }
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval

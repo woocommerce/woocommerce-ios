@@ -226,6 +226,287 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
         XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
     }
+
+    // MARK: - `generateProduct`
+
+    func test_generateProduct_sends_correct_fields_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                             tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let fieldsValue = try XCTUnwrap(request.parameters?["_fields"] as? String)
+        XCTAssertEqual("completion", fieldsValue)
+    }
+
+    func test_generateProduct_sends_correct_feature_value() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                             tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let featureValue = try XCTUnwrap(request.parameters?["feature"] as? String)
+        XCTAssertEqual("woo_ios_product_creation", featureValue)
+    }
+
+    func test_generateProduct_prompt_has_existing_categories() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [.init(categoryID: 1, siteID: sampleSiteID, parentID: 1, name: "Snacks", slug: ""),
+                                                          .init(categoryID: 2, siteID: sampleSiteID, parentID: 1, name: "Makeup", slug: ""),
+                                                          .init(categoryID: 3, siteID: sampleSiteID, parentID: 1, name: "Clothes", slug: "")],
+                                             tags: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
+        XCTAssertTrue(prompt.contains("categories:"))
+        XCTAssertTrue(prompt.contains("Snacks, Makeup, Clothes"))
+    }
+
+    func test_generateProduct_prompt_does_not_have_categories_if_no_categories_available() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [],
+                                             tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: ""),
+                                                    .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "")])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
+        XCTAssertFalse(prompt.contains("categories:"))
+        XCTAssertFalse(prompt.contains("Snacks, Makeup, Clothes"))
+    }
+
+    func test_generateProduct_prompt_has_existing_tags() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [],
+                                             tags: [.init(siteID: sampleSiteID, tagID: 1, name: "Food", slug: ""),
+                                                    .init(siteID: sampleSiteID, tagID: 2, name: "Grocery", slug: "")])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
+        XCTAssertTrue(prompt.contains("tags:"))
+        XCTAssertTrue(prompt.contains("Food, Grocery"))
+    }
+
+    func test_generateProduct_prompt_does_not_have_tags_if_no_tags_available() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [],
+                                             tags: [])
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
+        let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
+        XCTAssertFalse(prompt.contains("tags:"))
+        XCTAssertFalse(prompt.contains("Food, Grocery"))
+    }
+
+    func test_generateProduct_with_success_returns_product() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-success")
+
+        // When
+        let product = try await remote.generateProduct(siteID: sampleSiteID,
+                                                        productName: "Cookie",
+                                                        keywords: "Crunchy, Crispy",
+                                                        language: "en",
+                                                        tone: "Casual",
+                                                        currencySymbol: "INR",
+                                                        dimensionUnit: "cm",
+                                                        weightUnit: "kg",
+                                                        categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                        tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        XCTAssertNotNil(product)
+    }
+
+    func test_generateProduct_with_failure_returns_error() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-failure")
+
+        // When
+        await assertThrowsError {
+            _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                                 productName: "Cookie",
+                                                 keywords: "Crunchy, Crispy",
+                                                 language: "en",
+                                                 tone: "Casual",
+                                                 currencySymbol: "INR",
+                                                 dimensionUnit: "cm",
+                                                 weightUnit: "kg",
+                                                 categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                 tags: [ProductTag.fake(), ProductTag.fake()])
+        } errorAssert: { error in
+            // Then
+            error as? WordPressApiError == .unknown(code: "inactive", message: "OpenAI features have been disabled")
+        }
+    }
+
+    func test_generateProduct_with_failure_returns_error_when_token_generation_fails() async throws {
+        // Given
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-failure")
+        network.simulateResponse(requestUrlSuffix: "text-completion", filename: "generate-product-failure")
+
+        // When
+        await assertThrowsError {
+            _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                                 productName: "Cookie",
+                                                 keywords: "Crunchy, Crispy",
+                                                 language: "en",
+                                                 tone: "Casual",
+                                                 currencySymbol: "INR",
+                                                 dimensionUnit: "cm",
+                                                 weightUnit: "kg",
+                                                 categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                 tags: [ProductTag.fake(), ProductTag.fake()])
+        } errorAssert: { error in
+            // Then
+            error as? WordPressApiError == .unknown(code: "oauth2_invalid_token", message: "The OAuth2 token is invalid.")
+        }
+    }
+
+    func test_generateProduct_retries_after_regenarating_token_upon_receiving_403_error() async throws {
+        // Given
+        let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
+        let textCompletionPath = "text-completion"
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-success")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                             tags: [ProductTag.fake(), ProductTag.fake()])
+        // Then
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
+
+        // When
+        _ = try await remote.generateProduct(siteID: sampleSiteID,
+                                             productName: "Cookie",
+                                             keywords: "Crunchy, Crispy",
+                                             language: "en",
+                                             tone: "Casual",
+                                             currencySymbol: "INR",
+                                             dimensionUnit: "cm",
+                                             weightUnit: "kg",
+                                             categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                             tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        // Ensures that JWT is not requested again
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
+
+
+        // When
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-invalid-token")
+        _ = try? await remote.generateProduct(siteID: sampleSiteID,
+                                              productName: "Cookie",
+                                              keywords: "Crunchy, Crispy",
+                                              language: "en",
+                                              tone: "Casual",
+                                              currencySymbol: "INR",
+                                              dimensionUnit: "cm",
+                                              weightUnit: "kg",
+                                              categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                              tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
+        XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+    }
 }
 
 // MARK: - Helpers

@@ -18,7 +18,7 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     let date: Date
     let type: WooPaymentsDepositType
     let amount: Int
-    let status: String
+    let status: WooPaymentsDepositStatus
     let bankAccount: String
     let currency: String
     let automatic: Bool
@@ -27,10 +27,21 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     let created: Int
 }
 
-// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
+/// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
 public enum WooPaymentsDepositType: String, Codable, Equatable {
     case withdrawal
     case deposit
+}
+
+/// originates from https://stripe.com/docs/api/payouts/object
+/// with additions in WooPayments e.g. https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
+public enum WooPaymentsDepositStatus: String, Codable, Equatable {
+    case estimated
+    case pending
+    case inTransit = "in_transit"
+    case paid
+    case canceled
+    case failed
 }
 
 public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {

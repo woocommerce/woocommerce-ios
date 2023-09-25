@@ -159,4 +159,31 @@ public enum ProductAction: Action {
     /// Fetches the total number of products in the site given the site ID.
     ///
     case fetchNumberOfProducts(siteID: Int64, completion: (Result<Int64, Error>) -> Void)
+
+
+    /// Generates a product using AI
+    ///
+    /// - Parameter siteID: Site ID for which the product is generated for
+    /// - Parameter productName: Product name to input for AI
+    /// - Parameter keywords: Keywords describing the product to input for AI
+    /// - Parameter language: Language to generate the product details
+    /// - Parameter tone: Tone of AI - Represented by `AIToneVoice`
+    /// - Parameter currencySymbol: Currency symbol to generate product price
+    /// - Parameter dimensionUnit: Weight unit to generate product dimensions
+    /// - Parameter weightUnit: Weight unit to generate product weight
+    /// - Parameter categories: Existing categories
+    /// - Parameter tags: Existing tags
+    /// - Parameter completion: Completion closure
+    ///
+    case generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String,
+                         weightUnit: String,
+                         categories: [ProductCategory],
+                         tags: [ProductTag],
+                         completion: (Result<Product, Error>) -> Void)
 }

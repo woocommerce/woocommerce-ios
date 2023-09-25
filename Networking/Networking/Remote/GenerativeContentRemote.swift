@@ -30,6 +30,30 @@ public protocol GenerativeContentRemoteProtocol {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature) async throws -> String
+
+    /// Generates a product using provided info
+    /// - Parameters:
+    ///   - siteID: WPCOM ID of the site.
+    ///   - productName: Product name to input to AI prompt
+    ///   - keywords: Keywords describing the product to input for AI prompt
+    ///   - language: Language to generate the product details
+    ///   - tone: Tone of AI - Represented by `AIToneVoice`
+    ///   - currencySymbol: Currency symbol to generate product price
+    ///   - dimensionUnit: Weight unit to generate product dimensions
+    ///   - weightUnit: Weight unit to generate product weight
+    ///   - categories: Existing categories
+    ///   - tags: Existing tags
+    /// - Returns: Generated `Product`
+    func generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String,
+                         weightUnit: String,
+                         categories: [ProductCategory],
+                         tags: [ProductTag]) async throws -> Product
 }
 
 /// Product: Remote Endpoints
@@ -70,6 +94,50 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
+        }
+    }
+
+    public func generateProduct(siteID: Int64,
+                                productName: String,
+                                keywords: String,
+                                language: String,
+                                tone: String,
+                                currencySymbol: String,
+                                dimensionUnit: String,
+                                weightUnit: String,
+                                categories: [ProductCategory],
+                                tags: [ProductTag]) async throws -> Product {
+
+        do {
+            guard let token else {
+                throw GenerativeContentRemoteError.tokenNotFound
+            }
+            return try await generateProduct(siteID: siteID,
+                                             productName: productName,
+                                             keywords: keywords,
+                                             language: language,
+                                             tone: tone,
+                                             currencySymbol: currencySymbol,
+                                             dimensionUnit: dimensionUnit,
+                                             weightUnit: weightUnit,
+                                             categories: categories,
+                                             tags: tags,
+                                             token: token)
+        } catch GenerativeContentRemoteError.tokenNotFound,
+                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+            let token = try await fetchToken(siteID: siteID)
+            self.token = token
+            return try await generateProduct(siteID: siteID,
+                                             productName: productName,
+                                             keywords: keywords,
+                                             language: language,
+                                             tone: tone,
+                                             currencySymbol: currencySymbol,
+                                             dimensionUnit: dimensionUnit,
+                                             weightUnit: weightUnit,
+                                             categories: categories,
+                                             tags: tags,
+                                             token: token)
         }
     }
 }
@@ -117,6 +185,94 @@ private extension GenerativeContentRemote {
                                     parameters: parameters)
         let mapper = TextCompletionResponseMapper()
         return try await enqueue(request, mapper: mapper)
+    }
+
+
+    func generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String,
+                         weightUnit: String,
+                         categories: [ProductCategory],
+                         tags: [ProductTag],
+                         token: String) async throws -> Product {
+        // TODO: 10767 Implement AI generation
+        Product(siteID: siteID,
+                productID: 0,
+                name: "",
+                slug: "",
+                permalink: "",
+                date: Date(),
+                dateCreated: Date(),
+                dateModified: nil,
+                dateOnSaleStart: nil,
+                dateOnSaleEnd: nil,
+                productTypeKey: ProductType.simple.rawValue,
+                statusKey: ProductStatus.published.rawValue,
+                featured: false,
+                catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
+                fullDescription: "",
+                shortDescription: "",
+                sku: "",
+                price: "",
+                regularPrice: "",
+                salePrice: "",
+                onSale: false,
+                purchasable: false,
+                totalSales: 0,
+                virtual: false,
+                downloadable: false,
+                downloads: [],
+                downloadLimit: -1,
+                downloadExpiry: -1,
+                buttonText: "",
+                externalURL: "",
+                taxStatusKey: ProductTaxStatus.taxable.rawValue,
+                taxClass: "",
+                manageStock: false,
+                stockQuantity: nil,
+                stockStatusKey: ProductStockStatus.inStock.rawValue,
+                backordersKey: ProductBackordersSetting.notAllowed.rawValue,
+                backordersAllowed: false,
+                backordered: false,
+                soldIndividually: false,
+                weight: "",
+                dimensions: ProductDimensions(length: "", width: "", height: ""),
+                shippingRequired: true,
+                shippingTaxable: true,
+                shippingClass: "",
+                shippingClassID: 0,
+                productShippingClass: nil,
+                reviewsAllowed: true,
+                averageRating: "",
+                ratingCount: 0,
+                relatedIDs: [],
+                upsellIDs: [],
+                crossSellIDs: [],
+                parentID: 0,
+                purchaseNote: "",
+                categories: [],
+                tags: [],
+                images: [],
+                attributes: [],
+                defaultAttributes: [],
+                variations: [],
+                groupedProducts: [],
+                menuOrder: 0,
+                addOns: [],
+                isSampleItem: false,
+                bundleStockStatus: nil,
+                bundleStockQuantity: nil,
+                bundledItems: [],
+                compositeComponents: [],
+                subscription: nil,
+                minAllowedQuantity: nil,
+                maxAllowedQuantity: nil,
+                groupOfQuantity: nil,
+                combineVariationQuantities: nil)
     }
 }
 

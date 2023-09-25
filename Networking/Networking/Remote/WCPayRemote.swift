@@ -143,7 +143,7 @@ private extension WCPayRemote {
         static let createCustomer = "create_customer"
         static let locations = "payments/terminal/locations/store"
         static let charges = "payments/charges"
-        static let depositsOverview = "payments/deposits/overview"
+        static let depositsOverview = "payments/deposits/overview-all"
     }
 
     enum AccountParameterKeys {

@@ -16,7 +16,7 @@ public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     let id: String
     let date: Date
-    let type: String
+    let type: WooPaymentsDepositType
     let amount: Int
     let status: String
     let bankAccount: String
@@ -25,6 +25,12 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     let fee: Int
     let feePercentage: Int
     let created: Int
+}
+
+// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
+public enum WooPaymentsDepositType: String, Codable, Equatable {
+    case withdrawal
+    case deposit
 }
 
 public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -71,7 +77,7 @@ public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, Generated
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval
-public enum WooPaymentsDepositInterval: String, Codable {
+public enum WooPaymentsDepositInterval: String, Codable, Equatable {
     case daily
     case weekly
     case monthly

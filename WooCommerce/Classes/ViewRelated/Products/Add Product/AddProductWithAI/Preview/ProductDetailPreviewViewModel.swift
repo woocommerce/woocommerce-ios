@@ -97,7 +97,7 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
-        productDescription = product.fullDescription ?? product.shortDescription ?? self.productDescription
+        productDescription = product.fullDescription ?? product.shortDescription
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {

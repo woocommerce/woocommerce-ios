@@ -71,5 +71,13 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
 
 public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     let delayDays: Int
-    let interval: String
+    let interval: WooPaymentsDepositInterval
+}
+
+/// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval
+public enum WooPaymentsDepositInterval: String, Codable {
+    case daily
+    case weekly
+    case monthly
+    case manual
 }

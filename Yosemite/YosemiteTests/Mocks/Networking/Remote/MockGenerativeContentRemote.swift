@@ -25,6 +25,14 @@ final class MockGenerativeContentRemote {
     func whenIdentifyingLanguage(thenReturn result: Result<String, Error>) {
         identifyLanguageResult = result
     }
+
+    /// The results to return in `generateProduct`.
+    private var generateProductResult: Result<Product, Error>?
+
+    /// Returns the value when `generateProduct` is called.
+    func whenGeneratingProduct(thenReturn result: Result<Product, Error>) {
+        generateProductResult = result
+    }
 }
 
 extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
@@ -47,6 +55,23 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         identifyLanguageFeature = feature
         guard let result = identifyLanguageResult else {
             XCTFail("Could not find result for generating text.")
+            throw NetworkError.notFound
+        }
+        return try result.get()
+    }
+
+    func generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String,
+                         weightUnit: String,
+                         categories: [ProductCategory],
+                         tags: [ProductTag]) async throws -> Product {
+        guard let result = generateProductResult else {
+            XCTFail("Could not find result for generating product.")
             throw NetworkError.notFound
         }
         return try result.get()

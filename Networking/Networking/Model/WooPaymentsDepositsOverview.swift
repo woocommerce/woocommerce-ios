@@ -51,10 +51,6 @@ public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopia
     let card: Int
 }
 
-public struct WooPaymentsInstantBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    // Define properties for the 'instant_balance' object if needed.
-}
-
 public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     let depositsEnabled: Bool
     let depositsBlocked: Bool

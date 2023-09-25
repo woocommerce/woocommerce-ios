@@ -284,8 +284,10 @@ private extension AddProductCoordinator {
             self?.navigationController.dismiss(animated: true)
         },
                                                                                          onCompletion: { [weak self] product in
-            // TODO: Product saved
             self?.onProductCreated(product)
+            self?.navigationController.dismiss(animated: true) {
+                self?.presentProduct(product)
+            }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }

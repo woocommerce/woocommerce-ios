@@ -60,10 +60,17 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         currentStep = .preview
     }
 
+    func didCreateProduct(_ product: Product) {
+        completionHandler(product)
+    }
+
     func didGenerateDataFromPackage(_ data: AddProductFromImageData?) {
-        productName = data?.name ?? ""
-        productDescription = data?.description
-        packagingImage = data?.image
+        guard let data else {
+            return
+        }
+        productName = data.name
+        productDescription = data.description
+        packagingImage = data.image
         currentStep = .preview
     }
 

@@ -265,6 +265,9 @@ fileprivate extension ProductDetailPreviewView {
 
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductDetailPreviewView(viewModel: .init(siteID: 123))
+        ProductDetailPreviewView(viewModel: .init(siteID: 123,
+                                                  productName: "iPhone 15",
+                                                  productDescription: "New smart phone",
+                                                  productFeatures: nil))
     }
 }

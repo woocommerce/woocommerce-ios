@@ -395,7 +395,7 @@ private extension FilterListViewController {
             configuration.baseForegroundColor = .primary
             configuration.baseBackgroundColor = .primary
             configuration.buttonSize = .mini
-            configuration.title = NSLocalizedString("Explore!", comment: "Button title to explore an extension that isn't installed")
+            configuration.title = NSLocalizedString("Explore", comment: "Button title to explore an extension that isn't installed")
 
             let action = UIAction { action in
                 if let url = promotableType.promoteUrl, let viewController = self.hostViewController {

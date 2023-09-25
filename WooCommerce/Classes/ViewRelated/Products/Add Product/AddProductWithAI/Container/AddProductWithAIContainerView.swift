@@ -77,7 +77,11 @@ struct AddProductWithAIContainerView: View {
                     }
                 })
             case .preview:
-                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID))
+                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
+                                                          productName: viewModel.productName,
+                                                          productDescription: viewModel.productDescription,
+                                                          productFeatures: viewModel.productFeatures,
+                                                          packagingImage: viewModel.packagingImage))
             }
         }
         .onAppear() {

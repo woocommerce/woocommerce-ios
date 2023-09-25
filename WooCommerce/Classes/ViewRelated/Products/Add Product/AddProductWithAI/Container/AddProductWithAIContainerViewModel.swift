@@ -28,9 +28,9 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private let completionHandler: (Product) -> Void
 
     private(set) var productName: String = ""
-    private var productFeatures: String = ""
-    private var productDescription: String?
-    private var packagingImage: MediaPickerImage?
+    private(set) var productFeatures: String = ""
+    private(set) var productDescription: String?
+    private(set) var packagingImage: MediaPickerImage?
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 

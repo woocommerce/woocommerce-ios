@@ -366,7 +366,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: .simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3)
 
@@ -417,7 +417,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.searchTerm, "")
         XCTAssertNil(currentFilters.stockStatus)
         XCTAssertNil(currentFilters.productCategory)
-        XCTAssertNil(currentFilters.productType)
+        XCTAssertNil(currentFilters.promotableProductType)
         XCTAssertNil(currentFilters.productCategory)
         XCTAssertEqual(currentFilters.numberOfActiveFilters, 0)
     }
@@ -746,7 +746,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3
         )
@@ -909,7 +909,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: ProductStockStatus.outOfStock,
             productStatus: ProductStatus.draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 3
         )
@@ -933,7 +933,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )
@@ -1017,7 +1017,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
             numberOfActiveFilters: 1
         )
@@ -1042,7 +1042,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
-        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductType, filters.promotableProductType?.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
     }
@@ -1057,7 +1057,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: .outOfStock,
             productStatus: .draft,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: .init(categoryID: 123, siteID: sampleSiteID, parentID: 1, name: "Test", slug: "test"),
             numberOfActiveFilters: 1
         )
@@ -1081,7 +1081,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(filteredStockStatus, filters.stockStatus)
-        assertEqual(filteredProductType, filters.productType)
+        assertEqual(filteredProductType, filters.promotableProductType?.productType)
         assertEqual(filteredProductStatus, filters.productStatus)
         assertEqual(filteredProductCategory, filters.productCategory)
     }
@@ -1111,7 +1111,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.variable,
+            promotableProductType: PromotableProductType(productType: .variable, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )
@@ -1299,7 +1299,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let filters = FilterProductListViewModel.Filters(
             stockStatus: nil,
             productStatus: nil,
-            productType: ProductType.simple,
+            promotableProductType: PromotableProductType(productType: .simple, isAvailable: true, promoteUrl: nil),
             productCategory: nil,
             numberOfActiveFilters: 1
         )

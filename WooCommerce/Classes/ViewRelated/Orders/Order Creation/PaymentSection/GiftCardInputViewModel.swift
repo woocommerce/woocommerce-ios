@@ -28,10 +28,21 @@ final class GiftCardInputViewModel: ObservableObject {
     }
 }
 
+extension GiftCardInputViewModel {
+    static func isCodeValid(_ code: String) -> Bool {
+        let format = "^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$"
+
+        let regex = try? NSRegularExpression(pattern: format, options: .caseInsensitive)
+        let range = NSRange(location: 0, length: code.count)
+
+        return regex?.firstMatch(in: code, options: [], range: range) != nil
+    }
+}
+
 private extension GiftCardInputViewModel {
     func observeCodeForValidCheck() {
         $code.removeDuplicates()
-            .map { self.isCodeValid($0) }
+            .map { Self.isCodeValid($0) }
             .assign(to: &$isValid)
 
         $isValid.combineLatest($code)
@@ -39,15 +50,6 @@ private extension GiftCardInputViewModel {
                 isValid || code.isEmpty ? nil: Localization.errorMessage
             }
             .assign(to: &$errorMessage)
-    }
-
-    func isCodeValid(_ code: String) -> Bool {
-        let format = "^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$"
-
-        let regex = try? NSRegularExpression(pattern: format, options: .caseInsensitive)
-        let range = NSRange(location: 0, length: code.count)
-
-        return regex?.firstMatch(in: code, options: [], range: range) != nil
     }
 }
 

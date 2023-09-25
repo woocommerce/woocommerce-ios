@@ -31,7 +31,7 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productName)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.name,
+                    BasicDetailRow(content: viewModel.productName,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
@@ -40,7 +40,7 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productDescription)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.fullDescription,
+                    BasicDetailRow(content: viewModel.productDescription,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 

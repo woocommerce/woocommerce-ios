@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import Photos
 import Yosemite
 import WooFoundation
 
@@ -8,6 +9,7 @@ import WooFoundation
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var isSavingProduct: Bool = false
     @Published private var generatedProduct: Product?
 
     @Published private(set) var productName: String
@@ -24,6 +26,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
+    private let onProductCreated: (Product) -> Void
 
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
@@ -31,8 +34,13 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let weightUnit: String?
     private let dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
+    private let productImageUploader: ProductImageUploaderProtocol
 
     private var generatedProductSubscription: AnyCancellable?
+
+    /// Local ID used for background image upload
+    private let localProductID: Int64 = 0
+    private var createdProductID: Int64?
 
     init(siteID: Int64,
          productName: String,
@@ -44,11 +52,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
+         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
+        self.onProductCreated = onProductCreated
 
         self.currency = currency
         self.currencyFormatter = currencyFormatter
@@ -61,8 +72,16 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productDescription = productDescription
         self.productFeatures = productFeatures
         self.packagingImage = packagingImage
+        self.productImageUploader = productImageUploader
 
         observeGeneratedProduct()
+    }
+
+    func onDisappear() {
+        let id: ProductOrVariationID = .product(id: createdProductID ?? localProductID)
+        productImageUploader.startEmittingErrors(key: .init(siteID: siteID,
+                                                            productOrVariationID: id,
+                                                            isLocalID: createdProductID == nil))
     }
 
     @MainActor
@@ -71,13 +90,35 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         #if canImport(SwiftUI) && DEBUG
-        generatedProduct = Product.swiftUIPreviewSample()
+        generatedProduct = Product.swiftUIPreviewSample().copy(siteID: siteID)
         #endif
         isGeneratingDetails = false
     }
 
-    func saveProductAsDraft() {
-        // TODO
+    @MainActor
+    func saveProductAsDraft() async {
+        guard let generatedProduct else {
+            return
+        }
+        isSavingProduct = true
+        uploadPackagingImageIfNeeded()
+        do {
+            let newProduct = try await saveProductRemotely(product: generatedProduct)
+            createdProductID = newProduct.productID
+            guard packagingImage != nil else {
+                return onProductCreated(newProduct)
+            }
+
+            /// Update product with images
+            replaceProductID(newID: newProduct.productID)
+            let images = await saveProductImagesWhenNoneIsPendingUploadAnymore(productID: newProduct.productID)
+            let updatedProduct = newProduct.copy(images: images)
+            onProductCreated(updatedProduct)
+        } catch {
+            // TODO: error handling
+            DDLogError("⛔️ Error saving product with AI: \(error)")
+        }
+        isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
@@ -85,6 +126,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 }
 
+// MARK: - Helper methods
+//
 private extension ProductDetailPreviewViewModel {
     func observeGeneratedProduct() {
         generatedProductSubscription = $generatedProduct
@@ -152,6 +195,63 @@ private extension ProductDetailPreviewViewModel {
         }
 
         productShippingDetails = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
+    }
+
+    func uploadPackagingImageIfNeeded() {
+        guard let packagingImage else {
+            return
+        }
+        let productImageActionHandler = productImageUploader
+            .actionHandler(key: .init(siteID: siteID,
+                                      productOrVariationID: .product(id: localProductID),
+                                      isLocalID: true),
+                           originalStatuses: [])
+        switch packagingImage.source {
+        case let .asset(asset):
+            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
+        case let .media(media):
+            productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
+        }
+        productImageUploader.stopEmittingErrors(key: .init(siteID: siteID, productOrVariationID: .product(id: localProductID), isLocalID: true))
+    }
+
+    @MainActor
+    func saveProductRemotely(product: Product) async throws -> Product {
+        try await withCheckedThrowingContinuation { continuation in
+            let updateProductAction = ProductAction.addProduct(product: product) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let product):
+                    continuation.resume(returning: product)
+                }
+            }
+            stores.dispatch(updateProductAction)
+        }
+    }
+
+    func replaceProductID(newID: Int64) {
+        productImageUploader.replaceLocalID(siteID: siteID,
+                                            localID: .product(id: localProductID),
+                                            remoteID: newID)
+    }
+
+    @MainActor
+    func saveProductImagesWhenNoneIsPendingUploadAnymore(productID: Int64) async -> [ProductImage] {
+        await withCheckedContinuation { continuation in
+            let key: ProductImageUploaderKey = .init(siteID: siteID,
+                                                     productOrVariationID: .product(id: productID),
+                                                     isLocalID: false)
+            productImageUploader
+                .saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
+                    switch result {
+                    case .success(let images):
+                        continuation.resume(returning: images)
+                    case .failure(let error):
+                        DDLogError("⛔️ Error saving images for new product: \(error)")
+                    }
+                }
+        }
     }
 }
 

@@ -30,6 +30,30 @@ public protocol GenerativeContentRemoteProtocol {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature) async throws -> String
+
+    /// Generates a product using provided info
+    /// - Parameters:
+    ///   - siteID: WPCOM ID of the site.
+    ///   - productName: Product name to input to AI prompt
+    ///   - keywords: Keywords describing the product to input for AI prompt
+    ///   - language: Language to generate the product details
+    ///   - tone: Tone of AI - Represented by `AIToneVoice`
+    ///   - currencySymbol: Currency symbol to generate product price
+    ///   - dimensionUnit: Weight unit to generate product dimensions
+    ///   - weightUnit: Weight unit to generate product weight
+    ///   - categories: Existing categories
+    ///   - tags: Existing tags
+    /// - Returns: Generated `Product`
+    func generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String,
+                         weightUnit: String,
+                         categories: [ProductCategory],
+                         tags: [ProductTag]) async throws -> Product
 }
 
 /// Product: Remote Endpoints

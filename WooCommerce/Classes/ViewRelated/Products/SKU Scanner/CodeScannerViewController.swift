@@ -15,9 +15,9 @@ enum ScannedCodeFormat {
     case text(completion: (Result<[String], Error>) -> Void)
 }
 
-/// Starts live stream video for scanning barcodes.
+/// Starts live stream video for scanning codes (barcodes or text codes).
 /// This view controller is meant to be embedded as a child view controller for navigation customization.
-final class BarcodeScannerViewController: UIViewController {
+final class CodeScannerViewController: UIViewController {
     @IBOutlet private weak var videoOutputImageView: UIImageView!
 
     // Subviews of `videoOutputImageView`.
@@ -71,7 +71,7 @@ final class BarcodeScannerViewController: UIViewController {
     }
 }
 
-extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension CodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     /// Performs Vision request from live video stream.
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // For barcode scanning, it is not necessary to perform detection on each frame. Here we throttle the sampling from the video output.
@@ -108,7 +108,7 @@ extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDele
 
 // MARK: Video Processing
 //
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     /// Returns a `CIImage` for barcode detection Vision request, if available. This has to be run on the main thread due to frame access.
     /// - Parameters:
     ///   - videoSampleBuffer: sample buffer from video.
@@ -133,7 +133,7 @@ private extension BarcodeScannerViewController {
 
 // MARK: Video Setup
 //
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     /// Enables and starts live stream video, if available.
     func startLiveVideo() {
         session.sessionPreset = .photo
@@ -168,7 +168,7 @@ private extension BarcodeScannerViewController {
 
 // MARK: Barcode Detection
 //
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     func configureBarcodeDetection() {
         let requests: [VNRequest]
         switch format {
@@ -227,7 +227,7 @@ private extension BarcodeScannerViewController {
 
 // MARK: Configurations
 //
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     func configureMainView() {
         view.backgroundColor = .basicBackground
     }
@@ -256,7 +256,7 @@ private extension BarcodeScannerViewController {
 
 // MARK: Orientation Handling
 //
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     func updatePreviewLayerOrientation() {
         if let connection = previewLayer?.connection, connection.isVideoOrientationSupported {
             let orientation = view.window?.windowScene?.interfaceOrientation
@@ -282,7 +282,7 @@ private extension BarcodeScannerViewController {
     }
 }
 
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     func imageOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
         let orientation = UIDevice.current.orientation
         let imageOrientation: CGImagePropertyOrientation
@@ -305,7 +305,7 @@ private extension BarcodeScannerViewController {
     }
 }
 
-private extension BarcodeScannerViewController {
+private extension CodeScannerViewController {
     enum Constants {
         static let dimmingColor = UIColor(white: 0.0, alpha: 0.5)
         static let instructionTextInsets = UIEdgeInsets(top: 11, left: 0, bottom: 11, right: 0)

@@ -2,8 +2,8 @@ import UIKit
 
 /// Container view controller of gift card code scanner for an order.
 final class GiftCardCodeScannerViewController: UIViewController {
-    private lazy var codeScannerChildViewController: BarcodeScannerViewController = {
-        return BarcodeScannerViewController(instructionText: Localization.instructionText, format: .text { [weak self] result in
+    private lazy var codeScannerChildViewController: CodeScannerViewController = {
+        return CodeScannerViewController(instructionText: Localization.instructionText, format: .text { [weak self] result in
             guard let self = self else { return }
             guard self.hasDetectedCode == false else {
                 return

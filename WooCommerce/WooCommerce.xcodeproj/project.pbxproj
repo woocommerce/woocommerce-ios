@@ -240,9 +240,9 @@
 		025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */; };
 		025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1749237AA49D00C780B4 /* Product+ProductForm.swift */; };
 		025C00682550DE4700FAC222 /* ProductSKUInputScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00642550DE4600FAC222 /* ProductSKUInputScannerViewController.swift */; };
-		025C00692550DE4700FAC222 /* BarcodeScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */; };
+		025C00692550DE4700FAC222 /* CodeScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025C00652550DE4700FAC222 /* CodeScannerViewController.xib */; };
 		025C006A2550DE4700FAC222 /* ProductSKUInputScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */; };
-		025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */; };
+		025C006B2550DE4700FAC222 /* CodeScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00672550DE4700FAC222 /* CodeScannerViewController.swift */; };
 		025C00BA25514A7100FAC222 /* BarcodeScannerFrameScaler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */; };
 		025C00CC2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025C00CB2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift */; };
 		025CA1A62887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */; };
@@ -2733,9 +2733,9 @@
 		025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection+ReusableTableRow.swift"; sourceTree = "<group>"; };
 		025B1749237AA49D00C780B4 /* Product+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductForm.swift"; sourceTree = "<group>"; };
 		025C00642550DE4600FAC222 /* ProductSKUInputScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductSKUInputScannerViewController.swift; sourceTree = "<group>"; };
-		025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = BarcodeScannerViewController.xib; sourceTree = "<group>"; };
+		025C00652550DE4700FAC222 /* CodeScannerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CodeScannerViewController.xib; sourceTree = "<group>"; };
 		025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductSKUInputScannerViewController.xib; sourceTree = "<group>"; };
-		025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarcodeScannerViewController.swift; sourceTree = "<group>"; };
+		025C00672550DE4700FAC222 /* CodeScannerViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CodeScannerViewController.swift; sourceTree = "<group>"; };
 		025C00B925514A7100FAC222 /* BarcodeScannerFrameScaler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerFrameScaler.swift; sourceTree = "<group>"; };
 		025C00CB2551524300FAC222 /* BarcodeScannerFrameScalerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScannerFrameScalerTests.swift; sourceTree = "<group>"; };
 		025CA1A52887D17A00CCBB25 /* LoggedOutAppSettingsProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedOutAppSettingsProtocol.swift; sourceTree = "<group>"; };
@@ -5578,8 +5578,8 @@
 		025C00572550DDDD00FAC222 /* SKU Scanner */ = {
 			isa = PBXGroup;
 			children = (
-				025C00672550DE4700FAC222 /* BarcodeScannerViewController.swift */,
-				025C00652550DE4700FAC222 /* BarcodeScannerViewController.xib */,
+				025C00672550DE4700FAC222 /* CodeScannerViewController.swift */,
+				025C00652550DE4700FAC222 /* CodeScannerViewController.xib */,
 				025C00642550DE4600FAC222 /* ProductSKUInputScannerViewController.swift */,
 				025C00662550DE4700FAC222 /* ProductSKUInputScannerViewController.xib */,
 				02CE43012768CBF60006EAEF /* ProductSKUBarcodeScannerCoordinator.swift */,
@@ -11702,7 +11702,7 @@
 				D89CFFDE25B44468000E4683 /* ULAccountMismatchViewController.xib in Resources */,
 				452FE64C25657EC100EB54A0 /* LinkedProductsViewController.xib in Resources */,
 				0286B27A23C7051F003D784B /* ProductImagesCollectionViewController.xib in Resources */,
-				025C00692550DE4700FAC222 /* BarcodeScannerViewController.xib in Resources */,
+				025C00692550DE4700FAC222 /* CodeScannerViewController.xib in Resources */,
 				4512055324655FB6005D68DE /* TitleAndTextFieldWithImageTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
@@ -13307,7 +13307,7 @@
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
 				26FE09DF24DB871100B9BDF5 /* SurveyViewControllersFactory.swift in Sources */,
 				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
-				025C006B2550DE4700FAC222 /* BarcodeScannerViewController.swift in Sources */,
+				025C006B2550DE4700FAC222 /* CodeScannerViewController.swift in Sources */,
 				09885C8727C6947A00910A62 /* ProductPriceSettingsValidator.swift in Sources */,
 				02D7E7C12A4CA9030003049A /* LocalAnnouncementsProvider.swift in Sources */,
 				A6557218258B7510008AE7CA /* OrderListCellViewModel.swift in Sources */,

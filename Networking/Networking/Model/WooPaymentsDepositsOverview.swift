@@ -2,29 +2,29 @@ import Foundation
 import Codegen
 
 public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let deposit: WooPaymentsCurrencyDeposits
-    let balance: WooPaymentsCurrencyBalances
-    let account: WooPaymentsAccountDepositSummary
+    public let deposit: WooPaymentsCurrencyDeposits
+    public let balance: WooPaymentsCurrencyBalances
+    public let account: WooPaymentsAccountDepositSummary
 }
 
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let lastPaid: [WooPaymentsDeposit]
-    let nextScheduled: [WooPaymentsDeposit]
-    let lastManualDeposits: [WooPaymentsDeposit]
+    public let lastPaid: [WooPaymentsDeposit]
+    public let nextScheduled: [WooPaymentsDeposit]
+    public let lastManualDeposits: [WooPaymentsDeposit]
 }
 
 public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let id: String
-    let date: Date
-    let type: WooPaymentsDepositType
-    let amount: Int
-    let status: WooPaymentsDepositStatus
-    let bankAccount: String
-    let currency: String
-    let automatic: Bool
-    let fee: Int
-    let feePercentage: Int
-    let created: Int
+    public let id: String
+    public let date: Date
+    public let type: WooPaymentsDepositType
+    public let amount: Int
+    public let status: WooPaymentsDepositStatus
+    public let bankAccount: String
+    public let currency: String
+    public let automatic: Bool
+    public let fee: Int
+    public let feePercentage: Int
+    public let created: Int
 }
 
 /// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
@@ -45,18 +45,18 @@ public enum WooPaymentsDepositStatus: String, Codable, Equatable {
 }
 
 public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let pending: [WooPaymentsBalance]
-    let available: [WooPaymentsBalance]
-    let instant: [WooPaymentsBalance]
+    public let pending: [WooPaymentsBalance]
+    public let available: [WooPaymentsBalance]
+    public let instant: [WooPaymentsBalance]
 }
 
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let amount: Int
-    let currency: String
-    let sourceTypes: WooPaymentsSourceTypes
-    let depositsCount: Int?
+    public let amount: Int
+    public let currency: String
+    public let sourceTypes: WooPaymentsSourceTypes
+    public let depositsCount: Int?
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case amount
         case currency
         case sourceTypes = "source_types"
@@ -65,16 +65,16 @@ public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable,
 }
 
 public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let card: Int
+    public let card: Int
 }
 
 public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let depositsEnabled: Bool
-    let depositsBlocked: Bool
-    let depositsSchedule: WooPaymentsDepositsSchedule
-    let defaultCurrency: String
+    public let depositsEnabled: Bool
+    public let depositsBlocked: Bool
+    public let depositsSchedule: WooPaymentsDepositsSchedule
+    public let defaultCurrency: String
 
-    enum CodingKeys: String, CodingKey {
+    public enum CodingKeys: String, CodingKey {
         case depositsEnabled = "deposits_enabled"
         case depositsBlocked = "deposits_blocked"
         case depositsSchedule = "deposits_schedule"
@@ -83,8 +83,8 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
 }
 
 public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    let delayDays: Int
-    let interval: WooPaymentsDepositInterval
+    public let delayDays: Int
+    public let interval: WooPaymentsDepositInterval
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval

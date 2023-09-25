@@ -96,6 +96,50 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         }
     }
+
+    public func generateProduct(siteID: Int64,
+                                productName: String,
+                                keywords: String,
+                                language: String,
+                                tone: String,
+                                currencySymbol: String,
+                                dimensionUnit: String,
+                                weightUnit: String,
+                                categories: [ProductCategory],
+                                tags: [ProductTag]) async throws -> Product {
+
+        do {
+            guard let token else {
+                throw GenerativeContentRemoteError.tokenNotFound
+            }
+            return try await generateProduct(siteID: siteID,
+                                             productName: productName,
+                                             keywords: keywords,
+                                             language: language,
+                                             tone: tone,
+                                             currencySymbol: currencySymbol,
+                                             dimensionUnit: dimensionUnit,
+                                             weightUnit: weightUnit,
+                                             categories: categories,
+                                             tags: tags,
+                                             token: token)
+        } catch GenerativeContentRemoteError.tokenNotFound,
+                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+            let token = try await fetchToken(siteID: siteID)
+            self.token = token
+            return try await generateProduct(siteID: siteID,
+                                             productName: productName,
+                                             keywords: keywords,
+                                             language: language,
+                                             tone: tone,
+                                             currencySymbol: currencySymbol,
+                                             dimensionUnit: dimensionUnit,
+                                             weightUnit: weightUnit,
+                                             categories: categories,
+                                             tags: tags,
+                                             token: token)
+        }
+    }
 }
 
 private extension GenerativeContentRemote {

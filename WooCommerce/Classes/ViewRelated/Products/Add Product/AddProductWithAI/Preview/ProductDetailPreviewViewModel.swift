@@ -70,7 +70,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         // TODO - update this with actual implementation
         isGeneratingDetails = true
         try? await Task.sleep(nanoseconds: 1_000_000_000)
+        #if canImport(SwiftUI) && DEBUG
         generatedProduct = Product.swiftUIPreviewSample()
+        #endif
         isGeneratingDetails = false
     }
 

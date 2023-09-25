@@ -112,11 +112,13 @@ struct ProductDetailPreviewView: View {
             .padding(insets: Layout.insets)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if viewModel.isGeneratingDetails {
+                    if viewModel.isGeneratingDetails || viewModel.isSavingProduct {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.saveAsDraft) {
-                            viewModel.saveProductAsDraft()
+                            Task {
+                                await viewModel.saveProductAsDraft()
+                            }
                         }
                     }
                 }
@@ -125,6 +127,9 @@ struct ProductDetailPreviewView: View {
                 Task {
                     await viewModel.generateProductDetails()
                 }
+            }
+            .onDisappear {
+                viewModel.onDisappear()
             }
         }
     }
@@ -270,6 +275,6 @@ struct ProductDetailPreviewView_Previews: PreviewProvider {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
                                                   productName: "iPhone 15",
                                                   productDescription: "New smart phone",
-                                                  productFeatures: nil))
+                                                  productFeatures: nil) { _ in })
     }
 }

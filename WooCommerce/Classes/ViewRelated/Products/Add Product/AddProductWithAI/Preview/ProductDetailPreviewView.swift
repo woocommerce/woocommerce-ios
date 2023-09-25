@@ -31,7 +31,7 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productName)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.name,
+                    BasicDetailRow(content: viewModel.productName,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
@@ -40,11 +40,10 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productDescription)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.fullDescription,
+                    BasicDetailRow(content: viewModel.productDescription,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
-                // TODO: update values based on product
                 // Other details
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
                     Text(Localization.details)
@@ -53,7 +52,7 @@ struct ProductDetailPreviewView: View {
 
                     // Product type
                     TitleAndValueDetailRow(title: Localization.productType,
-                                           value: "Physical",
+                                           value: viewModel.productType,
                                            image: UIImage.productImage,
                                            isLoading: viewModel.isGeneratingDetails,
                                            cornerRadius: Layout.cornerRadius)
@@ -62,7 +61,7 @@ struct ProductDetailPreviewView: View {
                     VStack(spacing: 0) {
                         // Price
                         TitleAndValueDetailRow(title: Localization.price,
-                                               value: "Regular price: $15",
+                                               value: viewModel.productPrice,
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -78,7 +77,7 @@ struct ProductDetailPreviewView: View {
 
                         // Categories
                         TitleAndValueDetailRow(title: Localization.categories,
-                                               value: "Food, snack, sweet",
+                                               value: viewModel.productCategories,
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -86,7 +85,7 @@ struct ProductDetailPreviewView: View {
 
                         // Tags
                         TitleAndValueDetailRow(title: Localization.tags,
-                                               value: "yummy, candy, chocolate",
+                                               value: viewModel.productTags,
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -94,7 +93,7 @@ struct ProductDetailPreviewView: View {
 
                         // Shipping details
                         TitleAndValueDetailRow(title: Localization.shipping,
-                                               value: "Weight: 1kg\nDimension: 15 x 10 x 3 cm",
+                                               value: viewModel.productShippingDetails,
                                                image: UIImage.shippingImage,
                                                isLoading: viewModel.isGeneratingDetails)
                     }
@@ -123,7 +122,9 @@ struct ProductDetailPreviewView: View {
                 }
             }
             .onAppear {
-                viewModel.generateProductDetails()
+                Task {
+                    await viewModel.generateProductDetails()
+                }
             }
         }
     }
@@ -184,6 +185,7 @@ private extension ProductDetailPreviewView {
             .cornerRadius(cornerRadius)
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
+            .renderedIf(isLoading || value != nil)
         }
     }
 }
@@ -265,6 +267,9 @@ fileprivate extension ProductDetailPreviewView {
 
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductDetailPreviewView(viewModel: .init(siteID: 123))
+        ProductDetailPreviewView(viewModel: .init(siteID: 123,
+                                                  productName: "iPhone 15",
+                                                  productDescription: "New smart phone",
+                                                  productFeatures: nil))
     }
 }

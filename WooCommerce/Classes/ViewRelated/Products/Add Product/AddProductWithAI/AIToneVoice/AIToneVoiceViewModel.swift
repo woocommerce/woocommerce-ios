@@ -24,12 +24,7 @@ final class AIToneVoiceViewModel: ObservableObject {
         self.siteID = siteID
         self.analytics = analytics
         self.userDefaults = userDefaults
-        if let storedPrompt = userDefaults.aiTone(for: siteID) {
-            self.selectedTone = storedPrompt
-        } else {
-            self.selectedTone = .casual
-            userDefaults.setAITone(.casual, for: siteID)
-        }
+        self.selectedTone = userDefaults.aiTone(for: siteID)
     }
 
     func onSelectTone(_ aiPromptTone: AIToneVoice) {

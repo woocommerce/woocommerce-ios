@@ -8,6 +8,7 @@ import WooFoundation
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
+    @Published private(set) var isSavingProduct: Bool = false
     @Published private var generatedProduct: Product?
 
     @Published private(set) var productName: String
@@ -19,11 +20,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productShippingDetails: String?
 
     private let productFeatures: String?
-    private let packagingImage: MediaPickerImage?
 
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
+    private let onProductCreated: (Product) -> Void
 
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
@@ -38,17 +39,18 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          productName: String,
          productDescription: String?,
          productFeatures: String?,
-         packagingImage: MediaPickerImage? = nil,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
+        self.onProductCreated = onProductCreated
 
         self.currency = currency
         self.currencyFormatter = currencyFormatter
@@ -60,7 +62,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
-        self.packagingImage = packagingImage
 
         observeGeneratedProduct()
     }
@@ -71,13 +72,25 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         #if canImport(SwiftUI) && DEBUG
-        generatedProduct = Product.swiftUIPreviewSample()
+        generatedProduct = Product.swiftUIPreviewSample().copy(siteID: siteID, productID: 0, name: productName)
         #endif
         isGeneratingDetails = false
     }
 
-    func saveProductAsDraft() {
-        // TODO
+    @MainActor
+    func saveProductAsDraft() async {
+        guard let generatedProduct else {
+            return
+        }
+        isSavingProduct = true
+        do {
+            let newProduct = try await saveProductRemotely(product: generatedProduct)
+            onProductCreated(newProduct)
+        } catch {
+            // TODO: error handling
+            DDLogError("⛔️ Error saving product with AI: \(error)")
+        }
+        isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
@@ -85,6 +98,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 }
 
+// MARK: - Product details for preview
+//
 private extension ProductDetailPreviewViewModel {
     func observeGeneratedProduct() {
         generatedProductSubscription = $generatedProduct
@@ -129,7 +144,7 @@ private extension ProductDetailPreviewViewModel {
             .filter({ !$0.isEmpty })
 
         if let dimensionUnit = dimensionUnit,
-            !dimensions.isEmpty {
+           !dimensions.isEmpty {
             switch dimensions.count {
             case 1:
                 let dimension = dimensions[0]
@@ -152,6 +167,28 @@ private extension ProductDetailPreviewViewModel {
         }
 
         productShippingDetails = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
+    }
+}
+
+// MARK: - Saving product
+//
+private extension ProductDetailPreviewViewModel {
+
+    /// Saves the provided product remotely.
+    ///
+    @MainActor
+    func saveProductRemotely(product: Product) async throws -> Product {
+        try await withCheckedThrowingContinuation { continuation in
+            let updateProductAction = ProductAction.addProduct(product: product) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let product):
+                    continuation.resume(returning: product)
+                }
+            }
+            stores.dispatch(updateProductAction)
+        }
     }
 }
 

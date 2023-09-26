@@ -112,11 +112,13 @@ struct ProductDetailPreviewView: View {
             .padding(insets: Layout.insets)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if viewModel.isGeneratingDetails {
+                    if viewModel.isGeneratingDetails || viewModel.isSavingProduct {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.saveAsDraft) {
-                            viewModel.saveProductAsDraft()
+                            Task {
+                                await viewModel.saveProductAsDraft()
+                            }
                         }
                     }
                 }
@@ -210,7 +212,7 @@ fileprivate extension ProductDetailPreviewView {
             comment: "Title on the add product with AI Preview screen."
         )
         static let subtitle = NSLocalizedString(
-            "Don't worry. You can always change below details later.",
+            "You can always change the below details later.",
             comment: "Subtitle on the add product with AI Preview screen."
         )
         static let feedbackQuestion = NSLocalizedString(
@@ -270,6 +272,6 @@ struct ProductDetailPreviewView_Previews: PreviewProvider {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
                                                   productName: "iPhone 15",
                                                   productDescription: "New smart phone",
-                                                  productFeatures: nil))
+                                                  productFeatures: nil) { _ in })
     }
 }

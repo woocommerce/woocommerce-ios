@@ -51,8 +51,8 @@ public protocol GenerativeContentRemoteProtocol {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag]) async throws -> Product
 }
@@ -104,8 +104,8 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                 language: String,
                                 tone: String,
                                 currencySymbol: String,
-                                dimensionUnit: String,
-                                weightUnit: String,
+                                dimensionUnit: String?,
+                                weightUnit: String?,
                                 categories: [ProductCategory],
                                 tags: [ProductTag]) async throws -> Product {
 
@@ -195,8 +195,8 @@ private extension GenerativeContentRemote {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag],
                          token: String) async throws -> Product {

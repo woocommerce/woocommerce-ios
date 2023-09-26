@@ -463,6 +463,29 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_create_order_when_total_has_special_characters_then_properly_encodes_fee_lines() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let fee = OrderFeeLine(feeID: 333, name: "Line", taxClass: "", taxStatus: .none, total: "1.00د.إ", totalTax: "", taxes: [], attributes: [])
+        let order = Order.fake().copy(fees: [fee])
+
+        // When
+        remote.createOrder(siteID: 123, order: order, giftCard: nil, fields: [.feeLines]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let received = try XCTUnwrap(request.parameters["fee_lines"] as? [[String: AnyHashable]]).first
+        let expected: [String: AnyHashable] = [
+            "id": fee.feeID,
+            "name": fee.name ?? "",
+            "tax_status": fee.taxStatus.rawValue,
+            "tax_class": fee.taxClass,
+            "total": fee.total
+        ]
+        assertEqual("1.00د.إ", expected["total"])
+        assertEqual(received, expected)
+    }
+
     func test_create_order_properly_encodes_status() throws {
         // Given
         let remote = OrdersRemote(network: network)

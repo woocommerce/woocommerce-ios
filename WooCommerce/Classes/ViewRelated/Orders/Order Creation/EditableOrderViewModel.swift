@@ -178,6 +178,10 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
+    /// Whether gift card is supported in order form.
+    ///
+    @Published private var isGiftCardSupported: Bool = false
+
     /// Defines the multiple lines info message to show.
     ///
     @Published private(set) var multipleLinesMessage: String? = nil
@@ -396,6 +400,7 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
         syncInitialSelectedState()
         configureTaxRates()
+        configureGiftCardSupport()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -753,6 +758,12 @@ extension EditableOrderViewModel {
     /// Representation of payment data display properties
     ///
     struct PaymentDataViewModel {
+        /// Contains necessary info to render an applied gift card in the order form.
+        struct AppliedGiftCard: Hashable {
+            let code: String
+            let amount: String
+        }
+
         let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
@@ -784,6 +795,15 @@ extension EditableOrderViewModel {
         let shouldShowCoupon: Bool
         let shouldDisableAddingCoupons: Bool
 
+        /// Enabled when gift cards plugin is active (woocommerce-gift-cards/woocommerce-gift-cards.php).
+        let isGiftCardEnabled: Bool
+        /// Whether the Add Gift Card CTA is enabled, when the order total is greater than zero.
+        let isAddGiftCardActionEnabled: Bool
+        /// Optional gift card code to apply to the order.
+        let giftCardToApply: String?
+        /// Gift cards that have been applied to the order.
+        let appliedGiftCards: [AppliedGiftCard]
+
         /// Whether payment data is being reloaded (during remote sync)
         ///
         let isLoading: Bool
@@ -796,6 +816,7 @@ extension EditableOrderViewModel {
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
+        let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
              itemsTotal: String = "0",
@@ -812,6 +833,10 @@ extension EditableOrderViewModel {
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
+             isGiftCardEnabled: Bool = false,
+             isAddGiftCardActionEnabled: Bool = false,
+             giftCardToApply: String? = nil,
+             appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
@@ -827,6 +852,7 @@ extension EditableOrderViewModel {
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
+             setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
@@ -845,6 +871,10 @@ extension EditableOrderViewModel {
             self.shouldShowCoupon = shouldShowCoupon
             self.shouldDisableAddingCoupons = shouldDisableAddingCoupons
             self.couponLineViewModels = couponLineViewModels
+            self.isGiftCardEnabled = isGiftCardEnabled
+            self.isAddGiftCardActionEnabled = isAddGiftCardActionEnabled
+            self.giftCardToApply = giftCardToApply
+            self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
@@ -865,6 +895,7 @@ extension EditableOrderViewModel {
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
+            self.setGiftCardClosure = setGiftCardClosure
         }
     }
 
@@ -1137,8 +1168,19 @@ private extension EditableOrderViewModel {
     /// Updates payment section view model based on items in the order and order sync state.
     ///
     func configurePaymentDataViewModel() {
-        Publishers.CombineLatest4(orderSynchronizer.orderPublisher, orderSynchronizer.statePublisher, $shouldShowNonEditableIndicators, $taxBasedOnSetting)
-            .map { [weak self] order, state, showNonEditableIndicators, taxBasedOnSetting in
+        Publishers.CombineLatest(Publishers.CombineLatest4(orderSynchronizer.orderPublisher,
+                                                           orderSynchronizer.statePublisher,
+                                                           $shouldShowNonEditableIndicators,
+                                                           $taxBasedOnSetting),
+                                 Publishers.CombineLatest(orderSynchronizer.giftCardToApplyPublisher,
+                                                          $isGiftCardSupported))
+            .map { [weak self] combinedPublisher, giftCardPublisher in
+                let order = combinedPublisher.0
+                let state = combinedPublisher.1
+                let showNonEditableIndicators = combinedPublisher.2
+                let taxBasedOnSetting = combinedPublisher.3
+                let giftCardToApply = giftCardPublisher.0
+                let isGiftCardEnabled = giftCardPublisher.1
                 guard let self = self else {
                     return PaymentDataViewModel()
                 }
@@ -1156,6 +1198,18 @@ private extension EditableOrderViewModel {
                     }
                 }()
 
+                let appliedGiftCards: [PaymentDataViewModel.AppliedGiftCard] = {
+                    order.appliedGiftCards.compactMap { giftCard in
+                        let negativeAmount = -giftCard.amount
+                        guard let formattedAmount = self.currencyFormatter.formatAmount(negativeAmount.description) else {
+                            return nil
+                        }
+                        return .init(code: giftCard.code, amount: formattedAmount)
+                    }
+                }()
+
+                let isAddGiftCardActionEnabled = currencyFormatter.convertToDecimal(order.total)?.compare(NSDecimalNumber.zero) == .orderedDescending
+
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
@@ -1171,6 +1225,10 @@ private extension EditableOrderViewModel {
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: order.items.isEmpty,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
+                                            isGiftCardEnabled: isGiftCardEnabled,
+                                            isAddGiftCardActionEnabled: isAddGiftCardActionEnabled,
+                                            giftCardToApply: giftCardToApply,
+                                            appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
@@ -1195,6 +1253,9 @@ private extension EditableOrderViewModel {
                                             onDismissWpAdminWebViewClosure: { [weak self] in
                                                 self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
+                                            },
+                                            setGiftCardClosure: { [weak self] code in
+                                                self?.orderSynchronizer.setGiftCard.send(code)
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }
@@ -1271,6 +1332,24 @@ private extension EditableOrderViewModel {
         }
     }
 
+    func configureGiftCardSupport() {
+        Task { @MainActor in
+            isGiftCardSupported = await checkIfGiftCardsPluginIsActive()
+        }
+    }
+
+    @MainActor
+    func checkIfGiftCardsPluginIsActive() async -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm) else {
+            return false
+        }
+        return await withCheckedContinuation { continuation in
+            stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: SystemPluginPaths.giftCards) { plugin in
+                continuation.resume(returning: plugin?.active == true)
+            })
+        }
+    }
+
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
@@ -1301,11 +1380,13 @@ private extension EditableOrderViewModel {
     ///
     func trackCreateButtonTapped() {
         let hasCustomerDetails = customerDataViewModel.isDataAvailable
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(status: orderSynchronizer.order.status,
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
+                                                                                status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
                                                                                 hasCustomerDetails: hasCustomerDetails,
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
-                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty))
+                                                                                hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,
+                                                                                products: Array(allProducts)))
     }
 
     /// Tracks an order creation success
@@ -1634,6 +1715,11 @@ extension EditableOrderViewModel {
             guard !isEmailError(error, order: order) else {
                 return Notice(title: Localization.invalidBillingParameters, message: Localization.invalidBillingSuggestion, feedbackType: .error)
             }
+
+            if let giftCardErrorNotice = giftCardErrorNotice(from: error) {
+                return giftCardErrorNotice
+            }
+
             return Notice(title: Localization.errorMessageOrderCreation, feedbackType: .error)
         }
 
@@ -1662,6 +1748,10 @@ extension EditableOrderViewModel {
                         // Syncs the order without the failing coupon
                         orderSynchronizer.retryTrigger.send()
                 }
+            }
+
+            if let giftCardErrorNotice = giftCardErrorNotice(from: error) {
+                return giftCardErrorNotice
             }
 
             let errorMessage: String
@@ -1695,6 +1785,13 @@ extension EditableOrderViewModel {
             }
 
             return false
+        }
+
+        private static func giftCardErrorNotice(from error: Error) -> Notice? {
+            guard let giftCardError = error as? OrderStore.GiftCardError else {
+                return nil
+            }
+            return Notice(title: giftCardError.noticeTitle, message: giftCardError.noticeMessage, feedbackType: .error)
         }
     }
 }
@@ -1755,6 +1852,10 @@ private extension EditableOrderViewModel {
             static let plural = NSLocalizedString("Coupons (%1$@)",
                                                    comment: "The plural coupon summary. Reads like: Coupon (code1, code2)")
         }
+    }
+
+    enum SystemPluginPaths {
+        static let giftCards = "woocommerce-gift-cards/woocommerce-gift-cards.php"
     }
 }
 

@@ -315,6 +315,9 @@ which should be translated separately and considered part of this sentence. */
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https://automattic.com/ai-guidelines/)" = "[Learn more.](https://automattic.com/ai-guidelines/)";
+
 /* The message explaining what will happen when the merchant enables the Pay in Person payment gateway during card present payments onboarding. */
 "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery." = "A \"Pay in Person\" option on your checkout lets you accept card or cash payments on collection or delivery.";
 
@@ -375,6 +378,9 @@ which should be translated separately and considered part of this sentence. */
 /* Top header text of the store creation profiler question about the challenges.
    Top header text of the store creation profiler question about the features. */
 "About you" = "About you";
+
+/* Title on the add product features screen. */
+"About your product" = "About your product";
 
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
@@ -463,8 +469,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "Add a product";
+
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "Add a product and the details manually";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Add a product image";
@@ -552,7 +562,15 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Add File";
 
-/* Title for the option to create product manually */
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "Add Gift Card";
+
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "Add key features, benefits, or details to help your product get found online.";
+
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "Add manually";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -625,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the button to add the Shipping Address in Order Details */
 "Add Shipping Address" = "Add Shipping Address";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "Add tax rates in admin. Only tax rates with location information will be shown here.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Add the description of the coupon.";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "Add this rate to all created orders";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Add to new package";
@@ -650,6 +674,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Add your first store";
+
+/* Title on the add product name screen. */
+"Add your product name" = "Add your product name";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "Adding discount is currently not available. Remove coupons first.";
@@ -923,8 +950,10 @@ which should be translated separately and considered part of this sentence. */
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Icon";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Apply";
@@ -950,6 +979,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Are you sure you want to change the product type?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "Are you sure you want to delete this category permanently?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "Are you sure you want to delete this coupon?";
@@ -1331,10 +1363,13 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1421,11 +1456,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Cannot Add Tags";
 
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "Cannot apply gift card to order";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "Cannot apply gift card to order error: %1$@";
+
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Cannot duplicate product";
 
 /* Error message when no URL to WP-Admin page is found during Jetpack install flow */
 "Cannot find information about your site's WP-Admin. Please try again." = "Cannot find information about your site's WP-Admin. Please try again.";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "Cannot Update Category";
 
 /* The title of the alert when there is an error removing the image from a Product Variation if WooCommerce <4.7
    The title of the alert when there is an error updating the product */
@@ -1523,6 +1568,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Categories";
@@ -1569,6 +1615,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Check your email!";
+
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "Checking order";
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Checkout";
@@ -1926,6 +1975,7 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1970,10 +2020,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie Policy";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "Copied!";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
@@ -2101,6 +2153,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Create a percentage discount for selected products";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "Create a product with AI";
+
 /* Navigates to a new flow for site creation. */
 "Create a Site" = "Create a Site";
 
@@ -2133,6 +2188,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the banner notice in the Orders tab */
 "Create orders!" = "Create orders!";
+
+/* Continue button on the add product features screen */
+"Create Product Details" = "Create Product Details";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2338,8 +2396,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Delete";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "Delete %1$@";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "Delete Coupon";
@@ -2362,6 +2424,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Description";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "Details";
 
 /* Details section title in the Edit Address Form */
 "DETAILS" = "DETAILS";
@@ -2467,7 +2532,7 @@ which should be translated separately and considered part of this sentence. */
 "Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, book matches, mailable flammable solids" = "Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety/strike on box matches, book matches, mailable flammable solids";
 
 /* A hazardous material description stating when a package can fit into this category */
-"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)" = "Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20% concentration)";
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)";
 
 /* A hazardous material description stating when a package can fit into this category */
 "Division 5.2 – Organic Peroxides Package" = "Division 5.2 – Organic Peroxides Package";
@@ -2518,6 +2583,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Don't show again";
+
+/* Subtitle on the add product with AI Preview screen. */
+"Don't worry. You can always change below details later." = "Don't worry. You can always change below details later.";
 
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
@@ -2662,6 +2730,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -2711,6 +2780,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver accessibility hint, informing the user the button can be used to bulk edit products */
 "Edit status or price for multiple products at once" = "Edit status or price for multiple products at once";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "Edit Tax Rate Setting";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Edit Tax Rates in Admin";
@@ -2830,6 +2902,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* City field placeholder in Edit Address Form */
 "Enter City" = "Enter City";
+
+/* Placeholder of the gift card code text field in the order form. */
+"Enter code" = "Enter code";
 
 /* Phone country code field placeholder in Edit Address Form */
 "Enter Country Code" = "Enter Country Code";
@@ -3289,6 +3364,11 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "Food and drink";
 
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "For example, Soft fabric, durable stitching, unique design";
+
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Forgot password?";
 
@@ -3370,7 +3450,8 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the progress screen while generating a variation */
 "Generating Variation" = "Generating Variation";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Generating...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3442,6 +3523,16 @@ which should be translated separately and considered part of this sentence. */
 
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Gift";
+
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "Gift Card";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "Gift card is invalid";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "Gift card is not applied";
 
 /* No comment provided by engineer. */
 "Gift cards" = "Gift cards";
@@ -3656,6 +3747,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Hide store setup list";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "Highlight what makes your product unique, and let AI do the magic.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Highlight your product's unique features and audience with keywords for a tailored description.";
 
@@ -3755,7 +3849,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "In stock";
 
 /* Title of the store creation profiler question about the store selling platforms. */
@@ -3920,6 +4015,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Invalid endpoint";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "Invalid gift card error: %1$@";
+
 /* Error message for invalid format of ITN in Customs screen of Shipping Label flow */
 "Invalid ITN format" = "Invalid ITN format";
 
@@ -3954,6 +4052,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Invalid weight";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Inventory";
@@ -3972,6 +4071,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Is the generated message helpful?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "Is the result helpful?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Isle of Man";
@@ -4216,6 +4318,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
 
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "Let AI generate captivating titles for you.";
+
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Let us know how we can help";
 
@@ -4266,6 +4371,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The required number of items in the cart to apply a coupon in plural form, reads like: Limited to 10 items in cart */
 "Limited to %1$d items in cart" = "Limited to %1$d items in cart";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, cleaning products, paints, etc.)";
 
 /* Description of the Action sheet option when the user wants to change the Product type to external product */
 "Link a product to an external website" = "Link a product to an external website";
@@ -4414,9 +4522,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* No comment provided by engineer. */
 "Loyalty points programs" = "Loyalty points programs";
-
-/* A hazardous material description stating when a package can fit into this category */
-"LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, cleaning products, paints, etc.)" = "LTD QTY Ground Package - Aerosols, spray disinfectants, spray paint, hair spray, propane, butane, cleaning products, etc. - Fragrances, nail polish, nail polish remover, solvents, hand sanitizer, rubbing alcohol, ethanol base products, etc. - Other limited quantity surface materials (cosmetics, cleaning products, paints, etc.)";
 
 /* Country option for a site address. */
 "Luxembourg" = "Luxembourg";
@@ -4717,7 +4822,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Multiple Stores";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "My Store";
 
@@ -4809,6 +4915,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the order creation screen */
 "New Order" = "New Order";
+
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "New order for";
 
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "New order for $13.98 on Your WooCommerce Store";
@@ -4911,6 +5020,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message on the detail view of the Orders tab before any order is selected */
 "No order selected" = "No order selected";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "No Parent Category";
 
 /* Bolded message confirming that no payment has been taken when the upgrade failed. */
 "No payment has been taken" = "No payment has been taken";
@@ -5176,6 +5288,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Or tap to select existing attribute";
 
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "Or, expand your choices by tapping for more name suggestions.";
+
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Order #%1$@";
@@ -5292,6 +5407,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The title for the customer payment cell */
 "Paid" = "Paid";
+
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "Paid with %@";
 
 /* Country option for a site address. */
 "Pakistan" = "Pakistan";
@@ -5479,6 +5597,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "Please check the remaining balance of the gift card.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service";
@@ -5697,6 +5818,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Powered by";
 
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "Powered by AI.";
+
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Powered by AI. %1$@.";
 
@@ -5729,7 +5853,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "Present card to refund";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "Preview";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5739,7 +5864,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Section header title for product price
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "Price";
 
 /* Title of the notice when a user updated price for selected products */
@@ -5861,6 +5987,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Product copied";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "Product description";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Product draft saved";
 
@@ -5869,6 +5998,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Edit Product External Link navigation title */
 "Product Link" = "Product Link";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "Product name";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Product published";
@@ -5895,7 +6029,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for filtering products by product type. */
 "Product Type" = "Product Type";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "Product type";
 
 /* Title of the text field for editing the external URL for an external/affiliate product */
@@ -6019,6 +6154,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Quarter to Date";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "Quickly generate details for you";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Quickly get up and selling with a beautiful online store.";
 
@@ -6066,7 +6204,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Referral programs" = "Referral programs";
 
 /* Button label to refresh a web page
-   Button to refresh the state of the in-person payments setup */
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "Refresh";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
@@ -6129,6 +6268,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "Refunding payment";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "Regenerate";
@@ -6255,6 +6395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Reset your password";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "Resolve Now";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Restricted to customers with emails: %1$@";
@@ -6422,7 +6565,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for the 'Save' button in the privacy banner */
 "Save" = "Save";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "Save as draft";
 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
@@ -6688,6 +6832,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Set the percentage of the discount you want to offer.";
 
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Set the tone and voice to shape your product's presentation that aligns with your brand.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "Set tone and voice";
+
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "Set up %1$@";
 
@@ -6797,6 +6947,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Shipping";
 
@@ -6857,9 +7008,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Shipping Refund";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "Shipping Zones";
 
 /* Display label for the product's catalog visibility */
 "Shop and search results" = "Shop and search results";
@@ -7120,6 +7268,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Sorry, we cannot create support requests right now, please try again later.";
 
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Sorry, we could not complete this action, as no active payment was found.";
+
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Sorry, we could not connect to the reader. Please try again.";
 
@@ -7371,6 +7522,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "Sudan";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "Suggest a name";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "Suggestion from photo";
 
@@ -7452,6 +7606,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Tags";
 
@@ -7590,6 +7745,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Tax classes";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "Tax rate location added automatically";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Tax rates for different locations can be managed in your store’s admin.";
 
@@ -7631,6 +7789,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Tell us more about your store";
+
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "Tell us what your product is and what makes it unique!";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7757,6 +7918,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "The code should be in XXXX-XXXX-XXXX-XXXX format";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "The coupon amount cannot be greater than 100 for percentage discounts";
 
@@ -7783,6 +7947,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service.";
+
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "The gift card is not applied.";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
 "The Google account \"%@\" doesn't match any account on WordPress.com" = "The Google account \"%@\" doesn't match any account on WordPress.com";
@@ -7813,6 +7980,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "The payment was canceled on the reader";
+
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "The payment was cancelled.";
 
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "The payment was interrupted and cannot be continued. You can retry the payment from the order screen.";
@@ -7972,6 +8142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "There was an error issuing the refund";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "There was an error retrying this payment. Please go back and start again.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "There was an error saving your privacy choices.";
 
@@ -8054,6 +8227,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "This payment has already been completed – please check the order details.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "This product couldn't be loaded";
 
@@ -8093,6 +8269,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received \(total) outside of WooCommerce" = "This will mark your order as complete if you received \(total) outside of WooCommerce";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "This will not affect online orders";
 
 /* Tab selector title that shows the statistics for this year
    Top Performers section title - this year */
@@ -8187,6 +8366,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "Tokelau";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "Tone and voice";
 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
@@ -8467,6 +8649,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Unable to load categories";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "Unable to load notification";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "Unable to load order analytics";
 
@@ -8526,6 +8711,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Unable to process payment. Order total amount is not valid.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Unable to process payment. We could not connect to the payment system. Please contact support if this error continues.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "Unable to read card - the system timed out - please try again";
@@ -8681,6 +8881,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* String shown to indicate the latest version of a plugin when an update is available and highlighted to the user */
 "Update available" = "Update available";
 
+/* Product Update Category navigation title */
+"Update Category" = "Update Category";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Update Instructions";
 
@@ -8804,6 +9007,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!";
+
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "Use package photo (Optional)";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Use password to sign in";
@@ -9019,6 +9225,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "We couldn't load your site";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "We couldn’t find any tax rates";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "We couldn’t update your reader’s software";
 
@@ -9084,6 +9293,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "We were unable to retry the payment – please start again.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "We were unable to send you an email at this time. Please try again later.";
@@ -9316,6 +9528,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "WRITE NOTE" = "WRITE NOTE";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -9426,9 +9639,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title in Woo Payments setup celebration screen. */
 "You did it!" = "You did it!";
-
-/* Text to prompt the user to edit tax ratesin the web when there are no results */
-"You don't have any tax rates with a location." = "You don't have any tax rates with a location.";
 
 /* Message to be displayed when the user encounters a permission error during Jetpack setup */
 "You don't have permission to manage plugins on this store." = "You don't have permission to manage plugins on this store.";

@@ -162,7 +162,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
                 resultsController.updatePredicate(siteID: siteID,
                                                   stockStatus: filters.stockStatus,
                                                   productStatus: filters.productStatus,
-                                                  productType: filters.productType)
+                                                  productType: filters.promotableProductType?.productType)
 
                 /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
                 tableView.reloadData()
@@ -795,7 +795,7 @@ private extension ProductsViewController {
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
                                                            stockStatus: filters.stockStatus,
                                                            productStatus: filters.productStatus,
-                                                           productType: filters.productType)
+                                                           productType: filters.promotableProductType?.productType)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
@@ -1215,7 +1215,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                  pageSize: pageSize,
                                  stockStatus: filters.stockStatus,
                                  productStatus: filters.productStatus,
-                                 productType: filters.productType,
+                                 productType: filters.promotableProductType?.productType,
                                  productCategory: filters.productCategory,
                                  sortOrder: sortOrder) { [weak self] result in
                                     guard let self = self else {
@@ -1246,7 +1246,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                                               sort: sort?.rawValue,
                                                               stockStatusFilter: filters.stockStatus,
                                                               productStatusFilter: filters.productStatus,
-                                                              productTypeFilter: filters.productType,
+                                                              productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory) { (error) in
         }
         ServiceLocator.stores.dispatch(action)
@@ -1263,9 +1263,10 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                         self?.sortOrder = ProductsSortOrder(rawValue: sort) ?? .default
                     }
 
+                    let promotableProductType = settings.productTypeFilter.map { PromotableProductType(productType: $0, isAvailable: true, promoteUrl: nil) }
                     self?.filters = FilterProductListViewModel.Filters(stockStatus: settings.stockStatusFilter,
                                                                        productStatus: settings.productStatusFilter,
-                                                                       productType: settings.productTypeFilter,
+                                                                       promotableProductType: promotableProductType,
                                                                        productCategory: settings.productCategoryFilter,
                                                                        numberOfActiveFilters: settings.numberOfActiveFilters())
 

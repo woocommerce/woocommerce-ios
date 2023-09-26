@@ -132,7 +132,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.updateOrderStatus(newStatus: .processing)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, order, onCompletion):
+            case let .createOrder(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -152,7 +152,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, _, onCompletion):
+            case let .createOrder(_, _, _, onCompletion):
                 onCompletion(.failure(error))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -174,7 +174,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(error))
                     expectation.fulfill()
                 default:
@@ -198,7 +198,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: "")))
                     expectation.fulfill()
                 default:
@@ -827,7 +827,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let isLoadingDuringSync: Bool = waitFor { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     promise(self.viewModel.paymentDataViewModel.isLoading)
                     onCompletion(.success(.fake()))
                 default:
@@ -875,7 +875,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, _, onCompletion):
+            case let .createOrder(_, _, _, onCompletion):
                 let order = Order.fake().copy(siteID: self.sampleSiteID, totalTax: "2.50")
                 onCompletion(.success(order))
                 expectation.fulfill()
@@ -1275,7 +1275,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .createOrder(_, _, onCompletion):
+                case let .createOrder(_, _, _, onCompletion):
                     onCompletion(.failure(NSError(domain: "Error", code: 0)))
                     expectation.fulfill()
                 default:
@@ -1315,7 +1315,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitForExpectation { expectation in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case .createOrder(_, let order, let completion):
+                case .createOrder(_, let order, _, let completion):
                     completion(.success(order.copy(orderID: 12)))
                     expectation.fulfill()
                 default:
@@ -1616,7 +1616,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .createOrder(_, order, onCompletion):
+            case let .createOrder(_, order, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -2214,6 +2214,120 @@ final class EditableOrderViewModelTests: XCTestCase {
         waitUntil {
             viewModel.taxRateRowAction == .storedTaxRateSheet
         }
+    }
+
+    func test_isGiftCardEnabled_becomes_true_when_gift_cards_plugin_is_active() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(.fake().copy(active: true))
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, true)
+    }
+
+    func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_active() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(.fake().copy(active: false))
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+    }
+
+    func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_installed() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+
+        var viewModel: EditableOrderViewModel?
+        waitFor { promise in
+            stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
+                guard case let .fetchSystemPluginWithPath(_, pluginPath, onCompletion) = action else {
+                    return
+                }
+                XCTAssertEqual(pluginPath, "woocommerce-gift-cards/woocommerce-gift-cards.php")
+                onCompletion(nil)
+                promise(())
+            }
+
+            // When
+            viewModel = EditableOrderViewModel(siteID: self.sampleSiteID, stores: stores, storageManager: self.storageManager)
+            XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+        }
+
+        // Then
+        XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
+    }
+
+    func test_isAddGiftCardActionEnabled_is_false_when_order_total_is_zero() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.isAddGiftCardActionEnabled, false)
+    }
+
+    func test_isAddGiftCardActionEnabled_is_true_when_order_total_is_positive() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, total: "0.01")
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        XCTAssertEqual(viewModel.paymentDataViewModel.isAddGiftCardActionEnabled, true)
+    }
+
+    func test_appliedGiftCards_have_negative_formatted_amount() {
+        // Given
+        let order = Order.fake().copy(orderID: sampleOrderID, appliedGiftCards: [
+            .init(giftCardID: 1, code: "AAAA-BBBB-AAAA-BBBB", amount: 15.3333),
+            .init(giftCardID: 1, code: "AAAA-BBBB-AAAA-BBBB", amount: 2),
+            .init(giftCardID: 2, code: "BBBB-AAAA-BBBB-AAAA", amount: 5.6)
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), currencySettings: .init())
+
+        // Then
+        let expectedGiftCards: [EditableOrderViewModel.PaymentDataViewModel.AppliedGiftCard] = [
+            .init(code: "AAAA-BBBB-AAAA-BBBB", amount: "-$15.33"),
+            .init(code: "AAAA-BBBB-AAAA-BBBB", amount: "-$2.00"),
+            .init(code: "BBBB-AAAA-BBBB-AAAA", amount: "-$5.60")
+        ]
+        assertEqual(expectedGiftCards, viewModel.paymentDataViewModel.appliedGiftCards)
     }
 }
 

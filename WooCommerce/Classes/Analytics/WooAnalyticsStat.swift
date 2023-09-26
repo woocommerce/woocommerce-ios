@@ -602,8 +602,6 @@ public enum WooAnalyticsStat: String {
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
-    // Exposure event for the A/B experiment.
-    case addProductFromImageEligible = "add_product_from_image_eligible"
 
     // MARK: Add product from image events
     case addProductFromImageDisplayed = "add_product_from_image_displayed"
@@ -758,6 +756,7 @@ public enum WooAnalyticsStat: String {
     case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
     case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
     case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
+    case productFilterListExploreButtonTapped = "product_filter_list_explore_button_tapped"
 
     // MARK: Readonly Product Variations Events
     //

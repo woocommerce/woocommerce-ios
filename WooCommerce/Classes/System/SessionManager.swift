@@ -175,6 +175,7 @@ final class SessionManager: SessionManagerProtocol {
         defaults[.hasDismissedWriteWithAITooltip] = nil
         defaults[.numberOfTimesWriteWithAITooltipIsShown] = nil
         defaults[.storeProfilerAnswers] = nil
+        defaults[.aiPromptTone] = nil
     }
 
     /// Deletes application password

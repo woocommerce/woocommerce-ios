@@ -1128,6 +1128,7 @@ extension Networking.Product {
         groupedProducts: CopiableProp<[Int64]> = .copy,
         menuOrder: CopiableProp<Int> = .copy,
         addOns: CopiableProp<[ProductAddOn]> = .copy,
+        isSampleItem: CopiableProp<Bool> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
@@ -1201,6 +1202,7 @@ extension Networking.Product {
         let groupedProducts = groupedProducts ?? self.groupedProducts
         let menuOrder = menuOrder ?? self.menuOrder
         let addOns = addOns ?? self.addOns
+        let isSampleItem = isSampleItem ?? self.isSampleItem
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
         let bundledItems = bundledItems ?? self.bundledItems
@@ -1275,6 +1277,7 @@ extension Networking.Product {
             groupedProducts: groupedProducts,
             menuOrder: menuOrder,
             addOns: addOns,
+            isSampleItem: isSampleItem,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
             bundledItems: bundledItems,
@@ -2115,6 +2118,7 @@ extension Networking.Site {
         isSiteOwner: CopiableProp<Bool> = .copy,
         frameNonce: CopiableProp<String> = .copy,
         plan: CopiableProp<String> = .copy,
+        isAIAssistantFeatureActive: CopiableProp<Bool> = .copy,
         isJetpackThePluginInstalled: CopiableProp<Bool> = .copy,
         isJetpackConnected: CopiableProp<Bool> = .copy,
         isWooCommerceActive: CopiableProp<Bool> = .copy,
@@ -2136,6 +2140,7 @@ extension Networking.Site {
         let isSiteOwner = isSiteOwner ?? self.isSiteOwner
         let frameNonce = frameNonce ?? self.frameNonce
         let plan = plan ?? self.plan
+        let isAIAssistantFeatureActive = isAIAssistantFeatureActive ?? self.isAIAssistantFeatureActive
         let isJetpackThePluginInstalled = isJetpackThePluginInstalled ?? self.isJetpackThePluginInstalled
         let isJetpackConnected = isJetpackConnected ?? self.isJetpackConnected
         let isWooCommerceActive = isWooCommerceActive ?? self.isWooCommerceActive
@@ -2158,6 +2163,7 @@ extension Networking.Site {
             isSiteOwner: isSiteOwner,
             frameNonce: frameNonce,
             plan: plan,
+            isAIAssistantFeatureActive: isAIAssistantFeatureActive,
             isJetpackThePluginInstalled: isJetpackThePluginInstalled,
             isJetpackConnected: isJetpackConnected,
             isWooCommerceActive: isWooCommerceActive,

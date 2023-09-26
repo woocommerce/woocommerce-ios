@@ -125,7 +125,6 @@ public final class ProductCategoriesRemote: Remote {
                                      path: path,
                                      parameters: ["force": "true"],
                                      availableAsRESTRequest: true)
-        let mapper = ProductMapper(siteID: siteID)
         try await enqueue(request)
     }
 }

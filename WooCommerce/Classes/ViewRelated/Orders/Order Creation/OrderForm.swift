@@ -165,7 +165,6 @@ struct OrderForm: View {
                                 }
                                 .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
                                     storedTaxRateBottomSheetContent
-
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)

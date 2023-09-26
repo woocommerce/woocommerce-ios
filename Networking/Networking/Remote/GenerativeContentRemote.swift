@@ -207,7 +207,7 @@ private extension GenerativeContentRemote {
             }
 
             return
-                ", tags:Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
+                ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
                 "suggest an array of the best matching tags for this product, if no matches are found return an empty array, " +
                 "don’t suggest any value other than the available ones"
         }()
@@ -218,7 +218,7 @@ private extension GenerativeContentRemote {
             }
 
             return
-                ", categories:Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
+                ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
                 "suggest an array of the best matching categories for this product, if no matches are found return an empty array, " +
                 "don’t suggest any value other than the available ones"
         }()
@@ -234,18 +234,18 @@ private extension GenerativeContentRemote {
         let expectedJsonFormat =
         "Expected json response format:" + "\n" +
         "{" +
-            "name:The name of the product, in the ISO language code ```\(language)```, " +
-            "description:Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
-            "short_description:Product's short description, in the ISO language code ```\(language)```, " +
-            "virtual:A boolean value that shows whether the product is virtual or physical, " +
-            "shipping:" +
+            "name: The name of the product, in the ISO language code ```\(language)```, " +
+            "description: Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
+            "short_description: Product's short description, in the ISO language code ```\(language)```, " +
+            "virtual: A boolean value that shows whether the product is virtual or physical, " +
+            "shipping: " +
                 "{" +
-                    "length:Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "weight:Guess and provide only the number in ```\(weightUnit)```, " +
-                    "width:Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "height:Guess and provide only the number in ```\(dimensionUnit)```" +
+                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "weight: Guess and provide only the number in ```\(weightUnit)```, " +
+                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "height: Guess and provide only the number in ```\(dimensionUnit)```" +
                 "}, " +
-            "price:Guess the price in ```\(currencySymbol)```, return the price unformatted" +
+            "price: Guess the price in ```\(currencySymbol)```, return the price unformatted" +
             tagsAsString +
             categoriesAsString +
         "}"

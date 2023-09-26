@@ -96,11 +96,15 @@ struct AddProductFromImageView: View {
         .navigationTitle(Localization.title)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button(Localization.continueButtonTitle) {
-                    viewModel.trackContinueButtonTapped()
-                    completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
+                if viewModel.isGeneratingDetails {
+                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                } else {
+                    Button(Localization.continueButtonTitle) {
+                        viewModel.trackContinueButtonTapped()
+                        completion(.init(name: viewModel.name, description: viewModel.description, image: viewModel.image))
+                    }
+                    .buttonStyle(LinkButtonStyle())
                 }
-                .buttonStyle(LinkButtonStyle())
             }
             ToolbarItem(placement: .cancellationAction) {
                 Button(Localization.cancelButtonTitle) {

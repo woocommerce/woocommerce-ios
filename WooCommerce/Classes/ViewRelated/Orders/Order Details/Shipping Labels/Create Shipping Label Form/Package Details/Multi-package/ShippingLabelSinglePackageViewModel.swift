@@ -254,13 +254,13 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
                 if !containsHazmat {
                     self?.selectedHazmatCategory = .none
                 } else {
-                    analytics.track(.containsHazmatChecked)
+                    self?.analytics.track(.containsHazmatChecked)
                 }
             }.store(in: &subscriptions)
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
-            .map { containsHazmat, selectedCategory -> Bool in
-                analytics.track(.hazmatCategorySelected)
+            .map { [weak self] containsHazmat, selectedCategory -> Bool in
+                self?.analytics.track(.hazmatCategorySelected)
                 if containsHazmat {
                     return selectedCategory != .none
                 } else {

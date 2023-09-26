@@ -2616,7 +2616,7 @@ extension WooAnalyticsEvent {
 
 // MARK: - Shipping Label Hazmat Declaration
 //
-extensions WooAnalyticsEvent {
+extension WooAnalyticsEvent {
     enum ShippingLabelHazmatDeclaration {
         static func hazmatCategorySelectorOpened() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])

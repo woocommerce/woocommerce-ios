@@ -101,19 +101,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             return
         }
         isSavingProduct = true
-        uploadPackagingImageIfNeeded()
         do {
             let newProduct = try await saveProductRemotely(product: generatedProduct)
             createdProductID = newProduct.productID
-            guard packagingImage != nil else {
-                return onProductCreated(newProduct)
-            }
-
-            /// Updates local product with images
-            replaceProductID(newID: newProduct.productID)
-            let images = await updateProductWithUploadedImages(productID: newProduct.productID)
-            let updatedProduct = newProduct.copy(images: images)
-            onProductCreated(updatedProduct)
+            onProductCreated(newProduct)
         } catch {
             // TODO: error handling
             DDLogError("⛔️ Error saving product with AI: \(error)")
@@ -198,28 +189,9 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
-// MARK: - Uploading image and saving product
+// MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {
-    /// Sets up image uploader to upload packaging image if it's available.
-    ///
-    func uploadPackagingImageIfNeeded() {
-        guard let packagingImage else {
-            return
-        }
-        let productImageActionHandler = productImageUploader
-            .actionHandler(key: .init(siteID: siteID,
-                                      productOrVariationID: .product(id: localProductID),
-                                      isLocalID: true),
-                           originalStatuses: [])
-        switch packagingImage.source {
-        case let .asset(asset):
-            productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
-        case let .media(media):
-            productImageActionHandler.addSiteMediaLibraryImagesToProduct(mediaItems: [media])
-        }
-        productImageUploader.stopEmittingErrors(key: .init(siteID: siteID, productOrVariationID: .product(id: localProductID), isLocalID: true))
-    }
 
     /// Saves the provided product remotely.
     ///
@@ -235,35 +207,6 @@ private extension ProductDetailPreviewViewModel {
                 }
             }
             stores.dispatch(updateProductAction)
-        }
-    }
-
-    /// Replaces the actual product ID for pending images for background upload.
-    ///
-    func replaceProductID(newID: Int64) {
-        productImageUploader.replaceLocalID(siteID: siteID,
-                                            localID: .product(id: localProductID),
-                                            remoteID: newID)
-    }
-
-    /// Updates the product with provided ID with uploaded images.
-    /// Returns all the uploaded images.
-    ///
-    @MainActor
-    func updateProductWithUploadedImages(productID: Int64) async -> [ProductImage] {
-        await withCheckedContinuation { continuation in
-            let key: ProductImageUploaderKey = .init(siteID: siteID,
-                                                     productOrVariationID: .product(id: productID),
-                                                     isLocalID: false)
-            productImageUploader
-                .saveProductImagesWhenNoneIsPendingUploadAnymore(key: key) { result in
-                    switch result {
-                    case .success(let images):
-                        continuation.resume(returning: images)
-                    case .failure(let error):
-                        DDLogError("⛔️ Error saving images for new product: \(error)")
-                    }
-                }
         }
     }
 }

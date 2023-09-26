@@ -6,6 +6,7 @@ public enum GenerativeContentRemoteFeature: String {
     case productSharing = "woo_ios_share_product"
     case productDetailsFromScannedTexts = "woo_ios_product_details_from_scanned_texts"
     case productName = "woo_ios_product_name"
+    case productCreation = "woo_ios_product_creation"
 }
 
 /// Protocol for `GenerativeContentRemote` mainly used for mocking.
@@ -199,80 +200,71 @@ private extension GenerativeContentRemote {
                          categories: [ProductCategory],
                          tags: [ProductTag],
                          token: String) async throws -> Product {
-        // TODO: 10767 Implement AI generation
-        Product(siteID: siteID,
-                productID: 0,
-                name: "",
-                slug: "",
-                permalink: "",
-                date: Date(),
-                dateCreated: Date(),
-                dateModified: nil,
-                dateOnSaleStart: nil,
-                dateOnSaleEnd: nil,
-                productTypeKey: ProductType.simple.rawValue,
-                statusKey: ProductStatus.published.rawValue,
-                featured: false,
-                catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
-                fullDescription: "",
-                shortDescription: "",
-                sku: "",
-                price: "",
-                regularPrice: "",
-                salePrice: "",
-                onSale: false,
-                purchasable: false,
-                totalSales: 0,
-                virtual: false,
-                downloadable: false,
-                downloads: [],
-                downloadLimit: -1,
-                downloadExpiry: -1,
-                buttonText: "",
-                externalURL: "",
-                taxStatusKey: ProductTaxStatus.taxable.rawValue,
-                taxClass: "",
-                manageStock: false,
-                stockQuantity: nil,
-                stockStatusKey: ProductStockStatus.inStock.rawValue,
-                backordersKey: ProductBackordersSetting.notAllowed.rawValue,
-                backordersAllowed: false,
-                backordered: false,
-                soldIndividually: false,
-                weight: "",
-                dimensions: ProductDimensions(length: "", width: "", height: ""),
-                shippingRequired: true,
-                shippingTaxable: true,
-                shippingClass: "",
-                shippingClassID: 0,
-                productShippingClass: nil,
-                reviewsAllowed: true,
-                averageRating: "",
-                ratingCount: 0,
-                relatedIDs: [],
-                upsellIDs: [],
-                crossSellIDs: [],
-                parentID: 0,
-                purchaseNote: "",
-                categories: [],
-                tags: [],
-                images: [],
-                attributes: [],
-                defaultAttributes: [],
-                variations: [],
-                groupedProducts: [],
-                menuOrder: 0,
-                addOns: [],
-                isSampleItem: false,
-                bundleStockStatus: nil,
-                bundleStockQuantity: nil,
-                bundledItems: [],
-                compositeComponents: [],
-                subscription: nil,
-                minAllowedQuantity: nil,
-                maxAllowedQuantity: nil,
-                groupOfQuantity: nil,
-                combineVariationQuantities: nil)
+
+        let tagsAsString = {
+            guard !tags.isEmpty else {
+                return ""
+            }
+
+            return
+                ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
+                "suggest an array of the best matching tags for this product, if no matches are found return an empty array, " +
+                "don’t suggest any value other than the available ones."
+        }()
+
+        let categoriesAsString = {
+            guard !categories.isEmpty else {
+                return ""
+            }
+
+            return
+                ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
+                "suggest an array of the best matching categories for this product, if no matches are found return an empty array, " +
+                "don’t suggest any value other than the available ones."
+        }()
+
+        let input = [
+            "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
+            "using the provided name, keywords and tone, and give your response in the below JSON format.",
+            "name: ```\(productName)```",
+            "keywords: ```\(keywords)```",
+            "tone: ```\(tone)```",
+        ].joined(separator: "\n")
+
+        let expectedJsonFormat =
+        "Expected json response format:" + "\n" +
+        "{" +
+            "name: The name of the product, in the ISO language code ```\(language)```, " +
+            "description: Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
+            "short_description: Product's short description, in the ISO language code ```\(language)```, " +
+            "virtual: A boolean value that shows whether the product is virtual or physical, " +
+            "shipping: " +
+                "{" +
+                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "weight: Guess and provide only the number in ```\(weightUnit)```, " +
+                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "height: Guess and provide only the number in ```\(dimensionUnit)```" +
+                "}, " +
+            "price: Guess the price in ```\(currencySymbol)```, return the price unformatted" +
+            tagsAsString +
+            categoriesAsString +
+        "}"
+
+        let prompt = input + "\n" + expectedJsonFormat
+
+        let parameters = [ParameterKey.token: token,
+                          ParameterKey.prompt: prompt,
+                          ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
+                          ParameterKey.fields: ParameterValue.completion]
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2,
+                                    method: .post,
+                                    path: Path.textCompletion,
+                                    parameters: parameters)
+
+        let mapper = AIProductMapper(siteID: siteID,
+                                     existingCategories: categories,
+                                     existingTags: tags)
+        return try await enqueue(request, mapper: mapper)
     }
 }
 

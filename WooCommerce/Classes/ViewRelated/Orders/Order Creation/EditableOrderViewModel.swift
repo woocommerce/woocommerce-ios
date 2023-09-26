@@ -600,6 +600,17 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
     }
 
+    /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
+    ///
+    func forgetTaxRate() {
+        let order = orderSynchronizer.order
+        orderSynchronizer.setAddresses.send(OrderSyncAddressesInput(billing: order.billingAddress?.resettingTaxRateComponents(),
+                                                                    shipping: order.shippingAddress?.resettingTaxRateComponents()))
+        resetAddressForm()
+        storedTaxRate = nil
+        stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
+    }
+
     /// Updates the order creation draft with the current set customer note.
     ///
     func updateCustomerNote() {

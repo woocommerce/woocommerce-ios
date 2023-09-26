@@ -253,6 +253,8 @@ struct OrderForm: View {
             .padding()
 
             Button {
+                viewModel.forgetTaxRate()
+                shouldShowStoredTaxRateSheet = false
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)

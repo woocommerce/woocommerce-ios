@@ -401,6 +401,17 @@ final class GenerativeContentRemoteTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(product)
+        XCTAssertEqual(product.name, "Cookie")
+        // swiftlint:disable line_length
+        XCTAssertEqual(product.fullDescription, "Introducing Cookie, the ultimate crunchy and crispy treat that will satisfy your snacking cravings. Made with the finest ingredients, these irresistible cookies are baked to perfection, delivering a delightful texture with every bite. Whether you're enjoying them with a cup of tea or sharing them with friends, Cookie is the go-to snack for any casual occasion. Indulge in the mouthwatering flavors and experience a taste sensation that will leave you wanting more. Get your hands on Cookie today and discover why it's the ultimate snack companion.")
+        XCTAssertEqual(product.shortDescription, "The ultimate crunchy and crispy treat that will satisfy your snacking cravings. Made with the finest ingredients, these irresistible cookies are baked to perfection, delivering a delightful texture with every bite. Indulge in the mouthwatering flavors of Cookie today!")
+        // swiftlint:enable line_length
+        XCTAssertFalse(product.virtual)
+        XCTAssertEqual(product.weight, "0.2")
+        XCTAssertEqual(product.dimensions.length, "15")
+        XCTAssertEqual(product.dimensions.width, "10")
+        XCTAssertEqual(product.dimensions.height, "5")
+        XCTAssertEqual(product.price, "250")
     }
 
     func test_generateProduct_with_failure_returns_error() async throws {

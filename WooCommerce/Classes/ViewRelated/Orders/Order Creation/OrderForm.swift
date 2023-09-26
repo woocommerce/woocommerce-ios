@@ -222,7 +222,6 @@ struct OrderForm: View {
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
         VStack (alignment: .leading) {
-            // your sheet content here
             Text(Localization.storedTaxRateBottomSheetTitle)
                 .bodyStyle()
                 .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)

@@ -2614,6 +2614,24 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Shipping Label Hazmat Declaration
+//
+extensions WooAnalyticsEvent {
+    enum ShippingLabelHazmatDeclaration {
+        static func hazmatCategorySelectorOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])
+        }
+
+        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatDeclaration) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelected, properties: [:])
+        }
+
+        static func containsHazmatChecked() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .containsHazmatChecked, properties: [:])
+        }
+    }
+}
+
 // MARK: - Remote Requests
 //
 extension WooAnalyticsEvent {

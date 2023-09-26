@@ -90,7 +90,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         try? await Task.sleep(nanoseconds: 1_000_000_000)
         #if canImport(SwiftUI) && DEBUG
-        generatedProduct = Product.swiftUIPreviewSample().copy(siteID: siteID, productID: 0)
+        generatedProduct = Product.swiftUIPreviewSample().copy(siteID: siteID, productID: 0, name: productName)
         #endif
         isGeneratingDetails = false
     }
@@ -109,9 +109,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                 return onProductCreated(newProduct)
             }
 
-            /// Update product with images
+            /// Updates local product with images
             replaceProductID(newID: newProduct.productID)
-            let images = await saveProductImagesWhenNoneIsPendingUploadAnymore(productID: newProduct.productID)
+            let images = await updateProductWithUploadedImages(productID: newProduct.productID)
             let updatedProduct = newProduct.copy(images: images)
             onProductCreated(updatedProduct)
         } catch {
@@ -126,7 +126,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 }
 
-// MARK: - Helper methods
+// MARK: - Product details for preview
 //
 private extension ProductDetailPreviewViewModel {
     func observeGeneratedProduct() {
@@ -172,7 +172,7 @@ private extension ProductDetailPreviewViewModel {
             .filter({ !$0.isEmpty })
 
         if let dimensionUnit = dimensionUnit,
-            !dimensions.isEmpty {
+           !dimensions.isEmpty {
             switch dimensions.count {
             case 1:
                 let dimension = dimensions[0]
@@ -196,7 +196,13 @@ private extension ProductDetailPreviewViewModel {
 
         productShippingDetails = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
     }
+}
 
+// MARK: - Uploading image and saving product
+//
+private extension ProductDetailPreviewViewModel {
+    /// Sets up image uploader to upload packaging image if it's available.
+    ///
     func uploadPackagingImageIfNeeded() {
         guard let packagingImage else {
             return
@@ -215,6 +221,8 @@ private extension ProductDetailPreviewViewModel {
         productImageUploader.stopEmittingErrors(key: .init(siteID: siteID, productOrVariationID: .product(id: localProductID), isLocalID: true))
     }
 
+    /// Saves the provided product remotely.
+    ///
     @MainActor
     func saveProductRemotely(product: Product) async throws -> Product {
         try await withCheckedThrowingContinuation { continuation in
@@ -230,14 +238,19 @@ private extension ProductDetailPreviewViewModel {
         }
     }
 
+    /// Replaces the actual product ID for pending images for background upload.
+    ///
     func replaceProductID(newID: Int64) {
         productImageUploader.replaceLocalID(siteID: siteID,
                                             localID: .product(id: localProductID),
                                             remoteID: newID)
     }
 
+    /// Updates the product with provided ID with uploaded images.
+    /// Returns all the uploaded images.
+    ///
     @MainActor
-    func saveProductImagesWhenNoneIsPendingUploadAnymore(productID: Int64) async -> [ProductImage] {
+    func updateProductWithUploadedImages(productID: Int64) async -> [ProductImage] {
         await withCheckedContinuation { continuation in
             let key: ProductImageUploaderKey = .init(siteID: siteID,
                                                      productOrVariationID: .product(id: productID),

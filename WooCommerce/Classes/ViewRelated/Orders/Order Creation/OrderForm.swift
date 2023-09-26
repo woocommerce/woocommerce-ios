@@ -161,7 +161,8 @@ struct OrderForm: View {
                                         viewModel.onTaxRateSelected(taxRate)
                                     }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
-                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
+                                                           storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
                                 }
                                 .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
                                     storedTaxRateBottomSheetContent

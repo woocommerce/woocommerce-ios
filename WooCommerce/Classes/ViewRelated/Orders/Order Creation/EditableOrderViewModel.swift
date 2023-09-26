@@ -163,6 +163,12 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Defines if the toggle to store the tax rate in the selector should be enabled by default
+    ///
+    var shouldStoreTaxRateInSelectorByDefault: Bool {
+        storedTaxRate != nil
+    }
+
     var taxRateRowAction: TaxRateRowAction {
         storedTaxRate == nil ? .taxSelector : .storedTaxRateSheet
     }

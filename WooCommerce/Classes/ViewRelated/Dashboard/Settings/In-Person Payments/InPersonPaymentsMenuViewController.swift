@@ -211,7 +211,8 @@ private extension InPersonPaymentsMenuViewController {
     ///     If not set, this function will fetch the value from the viewModel, however, when called in response to a @Published update,
     ///     the viewModel value may not yet be up to date.
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
-                           shouldShowTapToPayOnIPhoneFeedback: Bool? = nil) {
+                           shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
+                           depositsOverviewViewModels: [WooPaymentsDepositsOverviewViewModel]? = nil) {
         var composingSections: [Section?] = [actionsSection]
 
         if isEligibleForTapToPayOnIPhone ?? viewModel.isEligibleForTapToPayOnIPhone {
@@ -222,6 +223,8 @@ private extension InPersonPaymentsMenuViewController {
         if viewModel.isEligibleForCardPresentPayments {
             composingSections.append(contentsOf: [cardReadersSection, paymentOptionsSection])
         }
+
+        composingSections.append(contentsOf: depositsSections(from: depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels))
 
         sections = composingSections.compactMap { $0 }
     }
@@ -259,6 +262,12 @@ private extension InPersonPaymentsMenuViewController {
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
     }
 
+    func depositsSections(from viewModels: [WooPaymentsDepositsOverviewViewModel])-> [Section] {
+        viewModels.map { viewModel in
+            Section(header: nil, rows: [.depositOverview])
+        }
+    }
+
     func configureTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -286,7 +295,11 @@ private extension InPersonPaymentsMenuViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            tableView.registerNib(for: row.type)
+            if row.registerWithNib {
+                tableView.registerNib(for: row.type)
+            } else {
+                tableView.register(row.type)
+            }
         }
     }
 
@@ -311,6 +324,12 @@ private extension InPersonPaymentsMenuViewController {
         case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhoneFeedback:
             configureTapToPayOnIPhoneFeedback(cell: cell)
         default:
+            if #available(iOS 16.0, *) {
+                if let cell = cell as? HostingTableViewCell<WooPaymentsDepositsOverviewView>,
+                   row == .depositOverview {
+                    return configureDepositOverview(cell: cell, at: indexPath)
+                }
+            }
             fatalError()
         }
     }
@@ -391,6 +410,25 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .none
     }
 
+    @available(iOS 16.0, *)
+    func configureDepositOverview(cell: HostingTableViewCell<WooPaymentsDepositsOverviewView>, at indexPath: IndexPath) {
+        guard let depositIndex = depositIndex(from: indexPath),
+              depositIndex <= viewModel.depositsOverviewViewModels.endIndex else {
+            return DDLogError("💰 Attempted to configure deposit overview for inaccessible view model.")
+        }
+
+        let view = WooPaymentsDepositsOverviewView(viewModel: viewModel.depositsOverviewViewModels[depositIndex])
+        cell.host(view, parent: self)
+        cell.selectionStyle = .none
+    }
+
+    private func depositIndex(from indexPath: IndexPath) -> Int? {
+        guard let firstDepositSectionIndex = sections.firstIndex(where: { $0.rows.contains(.depositOverview) }) else {
+            return nil
+        }
+        return indexPath.section - firstDepositSectionIndex
+    }
+
     private func prepareForReuse(_ cell: UITableViewCell) {
         cell.imageView?.tintColor = .text
         cell.accessoryType = .disclosureIndicator
@@ -425,6 +463,13 @@ private extension InPersonPaymentsMenuViewController {
         viewModel.$shouldBadgeTapToPayOnIPhone.sink { [weak self] _ in
             self?.configureSections()
             // ensures that the cell will be configured with the correct value for the badge
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }.store(in: &cancellables)
+
+        viewModel.$depositsOverviewViewModels.sink { [weak self] depositsOverviewViewModels in
+            self?.configureSections(depositsOverviewViewModels: depositsOverviewViewModels)
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
             }
@@ -622,6 +667,8 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             setUpTapToPayOnIPhoneWasPressed()
         case .tapToPayOnIPhoneFeedback:
             tapToPayOnIPhoneFeedbackWasPressed()
+        case .depositOverview:
+            break
         }
     }
 
@@ -736,6 +783,7 @@ private enum Row: CaseIterable {
     case toggleEnableCashOnDelivery
     case setUpTapToPayOnIPhone
     case tapToPayOnIPhoneFeedback
+    case depositOverview
 
     var type: UITableViewCell.Type {
         switch self {
@@ -745,8 +793,23 @@ private enum Row: CaseIterable {
             return LeftImageTitleSubtitleToggleTableViewCell.self
         case .setUpTapToPayOnIPhone:
             return BadgedLeftImageTableViewCell.self
+        case .depositOverview:
+            if #available(iOS 16.0, *) {
+                return HostingTableViewCell<WooPaymentsDepositsOverviewView>.self
+            } else {
+                fatalError()
+            }
         default:
             return LeftImageTableViewCell.self
+        }
+    }
+
+    fileprivate var registerWithNib: Bool {
+        switch self {
+        case .depositOverview:
+            return false
+        default:
+            return true
         }
     }
 

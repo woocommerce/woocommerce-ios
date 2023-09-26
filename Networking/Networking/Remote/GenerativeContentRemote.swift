@@ -209,7 +209,7 @@ private extension GenerativeContentRemote {
             return
                 ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
                 "suggest an array of the best matching tags for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones"
+                "don’t suggest any value other than the available ones."
         }()
 
         let categoriesAsString = {
@@ -220,12 +220,12 @@ private extension GenerativeContentRemote {
             return
                 ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
                 "suggest an array of the best matching categories for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones"
+                "don’t suggest any value other than the available ones."
         }()
 
         let input = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
-            "using the provided name, keywords and tone, and give your response in the below JSON format",
+            "using the provided name, keywords and tone, and give your response in the below JSON format.",
             "name: ```\(productName)```",
             "keywords: ```\(keywords)```",
             "tone: ```\(tone)```",

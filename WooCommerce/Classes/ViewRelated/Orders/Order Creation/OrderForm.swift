@@ -237,6 +237,8 @@ struct OrderForm: View {
             }
 
             Button {
+                shouldShowStoredTaxRateSheet = false
+                shouldShowNewTaxRateSelector = true
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)

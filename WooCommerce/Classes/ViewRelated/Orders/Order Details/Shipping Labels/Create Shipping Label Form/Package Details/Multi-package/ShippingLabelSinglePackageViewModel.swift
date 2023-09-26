@@ -197,6 +197,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             $0.showingMoveItemDialog = false
         }
     }
+    
+    func hazmatCategorySelectorOpened() {
+        analytics.track(.hazmatCategorySelectorOpened)
+    }
 
     private func configureItemRows() {
         itemsRows = generateItemsRows()
@@ -249,11 +253,14 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             .sink { [weak self] containsHazmat in
                 if !containsHazmat {
                     self?.selectedHazmatCategory = .none
+                } else {
+                    analytics.track(.containsHazmatChecked)
                 }
             }.store(in: &subscriptions)
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
             .map { containsHazmat, selectedCategory -> Bool in
+                analytics.track(.hazmatCategorySelected)
                 if containsHazmat {
                     return selectedCategory != .none
                 } else {

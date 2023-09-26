@@ -258,7 +258,7 @@ struct OrderForm: View {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)
                 } icon: {
-                    Image(systemName: "x.circle")
+                    Image(systemName: "xmark.circle")
                         .resizable()
                         .font(Font.title2.weight(.semibold))
                         .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,

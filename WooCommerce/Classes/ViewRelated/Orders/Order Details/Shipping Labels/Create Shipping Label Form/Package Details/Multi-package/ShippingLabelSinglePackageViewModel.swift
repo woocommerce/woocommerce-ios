@@ -197,7 +197,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             $0.showingMoveItemDialog = false
         }
     }
-    
+
     func hazmatCategorySelectorOpened() {
         analytics.track(.hazmatCategorySelectorOpened)
     }

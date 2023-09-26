@@ -52,7 +52,9 @@ struct AdaptiveSheetViewControllerRepresentable<Content: View>: UIViewController
     func updateUIViewController(_ uiViewController: AdaptiveSheetViewController<Content>, context: Context) {
         if isPresented {
             uiViewController.presentModalView()
-        } else if uiViewController.presentedViewController != nil {
+        } else if uiViewController.hostingViewController != nil,
+                  uiViewController.presentedViewController === uiViewController.hostingViewController {
+            // Dismiss if the view is presented
             uiViewController.dismissModalView()
         }
     }
@@ -73,6 +75,7 @@ struct AdaptiveSheetViewControllerRepresentable<Content: View>: UIViewController
 class AdaptiveSheetViewController<Content: View>: UIViewController {
     let content: Content
     let coordinator: AdaptiveSheetViewControllerRepresentable<Content>.Coordinator
+    var hostingViewController: UIHostingController<Content>?
 
     init(coordinator: AdaptiveSheetViewControllerRepresentable<Content>.Coordinator,
          @ViewBuilder content: @escaping () -> Content) {
@@ -89,6 +92,7 @@ class AdaptiveSheetViewController<Content: View>: UIViewController {
     }
     func presentModalView() {
         let hostingController = UIHostingController(rootView: content)
+        self.hostingViewController = hostingController
 
         hostingController.modalPresentationStyle = .popover
         hostingController.presentationController?.delegate = coordinator as UIAdaptivePresentationControllerDelegate

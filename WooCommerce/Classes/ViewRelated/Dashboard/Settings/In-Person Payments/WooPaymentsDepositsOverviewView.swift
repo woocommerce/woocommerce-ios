@@ -57,6 +57,7 @@ struct AccountSummaryBox: View {
                 .font(.caption)
                 .foregroundColor(.gray)
         }
+        .frame(maxWidth: .infinity)
         .padding()
         .background(Color.white)
         .cornerRadius(10)
@@ -89,6 +90,6 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
 
         return WooPaymentsDepositsOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
-//            .frame(width: 400, height: 400)
+            .frame(width: 400, height: 400)
     }
 }

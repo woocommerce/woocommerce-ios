@@ -1,6 +1,5 @@
 import Combine
 import Foundation
-import Photos
 import Yosemite
 import WooFoundation
 
@@ -33,13 +32,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let weightUnit: String?
     private let dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
-    private let productImageUploader: ProductImageUploaderProtocol
 
     private var generatedProductSubscription: AnyCancellable?
-
-    /// Local ID used for background image upload
-    private let localProductID: Int64 = 0
-    private var createdProductID: Int64?
 
     init(siteID: Int64,
          productName: String,
@@ -50,7 +44,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onProductCreated: @escaping (Product) -> Void) {
@@ -69,16 +62,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
-        self.productImageUploader = productImageUploader
 
         observeGeneratedProduct()
-    }
-
-    func onDisappear() {
-        let id: ProductOrVariationID = .product(id: createdProductID ?? localProductID)
-        productImageUploader.startEmittingErrors(key: .init(siteID: siteID,
-                                                            productOrVariationID: id,
-                                                            isLocalID: createdProductID == nil))
     }
 
     @MainActor
@@ -100,7 +85,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isSavingProduct = true
         do {
             let newProduct = try await saveProductRemotely(product: generatedProduct)
-            createdProductID = newProduct.productID
             onProductCreated(newProduct)
         } catch {
             // TODO: error handling

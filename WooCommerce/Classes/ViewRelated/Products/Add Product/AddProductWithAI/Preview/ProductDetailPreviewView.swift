@@ -128,9 +128,6 @@ struct ProductDetailPreviewView: View {
                     await viewModel.generateProductDetails()
                 }
             }
-            .onDisappear {
-                viewModel.onDisappear()
-            }
         }
     }
 }

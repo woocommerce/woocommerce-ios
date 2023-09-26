@@ -49,7 +49,7 @@ struct AccountSummaryBox: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
-            Text(String(format: "%.2f", amount))
+            Text(amount)
                 .font(.title)
                 .fontWeight(.bold)
 

@@ -157,7 +157,7 @@ private extension Product {
                   dateOnSaleStart: nil,
                   dateOnSaleEnd: nil,
                   productTypeKey: ProductType.simple.rawValue,
-                  statusKey: ProductStatus.published.rawValue,
+                  statusKey: ProductStatus.draft.rawValue,
                   featured: false,
                   catalogVisibilityKey: ProductCatalogVisibility.visible.rawValue,
                   fullDescription: aiProduct.description,

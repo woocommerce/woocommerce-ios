@@ -2622,7 +2622,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])
         }
 
-        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatDeclaration) -> WooAnalyticsEvent {
+        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatCategory) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .hazmatCategorySelected, properties: [:])
         }
 

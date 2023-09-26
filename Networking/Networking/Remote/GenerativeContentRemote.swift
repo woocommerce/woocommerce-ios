@@ -223,6 +223,20 @@ private extension GenerativeContentRemote {
                 "don’t suggest any value other than the available ones."
         }()
 
+        let shippingJson = {
+            guard let dimensionUnit,
+                  let weightUnit else {
+                return ""
+            }
+
+            return "shipping: {" +
+                            "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                            "weight: Guess and provide only the number in ```\(weightUnit)```, " +
+                            "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                            "height: Guess and provide only the number in ```\(dimensionUnit)```" +
+                    "}, "
+        }()
+
         let input = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
             "using the provided name, keywords and tone, and give your response in the below JSON format.",
@@ -238,13 +252,7 @@ private extension GenerativeContentRemote {
             "description: Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
             "short_description: Product's short description, in the ISO language code ```\(language)```, " +
             "virtual: A boolean value that shows whether the product is virtual or physical, " +
-            "shipping: " +
-                "{" +
-                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "weight: Guess and provide only the number in ```\(weightUnit)```, " +
-                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "height: Guess and provide only the number in ```\(dimensionUnit)```" +
-                "}, " +
+            shippingJson +
             "price: Guess the price in ```\(currencySymbol)```, return the price unformatted" +
             tagsAsString +
             categoriesAsString +

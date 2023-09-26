@@ -19,7 +19,7 @@ struct WooPaymentsDepositsOverviewView: View {
                 Image(systemName: "calendar")
                     .foregroundColor(.blue)
 
-                Text("Deposit schedule: \(viewModel.overview.automaticDeposits ? "Automatic" : "Manual"), every \(viewModel.overview.depositInterval.rawValue)")
+                Text("Deposit schedule: \(viewModel.overview.automaticDeposits ? "Automatic" : "Manual"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery)")
                     .font(.footnote)
             }
 
@@ -91,5 +91,28 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
         return WooPaymentsDepositsOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
             .frame(width: 400, height: 400)
+    }
+}
+
+private extension WooPaymentsDepositInterval {
+    var frequencyDescriptionEvery: String {
+        switch self {
+        case .daily:
+            return NSLocalizedString(
+                "depositsOverview.interval.every.day",
+                comment: "every day (lower case), shown in a sentence like 'Deposit schedule: automatic, every day'")
+        case .weekly:
+            return NSLocalizedString(
+                "depositsOverview.interval.every.week",
+                comment: "every week (lower case), shown in a sentence like 'Deposit schedule: automatic, every week'")
+        case .monthly:
+            return NSLocalizedString(
+                "depositsOverview.interval.every.month",
+                comment: "every month (lower case), shown in a sentence like 'Deposit schedule: automatic, every month'")
+        case .manual:
+            return NSLocalizedString(
+                "depositsOverview.interval.manual",
+                comment: "on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request'")
+        }
     }
 }

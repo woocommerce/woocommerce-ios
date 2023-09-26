@@ -80,8 +80,7 @@ struct AddProductWithAIContainerView: View {
                 ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
                                                           productName: viewModel.productName,
                                                           productDescription: viewModel.productDescription,
-                                                          productFeatures: viewModel.productFeatures,
-                                                          packagingImage: viewModel.packagingImage) { product in
+                                                          productFeatures: viewModel.productFeatures) { product in
                     viewModel.didCreateProduct(product)
                 })
             }

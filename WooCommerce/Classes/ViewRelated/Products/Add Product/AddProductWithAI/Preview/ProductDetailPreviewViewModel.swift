@@ -21,7 +21,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productShippingDetails: String?
 
     private let productFeatures: String?
-    private let packagingImage: MediaPickerImage?
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -46,7 +45,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          productName: String,
          productDescription: String?,
          productFeatures: String?,
-         packagingImage: MediaPickerImage? = nil,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
@@ -71,7 +69,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
-        self.packagingImage = packagingImage
         self.productImageUploader = productImageUploader
 
         observeGeneratedProduct()

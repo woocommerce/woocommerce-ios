@@ -38,10 +38,10 @@ class WooPaymentsDepositsOverviewViewModel: ObservableObject {
         return dateFormatter.string(from: date)
     }
 
-    private var numberFormatter: NumberFormatter {
+    private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.currencyCode = overview.currency.rawValue
         return formatter
-    }
+    }()
 }

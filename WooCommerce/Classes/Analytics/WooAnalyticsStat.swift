@@ -756,6 +756,7 @@ public enum WooAnalyticsStat: String {
     case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
     case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
     case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
+    case productFilterListExploreButtonTapped = "product_filter_list_explore_button_tapped"
 
     // MARK: Readonly Product Variations Events
     //

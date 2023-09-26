@@ -99,10 +99,14 @@ struct OrderForm: View {
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
+    /// Scale of the view based on accessibility changes
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     /// Fix for breaking navbar button
     @State private var navigationButtonID = UUID()
 
     @State private var shouldShowNewTaxRateSelector = false
+    @State private var shouldShowStoredTaxRateSheet = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -143,7 +147,13 @@ struct OrderForm: View {
                             Group {
                                 NewTaxRateSection(text: viewModel.taxRateRowText) {
                                     viewModel.onSetNewTaxRateTapped()
-                                    shouldShowNewTaxRateSelector = true
+                                    switch viewModel.taxRateRowAction {
+                                    case .storedTaxRateSheet:
+                                        shouldShowStoredTaxRateSheet = true
+                                    case .taxSelector:
+                                        shouldShowNewTaxRateSelector = true
+                                    }
+
                                 }
                                 .sheet(isPresented: $shouldShowNewTaxRateSelector) {
                                     NewTaxRateSelectorView(viewModel: NewTaxRateSelectorViewModel(siteID: viewModel.siteID,
@@ -152,6 +162,10 @@ struct OrderForm: View {
                                     }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
                                                            onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                }
+                                .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    storedTaxRateBottomSheetContent
+
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -204,6 +218,58 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+    }
+
+    @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
+        VStack (alignment: .leading) {
+            // your sheet content here
+            Text(Localization.storedTaxRateBottomSheetTitle)
+                .bodyStyle()
+                .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)
+                .padding([.leading, .trailing, .bottom])
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if let taxRateViewModel = viewModel.storedTaxRateViewModel {
+                TaxRateRow(viewModel: taxRateViewModel, onSelect: nil)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: Layout.storedTaxRateBottomSheetRowCornerRadius)
+                            .stroke(Color(.separator), lineWidth: 1)
+                    )
+                    .padding()
+            }
+
+            Button {
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)
+                        .bodyStyle()
+                } icon: {
+                    Image(systemName: "pencil")
+                        .resizable()
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                        .foregroundColor(Color(.secondaryLabel))
+                }
+            }
+            .padding()
+
+            Button {
+            } label: {
+                Label {
+                    Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)
+                } icon: {
+                    Image(systemName: "xmark.circle")
+                        .resizable()
+                        .font(Font.title2.weight(.semibold))
+                        .frame(width: Layout.storedTaxRateBottomSheetButtonIconSize * scale,
+                               height: Layout.storedTaxRateBottomSheetButtonIconSize * scale)
+                }
+            }
+            .foregroundColor(Color(uiColor: .withColorStudio(.red, shade: .shade60)))
+            .padding()
+
+            Spacer()
+        }
     }
 }
 
@@ -419,6 +485,10 @@ private extension OrderForm {
         static let sectionSpacing: CGFloat = 16.0
         static let verticalSpacing: CGFloat = 22.0
         static let noSpacing: CGFloat = 0.0
+        static let storedTaxRateBottomSheetTopSpace: CGFloat = 24.0
+        static let storedTaxRateBottomSheetRowCornerRadius: CGFloat = 8.0
+        static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
+        static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
     }
 
     enum Localization {
@@ -436,6 +506,13 @@ private extension OrderForm {
                                                           "Please enable camera permissions in your device settings",
                                                           comment: "Message of the action sheet button that links to settings for camera access")
         static let permissionsOpenSettings = NSLocalizedString("Open Settings", comment: "Button title to open device settings in an action sheet")
+        static let storedTaxRateBottomSheetTitle = NSLocalizedString("Automatically adding tax rate",
+                                                                     comment: "Title for the bottom sheet when there is a tax rate stored")
+        static let storedTaxRateBottomSheetNewTaxRateButtonTitle = NSLocalizedString("Set a new tax rate for this order",
+                                                                                     comment: "Title for the button to add a new tax rate" +
+                                                                                     "when there is a tax rate stored")
+        static let storedTaxRateBottomSheetClearTaxRateButtonTitle = NSLocalizedString("Clear address and stop using this rate",
+                                                                                       comment: "Title for the button to clear the stored tax rate")
     }
 
     enum Accessibility {

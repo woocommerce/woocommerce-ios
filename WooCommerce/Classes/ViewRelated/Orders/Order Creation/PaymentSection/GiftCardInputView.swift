@@ -3,6 +3,7 @@ import SwiftUI
 /// Allows the user to enter a gift card code.
 struct GiftCardInputView: View {
     @StateObject private var viewModel: GiftCardInputViewModel
+    @State private var showsScanner: Bool = false
 
     init(viewModel: GiftCardInputViewModel) {
         self._viewModel = .init(wrappedValue: viewModel)
@@ -12,8 +13,25 @@ struct GiftCardInputView: View {
         NavigationView {
             Form {
                 Section {
-                    TextField(Localization.placeholder, text: $viewModel.code)
-                        .focused()
+                    HStack {
+                        TextField(Localization.placeholder, text: $viewModel.code)
+                            .focused()
+                        Spacer()
+                        Button {
+                            showsScanner = true
+                        } label: {
+                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                                .foregroundColor(Color(.accent))
+                        }
+                        .sheet(isPresented: $showsScanner) {
+                            GiftCardCodeScannerNavigationView(onCodeScanned: { code in
+                                viewModel.code = code
+                                showsScanner = false
+                            }, onClose: {
+                                showsScanner = false
+                            })
+                        }
+                    }
 
                     if let errorMessage = viewModel.errorMessage {
                         Text(errorMessage)

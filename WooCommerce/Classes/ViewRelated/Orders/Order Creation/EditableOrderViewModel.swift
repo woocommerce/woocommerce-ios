@@ -42,6 +42,11 @@ final class EditableOrderViewModel: ObservableObject {
         case selector
     }
 
+    enum TaxRateRowAction {
+        case taxSelector
+        case storedTaxRateSheet
+    }
+
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
     let flow: Flow
@@ -158,9 +163,19 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    var taxRateRowAction: TaxRateRowAction {
+        storedTaxRate == nil ? .taxSelector : .storedTaxRateSheet
+    }
+
     /// Text to show on entry point for selecting a tax rate
     var taxRateRowText: String {
         storedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
+    }
+
+    var storedTaxRateViewModel: TaxRateViewModel? {
+        guard let storedTaxRate = storedTaxRate else { return nil }
+
+        return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
     /// Whether gift card is supported in order form.

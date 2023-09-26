@@ -2177,6 +2177,45 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
+    func test_viewModel_when_taxRate_is_stored_then_taxRateRowAction_is_storedTaxRateSheet() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        })
+
+        let taxRate = TaxRate.fake()
+
+        stores.whenReceivingAction(ofType: TaxAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxRate(_, _, let onCompletion):
+                onCompletion(.success(taxRate))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.taxRateRowAction == .storedTaxRateSheet
+        }
+    }
+
     func test_isGiftCardEnabled_becomes_true_when_gift_cards_plugin_is_active() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

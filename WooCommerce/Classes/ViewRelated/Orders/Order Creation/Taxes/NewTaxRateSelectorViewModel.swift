@@ -37,7 +37,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
 
     /// View models for placeholder rows. Strings are visible to the user as it is shimmering (loading)
     let placeholderRowViewModels: [TaxRateViewModel] = [Int64](0..<3).map { index in
-        TaxRateViewModel(id: index, title: "placeholder", rate: "10%")
+        TaxRateViewModel(id: index, title: "placeholder", rate: "10%", showChevron: true)
     }
 
     init(siteID: Int64,
@@ -170,18 +170,11 @@ private extension NewTaxRateSelectorViewModel {
     /// Updates row view models and sync state.
     func updateResults() {
         taxRateViewModels = resultsController.fetchedObjects
-            .filter {
-                $0.hasAddress
-            }
-            .map {
-            var title = $0.name
-            let titleSuffix = "\($0.country) \($0.state) \($0.postcodes.joined(separator: ",")) \($0.cities.joined(separator: ","))"
-
-            if titleSuffix.trimmingCharacters(in: .whitespaces).isNotEmpty {
-                title.append(" • \(titleSuffix)")
-            }
-
-            return TaxRateViewModel(id: $0.id, title: title, rate: Double($0.rate)?.percentFormatted() ?? "")
+        .filter {
+            $0.hasAddress
+        }
+        .map {
+            TaxRateViewModel(taxRate: $0)
         }
         transitionToResultsUpdatedState()
     }

@@ -215,7 +215,7 @@ fileprivate extension ProductDetailPreviewView {
             comment: "Title on the add product with AI Preview screen."
         )
         static let subtitle = NSLocalizedString(
-            "Don't worry. You can always change below details later.",
+            "You can always change the below details later.",
             comment: "Subtitle on the add product with AI Preview screen."
         )
         static let feedbackQuestion = NSLocalizedString(

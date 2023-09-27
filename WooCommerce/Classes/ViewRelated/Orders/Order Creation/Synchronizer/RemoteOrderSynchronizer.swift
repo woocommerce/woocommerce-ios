@@ -339,7 +339,7 @@ private extension RemoteOrderSynchronizer {
                 let syncType: OperationType = flow == .creation ? .sync : .commit
                 let includesGiftCard = flow != .creation
                 let hasGiftCard = giftCardToApply != nil
-                return self.updateOrderRemotely(order, type: syncType, includesGiftCard: flow != .creation)
+                return self.updateOrderRemotely(order, type: syncType, includesGiftCard: includesGiftCard)
                     .catch { [weak self] error -> AnyPublisher<Order, Never> in // When an error occurs, update state & finish.
                         self?.state = .error(error, usesGiftCard: includesGiftCard && hasGiftCard)
                         return Empty().eraseToAnyPublisher()

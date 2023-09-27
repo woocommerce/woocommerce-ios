@@ -107,6 +107,7 @@ struct OrderForm: View {
 
     @State private var shouldShowNewTaxRateSelector = false
     @State private var shouldShowStoredTaxRateSheet = false
+    @State private var shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -166,6 +167,12 @@ struct OrderForm: View {
                                 }
                                 .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
                                     storedTaxRateBottomSheetContent
+                                        .onDisappear {
+                                            if shouldShowTaxRateSelectorAfterTaxRateSheetDisappears {
+                                                shouldShowNewTaxRateSelector = true
+                                                shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = false
+                                            }
+                                        }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -239,7 +246,7 @@ struct OrderForm: View {
 
             Button {
                 shouldShowStoredTaxRateSheet = false
-                shouldShowNewTaxRateSelector = true
+                shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = true
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)

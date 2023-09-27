@@ -26,7 +26,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       productDescription: nil,
                                                       productFeatures: productFeatures,
                                                       stores: stores,
-                                                      storageManager: storage)
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
         XCTAssertFalse(viewModel.isGeneratingDetails)
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -86,7 +87,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       dimensionUnit: sampleDimensionUnit,
                                                       stores: stores,
                                                       storageManager: storage,
-                                                      userDefaults: userDefaults)
+                                                      userDefaults: userDefaults,
+                                                      onProductCreated: { _ in })
         XCTAssertFalse(viewModel.isGeneratingDetails)
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -142,7 +144,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
                                                       stores: stores,
-                                                      storageManager: storage)
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
         XCTAssertFalse(viewModel.isGeneratingDetails)
 
         // When
@@ -183,7 +186,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
                                                       stores: stores,
-                                                      storageManager: storage)
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -221,7 +225,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
                                                       stores: stores,
-                                                      storageManager: storage)
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

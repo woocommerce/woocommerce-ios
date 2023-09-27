@@ -801,6 +801,15 @@ public enum WooAnalyticsStat: String {
     //
     case productAIFeedback = "product_ai_feedback"
 
+    // MARK: Product name AI
+    //
+    case productNameAIEntryPointTapped = "product_name_ai_entry_point_tapped"
+    case productNameAIGenerateButtonTapped = "product_name_ai_generate_button_tapped"
+    case productNameAICopyButtonTapped = "product_name_ai_copy_button_tapped"
+    case productNameAIApplyButtonTapped = "product_name_ai_apply_button_tapped"
+    case productNameAIGenerationSuccess = "product_name_ai_generation_success"
+    case productNameAIGenerationFailed = "product_name_ai_generation_failed"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

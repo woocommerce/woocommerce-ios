@@ -696,7 +696,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onSetNewTaxRateTapped() {
-        analytics.track(.orderCreationSetNewTaxRateTapped)
+        analytics.track(.orderCreationSetNewTaxRateTapped, withProperties: ["auto_tax_rate_enabled": storedTaxRate != nil])
     }
 }
 

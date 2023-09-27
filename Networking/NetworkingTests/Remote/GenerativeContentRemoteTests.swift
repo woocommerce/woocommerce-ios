@@ -411,7 +411,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual(product.dimensions.length, "15")
         XCTAssertEqual(product.dimensions.width, "10")
         XCTAssertEqual(product.dimensions.height, "5")
-        XCTAssertEqual(product.price, "250")
+        XCTAssertEqual(product.regularPrice, "250")
     }
 
     func test_generateProduct_with_failure_returns_error() async throws {

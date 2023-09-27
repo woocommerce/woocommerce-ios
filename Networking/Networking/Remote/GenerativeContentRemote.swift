@@ -51,8 +51,8 @@ public protocol GenerativeContentRemoteProtocol {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag]) async throws -> Product
 }
@@ -104,8 +104,8 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                 language: String,
                                 tone: String,
                                 currencySymbol: String,
-                                dimensionUnit: String,
-                                weightUnit: String,
+                                dimensionUnit: String?,
+                                weightUnit: String?,
                                 categories: [ProductCategory],
                                 tags: [ProductTag]) async throws -> Product {
 
@@ -195,8 +195,8 @@ private extension GenerativeContentRemote {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag],
                          token: String) async throws -> Product {
@@ -223,6 +223,33 @@ private extension GenerativeContentRemote {
                 "don’t suggest any value other than the available ones."
         }()
 
+        let shippingJson = {
+            let weightJson = {
+                guard let weightUnit else {
+                    return ""
+                }
+
+                return "weight: Guess and provide only the number in ```\(weightUnit)```"
+            }()
+
+            let dimensionsJson = {
+                guard let dimensionUnit else {
+                    return ""
+                }
+
+                return
+                    ", " +
+                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "height: Guess and provide only the number in ```\(dimensionUnit)```"
+            }()
+
+            return "shipping: {" +
+                            weightJson +
+                            dimensionsJson +
+                    "}, "
+        }()
+
         let input = [
             "You are a WooCommerce SEO and marketing expert, perform in-depth research about the product " +
             "using the provided name, keywords and tone, and give your response in the below JSON format.",
@@ -238,14 +265,8 @@ private extension GenerativeContentRemote {
             "description: Product description of around 100 words long in a ```\(tone)``` tone, in the ISO language code ```\(language)```, " +
             "short_description: Product's short description, in the ISO language code ```\(language)```, " +
             "virtual: A boolean value that shows whether the product is virtual or physical, " +
-            "shipping: " +
-                "{" +
-                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "weight: Guess and provide only the number in ```\(weightUnit)```, " +
-                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                    "height: Guess and provide only the number in ```\(dimensionUnit)```" +
-                "}, " +
-            "price: Guess the price in ```\(currencySymbol)```, return the price unformatted" +
+            shippingJson +
+            "price: Guess the price in ```\(currencySymbol)```, do not include the currency symbol, only provide the price as a number" +
             tagsAsString +
             categoriesAsString +
         "}"

@@ -181,8 +181,8 @@ public enum ProductAction: Action {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag],
                          completion: (Result<Product, Error>) -> Void)

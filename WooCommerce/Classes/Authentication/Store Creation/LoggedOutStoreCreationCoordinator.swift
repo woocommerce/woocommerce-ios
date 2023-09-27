@@ -15,6 +15,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     let navigationController: UINavigationController
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var storeCreationCoordinator: StoreCreationCoordinator?
 
     private let analytics: Analytics
     private let source: Source
@@ -69,5 +70,10 @@ private extension LoggedOutStoreCreationCoordinator {
         let coordinator = StorePickerCoordinator(navigationController, config: .storeCreationFromLogin(source: source))
         storePickerCoordinator = coordinator
         coordinator.start()
+
+        // Start store creation
+        storeCreationCoordinator = StoreCreationCoordinator(source: .loggedOut(source: source),
+                                                            navigationController: navigationController)
+        storeCreationCoordinator?.start()
     }
 }

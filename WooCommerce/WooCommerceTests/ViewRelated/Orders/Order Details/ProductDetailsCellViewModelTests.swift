@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 @testable import WooCommerce
 import Yosemite
@@ -202,6 +203,49 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, quantity)
         XCTAssertEqual(viewModel.total, "$18.00")
         XCTAssertEqual(viewModel.subtitle, subtitle)
+    }
+
+    func test_AddOnsViewModel_init_aggregates_addOns_of_the_same_key_regardless_of_addOnID() {
+        // Given
+        let addOns: [OrderItemProductAddOn] = [
+            .fake().copy(addOnID: 1, key: "Extra fruit", value: "Apple"),
+            .fake().copy(addOnID: 2, key: "Has sugar", value: "30%"),
+            .fake().copy(addOnID: 3, key: "Extra fruit", value: "Mango")
+        ]
+
+        // When
+        let viewModel = ProductDetailsCellViewModel.AddOnsViewModel(addOns: addOns)
+
+        // Then
+        assertEqual([
+            .init(key: "Extra fruit", value: "Apple・Mango"),
+            .init(key: "Has sugar", value: "30%")
+        ], viewModel.addOns)
+    }
+
+    func test_subtitle_does_not_include_attributes_when_addOns_are_available() {
+        // Given
+        let item = makeAggregateOrderItem(quantity: 2,
+                                          price: 3.5,
+                                          total: 7,
+                                          sku: "",
+                                          attributes: [
+                                            .init(metaID: 2, name: "Woo", value: "Wao"),
+                                            .init(metaID: 25, name: "Wooo", value: "Waoo")
+                                          ])
+            .copy(addOns: [.init(addOnID: 1, key: "Sugar level", value: "25%")])
+
+        // When
+        let viewModel = ProductDetailsCellViewModel(aggregateItem: item,
+                                                    currency: "$",
+                                                    formatter: currencyFormatter,
+                                                    hasAddOns: false,
+                                                    isChildWithParent: true)
+
+        // Then
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, "2", "$3.50")
+        XCTAssertEqual(viewModel.subtitle, subtitle)
+        XCTAssertTrue(viewModel.addOns.addOns.isNotEmpty)
     }
 }
 

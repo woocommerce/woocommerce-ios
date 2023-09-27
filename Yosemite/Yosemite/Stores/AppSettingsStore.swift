@@ -196,6 +196,10 @@ public class AppSettingsStore: Store {
             getLocalAnnouncementVisibility(announcement: announcement, onCompletion: onCompletion)
         case .setLocalAnnouncementDismissed(let announcement, let onCompletion):
             setLocalAnnouncementDismissed(announcement: announcement, onCompletion: onCompletion)
+        case .setSelectedTaxRateID(let taxRateId, let siteID):
+            setSelectedTaxRateID(with: taxRateId, siteID: siteID)
+        case .loadSelectedTaxRateID(let siteID, let onCompletion):
+            loadSelectedTaxRateID(with: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -859,6 +863,20 @@ private extension AppSettingsStore {
         let timeRangeRawValue = storeSettings.lastSelectedStatsTimeRange
         let timeRange = StatsTimeRangeV4(rawValue: timeRangeRawValue)
         onCompletion(timeRange)
+    }
+}
+
+// MARK: - Tax Rate
+
+private extension AppSettingsStore {
+    func setSelectedTaxRateID(with id: Int64, siteID: Int64) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func loadSelectedTaxRateID(with siteID: Int64, onCompletion: (Int64?) -> Void) {
+        onCompletion(getStoreSettings(for: siteID).selectedTaxRateID)
     }
 }
 

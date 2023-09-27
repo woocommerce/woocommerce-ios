@@ -19,7 +19,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
             return controller
         } else {
             let controller = CardPresentPaymentsModalViewController(
-                viewModel: CardPresentModalPreparingReader(cancelAction: { [weak self] in
+                viewModel: CardPresentModalPreparingForPayment(cancelAction: { [weak self] in
                     self?.presentingController?.dismiss(animated: true)
                 }))
             _modalController = controller
@@ -48,7 +48,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
     }
 
     func preparingReader(onCancel: @escaping () -> Void) {
-        presentViewModel(viewModel: CardPresentModalPreparingReader(cancelAction: onCancel))
+        presentViewModel(viewModel: CardPresentModalPreparingForPayment(cancelAction: onCancel))
     }
 
     func tapOrInsertCard(title: String,

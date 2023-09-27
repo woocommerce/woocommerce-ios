@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 13:54:14+0000 */
+/* Translation-Revision-Date: 2023-09-21 15:54:22+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Jetpack'i WP-Admin'den etkinleştir";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "Eklentiyi etkinleştir";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Etkinleştiriliyor";
 
@@ -553,8 +556,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "Ürün ekleyin";
+
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "Bir ürünü ve ayrıntılarını manuel olarak ekleyin";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Bir ürün görseli ekle";
@@ -604,7 +611,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Her seçeneği ekleyin ve return tuşuna basın";
 
-/* Title for the option to create product manually */
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "El ile ekle";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -635,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Ürünlerin indirilebilir dosyalarına ait bilgileri uzaktan ekleyin";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "Yöneticide vergi oranlarını ekle. Yalnızca konum bilgisine sahip vergi oranları burada gösterilecek.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Kuponun açıklamasını ekleyin.";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "Oluşturulan tüm siparişlere bu oranı ekle";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Yeni pakete ekle";
@@ -704,6 +718,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "Afganistan";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Hava Yoluna Uygun Etanol Paketi - (onaylı parfüm ve el dezenfektanı gönderileri)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -936,6 +953,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Ürün türünü değiştirmek istediğinizden emin misiniz?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "Bu kategoriyi kalıcı olarak silmek istediğinizden emin misiniz?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "Bu kuponu silmek istediğinizden emin misiniz?";
@@ -1251,7 +1271,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Jetpack'i Yükle düğmesine dokunarak, %1$@ ve WordPress.com ile %2$@ kabul etmiş olursunuz.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooCommerce Payments'ı kullanarak [Hizmet Koşullarımıza](https:\/\/wordpress.com\/tos) bağlı kalmayı ve [Gizlilik Politikamızı](https:\/\/automattic.com\/privacy\/) okuduğunuzu kabul etmiş olursunuz.";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooPayments'ı kullanarak [Hizmet Koşullarımıza](https:\/\/wordpress.com\/tos) bağlı kalmayı ve [Gizlilik Politikamızı](https:\/\/automattic.com\/privacy\/) okuduğunuzu kabul etmiş olursunuz.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "ÜLKELER";
@@ -1324,6 +1344,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
@@ -1403,6 +1424,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Etiketler Eklenemiyor";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "Kategori Güncellenemiyor";
 
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "Bu adresten siteye erişilemiyor. Lütfen tekrar kontrol edip yeniden deneyin.";
@@ -1533,6 +1557,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "E-postanızı kontrol edin!";
 
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "Sipariş kontrol ediliyor";
+
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Ödeme";
 
@@ -1590,6 +1617,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "Ücretsiz alan adınızı talep edin";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Sınıf 1 - Oyuncak İtici\/Güvenlik Fünyesi Paketi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Sınıf 3 - Paket (El dezenfektanı, ispirto, etanol bazlı ürünler, yanıcı sıvılar vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Sınıf 4 - Paket (Yanıcı katı maddeler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Sınıf 5 - Paket (Oksitleyiciler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Sınıf 6 - Paket (Zehirli maddeler)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Sınıf 7 - Radyoaktif Madde Paketi (ör. duman dedektörleri, mineraller, silah nişangahları vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Sınıf 8 - Aşındırıcı Malzemeler Paketi - Hava Yoluna Uygun Aşındırıcı Malzemeler (belirli temizlik veya ağaç\/ot öldürücü bileşikler vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Sınıf 8 - Dökülebilir Olmayan Sıvı Pil Paketi - Sızdırmaz kurşun asit piller";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Sınıf 9 - Lityum Pil İşaretli - Yalnızca Kara Paketi - Yeni tekli veya yedek lityum piller (UN3480 veya UN3090 işaretli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "Sınıf 9 - Lityum Pil - İade Paketi - Lityum pil içeren veya onunla paketlenmiş kullanılmış elektronik cihazlar (işaretlemeler gerekli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Sınıf 9 - Lityum piller, işaretlenmiş paket - Lityum pillerle paketlenmiş yeni elektronik cihazlar (UN3481 veya UN3091 işaretli)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Sınıf 9 - Kuru Buz Paketi (Hava yoluyla gönderiliyorsa 5 lbs. ile sınırlıdır)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Sınıf 9 - Lityum piller, işaretlenmemiş paket - Lityum piller takılmış veya onlarla paketlenmiş yeni elektronik cihazlar (işaretleme yok)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Sınıf 9 - Manyetize Edilmiş Malzeme Paketi";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1834,6 +1903,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Buradan bize ulaşın";
 
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "Tehlikeli Maddeler İçerir";
+
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "İçerik Ayrıntıları";
 
@@ -2036,6 +2108,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Seçilen ürünler için indirim yüzdesini oluşturun";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "Yapay zeka ile ürün oluşturun";
+
 /* Title of the store creation web view. */
 "Create a store" = "Mağaza oluştur";
 
@@ -2218,6 +2293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "AYRINTILAR";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2244,8 +2322,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Sil";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "%1$@ öğesini sil";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "Kuponu Sil";
@@ -2268,6 +2350,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Tanım";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "%1$@ kullanarak ürününüzün postayla gönderilebilir olup olmadığını öğrenin. ";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Ürünlerin katalogdaki konumlandırmasını belirler. Sayı ne kadar küçükse öğe, ürün listesinde o kadar üstte olacaktır. Negatif değerler de kullanabilirsiniz";
@@ -2359,6 +2444,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Tüm mesajları önemseme";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Bölüm 4.1 - Postayla gönderilebilen yanıcı katılar ve Emniyet Kibritleri Paketi - Kutu kibritler, kitap kibritleri, postayla gönderilebilir yanıcı katılar üzerinde güvenlik\/çakma testi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "Bölüm 5.1 - Oksitleyici Paketi - Hidrojen peroksit (8 ila 20 konsantrasyon)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Bölüm 5.2 - Organik Peroksitler Paketi";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Bölüm 6.1 - Toksik Maddeler Paketi (LD50 değeri 50 mg\/kg veya daha az olan) - (pestisitler, herbisitler vb.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Bölüm 6.2 - Tehlikeli Maddeler - Biyolojik Maddeler (ör. laboratuvar test kitleri, onaylı COVID test kiti iadeleri)";
 
 /* Country option for a site address. */
 "Djibouti" = "Cibuti";
@@ -2541,6 +2641,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -2575,6 +2676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Durumu Düzenle";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "Vergi Oranı Ayarını Düzenle";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Yöneticide Vergi Oranlarını Düzenle";
@@ -2920,6 +3024,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Örneğin: Saksıda yetişir, kaktüs, bitki, dekoratif, bakımı kolay";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "İstisnai Miktarda Tedarik Paketi (örneğin, küçük hacimlerde yanıcı sıvılar, aşındırıcı, toksik veya çevreye zararlı maddeler - işaretleme gereklidir)";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d Kategoriyi Hariç Tut";
@@ -3378,6 +3485,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Grenada";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Yalnızca Karaya Uygun Tehlikeli Maddeler (Listede yer almayan ancak yalnızca yüzeyle sınırlı olan maddeler için)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "Grup adedi";
 
@@ -3451,6 +3561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Mağaza kimlik bilgilerinizi hazırlayın.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "Tehlikeli maddeler kategorisi";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Başlık 1";
@@ -3582,6 +3695,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Şu konuda yardıma ihtiyacım var";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 Tüketici Malları Paketi - Hava Yoluna Uygun ID8000 Tüketici Malları (Yanıcı olmayan aerosoller, Alev alabilen ve yanabilen sıvılar, Toksik Madde, Çeşitli tehlikeli maddeler)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "TAMAMLANACAK ÖĞELER";
@@ -4020,6 +4136,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "Daha fazla öğren";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@ adresinden USPS® yoluyla Tehlikeli Maddelerin nasıl güvenli bir şekilde paketleneceğini, etiketleneceğini ve gönderileceğini öğrenin. ";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -4102,6 +4221,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "Lihtenştayn";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "Çakmak Paketi - Onaylı Çakmaklar";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Kullanımı X Öğe ile Sınırla";
@@ -4556,7 +4678,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Çoklu ödeme seçenekleri";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Mağazam";
 
@@ -4652,6 +4775,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Yeni özellikler mevcut.";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "Şunun için yeni sipariş:";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "WooCommerce Mağazanızda 13.98 ABD doları tutarında yeni sipariş";
 
@@ -4679,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "(Onaylanmış) yorum yok";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "Üst Kategori Yok";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Kısıtlama Yok";
@@ -5132,6 +5261,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Ödendi";
 
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "%@ ile ödendi";
+
 /* Country option for a site address. */
 "Pakistan" = "Pakistan";
 
@@ -5520,9 +5652,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Posta kodu eksik";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "Potansiyel olarak tehlikeli maddeler arasında piller, kuru buz, yanıcı sıvılar, aerosoller, mühimmat, havai fişekler, oje, parfüm, boya, çözücüler ve daha fazlası yer almaktadır. Tehlikeli maddeler ayrı paketlerde gönderilmelidir.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "Destekleyen:";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "Yapay zeka destekli.";
 
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "Yapay zeka destekli. %1$@.";
@@ -5837,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "Çeyrekten tarihe";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "Ayrıntıları sizin için hızlıca oluşturur";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Güzel bir çevrimiçi mağaza ile hızla işinizi kurup satış yapın.";
 
@@ -5880,14 +6021,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "Yönlendirme programları";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "Yenile";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "Etkinleştirdikten sonra yenileyin";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "Kurulumdan sonra yenileyin";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6075,6 +6212,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Parolanızı sıfırlayın";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "Şimdi Çözün";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "E-postaları olan müşterilerle sınırlıdır: %1$@n ";
@@ -6422,6 +6562,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "Tür Seç";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "Bir kategori seçin";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Paket seç";
 
@@ -6472,6 +6616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "Ürünlerinizi göndermek için kullanmak istediğiniz ambalaj türünü seçin";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "Paketiniz tehlikeli mallar veya tehlikeli maddeler içeriyorsa bu seçeneği belirleyin.";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Karşıya yükleme yöntemi seç";
@@ -6813,6 +6960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Slug label in Product Settings */
 "Slug" = "Kısaltma";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "Küçük Miktarda Tedarik Paketi (işaretleme gerekli)";
+
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Sosyal reklam";
 
@@ -6922,6 +7072,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Üzgünüz, şu anda destek talebi oluşturamıyoruz, lütfen daha sonra tekrar deneyin.";
+
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Maalesef aktif bir ödeme olmadığı için bu işlemi tamamlayamadık.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Maalesef okuyucuya bağlanılamadı. Lütfen tekrar deneyin.";
@@ -7348,6 +7501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Vergi sınıfları";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "Vergi oranı konumu otomatik olarak eklendi";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Farklı konumlar için vergi oranları, mağazanızın yöneticisinde yönetilebilir.";
 
@@ -7569,6 +7725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Ödeme, okuyucu üzerinden iptal edildi";
 
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "Ödeme iptal edildi.";
+
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Ödeme kesintiye uğradı ve devam edilemiyor. Sipariş ekranından tekrar ödeme yapmayı deneyebilirsiniz.";
 
@@ -7724,6 +7883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "Bu ödeme tekrar denenirken bir hata oluştu. Lütfen geri dönüp tekrar başlatın.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Gizlilik tercihleriniz kaydedilirken bir hata oluştu.";
 
@@ -7817,6 +7979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Bu sipariş, sevkiyat ücretini hesaplamak için uzantı kullanmaktadır. Gösterilen sevkiyat yöntemleri eksik olabilir.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "Bu ödeme zaten tamamlandı. Lütfen sipariş ayrıntılarını kontrol edin.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Bu ürün yüklenemedi";
 
@@ -7849,6 +8014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Bu, WooCommerce dışından aldıysanız (toplam), siparişinizi tamamlandı olarak işaretleyecektir.";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "Bu durum çevrimiçi siparişleri etkilemeyecek";
 
 /* Country option for a site address. */
 "Timor-Leste" = "Doğu Timor";
@@ -8148,6 +8316,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "Adres";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS Tehlikeli Madde Arama Aracı";
+
 /* Country option for a site address. */
 "Uganda" = "Uganda";
 
@@ -8226,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Kategoriler yüklenemiyor";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "Bildirim yüklenemiyor";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "Sipariş analizleri yüklenemiyor";
 
@@ -8282,6 +8456,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Ödeme işlenemiyor. Sipariş toplam tutarı geçerli değil.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Ödeme işlenemiyor. Bu siparişin ödemesi zaten yapıldı, ek bir ödeme alınması müşteriden siparişi için iki kez ücret alınmasına neden olacaktır.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Ödeme işlenemiyor. Yeniden deneme sırasında bu ödemeyi tamamlayamadık. Temeldeki hata: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Ödeme işlenemiyor. Ödeme sistemine bağlanamadık. Bu hata devam ederse lütfen destekle iletişime geçin.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Ödeme işlenemiyor. En yeni sipariş ayrıntılarını alamadık. Lütfen ağ bağlantınızı kontrol edip tekrar deneyin.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Ödeme işlenemiyor. En yeni sipariş ayrıntılarını alamadık. Lütfen ağ bağlantınızı kontrol edip tekrar deneyin. Temeldeki hata: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "Kart okunamıyor - sistem zaman aşımına uğradı - lütfen tekrar deneyin";
@@ -8427,6 +8616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "Adresi Güncelle";
+
+/* Product Update Category navigation title */
+"Update Category" = "Kategoriyi Güncelle";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Güncelleme Yönergeleri";
@@ -8765,6 +8957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Sitenizi yükleyemedik";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "Hiçbir vergi oranı bulamadık.";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Okuyucunuzun yazılımı güncellenemedi";
 
@@ -8830,6 +9025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Gönderim adresini otomatik olarak doğrulayamadık. Adresin doğru olduğundan emin olmak için Apple Haritalar'da görüntüleyin.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "Ödemeyi tekrar gerçekleştirmeyi deneyemedik. Lütfen yeniden başlatın.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Size şu anda e-posta gönderemedik. Lütfen daha sonra tekrar deneyin.";
@@ -8986,9 +9184,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "WooCommerce Mobil Uygulaması - Mağazanızı her yerden işletin";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Ödemeler";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9199,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce Shipping, şu anda %1$@ yoluyla Tehlikeli Madde gönderimlerini desteklemiyor.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "WooCommerce mobil uygulaması";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "WooCommerce mağazası";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9295,6 +9498,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[YORUM]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Daha fazla bilgi alın.](https:\/\/automattic.com\/ai-guidelines\/)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "WooCommerce'i Hızla Kullanmaya Başlayın";
 
@@ -9363,6 +9569,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "bugün daha sonra";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "SINIRLI MİKTARDA Kara Paketi - Aerosoller, sprey dezenfektanlar, sprey boya, saç spreyi, propan, bütan, temizlik ürünleri vb. - Parfümler, oje, oje çıkarıcı, çözücüler, el dezenfektanı, ispirto, etanol bazlı ürünler vb. - Diğer sınırlı miktardaki yüzey malzemeleri (kozmetikler, temizlik ürünleri, boyalar vb.)";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "Elle para iadesi";
@@ -9475,6 +9684,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, ürünler, kategoriler, yeni ürün, ürün arama";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "yıl";

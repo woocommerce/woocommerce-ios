@@ -495,6 +495,7 @@ extension WooAnalyticsEvent {
             static let hasDifferentShippingDetails = "has_different_shipping_details"
             static let orderStatus = "order_status"
             static let productCount = "product_count"
+            static let hasAddOns = "has_addons"
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
             static let hasShippingMethod = "has_shipping_method"
@@ -503,6 +504,7 @@ extension WooAnalyticsEvent {
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
@@ -529,14 +531,11 @@ extension WooAnalyticsEvent {
         }
 
         static func orderProductsLoaded(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
-            let productIDs = order.items.map { $0.productID }
-            let productTypes = productIDs.compactMap { productID in
-                products.first(where: { $0.productID == productID })?.productType.rawValue
-            }.uniqued().joined(separator: ",")
+            let productTypes = productTypes(order: order, products: products)
             let hasAddOns = hasAddOns(order: order, products: products, addOnGroups: addOnGroups)
-            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: ["id": order.orderID,
-                                                                                  "product_types": productTypes,
-                                                                                  "has_addons": hasAddOns])
+            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: [Keys.orderID: order.orderID,
+                                                                                  Keys.productTypes: productTypes,
+                                                                                  Keys.hasAddOns: hasAddOns])
         }
 
         private static func hasAddOns(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> Bool {
@@ -556,6 +555,13 @@ extension WooAnalyticsEvent {
                 }
             }
             return false
+        }
+
+        private static func productTypes(order: Order, products: [Product]) -> String {
+            let productIDs = order.items.map { $0.productID }
+            return productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().sorted().joined(separator: ",")
         }
 
         static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
@@ -693,17 +699,20 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
-        static func orderCreateButtonTapped(status: OrderStatusEnum,
+        static func orderCreateButtonTapped(order: Order,
+                                            status: OrderStatusEnum,
                                             productCount: Int,
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
-                                            hasShippingMethod: Bool) -> WooAnalyticsEvent {
+                                            hasShippingMethod: Bool,
+                                            products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
-                Keys.hasShippingMethod: hasShippingMethod
+                Keys.hasShippingMethod: hasShippingMethod,
+                Keys.productTypes: productTypes(order: order, products: products)
             ])
         }
 
@@ -1641,6 +1650,7 @@ extension WooAnalyticsEvent {
             case searchingForReader = "searching_for_reader"
             case foundReader = "found_reader"
             case foundSeveralReaders = "found_several_readers"
+            case paymentValidatingOrder = "payment_validating_order"
             case paymentPreparingReader = "payment_preparing_reader"
             case paymentWaitingForInput = "payment_waiting_for_input"
             case connectionError = "connection_error"
@@ -1828,9 +1838,9 @@ extension WooAnalyticsEvent {
         /// - Parameters:
         ///   - reason: the reason why the onboarding step was shown (effectively the name of the step)
         ///   - countryCode: the country code of the store
-        ///   - error: the logged error
+        ///   - error: the logged error response from the API, if any.
         ///
-        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error) -> WooAnalyticsEvent {
+        static func cardPresentOnboardingCtaFailed(reason: String, countryCode: String, error: Error? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardPresentOnboardingCtaFailed,
                               properties: [
                                 Keys.countryCode: countryCode,

@@ -25,38 +25,6 @@ final class SupportDataSourcesTests: XCTestCase {
         XCTAssertTrue(expectedSet.isSubset(of: tagsSet))
     }
 
-    func test_mobile_app_tags_contain_addProductFromImage_tag_when_eligible() {
-        // Given
-        let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
-                                                             isEligible: true)
-        let sessionManager: SessionManager = .makeForTesting(authenticated: true)
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-        let metadataProvider = SupportFormMetadataProvider(stores: stores,
-                                                           sessionManager: sessionManager,
-                                                           addProductFromImageEligibilityChecker: mockEligibilityChecker)
-        let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
-
-        // Then
-        XCTAssertTrue(dataSource.tags.contains("ai_product_details_from_image"))
-    }
-
-    func test_mobile_app_tags_does_not_contain_addProductFromImage_tag_when_not_eligible() {
-        // Given
-        let mockEligibilityChecker = MockAddProductFromImageEligibilityChecker(isEligibleToParticipateInABTest: true,
-                                                             isEligible: false)
-        let sessionManager: SessionManager = .makeForTesting(authenticated: true)
-        sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
-        let stores = MockStoresManager(sessionManager: sessionManager)
-        let metadataProvider = SupportFormMetadataProvider(stores: stores,
-                                                           sessionManager: sessionManager,
-                                                           addProductFromImageEligibilityChecker: mockEligibilityChecker)
-        let dataSource = MobileAppSupportDataSource(metadataProvider: metadataProvider)
-
-        // Then
-        XCTAssertFalse(dataSource.tags.contains("ai_product_details_from_image"))
-    }
-
     func test_mobile_app_fields_have_correct_ids() {
         let dataSource = MobileAppSupportDataSource(metadataProvider: SupportFormMetadataProvider())
         let customFieldsKeys = dataSource.customFields.keys.sorted()

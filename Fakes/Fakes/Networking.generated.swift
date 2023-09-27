@@ -475,6 +475,7 @@ extension Networking.Order {
             number: .fake(),
             status: .fake(),
             currency: .fake(),
+            currencySymbol: .fake(),
             customerNote: .fake(),
             dateCreated: .fake(),
             dateModified: .fake(),
@@ -860,6 +861,7 @@ extension Networking.Product {
             groupedProducts: .fake(),
             menuOrder: .fake(),
             addOns: .fake(),
+            isSampleItem: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
             bundledItems: .fake(),
@@ -1670,6 +1672,7 @@ extension Networking.Site {
             isSiteOwner: .fake(),
             frameNonce: .fake(),
             plan: .fake(),
+            isAIAssistantFeatureActive: .fake(),
             isJetpackThePluginInstalled: .fake(),
             isJetpackConnected: .fake(),
             isWooCommerceActive: .fake(),
@@ -1942,7 +1945,8 @@ extension Networking.UploadableMedia {
         .init(
             localURL: .fake(),
             filename: .fake(),
-            mimeType: .fake()
+            mimeType: .fake(),
+            altText: .fake()
         )
     }
 }

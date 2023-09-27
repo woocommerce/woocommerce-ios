@@ -292,7 +292,9 @@ final class MediaStoreTests: XCTestCase {
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -327,7 +329,9 @@ final class MediaStoreTests: XCTestCase {
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -362,7 +366,9 @@ final class MediaStoreTests: XCTestCase {
         let _: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -373,7 +379,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.uploadMedia` for a placeholder site ID returns the uploaded media from the remote response.
-    func test_uploadMediareturns_uploaded_media_and_deletes_input_media_file_when_connecting_to_site_with_placeholder_site_id() throws {
+    func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file_when_connecting_to_site_with_placeholder_site_id() throws {
         // Given
         let siteID = WooConstants.placeholderSiteID
         let fileManager = FileManager.default
@@ -396,7 +402,9 @@ final class MediaStoreTests: XCTestCase {
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: siteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -438,7 +446,9 @@ final class MediaStoreTests: XCTestCase {
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -478,7 +488,9 @@ final class MediaStoreTests: XCTestCase {
         let result: Result<Media, Error> = waitFor { promise in
             let action = MediaAction.uploadMedia(siteID: self.sampleSiteID,
                                                  productID: self.sampleProductID,
-                                                 mediaAsset: asset) { result in
+                                                 mediaAsset: asset,
+                                                 altText: nil,
+                                                 filename: nil) { result in
                 promise(result)
             }
             mediaStore.onAction(action)
@@ -632,7 +644,8 @@ private extension MediaStoreTests {
     func createSampleUploadableMedia(targetURL: URL) -> UploadableMedia {
         return UploadableMedia(localURL: targetURL,
                                filename: "test.jpg",
-                               mimeType: "image/jpeg")
+                               mimeType: "image/jpeg",
+                               altText: nil)
     }
 
     func createMediaStoreAndExportableMedia(at targetURL: URL, fileManager: FileManager, remote: MediaRemoteProtocol? = nil) -> MediaStore {

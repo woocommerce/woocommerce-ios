@@ -204,6 +204,11 @@
             "menu_order": 0,
             "meta_data": [
                 {
+                    "id":190,
+                    "key":"_headstart_post",
+                    "value":"_hs_extra"
+                },
+                {
                     "id": 6779,
                     "key": "_wpas_done_all",
                     "value": "1"

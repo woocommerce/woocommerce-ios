@@ -186,7 +186,27 @@ public enum FeatureFlag: Int {
     ///
     case manualTaxesInOrderM2
 
+    /// Enables storing the selected tax rate locally and applying to future orders (Manual Taxes Milestone 3)
+    ///
+    case manualTaxesInOrderM3
+
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping
+
+    /// Enables the reuse of Payment Intents when retrying a failed payment
+    /// 
+    case reusePaymentIntentOnRetryInPersonPayment
+
+    /// Enables a required refresh of the order before each IPP payment (or retry)
+    ///
+    case refreshOrderBeforeInPersonPayment
+
+    /// Enables product creation with AI.
+    ///
+    case productCreationAI
+
+    /// Enables gift card support in order creation/editing
+    ///
+    case giftCardInOrderForm
 }

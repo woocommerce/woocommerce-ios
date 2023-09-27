@@ -83,6 +83,7 @@ extension Product {
     @NSManaged public var bundledItems: NSOrderedSet?
     @NSManaged public var compositeComponents: NSOrderedSet?
     @NSManaged public var subscription: ProductSubscription?
+    @NSManaged public var isSampleItem: Bool
 
 }
 

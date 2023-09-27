@@ -29,7 +29,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
         loginFields.username = email
         loginFields.password = password
         loginFields.siteAddress = siteURL
-        loginFields.meta.userIsDotCom = true
+        loginFields.userIsDotCom = true
         return loginFields
     }
 

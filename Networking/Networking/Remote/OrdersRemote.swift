@@ -146,15 +146,16 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the Order.
     ///     - order: Order to be created.
+    ///     - giftCard: Optional gift card to apply to the order.
     ///     - fields: Fields of the order to be created.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createOrder(siteID: Int64, order: Order, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+    public func createOrder(siteID: Int64, order: Order, giftCard: String?, fields: [CreateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = Constants.ordersPath
             let mapper = OrderMapper(siteID: siteID)
             let parameters: [String: Any] = try {
-                try fields.reduce(into: [:]) { params, field in
+                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
@@ -178,6 +179,13 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
                     }
                 }
+
+                // Custom amount isn't supported for gift cards.
+                if let giftCard {
+                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                }
+
+                return params
             }()
 
             let request = JetpackRequest(wooApiVersion: .mark3,
@@ -219,15 +227,20 @@ public class OrdersRemote: Remote {
     /// - Parameters:
     ///     - siteID: Site which hosts the Order.
     ///     - order: Order to be updated.
+    ///     - giftCard: Optional gift card to apply to the order.
     ///     - fields: Fields from the order to be updated.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int64, order: Order, fields: [UpdateOrderField], completion: @escaping (Result<Order, Error>) -> Void) {
+    public func updateOrder(from siteID: Int64,
+                            order: Order,
+                            giftCard: String?,
+                            fields: [UpdateOrderField],
+                            completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
             let mapper = OrderMapper(siteID: siteID)
             let parameters: [String: Any] = try {
-                try fields.reduce(into: [:]) { params, field in
+                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
@@ -252,6 +265,13 @@ public class OrdersRemote: Remote {
                         params[Order.CodingKeys.items.rawValue] = try order.items.map { try $0.toDictionary() }
                     }
                 }
+
+                // Custom amount isn't supported for gift cards.
+                if let giftCard {
+                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                }
+
+                return params
             }()
 
             let request = JetpackRequest(wooApiVersion: .mark3,
@@ -372,12 +392,16 @@ public extension OrdersRemote {
     enum ParameterValues {
         static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
         private static let commonOrderFieldValues = [
-            "id", "parent_id", "number", "status", "currency", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt", "date_paid_gmt",
-            "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
+            "id", "parent_id", "number", "status", "currency", "currency_symbol", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt",
+            "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
             "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
             "is_editable", "needs_payment", "needs_processing", "gift_cards"
         ]
         static let dateModifiedField = "date_modified_gmt"
+    }
+
+    enum NestedFieldKeys {
+        static let giftCardCode = "code"
     }
 
     /// Order fields supported for update

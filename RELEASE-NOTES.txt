@@ -1,8 +1,26 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-15.4
+15.6
 -----
 
+
+15.5
+-----
+- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
+- [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
+- [*] Enabled product description and product sharing AI features for self-hosted sites with Jetpack AI plugin. [https://github.com/woocommerce/woocommerce-ios/pull/10747]
+- [*] Order form: the applied gift cards are shown below the coupon section. [https://github.com/woocommerce/woocommerce-ios/pull/10743]
+
+15.4
+-----
+- [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]
+- [*] Taxes in orders: Add empty state design for the Tax Rate selector. [https://github.com/woocommerce/woocommerce-ios/pull/10665]
+- [*] Added protection against accidental double-charging with In-Person Payments in poor network conditions [https://github.com/woocommerce/woocommerce-ios/pull/10647]
+- [**] Improved retry handling for In-Person Payments that fail [https://github.com/woocommerce/woocommerce-ios/pull/10673]
+- [*] See more of your order by long pressing an order push notification. [https://github.com/woocommerce/woocommerce-ios/pull/10658]
+- [*] Order details: product add-ons for a line item are shown in separate lines for better readability. [https://github.com/woocommerce/woocommerce-ios/pull/10661]
+- [**] Product categories now can be deleted as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10643]
+- [**] Product categories can now be updated as part of the product editing flow. [https://github.com/woocommerce/woocommerce-ios/pull/10648]
 
 15.3
 -----

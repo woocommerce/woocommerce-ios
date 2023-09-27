@@ -307,6 +307,7 @@ public enum WooAnalyticsStat: String {
 
     // MARK: Card-Present Payments Onboarding
     case cardPresentOnboardingLearnMoreTapped = "card_present_onboarding_learn_more_tapped"
+    case cardPresentOnboardingCompleted = "card_present_onboarding_completed"
     case cardPresentOnboardingNotCompleted = "card_present_onboarding_not_completed"
     case cardPresentOnboardingStepSkipped = "card_present_onboarding_step_skipped"
     case cardPresentOnboardingCtaTapped = "card_present_onboarding_cta_tapped"
@@ -601,8 +602,6 @@ public enum WooAnalyticsStat: String {
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
-    // Exposure event for the A/B experiment.
-    case addProductFromImageEligible = "add_product_from_image_eligible"
 
     // MARK: Add product from image events
     case addProductFromImageDisplayed = "add_product_from_image_displayed"
@@ -693,6 +692,8 @@ public enum WooAnalyticsStat: String {
     case productCategorySettingsDoneButtonTapped = "product_category_settings_done_button_tapped"
     case productCategorySettingsAddButtonTapped = "product_category_settings_add_button_tapped"
     case productCategorySettingsSaveNewCategoryTapped = "add_product_category_save_tapped"
+    case productCategorySettingsDeleteButtonTapped = "product_category_settings_delete_button_tapped"
+    case productCategorySettingsEditButtonTapped = "product_category_settings_edit_button_tapped"
 
     // Product Tags Events
     //

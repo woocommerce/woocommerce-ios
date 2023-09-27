@@ -165,6 +165,7 @@ private extension Product_ProductFormTests {
                        groupedProducts: [],
                        menuOrder: 0,
                        addOns: [],
+                       isSampleItem: false,
                        bundleStockStatus: nil,
                        bundleStockQuantity: nil,
                        bundledItems: [],

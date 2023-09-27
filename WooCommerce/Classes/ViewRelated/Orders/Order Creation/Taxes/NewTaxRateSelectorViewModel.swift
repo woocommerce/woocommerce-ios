@@ -2,6 +2,7 @@ import Foundation
 import Yosemite
 import Combine
 import Storage
+import Experiments
 
 final class NewTaxRateSelectorViewModel: ObservableObject {
     private let wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol
@@ -18,6 +19,8 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     /// Analytics engine.
     ///
     private let analytics: Analytics
+
+    private let featureFlagService: FeatureFlagService
 
     @Published private(set) var taxRateViewModels: [TaxRateViewModel] = []
 
@@ -41,6 +44,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
          onTaxRateSelected: @escaping (Yosemite.TaxRate) -> Void,
          wpAdminTaxSettingsURLProvider: WPAdminTaxSettingsURLProviderProtocol = WPAdminTaxSettingsURLProvider(),
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
@@ -50,6 +54,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.paginationTracker = PaginationTracker(pageFirstIndex: 1, pageSize: 25)
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
 
         configureResultsController()
         configurePaginationTracker()
@@ -61,15 +66,9 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 
-    var bottomNoticeTitle: String? {
-        switch syncState {
-        case .syncingFirstPage:
-            return nil
-        case .results:
-            return Localization.bottomNoticeResultsSectionTitle
-        case .empty:
-            return Localization.bottomNoticeEmptySectionTitle
-        }
+    /// Whether to show the fixed bottom panel to save the selected tax rate or not
+    var showFixedBottomPanel: Bool {
+        featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM3)
     }
 
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
@@ -85,12 +84,16 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         paginationTracker.ensureNextPageIsSynced()
     }
 
-    func onRowSelected(with index: Int) {
+    func onRowSelected(with index: Int, storeSelectedTaxRate: Bool) {
         analytics.track(.taxRateSelectorTaxRateTapped)
 
         guard let taxRateViewModel = taxRateViewModels[safe: index],
               let taxRate = resultsController.fetchedObjects.first(where: { $0.id == taxRateViewModel.id }) else {
             return
+        }
+
+        if storeSelectedTaxRate {
+            stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: taxRate.id, siteID: siteID))
         }
 
         onTaxRateSelected(taxRate)
@@ -207,17 +210,6 @@ extension NewTaxRateSelectorViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = taxRateViewModels.isNotEmpty ? .results: .empty
-    }
-}
-
-extension NewTaxRateSelectorViewModel {
-    enum Localization {
-        static let bottomNoticeResultsSectionTitle = NSLocalizedString("Can’t find the rate you’re looking for?",
-                                                                         comment: "Text to prompt the user to edit tax rates in the web")
-        static let bottomNoticeEmptySectionTitle = NSLocalizedString("You don't have any tax rates with a location.",
-                                                                              comment: "Text to prompt the user to edit tax rates" +
-                                                                              "in the web when there are no results")
-
     }
 }
 

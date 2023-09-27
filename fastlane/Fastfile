@@ -127,9 +127,7 @@ ASC_KEY_PATH = File.join(SECRETS_DIR, 'app_store_connect_fastlane_api_key.json')
 # Use this instead of getting values from ENV directly
 # It will throw an error if the requested value is missing
 def get_required_env(key)
-  unless ENV.key?(key)
-    UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?")
-  end
+  UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?") unless ENV.key?(key)
   ENV.fetch(key)
 end
 
@@ -141,12 +139,8 @@ before_all do |lane|
   check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
   # Check that the env files exist
-  unless is_ci || File.file?(USER_ENV_FILE_PATH)
-    UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values")
-  end
-  unless File.file?(PROJECT_ENV_FILE_PATH)
-    UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`')
-  end
+  UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values") unless is_ci || File.file?(USER_ENV_FILE_PATH)
+  UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`') unless File.file?(PROJECT_ENV_FILE_PATH)
 
   setup_ci
 end
@@ -187,7 +181,7 @@ platform :ios do
       release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
       extracted_notes_file_path: RELEASE_NOTES_PATH
     )
-    ios_update_release_notes(new_version: new_version)
+    ios_update_release_notes(new_version:)
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and let the automation configure the release on GitHub?',
@@ -361,9 +355,7 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    if ios_current_branch_is_hotfix
-      UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead')
-    end
+    UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
 
     ios_finalize_prechecks(options)
 
@@ -553,7 +545,7 @@ platform :ios do
     version = options[:beta_release] ? ios_get_build_version : app_version
     create_release(
       repository: GITHUB_REPO,
-      version: version,
+      version:,
       release_notes_file_path: RELEASE_NOTES_PATH,
       release_assets: archive_zip_path.to_s,
       prerelease: options[:beta_release]
@@ -684,11 +676,11 @@ platform :ios do
 
     upload_to_app_store(
       app_identifier: APP_STORE_VERSION_BUNDLE_IDENTIFIER,
-      app_version: app_version,
+      app_version:,
       team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
-      skip_screenshots: skip_screenshots,
+      skip_screenshots:,
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
@@ -740,9 +732,9 @@ platform :ios do
       scheme: SCREENSHOTS_SCHEME,
 
       localize_simulator: true,
-      languages: languages,
+      languages:,
 
-      devices: devices,
+      devices:,
 
       # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
       test_without_building: true,
@@ -877,7 +869,7 @@ platform :ios do
 
     gp_downloadmetadata(
       project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      target_files: target_files,
+      target_files:,
       locales: locales_map,
       download_path: metadata_directory
     )
@@ -1024,8 +1016,8 @@ platform :ios do
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
-      readonly: readonly,
-      api_key_path: api_key_path
+      readonly:,
+      api_key_path:
     )
   end
 
@@ -1137,11 +1129,9 @@ lane :test_without_building do |options|
     e.include?(options[:name])
   end.first
 
-  unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
-    UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}")
-  end
+  UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}") unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
 
-  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
+  inject_buildkite_analytics_environment(xctestrun_path:) if buildkite_ci?
 
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
@@ -1205,7 +1195,7 @@ def trigger_buildkite_release_build(branch:, beta:)
   buildkite_trigger_build(
     buildkite_organization: 'automattic',
     buildkite_pipeline: 'woocommerce-ios',
-    branch: branch,
+    branch:,
     environment: { BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
   )
@@ -1243,8 +1233,10 @@ def prompt_user_for_app_store_connect_credentials
   require 'credentials_manager'
 
   # If Fastlane cannot instantiate a user, it will ask the caller for the email.
-  # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will already have access to it.
-  # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way to check it so we have to do it anyway.
+  # Once we have it, we can set it as `FASTLANE_USER` in the environment (which has lifecycle limited to this call) so that the next commands will
+  # already have access to it.
+  # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way
+  # to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
 

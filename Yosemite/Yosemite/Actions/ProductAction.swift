@@ -125,6 +125,13 @@ public enum ProductAction: Action {
                           feature: GenerativeContentRemoteFeature,
                           completion: (Result<String, Error>) -> Void)
 
+    /// Generates a product name with Jetpack AI given the keywords
+    ///
+    case generateProductName(siteID: Int64,
+                             keywords: String,
+                             language: String,
+                             completion: (Result<String, Error>) -> Void)
+
     /// Generates a product description with Jetpack AI given the name and features.
     ///
     case generateProductDescription(siteID: Int64,
@@ -142,9 +149,12 @@ public enum ProductAction: Action {
                                        language: String,
                                        completion: (Result<String, Error>) -> Void)
 
-    /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image.
+    /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image and optional product name .
     ///
-    case generateProductDetails(siteID: Int64, scannedTexts: [String], completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
+    case generateProductDetails(siteID: Int64,
+                                productName: String?,
+                                scannedTexts: [String],
+                                completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.
     ///

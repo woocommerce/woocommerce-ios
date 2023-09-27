@@ -107,7 +107,6 @@ struct OrderForm: View {
 
     @State private var shouldShowNewTaxRateSelector = false
     @State private var shouldShowStoredTaxRateSheet = false
-    @State private var shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -165,14 +164,14 @@ struct OrderForm: View {
                                                            onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
                                                            storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
                                 }
-                                .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
-                                    storedTaxRateBottomSheetContent
-                                        .onDisappear {
-                                            if shouldShowTaxRateSelectorAfterTaxRateSheetDisappears {
-                                                shouldShowNewTaxRateSelector = true
-                                                shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = false
-                                            }
-                                        }
+                                .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    if #available(iOS 16.0, *) {
+                                        storedTaxRateBottomSheetContent
+                                            .presentationDetents([.medium])
+                                            .presentationDragIndicator(.visible)
+                                    } else {
+                                        storedTaxRateBottomSheetContent
+                                    }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -246,7 +245,7 @@ struct OrderForm: View {
 
             Button {
                 shouldShowStoredTaxRateSheet = false
-                shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = true
+                shouldShowNewTaxRateSelector = true
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)

@@ -80,9 +80,3 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         }
     }
 }
-
-private extension AddProductWithAIContainerViewModel {
-    func handleCompletion() {
-        // TODO: Fire completion handler with created product
-    }
-}

@@ -167,7 +167,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isGeneratingDetails)
     }
 
-    func test_errorMessage_is_updated_when_generateProductDetails_fails() async throws {
+    func test_errorState_is_updated_when_generateProductDetails_fails() async throws {
         // Given
         let siteID: Int64 = 123
 
@@ -188,15 +188,16 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
+        XCTAssertEqual(viewModel.errorState, .none)
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                XCTAssertNil(viewModel.errorMessage)
+                XCTAssertEqual(viewModel.errorState, .none)
                 completion(.failure(expectedError))
             case let .identifyLanguage(_, _, _, completion):
-                XCTAssertNil(viewModel.errorMessage)
+                XCTAssertEqual(viewModel.errorState, .none)
                 completion(.success("en"))
             default:
                 break
@@ -205,7 +206,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
 
         // Then
-        XCTAssertEqual(viewModel.errorMessage, expectedError.localizedDescription)
+        XCTAssertEqual(viewModel.errorState, .generatingProduct)
     }
 
     func test_generateProductDetails_updates_generatedProduct_correctly() async throws {

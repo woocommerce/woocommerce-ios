@@ -932,6 +932,8 @@
 		EE998150295AACE10074AE68 /* RequestConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814F295AACE10074AE68 /* RequestConverter.swift */; };
 		EEA1E2022AC18CD700A37ADD /* AIProductMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */; };
 		EEA1E2062AC3036500A37ADD /* generate-product-success-no-shipping-info.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA1E2052AC3036500A37ADD /* generate-product-success-no-shipping-info.json */; };
+		EEA1E2092AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA1E2072AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json */; };
+		EEA1E20A2AC3E08600A37ADD /* generate-product-success-no-weight-info.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA1E2082AC3E08600A37ADD /* generate-product-success-no-weight-info.json */; };
 		EEA6583E2966B41E00112DF0 /* products-load-all-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA6583D2966B41E00112DF0 /* products-load-all-without-data.json */; };
 		EEA658402966C05D00112DF0 /* product-search-sku-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = EEA6583F2966C05D00112DF0 /* product-search-sku-without-data.json */; };
 		EEA658422966C41A00112DF0 /* ProductIDMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA658412966C41A00112DF0 /* ProductIDMapperTests.swift */; };
@@ -1915,6 +1917,8 @@
 		EE99814F295AACE10074AE68 /* RequestConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverter.swift; sourceTree = "<group>"; };
 		EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProductMapperTests.swift; sourceTree = "<group>"; };
 		EEA1E2052AC3036500A37ADD /* generate-product-success-no-shipping-info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-success-no-shipping-info.json"; sourceTree = "<group>"; };
+		EEA1E2072AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-success-no-dimensions-info.json"; sourceTree = "<group>"; };
+		EEA1E2082AC3E08600A37ADD /* generate-product-success-no-weight-info.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-success-no-weight-info.json"; sourceTree = "<group>"; };
 		EEA6583D2966B41E00112DF0 /* products-load-all-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "products-load-all-without-data.json"; sourceTree = "<group>"; };
 		EEA6583F2966C05D00112DF0 /* product-search-sku-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-search-sku-without-data.json"; sourceTree = "<group>"; };
 		EEA658412966C41A00112DF0 /* ProductIDMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductIDMapperTests.swift; sourceTree = "<group>"; };
@@ -2495,6 +2499,8 @@
 				EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */,
 				EE28C7D92AC17961004A69F4 /* generate-product-success.json */,
 				EEA1E2052AC3036500A37ADD /* generate-product-success-no-shipping-info.json */,
+				EEA1E2072AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json */,
+				EEA1E2082AC3E08600A37ADD /* generate-product-success-no-weight-info.json */,
 				EEAB47692A851AFD00E55B25 /* site-upload-profiler-answers-success.json */,
 				DEA662A12A84DD5100731D36 /* site-settings-success.json */,
 				EEFC4C942A5E996C004C5A83 /* jwt-token-failure.json */,
@@ -3441,6 +3447,7 @@
 				2670C3FE270F4E6A002FE931 /* sites-malformed.json in Resources */,
 				CCE5F39529F0034400087332 /* subscription-list-without-data.json in Resources */,
 				CCF434662906C2A400B4475A /* products-ids-only.json in Resources */,
+				EEA1E20A2AC3E08600A37ADD /* generate-product-success-no-weight-info.json in Resources */,
 				31B8D6B426583662008E3DB2 /* wcpay-account-not-eligible.json in Resources */,
 				74C8F06C20EEBD5D00B6EDC9 /* broken-order.json in Resources */,
 				DEC51A97274DD962009F3DF4 /* plugin.json in Resources */,
@@ -3650,6 +3657,7 @@
 				DEF13C6029668C420024A02B /* order-without-data.json in Resources */,
 				022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */,
 				4513382827A96DE700AE5E78 /* inbox-note.json in Resources */,
+				EEA1E2092AC3E08600A37ADD /* generate-product-success-no-dimensions-info.json in Resources */,
 				31A451D227863A2E00FE81AA /* stripe-account-restricted-pending.json in Resources */,
 				45CCFCEA27A2E59B0012E8CB /* inbox-note-list.json in Resources */,
 				025CA2C8238F4FF400B05C81 /* product-shipping-classes-load-all.json in Resources */,

@@ -161,11 +161,17 @@ struct OrderForm: View {
                                         viewModel.onTaxRateSelected(taxRate)
                                     }),
                                                            taxEducationalDialogViewModel: viewModel.paymentDataViewModel.taxEducationalDialogViewModel,
-                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure)
+                                                           onDismissWpAdminWebView: viewModel.paymentDataViewModel.onDismissWpAdminWebViewClosure,
+                                                           storeSelectedTaxRate: viewModel.shouldStoreTaxRateInSelectorByDefault)
                                 }
-                                .adaptiveSheet(isPresented: $shouldShowStoredTaxRateSheet) {
-                                    storedTaxRateBottomSheetContent
-
+                                .sheet(isPresented: $shouldShowStoredTaxRateSheet) {
+                                    if #available(iOS 16.0, *) {
+                                        storedTaxRateBottomSheetContent
+                                            .presentationDetents([.medium])
+                                            .presentationDragIndicator(.visible)
+                                    } else {
+                                        storedTaxRateBottomSheetContent
+                                    }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -222,7 +228,6 @@ struct OrderForm: View {
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
         VStack (alignment: .leading) {
-            // your sheet content here
             Text(Localization.storedTaxRateBottomSheetTitle)
                 .bodyStyle()
                 .padding(.top, Layout.storedTaxRateBottomSheetTopSpace)
@@ -239,6 +244,8 @@ struct OrderForm: View {
             }
 
             Button {
+                shouldShowStoredTaxRateSheet = false
+                shouldShowNewTaxRateSelector = true
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetNewTaxRateButtonTitle)
@@ -254,6 +261,8 @@ struct OrderForm: View {
             .padding()
 
             Button {
+                viewModel.forgetTaxRate()
+                shouldShowStoredTaxRateSheet = false
             } label: {
                 Label {
                     Text(Localization.storedTaxRateBottomSheetClearTaxRateButtonTitle)

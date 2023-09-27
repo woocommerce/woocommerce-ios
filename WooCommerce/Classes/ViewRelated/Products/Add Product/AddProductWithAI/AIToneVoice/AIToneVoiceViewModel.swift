@@ -24,12 +24,7 @@ final class AIToneVoiceViewModel: ObservableObject {
         self.siteID = siteID
         self.analytics = analytics
         self.userDefaults = userDefaults
-        if let storedPrompt = userDefaults.aiTone(for: siteID) {
-            self.selectedTone = storedPrompt
-        } else {
-            self.selectedTone = .casual
-            userDefaults.setAITone(.casual, for: siteID)
-        }
+        self.selectedTone = userDefaults.aiTone(for: siteID)
     }
 
     func onSelectTone(_ aiPromptTone: AIToneVoice) {
@@ -40,14 +35,18 @@ final class AIToneVoiceViewModel: ObservableObject {
 
 // MARK: - AI tone helpers
 extension UserDefaults {
+    private enum Constants {
+        static let defaultTone = AIToneVoice.casual
+    }
     /// Returns AI tone for the site ID
     ///
-    func aiTone(for siteID: Int64) -> AIToneVoice? {
+    func aiTone(for siteID: Int64) -> AIToneVoice {
         let aiPromptTone = self[.aiPromptTone] as? [String: String]
         let idAsString = "\(siteID)"
         guard let rawValue = aiPromptTone?[idAsString],
               let tone = AIToneVoice(rawValue: rawValue) else {
-            return nil
+            setAITone(Constants.defaultTone, for: siteID)
+            return Constants.defaultTone
         }
         return tone
     }

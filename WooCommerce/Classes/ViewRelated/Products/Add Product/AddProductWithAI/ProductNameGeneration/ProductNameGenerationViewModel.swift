@@ -108,7 +108,3 @@ extension ProductNameGenerationViewModel {
         )
     }
 }
-
-private enum IdentifyLanguageError: Error {
-    case failedToIdentifyLanguage(underlyingError: Error)
-}

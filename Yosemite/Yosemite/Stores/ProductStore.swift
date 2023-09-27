@@ -714,8 +714,8 @@ private extension ProductStore {
                          language: String,
                          tone: String,
                          currencySymbol: String,
-                         dimensionUnit: String,
-                         weightUnit: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
                          categories: [ProductCategory],
                          tags: [ProductTag],
                          completion: @escaping (Result<Product, Error>) -> Void) {

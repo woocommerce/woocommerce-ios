@@ -56,17 +56,15 @@ public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCop
         currency = try container.decode(String.self, forKey: .currency)
         let dateString = try container.decode(String.self, forKey: .date)
 
-        // For some reason, the date here is an ISO 8601 string not a milliseconds timestamp.
+        // For some reason, the date here is a string not a milliseconds timestamp.
         // Manual date parsing allows us to continue to parse the whole response with a single decoder.
-        let isoDateFormatter = ISO8601DateFormatter()
-//        isoDateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-//        isoDateFormatter.formatOptions = [
-//            .withFullDate,
-//            .withFullTime,
-//            .withDashSeparatorInDate,
-//            .withFractionalSeconds]
+        // ISO8601DateFormatter with custom options should be a better choice here, but didn't work.
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
 
-        guard let date = isoDateFormatter.date(from: dateString) else {
+        guard let date = dateFormatter.date(from: dateString) else {
             throw DecodingError.typeMismatch(Date.self, .init(codingPath: [CodingKeys.date],
                                                               debugDescription: "Expected ISO8601 string",
                                                               underlyingError: nil))

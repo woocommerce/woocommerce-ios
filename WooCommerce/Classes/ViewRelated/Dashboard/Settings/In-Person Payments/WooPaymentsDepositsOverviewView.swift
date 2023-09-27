@@ -10,41 +10,67 @@ struct WooPaymentsDepositsOverviewView: View {
     }
 
     var body: some View {
-        VStack(spacing: 20) {
-            Text("\(viewModel.overview.currency.name) (\(viewModel.overview.currency.rawValue)) balance")
-                .font(.title)
-                .fontWeight(.bold)
+        VStack {
+            Grid(alignment: .leading) {
+                Text("\(viewModel.overview.currency.name) (\(viewModel.overview.currency.rawValue))")
+                    .font(.title2)
+                    .fontWeight(.bold)
 
-            HStack {
-                Image(systemName: "calendar")
-                    .foregroundColor(.blue)
-
-                Text("Deposit schedule: \(viewModel.overview.automaticDeposits ? "Automatic" : "Manual"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery)")
-                    .font(.footnote)
-            }
-
-            Grid {
                 GridRow {
-                    AccountSummaryBox(title: "Pending Balance", amount: viewModel.pendingBalance, footer: "\(viewModel.overview.pendingDepositsCount) deposits")
-                    AccountSummaryBox(title: "Next Deposit", amount: viewModel.nextDepositAmount, footer: "Est. \(viewModel.nextDepositDate)")
+                    AccountSummaryItem(title: "Available funds",
+                                      amount: viewModel.availableBalance,
+                                      footer: "")
+                    AccountSummaryItem(title: "Pending funds",
+                                      amount: viewModel.pendingBalance,
+                                       footer: "\(viewModel.overview.pendingDepositsCount) deposits")
                 }
+
+                HStack(alignment: .top) {
+                    Image(systemName: "calendar")
+                    Text(
+                        """
+Funds become available after pending for 7 days.
+Available funds are deposited \(viewModel.overview.automaticDeposits ? "automatically" : "manually"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery).
+"""
+)
+                        .font(.footnote)
+                }
+                .padding(.vertical, 8)
+
                 GridRow {
-                    AccountSummaryBox(title: "Last Deposit", amount: viewModel.lastDepositAmount, footer: viewModel.lastDepositDate)
-                    AccountSummaryBox(title: "Available Balance", amount: viewModel.availableBalance, footer: "")
+                    AccountSummaryItem(title: "Next deposit",
+                                      amount: viewModel.nextDepositAmount,
+                                      footer: "Est. \(viewModel.nextDepositDate)")
+                    AccountSummaryItem(title: "Last deposit",
+                                      amount: viewModel.lastDepositAmount,
+                                      footer: viewModel.lastDepositDate)
+
                 }
+
+                Button {
+                    // no-op
+                } label: {
+                    HStack {
+                        Image(systemName: "info.circle")
+                        Text("Learn more about when you'll receive your funds")
+                            .font(.footnote)
+                    }
+                }
+
             }
+            .fixedSize(horizontal: false, vertical: true)
         }
         .padding()
     }
 }
 
-struct AccountSummaryBox: View {
+struct AccountSummaryItem: View {
     let title: String
     let amount: String
     let footer: String
 
     var body: some View {
-        VStack {
+        VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
@@ -54,14 +80,11 @@ struct AccountSummaryBox: View {
                 .fontWeight(.bold)
 
             Text(footer)
-                .font(.caption)
+                .font(.footnote)
                 .foregroundColor(.gray)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(Color.white)
-        .cornerRadius(10)
-        .shadow(radius: 3)
     }
 }
 
@@ -90,7 +113,7 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
 
         return WooPaymentsDepositsOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
-            .frame(width: 400, height: 400)
+//            .frame(width: 400, height: 400)
     }
 }
 

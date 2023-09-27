@@ -284,7 +284,3 @@ private extension ProductDetailPreviewViewModel {
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
     }
 }
-
-private enum IdentifyLanguageError: Error {
-    case failedToIdentifyLanguage(underlyingError: Error)
-}

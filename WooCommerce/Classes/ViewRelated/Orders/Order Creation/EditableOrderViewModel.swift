@@ -607,18 +607,6 @@ final class EditableOrderViewModel: ObservableObject {
         autodismissableNotice = Notice(title: Localization.newTaxRateSetSuccessMessage)
     }
 
-    /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
-    ///
-    func forgetTaxRate() {
-        let order = orderSynchronizer.order
-        orderSynchronizer.setAddresses.send(OrderSyncAddressesInput(billing: order.billingAddress?.resettingTaxRateComponents(),
-                                                                    shipping: order.shippingAddress?.resettingTaxRateComponents()))
-        resetAddressForm()
-        storedTaxRate = nil
-        stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
-        autodismissableNotice = Notice(title: Localization.stopAddingTaxRateAutomaticallySuccessMessage)
-    }
-
     /// Updates the order creation draft with the current set customer note.
     ///
     func updateCustomerNote() {
@@ -697,6 +685,19 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onSetNewTaxRateTapped() {
         analytics.track(.orderCreationSetNewTaxRateTapped)
+    }
+
+    func onStoredTaxRateBottomSheetAppear() {
+        analytics.track(.orderCreationStoredTaxRateBottomSheetAppear)
+    }
+
+    func onSetNewTaxRateFromBottomSheetTapped() {
+        analytics.track(.orderCreationSetNewTaxRateFromBottomSheetTapped)
+    }
+
+    func onClearAddressFromBottomSheetTapped() {
+        analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
+        forgetTaxRate()
     }
 }
 
@@ -1636,6 +1637,18 @@ private extension EditableOrderViewModel {
     func removeFee() {
         orderSynchronizer.setFee.send(nil)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
+    }
+
+    /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
+    ///
+    func forgetTaxRate() {
+        let order = orderSynchronizer.order
+        orderSynchronizer.setAddresses.send(OrderSyncAddressesInput(billing: order.billingAddress?.resettingTaxRateComponents(),
+                                                                    shipping: order.shippingAddress?.resettingTaxRateComponents()))
+        resetAddressForm()
+        storedTaxRate = nil
+        stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
+        autodismissableNotice = Notice(title: Localization.stopAddingTaxRateAutomaticallySuccessMessage)
     }
 }
 

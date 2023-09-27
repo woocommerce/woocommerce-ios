@@ -173,6 +173,9 @@ struct OrderForm: View {
                                                 shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = false
                                             }
                                         }
+                                        .onAppear {
+                                            viewModel.onStoredTaxRateBottomSheetAppear()
+                                        }
                                 }
 
                                 Spacer(minLength: Layout.sectionSpacing)
@@ -245,6 +248,7 @@ struct OrderForm: View {
             }
 
             Button {
+                viewModel.onSetNewTaxRateFromBottomSheetTapped()
                 shouldShowStoredTaxRateSheet = false
                 shouldShowTaxRateSelectorAfterTaxRateSheetDisappears = true
             } label: {
@@ -262,7 +266,7 @@ struct OrderForm: View {
             .padding()
 
             Button {
-                viewModel.forgetTaxRate()
+                viewModel.onClearAddressFromBottomSheetTapped()
                 shouldShowStoredTaxRateSheet = false
             } label: {
                 Label {

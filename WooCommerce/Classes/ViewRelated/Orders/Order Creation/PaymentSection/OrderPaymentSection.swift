@@ -25,7 +25,7 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the gift card code input sheet should be shown or not.
     ///
-    @State private var shouldShowAddGiftCard: Bool = false
+    @State private var shouldShowGiftCardForm: Bool = false
 
     /// Indicates if the tax educational dialog should be shown or not.
     ///
@@ -189,43 +189,38 @@ struct OrderPaymentSection: View {
 
     @ViewBuilder private var addGiftCardRow: some View {
         Button(Localization.addGiftCard) {
-            shouldShowAddGiftCard = true
+            shouldShowGiftCardForm = true
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-gift-card-button")
         .disabled(!viewModel.isAddGiftCardActionEnabled)
-        .sheet(isPresented: $shouldShowAddGiftCard) {
+        .sheet(isPresented: $shouldShowGiftCardForm) {
             giftCardInput
         }
     }
 
     @ViewBuilder private func editGiftCardRow(giftCard: String) -> some View {
         HStack {
-            TitleAndValueRow(title: Localization.giftCard, value: .content(giftCard))
-                .onTapGesture {
-                    shouldShowAddGiftCard = true
-                }
-                .sheet(isPresented: $shouldShowAddGiftCard) {
-                    giftCardInput
-                }
-
             Button {
-                viewModel.setGiftCardClosure(nil)
+                shouldShowGiftCardForm = true
             } label: {
-                Image(uiImage: .closeButton)
+                OrderFormGiftCardRow(code: giftCard)
             }
             .padding()
+            .sheet(isPresented: $shouldShowGiftCardForm) {
+                giftCardInput
+            }
         }
     }
 
     @ViewBuilder private var giftCardInput: some View {
         GiftCardInputView(viewModel: .init(code: viewModel.giftCardToApply ?? "",
-                                           addGiftCard: { code in
+                                           setGiftCard: { code in
             viewModel.setGiftCardClosure(code)
-            shouldShowAddGiftCard = false
+            shouldShowGiftCardForm = false
         }, dismiss: {
-            shouldShowAddGiftCard = false
+            shouldShowGiftCardForm = false
         }))
     }
 

@@ -433,7 +433,7 @@ struct PrimaryButton_Previews: PreviewProvider {
             Group {
                 Button("Secondary button") {}
                     .buttonStyle(SecondaryButtonStyle())
-                
+
                 Button("Secondary button (disabled)") {}
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(true)

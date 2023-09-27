@@ -10,7 +10,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
     @Published private(set) var isSavingProduct: Bool = false
-    @Published private var generatedProduct: Product?
+    @Published private(set) var generatedProduct: Product?
 
     @Published private(set) var productName: String
     @Published private(set) var productDescription: String?

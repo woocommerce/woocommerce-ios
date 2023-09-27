@@ -127,6 +127,48 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    func test_generateProductDetails_sends_productDescription_if_available_to_generate_product_details() async throws {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let sampleProductName = "Pen"
+        let sampleProductDescription = "Ballpoint, Blue ink, ABS plastic"
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.sessionManager.setStoreId(sampleSiteID)
+
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
+
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: sampleProductName,
+                                                      productDescription: sampleProductDescription,
+                                                      productFeatures: nil,
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      userDefaults: userDefaults,
+                                                      onProductCreated: { _ in })
+        XCTAssertFalse(viewModel.isGeneratingDetails)
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, keywords, _, _, _, _, _, _, _, completion):
+                // Then
+                XCTAssertEqual(keywords, sampleProductDescription)
+                completion(.success(Product.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        // When
+        await viewModel.generateProductDetails()
+    }
+
     func test_generateProductDetails_updates_generationInProgress_correctly() async throws {
         // Given
         let siteID: Int64 = 123

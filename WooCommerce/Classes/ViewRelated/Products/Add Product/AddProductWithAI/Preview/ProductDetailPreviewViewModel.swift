@@ -231,7 +231,7 @@ private extension ProductDetailPreviewViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProduct(siteID: siteID,
                                                           productName: productName,
-                                                          keywords: productFeatures ?? "",
+                                                          keywords: productFeatures ?? productDescription ?? "",
                                                           language: language,
                                                           tone: tone.rawValue,
                                                           currencySymbol: currency,

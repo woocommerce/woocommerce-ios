@@ -1201,6 +1201,57 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    func test_commitAllChanges_relays_usesGiftCard_on_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    completion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
+    }
+
+    func test_commitAllChanges_relays_usesGiftCard_on_failure() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    let error = NSError(domain: "", code: 0, userInfo: nil)
+                    completion(.failure(error))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
+    }
+
     func test_double_inputs_are_debounced_during_order_update() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

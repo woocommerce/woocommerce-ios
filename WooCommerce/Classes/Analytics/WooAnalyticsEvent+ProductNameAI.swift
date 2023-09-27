@@ -5,13 +5,13 @@ extension WooAnalyticsEvent {
         private enum Key: String {
             case source = "source"
             case isRetry = "is_retry"
-            case withMessage = "with_message"
+            case hasInputName = "has_input_name"
             case language = "language"
         }
 
-        static func entryPointTapped() -> WooAnalyticsEvent {
+        static func entryPointTapped(hasInputName: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productNameAIEntryPointTapped,
-                              properties: [:])
+                              properties: [Key.hasInputName.rawValue: hasInputName])
         }
 
         static func generateButtonTapped(isRetry: Bool) -> WooAnalyticsEvent {
@@ -21,7 +21,7 @@ extension WooAnalyticsEvent {
 
         static func copyButtonTapped(withMessage: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productNameAICopyButtonTapped,
-                              properties: [Key.withMessage.rawValue: withMessage])
+                              properties: [:])
         }
 
         static func applyButtonTapped() -> WooAnalyticsEvent {

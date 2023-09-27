@@ -873,7 +873,7 @@ private extension AppSettingsStore {
         let storeSettings = getStoreSettings(for: siteID)
 
         let updatedSettings: GeneralStoreSettings
-        if let taxRateID = id {
+        if let id {
             updatedSettings = storeSettings.copy(selectedTaxRateID: id)
         } else {
             updatedSettings = storeSettings.erasingSelectedTaxRateID()

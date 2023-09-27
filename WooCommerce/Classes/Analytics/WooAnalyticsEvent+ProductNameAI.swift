@@ -2,6 +2,10 @@ import Foundation
 
 extension WooAnalyticsEvent {
     enum ProductNameAI {
+        enum EntryPointSource: String {
+            case productCreationAI = "product_creation_ai"
+        }
+
         private enum Key: String {
             case source = "source"
             case isRetry = "is_retry"
@@ -9,9 +13,12 @@ extension WooAnalyticsEvent {
             case language = "language"
         }
 
-        static func entryPointTapped(hasInputName: Bool) -> WooAnalyticsEvent {
+        static func entryPointTapped(hasInputName: Bool, source: EntryPointSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productNameAIEntryPointTapped,
-                              properties: [Key.hasInputName.rawValue: hasInputName])
+                              properties: [
+                                Key.hasInputName.rawValue: hasInputName,
+                                Key.source.rawValue: source.rawValue
+                              ])
         }
 
         static func generateButtonTapped(isRetry: Bool) -> WooAnalyticsEvent {

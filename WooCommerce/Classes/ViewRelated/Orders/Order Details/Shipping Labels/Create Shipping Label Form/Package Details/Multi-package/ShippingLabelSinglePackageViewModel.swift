@@ -268,7 +268,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             }.store(in: &subscriptions)
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)
-            .map { [weak self] containsHazmat, selectedCategory -> Bool in
+            .map { containsHazmat, selectedCategory -> Bool in
                 if containsHazmat {
                     return selectedCategory != .none
                 } else {

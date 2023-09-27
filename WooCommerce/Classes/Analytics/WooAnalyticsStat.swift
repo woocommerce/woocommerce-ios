@@ -464,7 +464,7 @@ public enum WooAnalyticsStat: String {
     case shippingLabelReprintRequested = "shipping_label_print_requested"
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
-    
+
     // MARK: Shipping Label Hazmat Events
     //
     case containsHazmatChecked = "contains_hazmat_checked"

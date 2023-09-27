@@ -604,6 +604,7 @@ final class EditableOrderViewModel: ObservableObject {
 
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
+        autodismissableNotice = Notice(title: Localization.newTaxRateSetSuccessMessage)
     }
 
     /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
@@ -615,6 +616,7 @@ final class EditableOrderViewModel: ObservableObject {
         resetAddressForm()
         storedTaxRate = nil
         stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
+        autodismissableNotice = Notice(title: Localization.stopAddingTaxRateAutomaticallySuccessMessage)
     }
 
     /// Updates the order creation draft with the current set customer note.
@@ -1862,6 +1864,10 @@ private extension EditableOrderViewModel {
                                                                  "that is not applicated to the products")
         static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
         static let editTaxRateSetting = NSLocalizedString("Edit Tax Rate Setting", comment: "Button title to edit the selected tax rate to apply to the order")
+        static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set",  comment: "Message when a tax rate is set")
+        static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
+                                                                                    comment: "Message when the user disables adding tax rates automatically")
+
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

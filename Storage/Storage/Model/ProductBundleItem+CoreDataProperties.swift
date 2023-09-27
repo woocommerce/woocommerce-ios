@@ -17,8 +17,6 @@ extension ProductBundleItem {
     @NSManaged public var maxQuantity: NSDecimalNumber?
     @NSManaged public var defaultQuantity: NSDecimalNumber
     @NSManaged public var isOptional: Bool
-    @NSManaged public var isPricedIndividually: Bool
-    @NSManaged public var discount: NSNumber?
     @NSManaged public var product: Product?
 
 }

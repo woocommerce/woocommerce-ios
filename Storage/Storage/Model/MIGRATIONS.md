@@ -3,8 +3,8 @@
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
 ## Model 99 (Release 15.5.0.0)
-- @jaclync 2023-09-26
-    - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional`, `isPricedIndividually`, `discount` attributes to `ProductBundleItem` entity.
+- @jaclync 2023-09-27
+    - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional` attributes to `ProductBundleItem` entity.
 
 ## Model 98 (Release 15.4.0.0)
 - @hihuongdo 2023-09-15

@@ -112,6 +112,7 @@ public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable,
 
 public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let card: Int
+    // TODO: find out other possible source types, or remove
 }
 
 public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {

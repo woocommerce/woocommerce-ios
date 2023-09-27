@@ -2,6 +2,7 @@ import Combine
 import Foundation
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// View model for `ProductDetailPreviewView`
 ///
@@ -23,7 +24,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let userDefaults: UserDefaults
 
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
@@ -33,6 +36,18 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let shippingValueLocalizer: ShippingValueLocalizer
 
     private var generatedProductSubscription: AnyCancellable?
+
+    private lazy var categoryResultController: ResultsController<StorageProductCategory> = {
+        let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
+        return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    private lazy var tagResultController: ResultsController<StorageProductTag> = {
+        let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductTag.name, ascending: true)
+        return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
 
     init(siteID: Int64,
          productName: String,
@@ -45,10 +60,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
+         userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
+        self.userDefaults = userDefaults
 
         self.currency = currency
         self.currencyFormatter = currencyFormatter
@@ -62,6 +81,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productFeatures = productFeatures
         self.packagingImage = packagingImage
 
+        try? categoryResultController.performFetch()
+        try? tagResultController.performFetch()
         observeGeneratedProduct()
     }
 

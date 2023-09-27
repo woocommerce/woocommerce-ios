@@ -63,6 +63,7 @@ struct AddProductWithAIContainerView: View {
             switch viewModel.currentStep {
             case .productName:
                 AddProductNameWithAIView(viewModel: .init(siteID: viewModel.siteID,
+                                                          initialName: viewModel.productName,
                                                           onUsePackagePhoto: onUsePackagePhoto,
                                                           onContinueWithProductName: { name in
                     withAnimation {
@@ -71,7 +72,8 @@ struct AddProductWithAIContainerView: View {
                 }))
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
-                                                        productName: viewModel.productName) { features in
+                                                        productName: viewModel.productName,
+                                                        productFeatures: viewModel.productFeatures) { features in
                     withAnimation {
                         viewModel.onProductFeaturesAdded(features: features)
                     }
@@ -82,6 +84,8 @@ struct AddProductWithAIContainerView: View {
                                                           productDescription: viewModel.productDescription,
                                                           productFeatures: viewModel.productFeatures) { product in
                     viewModel.didCreateProduct(product)
+                }, onDismiss: {
+                    viewModel.backtrackOrDismiss()
                 })
             }
         }

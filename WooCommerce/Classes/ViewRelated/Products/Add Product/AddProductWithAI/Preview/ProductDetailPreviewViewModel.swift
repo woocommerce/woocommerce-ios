@@ -101,7 +101,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             isGeneratingDetails = false
         } catch {
             DDLogError("⛔️ Error generating product with AI: \(error)")
-            errorState = .generatingProduct(errorMessage: Localization.errorGenerating)
+            errorState = .generatingProduct
         }
     }
 
@@ -117,7 +117,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             onProductCreated(newProduct)
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
-            errorState = .savingProduct(errorMessage: Localization.errorSaving)
+            errorState = .savingProduct
         }
         isSavingProduct = false
     }
@@ -273,16 +273,17 @@ private extension ProductDetailPreviewViewModel {
 extension ProductDetailPreviewViewModel {
     enum ErrorState: Equatable {
         case none
-        case generatingProduct(errorMessage: String)
-        case savingProduct(errorMessage: String)
+        case generatingProduct
+        case savingProduct
 
         var errorMessage: String {
             switch self {
             case .none:
                 return ""
-            case .generatingProduct(let errorMessage),
-                    .savingProduct(let errorMessage):
-                return errorMessage
+            case .generatingProduct:
+                return Localization.errorGenerating
+            case .savingProduct:
+                return Localization.errorSaving
             }
         }
     }

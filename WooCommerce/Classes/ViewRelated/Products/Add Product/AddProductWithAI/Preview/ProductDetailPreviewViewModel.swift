@@ -9,7 +9,7 @@ import protocol Storage.StorageManagerType
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
-    @Published private var generatedProduct: Product?
+    @Published private(set) var generatedProduct: Product?
 
     @Published private(set) var productName: String
     @Published private(set) var productDescription: String?
@@ -18,6 +18,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productCategories: String?
     @Published private(set) var productTags: String?
     @Published private(set) var productShippingDetails: String?
+    @Published private(set) var errorMessage: String?
 
     private let productFeatures: String?
     private let packagingImage: MediaPickerImage?
@@ -88,12 +89,18 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func generateProductDetails() async {
-        // TODO - update this with actual implementation
         isGeneratingDetails = true
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        #if canImport(SwiftUI) && DEBUG
-        generatedProduct = Product.swiftUIPreviewSample()
-        #endif
+        errorMessage = nil
+        do {
+            let language = try await identifyLanguage()
+            let aiTone = userDefaults.aiTone(for: siteID)
+            let product = try await generateProduct(language: language,
+                                                    tone: aiTone)
+            generatedProduct = product
+        } catch {
+            errorMessage = error.localizedDescription
+            // TODO: Error handling
+        }
         isGeneratingDetails = false
     }
 

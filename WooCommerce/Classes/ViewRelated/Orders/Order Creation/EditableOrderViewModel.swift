@@ -1336,7 +1336,10 @@ private extension EditableOrderViewModel {
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
                 if canApplyTaxRates {
                     Task { @MainActor in
-                        await self.applySelectedStoredTaxRateIfAny()
+                        if self.flow == .creation {
+                            await self.applySelectedStoredTaxRateIfAny()
+                        }
+
                         // Show the tax rate section once we know if any stored tax rate applies, as it can change the text
                         self.shouldShowNewTaxRateSection = true
                     }

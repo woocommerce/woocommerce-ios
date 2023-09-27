@@ -1,3 +1,5 @@
+import Networking
+
 extension Note.Kind: Codable {}
 
 /// The type of notification count for the site

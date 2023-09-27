@@ -7,6 +7,15 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1234
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
     func test_itemsRows_returns_zero_itemsRows_with_empty_items() {
 
         // Given

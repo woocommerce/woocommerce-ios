@@ -224,16 +224,29 @@ private extension GenerativeContentRemote {
         }()
 
         let shippingJson = {
-            guard let dimensionUnit,
-                  let weightUnit else {
-                return ""
-            }
+            let weightJson = {
+                guard let weightUnit else {
+                    return ""
+                }
+
+                return "weight: Guess and provide only the number in ```\(weightUnit)```"
+            }()
+
+            let dimensionsJson = {
+                guard let dimensionUnit else {
+                    return ""
+                }
+
+                return
+                    ", " +
+                    "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
+                    "height: Guess and provide only the number in ```\(dimensionUnit)```"
+            }()
 
             return "shipping: {" +
-                            "length: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                            "weight: Guess and provide only the number in ```\(weightUnit)```, " +
-                            "width: Guess and provide only the number in ```\(dimensionUnit)```, " +
-                            "height: Guess and provide only the number in ```\(dimensionUnit)```" +
+                            weightJson +
+                            dimensionsJson +
                     "}, "
         }()
 

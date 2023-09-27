@@ -176,6 +176,54 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: Generating product
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func identifyLanguage() async throws -> String {
+        do {
+            let productInfo = {
+                guard let features = productFeatures,
+                      features.isNotEmpty else {
+                    return productName
+                }
+                return productName + " " + features
+            }()
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: productInfo,
+                                                               feature: .productCreation,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            return language
+        } catch {
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
+        }
+    }
+
+    @MainActor
+    func generateProduct(language: String,
+                         tone: AIToneVoice) async throws -> Product {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.generateProduct(siteID: siteID,
+                                                          productName: productName,
+                                                          keywords: productFeatures ?? "",
+                                                          language: language,
+                                                          tone: tone.rawValue,
+                                                          currencySymbol: currency,
+                                                          dimensionUnit: dimensionUnit,
+                                                          weightUnit: weightUnit,
+                                                          categories: categoryResultController.fetchedObjects,
+                                                          tags: tagResultController.fetchedObjects,
+                                                          completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
 private extension ProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
@@ -192,4 +240,8 @@ private extension ProductDetailPreviewViewModel {
         static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@ %4$@",
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
     }
+}
+
+private enum IdentifyLanguageError: Error {
+    case failedToIdentifyLanguage(underlyingError: Error)
 }

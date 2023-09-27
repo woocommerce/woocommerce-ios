@@ -11,6 +11,7 @@ SECRETS_DIR = File.join(Dir.home, '.configure', 'woocommerce-ios', 'secrets')
 PROJECT_ENV_FILE_PATH = File.join(SECRETS_DIR, 'project.env')
 
 GITHUB_REPO = 'woocommerce/woocommerce-ios'
+DEFAULT_BRANCH = 'trunk'
 
 # Constants
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
@@ -32,6 +33,12 @@ SCREENSHOT_DEVICES = [
   'iPad Pro (12.9-inch) (2nd generation)',
   'iPad Pro (12.9-inch) (3rd generation)'
 ].freeze
+
+# Instanstiate versioning classes
+VERSION_CALCULATOR = Fastlane::Wpmreleasetoolkit::Versioning::MarketingVersionCalculator.new
+VERSION_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartVersionFormatter.new
+BUILD_CODE_FORMATTER = Fastlane::Wpmreleasetoolkit::Versioning::FourPartBuildCodeFormatter.new
+VERSION_FILE = Fastlane::Wpmreleasetoolkit::Versioning::IOSVersionFile.new(xcconfig_path: PUBLIC_CONFIG_FILE)
 
 APP_STORE_VERSION_BUNDLE_IDENTIFIER = 'com.automattic.woocommerce'
 # Registered in our main account, for development and App Store
@@ -136,7 +143,7 @@ before_all do |lane|
   next if lane == :test_without_building
 
   # Ensure we use the latest version of the toolkit
-  check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
+  # check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
   # Check that the env files exist
   UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values") unless is_ci || File.file?(USER_ENV_FILE_PATH)
@@ -172,10 +179,36 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :code_freeze do |options|
-    ios_codefreeze_prechecks(options)
+    # Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
-    ios_bump_version_release
-    new_version = app_version
+    confirmation_message = <<-MESSAGE
+     Building a new release branch starting from #{DEFAULT_BRANCH}.
+     Current version is #{current_release_version} (#{current_build_code}).
+     After codefreeze the new version will be: #{next_release_version} (#{next_build_code}).
+     Do you want to continue?
+    MESSAGE
+
+    # Ask user confirmation
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm(confirmation_message)
+
+    # Create the release branch
+    UI.message 'Create release branch...'
+    ensure_git_status_clean
+    ensure_git_branch(branch: DEFAULT_BRANCH)
+    Fastlane::Helper::GitHelper.create_branch("release/#{next_release_version}", from: DEFAULT_BRANCH)
+    UI.message "Done! New release branch is: #{git_branch}"
+
+    # Bump the release version and build code and write it to the `xcconfig` file
+    UI.message 'Bumping app release version...'
+    version_file.write(
+      version_short: next_release_version,
+      version_long: next_build_code
+    )
+    UI.messsage "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
+
+    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+
+    new_version = current_release_version
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
@@ -217,7 +250,18 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
-    ios_completecodefreeze_prechecks(options)
+    # Verify that the current branch is a release branch
+    UI.user_error!("Current branch - '#{git_branch}' - is not a release branch. Abort.") unless git_branch.start_with?('release/')
+
+    message = "Completing code freeze for: #{current_release_version}\n"
+    if options[:skip_confirm]
+      UI.message(message)
+    else
+      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    end
+
+    ensure_git_status_clean
+
     generate_strings_file_for_glotpress
 
     if prompt_for_confirmation(
@@ -225,7 +269,7 @@ platform :ios do
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{app_version}")
+      trigger_beta_build(branch_to_build: "release/#{current_release_version}")
     else
       UI.message('Aborting code freeze completion. See you later 👋')
     end
@@ -255,7 +299,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options.fetch(:version, app_version)
+      release_version: options.fetch(:version, current_release_version)
     )
   end
 
@@ -277,17 +321,53 @@ platform :ios do
   #####################################################################################
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
-    ios_betabuild_prechecks(options)
+    # Checkout default branch and update
+    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
+
+    # Check versions
+    message = "The current build code has been detected: #{current_build_code}\n"
+
+    # Check branch
+    UI.user_error!("#{message}Release branch for version #{current_release_version} doesn't exist. Abort.") unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: current_release_version)
+
+    # Check user overwrite
+    switch_to_user_branch(options[:base_version], message) unless options[:base_version].nil?
+
+    # Verify
+    message << "Updating branch to version: #{next_build_code}.\n"
+    if options[:skip_confirm]
+      UI.message(message)
+    else
+      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    end
+
+    # Check local repo status
+    ensure_git_status_clean
+
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
-    ios_bump_version_beta
+
+    UI.message 'Bumping app release version...'
+
+    require_relative '../../helper/ios/ios_git_helper'
+    require_relative '../../helper/ios/ios_version_helper'
+
+    Fastlane::Helper::GitHelper.ensure_on_branch!('release')
+    create_config
+    show_config
+
+    UI.message 'Updating XcConfig...'
+    Fastlane::Helper::Ios::VersionHelper.update_xc_configs(@new_beta_version, @short_version, @new_internal_version)
+    UI.message 'Done!'
+
+    Fastlane::Helper::Ios::GitHelper.commit_version_bump
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the beta build?',
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{app_version}")
+      trigger_beta_build(branch_to_build: "release/#{current_release_version}")
     else
       UI.message('Aborting beta deployment. See you later 👋')
     end
@@ -334,7 +414,7 @@ platform :ios do
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_release_build(branch_to_build: "release/#{app_version}")
+      trigger_release_build(branch_to_build: "release/#{current_release_version}")
     else
       UI.message('Aborting hotfix finalization. See you later 👋')
     end
@@ -357,7 +437,17 @@ platform :ios do
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
 
-    ios_finalize_prechecks(options)
+    current_branch = Fastlane::Helper::GitHelper.current_git_branch
+    UI.user_error!("Current branch - '#{current_branch}' - is not a release branch. Abort.") unless current_branch.start_with?('release/')
+
+    message = "Finalizing release: #{current_release_version}\n"
+    if options[:skip_confirm]
+      UI.message(message)
+    else
+      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    end
+
+    ensure_git_status_clean
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
@@ -376,7 +466,7 @@ platform :ios do
     ios_bump_version_beta
 
     # Wrap up
-    version = app_version
+    version = current_release_version
     removebranchprotection(
       repository: GITHUB_REPO,
       branch: "release/#{version}"
@@ -542,7 +632,7 @@ platform :ios do
     archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
-    version = options[:beta_release] ? ios_get_build_version : app_version
+    version = options[:beta_release] ? current_build_code : current_release_version
     create_release(
       repository: GITHUB_REPO,
       version:,
@@ -676,7 +766,7 @@ platform :ios do
 
     upload_to_app_store(
       app_identifier: APP_STORE_VERSION_BUNDLE_IDENTIFIER,
-      app_version:,
+      app_version: current_release_version,
       team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
@@ -860,7 +950,7 @@ platform :ios do
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
     target_files = {
-      "v#{app_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
+      "v#{current_release_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
       app_store_name: { desc: 'name.txt', max_size: 30 },
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
@@ -918,7 +1008,7 @@ platform :ios do
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
       'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      "v#{app_version}-whats-new" => { desc: 'whats_new.txt' },
+      "v#{current_release_version}-whats-new" => { desc: 'whats_new.txt' },
 
       # Screenshots
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
@@ -1041,6 +1131,10 @@ platform :ios do
   desc 'Run release preflight checks'
   lane :release_preflight do
     configure_validate
+  end
+
+  lane :release_version_test do
+    next_release_version
   end
 
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
@@ -1219,10 +1313,34 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
   File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
 end
 
-# Returns the version of the app based on the specified xcconfig file
+def build_code(app_version)
+  version = VERSION_FORMATTER.parse(app_version)
+  BUILD_CODE_FORMATTER.build_code(version: version)
+end
+
+# Returns the release version of the app
 #
-def app_version(xcconfig_path: PUBLIC_CONFIG_FILE)
-  ios_get_app_version(public_version_xcconfig_file: xcconfig_path)
+def current_release_version
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_app_version)
+  VERSION_FORMATTER.release_version(current_version)
+end
+
+# Returns the beta version of the app
+#
+def current_build_code
+  build_code(VERSION_FILE.read_app_version)
+end
+
+#  Returns the next release version of the app
+#
+def next_release_version
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_app_version)
+  next_calculated_release_version = VERSION_CALCULATOR.next_release_version(version: current_version)
+  VERSION_FORMATTER.release_version(next_calculated_release_version)
+end
+
+def next_build_code
+  build_code(next_release_version)
 end
 
 def buildkite_ci?
@@ -1238,6 +1356,11 @@ def prompt_user_for_app_store_connect_credentials
   # Note that if the user is already available to `AccountManager`, setting it in the environment is redundant, but Fastlane doesn't provide a way
   # to check it so we have to do it anyway.
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
+end
+
+def switch_to_user_branch(version, message)
+  UI.user_error!("Release branch for version #{version} doesn't exist. Abort.") unless Fastlane::Helper::GitHelper.checkout_and_pull(release: version)
+  message << "Looking at branch release/#{version} as requested by user. Detected version: #{current_build_code}.\n"
 end
 
 # Wrapper around Fastlane `UI.confirm` that adds the option to bypass the

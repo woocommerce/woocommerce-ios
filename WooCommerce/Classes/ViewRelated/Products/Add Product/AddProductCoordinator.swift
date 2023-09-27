@@ -284,15 +284,17 @@ private extension AddProductCoordinator {
             self?.navigationController.dismiss(animated: true)
         },
                                                                                          onCompletion: { [weak self] product in
-            // TODO: Product saved
             self?.onProductCreated(product)
+            self?.navigationController.dismiss(animated: true) {
+                self?.presentProduct(product, formType: .edit)
+            }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product) {
+    func presentProduct(_ product: Product, formType: ProductFormType = .add) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -302,7 +304,7 @@ private extension AddProductCoordinator {
                                       isLocalID: true),
                            originalStatuses: model.imageStatuses)
         let viewModel = ProductFormViewModel(product: model,
-                                             formType: .add,
+                                             formType: formType,
                                              productImageActionHandler: productImageActionHandler)
         viewModel.onProductCreated = { [weak self] product in
             guard let self else { return }

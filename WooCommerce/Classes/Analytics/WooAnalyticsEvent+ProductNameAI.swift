@@ -26,7 +26,7 @@ extension WooAnalyticsEvent {
                               properties: [Key.isRetry.rawValue: isRetry])
         }
 
-        static func copyButtonTapped(withMessage: Bool) -> WooAnalyticsEvent {
+        static func copyButtonTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productNameAICopyButtonTapped,
                               properties: [:])
         }

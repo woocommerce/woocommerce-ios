@@ -209,7 +209,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isGeneratingDetails)
     }
 
-    func test_errorMessage_is_updated_when_generateProductDetails_fails() async throws {
+    func test_errorState_is_updated_when_generateProductDetails_fails() async throws {
         // Given
         let siteID: Int64 = 123
 
@@ -230,15 +230,16 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
+        XCTAssertEqual(viewModel.errorState, .none)
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
-                XCTAssertNil(viewModel.errorMessage)
+                XCTAssertEqual(viewModel.errorState, .none)
                 completion(.failure(expectedError))
             case let .identifyLanguage(_, _, _, completion):
-                XCTAssertNil(viewModel.errorMessage)
+                XCTAssertEqual(viewModel.errorState, .none)
                 completion(.success("en"))
             default:
                 break
@@ -247,7 +248,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
 
         // Then
-        XCTAssertEqual(viewModel.errorMessage, expectedError.localizedDescription)
+        XCTAssertEqual(viewModel.errorState, .generatingProduct)
     }
 
     func test_generateProductDetails_updates_generatedProduct_correctly() async throws {
@@ -285,5 +286,105 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(product, viewModel.generatedProduct)
+    }
+
+    // MARK: - Save product
+
+    func test_saveProductAsDraft_updates_isSavingProduct_properly() async {
+        // Given
+        let expectedProduct = Product.fake().copy(name: "iPhone 15")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: "iPhone 15",
+                                                      productDescription: nil,
+                                                      productFeatures: "",
+                                                      stores: stores,
+                                                      onProductCreated: { _ in })
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                XCTAssertFalse(viewModel.isSavingProduct)
+                completion(.success(expectedProduct))
+            case let .identifyLanguage(_, _, _, completion):
+                XCTAssertFalse(viewModel.isSavingProduct)
+                completion(.success("en"))
+            case let .addProduct(_, onCompletion):
+                XCTAssertTrue(viewModel.isSavingProduct)
+                onCompletion(.success(expectedProduct))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertFalse(viewModel.isSavingProduct)
+    }
+
+    func test_saveProductAsDraft_success_triggers_onProductCreated() async {
+        // Given
+        var createdProduct: Product?
+        let expectedProduct = Product.fake().copy(name: "iPhone 15")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: "iPhone 15",
+                                                      productDescription: nil,
+                                                      productFeatures: "",
+                                                      stores: stores,
+                                                      onProductCreated: { createdProduct = $0 })
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(expectedProduct))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(_, onCompletion):
+                onCompletion(.success(expectedProduct))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertEqual(createdProduct, expectedProduct)
+    }
+
+    func test_saveProductAsDraft_updates_errorState_upon_failure() async {
+        // Given
+        let expectedProduct = Product.fake().copy(name: "iPhone 15")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: "iPhone 15",
+                                                      productDescription: nil,
+                                                      productFeatures: "",
+                                                      stores: stores,
+                                                      onProductCreated: { _ in })
+        XCTAssertEqual(viewModel.errorState, .none)
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(expectedProduct))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(_, onCompletion):
+                onCompletion(.failure(.unexpected))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertEqual(viewModel.errorState, .savingProduct)
     }
 }

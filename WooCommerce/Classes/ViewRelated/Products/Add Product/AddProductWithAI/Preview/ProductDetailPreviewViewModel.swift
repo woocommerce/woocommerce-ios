@@ -19,7 +19,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productCategories: String?
     @Published private(set) var productTags: String?
     @Published private(set) var productShippingDetails: String?
-    @Published private(set) var errorMessage: String?
+    @Published private(set) var errorState: ErrorState = .none
 
     private let productFeatures: String?
 
@@ -91,18 +91,18 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @MainActor
     func generateProductDetails() async {
         isGeneratingDetails = true
-        errorMessage = nil
+        errorState = .none
         do {
             let language = try await identifyLanguage()
             let aiTone = userDefaults.aiTone(for: siteID)
             let product = try await generateProduct(language: language,
                                                     tone: aiTone)
             generatedProduct = product
+            isGeneratingDetails = false
         } catch {
-            errorMessage = error.localizedDescription
-            // TODO: Error handling
+            DDLogError("⛔️ Error generating product with AI: \(error)")
+            errorState = .generatingProduct
         }
-        isGeneratingDetails = false
     }
 
     @MainActor
@@ -110,13 +110,14 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         guard let generatedProduct else {
             return
         }
+        errorState = .none
         isSavingProduct = true
         do {
             let newProduct = try await saveProductRemotely(product: generatedProduct)
             onProductCreated(newProduct)
         } catch {
-            // TODO: error handling
             DDLogError("⛔️ Error saving product with AI: \(error)")
+            errorState = .savingProduct
         }
         isSavingProduct = false
     }
@@ -267,6 +268,27 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: - Subtypes
+//
+extension ProductDetailPreviewViewModel {
+    enum ErrorState: Equatable {
+        case none
+        case generatingProduct
+        case savingProduct
+
+        var errorMessage: String {
+            switch self {
+            case .none:
+                return ""
+            case .generatingProduct:
+                return Localization.errorGenerating
+            case .savingProduct:
+                return Localization.errorSaving
+            }
+        }
+    }
+}
+
 private extension ProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
@@ -282,5 +304,14 @@ private extension ProductDetailPreviewViewModel {
                                                            comment: "Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit]")
         static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@ %4$@",
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
+        // Error messages
+        static let errorGenerating = NSLocalizedString(
+            "There was an error generating product details. Please try again.",
+            comment: "Error message when generating product details fails on the add product with AI Preview screen."
+        )
+        static let errorSaving = NSLocalizedString(
+            "There was an error saving product details. Please try again.",
+            comment: "Error message when saving product as draft on the add product with AI Preview screen."
+        )
     }
 }

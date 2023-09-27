@@ -556,6 +556,35 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         viewModel.containsHazmatMaterials = false
         XCTAssertEqual(viewModel.selectedHazmatCategory, .none)
     }
+
+    func test_when_changing_hazmat_category_then_expected_analytics_is_triggered() throws {
+        // Given
+        let mockOrder = MockOrders()
+        let dimensions = ProductDimensions(length: "2", width: "3", height: "5")
+        let item = ShippingLabelPackageItem.fake(dimensions: dimensions)
+        let order = mockOrder.makeOrder().copy(siteID: sampleSiteID)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let viewModel = ShippingLabelSinglePackageViewModel(order: order,
+                                                            orderItems: [item],
+                                                            packagesResponse: mockPackageResponse(),
+                                                            selectedPackageID: "invividual",
+                                                            totalWeight: "10",
+                                                            isOriginalPackaging: true,
+                                                            onItemMoveRequest: {},
+                                                            onPackageSwitch: { _ in },
+                                                            onPackagesSync: { _ in },
+                                                            formatter: currencyFormatter,
+                                                            weightUnit: "kg",
+                                                            analytics: analytics)
+
+        // When
+        viewModel.selectedHazmatCategory = .class5
+
+        // Then
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "hazmat_category_selected" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["order_id"] as? Int64, mockOrder.orderID)
+    }
 }
 
 // MARK: - Mocks

@@ -25,7 +25,7 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.dimensions.length, "15")
         XCTAssertEqual(product.dimensions.width, "10")
         XCTAssertEqual(product.dimensions.height, "5")
-        XCTAssertEqual(product.price, "250")
+        XCTAssertEqual(product.regularPrice, "250")
     }
 
     func test_it_maps_product_correctly_when_no_shipping_info_available() throws {
@@ -49,7 +49,7 @@ final class AIProductMapperTests: XCTestCase {
         XCTAssertEqual(product.dimensions.length, "")
         XCTAssertEqual(product.dimensions.width, "")
         XCTAssertEqual(product.dimensions.height, "")
-        XCTAssertEqual(product.price, "250")
+        XCTAssertEqual(product.regularPrice, "250")
     }
 
     func test_it_maps_product_with_matching_existing_categories() throws {

@@ -1864,7 +1864,7 @@ private extension EditableOrderViewModel {
                                                                  "that is not applicated to the products")
         static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
         static let editTaxRateSetting = NSLocalizedString("Edit Tax Rate Setting", comment: "Button title to edit the selected tax rate to apply to the order")
-        static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set",  comment: "Message when a tax rate is set")
+        static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
         static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
                                                                                     comment: "Message when the user disables adding tax rates automatically")
 

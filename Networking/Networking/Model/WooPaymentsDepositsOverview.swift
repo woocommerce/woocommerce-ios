@@ -10,7 +10,7 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let lastPaid: [WooPaymentsDeposit]
     public let nextScheduled: [WooPaymentsDeposit]
-    public let lastManualDeposits: [WooPaymentsDeposit]
+    public let lastManualDeposits: [WooPaymentsManualDeposit]
 
     enum CodingKeys: String, CodingKey {
         case lastPaid = "last_paid"
@@ -44,6 +44,34 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
         case fee
         case feePercentage = "fee_percentage"
         case created
+    }
+}
+
+public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
+    public let currency: String
+    public let date: Date
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        currency = try container.decode(String.self, forKey: .currency)
+        let dateString = try container.decode(String.self, forKey: .date)
+
+        // For some reason, the date here is an ISO 8601 string not a milliseconds timestamp.
+        // Manual date parsing allows us to continue to parse the whole response with a single decoder.
+        let isoDateFormatter = ISO8601DateFormatter()
+//        isoDateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+//        isoDateFormatter.formatOptions = [
+//            .withFullDate,
+//            .withFullTime,
+//            .withDashSeparatorInDate,
+//            .withFractionalSeconds]
+
+        guard let date = isoDateFormatter.date(from: dateString) else {
+            throw DecodingError.typeMismatch(Date.self, .init(codingPath: [CodingKeys.date],
+                                                              debugDescription: "Expected ISO8601 string",
+                                                              underlyingError: nil))
+        }
+        self.date = date
     }
 }
 

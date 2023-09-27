@@ -1295,6 +1295,42 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["flow"] as? String, "creation")
     }
 
+    func test_onStoredTaxRateBottomSheetAppear_then_tracks_event() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.onStoredTaxRateBottomSheetAppear()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCreationStoredTaxRateBottomSheetAppear.rawValue])
+    }
+
+    func test_onSetNewTaxRateFromBottomSheetTapped_then_tracks_event() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.onSetNewTaxRateFromBottomSheetTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCreationSetNewTaxRateFromBottomSheetTapped.rawValue])
+    }
+
+    func test_onClearAddressFromBottomSheetTapped_then_tracks_event() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.onClearAddressFromBottomSheetTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents, [WooAnalyticsStat.orderCreationClearAddressFromBottomSheetTapped.rawValue])
+    }
+
     // MARK: -
 
     func test_customer_note_section_is_updated_when_note_is_added_to_order() {
@@ -2214,7 +2250,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             viewModel.addressFormViewModel.fields.state.isNotEmpty
         }
 
-        viewModel.forgetTaxRate()
+        viewModel.onClearAddressFromBottomSheetTapped()
 
         // Then
         XCTAssertTrue(viewModel.addressFormViewModel.fields.state.isEmpty)

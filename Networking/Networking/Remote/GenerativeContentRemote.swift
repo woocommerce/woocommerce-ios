@@ -253,7 +253,7 @@ private extension GenerativeContentRemote {
             "short_description: Product's short description, in the ISO language code ```\(language)```, " +
             "virtual: A boolean value that shows whether the product is virtual or physical, " +
             shippingJson +
-            "price: Guess the price in ```\(currencySymbol)```, return the price unformatted" +
+            "price: Guess the price in ```\(currencySymbol)```, do not include the currency symbol, only provide the price as a number" +
             tagsAsString +
             categoriesAsString +
         "}"

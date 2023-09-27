@@ -547,7 +547,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // When
         synchronizer.setNote.send(expectedNote)
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -584,7 +584,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setNote.send(expectedNote)
 
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -800,7 +800,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        assertEqual(states, [.syncing(blocking: true), .error(error)])
+        assertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_states_are_properly_set_upon_failing_order_update() {
@@ -839,7 +839,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(states, [.syncing(blocking: true), .error(error)])
+        XCTAssertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_sending_double_input_triggers_only_one_order_creation() {
@@ -1138,7 +1138,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1163,7 +1163,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1192,7 +1192,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1254,8 +1254,8 @@ extension OrderSyncState: Equatable {
         switch (lhs, rhs) {
         case (.syncing, .syncing), (.synced, .synced):
             return true
-        case (.error(let error1), .error(let error2)):
-            return error1 as NSError == error2 as NSError
+        case (.error(let error1, let usesGiftCard1), .error(let error2, let usesGiftCard2)):
+            return error1 as NSError == error2 as NSError && usesGiftCard1 == usesGiftCard2
         default:
             return false
         }

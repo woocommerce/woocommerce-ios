@@ -590,6 +590,11 @@ final class EditableOrderViewModel: ObservableObject {
             return
         }
 
+        if storedTaxRate != taxRate {
+            // If the new tax rate is different than the stored one forget the latter
+            storedTaxRate = nil
+        }
+
         let address = Address.from(taxRate: taxRate)
         let input: OrderSyncAddressesInput
         switch taxBasedOnSetting {

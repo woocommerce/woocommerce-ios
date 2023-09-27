@@ -8,6 +8,7 @@ struct OrderFormGiftCardRow: View {
         VStack(alignment: .leading) {
             HStack(spacing: Constants.horizontalSpacing) {
                 Text(Localization.giftCard)
+                    .foregroundColor(.init(uiColor: .accent))
                     .bodyStyle()
                 Image(systemName: "pencil")
             }

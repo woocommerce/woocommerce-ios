@@ -31,5 +31,16 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIGenerateDetailsTapped,
                               properties: [Key.isFirstAttempt.rawValue: isFirstAttempt])
         }
+
+        static func generateProductDetailsSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIGenerateProductDetailsSuccess,
+                              properties: [:])
+        }
+
+        static func generateProductDetailsFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIGenerateProductDetailsFailed,
+                              properties: [:],
+                              error: error)
+        }
     }
 }

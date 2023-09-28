@@ -15,10 +15,6 @@ struct ShippingLabelAccountSettingsMapper: Mapper {
             .siteID: siteID
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(Envelope<ShippingLabelAccountSettings>.self, from: response).data
-        } else {
-            return try decoder.decode(ShippingLabelAccountSettings.self, from: response)
-        }
+        return try extract(from: response, using: decoder)
     }
 }

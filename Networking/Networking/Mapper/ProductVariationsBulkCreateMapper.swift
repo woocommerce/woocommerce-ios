@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: ProductVariationsBulkCreateMapper
 ///
 struct ProductVariationsBulkCreateMapper: Mapper {
@@ -24,24 +22,15 @@ struct ProductVariationsBulkCreateMapper: Mapper {
             .siteID: siteID,
             .productID: productID
         ]
+
+        let container: ProductVariationsContainer
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductVariationsContainerEnvelope.self, from: response).data.createdProductVariations
+            container = try decoder.decode(Envelope<ProductVariationsContainer>.self, from: response).data
         } else {
-            return try decoder.decode(ProductVariationsContainer.self, from: response).createdProductVariations
+            container = try decoder.decode(ProductVariationsContainer.self, from: response)
         }
-    }
-}
 
-/// ProductVariationsEnvelope Disposable Entity
-///
-/// `Variations/batch` endpoint returns the requested create product variations document in a `create` key, nested in a `data` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductVariationsContainerEnvelope: Decodable {
-    let data: ProductVariationsContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
+        return container.createdProductVariations
     }
 }
 

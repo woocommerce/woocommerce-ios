@@ -5,9 +5,13 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
 
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
+    @State private var isShowingErrorAlert: Bool = false
 
-    init(viewModel: ProductDetailPreviewViewModel) {
+    private let onDismiss: () -> Void
+
+    init(viewModel: ProductDetailPreviewViewModel, onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -127,6 +131,24 @@ struct ProductDetailPreviewView: View {
                 Task {
                     await viewModel.generateProductDetails()
                 }
+            }
+            .onChange(of: viewModel.errorState) { newValue in
+                isShowingErrorAlert = newValue != .none
+            }
+            .alert(viewModel.errorState.errorMessage, isPresented: $isShowingErrorAlert) {
+                Button(Localization.retry) {
+                    Task {
+                        switch viewModel.errorState {
+                        case .none:
+                            return
+                        case .generatingProduct:
+                            await viewModel.generateProductDetails()
+                        case .savingProduct:
+                            await viewModel.saveProductAsDraft()
+                        }
+                    }
+                }
+                Button(Localization.cancel, action: onDismiss)
             }
         }
     }
@@ -263,6 +285,8 @@ fileprivate extension ProductDetailPreviewView {
             "Save as draft",
             comment: "Button to save product details on the add product with AI Preview screen."
         )
+        static let cancel = NSLocalizedString("Cancel", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
     }
 }
 
@@ -272,6 +296,7 @@ struct ProductDetailPreviewView_Previews: PreviewProvider {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
                                                   productName: "iPhone 15",
                                                   productDescription: "New smart phone",
-                                                  productFeatures: nil) { _ in })
+                                                  productFeatures: nil) { _ in },
+                                 onDismiss: {})
     }
 }

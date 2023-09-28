@@ -69,6 +69,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         }
         productName = data.name
         productDescription = data.description
+        productFeatures = data.description
         currentStep = .preview
     }
 
@@ -78,11 +79,5 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         } else {
             onCancel()
         }
-    }
-}
-
-private extension AddProductWithAIContainerViewModel {
-    func handleCompletion() {
-        // TODO: Fire completion handler with created product
     }
 }

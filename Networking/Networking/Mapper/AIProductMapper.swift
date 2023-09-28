@@ -110,7 +110,7 @@ private struct AIProduct: Codable {
         let description = container.failsafeDecodeIfPresent(String.self, forKey: .description) ?? ""
         let shortDescription = container.failsafeDecodeIfPresent(String.self, forKey: .shortDescription) ?? ""
         let virtual = container.failsafeDecodeIfPresent(Bool.self, forKey: .virtual) ?? false
-        let shipping = try container.decode(Shipping.self, forKey: .shipping)
+        let shipping = container.failsafeDecodeIfPresent(Shipping.self, forKey: .shipping) ?? Shipping(length: "", weight: "", width: "", height: "")
         let tags = container.failsafeDecodeIfPresent([String].self, forKey: .tags) ?? []
         let price = container.failsafeDecodeIfPresent(targetType: String.self,
                                                       forKey: .price,
@@ -163,8 +163,8 @@ private extension Product {
                   fullDescription: aiProduct.description,
                   shortDescription: aiProduct.shortDescription,
                   sku: "",
-                  price: aiProduct.price,
-                  regularPrice: "",
+                  price: "",
+                  regularPrice: aiProduct.price,
                   salePrice: "",
                   onSale: false,
                   purchasable: false,

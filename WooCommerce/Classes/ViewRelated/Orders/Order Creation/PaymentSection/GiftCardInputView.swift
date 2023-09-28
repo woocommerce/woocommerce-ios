@@ -11,41 +11,55 @@ struct GiftCardInputView: View {
 
     var body: some View {
         NavigationView {
-            Form {
-                Section {
-                    HStack {
-                        TextField(Localization.placeholder, text: $viewModel.code)
-                            .focused()
-                        Spacer()
+            ScrollView {
+                VStack(alignment: .leading, spacing: .zero) {
+                    VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
+                        Text(Localization.header)
+                            .foregroundColor(.init(uiColor: .text))
+                            .subheadlineStyle()
+                        HStack {
+                            TextField(Localization.placeholder, text: $viewModel.code)
+                                .focused()
+                                .textFieldStyle(RoundedBorderTextFieldStyle(focused: true))
+                            Spacer()
+                            Button {
+                                showsScanner = true
+                            } label: {
+                                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                                    .foregroundColor(Color(.accent))
+                            }
+                            .sheet(isPresented: $showsScanner) {
+                                GiftCardCodeScannerNavigationView(onCodeScanned: { code in
+                                    viewModel.code = code
+                                    showsScanner = false
+                                }, onClose: {
+                                    showsScanner = false
+                                })
+                            }
+                        }
+
+                        if let errorMessage = viewModel.errorMessage {
+                            Text(errorMessage)
+                                .font(.footnote)
+                                .foregroundColor(Color(uiColor: .error))
+                        }
+                    }
+                    .padding(Constants.insets)
+
+                    VStack(alignment: .leading, spacing: .zero) {
+                        Divider()
+
                         Button {
-                            showsScanner = true
+                            viewModel.remove()
                         } label: {
-                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                                .foregroundColor(Color(.accent))
+                            Text(Localization.remove)
+                                .foregroundColor(.init(uiColor: .error))
                         }
-                        .sheet(isPresented: $showsScanner) {
-                            GiftCardCodeScannerNavigationView(onCodeScanned: { code in
-                                viewModel.code = code
-                                showsScanner = false
-                            }, onClose: {
-                                showsScanner = false
-                            })
-                        }
+                        .foregroundColor(.init(uiColor: .error))
+                        .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                        .padding(Constants.insets)
                     }
-
-                    if let errorMessage = viewModel.errorMessage {
-                        Text(errorMessage)
-                            .font(.footnote)
-                            .foregroundColor(Color(.error))
-                    }
-
-                    Button {
-                        viewModel.apply()
-                    } label: {
-                        Text(Localization.apply)
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .disabled(!viewModel.isValid)
+                    .renderedIf(viewModel.isValid)
                 }
             }
             .toolbar {
@@ -53,6 +67,13 @@ struct GiftCardInputView: View {
                     Button(Localization.cancel, action: {
                         viewModel.cancel()
                     })
+                }
+
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.apply, action: {
+                        viewModel.apply()
+                    })
+                    .disabled(!viewModel.isValid)
                 }
             }
             .navigationTitle(Localization.title)
@@ -65,14 +86,22 @@ struct GiftCardInputView: View {
 private extension GiftCardInputView {
     enum Localization {
         static let title = NSLocalizedString("Add Gift Card", comment: "Title of the add gift card screen in the order form.")
-        static let placeholder = NSLocalizedString("Enter code", comment: "Placeholder of the gift card code text field in the order form.")
+        static let header = NSLocalizedString("Gift card code", comment: "Header of the gift card code text field in the order form.")
+        static let placeholder = NSLocalizedString("XXXX-XXXX-XXXX-XXXX", comment: "Placeholder of the gift card code text field in the order form.")
         static let apply = NSLocalizedString("Apply", comment: "Button to apply the gift card code to the order form.")
         static let cancel = NSLocalizedString("Cancel", comment: "Button to cancel entering the gift card code from the order form.")
+        static let remove = NSLocalizedString("Remove Gift Card", comment: "Button to remove the gift card code from the order form.")
+    }
+
+    enum Constants {
+        static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
+        static let verticalSpacing: CGFloat = 8
     }
 }
 
 struct GiftCardInputView_Previews: PreviewProvider {
     static var previews: some View {
-        GiftCardInputView(viewModel: .init(code: "", addGiftCard: { _ in }, dismiss: {}))
+        GiftCardInputView(viewModel: .init(code: "UU35-T3RE-BSWK-36J4", setGiftCard: { _ in }, dismiss: {}))
+        GiftCardInputView(viewModel: .init(code: "", setGiftCard: { _ in }, dismiss: {}))
     }
 }

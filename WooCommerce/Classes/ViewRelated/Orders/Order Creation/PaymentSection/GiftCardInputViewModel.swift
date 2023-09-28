@@ -7,19 +7,24 @@ final class GiftCardInputViewModel: ObservableObject {
     @Published private(set) var isValid: Bool = false
     @Published private(set) var errorMessage: String?
 
-    private let addGiftCard: (_ code: String) -> Void
+    private let setGiftCard: (_ code: String?) -> Void
     private let dismiss: () -> Void
 
-    init(code: String, addGiftCard: @escaping (_ code: String) -> Void, dismiss: @escaping () -> Void) {
+    init(code: String, setGiftCard: @escaping (_ code: String?) -> Void, dismiss: @escaping () -> Void) {
         self.code = code
-        self.addGiftCard = addGiftCard
+        self.setGiftCard = setGiftCard
         self.dismiss = dismiss
         observeCodeForValidCheck()
     }
 
     /// Applies the gift card code to the order.
     func apply() {
-        addGiftCard(code)
+        setGiftCard(code)
+    }
+
+    /// Removes the gift card code from the order.
+    func remove() {
+        setGiftCard(nil)
     }
 
     /// Cancels the gift card input form.

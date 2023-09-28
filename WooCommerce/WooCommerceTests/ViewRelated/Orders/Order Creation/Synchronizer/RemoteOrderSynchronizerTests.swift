@@ -547,7 +547,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         // When
         synchronizer.setNote.send(expectedNote)
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -584,7 +584,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setNote.send(expectedNote)
 
         let resultOrder = try waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }.get()
@@ -800,7 +800,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        assertEqual(states, [.syncing(blocking: true), .error(error)])
+        assertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_states_are_properly_set_upon_failing_order_update() {
@@ -839,7 +839,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(states, [.syncing(blocking: true), .error(error)])
+        XCTAssertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
     func test_sending_double_input_triggers_only_one_order_creation() {
@@ -1138,7 +1138,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1163,7 +1163,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
@@ -1192,13 +1192,64 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
 
         // When
         let result: Result<Order, Error> = waitFor { promise in
-            synchronizer.commitAllChanges { result in
+            synchronizer.commitAllChanges { result, _ in
                 promise(result)
             }
         }
 
         // Then
         XCTAssertTrue(result.isSuccess)
+    }
+
+    func test_commitAllChanges_relays_usesGiftCard_on_success() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    completion(.success(.fake()))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
+    }
+
+    func test_commitAllChanges_relays_usesGiftCard_on_failure() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+        stores.whenReceivingAction(ofType: OrderAction.self) { action in
+            switch action {
+                case .createOrder(_, _, _, let completion):
+                    let error = NSError(domain: "", code: 0, userInfo: nil)
+                    completion(.failure(error))
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        // When
+        synchronizer.setGiftCard.send("AABO")
+        let usesGiftCard = waitFor { promise in
+            synchronizer.commitAllChanges { _, usesGiftCard in
+                promise(usesGiftCard)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(usesGiftCard)
     }
 
     func test_double_inputs_are_debounced_during_order_update() {
@@ -1254,8 +1305,8 @@ extension OrderSyncState: Equatable {
         switch (lhs, rhs) {
         case (.syncing, .syncing), (.synced, .synced):
             return true
-        case (.error(let error1), .error(let error2)):
-            return error1 as NSError == error2 as NSError
+        case (.error(let error1, let usesGiftCard1), .error(let error2, let usesGiftCard2)):
+            return error1 as NSError == error2 as NSError && usesGiftCard1 == usesGiftCard2
         default:
             return false
         }

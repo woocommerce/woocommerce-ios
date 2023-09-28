@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Shipping Label Refund Mapper
 ///
 struct ShippingLabelRefundMapper: Mapper {
@@ -10,22 +7,10 @@ struct ShippingLabelRefundMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .millisecondsSince1970
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShippingLabelRefundResponse.self, from: response).data.refund
+            return try decoder.decode(Envelope<ShippingLabelRefundEnvelope>.self, from: response).data.refund
         } else {
             return try decoder.decode(ShippingLabelRefundEnvelope.self, from: response).refund
         }
-    }
-}
-
-/// ShippingLabelRefundResponse Disposable Entity:
-/// `Refund Shipping Label` endpoint returns the refund data wrapper in the `data` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ShippingLabelRefundResponse: Decodable {
-    let data: ShippingLabelRefundEnvelope
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

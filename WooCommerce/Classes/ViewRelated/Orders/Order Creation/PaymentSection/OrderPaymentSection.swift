@@ -256,6 +256,7 @@ struct OrderPaymentSection: View {
                 Image(systemName: "questionmark.circle")
                     .foregroundColor(Color(.wooCommercePurple(.shade60)))
             }
+            .renderedIf(viewModel.shouldShowTaxesInfoButton)
 
             Spacer()
 

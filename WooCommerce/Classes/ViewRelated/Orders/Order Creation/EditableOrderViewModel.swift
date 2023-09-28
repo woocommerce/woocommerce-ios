@@ -596,13 +596,16 @@ final class EditableOrderViewModel: ObservableObject {
             storedTaxRate = nil
         }
 
-        let address = Address.from(taxRate: taxRate)
         let input: OrderSyncAddressesInput
         switch taxBasedOnSetting {
         case .customerBillingAddress:
-            input = OrderSyncAddressesInput(billing: address, shipping: nil)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate),
+                                            shipping: orderSynchronizer.order.shippingAddress)
         case .customerShippingAddress:
-            input = OrderSyncAddressesInput(billing: nil, shipping: address)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress,
+                                            shipping: orderSynchronizer.order.shippingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate))
         default:
             // Do not add address if the taxes are not based on the customer's addresses
             return
@@ -814,6 +817,7 @@ extension EditableOrderViewModel {
         let taxLineViewModels: [TaxLineViewModel]
         let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
         let taxBasedOnSetting: TaxBasedOnSetting?
+        let shouldShowTaxesInfoButton: Bool
         let shouldShowStoredTaxRateAddedAutomatically: Bool
         let couponCode: String
         var discountTotal: String
@@ -865,6 +869,7 @@ extension EditableOrderViewModel {
              giftCardToApply: String? = nil,
              appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
+             shouldShowTaxesInfoButton: Bool = false,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
              taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
@@ -904,6 +909,7 @@ extension EditableOrderViewModel {
             self.giftCardToApply = giftCardToApply
             self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
+            self.shouldShowTaxesInfoButton = shouldShowTaxesInfoButton
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
@@ -1259,6 +1265,7 @@ private extension EditableOrderViewModel {
                                             giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
+                                            shouldShowTaxesInfoButton: order.isEditable,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
@@ -1335,6 +1342,13 @@ private extension EditableOrderViewModel {
     }
 
     func configureTaxRates() {
+        // Tax rates are not configurable if the order is not editable.
+        // In the creation flow orders are initially (incorrectly) reported as not editable, so we have to check the flow here as well
+        if case let .editing(order) = flow,
+           !order.isEditable {
+            return
+        }
+
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -1347,7 +1361,10 @@ private extension EditableOrderViewModel {
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
                 if canApplyTaxRates {
                     Task { @MainActor in
-                        await self.applySelectedStoredTaxRateIfAny()
+                        if self.flow == .creation {
+                            await self.applySelectedStoredTaxRateIfAny()
+                        }
+
                         // Show the tax rate section once we know if any stored tax rate applies, as it can change the text
                         self.shouldShowNewTaxRateSection = true
                     }

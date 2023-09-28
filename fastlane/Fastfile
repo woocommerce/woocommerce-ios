@@ -1119,10 +1119,6 @@ platform :ios do
     configure_validate
   end
 
-  lane :release_version_test do
-    next_release_version
-  end
-
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
   #
   #
@@ -1299,34 +1295,62 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
   File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
 end
 
-def build_code(app_version)
-  version = VERSION_FORMATTER.parse(app_version)
-  BUILD_CODE_FORMATTER.build_code(version:)
-end
 
-# Returns the release version of the app
+# Returns the release version of the app in the format `1.2` or `1.2.3` if it is a hotfix
 #
 def current_release_version
-  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_app_version)
+  # Read the current release version from the .xcconfig file and parse it into an AppVersion object
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  # Return the formatted release version
   VERSION_FORMATTER.release_version(current_version)
 end
 
-# Returns the beta version of the app
-#
-def current_build_code
-  build_code(VERSION_FILE.read_app_version)
-end
-
-#  Returns the next release version of the app
+#  Returns the next release version of the app in the format `1.2` or `1.2.3` if it is a hotfix
 #
 def next_release_version
-  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_app_version)
+  # Read the current release version from the .xcconfig file and parse it into an AppVersion object
+  current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  # Calculate the next release version
   next_calculated_release_version = VERSION_CALCULATOR.next_release_version(version: current_version)
+  # Return the formatted release version
   VERSION_FORMATTER.release_version(next_calculated_release_version)
 end
 
+# Returns the current build code of the app
+#
+def current_build_code
+  # Read the current build code from the .xcconfig file and parse it into an AppVersion object
+  # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
+  # calculator can be used to calculate the next four-part version
+  version = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
+  # Return the formatted build code
+  BUILD_CODE_FORMATTER.build_code(version:)
+end
+
+# Returns the build code of the app for the code freeze. It is the release version name plus sets the build number to 0
+#
+def code_freeze_build_code
+  # Read the current build code from the .xcconfig file and parse it into an AppVersion object
+  # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
+  # calculator can be used to calculate the next four-part version
+  current_release_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  # Calculate the next release version, which will be used as the basis of the new build code
+  code_freeze_build_code = VERSION_CALCULATOR.next_release_version(version: current_release_version)
+  # Return the formatted build code
+  BUILD_CODE_FORMATTER.build_code(version: code_freeze_build_code)
+end
+
+# Returns the next build code of the app
+#
 def next_build_code
-  build_code(next_release_version)
+  # Read the current build code from the .xcconfig file and parse it into an AppVersion object
+  # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
+  # calculator can be used to calculate the next four-part version
+  current_build_code = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
+  # Calculate the next build code
+  next_build_code = VERSION_CALCULATOR.next_build_number(version: current_build_code)
+  # Return the formatted build code
+  BUILD_CODE_FORMATTER.build_code(version: next_build_code)
 end
 
 def buildkite_ci?

@@ -25,7 +25,7 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the gift card code input sheet should be shown or not.
     ///
-    @State private var shouldShowAddGiftCard: Bool = false
+    @State private var shouldShowGiftCardForm: Bool = false
 
     /// Indicates if the tax educational dialog should be shown or not.
     ///
@@ -189,43 +189,38 @@ struct OrderPaymentSection: View {
 
     @ViewBuilder private var addGiftCardRow: some View {
         Button(Localization.addGiftCard) {
-            shouldShowAddGiftCard = true
+            shouldShowGiftCardForm = true
         }
         .buttonStyle(PlusButtonStyle())
         .padding()
         .accessibilityIdentifier("add-gift-card-button")
         .disabled(!viewModel.isAddGiftCardActionEnabled)
-        .sheet(isPresented: $shouldShowAddGiftCard) {
+        .sheet(isPresented: $shouldShowGiftCardForm) {
             giftCardInput
         }
     }
 
     @ViewBuilder private func editGiftCardRow(giftCard: String) -> some View {
         HStack {
-            TitleAndValueRow(title: Localization.giftCard, value: .content(giftCard))
-                .onTapGesture {
-                    shouldShowAddGiftCard = true
-                }
-                .sheet(isPresented: $shouldShowAddGiftCard) {
-                    giftCardInput
-                }
-
             Button {
-                viewModel.setGiftCardClosure(nil)
+                shouldShowGiftCardForm = true
             } label: {
-                Image(uiImage: .closeButton)
+                OrderFormGiftCardRow(code: giftCard)
             }
             .padding()
+            .sheet(isPresented: $shouldShowGiftCardForm) {
+                giftCardInput
+            }
         }
     }
 
     @ViewBuilder private var giftCardInput: some View {
         GiftCardInputView(viewModel: .init(code: viewModel.giftCardToApply ?? "",
-                                           addGiftCard: { code in
+                                           setGiftCard: { code in
             viewModel.setGiftCardClosure(code)
-            shouldShowAddGiftCard = false
+            shouldShowGiftCardForm = false
         }, dismiss: {
-            shouldShowAddGiftCard = false
+            shouldShowGiftCardForm = false
         }))
     }
 
@@ -324,7 +319,6 @@ private extension OrderPaymentSection {
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addGiftCard = NSLocalizedString("Add Gift Card", comment: "Title text of the button that adds shipping line when creating a new order")
-        static let giftCard = NSLocalizedString("Gift Card", comment: "Label for the the row showing the gift card to apply to the order")
         static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")

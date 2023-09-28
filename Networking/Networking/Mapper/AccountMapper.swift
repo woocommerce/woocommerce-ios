@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Account
 ///
 class AccountMapper: Mapper {

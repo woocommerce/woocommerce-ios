@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: AccountSettings
 ///
 struct AccountSettingsMapper: Mapper {

@@ -405,6 +405,34 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorState, .savingProduct)
     }
 
+    func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
+        // Given
+        let siteID: Int64 = 123
+        let delay: TimeInterval = 0
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      delayBeforeDismissingFeedbackBanner: delay,
+                                                      onProductCreated: { _ in })
+
+        // When
+        viewModel.handleFeedback(.up)
+
+        // Then
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            XCTAssertFalse(viewModel.shouldShowFeedbackView)
+        }
+    }
+
     // MARK: Analytics
 
     func test_generateProductDetails_tracks_event_on_success() async throws {

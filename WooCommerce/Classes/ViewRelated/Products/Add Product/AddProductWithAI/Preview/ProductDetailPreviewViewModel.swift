@@ -21,6 +21,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productShippingDetails: String?
     @Published private(set) var errorState: ErrorState = .none
 
+    /// Whether feedback banner for the generated text should be displayed.
+    @Published private(set) var shouldShowFeedbackView = false
+
     private let productFeatures: String?
 
     private let siteID: Int64
@@ -51,6 +54,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    private let delayBeforeDismissingFeedbackBanner: TimeInterval
+
     init(siteID: Int64,
          productName: String,
          productDescription: String?,
@@ -64,6 +69,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
+         delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.stores = stores
@@ -82,6 +88,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
+        self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
@@ -90,6 +97,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func generateProductDetails() async {
+        shouldShowFeedbackView = false
         isGeneratingDetails = true
         errorState = .none
         do {
@@ -99,6 +107,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                     tone: aiTone)
             generatedProduct = product
             isGeneratingDetails = false
+            shouldShowFeedbackView = true
             analytics.track(event: .ProductCreationAI.generateProductDetailsSuccess())
         } catch {
             analytics.track(event: .ProductCreationAI.generateProductDetailsFailed(error: error))
@@ -130,6 +139,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     func handleFeedback(_ vote: FeedbackView.Vote) {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productCreation,
                                                         isUseful: vote == .up))
+
+        // Delay the disappearance of the banner for a better UX.
+        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
+            self?.shouldShowFeedbackView = false
+        }
     }
 }
 

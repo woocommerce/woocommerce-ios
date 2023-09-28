@@ -111,7 +111,7 @@ struct ProductDetailPreviewView: View {
                              onVote: { vote in
                     viewModel.handleFeedback(vote)
                 })
-                .renderedIf(viewModel.isGeneratingDetails == false)
+                .renderedIf(viewModel.shouldShowFeedbackView)
             }
             .padding(insets: Layout.insets)
             .toolbar {

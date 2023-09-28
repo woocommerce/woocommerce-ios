@@ -8,7 +8,12 @@ extension WooAnalyticsEvent {
         }
 
         static func entryPointTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productNameAIEntryPointTapped,
+            WooAnalyticsEvent(statName: .productCreationAIEntryPointTapped,
+                              properties: [:])
+        }
+
+        static func productNameContinueTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIProductNameContinueTapped,
                               properties: [:])
         }
     }

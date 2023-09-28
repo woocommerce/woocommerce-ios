@@ -200,7 +200,7 @@ platform :ios do
 
     # Bump the release version and build code and write it to the `xcconfig` file
     UI.message 'Bumping release version and build code...'
-    version_file.write(
+    VERSION_FILE.write(
       version_short: next_release_version,
       version_long: next_build_code
     )
@@ -351,7 +351,7 @@ platform :ios do
     # Bump the build code
     UI.message 'Bumping build code...'
     Fastlane::Helper::GitHelper.ensure_on_branch!('release')
-    version_file.write(version_long: next_build_code)
+    VERSION_FILE.write(version_long: next_build_code)
     UI.messsage "Done! New Build Code: #{current_build_code}"
 
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
@@ -412,7 +412,7 @@ platform :ios do
 
     # Bump the hotfix version and build code and write it to the `xcconfig` file
     UI.message 'Bumping hotfix version and build code...'
-    version_file.write(
+    VERSION_FILE.write(
       version_short: new_version,
       version_long: build_code(new_version)
     )

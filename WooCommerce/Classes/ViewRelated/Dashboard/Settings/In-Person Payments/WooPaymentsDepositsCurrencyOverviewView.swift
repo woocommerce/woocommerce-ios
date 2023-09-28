@@ -12,44 +12,58 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
     var body: some View {
         VStack {
             Grid(alignment: .leading) {
-                Text("\(viewModel.overview.currency.name) (\(viewModel.overview.currency.rawValue))")
-                    .font(.title2)
-                    .fontWeight(.bold)
-
                 GridRow {
                     AccountSummaryItem(title: "Available funds",
-                                      amount: viewModel.availableBalance,
-                                      footer: "")
+                                       amount: viewModel.availableBalance,
+                                       footer: "")
                     AccountSummaryItem(title: "Pending funds",
-                                      amount: viewModel.pendingBalance,
+                                       amount: viewModel.pendingBalance,
                                        footer: "\(viewModel.overview.pendingDepositsCount) deposits")
                 }
+                Divider()
 
                 HStack(alignment: .top) {
                     Image(systemName: "calendar")
                     Text("Funds become available after pending for 7 days.")
                         .font(.footnote)
                 }
+                .foregroundColor(.secondary)
                 .padding(.vertical, 8)
+            }
+            .padding(.vertical)
+
+            Grid(alignment: .leading) {
+                Text("DEPOSITS")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
 
                 GridRow {
-                    AccountSummaryItem(title: "Next deposit",
-                                      amount: viewModel.nextDepositAmount,
-                                      footer: "Est. \(viewModel.nextDepositDate)")
-                    AccountSummaryItem(title: "Last deposit",
-                                      amount: viewModel.lastDepositAmount,
-                                      footer: viewModel.lastDepositDate)
-
+                    Text("Next")
+                    Text("Est. \(viewModel.nextDepositDate)")
+                    Text(viewModel.nextDepositAmount)
                 }
+                .padding(.vertical, 4)
+
+                GridRow {
+                    Text("Paid")
+                        .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
+                    Text(viewModel.lastDepositDate)
+                        .foregroundColor(.secondary)
+                    Text(viewModel.lastDepositAmount)
+                        .foregroundColor(.secondary)
+                }
+                Divider()
 
                 HStack(alignment: .top) {
                     Image(systemName: "building.columns")
                     Text("Available funds are deposited \(viewModel.overview.automaticDeposits ? "automatically" : "manually"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery).")
                         .font(.footnote)
                 }
+                .foregroundColor(.secondary)
                 .padding(.vertical, 8)
             }
             .fixedSize(horizontal: false, vertical: true)
+            .frame(maxWidth: .infinity)
         }
         .padding()
     }
@@ -64,7 +78,6 @@ struct AccountSummaryItem: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.subheadline)
-                .foregroundColor(.secondary)
 
             Text(amount)
                 .font(.title2)
@@ -75,8 +88,7 @@ struct AccountSummaryItem: View {
                 .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .border(Color(uiColor: .separator), width: 1)
+        .padding(.vertical)
     }
 }
 

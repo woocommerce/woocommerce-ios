@@ -813,6 +813,11 @@ public enum WooAnalyticsStat: String {
     case productNameAIGenerationSuccess = "product_name_ai_generation_success"
     case productNameAIGenerationFailed = "product_name_ai_generation_failed"
 
+    // MARK: Product creation AI
+    //
+    case productCreationAIEntryPointDisplayed = "product_creation_ai_entry_point_displayed"
+    case productCreationAIEntryPointTapped = "product_creation_ai_entry_point_tapped"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

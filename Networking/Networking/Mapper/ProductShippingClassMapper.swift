@@ -18,7 +18,7 @@ struct ProductShippingClassMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductShippingClassEnvelope.self, from: response).productShippingClass
+            return try decoder.decode(Envelope<ProductShippingClass>.self, from: response).data
         } else {
             return try decoder.decode(ProductShippingClass.self, from: response)
         }
@@ -37,4 +37,9 @@ private struct ProductShippingClassEnvelope: Decodable {
     private enum CodingKeys: String, CodingKey {
         case productShippingClass = "data"
     }
+}
+
+struct Envelope<Resource>: Decodable where Resource: Decodable {
+
+    let data: Resource
 }

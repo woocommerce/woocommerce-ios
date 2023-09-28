@@ -22,6 +22,21 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         super.viewDidLoad()
 
         configureTransparentNavigationBar()
+        navigationController?.presentationController?.delegate = self
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension AddProductWithAIContainerHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return viewModel.canBeDismissed
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.dismiss(animated: true)
+        })
     }
 }
 

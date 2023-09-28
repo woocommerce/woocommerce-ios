@@ -99,7 +99,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                     tone: aiTone)
             generatedProduct = product
             isGeneratingDetails = false
+            analytics.track(event: .ProductCreationAI.generateProductDetailsSuccess())
         } catch {
+            analytics.track(event: .ProductCreationAI.generateProductDetailsFailed(error: error))
             DDLogError("⛔️ Error generating product with AI: \(error)")
             errorState = .generatingProduct
         }

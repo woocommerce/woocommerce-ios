@@ -406,7 +406,7 @@ platform :ios do
 
     # Create the hotfix branch
     UI.message 'Creating hotfix branch...'
-    #ensure_git_status_clean
+    ensure_git_status_clean
     Fastlane::Helper::GitHelper.create_branch("release/#{new_version}", from: previous_version)
     UI.message "Done! New hotfix branch is: #{git_branch}"
 
@@ -418,7 +418,7 @@ platform :ios do
     )
     UI.message "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
 
-    #Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    Fastlane::Helper::Ios::GitHelper.commit_version_bump
   end
 
   #####################################################################################
@@ -1294,7 +1294,6 @@ def inject_buildkite_analytics_environment(xctestrun_path:)
 
   File.write(xctestrun_path, Plist::Emit.dump(xctestrun))
 end
-
 
 # Returns the release version of the app in the format `1.2` or `1.2.3` if it is a hotfix
 #

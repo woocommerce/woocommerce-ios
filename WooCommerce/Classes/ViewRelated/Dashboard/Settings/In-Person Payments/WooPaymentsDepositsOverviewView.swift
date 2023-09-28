@@ -27,12 +27,7 @@ struct WooPaymentsDepositsOverviewView: View {
 
                 HStack(alignment: .top) {
                     Image(systemName: "calendar")
-                    Text(
-                        """
-Funds become available after pending for 7 days.
-Available funds are deposited \(viewModel.overview.automaticDeposits ? "automatically" : "manually"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery).
-"""
-)
+                    Text("Funds become available after pending for 7 days.")
                         .font(.footnote)
                 }
                 .padding(.vertical, 8)
@@ -47,16 +42,25 @@ Available funds are deposited \(viewModel.overview.automaticDeposits ? "automati
 
                 }
 
+                HStack(alignment: .top) {
+                    Image(systemName: "building.columns")
+                    Text("Available funds are deposited \(viewModel.overview.automaticDeposits ? "automatically" : "manually"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery).")
+                        .font(.footnote)
+                }
+                .padding(.vertical, 8)
+
                 Button {
                     // no-op
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")
                         Text("Learn more about when you'll receive your funds")
+                            .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.footnote)
+                            .multilineTextAlignment(.leading)
                     }
                 }
-
+                .padding(.vertical, 8)
             }
             .fixedSize(horizontal: false, vertical: true)
         }
@@ -76,7 +80,7 @@ struct AccountSummaryItem: View {
                 .foregroundColor(.secondary)
 
             Text(amount)
-                .font(.title)
+                .font(.title2)
                 .fontWeight(.bold)
 
             Text(footer)
@@ -85,6 +89,7 @@ struct AccountSummaryItem: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
+        .border(Color(uiColor: .separator), width: 1)
     }
 }
 

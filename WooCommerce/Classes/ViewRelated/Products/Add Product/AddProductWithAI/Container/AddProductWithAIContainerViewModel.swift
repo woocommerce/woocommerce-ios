@@ -69,6 +69,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         }
         productName = data.name
         productDescription = data.description
+        productFeatures = data.description
         currentStep = .preview
     }
 

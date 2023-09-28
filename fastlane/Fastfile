@@ -416,7 +416,7 @@ platform :ios do
       version_short: new_version,
       version_long: build_code(new_version)
     )
-    UI.messsage "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
+    UI.message "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
 
     #Fastlane::Helper::Ios::GitHelper.commit_version_bump
   end
@@ -1301,7 +1301,7 @@ end
 
 def build_code(app_version)
   version = VERSION_FORMATTER.parse(app_version)
-  BUILD_CODE_FORMATTER.build_code(version: version)
+  BUILD_CODE_FORMATTER.build_code(version:)
 end
 
 # Returns the release version of the app

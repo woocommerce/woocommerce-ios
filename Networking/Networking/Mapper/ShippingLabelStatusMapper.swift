@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: Check Status of Shipping Labels
 ///
 struct ShippingLabelStatusMapper: Mapper {
@@ -26,22 +24,10 @@ struct ShippingLabelStatusMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShippingLabelStatusResponse.self, from: response).data.labels
+            return try decoder.decode(Envelope<ShippingLabelStatusEnvelope>.self, from: response).data.labels
         } else {
             return try decoder.decode(ShippingLabelStatusEnvelope.self, from: response).labels
         }
-    }
-}
-
-/// ShippingLabelPurchaseResponse Disposable Entity
-///
-/// `Check Shipping Labels Status` endpoint returns the data wrapper in the `data` key.
-///
-private struct ShippingLabelStatusResponse: Decodable {
-    let data: ShippingLabelStatusEnvelope
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

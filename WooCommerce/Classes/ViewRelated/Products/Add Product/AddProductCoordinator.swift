@@ -32,6 +32,7 @@ final class AddProductCoordinator: Coordinator {
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
     private let isFirstProduct: Bool
+    private let analytics: Analytics
 
     /// ResultController to to track the current product count.
     ///
@@ -61,6 +62,7 @@ final class AddProductCoordinator: Coordinator {
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -70,6 +72,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
@@ -80,6 +83,7 @@ final class AddProductCoordinator: Coordinator {
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -89,18 +93,19 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
     func start() {
         switch source {
         case .productsTab, .productOnboarding:
-            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
         }
 
-        ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
+        analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
         if shouldSkipBottomSheet {
@@ -176,8 +181,9 @@ private extension AddProductCoordinator {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(event: .ProductCreation
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedBottomSheetProductType in
+            guard let self else { return }
+            self.analytics.track(event: .ProductCreation
                 .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
                                         creationType: creationType))
             self.navigationController.dismiss(animated: true) {
@@ -367,7 +373,7 @@ private extension AddProductCoordinator {
                 return .manual
             }
         }()
-        ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
+        analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 
     /// Presents the celebratory view for the first created product.

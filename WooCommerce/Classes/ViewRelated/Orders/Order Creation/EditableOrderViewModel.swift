@@ -813,6 +813,7 @@ extension EditableOrderViewModel {
         let taxLineViewModels: [TaxLineViewModel]
         let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
         let taxBasedOnSetting: TaxBasedOnSetting?
+        let shouldShowTaxesInfoButton: Bool
         let shouldShowStoredTaxRateAddedAutomatically: Bool
         let couponCode: String
         var discountTotal: String
@@ -863,6 +864,7 @@ extension EditableOrderViewModel {
              giftCardToApply: String? = nil,
              appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
+             shouldShowTaxesInfoButton: Bool = false,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
              taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
@@ -901,6 +903,7 @@ extension EditableOrderViewModel {
             self.giftCardToApply = giftCardToApply
             self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
+            self.shouldShowTaxesInfoButton = shouldShowTaxesInfoButton
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
@@ -1255,6 +1258,7 @@ private extension EditableOrderViewModel {
                                             giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
+                                            shouldShowTaxesInfoButton: order.isEditable,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,

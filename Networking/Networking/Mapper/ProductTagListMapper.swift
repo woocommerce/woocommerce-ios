@@ -41,11 +41,14 @@ struct ProductTagListMapper: Mapper {
                 }
 
         case .delete:
+            let container: ProductTagListBatchDeleteContainer
             if hasDataEnvelope {
-                return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
+                container = try decoder.decode(Envelope<ProductTagListBatchDeleteContainer>.self, from: response).data
             } else {
-                return try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags
+                container = try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response)
             }
+
+            return container.tags
         }
     }
 
@@ -61,18 +64,6 @@ private struct ProductTagListBatchCreateContainer: Decodable {
 
     private enum CodingKeys: String, CodingKey {
         case tags = "create"
-    }
-}
-
-/// ProductTagListBatchDeleteEnvelope Disposable Entity:
-/// `Batch Delete Products Tags` endpoint returns the products tags under the `data` key, nested under `delete` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductTagListBatchDeleteEnvelope: Decodable {
-    let data: ProductTagListBatchDeleteContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

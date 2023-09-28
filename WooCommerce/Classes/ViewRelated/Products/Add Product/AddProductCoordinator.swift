@@ -286,7 +286,7 @@ private extension AddProductCoordinator {
                                                                                          onCompletion: { [weak self] product in
             self?.onProductCreated(product)
             self?.navigationController.dismiss(animated: true) {
-                self?.presentProduct(product, formType: .edit)
+                self?.presentProduct(product, formType: .edit, isAIContent: true)
             }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
@@ -294,7 +294,7 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product, formType: ProductFormType = .add) {
+    func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -317,6 +317,7 @@ private extension AddProductCoordinator {
             }
         }
         let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       isAIContent: isAIContent,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,

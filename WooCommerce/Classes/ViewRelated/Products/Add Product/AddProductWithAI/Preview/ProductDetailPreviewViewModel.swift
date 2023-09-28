@@ -128,7 +128,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
-        // TODO
+        analytics.track(event: .AIFeedback.feedbackSent(source: .productCreation,
+                                                        isUseful: vote == .up))
     }
 }
 

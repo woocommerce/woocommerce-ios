@@ -597,4 +597,31 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(errorEventProperties["error_code"] as? String, "0")
         XCTAssertEqual(errorEventProperties["error_domain"] as? String, "Yosemite.ProductUpdateError")
     }
+
+    func test_handleFeedback_tracks_feedback_received()  throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+
+        // When
+        viewModel.handleFeedback(.up)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_ai_feedback"}))
+        let eventProperties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(eventProperties["source"] as? String, "product_creation")
+        XCTAssertEqual(eventProperties["is_useful"] as? Bool, true)
+    }
 }

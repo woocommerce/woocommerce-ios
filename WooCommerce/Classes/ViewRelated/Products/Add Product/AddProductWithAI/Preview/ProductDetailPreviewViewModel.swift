@@ -109,6 +109,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func saveProductAsDraft() async {
+        analytics.track(event: .ProductCreationAI.saveAsDraftButtonTapped())
         guard let generatedProduct else {
             return
         }
@@ -116,9 +117,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isSavingProduct = true
         do {
             let newProduct = try await saveProductRemotely(product: generatedProduct)
+            analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(newProduct)
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
+            analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
             errorState = .savingProduct
         }
         isSavingProduct = false

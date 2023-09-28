@@ -38,6 +38,7 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     }
 
     func didTapContinue() {
+        analytics.track(event: .ProductCreationAI.productNameContinueTapped())
         onContinueWithProductName(productNameContent)
     }
 }

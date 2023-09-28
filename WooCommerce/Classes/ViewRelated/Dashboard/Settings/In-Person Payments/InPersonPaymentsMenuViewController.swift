@@ -294,11 +294,7 @@ private extension InPersonPaymentsMenuViewController {
 
     func registerTableViewCells() {
         for row in Row.allCases {
-            if row.registerWithNib {
-                tableView.registerNib(for: row.type)
-            } else {
-                tableView.register(row.type)
-            }
+            tableView.registerNib(for: row.type)
         }
     }
 
@@ -322,14 +318,10 @@ private extension InPersonPaymentsMenuViewController {
             configureSetUpTapToPayOnIPhone(cell: cell)
         case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhoneFeedback:
             configureTapToPayOnIPhoneFeedback(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .depositOverview:
+            configureDepositOverviews(cell: cell)
         default:
-            if #available(iOS 16.0, *) {
-                if let cell = cell as? HostingTableViewCell<WooPaymentsDepositsOverviewView>,
-                   row == .depositOverview {
-                    return configureDepositOverviews(cell: cell)
-                }
-            }
-            fatalError()
+            break
         }
     }
 
@@ -409,11 +401,10 @@ private extension InPersonPaymentsMenuViewController {
         cell.accessoryType = .none
     }
 
-    @available(iOS 16.0, *)
-    func configureDepositOverviews(cell: HostingTableViewCell<WooPaymentsDepositsOverviewView>) {
-        let view = WooPaymentsDepositsOverviewView(viewModels: viewModel.depositsOverviewViewModels)
-        cell.host(view, parent: self)
-        cell.selectionStyle = .none
+    func configureDepositOverviews(cell: LeftImageTableViewCell) {
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "deposit-overviews"
+        cell.configure(image: .bankIcon, text: "WooPayments Deposits")
     }
 
     private func prepareForReuse(_ cell: UITableViewCell) {
@@ -571,6 +562,16 @@ extension InPersonPaymentsMenuViewController {
         navigationController?.present(surveyNavigation, animated: true)
     }
 
+    func depositOverviewWasPressed() {
+        if #available(iOS 16.0, *) {
+            let depositOverviewsView = WooPaymentsDepositsOverviewView(viewModels: viewModel.depositsOverviewViewModels)
+            let depositOverviewHost = UIHostingController(rootView: depositOverviewsView)
+            present(depositOverviewHost, animated: true)
+        } else {
+            //TODO: handle iOS 15 – ideally just make sure we've not shown the row!
+        }
+    }
+
     func navigateToInPersonPaymentsSelectPluginView() {
         let view = InPersonPaymentsSelectPluginView(selectedPlugin: nil) { [weak self] plugin in
             self?.cardPresentPaymentsOnboardingUseCase.clearPluginSelection()
@@ -655,7 +656,7 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
         case .tapToPayOnIPhoneFeedback:
             tapToPayOnIPhoneFeedbackWasPressed()
         case .depositOverview:
-            break
+            depositOverviewWasPressed()
         }
     }
 
@@ -780,23 +781,8 @@ private enum Row: CaseIterable {
             return LeftImageTitleSubtitleToggleTableViewCell.self
         case .setUpTapToPayOnIPhone:
             return BadgedLeftImageTableViewCell.self
-        case .depositOverview:
-            if #available(iOS 16.0, *) {
-                return HostingTableViewCell<WooPaymentsDepositsOverviewView>.self
-            } else {
-                fatalError()
-            }
         default:
             return LeftImageTableViewCell.self
-        }
-    }
-
-    fileprivate var registerWithNib: Bool {
-        switch self {
-        case .depositOverview:
-            return false
-        default:
-            return true
         }
     }
 

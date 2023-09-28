@@ -2,10 +2,10 @@ import SwiftUI
 import Yosemite
 
 @available(iOS 16.0, *)
-struct WooPaymentsDepositsOverviewView: View {
-    @ObservedObject var viewModel: WooPaymentsDepositsOverviewViewModel
+struct WooPaymentsDepositsCurrencyOverviewView: View {
+    @ObservedObject var viewModel: WooPaymentsDepositsCurrencyOverviewViewModel
 
-    init(viewModel: WooPaymentsDepositsOverviewViewModel) {
+    init(viewModel: WooPaymentsDepositsCurrencyOverviewViewModel) {
         self.viewModel = viewModel
     }
 
@@ -114,9 +114,9 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             availableBalance: 1500.0
         )
 
-        let viewModel = WooPaymentsDepositsOverviewViewModel(overview: overviewData)
+        let viewModel = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overviewData)
 
-        return WooPaymentsDepositsOverviewView(viewModel: viewModel)
+        return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
 //            .frame(width: 400, height: 400)
     }

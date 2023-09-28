@@ -45,7 +45,7 @@ final class InPersonPaymentsMenuViewModel {
     @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
-    @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsOverviewViewModel] = []
+    @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -138,12 +138,12 @@ final class InPersonPaymentsMenuViewModel {
         Task {
             let overview = await depositService.fetchDepositsOverview()
             depositsOverviewViewModels = overview.map {
-                WooPaymentsDepositsOverviewViewModel(overview: $0)
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             }
         }
     }
 
-    func depositOverviewViewModel(depositIndex: Int) -> WooPaymentsDepositsOverviewViewModel? {
+    func depositOverviewViewModel(depositIndex: Int) -> WooPaymentsDepositsCurrencyOverviewViewModel? {
         return depositsOverviewViewModels[depositIndex]
     }
 

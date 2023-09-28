@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-class WooPaymentsDepositsOverviewViewModel: ObservableObject {
+class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     let overview: WooPaymentsDepositsOverviewByCurrency
 
     init(overview: WooPaymentsDepositsOverviewByCurrency) {

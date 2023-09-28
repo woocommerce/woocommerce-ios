@@ -44,14 +44,26 @@ final class ProductNameGenerationViewModel: ObservableObject {
 
     @MainActor
     func generateProductName() async {
+        analytics.track(event: .ProductNameAI.generateButtonTapped(isRetry: hasGeneratedMessage))
+
         generationInProgress = true
         errorMessage = nil
         do {
             suggestedText = try await generateProductName(from: keywords)
+            analytics.track(event: .ProductNameAI.nameGenerated())
         } catch {
             errorMessage = error.localizedDescription
+            analytics.track(event: .ProductNameAI.nameGenerationFailed(error: error))
         }
         generationInProgress = false
+    }
+
+    func didTapCopy() {
+        analytics.track(event: .ProductNameAI.copyButtonTapped())
+    }
+
+    func didTapApply() {
+        analytics.track(event: .ProductNameAI.applyButtonTapped())
     }
 }
 
@@ -87,10 +99,11 @@ private extension ProductNameGenerationViewModel {
                     continuation.resume(with: result)
                 }))
             }
-            // TODO: analytics if needed
+            analytics.track(event: .ProductNameAI.identifiedLanguage(language))
             self.languageIdentifiedUsingAI = language
             return language
         } catch {
+            analytics.track(event: .ProductNameAI.identifyLanguageFailed(error: error))
             throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
         }
     }

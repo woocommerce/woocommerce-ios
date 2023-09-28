@@ -63,6 +63,7 @@ final class ShippingLabelFormViewModel {
         return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
             let weight = NumberFormatter.double(from: package.totalWeight) ?? .zero
             let customsForm = customsForms.first(where: { $0.packageID == package.id })
+            let hazmatCategory = package.selectedHazmatCategory != .none ? package.selectedHazmatCategory.rawValue : ""
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title
@@ -73,7 +74,7 @@ final class ShippingLabelFormViewModel {
                                                     height: customPackage.getHeight(),
                                                     weight: weight,
                                                     isLetter: customPackage.isLetter,
-                                                    hazmatCategory: package.selectedHazmatCategory.rawValue,
+                                                    hazmatCategory: hazmatCategory,
                                                     customsForm: customsForm)
             }
 
@@ -87,7 +88,7 @@ final class ShippingLabelFormViewModel {
                                                         height: predefinedPackage.getHeight(),
                                                         weight: weight,
                                                         isLetter: predefinedPackage.isLetter,
-                                                        hazmatCategory: package.selectedHazmatCategory.rawValue,
+                                                        hazmatCategory: hazmatCategory,
                                                         customsForm: customsForm)
                 }
             }
@@ -100,7 +101,7 @@ final class ShippingLabelFormViewModel {
                                                     height: Double(item.dimensions.height) ?? 0,
                                                     weight: item.weight,
                                                     isLetter: false,
-                                                    hazmatCategory: package.selectedHazmatCategory.rawValue,
+                                                    hazmatCategory: hazmatCategory,
                                                     customsForm: customsForm)
             }
 

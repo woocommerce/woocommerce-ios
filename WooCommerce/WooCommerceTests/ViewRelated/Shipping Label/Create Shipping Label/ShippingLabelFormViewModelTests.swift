@@ -251,6 +251,38 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.selectedPackagesDetails, [selectedPackage])
     }
 
+    func test_handlePackageDetailsValueChanges_returns_empty_hazmat_string_when_category_is_none() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
+        let expectedPackageID = ShippingLabelPackageAttributes.originalPackagingBoxID
+        let expectedPackageWeight = "55"
+        let givenPackageItem = ShippingLabelPackageItem()
+        let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
+                                                             totalWeight: expectedPackageWeight,
+                                                             items: [givenPackageItem],
+                                                             selectedHazmatCategory: .none)
+        let givenPackageResponse = ShippingLabelPackagesResponse.fake()
+        let expectedSelectedPackage = ShippingLabelPackageSelected(id: expectedPackageID,
+                                                           boxID: expectedPackageID,
+                                                           length: 0,
+                                                           width: 0,
+                                                           height: 0,
+                                                           weight: 0,
+                                                           isLetter: false,
+                                                           hazmatCategory: "",
+                                                           customsForm: nil)
+
+        // When
+        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: givenPackageResponse)
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [givenPackageAttributes])
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackages, [expectedSelectedPackage])
+    }
+
     func test_handlePackageDetailsValueChanges_reset_carrier_and_rates_selection() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

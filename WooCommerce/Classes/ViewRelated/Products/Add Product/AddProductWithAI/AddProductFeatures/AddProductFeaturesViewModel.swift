@@ -13,8 +13,10 @@ final class AddProductFeaturesViewModel: ObservableObject {
     private let analytics: Analytics
     // TODO: add new type for product details and return it here.
     private let onCompletion: (String) -> Void
+    @Binding private var isFirstAttemptGeneratingDetails: Bool
 
     init(siteID: Int64,
+         isFirstAttemptGeneratingDetails: Binding<Bool>,
          productName: String,
          productFeatures: String? = nil,
          stores: StoresManager = ServiceLocator.stores,
@@ -26,10 +28,11 @@ final class AddProductFeaturesViewModel: ObservableObject {
         self.stores = stores
         self.analytics = analytics
         self.onCompletion = onCompletion
+        self._isFirstAttemptGeneratingDetails = isFirstAttemptGeneratingDetails
     }
 
     func proceedToPreview() {
-        // TODO: analytics
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails))
         onCompletion(productFeatures)
     }
 }

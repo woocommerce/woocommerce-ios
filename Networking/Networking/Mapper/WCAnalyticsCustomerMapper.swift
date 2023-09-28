@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: WCAnalyticsCustomer
 ///
 struct WCAnalyticsCustomerMapper: Mapper {
@@ -13,18 +11,11 @@ struct WCAnalyticsCustomerMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [.siteID: siteID]
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(WCAnalyticsCustomerEnvelope.self, from: response).customer
-        } else {
-            return try decoder.decode([WCAnalyticsCustomer].self, from: response)
-        }
-    }
-}
 
-private struct WCAnalyticsCustomerEnvelope: Decodable {
-    let customer: [WCAnalyticsCustomer]
-
-    private enum CodingKeys: String, CodingKey {
-        case customer = "data"
+        return try extract(
+            from: response,
+            usingJSONDecoderSiteID: siteID,
+            dateFormatter: DateFormatter.Defaults.dateTimeFormatter
+        )
     }
 }

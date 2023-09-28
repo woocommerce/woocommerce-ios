@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: ProductVariation
 ///
 struct ProductVariationMapper: Mapper {
@@ -25,23 +23,6 @@ struct ProductVariationMapper: Mapper {
             .productID: productID
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductVariationEnvelope.self, from: response).productVariation
-        } else {
-            return try decoder.decode(ProductVariation.self, from: response)
-        }
-    }
-}
-
-/// ProductVariationEnvelope Disposable Entity
-///
-/// `ProductVariation` endpoint returns the requested product variation document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductVariationEnvelope: Decodable {
-    let productVariation: ProductVariation
-
-    private enum CodingKeys: String, CodingKey {
-        case productVariation = "data"
+        return try extract(from: response, using: decoder)
     }
 }

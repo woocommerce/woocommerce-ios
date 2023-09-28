@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: WCPay account
 ///
 struct WCPayAccountMapper: Mapper {
@@ -22,31 +20,6 @@ struct WCPayAccountMapper: Mapper {
             return WCPayAccount.noAccount
         }
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(WCPayAccountEnvelope.self, from: response).account
-        } else {
-            return try decoder.decode(WCPayAccount.self, from: response)
-        }
-    }
-}
-
-private struct WCPayNullAccountEnvelope: Decodable {
-    let emptyArray: [String]
-
-    private enum CodingKeys: String, CodingKey {
-        case emptyArray = "data"
-    }
-}
-
-/// WCPayAccountEnvelope Disposable Entity
-///
-/// Account endpoint returns the requested account in the `data` key. This entity
-/// allows us to parse it with JSONDecoder.
-///
-private struct WCPayAccountEnvelope: Decodable {
-    let account: WCPayAccount
-
-    private enum CodingKeys: String, CodingKey {
-        case account = "data"
+        return try extract(from: response, using: decoder)
     }
 }

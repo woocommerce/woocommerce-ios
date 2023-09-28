@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper for an array of `ShipmentTracking` JSON objects
 ///
 struct ShipmentTrackingListMapper: Mapper {
@@ -28,22 +27,9 @@ struct ShipmentTrackingListMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShipmentTrackingListEnvelope.self, from: response).shipmentTrackings
+            return try decoder.decode(Envelope<[ShipmentTracking]>.self, from: response).data
         } else {
             return try decoder.decode([ShipmentTracking].self, from: response)
         }
-    }
-}
-
-
-/// ShipmentTracking list disposable entity:
-/// `Load Shipment Trackings` endpoint returns all of its tracking details within the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct ShipmentTrackingListEnvelope: Decodable {
-    let shipmentTrackings: [ShipmentTracking]
-
-    private enum CodingKeys: String, CodingKey {
-        case shipmentTrackings = "data"
     }
 }

@@ -1487,6 +1487,30 @@ final class EditableOrderViewModelTests: XCTestCase {
             XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
         }
 
+    func test_shouldShowTaxesInfoButton_when_order_is_not_editable_then_returns_false() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
+        let order = Order.fake().copy(isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
+    }
+
+    func test_shouldShowTaxesInfoButton_when_order_is_editable_then_returns_true() {
+        // Given
+        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
+        let order = Order.fake().copy(isEditable: true)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
+    }
+
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_resets_addressFormViewModel_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in

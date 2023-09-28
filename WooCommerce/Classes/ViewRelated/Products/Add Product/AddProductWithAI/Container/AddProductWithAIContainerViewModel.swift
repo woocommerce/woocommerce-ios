@@ -23,6 +23,10 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let siteID: Int64
     let source: AddProductCoordinator.Source
 
+    var canBeDismissed: Bool {
+        productName.isEmpty && productFeatures.isEmpty && productDescription == nil
+    }
+
     private let analytics: Analytics
     private let onCancel: () -> Void
     private let completionHandler: (Product) -> Void

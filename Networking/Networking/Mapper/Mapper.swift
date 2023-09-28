@@ -13,3 +13,14 @@ protocol Mapper {
     ///
     func map(response: Data) throws -> Output
 }
+
+extension Mapper where Output: Decodable {
+
+    func extract(from response: Data, using decoder: JSONDecoder) throws -> Output {
+        if hasDataEnvelope(in: response) {
+            return try decoder.decode(Envelope<Output>.self, from: response).data
+        } else {
+            return try decoder.decode(Output.self, from: response)
+        }
+    }
+}

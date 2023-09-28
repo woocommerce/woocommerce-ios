@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: Shipping Label Account Settings
 ///
 struct ShippingLabelAccountSettingsMapper: Mapper {
@@ -18,21 +16,9 @@ struct ShippingLabelAccountSettingsMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShippingLabelAccountSettingsMapperEnvelope.self, from: response).data
+            return try decoder.decode(Envelope<ShippingLabelAccountSettings>.self, from: response).data
         } else {
             return try decoder.decode(ShippingLabelAccountSettings.self, from: response)
         }
-    }
-}
-
-/// ShippingLabelAccountSettingsMapperEnvelope Disposable Entity:
-/// `Shipping Label Account Settings` endpoint returns the shipping label account settings in the `data` key.
-/// This entity allows us to parse all the things with JSONDecoder.
-///
-private struct ShippingLabelAccountSettingsMapperEnvelope: Decodable {
-    let data: ShippingLabelAccountSettings
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }

@@ -16,6 +16,12 @@ class ShippingLabelSinglePackageViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
+    override func tearDown() {
+        super.tearDown()
+        analyticsProvider = nil
+        analytics = nil
+    }
+
     func test_itemsRows_returns_zero_itemsRows_with_empty_items() {
 
         // Given

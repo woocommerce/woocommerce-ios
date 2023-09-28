@@ -10,7 +10,7 @@ struct OrderFormGiftCardRow: View {
                 Text(Localization.giftCard)
                     .foregroundColor(.init(uiColor: .accent))
                     .bodyStyle()
-                Image(systemName: "pencil")
+                Image(uiImage: .pencilImage)
             }
             .foregroundColor(.init(uiColor: .accent))
 

@@ -25,4 +25,22 @@ final class AddProductWithAIContainerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productDescription, expectedDescription)
         XCTAssertEqual(viewModel.productFeatures, expectedFeatures)
     }
+
+    // MARK: `onProductFeaturesAdded`
+
+    func test_onProductFeaturesAdded_sets_isFirstAttemptGeneratingDetails_as_false() {
+        // Given
+        let viewModel = AddProductWithAIContainerViewModel(siteID: 123,
+                                                           source: .productDescriptionAIAnnouncementModal,
+                                                           onCancel: { },
+                                                           onCompletion: { _ in })
+
+        XCTAssertTrue(viewModel.isFirstAttemptGeneratingDetails)
+
+        // When
+        viewModel.onProductFeaturesAdded(features: "")
+
+        // Then
+        XCTAssertFalse(viewModel.isFirstAttemptGeneratingDetails)
+    }
 }

@@ -213,7 +213,10 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
                            shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
                            depositsOverviewViewModels: [WooPaymentsDepositsOverviewViewModel]? = nil) {
-        var composingSections: [Section?] = [actionsSection]
+        var composingSections: [Section?] = [
+            depositsSection(from: depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels),
+            actionsSection
+            ]
 
         if isEligibleForTapToPayOnIPhone ?? viewModel.isEligibleForTapToPayOnIPhone {
             composingSections.append(tapToPayOnIPhoneSection(
@@ -223,8 +226,6 @@ private extension InPersonPaymentsMenuViewController {
         if viewModel.isEligibleForCardPresentPayments {
             composingSections.append(contentsOf: [cardReadersSection, paymentOptionsSection])
         }
-
-        composingSections.append(contentsOf: depositsSections(from: depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels))
 
         sections = composingSections.compactMap { $0 }
     }
@@ -262,10 +263,11 @@ private extension InPersonPaymentsMenuViewController {
         return Section(header: Localization.paymentOptionsSectionTitle, rows: [.managePaymentGateways])
     }
 
-    func depositsSections(from viewModels: [WooPaymentsDepositsOverviewViewModel])-> [Section] {
-        viewModels.map { viewModel in
-            Section(header: nil, rows: [.depositOverview])
+    func depositsSection(from viewModels: [WooPaymentsDepositsOverviewViewModel])-> Section {
+        let rows = viewModels.map { viewModel in
+            Row.depositOverview
         }
+        return Section(header: "Woo Payments Balance", rows: rows)
     }
 
     func configureTableView() {
@@ -422,11 +424,16 @@ private extension InPersonPaymentsMenuViewController {
         cell.selectionStyle = .none
     }
 
+    @available(iOS 16.0, *)
     private func depositIndex(from indexPath: IndexPath) -> Int? {
-        guard let firstDepositSectionIndex = sections.firstIndex(where: { $0.rows.contains(.depositOverview) }) else {
+        guard let depositSection = sections[safe: indexPath.section],
+              let firstDepositRowIndex = depositSection.rows.firstIndex(where: {
+                  $0.type == HostingTableViewCell<WooPaymentsDepositsOverviewView>.self
+              })
+        else {
             return nil
         }
-        return indexPath.section - firstDepositSectionIndex
+        return indexPath.row - firstDepositRowIndex
     }
 
     private func prepareForReuse(_ cell: UITableViewCell) {

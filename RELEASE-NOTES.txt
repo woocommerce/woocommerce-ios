@@ -2,7 +2,7 @@
 
 15.6
 -----
-
+- [*] Order form: the merchant can apply a gift card to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10759]
 
 15.5
 -----

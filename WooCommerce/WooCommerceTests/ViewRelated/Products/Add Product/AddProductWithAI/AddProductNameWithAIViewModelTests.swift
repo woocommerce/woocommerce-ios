@@ -77,13 +77,13 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["source"] as? String, "product_creation_ai")
     }
 
-    func test_didTapContinue_tracks_entry_point_event_for_product_name_ai_with_correct_non_empty_input() throws {
+    func test_didTapSuggestName_tracks_entry_point_event_for_product_name_ai_with_correct_non_empty_input() throws {
         //  Given
         let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
 
         // When
         viewModel.productNameContent = "iPhone 15"
-        viewModel.didTapContinue()
+        viewModel.didTapSuggestName()
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_name_ai_entry_point_tapped"))

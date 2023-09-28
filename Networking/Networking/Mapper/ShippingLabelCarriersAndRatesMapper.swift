@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Shipping Label Carriers and Rates Data
 ///
 struct ShippingLabelCarriersAndRatesMapper: Mapper {
@@ -8,23 +5,15 @@ struct ShippingLabelCarriersAndRatesMapper: Mapper {
     ///
     func map(response: Data) throws -> [ShippingLabelCarriersAndRates] {
         let decoder = JSONDecoder()
+
+        let container: ShippingLabelRatesEnvelope
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShippingLabelDataEnvelope.self, from: response).data.rates.boxes
+            container = try decoder.decode(Envelope<ShippingLabelRatesEnvelope>.self, from: response).data
         } else {
-            return try decoder.decode(ShippingLabelRatesEnvelope.self, from: response).rates.boxes
+            container = try decoder.decode(ShippingLabelRatesEnvelope.self, from: response)
         }
-    }
-}
 
-/// ShippingLabelDataEnvelope Disposable Entity:
-/// `Carriers and Rates Shipping Label` endpoint returns the shipping label document under `data` -> `rates` -> `default_box`  key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ShippingLabelDataEnvelope: Decodable {
-    let data: ShippingLabelRatesEnvelope
-
-    private enum CodingKeys: String, CodingKey {
-        case data
+        return container.rates.boxes
     }
 }
 

@@ -4,6 +4,22 @@ import Yosemite
 
 @MainActor
 final class ProductDetailPreviewViewModelTests: XCTestCase {
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     // MARK: `generateProductDetails`
 
     func test_generateProductDetails_sends_name_and_features_to_identify_language() async throws {
@@ -386,5 +402,90 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.errorState, .savingProduct)
+    }
+
+    // MARK: Analytics
+
+    func test_generateProductDetails_tracks_event_on_success() async throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(Product.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_generate_product_details_success"))
+    }
+
+    func test_generateProductDetails_tracks_event_on_failure() async throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
+
+        let expectedError = NSError(domain: "test", code: 503)
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.failure(expectedError))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_generate_product_details_failed"))
+
+        let errorEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_creation_ai_generate_product_details_failed"}))
+        let errorEventProperties = analyticsProvider.receivedProperties[errorEventIndex]
+        XCTAssertEqual(errorEventProperties["error_code"] as? String, "503")
+        XCTAssertEqual(errorEventProperties["error_domain"] as? String, "test")
     }
 }

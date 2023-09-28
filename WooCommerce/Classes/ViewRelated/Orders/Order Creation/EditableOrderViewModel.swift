@@ -1277,6 +1277,13 @@ private extension EditableOrderViewModel {
     }
 
     func configureTaxRates() {
+        // Tax rates are not configurable if the order is not editable.
+        // In the creation flow orders are initially (incorrectly) reported as not editable, so we have to check the flow here as well
+        if case let .editing(order) = flow,
+           !order.isEditable {
+            return
+        }
+
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
             guard let self = self else { return }

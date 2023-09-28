@@ -1430,6 +1430,27 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
     }
 
+    func test_shouldShowNewTaxRateSection_when_order_is_not_editable_and_flow_is_editing_then_returns_false() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerShippingAddress))
+            default:
+                break
+            }
+        })
+
+        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
+        let order = Order.fake().copy(isEditable: false)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores, featureFlagService: featureFlagService)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
+    }
+
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_resets_addressFormViewModel_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in

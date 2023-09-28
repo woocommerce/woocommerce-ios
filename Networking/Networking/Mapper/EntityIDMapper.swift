@@ -1,4 +1,4 @@
-import Foundation
+private typealias EntityIDDictionary = [String: Int64]
 
 /// Mapper: Single Entity ID
 ///
@@ -9,37 +9,13 @@ struct EntityIDMapper: Mapper {
     func map(response: Data) throws -> Int64 {
         let decoder = JSONDecoder()
 
+        let idDictionary: EntityIDDictionary
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(EntityIDEnvelope.self, from: response).id
+            idDictionary = try decoder.decode(Envelope<EntityIDDictionary>.self, from: response).data
         } else {
-            let idDictionary = try decoder.decode(EntityIDEnvelope.EntityIDDictionaryType.self, from: response)
-            return idDictionary[Constants.idKey] ?? .zero
+            idDictionary = try decoder.decode(EntityIDDictionary.self, from: response)
         }
-    }
-}
 
-// MARK: Constants
-//
-private extension EntityIDMapper {
-    enum Constants {
-        static let idKey = "id"
-    }
-}
-
-/// Disposable Entity:
-/// Allows us to parse a product ID with JSONDecoder.
-///
-private struct EntityIDEnvelope: Decodable {
-    typealias EntityIDDictionaryType = [String: Int64]
-
-    private let data: EntityIDDictionaryType
-
-    // Extracts the entity ID from the underlying data
-    var id: Int64 {
-        data[EntityIDMapper.Constants.idKey] ?? .zero
-    }
-
-    private enum CodingKeys: String, CodingKey {
-        case data = "data"
+        return idDictionary["id"] ?? .zero
     }
 }

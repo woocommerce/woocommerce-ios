@@ -10,11 +10,14 @@ struct EntityDateModifiedMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
+        let entity: ModifiedEntity
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(Envelope<ModifiedEntity>.self, from: response).data.dateModified
+            entity = try decoder.decode(Envelope<ModifiedEntity>.self, from: response).data
         } else {
-            return try decoder.decode(ModifiedEntity.self, from: response).dateModified
+            entity = try decoder.decode(ModifiedEntity.self, from: response)
         }
+
+        return entity.dateModified
     }
 }
 

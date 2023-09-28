@@ -7,7 +7,7 @@ import Combine
 enum OrderSyncState {
     case syncing(blocking: Bool)
     case synced
-    case error(Error)
+    case error(Error, usesGiftCard: Bool)
 }
 
 /// Product input for an `OrderSynchronizer` type.
@@ -113,5 +113,5 @@ protocol OrderSynchronizer {
 
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///
-    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void)
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>, _ usesGiftCard: Bool) -> Void)
 }

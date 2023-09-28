@@ -190,6 +190,7 @@ struct OrderPaymentSection: View {
     @ViewBuilder private var addGiftCardRow: some View {
         Button(Localization.addGiftCard) {
             shouldShowGiftCardForm = true
+            viewModel.addGiftCardClosure()
         }
         .buttonStyle(PlusButtonStyle())
         .padding()

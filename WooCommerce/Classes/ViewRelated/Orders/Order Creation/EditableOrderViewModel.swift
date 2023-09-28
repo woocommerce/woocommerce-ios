@@ -407,6 +407,7 @@ final class EditableOrderViewModel: ObservableObject {
         syncInitialSelectedState()
         configureTaxRates()
         configureGiftCardSupport()
+        observeGiftCardStatesForAnalytics()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -637,17 +638,17 @@ final class EditableOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        orderSynchronizer.commitAllChanges { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
             switch result {
             case .success(let newOrder):
                 self.onFinished(newOrder)
-                self.trackCreateOrderSuccess()
+                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
             case .failure(let error):
                 self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(error: error)
+                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -840,6 +841,7 @@ extension EditableOrderViewModel {
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
+        let addGiftCardClosure: () -> Void
         let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
@@ -876,6 +878,7 @@ extension EditableOrderViewModel {
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
+             addGiftCardClosure: @escaping () -> Void = {},
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
@@ -919,6 +922,7 @@ extension EditableOrderViewModel {
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
+            self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
         }
     }
@@ -977,9 +981,9 @@ private extension EditableOrderViewModel {
             .map { [weak self] state in
                 guard let self = self else { return nil }
                 switch state {
-                case .error(let error):
+                case let .error(error, usesGiftCard):
                     DDLogError("⛔️ Error syncing order remotely: \(error)")
-                    self.trackSyncOrderFailure(error: error)
+                    self.trackSyncOrderFailure(usesGiftCard: usesGiftCard, error: error)
                     return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
@@ -1278,8 +1282,15 @@ private extension EditableOrderViewModel {
                                                 self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
                                             },
+                                            addGiftCardClosure: { [weak self] in
+                                                guard let self else { return }
+                                                self.analytics.track(event: .Orders.orderFormAddGiftCardCTATapped(flow: self.flow.analyticsFlow))
+                                            },
                                             setGiftCardClosure: { [weak self] code in
-                                                self?.orderSynchronizer.setGiftCard.send(code)
+                                                guard let self else { return }
+                                                self.orderSynchronizer.setGiftCard.send(code)
+                                                self.analytics.track(event: .Orders.orderFormGiftCardSet(flow: self.flow.analyticsFlow,
+                                                                                                         isRemoved: code == nil))
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }
@@ -1374,6 +1385,16 @@ private extension EditableOrderViewModel {
         }
     }
 
+    func observeGiftCardStatesForAnalytics() {
+        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
+            .first()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
+            }
+            .store(in: &cancellables)
+    }
+
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
@@ -1415,23 +1436,26 @@ private extension EditableOrderViewModel {
 
     /// Tracks an order creation success
     ///
-    func trackCreateOrderSuccess() {
+    func trackCreateOrderSuccess(usesGiftCard: Bool) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
                                                                                 try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count),
+                                                                             usesGiftCard: usesGiftCard))
     }
 
     /// Tracks an order creation failure
     ///
-    func trackCreateOrderFailure(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+    func trackCreateOrderFailure(usesGiftCard: Bool, error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(usesGiftCard: usesGiftCard,
+                                                                            errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
     }
 
     /// Tracks an order remote sync failure
     ///
-    func trackSyncOrderFailure(error: Error) {
+    func trackSyncOrderFailure(usesGiftCard: Bool, error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(flow: flow.analyticsFlow,
+                                                                        usesGiftCard: usesGiftCard,
                                                                         errorContext: String(describing: error),
                                                                         errorDescription: error.localizedDescription))
     }

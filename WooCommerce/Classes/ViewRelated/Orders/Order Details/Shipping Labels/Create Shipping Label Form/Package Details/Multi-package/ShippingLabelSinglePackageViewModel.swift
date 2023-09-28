@@ -262,8 +262,8 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             .removeDuplicates()
             .filter { $0 != .none }
             .sink { [weak self] selectedCategory in
-                guard let order = self?.order else { return }
-                self?.analytics.track(event: .ShippingLabelHazmatDeclaration.hazmatCategorySelected(orderID: order.orderID,
+                guard let self else { return }
+                self.analytics.track(event: .ShippingLabelHazmatDeclaration.hazmatCategorySelected(orderID: self.order.orderID,
                                                                                                     selectedCategory: selectedCategory))
             }.store(in: &subscriptions)
 

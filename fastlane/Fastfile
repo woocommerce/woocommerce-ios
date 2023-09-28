@@ -192,14 +192,14 @@ platform :ios do
     UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm(confirmation_message)
 
     # Create the release branch
-    UI.message 'Create release branch...'
+    UI.message 'Creating release branch...'
     ensure_git_status_clean
     ensure_git_branch(branch: DEFAULT_BRANCH)
     Fastlane::Helper::GitHelper.create_branch("release/#{next_release_version}", from: DEFAULT_BRANCH)
     UI.message "Done! New release branch is: #{git_branch}"
 
     # Bump the release version and build code and write it to the `xcconfig` file
-    UI.message 'Bumping app release version...'
+    UI.message 'Bumping release version and build code...'
     version_file.write(
       version_short: next_release_version,
       version_long: next_build_code
@@ -344,21 +344,15 @@ platform :ios do
     # Check local repo status
     ensure_git_status_clean
 
+    # Download the latest translations from GlotPress
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
 
-    UI.message 'Bumping app release version...'
-
-    require_relative '../../helper/ios/ios_git_helper'
-    require_relative '../../helper/ios/ios_version_helper'
-
+    # Bump the build code
+    UI.message 'Bumping build code...'
     Fastlane::Helper::GitHelper.ensure_on_branch!('release')
-    create_config
-    show_config
-
-    UI.message 'Updating XcConfig...'
-    Fastlane::Helper::Ios::VersionHelper.update_xc_configs(@new_beta_version, @short_version, @new_internal_version)
-    UI.message 'Done!'
+    version_file.write(version_long: next_build_code)
+    UI.messsage "Done! New Build Code: #{current_build_code}"
 
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
 
@@ -387,11 +381,44 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
   lane :new_hotfix_release do |options|
-    prev_ver = ios_hotfix_prechecks(options)
-    ios_bump_version_hotfix(
-      previous_version: prev_ver,
-      version: options[:version]
+    UI.message "Skip confirm: #{options[:skip_confirm]}"
+
+    new_version = options[:version]
+    # Parse the provided version into an AppVersion object
+    parsed_version = VERSION_FORMATTER.parse(new_version)
+    previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
+
+    # Confirmation message
+    message = <<-MESSAGE
+      Requested Hotfix version: #{new_version}
+      Branching from: #{previous_version}
+    MESSAGE
+
+    if options[:skip_confirm]
+      UI.message(message)
+    else
+      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    end
+
+    # Check tags
+    UI.user_error!("Version #{new_version} already exists! Abort!") if git_tag_exists(tag: new_version)
+    UI.user_error!("Version #{previous_version} is not tagged! A hotfix branch cannot be created.") unless git_tag_exists(tag: previous_version)
+
+    # Create the hotfix branch
+    UI.message 'Creating hotfix branch...'
+    ensure_git_status_clean
+    Fastlane::Helper::GitHelper.create_branch("release/#{new_version}", from: previous_version)
+    UI.message "Done! New hotfix branch is: #{git_branch}"
+
+    # Bump the hotfix version and build code and write it to the `xcconfig` file
+    UI.message 'Bumping hotfix version and build code...'
+    version_file.write(
+      version_short: new_version,
+      version_long: build_code(new_version)
     )
+    UI.messsage "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
+
+    Fastlane::Helper::Ios::GitHelper.commit_version_bump
   end
 
   #####################################################################################
@@ -407,7 +434,16 @@ platform :ios do
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do |options|
-    ios_finalize_prechecks(options)
+    UI.user_error!("Current branch - '#{git_branch}' - is not a release branch. Abort.") unless git_branch.start_with?('release/')
+
+    message = "Finalizing release: #{current_release_version}\n"
+    if options[:skip_confirm]
+      UI.message(message)
+    else
+      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    end
+
+    ensure_git_status_clean
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the release build?',
@@ -437,8 +473,7 @@ platform :ios do
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
 
-    current_branch = Fastlane::Helper::GitHelper.current_git_branch
-    UI.user_error!("Current branch - '#{current_branch}' - is not a release branch. Abort.") unless current_branch.start_with?('release/')
+    UI.user_error!("Current branch - '#{git_branch}' - is not a release branch. Abort.") unless git_branch.start_with?('release/')
 
     message = "Finalizing release: #{current_release_version}\n"
     if options[:skip_confirm]
@@ -500,60 +535,6 @@ platform :ios do
   end
 
   #####################################################################################
-  # build_and_upload_beta
-  # -----------------------------------------------------------------------------------
-  # This lane builds the app and uploads it for distribution
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane build_and_upload_beta [skip_confirm:<skip confirm>]
-  #
-  # Example:
-  # bundle exec fastlane build_and_upload_beta
-  # bundle exec fastlane build_and_upload_beta skip_confirm:true
-  #####################################################################################
-  desc 'Builds and uploads for distribution'
-  lane :build_and_upload_beta do |options|
-    ios_build_prechecks(
-      skip_confirm: options[:skip_confirm],
-      internal: false,
-      external: true
-    )
-    ios_build_preflight
-    build_and_upload_to_app_store_connect(
-      skip_prechecks: true,
-      skip_confirm: options[:skip_confirm],
-      beta_release: true
-    )
-  end
-
-  #####################################################################################
-  # build_and_upload_release
-  # -----------------------------------------------------------------------------------
-  # This lane builds the app and uploads it for distribution
-  # -----------------------------------------------------------------------------------
-  # Usage:
-  # bundle exec fastlane build_and_upload_release [skip_confirm:<skip confirm>]
-  #
-  # Example:
-  # bundle exec fastlane build_and_upload_release
-  # bundle exec fastlane build_and_upload_release skip_confirm:true
-  #####################################################################################
-  desc 'Builds and uploads for distribution'
-  lane :build_and_upload_release do |options|
-    ios_build_prechecks(
-      skip_confirm: options[:skip_confirm],
-      internal: false,
-      external: true
-    )
-    ios_build_preflight
-    build_and_upload_to_app_store_connect(
-      skip_prechecks: true,
-      skip_confirm: options[:skip_confirm],
-      beta_release: false
-    )
-  end
-
-  #####################################################################################
   # trigger_beta_build
   # -----------------------------------------------------------------------------------
   # This lane triggers a beta build on CI
@@ -603,11 +584,16 @@ platform :ios do
     ensure_sentry_installed
 
     unless options[:skip_prechecks]
-      ios_build_prechecks(
-        skip_confirm: options[:skip_confirm],
-        external: true
-      )
-      ios_build_preflight
+      message = "Building version #{current_release_version} (#{current_build_code}) and uploading to TestFlight\n"
+      if options[:skip_confirm]
+        UI.message(message)
+      else
+        UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+      end
+
+      # Check local repo status
+      ensure_git_status_clean unless is_ci
+      ios_build_preflight(derived_data_path: DERIVED_DATA_DIR)
       xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     end
 

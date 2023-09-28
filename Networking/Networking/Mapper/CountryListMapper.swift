@@ -9,21 +9,9 @@ struct CountryListMapper: Mapper {
     ///
     func map(response: Data) throws -> [Country] {
         if hasDataEnvelope(in: response) {
-            return try JSONDecoder().decode(CountryListEnvelope.self, from: response).data
+            return try JSONDecoder().decode(Envelope<[Country]>.self, from: response).data
         } else {
             return try JSONDecoder().decode([Country].self, from: response)
         }
-    }
-}
-
-
-/// CountryListEnvelope Disposable Entity:
-/// This entity allows us to parse [Country] with JSONDecoder.
-///
-private struct CountryListEnvelope: Decodable {
-    let data: [Country]
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }

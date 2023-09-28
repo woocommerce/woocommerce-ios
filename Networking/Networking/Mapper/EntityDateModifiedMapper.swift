@@ -11,21 +11,10 @@ struct EntityDateModifiedMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ModifiedEntityEnvelope.self, from: response).modifiedEntity.dateModified
+            return try decoder.decode(Envelope<ModifiedEntity>.self, from: response).data.dateModified
         } else {
             return try decoder.decode(ModifiedEntity.self, from: response).dateModified
         }
-    }
-}
-
-/// Disposable Entity:
-/// Allows us to parse the date modified with JSONDecoder.
-///
-private struct ModifiedEntityEnvelope: Decodable {
-    let modifiedEntity: ModifiedEntity
-
-    private enum CodingKeys: String, CodingKey {
-        case modifiedEntity = "data"
     }
 }
 

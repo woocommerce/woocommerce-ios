@@ -12,16 +12,9 @@ struct AddOnGroupMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.userInfo = [.siteID: siteID]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(AddOnGroupEnvelope.self, from: response).data
+            return try decoder.decode(Envelope<[AddOnGroup]>.self, from: response).data
         } else {
             return try decoder.decode([AddOnGroup].self, from: response)
         }
     }
-}
-
-/// `AddOnGroupEnvelope` Disposable Entity:
-/// `AddOnGroup` endpoints returns it's add-on-groups json in the `data` key.
-///
-private struct AddOnGroupEnvelope: Decodable {
-    let data: [AddOnGroup]
 }

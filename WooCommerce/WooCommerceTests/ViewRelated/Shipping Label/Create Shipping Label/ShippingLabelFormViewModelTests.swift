@@ -251,32 +251,41 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.selectedPackagesDetails, [selectedPackage])
     }
 
-    func test_handlePackageDetailsValueChanges_returns_empty_hazmat_string_when_category_is_none() {
+    func test_selectedPackages_returns_package_with_empty_hazmat_string_when_category_is_none() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
                                                                     originAddress: nil,
                                                                     destinationAddress: nil,
                                                                     userDefaults: userDefaults)
         let expectedPackageID = ShippingLabelPackageAttributes.originalPackagingBoxID
-        let expectedPackageWeight = "55"
-        let givenPackageItem = ShippingLabelPackageItem()
+        let expectedPackageWeight = "10"
+        let expectedDimensions = ProductDimensions(length: "10", width: "10", height: "10")
+        let packageName = "package-name"
+        let givenPackageItem = ShippingLabelPackageItem(productOrVariationID: 0,
+                                                        name: packageName,
+                                                        weight: 10.0,
+                                                        quantity: 1,
+                                                        value: 10.0,
+                                                        dimensions: expectedDimensions,
+                                                        attributes: [])
+
         let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
-                                                             totalWeight: expectedPackageWeight,
-                                                             items: [givenPackageItem],
-                                                             selectedHazmatCategory: .none)
-        let givenPackageResponse = ShippingLabelPackagesResponse.fake()
-        let expectedSelectedPackage = ShippingLabelPackageSelected(id: expectedPackageID,
-                                                           boxID: expectedPackageID,
-                                                           length: 0,
-                                                           width: 0,
-                                                           height: 0,
-                                                           weight: 0,
-                                                           isLetter: false,
-                                                           hazmatCategory: "",
-                                                           customsForm: nil)
+                                                                    totalWeight: expectedPackageWeight,
+                                                                    items: [givenPackageItem],
+                                                                    selectedHazmatCategory: .none)
+
+        let expectedSelectedPackage = ShippingLabelPackageSelected(id: givenPackageAttributes.id,
+                                                                   boxID: expectedPackageID,
+                                                                   length: 10.0,
+                                                                   width: 10.0,
+                                                                   height: 10.0,
+                                                                   weight: 10.0,
+                                                                   isLetter: false,
+                                                                   hazmatCategory: "",
+                                                                   customsForm: nil)
 
         // When
-        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: givenPackageResponse)
+        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: ShippingLabelPackagesResponse.fake())
         shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [givenPackageAttributes])
 
         // Then

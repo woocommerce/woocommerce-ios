@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Product Sku String
 ///
 struct ProductSkuMapper: Mapper {
@@ -10,32 +7,15 @@ struct ProductSkuMapper: Mapper {
     func map(response: Data) throws -> String {
         let decoder = JSONDecoder()
 
+        let skus: ProductsSKUs
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductSkuEnvelope.self, from: response).productsSkus.first?[Constants.skuKey] ?? ""
+            skus = try decoder.decode(Envelope<ProductsSKUs>.self, from: response).data
         } else {
-            return try decoder.decode(ProductSkuEnvelope.ProductsSkus.self, from: response).first?[Constants.skuKey] ?? ""
+            skus = try decoder.decode(ProductsSKUs.self, from: response)
         }
+
+        return skus.first?["sku"] ?? ""
     }
 }
 
-// MARK: Constants
-//
-private extension ProductSkuMapper {
-    enum Constants {
-        static let skuKey = "sku"
-    }
-}
-
-/// ProductSkuEnvelope Disposable Entity:
-/// `Products` endpoint returns if a sku exists. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductSkuEnvelope: Decodable {
-    typealias ProductsSkus = [[String: String]]
-
-    let productsSkus: ProductsSkus
-
-    private enum CodingKeys: String, CodingKey {
-        case productsSkus = "data"
-    }
-}
+typealias ProductsSKUs = [[String: String]]

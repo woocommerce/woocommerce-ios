@@ -48,19 +48,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                         .font(.footnote)
                 }
                 .padding(.vertical, 8)
-
-                Button {
-                    // no-op
-                } label: {
-                    HStack {
-                        Image(systemName: "info.circle")
-                        Text("Learn more about when you'll receive your funds")
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .font(.footnote)
-                            .multilineTextAlignment(.leading)
-                    }
-                }
-                .padding(.vertical, 8)
             }
             .fixedSize(horizontal: false, vertical: true)
         }
@@ -94,7 +81,7 @@ struct AccountSummaryItem: View {
 }
 
 @available(iOS 16.0, *)
-struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
+struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
     static var previews: some View {
         let overviewData = WooPaymentsDepositsOverviewByCurrency(
             currency: .GBP,

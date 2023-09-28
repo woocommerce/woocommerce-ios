@@ -40,8 +40,6 @@ final class InPersonPaymentsMenuViewModel {
         cardPresentPaymentsConfiguration.isSupportedCountry
     }
 
-//    private(set) var depositsOverviewViewModels: [WooPaymentsDepositsOverviewViewModel] = []
-
     @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false

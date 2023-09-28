@@ -264,10 +264,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func depositsSection(from viewModels: [WooPaymentsDepositsCurrencyOverviewViewModel])-> Section {
-        let rows = viewModels.map { viewModel in
-            Row.depositOverview
-        }
-        return Section(header: "Woo Payments Balance", rows: rows)
+        return Section(header: "Woo Payments Balance", rows: [Row.depositOverview])
     }
 
     func configureTableView() {
@@ -327,9 +324,9 @@ private extension InPersonPaymentsMenuViewController {
             configureTapToPayOnIPhoneFeedback(cell: cell)
         default:
             if #available(iOS 16.0, *) {
-                if let cell = cell as? HostingTableViewCell<WooPaymentsDepositsCurrencyOverviewView>,
+                if let cell = cell as? HostingTableViewCell<WooPaymentsDepositsOverviewView>,
                    row == .depositOverview {
-                    return configureDepositOverview(cell: cell, at: indexPath)
+                    return configureDepositOverviews(cell: cell)
                 }
             }
             fatalError()
@@ -413,27 +410,10 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     @available(iOS 16.0, *)
-    func configureDepositOverview(cell: HostingTableViewCell<WooPaymentsDepositsCurrencyOverviewView>, at indexPath: IndexPath) {
-        guard let depositIndex = depositIndex(from: indexPath),
-              depositIndex <= viewModel.depositsOverviewViewModels.endIndex else {
-            return DDLogError("💰 Attempted to configure deposit overview for inaccessible view model.")
-        }
-
-        let view = WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel.depositsOverviewViewModels[depositIndex])
+    func configureDepositOverviews(cell: HostingTableViewCell<WooPaymentsDepositsOverviewView>) {
+        let view = WooPaymentsDepositsOverviewView(viewModels: viewModel.depositsOverviewViewModels)
         cell.host(view, parent: self)
         cell.selectionStyle = .none
-    }
-
-    @available(iOS 16.0, *)
-    private func depositIndex(from indexPath: IndexPath) -> Int? {
-        guard let depositSection = sections[safe: indexPath.section],
-              let firstDepositRowIndex = depositSection.rows.firstIndex(where: {
-                  $0.type == HostingTableViewCell<WooPaymentsDepositsCurrencyOverviewView>.self
-              })
-        else {
-            return nil
-        }
-        return indexPath.row - firstDepositRowIndex
     }
 
     private func prepareForReuse(_ cell: UITableViewCell) {
@@ -802,7 +782,7 @@ private enum Row: CaseIterable {
             return BadgedLeftImageTableViewCell.self
         case .depositOverview:
             if #available(iOS 16.0, *) {
-                return HostingTableViewCell<WooPaymentsDepositsCurrencyOverviewView>.self
+                return HostingTableViewCell<WooPaymentsDepositsOverviewView>.self
             } else {
                 fatalError()
             }

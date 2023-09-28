@@ -17,20 +17,9 @@ struct JustInTimeMessageListMapper: Mapper {
             .siteID: siteID
         ]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(JustInTimeMessageListEnvelope.self, from: response).data
+            return try decoder.decode(Envelope<[JustInTimeMessage]>.self, from: response).data
         } else {
             return try decoder.decode([JustInTimeMessage].self, from: response)
         }
-    }
-}
-
-/// JustInTimeMessageEnvelope Disposable Entity:
-/// This entity allows us to parse JustInTimeMessage with JSONDecoder.
-///
-private struct JustInTimeMessageListEnvelope: Decodable {
-    let data: [JustInTimeMessage]
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }

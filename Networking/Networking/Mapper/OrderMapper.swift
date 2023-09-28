@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Order
 ///
 struct OrderMapper: Mapper {
@@ -21,23 +18,9 @@ struct OrderMapper: Mapper {
             .siteID: siteID
         ]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(OrderEnvelope.self, from: response).order
+            return try decoder.decode(Envelope<Order>.self, from: response).data
         } else {
             return try decoder.decode(Order.self, from: response)
         }
-    }
-}
-
-
-/// OrdersEnvelope Disposable Entity
-///
-/// `Load Order` endpoint returns the requested order document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct OrderEnvelope: Decodable {
-    let order: Order
-
-    private enum CodingKeys: String, CodingKey {
-        case order = "data"
     }
 }

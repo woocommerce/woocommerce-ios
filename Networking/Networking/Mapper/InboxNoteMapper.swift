@@ -18,20 +18,9 @@ struct InboxNoteMapper: Mapper {
             .siteID: siteID
         ]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(InboxNoteEnvelope.self, from: response).data
+            return try decoder.decode(Envelope<InboxNote>.self, from: response).data
         } else {
             return try decoder.decode(InboxNote.self, from: response)
         }
-    }
-}
-
-/// InboxNoteEnvelope Disposable Entity:
-/// This entity allows us to parse InboxNote with JSONDecoder.
-///
-private struct InboxNoteEnvelope: Decodable {
-    let data: InboxNote
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }

@@ -24,17 +24,9 @@ struct NewShipmentTrackingMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
+            return try decoder.decode(Envelope<ShipmentTracking>.self, from: response).data
         } else {
             return try decoder.decode(ShipmentTracking.self, from: response)
         }
-    }
-}
-
-private struct NewShipmentTrackingMapperEnvelope: Decodable {
-    let shipmentTracking: ShipmentTracking
-
-    private enum CodingKeys: String, CodingKey {
-        case shipmentTracking = "data"
     }
 }

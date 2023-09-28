@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: OrderNotes
 ///
 class OrderNotesMapper: Mapper {
@@ -12,22 +9,9 @@ class OrderNotesMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(OrderNotesEnvelope.self, from: response).orderNotes
+            return try decoder.decode(Envelope<[OrderNote]>.self, from: response).data
         } else {
             return try decoder.decode([OrderNote].self, from: response)
         }
-    }
-}
-
-
-/// OrderNote Disposable Entity:
-/// `Load Order Notes` endpoint returns all of its notes within the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct OrderNotesEnvelope: Decodable {
-    let orderNotes: [OrderNote]
-
-    private enum CodingKeys: String, CodingKey {
-        case orderNotes = "data"
     }
 }

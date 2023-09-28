@@ -22,22 +22,9 @@ struct OrderListMapper: Mapper {
         ]
 
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(OrderListEnvelope.self, from: response).orders
+            return try decoder.decode(Envelope<[Order]>.self, from: response).data
         } else {
             return try decoder.decode([Order].self, from: response)
         }
-    }
-}
-
-
-/// OrderList Disposable Entity:
-/// `Load All Orders` endpoint returns all of its orders within the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct OrderListEnvelope: Decodable {
-    let orders: [Order]
-
-    private enum CodingKeys: String, CodingKey {
-        case orders = "data"
     }
 }

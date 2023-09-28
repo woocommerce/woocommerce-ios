@@ -415,11 +415,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let storage = MockStorageManager()
         storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
 
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
-
-        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -427,8 +423,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
-
-        // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
@@ -439,6 +433,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 break
             }
         }
+
+        // When
         await viewModel.generateProductDetails()
 
         // Then
@@ -453,13 +449,9 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let storage = MockStorageManager()
         storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
 
-        let uuid = UUID().uuidString
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
-        userDefaults[.aiPromptTone] = ["\(siteID)": AIToneVoice.casual.rawValue]
-
         let expectedError = NSError(domain: "test", code: 503)
 
-        let viewModel = ProductDetailPreviewViewModel(siteID: 123,
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
                                                       productName: "Pen",
                                                       productDescription: nil,
                                                       productFeatures: "Ballpoint, Blue ink, ABS plastic",
@@ -467,8 +459,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
-
-        // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
@@ -479,6 +469,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 break
             }
         }
+
+        // When
         await viewModel.generateProductDetails()
 
         // Then

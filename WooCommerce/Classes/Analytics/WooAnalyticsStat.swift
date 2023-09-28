@@ -819,6 +819,7 @@ public enum WooAnalyticsStat: String {
     case productCreationAIEntryPointTapped = "product_creation_ai_entry_point_tapped"
     case productCreationAIProductNameContinueTapped = "product_creation_ai_product_name_continue_button_tapped"
     case productCreationAIToneSelected = "product_creation_ai_tone_selected"
+    case productCreationAIGenerateDetailsTapped = "product_creation_ai_generate_details_tapped"
 
     // MARK: Remote Request Events
     //

@@ -4,6 +4,7 @@ extension WooAnalyticsEvent {
     enum ProductCreationAI {
         private enum Key: String {
             case value = "value"
+            case isFirstAttempt = "is_first_attempt"
         }
 
         static func entryPointDisplayed() -> WooAnalyticsEvent {
@@ -24,6 +25,11 @@ extension WooAnalyticsEvent {
         static func aiToneSelected(_ tone: AIToneVoice) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIToneSelected,
                               properties: [Key.value.rawValue: tone.rawValue])
+        }
+
+        static func generateDetailsTapped(isFirstAttempt: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAIGenerateDetailsTapped,
+                              properties: [Key.isFirstAttempt.rawValue: isFirstAttempt])
         }
     }
 }

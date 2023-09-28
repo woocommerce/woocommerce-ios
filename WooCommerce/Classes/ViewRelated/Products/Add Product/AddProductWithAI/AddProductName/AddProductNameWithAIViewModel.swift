@@ -33,8 +33,11 @@ final class AddProductNameWithAIViewModel: ObservableObject {
         onUsePackagePhoto(productName)
     }
 
+    func didTapSuggestName() {
+        analytics.track(event: .ProductNameAI.entryPointTapped(hasInputName: productNameContent.isNotEmpty, source: .productCreationAI))
+    }
+
     func didTapContinue() {
         onContinueWithProductName(productNameContent)
-        analytics.track(event: .ProductNameAI.entryPointTapped(hasInputName: productNameContent.isNotEmpty, source: .productCreationAI))
     }
 }

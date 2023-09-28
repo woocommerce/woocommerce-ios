@@ -88,6 +88,7 @@ private extension AddProductNameWithAIView {
         HStack {
             // Suggest a name
             Button {
+                viewModel.didTapSuggestName()
                 showingNameGeneratingView = true
             } label: {
                 HStack(alignment: .top) {

@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
+@testable import Yosemite
 
 @MainActor
 final class ProductDetailPreviewViewModelTests: XCTestCase {
@@ -487,5 +488,121 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let errorEventProperties = analyticsProvider.receivedProperties[errorEventIndex]
         XCTAssertEqual(errorEventProperties["error_code"] as? String, "503")
         XCTAssertEqual(errorEventProperties["error_domain"] as? String, "test")
+    }
+
+    func test_saveProductAsDraft_tracks_tapped_event() async throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(Product.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        // When
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_save_as_draft_button_tapped"))
+    }
+
+    func test_saveProductAsDraft_tracks_event_on_success() async throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(Product.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(product, completion):
+                completion(.success(product))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+
+        // When
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_save_as_draft_success"))
+    }
+
+    func test_saveProductAsDraft_tracks_event_on_failure() async throws {
+        // Given
+        let siteID: Int64 = 123
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: siteID))
+
+        let expectedError = ProductUpdateError(error: NSError(domain: "test", code: 503))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: siteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      analytics: analytics,
+                                                      onProductCreated: { _ in })
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(Product.fake()))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(_, completion):
+                completion(.failure(expectedError))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+
+        // When
+        await viewModel.saveProductAsDraft()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_save_as_draft_failed"))
+
+        let errorEventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_creation_ai_save_as_draft_failed"}))
+        let errorEventProperties = analyticsProvider.receivedProperties[errorEventIndex]
+        XCTAssertEqual(errorEventProperties["error_code"] as? String, "0")
+        XCTAssertEqual(errorEventProperties["error_domain"] as? String, "Yosemite.ProductUpdateError")
     }
 }

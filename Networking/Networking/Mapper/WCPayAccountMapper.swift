@@ -16,7 +16,7 @@ struct WCPayAccountMapper: Mapper {
 
         /// Prior to WooCommerce Payments plugin version 2.9.0 (Aug 2021) `data` could contain an empty array []
         /// indicating that the plugin was active but the merchant had not on-boarded (and therefore has no account.)
-        if let _ = try? decoder.decode(WCPayNullAccountEnvelope.self, from: response) {
+        if let _ = try? decoder.decode(Envelope<[String]>.self, from: response) {
             return WCPayAccount.noAccount
         } else if let _ = try? decoder.decode([String].self, from: response) {
             return WCPayAccount.noAccount

@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: SitePlugin
 ///
 struct SitePluginMapper: Mapper {
@@ -20,28 +18,6 @@ struct SitePluginMapper: Mapper {
     /// (Attempts) to convert a dictionary into SitePlugin.
     ///
     func map(response: Data) throws -> SitePlugin {
-        let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(SitePluginEnvelope.self, from: response).plugin
-        } else {
-            return try decoder.decode(SitePlugin.self, from: response)
-        }
-    }
-}
-
-
-/// SitePluginEnvelope Disposable Entity:
-/// The plugins endpoint returns the document within a `data` key. This entity
-/// allows us to do parse the returned plugin model with JSONDecoder.
-///
-private struct SitePluginEnvelope: Decodable {
-    let plugin: SitePlugin
-
-    private enum CodingKeys: String, CodingKey {
-        case plugin = "data"
+        try extract(from: response, usingJSONDecoderSiteID: siteID)
     }
 }

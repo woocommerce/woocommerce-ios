@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: SiteSettings
 ///
 struct SiteSettingsMapper: Mapper {
@@ -26,23 +23,6 @@ struct SiteSettingsMapper: Mapper {
             .settingGroupKey: settingsGroup.rawValue
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(SiteSettingsEnvelope.self, from: response).settings
-        } else {
-            return try decoder.decode([SiteSetting].self, from: response)
-        }
-    }
-}
-
-
-/// SiteSettingsEnvelope Disposable Entity:
-/// The settings endpoint returns the settings document within a `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct SiteSettingsEnvelope: Decodable {
-    let settings: [SiteSetting]
-
-    private enum CodingKeys: String, CodingKey {
-        case settings = "data"
+        return try extract(from: response, using: decoder)
     }
 }

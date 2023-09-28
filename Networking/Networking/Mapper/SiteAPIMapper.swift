@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: SiteAPI
 ///
 struct SiteAPIMapper: Mapper {
@@ -13,29 +10,10 @@ struct SiteAPIMapper: Mapper {
     /// (Attempts) to convert a dictionary into [SiteSetting].
     ///
     func map(response: Data) throws -> SiteAPI {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(SiteAPIEnvelope.self, from: response).siteAPI
-        } else {
-            return try decoder.decode(SiteAPI.self, from: response)
-        }
-    }
-}
-
-
-/// SiteAPIEnvelope Disposable Entity:
-/// The settings endpoint returns the settings document within a `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
-///
-private struct SiteAPIEnvelope: Decodable {
-    let siteAPI: SiteAPI
-
-    private enum CodingKeys: String, CodingKey {
-        case siteAPI = "data"
+        try extract(
+            from: response,
+            usingJSONDecoderSiteID: siteID,
+            dateFormatter: DateFormatter.Defaults.dateTimeFormatter
+        )
     }
 }

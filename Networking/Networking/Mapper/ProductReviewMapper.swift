@@ -1,8 +1,3 @@
-import Foundation
-
-
-/// Mapper: ProductReview
-///
 struct ProductReviewMapper: Mapper {
 
     /// Site Identifier associated to the product review that will be parsed.
@@ -15,30 +10,10 @@ struct ProductReviewMapper: Mapper {
     /// (Attempts) to convert a dictionary into ProductReview.
     ///
     func map(response: Data) throws -> ProductReview {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductReviewEnvelope.self, from: response).productReview
-        } else {
-            return try decoder.decode(ProductReview.self, from: response)
-        }
-    }
-}
-
-
-/// ProductReviewEnvelope Disposable Entity
-///
-/// `Load Product Review` endpoint returns the requested product document in the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct ProductReviewEnvelope: Decodable {
-    let productReview: ProductReview
-
-    private enum CodingKeys: String, CodingKey {
-        case productReview = "data"
+        try extract(
+            from: response,
+            usingJSONDecoderSiteID: siteID,
+            dateFormatter: DateFormatter.Defaults.dateTimeFormatter
+        )
     }
 }

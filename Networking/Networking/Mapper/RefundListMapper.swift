@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: Refund List
 ///
 struct RefundListMapper: Mapper {
@@ -16,7 +13,6 @@ struct RefundListMapper: Mapper {
     ///
     let orderID: Int64
 
-
     /// (Attempts) to convert a dictionary into [Refund].
     ///
     func map(response: Data) throws -> [Refund] {
@@ -27,24 +23,6 @@ struct RefundListMapper: Mapper {
             .orderID: orderID
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(RefundsEnvelope.self, from: response).refunds
-        } else {
-            return try decoder.decode([Refund].self, from: response)
-        }
-    }
-}
-
-
-/// RefundsEnvelope Disposable Entity
-///
-/// `Load Refunds` endpoint returns the requested order refunds document in the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct RefundsEnvelope: Decodable {
-    let refunds: [Refund]
-
-    private enum CodingKeys: String, CodingKey {
-        case refunds = "data"
+        return try extract(from: response, using: decoder)
     }
 }

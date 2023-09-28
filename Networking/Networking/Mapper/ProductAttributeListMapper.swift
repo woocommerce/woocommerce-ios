@@ -1,20 +1,17 @@
-/// Mapper: ProductAttribute List
-///
-struct ProductAttributeListMapper: Mapper {
-    /// Site Identifier associated to the `ProductAttribute`s that will be parsed.
+typealias ProductAttributeListMapper = GenericMapper<[ProductAttribute]>
+
+struct GenericMapper<Resource: Decodable>: Mapper {
+
+    /// Site Identifier associated to the `Resource`s that will be parsed.
     ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the ProductAttribute Endpoints.
-    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the endpoints.
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into [ProductAttribute].
-    ///
-    func map(response: Data) throws -> [ProductAttribute] {
-        let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        return try extract(from: response, using: decoder)
+    func map(response: Data) throws -> Resource {
+        try extract(
+            from: response,
+            usingJSONDecoderSiteID: siteID,
+            dateFormatter: DateFormatter.Defaults.dateTimeFormatter
+        )
     }
 }

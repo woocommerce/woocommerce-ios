@@ -86,6 +86,15 @@ extension Address {
         self == .empty
     }
 
+    /// Erases the address components that are also part of a Tax Rate. Call this if you want to unlink an address from a tax rate.
+    /// 
+    func resettingTaxRateComponents() -> Address {
+        copy(city: "",
+             state: "",
+             postcode: "",
+             country: "")
+    }
+
     /// Generates an Address object from a TaxRate object data
     ///
     static func from(taxRate: TaxRate) -> Address {

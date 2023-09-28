@@ -2177,6 +2177,52 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
+    func test_forgetTaxRate_then_resets_addressFormViewModel_fields() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        })
+
+        let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
+
+        stores.whenReceivingAction(ofType: TaxAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxRate(_, _, let onCompletion):
+                onCompletion(.success(taxRate))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        waitUntil {
+            viewModel.addressFormViewModel.fields.state.isNotEmpty
+        }
+
+        viewModel.forgetTaxRate()
+
+        // Then
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.state.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.country.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.postcode.isEmpty)
+        XCTAssertTrue(viewModel.addressFormViewModel.fields.city.isEmpty)
+    }
+
     func test_viewModel_when_taxRate_is_stored_then_taxRateRowAction_is_storedTaxRateSheet() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2213,6 +2259,45 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         waitUntil {
             viewModel.taxRateRowAction == .storedTaxRateSheet
+        }
+    }
+
+    func test_viewModel_when_taxRate_is_stored_then_shouldStoreTaxRateInSelectorByDefault_is_true() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        })
+
+        let taxRate = TaxRate.fake()
+
+        stores.whenReceivingAction(ofType: TaxAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxRate(_, _, let onCompletion):
+                onCompletion(.success(taxRate))
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        // Then
+        waitUntil {
+            viewModel.shouldStoreTaxRateInSelectorByDefault == true
         }
     }
 

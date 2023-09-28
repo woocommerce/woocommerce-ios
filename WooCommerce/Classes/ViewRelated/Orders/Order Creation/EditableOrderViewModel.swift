@@ -163,6 +163,12 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Defines if the toggle to store the tax rate in the selector should be enabled by default
+    ///
+    var shouldStoreTaxRateInSelectorByDefault: Bool {
+        storedTaxRate != nil
+    }
+
     var taxRateRowAction: TaxRateRowAction {
         storedTaxRate == nil ? .taxSelector : .storedTaxRateSheet
     }
@@ -585,6 +591,11 @@ final class EditableOrderViewModel: ObservableObject {
             return
         }
 
+        if storedTaxRate != taxRate {
+            // If the new tax rate is different than the stored one forget the latter
+            storedTaxRate = nil
+        }
+
         let address = Address.from(taxRate: taxRate)
         let input: OrderSyncAddressesInput
         switch taxBasedOnSetting {
@@ -599,6 +610,19 @@ final class EditableOrderViewModel: ObservableObject {
 
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
+        autodismissableNotice = Notice(title: Localization.newTaxRateSetSuccessMessage)
+    }
+
+    /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
+    ///
+    func forgetTaxRate() {
+        let order = orderSynchronizer.order
+        orderSynchronizer.setAddresses.send(OrderSyncAddressesInput(billing: order.billingAddress?.resettingTaxRateComponents(),
+                                                                    shipping: order.shippingAddress?.resettingTaxRateComponents()))
+        resetAddressForm()
+        storedTaxRate = nil
+        stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
+        autodismissableNotice = Notice(title: Localization.stopAddingTaxRateAutomaticallySuccessMessage)
     }
 
     /// Updates the order creation draft with the current set customer note.
@@ -1869,6 +1893,10 @@ private extension EditableOrderViewModel {
                                                                  "that is not applicated to the products")
         static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
         static let editTaxRateSetting = NSLocalizedString("Edit Tax Rate Setting", comment: "Button title to edit the selected tax rate to apply to the order")
+        static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
+        static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
+                                                                                    comment: "Message when the user disables adding tax rates automatically")
+
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

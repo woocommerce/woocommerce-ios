@@ -1332,7 +1332,7 @@ private extension EditableOrderViewModel {
 
     func configureTaxRates() {
         // Tax rates are not configurable if the order is not editable.
-        // Even in creation flow we get right at the beginning that the order is not editable, that's why we have to check the flow here as well
+        // In the creation flow orders are initially (incorrectly) reported as not editable, so we have to check the flow here as well
         if case let .editing(order) = flow,
            !order.isEditable {
             return

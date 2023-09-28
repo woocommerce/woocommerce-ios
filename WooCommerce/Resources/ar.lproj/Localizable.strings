@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-26 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-28 15:19:52+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -1456,7 +1456,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Order gift card error notice message when the gift card cannot be applied.
    Order gift card error notice title when the gift card cannot be applied. */
-"Cannot apply gift card to order" = "يتعذر تطبيق بطاقة الهدايا على الطلب، الخطأ: %1$@";
+"Cannot apply gift card to order" = "يتعذر تطبيق بطاقة الهدايا على الطلب، الخطأ";
 
 /* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
 "Cannot apply gift card to order error: %1$@" = "يتعذر تطبيق بطاقة الهدايا على الطلب، الخطأ: %1$@";

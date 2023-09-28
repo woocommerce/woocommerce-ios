@@ -63,7 +63,7 @@ final class ShippingLabelFormViewModel {
         return selectedPackagesDetails.compactMap { package -> ShippingLabelPackageSelected? in
             let weight = NumberFormatter.double(from: package.totalWeight) ?? .zero
             let customsForm = customsForms.first(where: { $0.packageID == package.id })
-            let hazmatCategory = package.selectedHazmatCategory != .none ? package.selectedHazmatCategory.rawValue : ""
+            let hazmatCategory = package.selectedHazmatCategory != .none ? package.selectedHazmatCategory.rawValue : nil
 
             if let customPackage = packagesResponse.customPackages.first(where: { $0.title == package.packageID }) {
                 let boxID = customPackage.title

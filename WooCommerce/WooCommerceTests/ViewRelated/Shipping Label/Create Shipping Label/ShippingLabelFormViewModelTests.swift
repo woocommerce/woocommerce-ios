@@ -281,7 +281,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
                                                                    height: 10.0,
                                                                    weight: 10.0,
                                                                    isLetter: false,
-                                                                   hazmatCategory: "",
+                                                                   hazmatCategory: nil,
                                                                    customsForm: nil)
 
         // When

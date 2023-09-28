@@ -24,14 +24,14 @@ struct ProductTagListMapper: Mapper {
         case .load:
             return try extract(from: response, usingJSONDecoderSiteID: siteID)
         case .create:
-            let tags: [ProductTagFromBatchCreation] = try {
-                if hasDataEnvelope {
-                    return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags
-                } else {
-                    return try decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags
-                }
-            }()
-            return tags
+            let container: ProductTagListBatchCreateContainer
+            if hasDataEnvelope {
+                container = try decoder.decode(Envelope<ProductTagListBatchCreateContainer>.self, from: response).data
+            } else {
+                container = try decoder.decode(ProductTagListBatchCreateContainer.self, from: response)
+            }
+
+            return container.tags
                 .filter { $0.error == nil }
                 .compactMap { (tagCreated) -> ProductTag? in
                     if let name = tagCreated.name, let slug = tagCreated.slug {
@@ -53,18 +53,6 @@ struct ProductTagListMapper: Mapper {
       case load
       case create
       case delete
-    }
-}
-
-/// ProductTagListBatchCreateEnvelope Disposable Entity:
-/// `Batch Create Products Tags` endpoint returns the products tags under the `data` key, nested under `create`  key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductTagListBatchCreateEnvelope: Decodable {
-    let data: ProductTagListBatchCreateContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

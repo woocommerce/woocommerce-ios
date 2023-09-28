@@ -32,7 +32,7 @@ extension WooAnalyticsEvent {
         }
 
         static func applyButtonTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productNameAICopyButtonTapped,
+            WooAnalyticsEvent(statName: .productNameAIApplyButtonTapped,
                               properties: [:])
         }
 

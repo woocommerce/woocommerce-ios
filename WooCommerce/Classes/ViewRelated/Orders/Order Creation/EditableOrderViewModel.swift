@@ -595,13 +595,16 @@ final class EditableOrderViewModel: ObservableObject {
             storedTaxRate = nil
         }
 
-        let address = Address.from(taxRate: taxRate)
         let input: OrderSyncAddressesInput
         switch taxBasedOnSetting {
         case .customerBillingAddress:
-            input = OrderSyncAddressesInput(billing: address, shipping: nil)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate),
+                                            shipping: orderSynchronizer.order.shippingAddress)
         case .customerShippingAddress:
-            input = OrderSyncAddressesInput(billing: nil, shipping: address)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress,
+                                            shipping: orderSynchronizer.order.shippingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate))
         default:
             // Do not add address if the taxes are not based on the customer's addresses
             return

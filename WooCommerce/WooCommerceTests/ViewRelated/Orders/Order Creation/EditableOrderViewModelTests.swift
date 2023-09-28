@@ -1511,7 +1511,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
     }
 
-    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_resets_addressFormViewModel_fields_with_new_data() {
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1522,19 +1522,30 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddress1(),
+            shipping: sampleAddress2()
+        )
+
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
-
+        viewModel.addCustomerAddressToOrder(customer: customer)
         viewModel.onTaxRateSelected(taxRate)
 
         // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.email, customer.email)
         XCTAssertEqual(viewModel.addressFormViewModel.fields.state, taxRate.state)
         XCTAssertEqual(viewModel.addressFormViewModel.fields.country, taxRate.country)
         XCTAssertEqual(viewModel.addressFormViewModel.fields.postcode, taxRate.postcodes.first)
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
-    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_resets_addressFormViewModel_secondaryFields_with_new_data() {
+    func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1545,12 +1556,24 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
+        let customer = Customer.fake().copy(
+            email: "scrambled@scrambled.com",
+            firstName: "Johnny",
+            lastName: "Appleseed",
+            billing: sampleAddress1(),
+            shipping: sampleAddress2()
+        )
+
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
         let taxRate = TaxRate.fake().copy(siteID: sampleSiteID, name: "test tax rate", country: "US", state: "CA", postcodes: ["12345"], cities: ["San Diego"])
 
+        viewModel.addCustomerAddressToOrder(customer: customer)
         viewModel.onTaxRateSelected(taxRate)
 
         // Then
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.firstName, customer.firstName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.lastName, customer.lastName)
+        XCTAssertEqual(viewModel.addressFormViewModel.fields.email, customer.email)
         XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.state, taxRate.state)
         XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.country, taxRate.country)
         XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.postcode, taxRate.postcodes.first)

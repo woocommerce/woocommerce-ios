@@ -42,5 +42,21 @@ extension WooAnalyticsEvent {
                               properties: [:],
                               error: error)
         }
+
+        static func saveAsDraftButtonTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAISaveAsDraftButtonTapped,
+                              properties: [:])
+        }
+
+        static func saveAsDraftSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAISaveAsDraftSuccess,
+                              properties: [:])
+        }
+
+        static func saveAsDraftFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productCreationAISaveAsDraftFailed,
+                              properties: [:],
+                              error: error)
+        }
     }
 }

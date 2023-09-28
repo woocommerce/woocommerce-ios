@@ -2630,6 +2630,30 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Shipping Label Hazmat Declaration
+//
+extension WooAnalyticsEvent {
+    enum ShippingLabelHazmatDeclaration {
+        enum Keys: String {
+            case orderID = "order_id"
+            case category
+        }
+
+        static func hazmatCategorySelectorOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])
+        }
+
+        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatCategory) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelected, properties: [Keys.orderID.rawValue: orderID,
+                                                                              Keys.category.rawValue: selectedCategory.rawValue])
+        }
+
+        static func containsHazmatChecked() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .containsHazmatChecked, properties: [:])
+        }
+    }
+}
+
 // MARK: - Remote Requests
 //
 extension WooAnalyticsEvent {

@@ -406,7 +406,7 @@ platform :ios do
 
     # Create the hotfix branch
     UI.message 'Creating hotfix branch...'
-    ensure_git_status_clean
+    #ensure_git_status_clean
     Fastlane::Helper::GitHelper.create_branch("release/#{new_version}", from: previous_version)
     UI.message "Done! New hotfix branch is: #{git_branch}"
 
@@ -418,7 +418,7 @@ platform :ios do
     )
     UI.messsage "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
 
-    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    #Fastlane::Helper::Ios::GitHelper.commit_version_bump
   end
 
   #####################################################################################

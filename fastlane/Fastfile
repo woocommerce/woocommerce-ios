@@ -176,15 +176,15 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :code_freeze do |options|
-    # Ensure we use the latest version of the toolkit
+    # Check for Release Toolkit updates
     check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
     confirmation_message = <<-MESSAGE
      Building a new release branch starting from #{DEFAULT_BRANCH}.
-     Current version is #{current_release_version} (#{current_build_code}).
-     After codefreeze the new version will be: #{next_release_version} (#{next_build_code}).
+     Current version: #{current_release_version} (#{current_build_code}).
+     New beta version to start the code freeze: #{next_release_version} (#{next_build_code}).
      Do you want to continue?
     MESSAGE
 

@@ -14753,6 +14753,7 @@
 				OTHER_LDFLAGS = (
 					"-Xlinker",
 					"-interposable",
+					"-fprofile-instr-generate",
 				);
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;

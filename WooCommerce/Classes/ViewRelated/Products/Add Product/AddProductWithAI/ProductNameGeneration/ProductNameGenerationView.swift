@@ -73,6 +73,7 @@ struct ProductNameGenerationView: View {
                         Spacer()
                         // CTA to copy the generated text.
                         Button {
+                            viewModel.didTapCopy()
                             UIPasteboard.general.string = suggestedText
                             copyTextNotice = .init(title: Localization.textCopiedNotice)
                         } label: {
@@ -125,6 +126,7 @@ struct ProductNameGenerationView: View {
 
                     // Action button to apply product name
                     Button(Localization.apply) {
+                        viewModel.didTapApply()
                         onCompletion(suggestedText)
                     }
                     .buttonStyle(PrimaryButtonStyle())

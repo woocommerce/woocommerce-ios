@@ -22,6 +22,21 @@ final class AddProductWithAIContainerHostingController: UIHostingController<AddP
         super.viewDidLoad()
 
         configureTransparentNavigationBar()
+        navigationController?.presentationController?.delegate = self
+    }
+}
+
+/// Intercepts to the dismiss drag gesture.
+///
+extension AddProductWithAIContainerHostingController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
+        return viewModel.canBeDismissed
+    }
+
+    func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.dismiss(animated: true)
+        })
     }
 }
 
@@ -62,22 +77,30 @@ struct AddProductWithAIContainerView: View {
 
             switch viewModel.currentStep {
             case .productName:
-                AddProductNameWithAIView(viewModel: .init(siteID: viewModel.siteID,
-                                                          onUsePackagePhoto: onUsePackagePhoto,
-                                                          onContinueWithProductName: { name in
+                AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
+                                         onUsePackagePhoto: onUsePackagePhoto,
+                                         onContinueWithProductName: { name in
                     withAnimation {
                         viewModel.onContinueWithProductName(name: name)
                     }
-                }))
+                })
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
-                                                        productName: viewModel.productName) { features in
+                                                        productName: viewModel.productName,
+                                                        productFeatures: viewModel.productFeatures) { features in
                     withAnimation {
                         viewModel.onProductFeaturesAdded(features: features)
                     }
                 })
             case .preview:
-                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID))
+                ProductDetailPreviewView(viewModel: .init(siteID: viewModel.siteID,
+                                                          productName: viewModel.productName,
+                                                          productDescription: viewModel.productDescription,
+                                                          productFeatures: viewModel.productFeatures) { product in
+                    viewModel.didCreateProduct(product)
+                }, onDismiss: {
+                    viewModel.backtrackOrDismiss()
+                })
             }
         }
         .onAppear() {

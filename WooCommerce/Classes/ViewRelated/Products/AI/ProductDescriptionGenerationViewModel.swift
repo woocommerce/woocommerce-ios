@@ -173,6 +173,6 @@ private extension ProductDescriptionGenerationViewModel {
     }
 }
 
-private enum IdentifyLanguageError: Error {
+enum IdentifyLanguageError: Error {
     case failedToIdentifyLanguage(underlyingError: Error)
 }

@@ -5,9 +5,13 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
 
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
+    @State private var isShowingErrorAlert: Bool = false
 
-    init(viewModel: ProductDetailPreviewViewModel) {
+    private let onDismiss: () -> Void
+
+    init(viewModel: ProductDetailPreviewViewModel, onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -31,7 +35,7 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productName)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.name,
+                    BasicDetailRow(content: viewModel.productName,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
@@ -40,11 +44,10 @@ struct ProductDetailPreviewView: View {
                     Text(Localization.productDescription)
                         .foregroundColor(.primary)
                         .subheadlineStyle()
-                    BasicDetailRow(content: viewModel.generatedProduct?.fullDescription,
+                    BasicDetailRow(content: viewModel.productDescription,
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
-                // TODO: update values based on product
                 // Other details
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
                     Text(Localization.details)
@@ -53,7 +56,7 @@ struct ProductDetailPreviewView: View {
 
                     // Product type
                     TitleAndValueDetailRow(title: Localization.productType,
-                                           value: "Physical",
+                                           value: viewModel.productType,
                                            image: UIImage.productImage,
                                            isLoading: viewModel.isGeneratingDetails,
                                            cornerRadius: Layout.cornerRadius)
@@ -62,7 +65,7 @@ struct ProductDetailPreviewView: View {
                     VStack(spacing: 0) {
                         // Price
                         TitleAndValueDetailRow(title: Localization.price,
-                                               value: "Regular price: $15",
+                                               value: viewModel.productPrice,
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -78,7 +81,7 @@ struct ProductDetailPreviewView: View {
 
                         // Categories
                         TitleAndValueDetailRow(title: Localization.categories,
-                                               value: "Food, snack, sweet",
+                                               value: viewModel.productCategories,
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -86,7 +89,7 @@ struct ProductDetailPreviewView: View {
 
                         // Tags
                         TitleAndValueDetailRow(title: Localization.tags,
-                                               value: "yummy, candy, chocolate",
+                                               value: viewModel.productTags,
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
                         Divider()
@@ -94,7 +97,7 @@ struct ProductDetailPreviewView: View {
 
                         // Shipping details
                         TitleAndValueDetailRow(title: Localization.shipping,
-                                               value: "Weight: 1kg\nDimension: 15 x 10 x 3 cm",
+                                               value: viewModel.productShippingDetails,
                                                image: UIImage.shippingImage,
                                                isLoading: viewModel.isGeneratingDetails)
                     }
@@ -106,24 +109,48 @@ struct ProductDetailPreviewView: View {
                              backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
                                                                    dark: .tertiarySystemBackground)),
                              onVote: { vote in
-                    viewModel.handleFeedback(vote)
+                    withAnimation {
+                        viewModel.handleFeedback(vote)
+                    }
                 })
-                .renderedIf(viewModel.isGeneratingDetails == false)
+                .renderedIf(viewModel.shouldShowFeedbackView)
             }
             .padding(insets: Layout.insets)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if viewModel.isGeneratingDetails {
+                    if viewModel.isGeneratingDetails || viewModel.isSavingProduct {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.saveAsDraft) {
-                            viewModel.saveProductAsDraft()
+                            Task {
+                                await viewModel.saveProductAsDraft()
+                            }
                         }
                     }
                 }
             }
             .onAppear {
-                viewModel.generateProductDetails()
+                Task {
+                    await viewModel.generateProductDetails()
+                }
+            }
+            .onChange(of: viewModel.errorState) { newValue in
+                isShowingErrorAlert = newValue != .none
+            }
+            .alert(viewModel.errorState.errorMessage, isPresented: $isShowingErrorAlert) {
+                Button(Localization.retry) {
+                    Task {
+                        switch viewModel.errorState {
+                        case .none:
+                            return
+                        case .generatingProduct:
+                            await viewModel.generateProductDetails()
+                        case .savingProduct:
+                            await viewModel.saveProductAsDraft()
+                        }
+                    }
+                }
+                Button(Localization.cancel, action: onDismiss)
             }
         }
     }
@@ -184,6 +211,7 @@ private extension ProductDetailPreviewView {
             .cornerRadius(cornerRadius)
             .redacted(reason: isLoading ? .placeholder : [])
             .shimmering(active: isLoading)
+            .renderedIf(isLoading || value != nil)
         }
     }
 }
@@ -208,7 +236,7 @@ fileprivate extension ProductDetailPreviewView {
             comment: "Title on the add product with AI Preview screen."
         )
         static let subtitle = NSLocalizedString(
-            "Don't worry. You can always change below details later.",
+            "You can always change the below details later.",
             comment: "Subtitle on the add product with AI Preview screen."
         )
         static let feedbackQuestion = NSLocalizedString(
@@ -259,12 +287,18 @@ fileprivate extension ProductDetailPreviewView {
             "Save as draft",
             comment: "Button to save product details on the add product with AI Preview screen."
         )
+        static let cancel = NSLocalizedString("Cancel", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
     }
 }
 
 
 struct ProductDetailPreviewView_Previews: PreviewProvider {
     static var previews: some View {
-        ProductDetailPreviewView(viewModel: .init(siteID: 123))
+        ProductDetailPreviewView(viewModel: .init(siteID: 123,
+                                                  productName: "iPhone 15",
+                                                  productDescription: "New smart phone",
+                                                  productFeatures: nil) { _ in },
+                                 onDismiss: {})
     }
 }

@@ -3,6 +3,7 @@
 15.6
 -----
 - [**] Taxes in orders: Users can now store the tax rate's location to add it automatically to a new order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10802]
+- [*] Order form: the merchant can apply a gift card to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10759]
 
 15.5
 -----

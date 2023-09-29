@@ -19,48 +19,50 @@ struct TopTabView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView(.horizontal, showsIndicators: false) {
-                ScrollViewReader { scrollViewProxy in
-                    HStack(spacing: Layout.tabPadding * 2) {
-                        ForEach(0..<tabs.count, id: \.self) { index in
-                            VStack {
-                                Text(tabs[index].name)
-                                    .font(.headline)
-                                    .foregroundColor(selectedTab == index ? Colors.selected : .primary)
-                                    .id(index)
-                                    .onTapGesture {
-                                        withAnimation {
-                                            selectedTab = index
-                                            underlineOffset = calculateOffset(index: index)
-                                            scrollViewProxy.scrollTo(index, anchor: .center)
+            if tabs.count > 1 {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    ScrollViewReader { scrollViewProxy in
+                        HStack(spacing: Layout.tabPadding * 2) {
+                            ForEach(0..<tabs.count, id: \.self) { index in
+                                VStack {
+                                    Text(tabs[index].name)
+                                        .font(.headline)
+                                        .foregroundColor(selectedTab == index ? Colors.selected : .primary)
+                                        .id(index)
+                                        .onTapGesture {
+                                            withAnimation {
+                                                selectedTab = index
+                                                underlineOffset = calculateOffset(index: index)
+                                                scrollViewProxy.scrollTo(index, anchor: .center)
+                                            }
                                         }
-                                    }
-                            }
-                            .padding()
-                            .background(GeometryReader { geometry in
-                                Color.clear.onAppear {
-                                    if index < tabWidths.count {
-                                        tabWidths[index] = geometry.size.width
-                                        if index == selectedTab {
-                                            underlineOffset = calculateOffset(index: index)
-                                        }
-                                    }
                                 }
-                            })
+                                .padding()
+                                .background(GeometryReader { geometry in
+                                    Color.clear.onAppear {
+                                        if index < tabWidths.count {
+                                            tabWidths[index] = geometry.size.width
+                                            if index == selectedTab {
+                                                underlineOffset = calculateOffset(index: index)
+                                            }
+                                        }
+                                    }
+                                })
+                            }
                         }
+                        .padding(.horizontal, Layout.tabPadding)
+                        .overlay(
+                            Rectangle()
+                                .frame(width: selectedTabUnderlineWidth(),
+                                       height: Layout.selectedTabIndicatorHeight)
+                                .foregroundColor(Colors.selected)
+                                .offset(x: underlineOffset),
+                            alignment: .bottomLeading
+                        )
                     }
-                    .padding(.horizontal, Layout.tabPadding)
-                    .overlay(
-                        Rectangle()
-                            .frame(width: selectedTabUnderlineWidth(),
-                                   height: Layout.selectedTabIndicatorHeight)
-                            .foregroundColor(Colors.selected)
-                            .offset(x: underlineOffset),
-                        alignment: .bottomLeading
-                    )
                 }
+                Divider()
             }
-            Divider()
 
             // Display Content for selected tab
             tabs[safe: selectedTab]?.view
@@ -110,6 +112,14 @@ struct ContentView_Previews: PreviewProvider {
                 .padding())),
         ]
         TopTabView(tabs: tabs)
+            .previewLayout(.sizeThatFits)
+
+        let oneTab: [TopTabItem] = [
+            TopTabItem(name: "A tab name", view: AnyView(Text("Content for Tab 1")
+                .font(.largeTitle)
+                .padding()))
+        ]
+        TopTabView(tabs: oneTab)
             .previewLayout(.sizeThatFits)
     }
 }

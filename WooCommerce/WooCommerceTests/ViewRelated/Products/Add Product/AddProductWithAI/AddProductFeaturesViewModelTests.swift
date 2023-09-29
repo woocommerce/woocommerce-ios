@@ -2,7 +2,6 @@ import XCTest
 @testable import WooCommerce
 
 final class AddProductFeaturesViewModelTests: XCTestCase {
-
     func test_productFeatures_is_updated_with_initial_features() {
         // Given
         let expectedFeatures = "Fancy new smart phone"
@@ -30,5 +29,4 @@ final class AddProductFeaturesViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(triggeredFeatures, expectedFeatures)
     }
-
 }

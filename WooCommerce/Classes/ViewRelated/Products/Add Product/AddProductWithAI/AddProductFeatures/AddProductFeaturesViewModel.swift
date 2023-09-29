@@ -29,7 +29,6 @@ final class AddProductFeaturesViewModel: ObservableObject {
     }
 
     func proceedToPreview() {
-        // TODO: analytics
         onCompletion(productFeatures)
     }
 }

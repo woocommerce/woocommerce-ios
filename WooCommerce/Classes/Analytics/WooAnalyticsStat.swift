@@ -822,6 +822,19 @@ public enum WooAnalyticsStat: String {
     case productNameAIGenerationSuccess = "product_name_ai_generation_success"
     case productNameAIGenerationFailed = "product_name_ai_generation_failed"
 
+    // MARK: Product creation AI
+    //
+    case productCreationAIEntryPointDisplayed = "product_creation_ai_entry_point_displayed"
+    case productCreationAIEntryPointTapped = "product_creation_ai_entry_point_tapped"
+    case productCreationAIProductNameContinueTapped = "product_creation_ai_product_name_continue_button_tapped"
+    case productCreationAIToneSelected = "product_creation_ai_tone_selected"
+    case productCreationAIGenerateDetailsTapped = "product_creation_ai_generate_details_tapped"
+    case productCreationAIGenerateProductDetailsSuccess = "product_creation_ai_generate_product_details_success"
+    case productCreationAIGenerateProductDetailsFailed = "product_creation_ai_generate_product_details_failed"
+    case productCreationAISaveAsDraftButtonTapped = "product_creation_ai_save_as_draft_button_tapped"
+    case productCreationAISaveAsDraftSuccess = "product_creation_ai_save_as_draft_success"
+    case productCreationAISaveAsDraftFailed = "product_creation_ai_save_as_draft_failed"
+
     // MARK: Remote Request Events
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"

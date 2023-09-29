@@ -30,6 +30,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private(set) var productName: String = ""
     private(set) var productFeatures: String = ""
     private(set) var productDescription: String?
+    private var isFirstAttemptGeneratingDetails: Bool
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
@@ -43,6 +44,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
+        isFirstAttemptGeneratingDetails = true
     }
 
     func onAppear() {
@@ -55,8 +57,10 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onProductFeaturesAdded(features: String) {
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails))
         productFeatures = features
         currentStep = .preview
+        isFirstAttemptGeneratingDetails = false
     }
 
     func didCreateProduct(_ product: Product) {

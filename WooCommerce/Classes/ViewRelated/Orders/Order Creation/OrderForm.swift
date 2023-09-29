@@ -150,6 +150,7 @@ struct OrderForm: View {
                                     switch viewModel.taxRateRowAction {
                                     case .storedTaxRateSheet:
                                         shouldShowStoredTaxRateSheet = true
+                                        viewModel.onStoredTaxRateBottomSheetAppear()
                                     case .taxSelector:
                                         shouldShowNewTaxRateSelector = true
                                     }
@@ -244,6 +245,7 @@ struct OrderForm: View {
             }
 
             Button {
+                viewModel.onSetNewTaxRateFromBottomSheetTapped()
                 shouldShowStoredTaxRateSheet = false
                 shouldShowNewTaxRateSelector = true
             } label: {
@@ -261,7 +263,7 @@ struct OrderForm: View {
             .padding()
 
             Button {
-                viewModel.forgetTaxRate()
+                viewModel.onClearAddressFromBottomSheetTapped()
                 shouldShowStoredTaxRateSheet = false
             } label: {
                 Label {

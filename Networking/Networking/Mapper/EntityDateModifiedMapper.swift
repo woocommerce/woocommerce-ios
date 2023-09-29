@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: Date Modified for an entity, Wrapped in `data` Key or not
 ///
 struct EntityDateModifiedMapper: Mapper {

@@ -58,6 +58,7 @@ public class WooPaymentsDepositService {
                 depositInterval: depositsOverview.account.depositsSchedule.interval,
                 pendingBalanceAmount: balanceAmount(from: pendingBalance),
                 pendingDepositsCount: pendingBalance?.depositsCount ?? 0,
+                pendingDepositDays: depositsOverview.account.depositsSchedule.delayDays,
                 nextDeposit: nextDepositForView(from: nextDeposit),
                 lastDeposit: lastDepositForView(from: lastDeposit),
                 availableBalance: balanceAmount(from: availableBalance))

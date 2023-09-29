@@ -122,6 +122,7 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             depositInterval: .daily,
             pendingBalanceAmount: 1000.0,
             pendingDepositsCount: 5,
+            pendingDepositDays: 2,
             nextDeposit: WooPaymentsDepositsOverviewByCurrency.NextDeposit(
                 amount: 250.0,
                 date: Date(),

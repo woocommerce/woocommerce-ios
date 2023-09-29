@@ -53,8 +53,7 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     }
 
     private func balanceTypeHintText() -> String {
-        //TODO: use the number from the API, not just 7
-        String(format: Localization.balanceTypeHint, 7)
+        String(format: Localization.balanceTypeHint, overview.pendingDepositDays)
     }
 
     private func pendingFundsDepositsSummaryText() -> String {

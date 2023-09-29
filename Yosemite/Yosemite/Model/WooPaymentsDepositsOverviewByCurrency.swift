@@ -8,6 +8,7 @@ public struct WooPaymentsDepositsOverviewByCurrency {
     public let depositInterval: WooPaymentsDepositInterval
     public let pendingBalanceAmount: NSDecimalNumber
     public let pendingDepositsCount: Int
+    public let pendingDepositDays: Int
     public let nextDeposit: NextDeposit?
     public let lastDeposit: LastDeposit?
     public let availableBalance: NSDecimalNumber
@@ -39,6 +40,7 @@ public struct WooPaymentsDepositsOverviewByCurrency {
                 depositInterval: WooPaymentsDepositInterval,
                 pendingBalanceAmount: NSDecimalNumber,
                 pendingDepositsCount: Int,
+                pendingDepositDays: Int,
                 nextDeposit: NextDeposit?,
                 lastDeposit: LastDeposit?,
                 availableBalance: NSDecimalNumber) {
@@ -47,6 +49,7 @@ public struct WooPaymentsDepositsOverviewByCurrency {
         self.depositInterval = depositInterval
         self.pendingBalanceAmount = pendingBalanceAmount
         self.pendingDepositsCount = pendingDepositsCount
+        self.pendingDepositDays = pendingDepositDays
         self.nextDeposit = nextDeposit
         self.lastDeposit = lastDeposit
         self.availableBalance = availableBalance

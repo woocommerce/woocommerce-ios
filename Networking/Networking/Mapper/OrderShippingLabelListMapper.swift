@@ -30,13 +30,13 @@ struct OrderShippingLabelListMapper: Mapper {
             .orderID: orderID
         ]
 
-        let data: OrderShippingLabelListData = try {
-            if hasDataEnvelope(in: response) {
-                return try decoder.decode(Envelope<OrderShippingLabelListData>.self, from: response).data
-            } else {
-                return try decoder.decode(OrderShippingLabelListData.self, from: response)
-            }
-        }()
+        let data: OrderShippingLabelListData
+        if hasDataEnvelope(in: response) {
+            data = try decoder.decode(Envelope<OrderShippingLabelListData>.self, from: response).data
+        } else {
+            data = try decoder.decode(OrderShippingLabelListData.self, from: response)
+        }
+
         return OrderShippingLabelListResponse(shippingLabels: data.shippingLabels, settings: data.settings)
     }
 }

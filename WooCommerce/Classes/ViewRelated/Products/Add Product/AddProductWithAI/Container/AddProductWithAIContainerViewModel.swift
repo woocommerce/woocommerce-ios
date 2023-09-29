@@ -24,7 +24,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let source: AddProductCoordinator.Source
 
     var canBeDismissed: Bool {
-        productName.isEmpty && productFeatures.isEmpty && productDescription == nil
+        currentStep == .productName && addProductNameViewModel.productName == nil
     }
 
     private let analytics: Analytics
@@ -34,6 +34,10 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private(set) var productName: String = ""
     private(set) var productFeatures: String = ""
     private(set) var productDescription: String?
+
+    private(set) lazy var addProductNameViewModel: AddProductNameWithAIViewModel = {
+        .init(siteID: siteID)
+    }()
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 

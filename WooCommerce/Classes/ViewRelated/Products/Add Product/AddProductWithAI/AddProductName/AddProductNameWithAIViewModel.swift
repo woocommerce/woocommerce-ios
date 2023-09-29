@@ -6,31 +6,24 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     @Published var productNameContent: String
 
     let siteID: Int64
-    private let onUsePackagePhoto: (String?) -> Void
-    private let onContinueWithProductName: (String) -> Void
 
-    private var productName: String? {
+    var productName: String? {
         guard productNameContent.isNotEmpty else {
             return nil
         }
         return productNameContent
     }
 
-    init(siteID: Int64,
-         initialName: String = "",
-         onUsePackagePhoto: @escaping (String?) -> Void,
-         onContinueWithProductName: @escaping (String) -> Void) {
+    init(siteID: Int64) {
         self.siteID = siteID
-        self.onUsePackagePhoto = onUsePackagePhoto
-        self.onContinueWithProductName = onContinueWithProductName
-        self.productNameContent = initialName
+        self.productNameContent = ""
     }
 
     func didTapUsePackagePhoto() {
-        onUsePackagePhoto(productName)
+        // Analytics
     }
 
     func didTapContinue() {
-        onContinueWithProductName(productNameContent)
+        // Analytics
     }
 }

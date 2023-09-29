@@ -77,14 +77,13 @@ struct AddProductWithAIContainerView: View {
 
             switch viewModel.currentStep {
             case .productName:
-                AddProductNameWithAIView(viewModel: .init(siteID: viewModel.siteID,
-                                                          initialName: viewModel.productName,
-                                                          onUsePackagePhoto: onUsePackagePhoto,
-                                                          onContinueWithProductName: { name in
+                AddProductNameWithAIView(viewModel: viewModel.addProductNameViewModel,
+                                         onUsePackagePhoto: onUsePackagePhoto,
+                                         onContinueWithProductName: { name in
                     withAnimation {
                         viewModel.onContinueWithProductName(name: name)
                     }
-                }))
+                })
             case .aboutProduct:
                 AddProductFeaturesView(viewModel: .init(siteID: viewModel.siteID,
                                                         productName: viewModel.productName,

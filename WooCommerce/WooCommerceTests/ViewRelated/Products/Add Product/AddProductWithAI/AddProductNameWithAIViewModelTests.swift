@@ -52,4 +52,15 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
         XCTAssertEqual(eventProperties["has_input_name"] as? Bool, true)
         XCTAssertEqual(eventProperties["source"] as? String, "product_creation_ai")
     }
+
+    func test_didTapContinue_tracks_continue_tapped_event() throws {
+        //  Given
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+
+        // When
+        viewModel.didTapContinue()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_product_name_continue_button_tapped"))
+    }
 }

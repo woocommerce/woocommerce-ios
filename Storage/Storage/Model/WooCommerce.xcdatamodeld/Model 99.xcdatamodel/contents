@@ -96,6 +96,7 @@
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>
         <attribute name="value" attributeType="String"/>
+        <relationship name="productBundleItem" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductBundleItem" inverseName="defaultVariationAttributes" inverseEntity="ProductBundleItem"/>
         <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="attributes" inverseEntity="ProductVariation"/>
     </entity>
     <entity name="InboxAction" representedClassName="InboxAction" syncable="YES">
@@ -500,15 +501,19 @@
         <relationship name="attribute" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductAttribute" inverseName="terms" inverseEntity="ProductAttribute"/>
     </entity>
     <entity name="ProductBundleItem" representedClassName="ProductBundleItem" syncable="YES">
+        <attribute name="allowedVariations" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="bundledItemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="defaultQuantity" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="isOptional" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="maxQuantity" optional="YES" attributeType="Decimal" defaultValueString="0"/>
         <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="minQuantity" attributeType="Decimal" defaultValueString="0"/>
+        <attribute name="overridesDefaultVariationAttributes" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="overridesVariations" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="stockStatus" attributeType="String" defaultValueString=""/>
         <attribute name="title" attributeType="String" defaultValueString=""/>
+        <relationship name="defaultVariationAttributes" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="GenericAttribute" inverseName="productBundleItem" inverseEntity="GenericAttribute"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="bundledItems" inverseEntity="Product"/>
     </entity>
     <entity name="ProductCategory" representedClassName="ProductCategory" syncable="YES">

@@ -21,7 +21,7 @@ struct WooPaymentsDepositsOverviewView: View {
             } label: {
                 HStack {
                     Image(systemName: "info.circle")
-                    Text("Learn more about when you'll receive your funds")
+                    Text(Localization.learnMoreButtonText)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .font(.footnote)
                         .multilineTextAlignment(.leading)
@@ -31,6 +31,15 @@ struct WooPaymentsDepositsOverviewView: View {
 
             Spacer()
         }
+    }
+}
+
+@available(iOS 16.0, *)
+private extension WooPaymentsDepositsOverviewView {
+    enum Localization {
+        static let learnMoreButtonText = NSLocalizedString(
+            "Learn more about when you'll receive your funds",
+            comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
     }
 }
 

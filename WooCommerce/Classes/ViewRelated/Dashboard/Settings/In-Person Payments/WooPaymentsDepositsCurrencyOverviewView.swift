@@ -13,12 +13,12 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
         VStack {
             Grid(alignment: .leading) {
                 GridRow {
-                    AccountSummaryItem(title: "Available funds",
+                    AccountSummaryItem(title: Localization.availableFunds,
                                        amount: viewModel.availableBalance,
                                        footer: "")
-                    AccountSummaryItem(title: "Pending funds",
+                    AccountSummaryItem(title: Localization.pendingFunds,
                                        amount: viewModel.pendingBalance,
-                                       footer: "\(viewModel.overview.pendingDepositsCount) deposits")
+                                       footer: viewModel.pendingFundsDepositsSummary)
                 }
                 Divider()
 
@@ -32,7 +32,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
             }
             .padding(.vertical)
 
-            Text("DEPOSITS")
+            Text(Localization.depositsHeader.localizedUppercase)
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -40,11 +40,11 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                                 GridItem(alignment: .leading),
                                 GridItem(alignment: .trailing)],
                       spacing: 16) {
-                Text("Next")
+                Text(Localization.nextDepositRowTitle)
                 Text(viewModel.nextDepositDate)
                 Text(viewModel.nextDepositAmount)
 
-                Text("Paid")
+                Text(Localization.paidDepositRowTitle)
                     .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
                 Text(viewModel.lastDepositDate)
                     .foregroundColor(.secondary)
@@ -70,7 +70,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 struct AccountSummaryItem: View {
     let title: String
     let amount: String
-    let footer: String
+    let footer: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -81,12 +81,35 @@ struct AccountSummaryItem: View {
                 .font(.title2)
                 .fontWeight(.bold)
 
-            Text(footer)
+            Text(footer ?? "")
                 .font(.footnote)
                 .foregroundColor(.gray)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical)
+    }
+}
+
+@available(iOS 16.0, *)
+private extension WooPaymentsDepositsCurrencyOverviewView {
+    enum Localization {
+        static let availableFunds = NSLocalizedString(
+            "Available funds",
+            comment: "Title for available funds overview in WooPayments Deposits view. " +
+            "This shows the balance which can be paid out.")
+        static let pendingFunds = NSLocalizedString(
+            "Pending funds",
+            comment: "Title for pending funds overview in WooPayments Deposits view. " +
+            "This shows the balance which will be made available for pay out later.")
+        static let depositsHeader = NSLocalizedString(
+            "Deposits",
+            comment: "Section header for the deposits list in the WooPayments Deposits overview")
+        static let nextDepositRowTitle = NSLocalizedString(
+            "Next",
+            comment: "Row title for the next deposit in the WooPayments Deposits overview")
+        static let paidDepositRowTitle = NSLocalizedString(
+            "Paid",
+            comment: "Row title for the last paid deposit in the WooPayments Deposits overview")
     }
 }
 
@@ -115,6 +138,5 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
 
         return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
-//            .frame(width: 400, height: 400)
     }
 }

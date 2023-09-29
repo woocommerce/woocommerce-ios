@@ -147,16 +147,36 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(retrieveTaxRatesCallCount, 2)
     }
 
-    func test_onRowSelected_then_tracks_event() {
+    func test_onRowSelected_with_parameter_false_then_tracks_event() throws {
         // Given
         let analytics = MockAnalyticsProvider()
+        let storeSelectedTaxRate = false
 
         // When
         let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
-        viewModel.onRowSelected(with: 1, storeSelectedTaxRate: false)
+        viewModel.onRowSelected(with: 1, storeSelectedTaxRate: storeSelectedTaxRate)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorTaxRateTapped.rawValue)
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first)
+        XCTAssertEqual(properties["auto_tax_rate_enabled"] as? Bool, storeSelectedTaxRate)
+    }
+
+    func test_onRowSelected_with_parameter_true_then_tracks_event() throws {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let storeSelectedTaxRate = true
+
+        // When
+        let viewModel = NewTaxRateSelectorViewModel(siteID: sampleSiteID, onTaxRateSelected: { _ in }, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onRowSelected(with: 1, storeSelectedTaxRate: storeSelectedTaxRate)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.taxRateSelectorTaxRateTapped.rawValue)
+
+        let properties = try XCTUnwrap(analytics.receivedProperties.first)
+        XCTAssertEqual(properties["auto_tax_rate_enabled"] as? Bool, storeSelectedTaxRate)
     }
 
     func test_onRowSelected_when_storeSelectedTaxRate_is_true_then_stores_tax_rate_id() {

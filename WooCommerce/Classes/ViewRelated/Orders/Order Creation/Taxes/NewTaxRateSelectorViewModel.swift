@@ -85,7 +85,7 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
     }
 
     func onRowSelected(with index: Int, storeSelectedTaxRate: Bool) {
-        analytics.track(.taxRateSelectorTaxRateTapped)
+        analytics.track(.taxRateSelectorTaxRateTapped, withProperties: ["auto_tax_rate_enabled": storeSelectedTaxRate])
 
         guard let taxRateViewModel = taxRateViewModels[safe: index],
               let taxRate = resultsController.fetchedObjects.first(where: { $0.id == taxRateViewModel.id }) else {

@@ -213,10 +213,14 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
                            shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
                            depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]? = nil) {
-        var composingSections: [Section?] = [
-            depositsSection(from: depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels),
-            actionsSection
-            ]
+        var composingSections: [Section?] = [actionsSection]
+
+        let depositsOverviewViewModels = depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels
+        if #available(iOS 16.0, *),
+           featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+           depositsOverviewViewModels.isNotEmpty {
+            composingSections.insert(depositsSection(from: depositsOverviewViewModels), at: 0)
+        }
 
         if isEligibleForTapToPayOnIPhone ?? viewModel.isEligibleForTapToPayOnIPhone {
             composingSections.append(tapToPayOnIPhoneSection(
@@ -564,11 +568,17 @@ extension InPersonPaymentsMenuViewController {
 
     func depositOverviewWasPressed() {
         if #available(iOS 16.0, *) {
-            let depositOverviewsView = WooPaymentsDepositsOverviewView(viewModels: viewModel.depositsOverviewViewModels)
+            let depositOverviewsView = NavigationView {
+                WooPaymentsDepositsOverviewView(viewModels: viewModel.depositsOverviewViewModels)
+                    .navigationBarItems(leading: Button(Localization.done, action: { [weak self] in
+                        self?.dismiss(animated: true)
+                    }))
+                    .wooNavigationBarStyle()
+            }
             let depositOverviewHost = UIHostingController(rootView: depositOverviewsView)
             present(depositOverviewHost, animated: true)
         } else {
-            //TODO: handle iOS 15 – ideally just make sure we've not shown the row!
+            DDLogError("Deposits overview unexpectedly tapped on iOS 15 device – this is unsupported.")
         }
     }
 
@@ -754,6 +764,10 @@ private extension InPersonPaymentsMenuViewController {
                      This is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
         )
+
+        static let done = NSLocalizedString(
+            "Done",
+            comment: "Title for a done button in the navigation bar")
     }
 }
 

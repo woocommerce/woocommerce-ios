@@ -99,6 +99,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .giftCardInOrderForm:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         default:
             return true
         }

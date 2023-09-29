@@ -29,6 +29,7 @@ struct SinglePackageHazmatDeclaration: View {
 
                     Button(action: {
                         isShowingHazmatSelection.toggle()
+                        viewModel.hazmatCategorySelectorOpened()
                     }, label: {
                         HStack(spacing: 0) {
                             VStack(alignment: .leading) {

@@ -15,7 +15,6 @@ final class AddProductFromImageCoordinator: Coordinator {
     private let siteID: Int64
     private let source: AddProductCoordinator.Source
     private let productName: String?
-    private let productImageUploader: ProductImageUploaderProtocol
     private let productImageLoader: ProductUIImageLoader
 
     /// Invoked when AI generates product data from image
@@ -25,14 +24,12 @@ final class AddProductFromImageCoordinator: Coordinator {
          source: AddProductCoordinator.Source,
          productName: String?,
          sourceNavigationController: UINavigationController,
-         productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          productImageLoader: ProductUIImageLoader = DefaultProductUIImageLoader(phAssetImageLoaderProvider: { PHImageManager.default() }),
          onAIGenerationCompleted: @escaping (AddProductFromImageData?) -> Void) {
         self.siteID = siteID
         self.source = source
         self.productName = productName
         self.navigationController = sourceNavigationController
-        self.productImageUploader = productImageUploader
         self.productImageLoader = productImageLoader
         self.onAIGenerationCompleted = onAIGenerationCompleted
     }

@@ -1576,6 +1576,27 @@ extension Networking.ProductSubscription {
     }
 }
 
+extension Networking.ProductTag {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        tagID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        slug: CopiableProp<String> = .copy
+    ) -> Networking.ProductTag {
+        let siteID = siteID ?? self.siteID
+        let tagID = tagID ?? self.tagID
+        let name = name ?? self.name
+        let slug = slug ?? self.slug
+
+        return Networking.ProductTag(
+            siteID: siteID,
+            tagID: tagID,
+            name: name,
+            slug: slug
+        )
+    }
+}
+
 extension Networking.ProductVariation {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

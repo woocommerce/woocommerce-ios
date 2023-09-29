@@ -94,11 +94,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .refreshOrderBeforeInPersonPayment:
             return true
         case .manualTaxesInOrderM3:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productCreationAI:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return true
         case .giftCardInOrderForm:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return true
         default:
             return true
         }

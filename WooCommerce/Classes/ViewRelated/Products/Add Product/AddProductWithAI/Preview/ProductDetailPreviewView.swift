@@ -62,38 +62,30 @@ struct ProductDetailPreviewView: View {
                                            cornerRadius: Layout.cornerRadius)
                     .padding(.bottom, Layout.contentPadding)
 
-                    VStack(spacing: 0) {
+                    VStack(spacing: Layout.separatorHeight) {
                         // Price
                         TitleAndValueDetailRow(title: Localization.price,
                                                value: viewModel.productPrice,
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Inventory
                         TitleAndValueDetailRow(title: Localization.inventory,
                                                value: Localization.inStock,
                                                image: UIImage.inventoryImage,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Categories
                         TitleAndValueDetailRow(title: Localization.categories,
                                                value: viewModel.productCategories,
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Tags
                         TitleAndValueDetailRow(title: Localization.tags,
                                                value: viewModel.productTags,
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Shipping details
                         TitleAndValueDetailRow(title: Localization.shipping,
@@ -101,6 +93,7 @@ struct ProductDetailPreviewView: View {
                                                image: UIImage.shippingImage,
                                                isLoading: viewModel.isGeneratingDetails)
                     }
+                    .background(viewModel.isGeneratingDetails ? Color.clear : Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
                 }
 
@@ -225,6 +218,7 @@ fileprivate extension ProductDetailPreviewView {
         static let contentPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let detailVerticalSpacing: CGFloat = 4
+        static let separatorHeight: CGFloat = 0.5
     }
     enum Constants {
         static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"

@@ -142,6 +142,8 @@ private extension AddProductFeaturesView {
 
 struct AddProductDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductFeaturesView(viewModel: .init(siteID: 123, productName: "iPhone 15", onCompletion: { _ in }))
+        AddProductFeaturesView(viewModel: .init(siteID: 123,
+                                                productName: "iPhone 15",
+                                                onCompletion: { _ in }))
     }
 }

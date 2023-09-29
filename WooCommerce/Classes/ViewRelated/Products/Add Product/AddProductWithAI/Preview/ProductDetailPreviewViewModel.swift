@@ -21,6 +21,9 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productShippingDetails: String?
     @Published private(set) var errorState: ErrorState = .none
 
+    /// Whether feedback banner for the generated text should be displayed.
+    @Published private(set) var shouldShowFeedbackView = false
+
     private let productFeatures: String?
 
     private let siteID: Int64
@@ -90,6 +93,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func generateProductDetails() async {
+        shouldShowFeedbackView = false
         isGeneratingDetails = true
         errorState = .none
         do {
@@ -99,7 +103,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
                                                     tone: aiTone)
             generatedProduct = product
             isGeneratingDetails = false
+            shouldShowFeedbackView = true
+            analytics.track(event: .ProductCreationAI.generateProductDetailsSuccess())
         } catch {
+            analytics.track(event: .ProductCreationAI.generateProductDetailsFailed(error: error))
             DDLogError("⛔️ Error generating product with AI: \(error)")
             errorState = .generatingProduct
         }
@@ -107,6 +114,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @MainActor
     func saveProductAsDraft() async {
+        analytics.track(event: .ProductCreationAI.saveAsDraftButtonTapped())
         guard let generatedProduct else {
             return
         }
@@ -114,16 +122,21 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isSavingProduct = true
         do {
             let newProduct = try await saveProductRemotely(product: generatedProduct)
+            analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(newProduct)
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
+            analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
             errorState = .savingProduct
         }
         isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
-        // TODO
+        analytics.track(event: .AIFeedback.feedbackSent(source: .productCreation,
+                                                        isUseful: vote == .up))
+
+        shouldShowFeedbackView = false
     }
 }
 

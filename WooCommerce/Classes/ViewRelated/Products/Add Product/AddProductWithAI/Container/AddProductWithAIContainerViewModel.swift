@@ -23,6 +23,10 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     let siteID: Int64
     let source: AddProductCoordinator.Source
 
+    var canBeDismissed: Bool {
+        currentStep == .productName && addProductNameViewModel.productName == nil
+    }
+
     private let analytics: Analytics
     private let onCancel: () -> Void
     private let completionHandler: (Product) -> Void
@@ -30,6 +34,11 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     private(set) var productName: String = ""
     private(set) var productFeatures: String = ""
     private(set) var productDescription: String?
+    private var isFirstAttemptGeneratingDetails: Bool
+
+    private(set) lazy var addProductNameViewModel: AddProductNameWithAIViewModel = {
+        .init(siteID: siteID)
+    }()
 
     @Published private(set) var currentStep: AddProductWithAIStep = .productName
 
@@ -43,6 +52,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         self.analytics = analytics
         self.onCancel = onCancel
         self.completionHandler = onCompletion
+        isFirstAttemptGeneratingDetails = true
     }
 
     func onAppear() {
@@ -55,8 +65,10 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
     }
 
     func onProductFeaturesAdded(features: String) {
+        analytics.track(event: .ProductCreationAI.generateDetailsTapped(isFirstAttempt: isFirstAttemptGeneratingDetails))
         productFeatures = features
         currentStep = .preview
+        isFirstAttemptGeneratingDetails = false
     }
 
     func didCreateProduct(_ product: Product) {
@@ -67,6 +79,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         guard let data else {
             return
         }
+        addProductNameViewModel.productNameContent = data.name
         productName = data.name
         productDescription = data.description
         productFeatures = data.description

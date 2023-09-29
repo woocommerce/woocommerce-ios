@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: `Coupon`
 ///
 struct CouponMapper: Mapper {

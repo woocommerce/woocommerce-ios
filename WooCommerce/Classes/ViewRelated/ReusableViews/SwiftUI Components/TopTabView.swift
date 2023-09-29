@@ -26,7 +26,7 @@ struct TopTabView: View {
                             VStack {
                                 Text(tabs[index].name)
                                     .font(.headline)
-                                    .foregroundColor(selectedTab == index ? .purple : .primary)
+                                    .foregroundColor(selectedTab == index ? Colors.selected : .primary)
                                     .id(index)
                                     .onTapGesture {
                                         withAnimation {
@@ -54,7 +54,7 @@ struct TopTabView: View {
                         Rectangle()
                             .frame(width: selectedTabUnderlineWidth(),
                                    height: Layout.selectedTabIndicatorHeight)
-                            .foregroundColor(.purple)
+                            .foregroundColor(Colors.selected)
                             .offset(x: underlineOffset),
                         alignment: .bottomLeading
                     )
@@ -85,6 +85,10 @@ struct TopTabView: View {
     private enum Layout {
         static let tabPadding: CGFloat = 10
         static let selectedTabIndicatorHeight: CGFloat = 2
+    }
+
+    private enum Colors {
+        static let selected: Color = .withColorStudio(name: .wooCommercePurple, shade: .shade50)
     }
 }
 

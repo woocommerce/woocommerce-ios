@@ -64,8 +64,6 @@ struct TopTabView: View {
 
             // Display Content for selected tab
             tabs[safe: selectedTab]?.view
-
-            Spacer()
         }
     }
 

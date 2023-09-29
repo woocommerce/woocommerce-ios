@@ -15,8 +15,9 @@ struct WooPaymentsDepositsOverviewView: View {
     var body: some View {
         VStack {
             TopTabView(tabs: tabs)
+
             Button {
-                // no-op
+                // TODO: Open a webview here: https://woocommerce.com/document/woopayments/deposits/deposit-schedule/
             } label: {
                 HStack {
                     Image(systemName: "info.circle")
@@ -26,7 +27,9 @@ struct WooPaymentsDepositsOverviewView: View {
                         .multilineTextAlignment(.leading)
                 }
             }
-            .padding(.vertical, 8)
+            .padding()
+
+            Spacer()
         }
     }
 }

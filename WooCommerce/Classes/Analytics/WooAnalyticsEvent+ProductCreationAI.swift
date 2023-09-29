@@ -24,7 +24,7 @@ extension WooAnalyticsEvent {
 
         static func aiToneSelected(_ tone: AIToneVoice) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productCreationAIToneSelected,
-                              properties: [Key.value.rawValue: tone.rawValue])
+                              properties: [Key.value.rawValue: tone.rawValue.lowercased()])
         }
 
         static func generateDetailsTapped(isFirstAttempt: Bool) -> WooAnalyticsEvent {

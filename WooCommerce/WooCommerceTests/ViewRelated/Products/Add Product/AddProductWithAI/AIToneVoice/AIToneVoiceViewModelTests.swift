@@ -108,6 +108,6 @@ final class AIToneVoiceViewModelTests: XCTestCase {
 
         let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_creation_ai_tone_selected"}))
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
-        XCTAssertEqual(eventProperties["value"] as? String, "Flowery")
+        XCTAssertEqual(eventProperties["value"] as? String, "flowery")
     }
 }

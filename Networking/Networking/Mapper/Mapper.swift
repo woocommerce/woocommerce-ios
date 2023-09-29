@@ -30,7 +30,7 @@ extension Mapper where Output: Decodable {
         return try extract(from: response, using: decoder)
     }
 
-    func extract(from response: Data, using decoder: JSONDecoder) throws -> Output {
+    func extract(from response: Data, using decoder: JSONDecoder = JSONDecoder()) throws -> Output {
         if hasDataEnvelope(in: response) {
             return try decoder.decode(Envelope<Output>.self, from: response).data
         } else {

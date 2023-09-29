@@ -1,1 +1,1 @@
-typealias TaxClassListMapper = GenericMapper<[TaxClass]>
+typealias TaxClassListMapper = SiteIDMapper<[TaxClass]>

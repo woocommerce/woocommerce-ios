@@ -1,1 +1,1 @@
-typealias SitePluginsMapper = GenericMapper<[SitePlugin]>
+typealias SitePluginsMapper = SiteIDMapper<[SitePlugin]>

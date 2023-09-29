@@ -1,1 +1,1 @@
-typealias SubscriptionMapper = GenericMapper<Subscription>
+typealias SubscriptionMapper = SiteIDMapper<Subscription>

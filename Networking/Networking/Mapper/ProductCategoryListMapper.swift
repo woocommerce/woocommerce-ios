@@ -1,1 +1,1 @@
-typealias ProductCategoryListMapper = GenericMapper<[ProductCategory]>
+typealias ProductCategoryListMapper = SiteIDMapper<[ProductCategory]>

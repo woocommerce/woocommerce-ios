@@ -1,1 +1,1 @@
-typealias TaxRateListMapper = GenericMapper<[TaxRate]>
+typealias TaxRateListMapper = SiteIDMapper<[TaxRate]>

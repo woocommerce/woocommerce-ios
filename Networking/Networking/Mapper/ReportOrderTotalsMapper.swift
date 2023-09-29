@@ -1,1 +1,1 @@
-typealias ReportOrderTotalsMapper = GenericMapper<[OrderStatus]>
+typealias ReportOrderTotalsMapper = SiteIDMapper<[OrderStatus]>

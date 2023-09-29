@@ -39,3 +39,20 @@ extension Mapper where Output: Decodable {
         }
     }
 }
+
+/// A `Mapper` implementation for resources using a site id and default date formatter
+struct SiteIDMapper<Resource: Decodable>: Mapper {
+
+    /// Site Identifier associated to the `Resource`s that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the endpoints.
+    let siteID: Int64
+
+    func map(response: Data) throws -> Resource {
+        try extract(
+            from: response,
+            siteID: siteID,
+            dateFormatter: DateFormatter.Defaults.dateTimeFormatter
+        )
+    }
+}

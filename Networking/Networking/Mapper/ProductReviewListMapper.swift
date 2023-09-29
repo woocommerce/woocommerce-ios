@@ -1,1 +1,1 @@
-typealias ProductReviewListMapper = GenericMapper<[ProductReview]>
+typealias ProductReviewListMapper = SiteIDMapper<[ProductReview]>

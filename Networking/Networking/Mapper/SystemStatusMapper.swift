@@ -1,1 +1,1 @@
-typealias SystemStatusMapper = GenericMapper<SystemStatus>
+typealias SystemStatusMapper = SiteIDMapper<SystemStatus>

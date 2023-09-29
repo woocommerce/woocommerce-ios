@@ -1,1 +1,1 @@
-typealias AddOnGroupMapper = GenericMapper<[AddOnGroup]>
+typealias AddOnGroupMapper = SiteIDMapper<[AddOnGroup]>

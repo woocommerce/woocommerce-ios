@@ -1,1 +1,1 @@
-typealias CustomerMapper = GenericMapper<Customer>
+typealias CustomerMapper = SiteIDMapper<Customer>

@@ -1,1 +1,1 @@
-typealias ProductAttributeTermListMapper = GenericMapper<[ProductAttributeTerm]>
+typealias ProductAttributeTermListMapper = SiteIDMapper<[ProductAttributeTerm]>

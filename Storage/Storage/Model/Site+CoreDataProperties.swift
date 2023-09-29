@@ -15,6 +15,7 @@ extension Site {
     @NSManaged public var loginURL: String?
     @NSManaged public var frameNonce: String?
     @NSManaged public var plan: String?
+    @NSManaged public var isAIAssitantFeatureActive: Bool
     @NSManaged public var isWooCommerceActive: NSNumber?
     @NSManaged public var isWordPressStore: NSNumber?
     @NSManaged public var timezone: String?

@@ -395,6 +395,9 @@ public enum WooAnalyticsStat: String {
     case orderCreationProductSelectorClearSelectionButtonTapped = "order_creation_product_selector_clear_selection_button_tapped"
     case orderCreationProductSelectorSearchTriggered = "order_creation_product_selector_search_triggered"
     case orderCreationSetNewTaxRateTapped = "order_creation_set_new_tax_rate_tapped"
+    case orderCreationStoredTaxRateBottomSheetAppear = "tax_rate_auto_tax_rate_bottom_sheet_displayed"
+    case orderCreationSetNewTaxRateFromBottomSheetTapped = "tax_rate_auto_tax_rate_set_new_rate_for_order_tapped"
+    case orderCreationClearAddressFromBottomSheetTapped = "tax_rate_auto_tax_rate_clear_address_tapped"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
     case orderEditButtonTapped = "order_edit_button_tapped"
@@ -430,6 +433,9 @@ public enum WooAnalyticsStat: String {
     case orderShippingMethodAdd = "order_shipping_method_add"
     case orderShippingMethodRemove = "order_shipping_method_remove"
     case orderSyncFailed = "order_sync_failed"
+    case orderFormAddGiftCardCTAShown = "order_form_add_gift_card_cta_shown"
+    case orderFormAddGiftCardCTATapped = "order_form_add_gift_card_cta_tapped"
+    case orderFormGiftCardSet = "order_form_gift_card_set"
     case collectPaymentTapped = "payments_flow_order_collect_payment_tapped"
     case orderViewCustomFieldsTapped = "order_view_custom_fields_tapped"
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
@@ -464,6 +470,12 @@ public enum WooAnalyticsStat: String {
     case shippingLabelReprintRequested = "shipping_label_print_requested"
     case shipmentTrackingMenuAction = "shipment_tracking_menu_action"
     case shippingLabelsAPIRequest = "shipping_label_api_request"
+
+    // MARK: Shipping Label Hazmat Events
+    //
+    case containsHazmatChecked = "contains_hazmat_checked"
+    case hazmatCategorySelectorOpened = "hazmat_category_selector_opened"
+    case hazmatCategorySelected = "hazmat_category_selected"
 
     // MARK: Shipping Labels Creation Events
     //
@@ -602,8 +614,6 @@ public enum WooAnalyticsStat: String {
     case addProductSaveAsDraftTapped = "add_product_save_as_draft_tapped"
     case addProductSuccess = "add_product_success"
     case addProductFailed = "add_product_failed"
-    // Exposure event for the A/B experiment.
-    case addProductFromImageEligible = "add_product_from_image_eligible"
 
     // MARK: Add product from image events
     case addProductFromImageDisplayed = "add_product_from_image_displayed"
@@ -758,6 +768,7 @@ public enum WooAnalyticsStat: String {
     case productFilterListShowProductsButtonTapped = "product_filter_list_show_products_button_tapped"
     case productFilterListClearMenuButtonTapped = "product_filter_list_clear_menu_button_tapped"
     case productFilterListDismissButtonTapped = "product_filter_list_dismiss_button_tapped"
+    case productFilterListExploreButtonTapped = "product_filter_list_explore_button_tapped"
 
     // MARK: Readonly Product Variations Events
     //
@@ -801,6 +812,28 @@ public enum WooAnalyticsStat: String {
     // MARK: Product AI Feedback
     //
     case productAIFeedback = "product_ai_feedback"
+
+    // MARK: Product name AI
+    //
+    case productNameAIEntryPointTapped = "product_name_ai_entry_point_tapped"
+    case productNameAIGenerateButtonTapped = "product_name_ai_generate_button_tapped"
+    case productNameAICopyButtonTapped = "product_name_ai_copy_button_tapped"
+    case productNameAIApplyButtonTapped = "product_name_ai_apply_button_tapped"
+    case productNameAIGenerationSuccess = "product_name_ai_generation_success"
+    case productNameAIGenerationFailed = "product_name_ai_generation_failed"
+
+    // MARK: Product creation AI
+    //
+    case productCreationAIEntryPointDisplayed = "product_creation_ai_entry_point_displayed"
+    case productCreationAIEntryPointTapped = "product_creation_ai_entry_point_tapped"
+    case productCreationAIProductNameContinueTapped = "product_creation_ai_product_name_continue_button_tapped"
+    case productCreationAIToneSelected = "product_creation_ai_tone_selected"
+    case productCreationAIGenerateDetailsTapped = "product_creation_ai_generate_details_tapped"
+    case productCreationAIGenerateProductDetailsSuccess = "product_creation_ai_generate_product_details_success"
+    case productCreationAIGenerateProductDetailsFailed = "product_creation_ai_generate_product_details_failed"
+    case productCreationAISaveAsDraftButtonTapped = "product_creation_ai_save_as_draft_button_tapped"
+    case productCreationAISaveAsDraftSuccess = "product_creation_ai_save_as_draft_success"
+    case productCreationAISaveAsDraftFailed = "product_creation_ai_save_as_draft_failed"
 
     // MARK: Remote Request Events
     //

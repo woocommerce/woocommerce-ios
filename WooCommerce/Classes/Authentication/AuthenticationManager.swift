@@ -111,10 +111,6 @@ class AuthenticationManager: Authentication {
         let source = options[.sourceApplication] as? String
         let annotation = options[.annotation]
 
-        if WordPressAuthenticator.shared.isGoogleAuthUrl(url) {
-            return WordPressAuthenticator.shared.handleGoogleAuthUrl(url, sourceApplication: source, annotation: annotation)
-        }
-
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
@@ -357,9 +353,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
     /// Presents the Signup Epilogue, in the specified NavigationController.
     ///
-    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, service: SocialService?) {
+    func presentSignupEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, socialUser: SocialUser?) {
         // NO-OP: The current WC version does not support Signup. Let SIWA through.
-        guard case .apple = service else {
+        guard case .apple = socialUser?.service else {
             return
         }
 

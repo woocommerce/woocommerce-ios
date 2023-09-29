@@ -265,21 +265,21 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
     func test_it_persists_order_gift_card_in_storage() throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
-        let order = makeOrder().copy(siteID: 3, appliedGiftCards: [giftCard])
+        let order = makeOrder().copy(siteID: 3, orderID: 11, appliedGiftCards: [giftCard])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
 
         // When
         useCase.upsert([order])
 
         // Then
-        let storageGiftCard = try XCTUnwrap(viewStorage.loadOrderGiftCard(siteID: 3, giftCardID: 2))
-        XCTAssertEqual(storageGiftCard.toReadOnly(), giftCard)
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11))
+        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
     }
 
-    func test_it_replaces_existing_order_gift_card_in_storage() throws {
+    func test_it_replaces_existing_order_gift_card_in_storage_for_the_same_order() throws {
         // Given
         let originalGiftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
-        let order = makeOrder().copy(siteID: 3, appliedGiftCards: [originalGiftCard])
+        let order = makeOrder().copy(siteID: 3, orderID: 11, appliedGiftCards: [originalGiftCard])
         let useCase = OrdersUpsertUseCase(storage: viewStorage)
         useCase.upsert([order])
 
@@ -288,8 +288,44 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         useCase.upsert([order.copy(appliedGiftCards: [giftCard])])
 
         // Then
-        let storageGiftCard = try XCTUnwrap(viewStorage.loadOrderGiftCard(siteID: 3, giftCardID: 2))
-        XCTAssertEqual(storageGiftCard.toReadOnly(), giftCard)
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11))
+        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
+    }
+
+    func test_it_does_not_replace_existing_order_gift_card_in_storage_for_a_different_order() throws {
+        // Given
+        let originalGiftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
+        let originalOrder = makeOrder().copy(siteID: 3, orderID: 11, appliedGiftCards: [originalGiftCard])
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([originalOrder])
+
+        // When
+        let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 25)
+        let order = makeOrder().copy(siteID: 3, orderID: 12, appliedGiftCards: [giftCard])
+        useCase.upsert([order])
+
+        // Then
+        let originalStorageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11))
+        XCTAssertEqual(originalStorageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [originalGiftCard])
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 12))
+        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
+    }
+
+    func test_it_allows_multiple_gift_cards_of_the_same_giftCardID_for_the_same_order_in_storage() throws {
+        // Given
+        let giftCard1 = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 25)
+        let giftCard2 = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 5)
+        let order = makeOrder().copy(siteID: 3, orderID: 11, appliedGiftCards: [giftCard1, giftCard2])
+
+        // When
+        let useCase = OrdersUpsertUseCase(storage: viewStorage)
+        useCase.upsert([order])
+
+        // Then
+        let storageOrder = try XCTUnwrap(viewStorage.loadOrder(siteID: 3, orderID: 11))
+        // `appliedGiftCards` is a Set and sorting is required to guarantee the order.
+        XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }.sorted(by: { $0.amount > $1.amount }),
+                       [giftCard1, giftCard2])
     }
 }
 

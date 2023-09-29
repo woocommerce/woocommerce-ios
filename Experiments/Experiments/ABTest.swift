@@ -10,10 +10,6 @@ public enum ABTest: String, Codable, CaseIterable {
     /// Experiment ref: pbxNRc-1QS-p2
     case aaTestLoggedIn = "woocommerceios_explat_aa_test_logged_in_202212_v2"
 
-    /// A/B test for flow to add product from an image.
-    /// Experiment ref: pbxNRc-2MS-p2
-    case addProductFromImage = "woocommerceios_add_product_from_photo_202307"
-
     /// A/A test to make sure there is no bias in the logged out state.
     /// Experiment ref: pbxNRc-1S0-p2
     case aaTestLoggedOut = "woocommerceios_explat_aa_test_logged_out_202212_v2"
@@ -30,8 +26,6 @@ public enum ABTest: String, Codable, CaseIterable {
     public var context: ExperimentContext {
         switch self {
         case .aaTestLoggedIn:
-            return .loggedIn
-        case .addProductFromImage:
             return .loggedIn
         case .aaTestLoggedOut:
             return .loggedOut

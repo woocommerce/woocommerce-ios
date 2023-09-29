@@ -23,7 +23,7 @@ workspace 'WooCommerce.xcworkspace'
 ## =====================================
 ##
 def aztec
-  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+  pod 'WordPress-Editor-iOS', '~> 1.19.9'
 end
 
 def tracks
@@ -83,9 +83,9 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 1.2.0'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', '~> 6.4.0'
-#     pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
-  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: 'trunk'
+  pod 'WordPressAuthenticator', '~> 7.0'
+  # pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => ''
+  # pod 'WordPressAuthenticator', git: 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', branch: ''
   # pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
 
   wordpress_shared
@@ -354,9 +354,7 @@ post_install do |installer|
     end
     target.build_configurations.each do |configuration|
       pod_ios_deployment_target = Gem::Version.new(configuration.build_settings['IPHONEOS_DEPLOYMENT_TARGET'])
-      if pod_ios_deployment_target <= app_ios_deployment_target
-        configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET'
-      end
+      configuration.build_settings.delete 'IPHONEOS_DEPLOYMENT_TARGET' if pod_ios_deployment_target <= app_ios_deployment_target
     end
   end
 

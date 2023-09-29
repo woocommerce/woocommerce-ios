@@ -46,7 +46,13 @@
                       },
                       "plan": {
                           "product_id": 1003,
-                          "product_slug": "value_bundle"
+                          "product_slug": "value_bundle",
+                          "features": {
+                              "active": [
+                                  "akismet",
+                                  "donations"
+                              ]
+                          }
                       },
                       "jetpack": true,
                       "jetpack_connection": true,
@@ -57,7 +63,7 @@
                         "blog_public": 1,
                         "admin_url": "http:\/\/yourwoosite.com/wp-admin/",
                         "login_url": "http:\/\/yourwoosite.com/wp-login.php",
-                        "is_wpcom_store": true,
+                        "is_wpcom_store": false,
                         "woocommerce_is_active": true,
                         "can_blaze": false,
                         "jetpack_version": "8.1.1",

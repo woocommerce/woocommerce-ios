@@ -495,14 +495,17 @@ extension WooAnalyticsEvent {
             static let hasDifferentShippingDetails = "has_different_shipping_details"
             static let orderStatus = "order_status"
             static let productCount = "product_count"
+            static let hasAddOns = "has_addons"
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
             static let hasShippingMethod = "has_shipping_method"
+            static let isGiftCardRemoved = "removed"
             static let errorContext = "error_context"
             static let errorDescription = "error_description"
             static let to = "to"
             static let from = "from"
             static let orderID = "id"
+            static let productTypes = "product_types"
             static let hasMultipleShippingLines = "has_multiple_shipping_lines"
             static let hasMultipleFeeLines = "has_multiple_fee_lines"
             static let itemType = "item_type"
@@ -514,6 +517,7 @@ extension WooAnalyticsEvent {
             static let reason = "reason"
             static let couponsCount = "coupons_count"
             static let type = "type"
+            static let usesGiftCard = "use_gift_card"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -529,14 +533,11 @@ extension WooAnalyticsEvent {
         }
 
         static func orderProductsLoaded(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> WooAnalyticsEvent {
-            let productIDs = order.items.map { $0.productID }
-            let productTypes = productIDs.compactMap { productID in
-                products.first(where: { $0.productID == productID })?.productType.rawValue
-            }.uniqued().joined(separator: ",")
+            let productTypes = productTypes(order: order, products: products)
             let hasAddOns = hasAddOns(order: order, products: products, addOnGroups: addOnGroups)
-            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: ["id": order.orderID,
-                                                                                  "product_types": productTypes,
-                                                                                  "has_addons": hasAddOns])
+            return WooAnalyticsEvent(statName: .orderProductsLoaded, properties: [Keys.orderID: order.orderID,
+                                                                                  Keys.productTypes: productTypes,
+                                                                                  Keys.hasAddOns: hasAddOns])
         }
 
         private static func hasAddOns(order: Order, products: [Product], addOnGroups: [AddOnGroup]) -> Bool {
@@ -556,6 +557,13 @@ extension WooAnalyticsEvent {
                 }
             }
             return false
+        }
+
+        private static func productTypes(order: Order, products: [Product]) -> String {
+            let productIDs = order.items.map { $0.productID }
+            return productIDs.compactMap { productID in
+                products.first(where: { $0.productID == productID })?.productType.rawValue
+            }.uniqued().sorted().joined(separator: ",")
         }
 
         static func orderAddNewFromBarcodeScanningTapped() -> WooAnalyticsEvent {
@@ -693,22 +701,25 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderStatusChange, properties: properties.compactMapValues { $0 })
         }
 
-        static func orderCreateButtonTapped(status: OrderStatusEnum,
+        static func orderCreateButtonTapped(order: Order,
+                                            status: OrderStatusEnum,
                                             productCount: Int,
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
-                                            hasShippingMethod: Bool) -> WooAnalyticsEvent {
+                                            hasShippingMethod: Bool,
+                                            products: [Product]) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
-                Keys.hasShippingMethod: hasShippingMethod
+                Keys.hasShippingMethod: hasShippingMethod,
+                Keys.productTypes: productTypes(order: order, products: products)
             ])
         }
 
-        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64) -> WooAnalyticsEvent {
-            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount]
+        static func orderCreationSuccess(millisecondsSinceSinceOrderAddNew: Int64?, couponsCount: Int64, usesGiftCard: Bool) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [Keys.couponsCount: couponsCount, Keys.usesGiftCard: usesGiftCard]
 
             if let lapseSinceLastOrderAddNew = millisecondsSinceSinceOrderAddNew {
                 properties[GlobalKeys.millisecondsSinceOrderAddNew] = lapseSinceLastOrderAddNew
@@ -717,16 +728,18 @@ extension WooAnalyticsEvent {
             return WooAnalyticsEvent(statName: .orderCreationSuccess, properties: properties)
         }
 
-        static func orderCreationFailed(errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderCreationFailed(usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationFailed, properties: [
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
         }
 
-        static func orderSyncFailed(flow: Flow, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
+        static func orderSyncFailed(flow: Flow, usesGiftCard: Bool, errorContext: String, errorDescription: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderSyncFailed, properties: [
                 Keys.flow: flow.rawValue,
+                Keys.usesGiftCard: usesGiftCard,
                 Keys.errorContext: errorContext,
                 Keys.errorDescription: errorDescription
             ])
@@ -762,6 +775,18 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductSelectorClearSelectionButtonTapped, properties: [
                 Keys.source: productType.rawValue + "_selector"
             ])
+        }
+
+        static func orderFormAddGiftCardCTAShown(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTAShown, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormAddGiftCardCTATapped(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormAddGiftCardCTATapped, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFormGiftCardSet(flow: Flow, isRemoved: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormGiftCardSet, properties: [Keys.flow: flow.rawValue, Keys.isGiftCardRemoved: isRemoved])
         }
 
         /// Tracked when the user taps to collect a payment
@@ -2601,6 +2626,30 @@ extension WooAnalyticsEvent {
 
         static func saveButtonTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .privacyChoicesSaveButtonTapped, properties: [:])
+        }
+    }
+}
+
+// MARK: - Shipping Label Hazmat Declaration
+//
+extension WooAnalyticsEvent {
+    enum ShippingLabelHazmatDeclaration {
+        enum Keys: String {
+            case orderID = "order_id"
+            case category
+        }
+
+        static func hazmatCategorySelectorOpened() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelectorOpened, properties: [:])
+        }
+
+        static func hazmatCategorySelected(orderID: Int64, selectedCategory: ShippingLabelHazmatCategory) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .hazmatCategorySelected, properties: [Keys.orderID.rawValue: orderID,
+                                                                              Keys.category.rawValue: selectedCategory.rawValue])
+        }
+
+        static func containsHazmatChecked() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .containsHazmatChecked, properties: [:])
         }
     }
 }

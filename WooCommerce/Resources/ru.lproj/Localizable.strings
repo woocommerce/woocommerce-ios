@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-21 15:54:22+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -422,6 +422,9 @@ which should be translated separately and considered part of this sentence. */
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "Активировать Jetpack на консоли";
 
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "Активировать плагин";
+
 /* Name of the activation Jetpack plugin step */
 "Activating" = "Активация";
 
@@ -553,8 +556,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "Добавить продукт";
+
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "Добавьте товар и сведения вручную";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "Добавить изображение продукта";
@@ -604,7 +611,8 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Добавьте каждую опцию и нажмите \"Ввод\"";
 
-/* Title for the option to create product manually */
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "Добавить вручную";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -635,8 +643,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "Добавляйте информацию о загружаемых файлах удаленно";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "Добавьте налоговые ставки в консоли. Будут показаны только налоговые ставки с информацией о местоположении.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "Добавьте описание купона.";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "Добавить эту ставку ко всем созданным заказам";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "Добавить в новую упаковку";
@@ -704,6 +718,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "Афганистан";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "Разрешённые к авиаперевозке посылки с этанолом (разрешённые посылки с духами и антисептиками для рук)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -936,6 +953,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "Вы уверены, что хотите изменить тип товара?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "Вы уверены, что хотите навсегда удалить эту рубрику?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "Действительно удалить этот купон?";
@@ -1251,7 +1271,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "Нажимая кнопку «Установить Jetpack», вы принимаете %1$@ и разрешаете %2$@ с WordPress.com.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Используя WooCommerce Payments, вы принимаете [Условия предоставления услуг](https:\/\/wordpress.com\/tos) и подтверждаете, что ознакомились с [Политикой конфиденциальности](https:\/\/automattic.com\/privacy\/).";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "Используя WooPayments, вы принимаете [Условия предоставления услуг](https:\/\/wordpress.com\/tos) и подтверждаете, что ознакомились с [Политикой конфиденциальности](https:\/\/automattic.com\/privacy\/).";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "СТРАНЫ";
@@ -1324,6 +1344,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
@@ -1403,6 +1424,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "Не удалось добавить метки";
+
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "Не удалось обновить рубрику";
 
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "Невозможно открыть сайт по этому адресу. Проверьте данные и повторите попытку.";
@@ -1533,6 +1557,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "Проверьте электронную почту!";
 
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "Проверка заказа";
+
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "Оформление заказа";
 
@@ -1590,6 +1617,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "Получите свой домен бесплатно";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Класс 1 — горючие жидкости и зажигательные шнуры";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Класс 3 — посылка (антисептики для рук, медицинский спирт, средства на основе этанола, воспламеняющиеся жидкости и т. д.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Класс 4 — посылка (воспламеняющиеся твёрдые вещества)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Класс 5 — посылка (окислители)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Класс 6 — посылка (ядовитые вещества)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Класс 7 — посылка с радиоактивными веществами (например, детекторы дыма, минералы, оружейные прицелы и т. д.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Класс 8 — посылка с коррозионно-активными веществами — разрешённые к авиаперевозке коррозионно-активные вещества (некоторые чистящие средства, гербициды и т. д.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Класс 8 — непротекающие жидкостные батареи, разрешённые к перевозке — герметичные свинцово-кислые батареи";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Класс 9 — литиевые батареи с маркировкой — только наземная транспортировка — новые отдельные или запасные литиевые батареи (с маркировкой UN3480 или UN3090)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "Класс 9 — литиевые батареи — возвратная посылка — бывшие в употреблении электронные устройства с установленными или комплектными литиевыми батареями (требуется маркировка)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Класс 9 — литиевые батареи, посылки с маркировкой — новые электронные устройства с комплектными литиевыми батареями (маркировка UN3481 или UN3091)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Класс 9 — посылки с сухим льдом (не более 2,3 кг при авиаперевозке)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Класс 9 — литиевые батареи, посылки без маркировки — новые электронные устройства с установленными или комплектными литиевыми батареями (без маркировки)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Класс 9 — посылка с намагниченными веществами";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1834,6 +1903,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "Свяжитесь с нами";
 
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "Содержит опасные вещества";
+
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "Сведения о содержимом";
 
@@ -2036,6 +2108,9 @@ which should be translated separately and considered part of this sentence. */
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "Создайте скидку в процентах на выбранные товары";
 
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "Создать товар с помощью ИИ";
+
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
 
@@ -2218,6 +2293,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "ДЕТАЛИ";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2244,8 +2322,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "Удалить";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "Удалить %1$@";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "Удалить купон";
@@ -2268,6 +2350,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Описание";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "Выясните, можно ли доставить ваш товар с помощью %1$@.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "Определяет положение товара в каталоге. Чем меньше число, тем выше товар в списке. Можно также использовать отрицательные значения.";
@@ -2359,6 +2444,21 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "Закрыть все сообщения";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "П. 4.1 — разрешённые к пересылке воспламеняющиеся твёрдые вещества и безопасные спички — безопасные спички в коробке и разрешённые к пересылке воспламеняющиеся твёрдые вещества";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "П. 5.1 — посылка с окислителями — перекись водорода в концентрации от 8 до 20 ％";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "П. 5.2 — посылка с органическими пероксидами";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "П. 6.1 — посылка с токсичными веществами (средняя летальная доза 50 мг\/кг и менее) (пестициды, гербициды и т. д.)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "П. 6.2 — посылка с опасными веществами — биологические материалы (например, наборы для лабораторных анализов, материалы для анализа на COVID)";
 
 /* Country option for a site address. */
 "Djibouti" = "Джибути";
@@ -2541,6 +2641,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -2575,6 +2676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "Изменить статус";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "Редактировать настройки налоговой ставки";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "Изменить налоговые ставки в консоли";
@@ -2920,6 +3024,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "Пример: комнатный, кактус, растение, декоративный, простой уход";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "Посылка с допустимым количеством (например, небольшой объём воспламеняющейся жидкости, коррозионно-активные, токсичные или экологически опасные вещества — требуется маркировка)";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "Исключить рубрики (%1$d)";
@@ -3378,6 +3485,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Grenada" = "Гренада";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "Опасные материалы, разрешённые только к наземной перевозке (для товаров, которые не перечислены, но их можно перевозить только по земле)";
+
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "Количество в комплекте";
 
@@ -3451,6 +3561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "Подготовьте учётные данные магазина.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "Категория опасных веществ";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "Заголовок №1";
@@ -3582,6 +3695,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "Мне нужна помощь с";
+
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "Посылка с потребительскими товарами ID8000 — разрешённые к авиаперевозке потребительские товары ID8000 (невоспламеняющиеся аэрозоли, воспламеняющиеся горючие жидкости, токсичные вещества, прочие опасные материалы)";
 
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "ТОВАРЫ В ЗАКАЗЕ К ВЫПОЛНЕНИЮ";
@@ -4020,6 +4136,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "Подробнее";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "Узнайте, как надёжно упаковать опасные вещества, выполнить адресацию и доставить их с помощью USPS® в %1$@.";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -4102,6 +4221,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "Лихтенштейн";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "Посылка с зажигающим устройством (разрешённым к перевозке)";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "Лимит использования на X товаров";
@@ -4556,7 +4678,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "Несколько способов оплаты";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "Мой магазин";
 
@@ -4652,6 +4775,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "Доступны новые функции!";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "Новый заказ на";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "Новый заказ на 13,98 долл. в магазине WooCommerce";
 
@@ -4679,6 +4805,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "Нет (подтверждённых) отзывов";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "Нет родительской рубрики";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "Нет ограничений";
@@ -5132,6 +5261,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title for the customer payment cell */
 "Paid" = "Платно";
 
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "Оплачено с помощью %@";
+
 /* Country option for a site address. */
 "Pakistan" = "Пакистан";
 
@@ -5520,9 +5652,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "Не указан почтовый индекс";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "К потенциально опасным материалам относятся: батарейки и аккумуляторы, сухой лёд, воспламеняющиеся жидкости, аэрозоли, боеприпасы, фейерверки, лаки для ногтей, парфюмерные изделия, краски, растворители и т. д. Опасные товары должны доставляться в отдельных упаковках.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "При поддержке";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "На основе ИИ.";
 
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "На основе ИИ. %1$@.";
@@ -5837,6 +5975,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "С начала квартала до текущего дня";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "Быстро сгенерировать подробную информацию для вас";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "Создайте онлайн-магазин и начните продажи в кротчайшие сроки.";
 
@@ -5880,14 +6021,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "Реферальные программы";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "Обновить";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "Перезагрузить после активации";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "Перезагрузить после установки";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -6075,6 +6212,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "Сбросить пароль";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "Исправить";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "Только для клиентов с почтовыми адресами: %1$@";
@@ -6422,6 +6562,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "Выбрать тип";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "Выбрать категорию";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "Выбрать посылку";
 
@@ -6472,6 +6616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "Выберите тип упаковки, в которой хотите отправить товары";
+
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "Выберите эту опцию, если в вашей посылке содержатся опасные товары или материалы.";
 
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "Выберите способ загрузки";
@@ -6813,6 +6960,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Slug label in Product Settings */
 "Slug" = "Слаг";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "Посылка, небольшое количество (требуется маркировка)";
+
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "Реклама в социальных сетях";
 
@@ -6922,6 +7072,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "Не удалось создать запрос в службу поддержки. Повторите попытку позже.";
+
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "Не удалось выполнить действие, поскольку активный платёж не найден.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "Не удалось подключиться к устройству чтения. Повторите попытку.";
@@ -7348,6 +7501,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "Налоговые классы";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "Местоположение налоговой ставки добавлено автоматически";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "Налоговые ставки для разных мест можно изменить в консоли магазина.";
 
@@ -7569,6 +7725,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "Платёж аннулирован на Читалке";
 
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "Платёж был отменён.";
+
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "Оплата была прервана и не может быть продолжена. Повторите попытку оплаты на экране заказа.";
 
@@ -7724,6 +7883,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "При возврате средств произошла ошибка";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "При повторной попытке платежа произошла ошибка. Вернитесь назад и начните сначала.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "При сохранении параметров конфиденциальности произошла ошибка.";
 
@@ -7817,6 +7979,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "В этом заказе используются расширения для расчета суммы доставки. Возможно, показаны не все способы доставки.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "Этот платёж уже завершён, проверьте детали заказа.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Этот продукт не может быть загружен";
 
@@ -7849,6 +8014,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "Заказ будет отмечен как выполненный, если вы получили (всего) не через WooCommerce";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "Это не затронет онлайн-заказы";
 
 /* Country option for a site address. */
 "Timor-Leste" = "Восточный Тимор";
@@ -8148,6 +8316,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL-адрес";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "Инструмент поиска опасных веществ USPS";
+
 /* Country option for a site address. */
 "Uganda" = "Уганда";
 
@@ -8226,6 +8397,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "Не удается загрузить категории";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "Не удалось загрузить уведомление";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "Не удалось загрузить данные анализа заказов";
 
@@ -8282,6 +8456,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "Не удалось обработать платеж. Недопустимая общая сумма заказа.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "Не удалось обработать платёж. Этот заказ уже оплачен. Дальнейшие платёжные действия могут привести к тому, что с клиента будет дважды списана плата за заказ.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось завершить платёж при повторной попытке. Основная ошибка: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "Не удалось обработать платёж. Не удалось подключиться к платёжной системе. Повторите попытку или обратитесь в службу поддержки, если эта ошибка произойдёт снова.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "Не удалось обработать платёж. Не удалось получить сведения о последнем заказе. Проверьте подключение к сети и повторите попытку.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "Не удалось обработать платёж. Не удалось получить сведения о последнем заказе. Проверьте подключение к сети и повторите попытку. Основная ошибка: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "Не удалось прочитать карту: истекло время ожидания. Повторите попытку";
@@ -8427,6 +8616,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility Label for the edit button to change the Customer Billing Address in Billing Information
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "Изменить адрес";
+
+/* Product Update Category navigation title */
+"Update Category" = "Обновить рубрику";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "Инструкции по обновлению";
@@ -8765,6 +8957,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Не удалось загрузить сайт";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "Налоговые ставки не найдены";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "Не удалось обновить ПО вашего платёжного терминала";
 
@@ -8830,6 +9025,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "Не удалось автоматически проверить почтовый адрес. Укажите его на Apple Maps и убедитесь, что адрес указан верно.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "Не удалось повторить платёж. Начните заново.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "Мы не смогли отправить вам сообщение по эл.почте. Попробуйте еще раз позже.";
@@ -8986,9 +9184,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "Мобильное приложение WooCommerce — управляйте магазином откуда угодно";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "Платежи WooCommerce";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9199,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce Shipping";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "В настоящее время WooCommerce Shipping не поддерживает доставку опасных веществ с помощью %1$@.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "Мобильное приложение WooCommerce";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "Магазин WooCommerce";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "WordPress";
@@ -9295,6 +9498,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[КОММЕНТАРИЙ]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[Подробнее](https:\/\/automattic.com\/ai-guidelines\/)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Быстрый запуск WooCommerce";
 
@@ -9363,6 +9569,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "позже сегодня";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "Наземное отправление, ограниченное количество: аэрозоли, дезинфицирующие спреи, аэрозольная краска, спреи для волос, пропан, бутан, чистящие средства и т. д. - Духи, лак для ногтей, жидкость для снятия лака для ногтей, растворители, антисептики для рук, медицинский спирт, продукты на основе этанола и т. д. - Другие поверхностные вещества в ограниченном количестве (косметика, бытовая химия, краски и т. д.)";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "возврат вручную";
@@ -9475,6 +9684,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, товары, рубрики, новый товар, поиск товаров";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "год";

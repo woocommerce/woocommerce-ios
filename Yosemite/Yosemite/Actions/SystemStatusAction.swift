@@ -12,6 +12,14 @@ public enum SystemStatusAction: Action {
     ///
     case fetchSystemPlugin(siteID: Int64, systemPluginName: String, onCompletion: (SystemPlugin?) -> Void)
 
+    /// Fetch an specific systemPlugin by siteID and name list.
+    ///
+    case fetchSystemPluginListWithNameList(siteID: Int64, systemPluginNameList: [String], onCompletion: (SystemPlugin?) -> Void)
+
+    /// Fetch a specific systemPlugin by path.
+    ///
+    case fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: (SystemPlugin?) -> Void)
+
     /// Fetch system status report for a site given its ID
     ///
     case fetchSystemStatusReport(siteID: Int64, onCompletion: (Result<SystemStatus, Error>) -> Void)

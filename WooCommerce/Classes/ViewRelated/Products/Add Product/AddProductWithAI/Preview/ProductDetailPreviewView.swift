@@ -62,7 +62,7 @@ struct ProductDetailPreviewView: View {
                                            cornerRadius: Layout.cornerRadius)
                     .padding(.bottom, Layout.contentPadding)
 
-                    VStack(spacing: Constants.separatorHeight) {
+                    VStack(spacing: Layout.separatorHeight) {
                         // Price
                         TitleAndValueDetailRow(title: Localization.price,
                                                value: viewModel.productPrice,
@@ -93,7 +93,7 @@ struct ProductDetailPreviewView: View {
                                                image: UIImage.shippingImage,
                                                isLoading: viewModel.isGeneratingDetails)
                     }
-                    .background(Color(.separator))
+                    .background(viewModel.isGeneratingDetails ? Color.clear : Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
                 }
 

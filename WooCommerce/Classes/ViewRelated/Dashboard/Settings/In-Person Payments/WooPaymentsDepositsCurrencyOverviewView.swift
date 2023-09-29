@@ -24,7 +24,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                 HStack(alignment: .top) {
                     Image(systemName: "calendar")
-                    Text("Funds become available after pending for 7 days.")
+                    Text(viewModel.balanceTypeHint)
                         .font(.footnote)
                 }
                 .foregroundColor(.secondary)
@@ -32,39 +32,37 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
             }
             .padding(.vertical)
 
-            Grid(alignment: .leading) {
-                Text("DEPOSITS")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-
-                GridRow {
-                    Text("Next")
-                    Text("Est. \(viewModel.nextDepositDate)")
-                    Text(viewModel.nextDepositAmount)
-                }
-                .padding(.vertical, 4)
-
-                GridRow {
-                    Text("Paid")
-                        .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
-                    Text(viewModel.lastDepositDate)
-                        .foregroundColor(.secondary)
-                    Text(viewModel.lastDepositAmount)
-                        .foregroundColor(.secondary)
-                }
-                Divider()
-
-                HStack(alignment: .top) {
-                    Image(systemName: "building.columns")
-                    Text("Available funds are deposited \(viewModel.overview.automaticDeposits ? "automatically" : "manually"), \(viewModel.overview.depositInterval.frequencyDescriptionEvery).")
-                        .font(.footnote)
-                }
+            Text("DEPOSITS")
+                .font(.subheadline)
                 .foregroundColor(.secondary)
-                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            LazyVGrid(columns: [GridItem(.flexible(maximum: 70), alignment: .leading),
+                                GridItem(alignment: .leading),
+                                GridItem(alignment: .trailing)],
+                      spacing: 16) {
+                Text("Next")
+                Text(viewModel.nextDepositDate)
+                Text(viewModel.nextDepositAmount)
+
+                Text("Paid")
+                    .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
+                Text(viewModel.lastDepositDate)
+                    .foregroundColor(.secondary)
+                Text(viewModel.lastDepositAmount)
+                    .foregroundColor(.secondary)
             }
-            .fixedSize(horizontal: false, vertical: true)
-            .frame(maxWidth: .infinity)
+            Divider()
+
+            HStack(alignment: .top) {
+                Image(systemName: "building.columns")
+                Text(viewModel.depositScheduleHint)
+                    .font(.footnote)
+            }
+            .foregroundColor(.secondary)
+            .padding(.vertical, 8)
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .fixedSize(horizontal: false, vertical: true)
         .padding()
     }
 }
@@ -118,28 +116,5 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
         return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel)
             .previewLayout(.sizeThatFits)
 //            .frame(width: 400, height: 400)
-    }
-}
-
-private extension WooPaymentsDepositInterval {
-    var frequencyDescriptionEvery: String {
-        switch self {
-        case .daily:
-            return NSLocalizedString(
-                "depositsOverview.interval.every.day",
-                comment: "every day (lower case), shown in a sentence like 'Deposit schedule: automatic, every day'")
-        case .weekly:
-            return NSLocalizedString(
-                "depositsOverview.interval.every.week",
-                comment: "every week (lower case), shown in a sentence like 'Deposit schedule: automatic, every week'")
-        case .monthly:
-            return NSLocalizedString(
-                "depositsOverview.interval.every.month",
-                comment: "every month (lower case), shown in a sentence like 'Deposit schedule: automatic, every month'")
-        case .manual:
-            return NSLocalizedString(
-                "depositsOverview.interval.manual",
-                comment: "on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request'")
-        }
     }
 }

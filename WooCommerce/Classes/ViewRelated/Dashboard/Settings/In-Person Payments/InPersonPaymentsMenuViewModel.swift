@@ -127,7 +127,8 @@ final class InPersonPaymentsMenuViewModel {
     }
 
     private func updateDepositsOverview() {
-        guard let siteID,
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+            let siteID,
             let credentials = stores.sessionManager.defaultCredentials else {
             return
         }

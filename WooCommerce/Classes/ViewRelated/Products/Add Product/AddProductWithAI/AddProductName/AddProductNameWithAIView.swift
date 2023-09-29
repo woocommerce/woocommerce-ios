@@ -129,7 +129,6 @@ private extension AddProductNameWithAIView {
         HStack {
             // Use package photo
             Button {
-                viewModel.didTapUsePackagePhoto()
                 onUsePackagePhoto(viewModel.productName)
             } label: {
                 HStack(alignment: .top, spacing: Layout.UsePackagePhoto.spacing) {

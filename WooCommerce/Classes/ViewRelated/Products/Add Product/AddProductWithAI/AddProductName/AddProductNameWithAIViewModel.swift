@@ -15,14 +15,10 @@ final class AddProductNameWithAIViewModel: ObservableObject {
         return productNameContent
     }
 
-    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics,) {
+    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.productNameContent = ""
         self.analytics = analytics
-    }
-
-    func didTapUsePackagePhoto() {
-        // Analytics
     }
 
     func didTapSuggestName() {

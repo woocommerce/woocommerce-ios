@@ -22,7 +22,7 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
 
     func test_didTapSuggestName_tracks_entry_point_event_for_product_name_ai_with_correct_empty_input() throws {
         //  Given
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.didTapSuggestName()
@@ -38,7 +38,7 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
 
     func test_didTapSuggestName_tracks_entry_point_event_for_product_name_ai_with_correct_non_empty_input() throws {
         //  Given
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.productNameContent = "iPhone 15"

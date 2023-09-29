@@ -46,6 +46,7 @@ public class WooPaymentsDepositService {
 
         var depositsOverviews: [WooPaymentsDepositsOverviewByCurrency] = []
 
+        //TODO: correctly determine manual/automatic deposits, using the interval?
         for currency in currencies {
             let pendingBalance = depositsOverview.balance.pending.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
             let availableBalance = depositsOverview.balance.available.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }

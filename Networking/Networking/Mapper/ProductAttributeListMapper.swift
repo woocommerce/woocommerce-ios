@@ -10,7 +10,7 @@ struct GenericMapper<Resource: Decodable>: Mapper {
     func map(response: Data) throws -> Resource {
         try extract(
             from: response,
-            usingJSONDecoderSiteID: siteID,
+            siteID: siteID,
             dateFormatter: DateFormatter.Defaults.dateTimeFormatter
         )
     }

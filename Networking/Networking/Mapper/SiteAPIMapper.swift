@@ -12,7 +12,7 @@ struct SiteAPIMapper: Mapper {
     func map(response: Data) throws -> SiteAPI {
         try extract(
             from: response,
-            usingJSONDecoderSiteID: siteID,
+            siteID: siteID,
             dateFormatter: DateFormatter.Defaults.dateTimeFormatter
         )
     }

@@ -18,6 +18,6 @@ struct SitePluginMapper: Mapper {
     /// (Attempts) to convert a dictionary into SitePlugin.
     ///
     func map(response: Data) throws -> SitePlugin {
-        try extract(from: response, usingJSONDecoderSiteID: siteID)
+        try extract(from: response, siteID: siteID)
     }
 }

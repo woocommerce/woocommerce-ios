@@ -13,11 +13,7 @@ protocol Mapper {
 
 extension Mapper where Output: Decodable {
 
-    func extract(
-        from response: Data,
-        usingJSONDecoderSiteID siteID: Int64,
-        dateFormatter: DateFormatter? = .none
-    ) throws -> Output {
+    func extract(from response: Data, siteID: Int64, dateFormatter: DateFormatter? = .none) throws -> Output {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID

@@ -22,7 +22,7 @@ struct ProductTagListMapper: Mapper {
 
         switch responseType {
         case .load:
-            return try extract(from: response, usingJSONDecoderSiteID: siteID)
+            return try extract(from: response, siteID: siteID)
         case .create:
             let container: ProductTagListBatchCreateContainer
             if hasDataEnvelope {

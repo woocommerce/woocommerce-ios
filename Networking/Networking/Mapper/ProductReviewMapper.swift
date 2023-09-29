@@ -12,7 +12,7 @@ struct ProductReviewMapper: Mapper {
     func map(response: Data) throws -> ProductReview {
         try extract(
             from: response,
-            usingJSONDecoderSiteID: siteID,
+            siteID: siteID,
             dateFormatter: DateFormatter.Defaults.dateTimeFormatter
         )
     }

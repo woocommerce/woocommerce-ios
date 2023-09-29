@@ -11,7 +11,7 @@ struct SubscriptionListMapper: Mapper {
     func map(response: Data) throws -> [Subscription] {
         try extract(
             from: response,
-            usingJSONDecoderSiteID: siteID,
+            siteID: siteID,
             dateFormatter: DateFormatter.Defaults.dateTimeFormatter
         )
     }

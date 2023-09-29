@@ -55,7 +55,7 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
 
     func test_didTapContinue_tracks_continue_tapped_event() throws {
         //  Given
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.didTapContinue()

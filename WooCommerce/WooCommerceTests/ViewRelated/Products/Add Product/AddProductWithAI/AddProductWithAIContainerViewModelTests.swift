@@ -13,7 +13,7 @@ final class AddProductWithAIContainerViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canBeDismissed)
     }
 
-    func test_canBeDismissed_returns_False_if_current_step_is_productName_and_the_name_field_is_not_empty() {
+    func test_canBeDismissed_returns_false_if_current_step_is_productName_and_the_name_field_is_not_empty() {
         // Given
         let viewModel = AddProductWithAIContainerViewModel(siteID: 123, source: .productsTab, onCancel: {}, onCompletion: { _ in })
 
@@ -24,7 +24,7 @@ final class AddProductWithAIContainerViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canBeDismissed)
     }
 
-    func test_canBeDismissed_returns_False_if_current_step_is_not_product_name() {
+    func test_canBeDismissed_returns_false_if_current_step_is_not_product_name() {
         // Given
         let viewModel = AddProductWithAIContainerViewModel(siteID: 123, source: .productsTab, onCancel: {}, onCompletion: { _ in })
 

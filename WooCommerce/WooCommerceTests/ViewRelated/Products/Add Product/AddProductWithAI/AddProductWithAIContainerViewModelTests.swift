@@ -63,5 +63,6 @@ final class AddProductWithAIContainerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productName, expectedName)
         XCTAssertEqual(viewModel.productDescription, expectedDescription)
         XCTAssertEqual(viewModel.productFeatures, expectedFeatures)
+        XCTAssertEqual(viewModel.addProductNameViewModel.productName, expectedName)
     }
 }

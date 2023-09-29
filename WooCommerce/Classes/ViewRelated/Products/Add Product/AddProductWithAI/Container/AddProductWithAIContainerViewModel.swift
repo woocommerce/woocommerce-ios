@@ -75,6 +75,7 @@ final class AddProductWithAIContainerViewModel: ObservableObject {
         guard let data else {
             return
         }
+        addProductNameViewModel.productNameContent = data.name
         productName = data.name
         productDescription = data.description
         productFeatures = data.description

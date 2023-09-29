@@ -54,8 +54,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    private let delayBeforeDismissingFeedbackBanner: TimeInterval
-
     init(siteID: Int64,
          productName: String,
          productDescription: String?,
@@ -69,7 +67,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         delayBeforeDismissingFeedbackBanner: TimeInterval = 0.5,
          onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.stores = stores
@@ -88,7 +85,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
-        self.delayBeforeDismissingFeedbackBanner = delayBeforeDismissingFeedbackBanner
 
         try? categoryResultController.performFetch()
         try? tagResultController.performFetch()
@@ -140,10 +136,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         analytics.track(event: .AIFeedback.feedbackSent(source: .productCreation,
                                                         isUseful: vote == .up))
 
-        // Delay the disappearance of the banner for a better UX.
-        DispatchQueue.main.asyncAfter(deadline: .now() + delayBeforeDismissingFeedbackBanner) { [weak self] in
-            self?.shouldShowFeedbackView = false
-        }
+        shouldShowFeedbackView = false
     }
 }
 

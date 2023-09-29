@@ -408,7 +408,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
         // Given
         let siteID: Int64 = 123
-        let delay: TimeInterval = 0
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let storage = MockStorageManager()
@@ -421,16 +420,13 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       storageManager: storage,
                                                       analytics: analytics,
-                                                      delayBeforeDismissingFeedbackBanner: delay,
                                                       onProductCreated: { _ in })
 
         // When
         viewModel.handleFeedback(.up)
 
         // Then
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            XCTAssertFalse(viewModel.shouldShowFeedbackView)
-        }
+        XCTAssertFalse(viewModel.shouldShowFeedbackView)
     }
 
     // MARK: Analytics

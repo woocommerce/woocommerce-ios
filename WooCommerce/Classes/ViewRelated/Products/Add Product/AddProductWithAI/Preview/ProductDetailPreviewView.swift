@@ -109,7 +109,9 @@ struct ProductDetailPreviewView: View {
                              backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
                                                                    dark: .tertiarySystemBackground)),
                              onVote: { vote in
-                    viewModel.handleFeedback(vote)
+                    withAnimation {
+                        viewModel.handleFeedback(vote)
+                    }
                 })
                 .renderedIf(viewModel.shouldShowFeedbackView)
             }

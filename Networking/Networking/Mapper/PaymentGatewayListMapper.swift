@@ -11,14 +11,6 @@ struct PaymentGatewayListMapper: Mapper {
     /// (Attempts) to convert a dictionary into `[PaymentGateway]`
     ///
     func map(response: Data) throws -> [PaymentGateway] {
-        let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID,
-        ]
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(Envelope<[PaymentGateway]>.self, from: response).data
-        } else {
-            return try decoder.decode([PaymentGateway].self, from: response)
-        }
+        try extract(from: response, siteID: siteID)
     }
 }

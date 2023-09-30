@@ -330,8 +330,8 @@ platform :ios do
     # Check branch
     UI.user_error!("#{message}Release branch for version #{current_release_version} doesn't exist. Abort.") unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: current_release_version)
 
-    # Check user overwrite
-    switch_to_user_branch(options[:base_version], message) unless options[:base_version].nil?
+    # Check user override
+    override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     # Verify
     message << "Updating branch to version: #{next_build_code}.\n"
@@ -414,7 +414,7 @@ platform :ios do
     UI.message 'Bumping hotfix version and build code...'
     VERSION_FILE.write(
       version_short: new_version,
-      version_long: build_code(new_version)
+      version_long: next_build_code
     )
     UI.message "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
 
@@ -1367,9 +1367,11 @@ def prompt_user_for_app_store_connect_credentials
   ENV['FASTLANE_USER'] = CredentialsManager::AccountManager.new.user
 end
 
-def switch_to_user_branch(version, message)
-  UI.user_error!("Release branch for version #{version} doesn't exist. Abort.") unless Fastlane::Helper::GitHelper.checkout_and_pull(release: version)
-  message << "Looking at branch release/#{version} as requested by user. Detected version: #{current_build_code}.\n"
+def override_default_release_branch(version)
+  success = Fastlane::Helper::GitHelper.checkout_and_pull(release: version)
+  UI.user_error!("Release branch for version #{version} doesn't exist. Abort.") unless success
+
+  UI.message "Checked out branch `#{git_branch}` as requested by user.\n"
 end
 
 # Wrapper around Fastlane `UI.confirm` that adds the option to bypass the

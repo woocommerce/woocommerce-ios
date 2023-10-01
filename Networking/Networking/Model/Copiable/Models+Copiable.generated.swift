@@ -720,7 +720,8 @@ extension Networking.OrderItem {
         totalTax: CopiableProp<String> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
         addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
-        parent: NullableCopiableProp<Int64> = .copy
+        parent: NullableCopiableProp<Int64> = .copy,
+        bundleConfiguration: CopiableProp<[OrderItemBundleItem]> = .copy
     ) -> Networking.OrderItem {
         let itemID = itemID ?? self.itemID
         let name = name ?? self.name
@@ -738,6 +739,7 @@ extension Networking.OrderItem {
         let attributes = attributes ?? self.attributes
         let addOns = addOns ?? self.addOns
         let parent = parent ?? self.parent
+        let bundleConfiguration = bundleConfiguration ?? self.bundleConfiguration
 
         return Networking.OrderItem(
             itemID: itemID,
@@ -755,7 +757,8 @@ extension Networking.OrderItem {
             totalTax: totalTax,
             attributes: attributes,
             addOns: addOns,
-            parent: parent
+            parent: parent,
+            bundleConfiguration: bundleConfiguration
         )
     }
 }
@@ -1405,20 +1408,44 @@ extension Networking.ProductBundleItem {
         productID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
         title: CopiableProp<String> = .copy,
-        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy
+        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy,
+        minQuantity: CopiableProp<Decimal> = .copy,
+        maxQuantity: NullableCopiableProp<Decimal> = .copy,
+        defaultQuantity: CopiableProp<Decimal> = .copy,
+        isOptional: CopiableProp<Bool> = .copy,
+        overridesVariations: CopiableProp<Bool> = .copy,
+        allowedVariations: CopiableProp<[Int64]> = .copy,
+        overridesDefaultVariationAttributes: CopiableProp<Bool> = .copy,
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
         let menuOrder = menuOrder ?? self.menuOrder
         let title = title ?? self.title
         let stockStatus = stockStatus ?? self.stockStatus
+        let minQuantity = minQuantity ?? self.minQuantity
+        let maxQuantity = maxQuantity ?? self.maxQuantity
+        let defaultQuantity = defaultQuantity ?? self.defaultQuantity
+        let isOptional = isOptional ?? self.isOptional
+        let overridesVariations = overridesVariations ?? self.overridesVariations
+        let allowedVariations = allowedVariations ?? self.allowedVariations
+        let overridesDefaultVariationAttributes = overridesDefaultVariationAttributes ?? self.overridesDefaultVariationAttributes
+        let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
             productID: productID,
             menuOrder: menuOrder,
             title: title,
-            stockStatus: stockStatus
+            stockStatus: stockStatus,
+            minQuantity: minQuantity,
+            maxQuantity: maxQuantity,
+            defaultQuantity: defaultQuantity,
+            isOptional: isOptional,
+            overridesVariations: overridesVariations,
+            allowedVariations: allowedVariations,
+            overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
+            defaultVariationAttributes: defaultVariationAttributes
         )
     }
 }

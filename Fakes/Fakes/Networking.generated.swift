@@ -570,7 +570,8 @@ extension Networking.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
-            parent: .fake()
+            parent: .fake(),
+            bundleConfiguration: .fake()
         )
     }
 }
@@ -954,7 +955,15 @@ extension Networking.ProductBundleItem {
             productID: .fake(),
             menuOrder: .fake(),
             title: .fake(),
-            stockStatus: .fake()
+            stockStatus: .fake(),
+            minQuantity: .fake(),
+            maxQuantity: .fake(),
+            defaultQuantity: .fake(),
+            isOptional: .fake(),
+            overridesVariations: .fake(),
+            allowedVariations: .fake(),
+            overridesDefaultVariationAttributes: .fake(),
+            defaultVariationAttributes: .fake()
         )
     }
 }

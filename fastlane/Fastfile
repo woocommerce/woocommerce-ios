@@ -184,10 +184,14 @@ platform :ios do
     ensure_git_status_clean
 
     confirmation_message = <<-MESSAGE
-     Building a new release branch starting from #{DEFAULT_BRANCH}.
-     Current version: #{current_release_version} (#{current_build_code}).
-     New beta version to start the code freeze: #{next_release_version} (#{next_build_code}).
-     Do you want to continue?
+
+      Code Freeze:
+      • New release branch from #{DEFAULT_BRANCH}: release/#{next_release_version}
+      • Current release version and build code: #{current_release_version} (#{current_build_code}).
+      • New release version and build code: #{next_release_version} (#{code_freeze_build_code}).
+
+      Do you want to continue?
+
     MESSAGE
 
     # Ask user confirmation
@@ -203,11 +207,10 @@ platform :ios do
     UI.message 'Bumping release version and build code...'
     VERSION_FILE.write(
       version_short: next_release_version,
-      version_long: next_build_code
+      version_long: code_freeze_build_code
     )
-    UI.messsage "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
-
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    UI.message "Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}"
 
     new_version = current_release_version
     extract_release_notes_for_version(
@@ -329,7 +332,12 @@ platform :ios do
     ensure_git_status_clean
 
     # Check versions
-    message = "The current build code has been detected: #{current_build_code}\n"
+    message = <<-MESSAGE
+
+      Current build code: #{current_build_code}
+      New build code: #{next_build_code}
+
+    MESSAGE
 
     # Check branch
     UI.user_error!("#{message}Release branch for version #{current_release_version} doesn't exist. Abort.") unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: current_release_version)
@@ -338,7 +346,6 @@ platform :ios do
     override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     # Verify
-    message << "Updating branch to version: #{next_build_code}.\n"
     if options[:skip_confirm]
       UI.message(message)
     else
@@ -354,7 +361,7 @@ platform :ios do
     Fastlane::Helper::GitHelper.ensure_on_branch!('release')
     VERSION_FILE.write(version_long: next_build_code)
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
-    UI.messsage "Done! New Build Code: #{current_build_code}"
+    UI.message "Done! New Build Code: #{current_build_code}"
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the beta build?',
@@ -381,17 +388,23 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
   lane :new_hotfix_release do |options|
-    UI.message "Skip confirm: #{options[:skip_confirm]}"
+    new_version = options[:version] || UI.input('Version number for the new hotfix?')
 
-    new_version = options[:version]
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(new_version)
     previous_version = VERSION_FORMATTER.release_version(VERSION_CALCULATOR.previous_patch_version(version: parsed_version))
 
-    # Confirmation message
+    # Check versions
     message = <<-MESSAGE
-      Requested Hotfix version: #{new_version}
-      Branching from: #{previous_version}
+
+      Current release version: #{current_release_version}
+      New hotfix version: #{new_version}
+
+      Current build code: #{current_build_code}
+      New build code: #{next_build_code}
+
+      Branching from tag: #{previous_version}
+
     MESSAGE
 
     if options[:skip_confirm]
@@ -427,33 +440,15 @@ platform :ios do
   # This lane finalizes the hotfix branch.
   # -----------------------------------------------------------------------------------
   # Usage:
-  # bundle exec fastlane finalize_hotfix_release [skip_confirm:<skip confirm>]
-  #
-  # Example:
-  # bundle exec fastlane finalize_hotfix_release skip_confirm:true
+  # bundle exec fastlane finalize_hotfix_release
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
-  lane :finalize_hotfix_release do |options|
+  lane :finalize_hotfix_release do
     UI.user_error!("Current branch - '#{git_branch}' - is not a release branch. Abort.") unless git_branch.start_with?('release/')
-
     ensure_git_status_clean
 
-    message = "Finalizing hotfix release: #{current_release_version}\n"
-    if options[:skip_confirm]
-      UI.message(message)
-    else
-      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
-    end
-
-    if prompt_for_confirmation(
-      message: 'Ready to push changes to remote and trigger the release build?',
-      bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
-    )
-      push_to_git_remote(tags: false)
-      trigger_release_build(branch_to_build: "release/#{current_release_version}")
-    else
-      UI.message('Aborting hotfix finalization. See you later 👋')
-    end
+    UI.message = "Triggering hotfix build for version: #{current_release_version}"
+    trigger_release_build(branch_to_build: "release/#{current_release_version}")
   end
 
   #####################################################################################
@@ -471,7 +466,7 @@ platform :ios do
   #####################################################################################
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
-    UI.user_error!('To finalize a hotfix, please use the finalize_hotfix_release lane instead') if ios_current_branch_is_hotfix
+    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
 
     UI.user_error!("Current branch - '#{git_branch}' - is not a release branch. Abort.") unless git_branch.start_with?('release/')
 
@@ -504,7 +499,7 @@ platform :ios do
     Fastlane::Helper::GitHelper.ensure_on_branch!('release')
     VERSION_FILE.write(version_long: next_build_code)
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
-    UI.messsage "Done! New Build Code: #{current_build_code}"
+    UI.message "Done! New Build Code: #{current_build_code}"
 
     # Wrap up
     version = current_release_version

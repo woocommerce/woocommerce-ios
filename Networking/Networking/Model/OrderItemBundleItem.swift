@@ -22,7 +22,12 @@ public struct OrderItemBundleItem: Encodable, Equatable, Hashable {
     /// Bundle item's variation attributes if the item is a variable product. All attributes need to be specified ("Any" is not supported).
     public let variationAttributes: [ProductVariationAttribute]?
 
-    public init(bundledItemID: Int64, productID: Int64, quantity: Decimal, isOptionalAndSelected: Bool?, variationID: Int64?, variationAttributes: [ProductVariationAttribute]?) {
+    public init(bundledItemID: Int64,
+                productID: Int64,
+                quantity: Decimal,
+                isOptionalAndSelected: Bool?,
+                variationID: Int64?,
+                variationAttributes: [ProductVariationAttribute]?) {
         self.bundledItemID = bundledItemID
         self.productID = productID
         self.quantity = quantity

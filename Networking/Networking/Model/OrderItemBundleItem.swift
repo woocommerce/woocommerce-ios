@@ -3,7 +3,7 @@ import Codegen
 
 /// Networking layer and encodable only, when creating/updating an `OrderItem`.
 /// Contains configurable properties of a bundle item when an order item is a bundle product.
-public struct OrderItemBundleItem: Encodable, Equatable, Hashable {
+public struct OrderItemBundleItem: Encodable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
     /// Bundle item ID.
     public let bundledItemID: Int64
 

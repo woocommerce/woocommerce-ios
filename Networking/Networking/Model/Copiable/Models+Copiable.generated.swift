@@ -781,6 +781,33 @@ extension Networking.OrderItemAttribute {
     }
 }
 
+extension Networking.OrderItemBundleItem {
+    public func copy(
+        bundledItemID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        isOptionalAndSelected: NullableCopiableProp<Bool> = .copy,
+        variationID: NullableCopiableProp<Int64> = .copy,
+        variationAttributes: NullableCopiableProp<[ProductVariationAttribute]> = .copy
+    ) -> Networking.OrderItemBundleItem {
+        let bundledItemID = bundledItemID ?? self.bundledItemID
+        let productID = productID ?? self.productID
+        let quantity = quantity ?? self.quantity
+        let isOptionalAndSelected = isOptionalAndSelected ?? self.isOptionalAndSelected
+        let variationID = variationID ?? self.variationID
+        let variationAttributes = variationAttributes ?? self.variationAttributes
+
+        return Networking.OrderItemBundleItem(
+            bundledItemID: bundledItemID,
+            productID: productID,
+            quantity: quantity,
+            isOptionalAndSelected: isOptionalAndSelected,
+            variationID: variationID,
+            variationAttributes: variationAttributes
+        )
+    }
+}
+
 extension Networking.OrderItemProductAddOn {
     public func copy(
         addOnID: NullableCopiableProp<Int64> = .copy,

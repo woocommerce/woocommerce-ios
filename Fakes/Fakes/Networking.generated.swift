@@ -586,6 +586,20 @@ extension Networking.OrderItemAttribute {
         )
     }
 }
+extension Networking.OrderItemBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderItemBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            quantity: .fake(),
+            isOptionalAndSelected: .fake(),
+            variationID: .fake(),
+            variationAttributes: .fake()
+        )
+    }
+}
 extension Networking.OrderItemProductAddOn {
     /// Returns a "ready to use" type filled with fake values.
     ///

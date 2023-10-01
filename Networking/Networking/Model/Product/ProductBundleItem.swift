@@ -84,7 +84,7 @@ public struct ProductBundleItem: Codable, Equatable, GeneratedCopiable, Generate
         let title = try container.decode(String.self, forKey: .title)
         let stockStatus = try container.decode(ProductBundleItemStockStatus.self, forKey: .stockStatus)
         let minQuantity = try container.decode(Decimal.self, forKey: .minQuantity)
-        // When there is no max quantity, an empty string is returned null.
+        // When there is no max quantity, an empty string is returned.
         let maxQuantity = container.failsafeDecodeIfPresent(decimalForKey: .maxQuantity)
         let defaultQuantity = try container.decode(Decimal.self, forKey: .defaultQuantity)
         let isOptional = try container.decode(Bool.self, forKey: .isOptional)

@@ -412,17 +412,6 @@ private extension ProductStore {
         })
     }
 
-    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
-        productIDs
-            .compactMap {
-                let predicate = NSPredicate(format: "productID == %lld", $0)
-                let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: predicate,
-                                                          sortedBy: nil).first
-                return product
-            }.map { $0.toReadOnly() }
-    }
-
     /// Adds a product.
     ///
     func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {

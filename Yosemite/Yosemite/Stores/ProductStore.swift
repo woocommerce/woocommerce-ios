@@ -1004,6 +1004,19 @@ extension ProductStore {
         let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
             let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             storageBundledItem.update(with: readOnlyBundleItem)
+
+            // Removes all default variation attributes and adds new ones from the readonly version.
+            if let defaultVariationAttributes = storageBundledItem.defaultVariationAttributes {
+                storageBundledItem.removeFromDefaultVariationAttributes(defaultVariationAttributes)
+            }
+
+            let storageDefaultVariationAttributes = readOnlyBundleItem.defaultVariationAttributes.map {
+                let storageVariationAttribute = storage.insertNewObject(ofType: Storage.GenericAttribute.self)
+                storageVariationAttribute.update(with: $0)
+                return storageVariationAttribute
+            }
+            storageBundledItem.addToDefaultVariationAttributes(NSOrderedSet(array: storageDefaultVariationAttributes))
+
             return storageBundledItem
         }
         storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))

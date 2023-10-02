@@ -42,6 +42,11 @@ final class EditableOrderViewModel: ObservableObject {
         case selector
     }
 
+    enum TaxRateRowAction {
+        case taxSelector
+        case storedTaxRateSheet
+    }
+
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
     let flow: Flow
@@ -158,9 +163,25 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Defines if the toggle to store the tax rate in the selector should be enabled by default
+    ///
+    var shouldStoreTaxRateInSelectorByDefault: Bool {
+        storedTaxRate != nil
+    }
+
+    var taxRateRowAction: TaxRateRowAction {
+        storedTaxRate == nil ? .taxSelector : .storedTaxRateSheet
+    }
+
     /// Text to show on entry point for selecting a tax rate
     var taxRateRowText: String {
         storedTaxRate == nil ? Localization.setNewTaxRate : Localization.editTaxRateSetting
+    }
+
+    var storedTaxRateViewModel: TaxRateViewModel? {
+        guard let storedTaxRate = storedTaxRate else { return nil }
+
+        return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
     /// Whether gift card is supported in order form.
@@ -386,6 +407,7 @@ final class EditableOrderViewModel: ObservableObject {
         syncInitialSelectedState()
         configureTaxRates()
         configureGiftCardSupport()
+        observeGiftCardStatesForAnalytics()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -569,13 +591,21 @@ final class EditableOrderViewModel: ObservableObject {
             return
         }
 
-        let address = Address.from(taxRate: taxRate)
+        if storedTaxRate != taxRate {
+            // If the new tax rate is different than the stored one forget the latter
+            storedTaxRate = nil
+        }
+
         let input: OrderSyncAddressesInput
         switch taxBasedOnSetting {
         case .customerBillingAddress:
-            input = OrderSyncAddressesInput(billing: address, shipping: nil)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate),
+                                            shipping: orderSynchronizer.order.shippingAddress)
         case .customerShippingAddress:
-            input = OrderSyncAddressesInput(billing: nil, shipping: address)
+            input = OrderSyncAddressesInput(billing: orderSynchronizer.order.billingAddress,
+                                            shipping: orderSynchronizer.order.shippingAddress?.applyingTaxRate(taxRate: taxRate) ??
+                                            Address.from(taxRate: taxRate))
         default:
             // Do not add address if the taxes are not based on the customer's addresses
             return
@@ -583,6 +613,7 @@ final class EditableOrderViewModel: ObservableObject {
 
         orderSynchronizer.setAddresses.send(input)
         resetAddressForm()
+        autodismissableNotice = Notice(title: Localization.newTaxRateSetSuccessMessage)
     }
 
     /// Updates the order creation draft with the current set customer note.
@@ -598,17 +629,17 @@ final class EditableOrderViewModel: ObservableObject {
     func createOrder() {
         performingNetworkRequest = true
 
-        orderSynchronizer.commitAllChanges { [weak self] result in
+        orderSynchronizer.commitAllChanges { [weak self] result, usesGiftCard in
             guard let self = self else { return }
             self.performingNetworkRequest = false
 
             switch result {
             case .success(let newOrder):
                 self.onFinished(newOrder)
-                self.trackCreateOrderSuccess()
+                self.trackCreateOrderSuccess(usesGiftCard: usesGiftCard)
             case .failure(let error):
                 self.fixedNotice = NoticeFactory.createOrderErrorNotice(error, order: self.orderSynchronizer.order)
-                self.trackCreateOrderFailure(error: error)
+                self.trackCreateOrderFailure(usesGiftCard: usesGiftCard, error: error)
                 DDLogError("⛔️ Error creating new order: \(error)")
             }
         }
@@ -663,6 +694,19 @@ final class EditableOrderViewModel: ObservableObject {
 
     func onSetNewTaxRateTapped() {
         analytics.track(.orderCreationSetNewTaxRateTapped)
+    }
+
+    func onStoredTaxRateBottomSheetAppear() {
+        analytics.track(.orderCreationStoredTaxRateBottomSheetAppear)
+    }
+
+    func onSetNewTaxRateFromBottomSheetTapped() {
+        analytics.track(.orderCreationSetNewTaxRateFromBottomSheetTapped)
+    }
+
+    func onClearAddressFromBottomSheetTapped() {
+        analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
+        forgetTaxRate()
     }
 }
 
@@ -773,6 +817,7 @@ extension EditableOrderViewModel {
         let taxLineViewModels: [TaxLineViewModel]
         let taxEducationalDialogViewModel: TaxEducationalDialogViewModel
         let taxBasedOnSetting: TaxBasedOnSetting?
+        let shouldShowTaxesInfoButton: Bool
         let shouldShowStoredTaxRateAddedAutomatically: Bool
         let couponCode: String
         var discountTotal: String
@@ -801,6 +846,7 @@ extension EditableOrderViewModel {
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
         let onDismissWpAdminWebViewClosure: () -> Void
+        let addGiftCardClosure: () -> Void
         let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
@@ -823,6 +869,7 @@ extension EditableOrderViewModel {
              giftCardToApply: String? = nil,
              appliedGiftCards: [AppliedGiftCard] = [],
              taxBasedOnSetting: TaxBasedOnSetting? = nil,
+             shouldShowTaxesInfoButton: Bool = false,
              shouldShowStoredTaxRateAddedAutomatically: Bool = false,
              taxLineViewModels: [TaxLineViewModel] = [],
              taxEducationalDialogViewModel: TaxEducationalDialogViewModel = TaxEducationalDialogViewModel(orderTaxLines: [], taxBasedOnSetting: nil),
@@ -837,6 +884,7 @@ extension EditableOrderViewModel {
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
              onDismissWpAdminWebViewClosure: @escaping () -> Void = {},
+             addGiftCardClosure: @escaping () -> Void = {},
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
@@ -861,6 +909,7 @@ extension EditableOrderViewModel {
             self.giftCardToApply = giftCardToApply
             self.appliedGiftCards = appliedGiftCards
             self.taxBasedOnSetting = taxBasedOnSetting
+            self.shouldShowTaxesInfoButton = shouldShowTaxesInfoButton
             self.shouldShowStoredTaxRateAddedAutomatically = shouldShowStoredTaxRateAddedAutomatically
             self.taxLineViewModels = taxLineViewModels
             self.taxEducationalDialogViewModel = taxEducationalDialogViewModel
@@ -880,6 +929,7 @@ extension EditableOrderViewModel {
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
+            self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
         }
     }
@@ -938,9 +988,9 @@ private extension EditableOrderViewModel {
             .map { [weak self] state in
                 guard let self = self else { return nil }
                 switch state {
-                case .error(let error):
+                case let .error(error, usesGiftCard):
                     DDLogError("⛔️ Error syncing order remotely: \(error)")
-                    self.trackSyncOrderFailure(error: error)
+                    self.trackSyncOrderFailure(usesGiftCard: usesGiftCard, error: error)
                     return NoticeFactory.syncOrderErrorNotice(error, flow: self.flow, with: self.orderSynchronizer)
                 default:
                     return nil
@@ -1215,6 +1265,7 @@ private extension EditableOrderViewModel {
                                             giftCardToApply: giftCardToApply,
                                             appliedGiftCards: appliedGiftCards,
                                             taxBasedOnSetting: taxBasedOnSetting,
+                                            shouldShowTaxesInfoButton: order.isEditable,
                                             shouldShowStoredTaxRateAddedAutomatically: self.storedTaxRate != nil,
                                             taxLineViewModels: self.taxLineViewModels(from: order.taxes),
                                             taxEducationalDialogViewModel: TaxEducationalDialogViewModel(orderTaxLines: order.taxes,
@@ -1239,8 +1290,15 @@ private extension EditableOrderViewModel {
                                                 self?.configureTaxRates()
                                                 self?.orderSynchronizer.retryTrigger.send()
                                             },
+                                            addGiftCardClosure: { [weak self] in
+                                                guard let self else { return }
+                                                self.analytics.track(event: .Orders.orderFormAddGiftCardCTATapped(flow: self.flow.analyticsFlow))
+                                            },
                                             setGiftCardClosure: { [weak self] code in
-                                                self?.orderSynchronizer.setGiftCard.send(code)
+                                                guard let self else { return }
+                                                self.orderSynchronizer.setGiftCard.send(code)
+                                                self.analytics.track(event: .Orders.orderFormGiftCardSet(flow: self.flow.analyticsFlow,
+                                                                                                         isRemoved: code == nil))
                                             },
                                             currencyFormatter: self.currencyFormatter)
             }
@@ -1284,6 +1342,13 @@ private extension EditableOrderViewModel {
     }
 
     func configureTaxRates() {
+        // Tax rates are not configurable if the order is not editable.
+        // In the creation flow orders are initially (incorrectly) reported as not editable, so we have to check the flow here as well
+        if case let .editing(order) = flow,
+           !order.isEditable {
+            return
+        }
+
         stores.dispatch(SettingAction.retrieveTaxBasedOnSetting(siteID: siteID,
                                                                 onCompletion: { [weak self] result in
             guard let self = self else { return }
@@ -1296,7 +1361,10 @@ private extension EditableOrderViewModel {
                 (setting == .customerBillingAddress || setting == .customerShippingAddress)
                 if canApplyTaxRates {
                     Task { @MainActor in
-                        await self.applySelectedStoredTaxRateIfAny()
+                        if self.flow == .creation {
+                            await self.applySelectedStoredTaxRateIfAny()
+                        }
+
                         // Show the tax rate section once we know if any stored tax rate applies, as it can change the text
                         self.shouldShowNewTaxRateSection = true
                     }
@@ -1333,6 +1401,16 @@ private extension EditableOrderViewModel {
                 continuation.resume(returning: plugin?.active == true)
             })
         }
+    }
+
+    func observeGiftCardStatesForAnalytics() {
+        $paymentDataViewModel.filter { $0.isGiftCardEnabled && $0.isAddGiftCardActionEnabled }
+            .first()
+            .sink { [weak self] _ in
+                guard let self else { return }
+                self.analytics.track(event: .Orders.orderFormAddGiftCardCTAShown(flow: self.flow.analyticsFlow))
+            }
+            .store(in: &cancellables)
     }
 
     /// Tracks when customer details have been added
@@ -1376,23 +1454,26 @@ private extension EditableOrderViewModel {
 
     /// Tracks an order creation success
     ///
-    func trackCreateOrderSuccess() {
+    func trackCreateOrderSuccess(usesGiftCard: Bool) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreationSuccess(millisecondsSinceSinceOrderAddNew:
                                                                                 try? orderDurationRecorder.millisecondsSinceOrderAddNew(),
-                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count)))
+                                                                             couponsCount: Int64(orderSynchronizer.order.coupons.count),
+                                                                             usesGiftCard: usesGiftCard))
     }
 
     /// Tracks an order creation failure
     ///
-    func trackCreateOrderFailure(error: Error) {
-        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(errorContext: String(describing: error),
+    func trackCreateOrderFailure(usesGiftCard: Bool, error: Error) {
+        analytics.track(event: WooAnalyticsEvent.Orders.orderCreationFailed(usesGiftCard: usesGiftCard,
+                                                                            errorContext: String(describing: error),
                                                                             errorDescription: error.localizedDescription))
     }
 
     /// Tracks an order remote sync failure
     ///
-    func trackSyncOrderFailure(error: Error) {
+    func trackSyncOrderFailure(usesGiftCard: Bool, error: Error) {
         analytics.track(event: WooAnalyticsEvent.Orders.orderSyncFailed(flow: flow.analyticsFlow,
+                                                                        usesGiftCard: usesGiftCard,
                                                                         errorContext: String(describing: error),
                                                                         errorDescription: error.localizedDescription))
     }
@@ -1602,6 +1683,18 @@ private extension EditableOrderViewModel {
     func removeFee() {
         orderSynchronizer.setFee.send(nil)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
+    }
+
+    /// Erases stored tax rate from order by cleaning the address, and removes stored tax rate from storage
+    ///
+    func forgetTaxRate() {
+        let order = orderSynchronizer.order
+        orderSynchronizer.setAddresses.send(OrderSyncAddressesInput(billing: order.billingAddress?.resettingTaxRateComponents(),
+                                                                    shipping: order.shippingAddress?.resettingTaxRateComponents()))
+        resetAddressForm()
+        storedTaxRate = nil
+        stores.dispatch(AppSettingsAction.setSelectedTaxRateID(id: nil, siteID: siteID))
+        autodismissableNotice = Notice(title: Localization.stopAddingTaxRateAutomaticallySuccessMessage)
     }
 }
 
@@ -1830,6 +1923,10 @@ private extension EditableOrderViewModel {
                                                                  "that is not applicated to the products")
         static let setNewTaxRate = NSLocalizedString("Set New Tax Rate", comment: "Button title to set a new tax rate to an order")
         static let editTaxRateSetting = NSLocalizedString("Edit Tax Rate Setting", comment: "Button title to edit the selected tax rate to apply to the order")
+        static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
+        static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
+                                                                                    comment: "Message when the user disables adding tax rates automatically")
+
 
         enum CouponSummary {
             static let singular = NSLocalizedString("Coupon (%1$@)",

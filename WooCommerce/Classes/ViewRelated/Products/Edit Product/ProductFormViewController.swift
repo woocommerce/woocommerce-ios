@@ -84,13 +84,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var shareProductCoordinator: ShareProductCoordinator?
 
+    /// Whether the product details were generated with AI.
+    ///
+    private let isAIContent: Bool
+
     init(viewModel: ViewModel,
+         isAIContent: Bool = false,
          eventLogger: ProductFormEventLoggerProtocol,
          productImageActionHandler: ProductImageActionHandler,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          presentationStyle: ProductFormPresentationStyle,
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader) {
         self.viewModel = viewModel
+        self.isAIContent = isAIContent
         self.eventLogger = eventLogger
         self.currency = currency
         self.presentationStyle = presentationStyle
@@ -210,6 +216,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     @objc func publishProduct() {
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
+        } else if viewModel.formType == .edit && isAIContent {
+            ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: [
+                "product_type": product.productType.rawValue,
+                "is_ai_content": isAIContent
+            ])
         }
         saveProduct(status: .published)
     }

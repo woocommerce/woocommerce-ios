@@ -2,13 +2,15 @@ import Combine
 import Foundation
 import Yosemite
 import WooFoundation
+import protocol Storage.StorageManagerType
 
 /// View model for `ProductDetailPreviewView`
 ///
 final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var isGeneratingDetails: Bool = false
-    @Published private var generatedProduct: Product?
+    @Published private(set) var isSavingProduct: Bool = false
+    @Published private(set) var generatedProduct: Product?
 
     @Published private(set) var productName: String
     @Published private(set) var productDescription: String?
@@ -17,13 +19,19 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     @Published private(set) var productCategories: String?
     @Published private(set) var productTags: String?
     @Published private(set) var productShippingDetails: String?
+    @Published private(set) var errorState: ErrorState = .none
+
+    /// Whether feedback banner for the generated text should be displayed.
+    @Published private(set) var shouldShowFeedbackView = false
 
     private let productFeatures: String?
-    private let packagingImage: MediaPickerImage?
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
+    private let userDefaults: UserDefaults
+    private let onProductCreated: (Product) -> Void
 
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
@@ -34,21 +42,38 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     private var generatedProductSubscription: AnyCancellable?
 
+    private lazy var categoryResultController: ResultsController<StorageProductCategory> = {
+        let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductCategory.name, ascending: true)
+        return ResultsController<StorageProductCategory>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    private lazy var tagResultController: ResultsController<StorageProductTag> = {
+        let predicate = NSPredicate(format: "siteID = %lld", self.siteID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductTag.name, ascending: true)
+        return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     init(siteID: Int64,
          productName: String,
          productDescription: String?,
          productFeatures: String?,
-         packagingImage: MediaPickerImage? = nil,
          currency: String = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode),
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
          dimensionUnit: String? = ServiceLocator.shippingSettingsService.dimensionUnit,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer(),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         analytics: Analytics = ServiceLocator.analytics,
+         userDefaults: UserDefaults = .standard,
+         onProductCreated: @escaping (Product) -> Void) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
+        self.userDefaults = userDefaults
+        self.onProductCreated = onProductCreated
 
         self.currency = currency
         self.currencyFormatter = currencyFormatter
@@ -60,31 +85,63 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         self.productName = productName
         self.productDescription = productDescription
         self.productFeatures = productFeatures
-        self.packagingImage = packagingImage
 
+        try? categoryResultController.performFetch()
+        try? tagResultController.performFetch()
         observeGeneratedProduct()
     }
 
     @MainActor
     func generateProductDetails() async {
-        // TODO - update this with actual implementation
+        shouldShowFeedbackView = false
         isGeneratingDetails = true
-        try? await Task.sleep(nanoseconds: 1_000_000_000)
-        #if canImport(SwiftUI) && DEBUG
-        generatedProduct = Product.swiftUIPreviewSample()
-        #endif
-        isGeneratingDetails = false
+        errorState = .none
+        do {
+            let language = try await identifyLanguage()
+            let aiTone = userDefaults.aiTone(for: siteID)
+            let product = try await generateProduct(language: language,
+                                                    tone: aiTone)
+            generatedProduct = product
+            isGeneratingDetails = false
+            shouldShowFeedbackView = true
+            analytics.track(event: .ProductCreationAI.generateProductDetailsSuccess())
+        } catch {
+            analytics.track(event: .ProductCreationAI.generateProductDetailsFailed(error: error))
+            DDLogError("⛔️ Error generating product with AI: \(error)")
+            errorState = .generatingProduct
+        }
     }
 
-    func saveProductAsDraft() {
-        // TODO
+    @MainActor
+    func saveProductAsDraft() async {
+        analytics.track(event: .ProductCreationAI.saveAsDraftButtonTapped())
+        guard let generatedProduct else {
+            return
+        }
+        errorState = .none
+        isSavingProduct = true
+        do {
+            let newProduct = try await saveProductRemotely(product: generatedProduct)
+            analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
+            onProductCreated(newProduct)
+        } catch {
+            DDLogError("⛔️ Error saving product with AI: \(error)")
+            analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
+            errorState = .savingProduct
+        }
+        isSavingProduct = false
     }
 
     func handleFeedback(_ vote: FeedbackView.Vote) {
-        // TODO
+        analytics.track(event: .AIFeedback.feedbackSent(source: .productCreation,
+                                                        isUseful: vote == .up))
+
+        shouldShowFeedbackView = false
     }
 }
 
+// MARK: - Product details for preview
+//
 private extension ProductDetailPreviewViewModel {
     func observeGeneratedProduct() {
         generatedProductSubscription = $generatedProduct
@@ -129,7 +186,7 @@ private extension ProductDetailPreviewViewModel {
             .filter({ !$0.isEmpty })
 
         if let dimensionUnit = dimensionUnit,
-            !dimensions.isEmpty {
+           !dimensions.isEmpty {
             switch dimensions.count {
             case 1:
                 let dimension = dimensions[0]
@@ -155,6 +212,96 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: Generating product
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func identifyLanguage() async throws -> String {
+        do {
+            let productInfo = {
+                guard let features = productFeatures,
+                      features.isNotEmpty else {
+                    return productName
+                }
+                return productName + " " + features
+            }()
+            let language = try await withCheckedThrowingContinuation { continuation in
+                stores.dispatch(ProductAction.identifyLanguage(siteID: siteID,
+                                                               string: productInfo,
+                                                               feature: .productCreation,
+                                                               completion: { result in
+                    continuation.resume(with: result)
+                }))
+            }
+            return language
+        } catch {
+            throw IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: error)
+        }
+    }
+
+    @MainActor
+    func generateProduct(language: String,
+                         tone: AIToneVoice) async throws -> Product {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.generateProduct(siteID: siteID,
+                                                          productName: productName,
+                                                          keywords: productFeatures ?? productDescription ?? "",
+                                                          language: language,
+                                                          tone: tone.rawValue,
+                                                          currencySymbol: currency,
+                                                          dimensionUnit: dimensionUnit,
+                                                          weightUnit: weightUnit,
+                                                          categories: categoryResultController.fetchedObjects,
+                                                          tags: tagResultController.fetchedObjects,
+                                                          completion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
+// MARK: - Saving product
+//
+private extension ProductDetailPreviewViewModel {
+    /// Saves the provided product remotely.
+    ///
+    @MainActor
+    func saveProductRemotely(product: Product) async throws -> Product {
+        try await withCheckedThrowingContinuation { continuation in
+            let updateProductAction = ProductAction.addProduct(product: product) { result in
+                switch result {
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                case .success(let product):
+                    continuation.resume(returning: product)
+                }
+            }
+            stores.dispatch(updateProductAction)
+        }
+    }
+}
+
+// MARK: - Subtypes
+//
+extension ProductDetailPreviewViewModel {
+    enum ErrorState: Equatable {
+        case none
+        case generatingProduct
+        case savingProduct
+
+        var errorMessage: String {
+            switch self {
+            case .none:
+                return ""
+            case .generatingProduct:
+                return Localization.errorGenerating
+            case .savingProduct:
+                return Localization.errorSaving
+            }
+        }
+    }
+}
+
 private extension ProductDetailPreviewViewModel {
     enum Localization {
         static let virtualProductType = NSLocalizedString("Virtual", comment: "Display label for simple virtual product type.")
@@ -170,5 +317,14 @@ private extension ProductDetailPreviewViewModel {
                                                            comment: "Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit]")
         static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@ %4$@",
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
+        // Error messages
+        static let errorGenerating = NSLocalizedString(
+            "There was an error generating product details. Please try again.",
+            comment: "Error message when generating product details fails on the add product with AI Preview screen."
+        )
+        static let errorSaving = NSLocalizedString(
+            "There was an error saving product details. Please try again.",
+            comment: "Error message when saving product as draft on the add product with AI Preview screen."
+        )
     }
 }

@@ -22,7 +22,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
                 height: Double,
                 weight: Double,
                 isLetter: Bool,
-                hazmatCategory: String,
+                hazmatCategory: String?,
                 customsForm: ShippingLabelCustomsForm?) {
         self.id = id
         self.boxID = boxID
@@ -31,7 +31,7 @@ public struct ShippingLabelPackageSelected: Equatable, GeneratedFakeable {
         self.height = height
         self.weight = weight
         self.isLetter = isLetter
-        self.hazmatCategory = hazmatCategory.isEmpty ? nil : hazmatCategory
+        self.hazmatCategory = hazmatCategory
         self.customsForm = customsForm
     }
 }
@@ -49,7 +49,7 @@ extension ShippingLabelPackageSelected: Encodable {
         try container.encode(height, forKey: .height)
         try container.encode(weight, forKey: .weight)
         try container.encode(isLetter, forKey: .isLetter)
-        try container.encode(hazmatCategory, forKey: .hazmatCategory)
+        try container.encodeIfPresent(hazmatCategory, forKey: .hazmatCategory)
         if let form = customsForm {
             try container.encode(form.contentsType.rawValue, forKey: .contentsType)
             try container.encode(form.contentExplanation, forKey: .contentsExplanation)

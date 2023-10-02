@@ -387,6 +387,7 @@
 		6812FC012A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */; };
 		6846B0152A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */; };
 		6846B01B2A61B590008EB143 /* iap-transaction-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6846B01A2A61B590008EB143 /* iap-transaction-handled.json */; };
+		684AB6D82AC2E93100106D7C /* order-with-special-character-currency.json in Resources */ = {isa = PBXBuildFile; fileRef = 684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */; };
 		6888A2C62A650FD00026F5C0 /* iap-transaction-not-handled.json in Resources */ = {isa = PBXBuildFile; fileRef = 6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */; };
 		688908AE28FF920C0081A07E /* customer-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 688908AD28FF920C0081A07E /* customer-2.json */; };
 		68BD37B328D9B8BD00C2A517 /* CustomerRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */; };
@@ -1364,6 +1365,7 @@
 		6812FC002A6B27E100D7C625 /* InAppPurchasesTransactionMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapperTests.swift; sourceTree = "<group>"; };
 		6846B0142A619A5C008EB143 /* InAppPurchasesTransactionMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesTransactionMapper.swift; sourceTree = "<group>"; };
 		6846B01A2A61B590008EB143 /* iap-transaction-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-handled.json"; sourceTree = "<group>"; };
+		684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-with-special-character-currency.json"; sourceTree = "<group>"; };
 		6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "iap-transaction-not-handled.json"; sourceTree = "<group>"; };
 		688908AD28FF920C0081A07E /* customer-2.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "customer-2.json"; sourceTree = "<group>"; };
 		68BD37B228D9B8BD00C2A517 /* CustomerRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerRemoteTests.swift; sourceTree = "<group>"; };
@@ -2880,6 +2882,7 @@
 				CE865AA22A4207A50049B03C /* date-modified-gmt-without-data.json */,
 				6846B01A2A61B590008EB143 /* iap-transaction-handled.json */,
 				6888A2C52A650FD00026F5C0 /* iap-transaction-not-handled.json */,
+				684AB6D72AC2E93100106D7C /* order-with-special-character-currency.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -3801,6 +3804,7 @@
 				028CB717290223CB00331C09 /* create-account-error-password.json in Resources */,
 				CE71E2372A4C3F3900DB5376 /* reports-products-without-data.json in Resources */,
 				D800DA0E25EFEC21001E13CE /* wcpay-connection-token.json in Resources */,
+				684AB6D82AC2E93100106D7C /* order-with-special-character-currency.json in Resources */,
 				CE865AA32A4207A50049B03C /* date-modified-gmt-without-data.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
 				DE4D23BE29B6E10F003A4B5D /* announcements.json in Resources */,

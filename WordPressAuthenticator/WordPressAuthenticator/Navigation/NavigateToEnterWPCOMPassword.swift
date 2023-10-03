@@ -9,21 +9,24 @@ public struct NavigateToEnterWPCOMPassword: NavigationCommand {
         self.loginFields = loginFields
     }
     public func execute(from: UIViewController?) {
-        presentUsernameAndPasswordView(navigationController: (from as? UINavigationController) ?? from?.navigationController, loginFields: loginFields)
+        let navigationController = (from as? UINavigationController) ?? from?.navigationController
+        presentPasswordView(navigationController: navigationController,
+                            loginFields: loginFields)
     }
 }
 
 private extension NavigateToEnterWPCOMPassword {
-    func presentUsernameAndPasswordView(navigationController: UINavigationController?, loginFields: LoginFields) {
-        guard let vc = PasswordViewController.instantiate(from: .password) else {
+    func presentPasswordView(navigationController: UINavigationController?, loginFields: LoginFields) {
+        guard let controller = PasswordViewController.instantiate(from: .password) else {
             WPAuthenticatorLogError("Failed to navigate to PasswordViewController from GetStartedViewController")
             return
         }
 
-        vc.loginFields = loginFields
-//        vc.dismissBlock = dismissBlock
-//        vc.errorToPresent = errorToPresent
+        // TODO: test the dismissal & error handling
+        controller.loginFields = loginFields
+//        controller.dismissBlock = dismissBlock
+//        controller.errorToPresent = errorToPresent
 
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }

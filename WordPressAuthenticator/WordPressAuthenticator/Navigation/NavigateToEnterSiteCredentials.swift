@@ -9,21 +9,24 @@ public struct NavigateToEnterSiteCredentials: NavigationCommand {
         self.loginFields = loginFields
     }
     public func execute(from: UIViewController?) {
-        presentUsernameAndPasswordView(navigationController: (from as? UINavigationController) ?? from?.navigationController, loginFields: loginFields)
+        let navigationController = (from as? UINavigationController) ?? from?.navigationController
+        presentSiteCredentialsView(navigationController: navigationController,
+                                   loginFields: loginFields)
     }
 }
 
 private extension NavigateToEnterSiteCredentials {
-    func presentUsernameAndPasswordView(navigationController: UINavigationController?, loginFields: LoginFields) {
-        guard let vc = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
+    func presentSiteCredentialsView(navigationController: UINavigationController?, loginFields: LoginFields) {
+        guard let controller = SiteCredentialsViewController.instantiate(from: .siteAddress) else {
             WPAuthenticatorLogError("Failed to navigate to SiteCredentialsViewController")
             return
         }
 
-        vc.loginFields = loginFields
-//        vc.dismissBlock = dismissBlock
-//        vc.errorToPresent = errorToPresent
+        // TODO: test the dismissal & error handling
+        controller.loginFields = loginFields
+//        controller.dismissBlock = dismissBlock
+//        controller.errorToPresent = errorToPresent
 
-        navigationController?.pushViewController(vc, animated: true)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }

@@ -228,6 +228,20 @@ private extension ProductDetailPreviewViewModel {
             stores.dispatch(action)
         }
     }
+
+    @MainActor
+    func fetchProductSiteSettings() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let action = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
 }
 
 // MARK: Generating product

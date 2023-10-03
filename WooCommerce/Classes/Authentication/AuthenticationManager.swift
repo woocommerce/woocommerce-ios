@@ -116,7 +116,47 @@ class AuthenticationManager: Authentication {
                                                                         rootViewController: rootViewController)
         }
 
+        if isAppLoginUrl(url) {
+            guard let queryDictionary = url.query?.dictionaryFromQueryString(),
+            let siteURL = queryDictionary.string(forKey: "siteUrl") else {
+                print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                return false
+            }
+
+            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail") {
+                showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
+                return true
+            }
+
+            if let wporgUsername = queryDictionary.string(forKey: "username") {
+                showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
+                return true
+            }
+        }
+
         return false
+    }
+
+    private func showWPCOMLogin(siteURL: String, email: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = true
+        loginFields.username = email
+        NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = false
+        loginFields.username = username
+        NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func isAppLoginUrl(_ url: URL) -> Bool {
+        // TODO-jc: move to constants
+        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)://app-login"
+        return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
     /// Injects `loggedOutAppSettings`

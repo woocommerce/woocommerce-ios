@@ -33,11 +33,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let onProductCreated: (Product) -> Void
 
-    private let currency: String
-    private let currencyFormatter: CurrencyFormatter
+    private var currency: String
+    private var currencyFormatter: CurrencyFormatter
 
-    private let weightUnit: String?
-    private let dimensionUnit: String?
+    private var weightUnit: String?
+    private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
 
     private var generatedProductSubscription: AnyCancellable?

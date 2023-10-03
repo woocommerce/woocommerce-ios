@@ -215,6 +215,26 @@ private extension ProductDetailPreviewViewModel {
 // MARK: - Site settings
 //
 private extension ProductDetailPreviewViewModel {
+    func fetchSettingsIfNeeded() async {
+        guard weightUnit == nil || dimensionUnit == nil else {
+            return
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                try? await self.fetchGeneralSettings()
+            }
+            group.addTask {
+                try? await self.fetchProductSiteSettings()
+            }
+        }
+
+        currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+        currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        weightUnit = ServiceLocator.shippingSettingsService.weightUnit
+        dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit
+    }
+
     @MainActor
     func fetchGeneralSettings() async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in

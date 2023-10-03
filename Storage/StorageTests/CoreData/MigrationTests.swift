@@ -2216,6 +2216,74 @@ final class MigrationTests: XCTestCase {
         let isAIAssitantFeatureActive = try XCTUnwrap(migratedSiteEntity.value(forKey: "isAIAssitantFeatureActive") as? Bool)
         XCTAssertFalse(isAIAssitantFeatureActive, "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_97_to_98_adds_new_isSampleItem_attribute_to_product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 97")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 97)
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["isSampleItem"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 98")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductEntity = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        let isSampleItem = try XCTUnwrap(migratedProductEntity.value(forKey: "isSampleItem") as? Bool)
+        XCTAssertFalse(isSampleItem, "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_98_to_99_adds_new_attributes_to_ProductBundleItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 98")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 98)
+
+        // Inserts a new ProductBundleItem and add it to Product.
+        let bundledItem = insertProductBundleItem(to: sourceContext)
+        product.setValue(NSOrderedSet(array: [bundledItem]), forKey: "bundledItems")
+        try sourceContext.save()
+
+        XCTAssertNil(bundledItem.entity.attributesByName["minQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["maxQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["defaultQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["isOptional"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesDefaultVariationAttributes"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["allowedVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.relationshipsByName["defaultVariationAttributes"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 99")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        let migratedBundledItem = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductBundleItem"), 1)
+
+        // ProductBundleItem has the expected default values for the new attributes.
+        XCTAssertEqual(migratedBundledItem.value(forKey: "minQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "maxQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "isOptional") as? Bool, true)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesVariations") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesDefaultVariationAttributes") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "allowedVariations") as? [Int64], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultVariationAttributes") as? [GenericAttribute], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "product") as? NSManagedObject, migratedProduct)
+
+        // Product's relationship to ProductBundleItem exists.
+        XCTAssertEqual(migratedProduct.value(forKey: "bundledItems") as? NSOrderedSet, NSOrderedSet(array: [migratedBundledItem]))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

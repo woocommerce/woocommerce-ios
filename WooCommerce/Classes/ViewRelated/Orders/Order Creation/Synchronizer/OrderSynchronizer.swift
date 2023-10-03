@@ -7,7 +7,7 @@ import Combine
 enum OrderSyncState {
     case syncing(blocking: Bool)
     case synced
-    case error(Error)
+    case error(Error, usesGiftCard: Bool)
 }
 
 /// Product input for an `OrderSynchronizer` type.
@@ -58,6 +58,12 @@ protocol OrderSynchronizer {
     ///
     var orderPublisher: Published<Order>.Publisher { get }
 
+    /// Gift card code to apply to the order.
+    var giftCardToApply: String? { get }
+
+    /// Publisher for the gift card code to apply to the order.
+    var giftCardToApplyPublisher: Published<String?>.Publisher { get }
+
     // MARK: Inputs
 
     /// Changes the underlaying order status.
@@ -94,6 +100,9 @@ protocol OrderSynchronizer {
     ///
     var removeCoupon: PassthroughSubject<String, Never> { get }
 
+    /// Sets the gift card applied to the order.
+    var setGiftCard: PassthroughSubject<String?, Never> { get }
+
     /// Sets or removes an order customer note.
     ///
     var setNote: PassthroughSubject<String?, Never> { get }
@@ -104,5 +113,5 @@ protocol OrderSynchronizer {
 
     /// Commits all order changes to the remote source. State needs to be in `.synced` to initiate work.
     ///
-    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>) -> Void)
+    func commitAllChanges(onCompletion: @escaping (Result<Order, Error>, _ usesGiftCard: Bool) -> Void)
 }

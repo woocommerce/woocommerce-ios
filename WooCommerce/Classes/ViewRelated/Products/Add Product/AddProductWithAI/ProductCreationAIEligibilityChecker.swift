@@ -4,31 +4,30 @@ import Experiments
 
 /// Protocol for checking "add product using AI" eligibility for easier unit testing.
 protocol ProductCreationAIEligibilityCheckerProtocol {
-    /// Checks if the user is eligible for the "add product from image" feature.
-    func isEligible() -> Bool
+    /// Checks if the user is eligible for the "add product using AI" feature.
+    var isEligible: Bool { get }
 }
 
 /// Checks the eligibility for the "add product using AI" feature.
 final class ProductCreationAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol {
     private let stores: StoresManager
-    private let storeHasProducts: Bool
+    private let featureFlagService: FeatureFlagService
 
     init(stores: StoresManager = ServiceLocator.stores,
-         storeHasProducts: Bool) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.stores = stores
-        self.storeHasProducts = storeHasProducts
+        self.featureFlagService = featureFlagService
     }
 
-    func isEligible() -> Bool {
+    var isEligible: Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.productCreationAI) else {
+            return false
+        }
+
         guard let site = stores.sessionManager.defaultSite else {
             return false
         }
 
-        // Should be a new user with zero products
-        guard storeHasProducts == false else {
-            return false
-        }
-
-        return site.isWordPressComStore || site.isAIAssitantFeatureActive
+        return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

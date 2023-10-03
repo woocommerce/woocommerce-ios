@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-05 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-09-27 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -384,6 +384,9 @@ which should be translated separately and considered part of this sentence. */
    Top header text of the store creation profiler question about the features. */
 "About you" = "자기소개";
 
+/* Title on the add product features screen. */
+"About your product" = "상품 소개";
+
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
    Header of the store creation profiler question about the store selling platforms.
@@ -421,6 +424,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button to activate Jetpack on WP-Admin instead of on app */
 "Activate Jetpack in WP-Admin" = "WP 관리자에서 젯팩 활성화";
+
+/* Button to activate the Card Present Payments plugin */
+"Activate plugin" = "플러그인 활성화";
 
 /* Name of the activation Jetpack plugin step */
 "Activating" = "활성화 중";
@@ -481,6 +487,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "파일 추가하기";
+
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "상품권 추가";
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "새 속성 추가하기";
@@ -553,8 +563,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message title of bottom sheet for selecting a template or manual product
    The action to add a product
-   Title for the button on the Products onboarding banner */
+   Title for the button on the Products onboarding banner
+   Title on the action sheet to select an option for adding new product */
 "Add a product" = "제품 추가";
+
+/* Description of the option to add new product manually */
+"Add a product and the details manually" = "수동으로 상품 및 상세 정보 추가";
 
 /* Cell text in Add / Edit product when there are no images. */
 "Add a product image" = "제품 이미지 추가";
@@ -604,7 +618,11 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "각 옵션 추가 및 Return 키 누르기";
 
-/* Title for the option to create product manually */
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "온라인에서 상품이 쉽게 검색되도록 주요 기능, 이점 또는 상세 정보를 추가하세요.";
+
+/* Title for the option to create product manually
+   Title of the option to add new product manually */
 "Add manually" = "수동으로 추가";
 
 /* Title of the bottom sheet from the product form to add more product details.
@@ -635,8 +653,14 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility label to add products' downloadable files' info remotely */
 "Add products' downloadable files' info remotely" = "원격으로 제품의 다운로드 가능한 파일의 정보 입력";
 
+/* Description for the empty state on the Tax Rates selector screen */
+"Add tax rates in admin. Only tax rates with location information will be shown here." = "관리자에서 세율을 추가합니다. 위치 정보가 있는 세율만 여기에 표시됩니다.";
+
 /* Placeholder text that will be shown in the view for adding the description of a coupon. */
 "Add the description of the coupon." = "쿠폰 설명을 추가합니다.";
+
+/* Body for the action to store selected tax rate */
+"Add this rate to all created orders" = "생성한 모든 주문에 이 요율 추가";
 
 /* Option to add item to new package on Package Details screen of Shipping Label flow. */
 "Add to new package" = "새 패키지에 추가";
@@ -652,6 +676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "첫 번째 스토어 추가";
+
+/* Title on the add product name screen. */
+"Add your product name" = "상품 이름 추가";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "할인 추가는 현재 이용할 수 없습니다. 먼저 쿠폰을 제거하세요.";
@@ -704,6 +731,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Afghanistan" = "아프가니스탄";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Air Eligible Ethanol Package - (authorized fragrance and hand sanitizer shipments)" = "항공 적격 에탄올 패키지 - (승인된 향수 및 손 소독제 배송)";
 
 /* Option to select the Airmail app when logging in with magic links */
 "Airmail" = "Airmail";
@@ -909,8 +939,10 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "애플리케이션 이름";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "적용";
@@ -936,6 +968,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the alert when a user is changing the product type */
 "Are you sure you want to change the product type?" = "제품 유형을 변경하시겠습니까?";
+
+/* Message on the confirmation alert to delete product category */
+"Are you sure you want to delete this category permanently?" = "이 카테고리를 영구적으로 삭제하시겠어요?";
 
 /* Confirm message for deleting coupon on the Coupon Details screen */
 "Are you sure you want to delete this coupon?" = "이 쿠폰을 삭제하시겠나요?";
@@ -1251,7 +1286,7 @@ which should be translated separately and considered part of this sentence. */
 "By tapping the Install Jetpack button, you agree to our %1$@ and to %2$@ with WordPress.com." = "젯팩 설치 버튼을 클릭하면 워드프레스닷컴의 %1$@ 및 %2$@에 동의하는 것입니다.";
 
 /* Details on the store onboarding WCPay setup screen. */
-"By using WooCommerce Payments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "우커머스 결제를 사용하면 [서비스 약관(https:\/\/wordpress.com\/tos) 적용에 동의하고 [개인정보 취급방침](https:\/\/automattic.com\/privacy\/)을 읽었다고 인정하는 것입니다.";
+"By using WooPayments you agree to be bound by our [Terms of Service](https:\/\/wordpress.com\/tos) and acknowledge that you have read our [Privacy Policy](https:\/\/automattic.com\/privacy\/)." = "WooPayments를 사용하면 [서비스 약관(https:\/\/wordpress.com\/tos) 적용에 동의하고 [개인정보 취급방침](https:\/\/automattic.com\/privacy\/)을 읽었다는 것을 확인하는 것입니다.";
 
 /* Header of a list of other countries in the store creation country question. */
 "COUNTRIES" = "국가";
@@ -1323,10 +1358,13 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
+   Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1404,6 +1442,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert when there is an error adding new product tags. */
 "Cannot Add Tags" = "태그를 추가할 수 없습니다.";
 
+/* Title of the alert when there is an error creating a new product category */
+"Cannot Update Category" = "카테고리를 업데이트할 수 없음";
+
 /* Error message shown when the input URL does not point to an existing site. */
 "Cannot access the site at this address. Please double-check and try again." = "이 주소의 사이트에 접근할 수 없습니다. 다시 확인하고 다시 시도하세요.";
 
@@ -1412,6 +1453,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "패키지를 추가할 수 없음";
+
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "주문에 상품권 적용 불가";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "주문에 상품권 적용 불가 오류: %1$@";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "상품을 복제할 수 없음";
@@ -1486,6 +1534,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "카테고리";
@@ -1532,6 +1581,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Alert title for check your email during logIn/signUp. */
 "Check your email!" = "이메일을 확인하세요!";
+
+/* Bottom title of the alert presented with a spinner while the order is being validated */
+"Checking order" = "주문 확인하기";
 
 /* Title of the WPCOM checkout web view. */
 "Checkout" = "계산";
@@ -1590,6 +1642,48 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the domain credit banner in domain settings. */
 "Claim your free domain" = "무료 도메인 신청";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 1 – Toy Propellant\/Safety Fuse Package" = "Class 1 - 장난감 추진제\/안전 도화선 패키지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 3 - Package (Hand sanitizer, rubbing alcohol, ethanol base products, flammable liquids etc.)" = "Class 3 - 패키지(손 소독제, 소독용 알코올, 에탄올 주성분 제품, 인화성 액체 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 4 - Package (Flammable solids)" = "Class 4 - 패키지(가연성 고체)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 5 - Package (Oxidizers)" = "Class 5 - 패키지(산화제)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 6 - Package (Poisonous materials)" = "Class 6 - 패키지(유독물질)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 7 – Radioactive Materials Package (e.g., smoke detectors, minerals, gun sights, etc.)" = "Class 7 - (예: 연기 감지기, 무기질, 사격 조준기 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Corrosive Materials Package - Air Eligible Corrosive Materials (certain cleaning or tree\/weed killing compounds, etc.)" = "Class 8 - 부식성 물질 패키지 - 항공 적격 부식성 물질(특정 세정 또는 나무\/잡초 제거 화합물 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 8 – Nonspillable Wet Battery Package - Sealed lead acid batteries" = "Class 8 - 비누출형 습식 배터리 패키지 - 밀폐형 납 축전지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery Marked – Ground Only Package - New Individual or spare lithium batteries (marked UN3480 or UN3090)" = "Class 9 - 리튬 배터리 표시 - 육상 전용 패키지 - 새 개별 또는 예비 리튬 배터리(UN3480 또는 UN3090 표시)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium Battery – Returns Package - Used electronic devices containing or packaged with lithium batteries (markings required)" = "클래스 9 - 리튬 배터리 - 반품 패키지 - 리튬 배터리가 포함되어 있거나 포장된 중고 전자 기기(표시 필수)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 - Lithium batteries, marked package - New electronic devices packaged with lithium batteries (marked UN3481 or UN3091)" = "Class 9 - 리튬 배터리, 표시된 패키지 - 리튬 배터리가 포장된 새 전자 기기(UN3481 또는 UN3091 표시)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Dry Ice Package (limited to 5 lbs. if shipped via Air)" = "Class 9 - 드라이아이스 패키지(항공 배송 시 5파운드로 제한)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Lithium batteries, unmarked package - New electronic devices installed or packaged with lithium batteries (no marking)" = "Class 9 - 리튬 배터리, 표시 없는 패키지 - 리튬 배터리가 장착되거나 포장된 새 전자 기기(표시 없음)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Class 9 – Magnetized Materials Package" = "Class 9 - 자성물질 패키지";
 
 /* Action to add product on the placeholder overlay when no products match the filter on the Products tab
    Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List */
@@ -1834,6 +1928,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button to contact support in the survey complete screen */
 "Contact us here" = "여기에서 문의하세요.";
 
+/* Toggle to declare when a package contains hazardous materials */
+"Contains Hazardous Materials" = "유해물질 있음";
+
 /* Title for the Content Details row in Customs screen of Shipping Label flow */
 "Content Details" = "내용물 상세 정보";
 
@@ -1844,6 +1941,7 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1888,10 +1986,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "쿠키 정책";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "복사되었습니다!";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "복사";
@@ -2010,6 +2110,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "쿠폰 생성";
 
+/* Continue button on the add product features screen */
+"Create Product Details" = "상품 상세 정보 생성";
+
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
    Text on the button that starts shipping label creation */
@@ -2035,6 +2138,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description for percentage discount type on the action sheet presented from Add or Edit coupon screen */
 "Create a percentage discount for selected products" = "선택한 제품에 대해 할인율을 설정하세요.";
+
+/* Title of the option to add new product with AI assistance */
+"Create a product with AI" = "AI로 상품 생성";
 
 /* Title of the store creation web view. */
 "Create a store" = "스토어 생성";
@@ -2218,6 +2324,9 @@ which should be translated separately and considered part of this sentence. */
 /* Details section title in the Edit Address Form */
 "DETAILS" = "상세 정보";
 
+/* A clickable text link that willredirect the user to a website */
+"DHL Express" = "DHL Express";
+
 /* Navigation title of the orders filter selector screen for date range
    Row title for filtering orders by date range.
    Title describing the possible date range selections of the Analytics Hub
@@ -2244,8 +2353,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button title Delete in Downloadable File Options Action Sheet
    Button title Delete in Edit Product More Options Action Sheet
+   Button to delete a product category
    Title for the action button on the confirm alert for deleting coupon on the Coupon Details screen */
 "Delete" = "삭제";
+
+/* Title of the confirmation alert to delete product category. Reads like: Delete Clothing */
+"Delete %1$@" = "%1$@ 삭제";
 
 /* Action title for deleting coupon on the Coupon Details screen */
 "Delete Coupon" = "쿠폰 삭제";
@@ -2268,6 +2381,12 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "세부사항";
+
+/* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
+"Determine your product's mailability using the %1$@." = "%1$@을(를) 사용하여 상품의 우송 가능성을 결정합니다.";
 
 /* Footer text in Product Menu order screen */
 "Determines the products positioning in the catalog. The lower the value of the number, the higher the item will be on the product list. You can also use negative values" = "카탈로그에서 제품 위치를 결정합니다. 숫자 값이 낮을수록 아이템이 제품 목록에서 더 위에 옵니다. 음수 값도 사용할 수 있습니다";
@@ -2360,6 +2479,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the alert for dismissing all the inbox notes. */
 "Dismiss all messages" = "모든 메시지 무시";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Division 4.1 – Mailable flammable solids and Safety Matches Package - Safety\/strike on box matches, book matches, mailable flammable solids" = "Division 4.1 - 우송 가능한 가연성 고체 및 안전성냥 패키지 - 곽성냥, 성냥첩, 우송 가능한 가연성 고체에 대한 안전성\/타격";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.1 – Oxidizers Package - Hydrogen peroxide (8 to 20％ concentration)" = "Division 5.1 - 산화제 패키지 - 과산화수소(농도 8~20％)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 5.2 – Organic Peroxides Package" = "Division 5.2 - 유기과산화물 패키지";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.1 – Toxic Materials Package (with an LD50 of 50 mg\/kg or less) - (pesticides, herbicides, etc.)" = "Division 6.1 - 독성 물질 패키지(50mg\/kg 이하 LD50 포함) - (살충제, 제초제 등)";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Division 6.2 - Hazardous Materials - Biological Materials (e.g., lab test kits, authorized COVID test kit returns)" = "Division 6.2 - 위험물질 - 생물학적 물질(예: 실험실 테스트 키트, 승인된 코로나19 진단 키트 반품)";
+
 /* Country option for a site address. */
 "Djibouti" = "지부티";
 
@@ -2400,6 +2534,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "다시 보지 않음";
+
+/* Subtitle on the add product with AI Preview screen. */
+"Don't worry. You can always change below details later." = "걱정하지 마세요. 아래의 상세 정보는 나중에 언제든지 변경하실 수 있습니다.";
 
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
@@ -2541,6 +2678,7 @@ which should be translated separately and considered part of this sentence. */
 "Ecwid" = "Ecwid";
 
 /* Button to edit a customer on the New Order screen
+   Button to edit a product category
    Button to edit an order on Order Details screen
    Button to edit an order status on the New Order screen
    Button to edit the customer note on the New Order screen
@@ -2575,6 +2713,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Accessibility label for the button to edit order status on the New Order screen */
 "Edit Status" = "상태 편집";
+
+/* Button title to edit the selected tax rate to apply to the order */
+"Edit Tax Rate Setting" = "세율 설정 편집";
 
 /* Button title for the edit tax rates button in the tax educational dialog */
 "Edit Tax Rates in Admin" = "관리자에서 세율 편집";
@@ -2741,6 +2882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
+
+/* Placeholder of the gift card code text field in the order form. */
+"Enter code" = "코드 입력";
 
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "설명 입력";
@@ -2920,6 +3064,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label for sample product features to enter in the product description AI generator view. */
 "Example: Potted, cactus, plant, decorative, easy-care" = "예: 화분, 선인장, 식물, 장식용, 손쉬운 관리";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Excepted Quantity Provision Package (e.g., small volumes of flammable liquids, corrosive, toxic or environmentally hazardous materials - marking required)" = "예외 수량 제공 패키지(예: 소량의 인화성 액체, 부식성, 독성 또는 환경적으로 유해한 물질 - 표시 필수)";
 
 /* Button to submit selection on the Exclude Categories screen when more than 1 item is selected. Reads like: Exclude 10 Categories */
 "Exclude %1$d Categories" = "%1$d개 카테고리 제외";
@@ -3158,6 +3305,11 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "음식 및 음료";
 
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "예: 부드러운 원단, 튼튼한 바느질, 독특한 디자인";
+
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "비밀번호를 잊으셨나요?";
 
@@ -3239,7 +3391,8 @@ which should be translated separately and considered part of this sentence. */
 /* Loading state for the suggested text in the add product from image form. */
 "Generating suggestion from photo..." = "사진을 통한 추천 생성 중...";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "생성 중...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3312,9 +3465,19 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "선물";
 
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "상품권";
+
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "상품권";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "상품권이 유효하지 않음";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "상품권이 적용되지 않음";
 
 /* No comment provided by engineer. */
 "Gift cards" = "상품권";
@@ -3377,6 +3540,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Grenada" = "그레나다";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Ground Only Hazardous Materials (For items that are not listed, but are restricted to surface only)" = "육상 전용 유해물질(목록에 없지만 표면으로만 제한된 아이템의 경우)";
 
 /* Title for the 'group of' setting in the quantity rules screen. */
 "Group of" = "그룹";
@@ -3451,6 +3617,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle on the Jetpack setup required screen */
 "Have your store credentials ready." = "스토어 자격 증명을 준비하세요.";
+
+/* Button title for the hazmat material category selection */
+"Hazardous material category" = "유해물질 카테고리";
 
 /* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
 "Header 1" = "헤더 1";
@@ -3535,6 +3704,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "스토어 설정 목록 숨기기";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "어떤 부분이 상품을 독특하게 만드는지 강조하고 AI가 만들어 내는 놀라운 결과물을 확인하세요.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "맞춤형 설명에 대한 키워드로 상품의 고유한 기능과 잠재 고객을 강조 표시하세요.";
 
@@ -3583,6 +3755,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text on the support form to refer to what area the user has problem with. */
 "I need help with" = "도움말이 필요한 영역";
 
+/* A hazardous material description stating when a package can fit into this category */
+"ID8000 Consumer Commodity Package - Air Eligible ID8000 Consumer Commodity (Non-flammableaerosols, Flammable combustible liquids, Toxic Substance, Miscellaneious hazardous materials)" = "ID8000 소비자 상품 패키지 - 항공 적격 ID8000 소비자 상품(비인화성 에어로졸, 인화성 가연성 액체, 독성 물질, 기타 유해물질)";
+
 /* Header section items to fulfill in Shipping Label Package Detail */
 "ITEMS TO FULFILL" = "주문을 처리할 아이템";
 
@@ -3627,7 +3802,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "재고 있음";
 
 /* Title of the store creation profiler question about the store selling platforms. */
@@ -3816,6 +3992,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "유효하지 않은 엔드포인트";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "유효하지 않은 상품권 오류: %1$@";
+
 /* No comment provided by engineer. */
 "Invalid username" = "유효하지 않은 사용자명";
 
@@ -3826,6 +4005,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "유효하지 않은 무게";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "재고";
@@ -3844,6 +4024,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "생성한 메시지가 유용한가요?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "결과가 유용한가요?";
 
 /* Country option for a site address. */
 "Isle of Man" = "맨섬";
@@ -4020,6 +4203,9 @@ which should be translated separately and considered part of this sentence. */
    Title on the button to upgrade a free trial plan. */
 "Learn More" = "더 알아보기";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"Learn how to securely package, label, and ship HAZMAT through USPS® at %1$@." = "%1$@에서 USPS®를 통해 HAZMAT를 안전하게 포장하고, 레이블을 부착하고, 배송하는 방법을 알아보세요.";
+
 /* A label prompting users to learn more about card readers.
 This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
    Button title in the shipping label creation info screen
@@ -4070,6 +4256,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Lesotho" = "레소토";
 
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "AI에게 매력적인 제목 생성을 맡겨 보세요.";
+
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "어떻게 도와드릴 수 있을지 알려주세요.";
 
@@ -4102,6 +4291,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Liechtenstein" = "리히텐슈타인";
+
+/* A hazardous material description stating when a package can fit into this category */
+"Lighters Package - Authorized Lighters" = "라이터 패키지 - 승인된 라이터";
 
 /* Title for the limit usage to X items row in coupon usage restrictions screen. */
 "Limit Usage to X Items" = "X개 아이템으로 사용 제한";
@@ -4556,7 +4748,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of eCommerce plan feature on the store creation plan screen. */
 "Multiple payment options" = "여러 가지 결제 옵션";
 
-/* Title of the 'My Store' tab - used for spotlight indexing on iOS.
+/* Placeholder store name on a notification
+   Title of the 'My Store' tab - used for spotlight indexing on iOS.
    Title of the hub menu view in case there is no title for the store */
 "My Store" = "내 스토어";
 
@@ -4652,6 +4845,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The title of the top banner on the Products tab. */
 "New features available!" = "새 기능을 사용할 수 있습니다!";
 
+/* Rich order notification text, will read as: New order for MyCustom store */
+"New order for" = "새 주문 대상";
+
 /* Message for the mocked order notification needed for the AppStore listing screenshot. 'Your WooCommerce Store' is the name of the mocked store. */
 "New order for $13.98 on Your WooCommerce Store" = "우커머스 스토어의 새 주문 $13.98";
 
@@ -4679,6 +4875,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Placeholder for empty product ratings */
 "No (approved) reviews" = "(승인된) 리뷰 없음";
+
+/* Button to remove parent category for the existing category */
+"No Parent Category" = "상위 카테고리 없음";
 
 /* Value for the allowed emails row in Coupon Usage Restrictions screen when no restriction is set */
 "No Restrictions" = "제한 없음";
@@ -5015,6 +5214,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "또는 기존 속성을 눌러서 선택";
 
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "선택의 폭을 넓히려면 눌러서 더 많은 이름 제안을 볼 수 있습니다.";
+
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "주문 #%1$@";
@@ -5131,6 +5333,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The title for the customer payment cell */
 "Paid" = "유료";
+
+/* Rich order notification text, will read as: Paid with Visa credit card */
+"Paid with %@" = "%@(으)로 결제됨";
 
 /* Country option for a site address. */
 "Pakistan" = "파키스탄";
@@ -5309,6 +5514,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "iOS 16.0 이상이 실행되는 iPhone XS 이상 기종이라는 요구 사항을 스마트폰에서 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "상품권의 잔액을 확인하세요.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID가 유효한지 확인한 다음에 다시 시도하세요. Apple의 서비스 약관에 동의하려면 유효한 Apple ID가 필요합니다.";
@@ -5520,9 +5728,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error showed in Shipping Label Address Validation for the postcode field */
 "Postcode missing" = "우편번호 누락";
 
+/* Instructions for hazardous package shipping */
+"Potentially hazardous material includes items such as batteries, dry ice, flammable liquids, aerosols, ammunition, fireworks, nail polish, perfume, paint, solvents, and more. Hazardous items must ship in separate packages." = "잠재적 유해물질에는 배터리, 드라이아이스, 가연성 액체, 에어로졸, 탄약, 폭죽, 매니큐어, 향수, 페인트, 용제 등과 같은 품목이 포함됩니다. 유해 아이템은 별도의 패키지로 배송되어야 합니다.";
+
 /* Text next to the WPCom logo in the free trial summary screen
    The text is followed by a WordPress.com logo on the store creation plan screen. */
 "Powered by" = "제공:";
+
+/* Label to indicate AI-generated content on the product creation action sheet. */
+"Powered by AI." = "AI를 활용했습니다.";
 
 /* Label to indicate AI-generated content in the product detail screen. Reads: Powered by AI. Learn more. */
 "Powered by AI. %1$@." = "AI를 활용했습니다. %1$@.";
@@ -5556,7 +5770,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "환불할 카드 제시";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "미리보기";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5566,7 +5781,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Section header title for product price
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "가격";
 
 /* Title of the notice when a user updated price for selected products */
@@ -5701,11 +5917,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "상품 복사됨";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "상품 설명";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "상품 임시글 저장됨";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "제품 링크";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "상품 이름";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "상품 공개됨";
@@ -5716,7 +5940,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "상품 저장됨";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "제품 유형";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -5837,6 +6062,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Analytics Hub Quarter to Date selection range */
 "Quarter to Date" = "분기 누계";
 
+/* Description of the option to add new product with AI assistance */
+"Quickly generate details for you" = "자동으로 빠르게 상세 정보 생성";
+
 /* Subtitle displayed during the Login flow, whenever the user has no woo stores associated. */
 "Quickly get up and selling with a beautiful online store." = "아름다운 온라인 스토어로 빠르게 시작하고 판매하세요.";
 
@@ -5880,14 +6108,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Referral programs" = "추천 프로그램";
 
-/* Button label to refresh a web page */
+/* Button label to refresh a web page
+   Button to refresh the state of the in-person payments setup
+   Button to refresh the state of the in-person payments setup. */
 "Refresh" = "새로 고침";
-
-/* Button to reload plugin data after activating a Card Present Payments extension */
-"Refresh After Activating" = "활성화 후 새로 고침";
-
-/* Button to reload plugin data after installing the WooCommerce Payments plugin */
-"Refresh After Installing" = "설치 후 새로 고침";
 
 /* Button to reload plugin data after updating a Card Present Payments extension plugin
    Button to reload plugin data after updating a card present payments plugin settings */
@@ -5949,6 +6173,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "결제 환불하기";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "재생성";
@@ -6075,6 +6300,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to reset password on the WPCom password login screen of the Jetpack setup flow.
    The button title for a secondary call-to-action button. When the user can't remember their password. */
 "Reset your password" = "비밀번호 재설정하기";
+
+/* Button to open a web view and resolve pending plugin requirements before using it. */
+"Resolve Now" = "지금 해결";
 
 /* Restriction for customers with specified emails to use a coupon, reads like: Restricted to customers with emails: *@a8c.com, *@vip.com */
 "Restricted to customers with emails: %1$@" = "이메일(%1$@)이 있는 고객으로 제한됨";
@@ -6272,7 +6500,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "임시글로 저장";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "임시글로 저장";
 
 /* Button title to save a shipping label to print later */
@@ -6422,6 +6651,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder for the row to select the package type (box or envelope) on the Add New Custom Package screen in Shipping Label flow */
 "Select Type" = "유형 선택";
 
+/* Hazmat category button tooltip asking to select a category
+   Title of the Hazmat category selection list */
+"Select a category" = "카테고리 선택";
+
 /* Placeholder for the selected package in the Shipping Labels Package Details screen */
 "Select a package" = "패키지 선택";
 
@@ -6473,6 +6706,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Placeholder in Shipping Label form for the Package Details row. */
 "Select the type of packaging you'd like to ship your items in" = "아이템을 배송할 포장 유형 선택";
 
+/* Tooltip below the hazmat toggle detailing when to select it */
+"Select this if your package contains dangerous goods or hazardous materials" = "패키지에 위험물 또는 유해물질이 있는 경우 선택";
+
 /* Title of the bottom sheet from the product downloadable file to add a new downloadable file. */
 "Select upload method" = "업로드 방법 선택";
 
@@ -6521,6 +6757,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "제공하려는 할인 비율을 설정하세요.";
+
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "브랜드에 어울리는 상품 프레젠테이션을 위해 어조와 목소리를 설정하세요.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "어조 및 목소리 설정";
 
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "%1$@ 설정";
@@ -6627,6 +6869,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
 
@@ -6651,9 +6894,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "배송비 환불";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "배송 구역";
 
 /* Challenge option in the store creation challenges question. */
 "Shipping and logistics" = "배송 및 물류";
@@ -6813,6 +7053,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Slug label in Product Settings */
 "Slug" = "슬러그";
 
+/* A hazardous material description stating when a package can fit into this category */
+"Small Quantity Provision Package (markings required)" = "소량 제공 패키지(표시 필수)";
+
 /* Social advertising title feature on the Free Trial Summary Screen */
 "Social advertising" = "소셜 광고";
 
@@ -6922,6 +7165,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the app can't create a zendesk identity. */
 "Sorry, we cannot create support requests right now, please try again later." = "죄송합니다. 지금은 지원 요청을 생성할 수 없습니다. 나중에 다시 시도해 주세요.";
+
+/* Underlying error message for actions which require an active payment, such as cancellation, when none is found. Unlikely to be shown. */
+"Sorry, we could not complete this action, as no active payment was found." = "죄송합니다. 활성 결제를 찾을 수 없어서 이 조치를 완료할 수 없습니다.";
 
 /* Error message shown when an in-progress connection is cancelled by the system */
 "Sorry, we could not connect to the reader. Please try again." = "죄송합니다. 리더에 연결할 수 없습니다. 다시 시도하세요.";
@@ -7123,6 +7369,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "수단";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "이름 제안";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "사진을 통한 추천";
 
@@ -7204,6 +7453,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "태그";
 
@@ -7348,6 +7598,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title of the Product tax class selector screen */
 "Tax classes" = "세금 클래스";
 
+/* Notice in editable order details when the tax rate was added to the order */
+"Tax rate location added automatically" = "세율 위치가 자동으로 추가됨";
+
 /* Second paragraph of the body for the tax educational dialog */
 "Tax rates for different locations can be managed in your store’s admin." = "스토어 관리자에서 다양한 위치의 세율을 관리할 수 있습니다.";
 
@@ -7383,6 +7636,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "스토어에 대해 자세히 알려주세요.";
+
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "상품이 무엇이고 어떤 점이 독특한지 말씀해 주세요!";
 
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
@@ -7521,6 +7777,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "코드가 XXXX-XXXX-XXXX-XXXX 형식으로 되어 있어야 함";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "쿠폰 금액의 할인 비율은 100보다 클 수 없습니다.";
 
@@ -7548,6 +7807,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "iPhone의 Tap to Pay를 처음 사용할 때 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "상품권이 적용되지 않습니다.";
+
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "새 사용자 정의 패키지 이름이 고유하지 않습니다.";
 
@@ -7568,6 +7830,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the cancel button on the reader is used. */
 "The payment was canceled on the reader" = "리더에서 결제가 취소되었습니다.";
+
+/* Message shown if a payment cancellation is shown as an error. */
+"The payment was cancelled." = "결제가 취소되었습니다.";
 
 /* Error shown when the built-in card reader payment is interrupted by activity on the phone */
 "The payment was interrupted and cannot be continued. You can retry the payment from the order screen." = "결제가 중단되었으며 계속할 수 없습니다. 주문 화면에서 결제를 다시 시도하실 수 있습니다.";
@@ -7724,6 +7989,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "환불 발행 중 오류 발생";
 
+/* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
+"There was an error retrying this payment. Please go back and start again." = "이 결제를 재시도하는 동안 오류가 발생했습니다. 뒤로 이동하여 다시 시작하세요.";
+
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "개인정보 선택 사항을 저장하는 중 오류가 발생했습니다.";
 
@@ -7817,6 +8085,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping notice row label when there is more than one shipping method */
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "이 주문은 확장을 사용하여 배송 요금을 계산합니다. 표시된 배송 방법이 불완전할 수 있습니다.";
 
+/* Explanation in the alert shown when a retry fails because the payment already completed */
+"This payment has already been completed – please check the order details." = "결제가 이미 완료되었습니다. 주문 상세 정보를 확인해 보세요.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "이 제품을 로드할 수 없음";
 
@@ -7849,6 +8120,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Alert info when selecting the cash payment method during payments */
 "This will mark your order as complete if you received (total) outside of WooCommerce" = "그러면 WooCommerce 외부에서 수신한 주문(전체)이 완료로 표시됩니다.";
+
+/* Footnote for the action to store selected tax rate */
+"This will not affect online orders" = "온라인 주문은 영향을 받지 않음";
 
 /* Country option for a site address. */
 "Timor-Leste" = "동티모르";
@@ -7939,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "토켈라우";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "어조 및 목소리";
 
 /* Country option for a site address. */
 "Tonga" = "통가";
@@ -8148,6 +8425,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    URL text field placeholder */
 "URL" = "URL";
 
+/* A clickable text link that willredirect the user to a website */
+"USPS HAZMAT Search Tool" = "USPS HAZMAT 검색 도구";
+
 /* Country option for a site address. */
 "Uganda" = "우간다";
 
@@ -8226,6 +8506,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Notice message when loading product categories fails */
 "Unable to load categories" = "카테고리를 로드할 수 없음";
 
+/* Text when failing to load a notification after long pressing on it. */
+"Unable to load notification" = "알림을 로드할 수 없음";
+
 /* Text displayed when there is an error loading order stats data. */
 "Unable to load order analytics" = "주문 분석을 로드할 수 없음";
 
@@ -8282,6 +8565,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the order amount is not valid. */
 "Unable to process payment. Order total amount is not valid." = "결제를 처리할 수 없습니다. 주문 총액이 유효하지 않습니다.";
+
+/* Error message shown during In-Person Payments when the order is found to be paid after it's refreshed. */
+"Unable to process payment. This order is already paid, taking a further payment would result in the customer being charged twice for their order." = "결제를 처리할 수 없습니다. 이 주문은 이미 결제되어서 추가로 결제하면 고객에게 주문 금액이 두 번 청구됩니다.";
+
+/* Error message when retrying an In-Person Payment and an unknown error is received. */
+"Unable to process payment. We could not complete this payment while retrying. Underlying error: %1$@" = "결제를 처리할 수 없습니다. 재시도하는 동안 이 결제를 완료할 수 없었습니다. 근원적인 오류: %1$@";
+
+/* Error message shown during In-Person Payments when the payment gateway is not available. */
+"Unable to process payment. We could not connect to the payment system. Please contact support if this error continues." = "결제를 처리할 수 없습니다. 결제 시스템에 연결할 수 없었습니다. 이 오류가 계속 발생하면 지원팀에 문의하세요.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again." = "결제를 처리할 수 없습니다. 마지막 주문 상세 정보를 가져올 수 없었습니다. 네트워크 연결을 확인하고 다시 시도하세요.";
+
+/* Error message when collecting an In-Person Payment and unable to update the order. %!$@ will be replaced with further error details. */
+"Unable to process payment. We could not fetch the latest order details. Please check your network connection and try again. Underlying error: %1$@" = "결제를 처리할 수 없습니다. 마지막 주문 상세 정보를 가져올 수 없었습니다. 네트워크 연결을 확인하고 다시 시도하세요. 근원적인 오류: %1$@";
 
 /* Error message when the card reader times out while reading a card. */
 "Unable to read card - the system timed out - please try again" = "카드를 읽을 수 없음 - 시스템 시간 초과 - 다시 시도하세요.";
@@ -8428,6 +8726,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Accessibility Label for the edit button to change the Customer Shipping Address in Order Details */
 "Update Address" = "주소 업데이트";
 
+/* Product Update Category navigation title */
+"Update Category" = "카테고리 업데이트";
+
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
 "Update Instructions" = "업데이트 지침";
 
@@ -8553,6 +8854,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "AI 기반 도구를 사용하여 상품 설명을 빠르게 생성하세요. 키워드만 입력하시면 나머지는 자동으로 진행됩니다!";
+
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "패키지 사진 사용(선택 사항)";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "로그인 비밀번호 사용";
@@ -8765,6 +9069,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "사이트를 로드할 수 없음";
 
+/* Title for the empty state on the Tax Rates selector screen */
+"We couldn’t find any tax rates" = "어떠한 세율도 찾을 수 없음";
+
 /* Error message. Presented to users when updating the card reader software fails */
 "We couldn’t update your reader’s software" = "리더의 소프트웨어를 업데이트할 수 없습니다.";
 
@@ -8830,6 +9137,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Banner caption in Shipping Label Address Validation when the destination address can't be verified and no customer phone number is found. */
 "We were unable to automatically verify the shipping address. View on Apple Maps to make sure the address is correct." = "배송 주소를 자동으로 확인할 수 없었습니다. Apple Maps에서 보며 주소가 올바른지 확인하세요.";
+
+/* Explanation in the alert presented when a retry of a payment fails */
+"We were unable to retry the payment – please start again." = "결제를 재시도할 수 없었습니다. 다시 시작해 주세요.";
 
 /* Error message displayed when an error occurred sending the magic link email. */
 "We were unable to send you an email at this time. Please try again later." = "지금은 회원님에게 이메일을 보낼 수 없습니다. 나중에 다시 시도하세요.";
@@ -8986,9 +9296,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subject line for when sharing the app with others through mail or any other activity types that support contains a subject field. */
 "WooCommerce Mobile App - Run your store from anywhere" = "우커머스 모바일 앱 - 어디에서나 스토어 실행";
 
-/* Highlighted header text on the store onboarding WCPay setup screen.
-   Title of the webview for WCPay setup from onboarding.
-   Title of the WooCommerce Payments support area option */
+/* Title of the WooCommerce Payments support area option */
 "WooCommerce Payments" = "WooCommerce Payments";
 
 /* Title of the WooCommerce Plugin support area option */
@@ -9003,11 +9311,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation bar title in the shipping label creation info screen */
 "WooCommerce Shipping" = "WooCommerce 배송";
 
+/* Instructions for hazardous package shipping. The %1$@ is a tappable linkthat will direct the user to a website */
+"WooCommerce Shipping does not currently support HAZMAT shipments through %1$@." = "WooCommerce 배송에서는 현재 %1$@을(를) 통한 HAZMAT 배송이 지원되지 않습니다.";
+
 /* No comment provided by engineer. */
 "WooCommerce mobile app" = "우커머스 모바일 앱";
 
 /* No comment provided by engineer. */
 "WooCommerce store" = "우커머스 스토어";
+
+/* Highlighted header text on the store onboarding WCPay setup screen.
+   Title of the webview for WCPay setup from onboarding. */
+"WooPayments" = "WooPayments";
 
 /* Option in the store creation selling platforms question. */
 "WordPress" = "워드프레스";
@@ -9036,6 +9351,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Write a description" = "설명 작성";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -9295,6 +9611,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Comment Attachment Label */
 "[COMMENT]" = "[댓글]";
 
+/* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
+"[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "빠르게 우커머스 시작";
 
@@ -9363,6 +9682,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Later today */
 "later today" = "오늘 중";
+
+/* A hazardous material description stating when a package can fit into this category */
+"limited_quantity_category" = "한정 수량 육상 패키지 - 에어로졸, 스프레이 소독제, 스프레이 페인트, 헤어스프레이, 프로판, 부탄, 세정제 등 - 향료, 매니큐어, 매니큐어 제거제, 용제, 손 소독제, 소독용 알코올, 에탄올 주성분 제품 등 - 기타 한정 수량 표면재(화장품, 세정제, 도료 등)";
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "수동 환불";
@@ -9475,6 +9797,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
+
+/* A clickable text link that willredirect the user to a website */
+"www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
 /* Display label for a product's subscription period when it is a single year. */
 "year" = "연";

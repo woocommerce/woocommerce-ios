@@ -1,5 +1,22 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.7
+-----
+
+
+15.6
+-----
+- [**] Taxes in orders: Users can now store the tax rate's location to add it automatically to a new order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10802]
+- [**] WPCOM stores and self-hosted stores with Jetpack AI plugin can now create products using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10812]
+- [*] Order form: the merchant can apply a gift card to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10759]
+
+15.5
+-----
+- [*] Store creation: Start store creation flow after a new WPCOM account sign up. [https://github.com/woocommerce/woocommerce-ios/pull/10729]
+- [*] Different orders with the same gift card code applied should all show the gift card info in order details now. [https://github.com/woocommerce/woocommerce-ios/pull/10719]
+- [*] Enabled product description and product sharing AI features for self-hosted sites with Jetpack AI plugin. [https://github.com/woocommerce/woocommerce-ios/pull/10747]
+- [*] Order form: the applied gift cards are shown below the coupon section. [https://github.com/woocommerce/woocommerce-ios/pull/10743]
+
 15.4
 -----
 - [*] Enable editing product details when tapping on order item on the order detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10632]

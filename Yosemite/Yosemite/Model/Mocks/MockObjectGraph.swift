@@ -217,7 +217,8 @@ extension MockObjectGraph {
             totalTax: "0",
             attributes: [],
             addOns: [],
-            parent: nil
+            parent: nil,
+            bundleConfiguration: []
         )
     }
 }
@@ -310,6 +311,7 @@ extension MockObjectGraph {
             groupedProducts: [],
             menuOrder: 0,
             addOns: [],
+            isSampleItem: false,
             bundleStockStatus: nil,
             bundleStockQuantity: nil,
             bundledItems: [],

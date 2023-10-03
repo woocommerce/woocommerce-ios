@@ -32,6 +32,7 @@ final class AddProductCoordinator: Coordinator {
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
     private let isFirstProduct: Bool
+    private let analytics: Analytics
 
     /// ResultController to to track the current product count.
     ///
@@ -47,18 +48,21 @@ final class AddProductCoordinator: Coordinator {
     var onProductCreated: (Product) -> Void = { _ in }
 
     private var storeHasProducts: Bool {
-        !productsResultsController.isEmpty
+        let objects = productsResultsController.fetchedObjects
+        return objects.contains(where: { $0.isSampleItem == false })
     }
 
+    private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private var addProductWithAICoordinator: AddProductWithAICoordinator?
 
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -67,6 +71,8 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
@@ -75,7 +81,9 @@ final class AddProductCoordinator: Coordinator {
          sourceView: UIView?,
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
+         addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -84,28 +92,27 @@ final class AddProductCoordinator: Coordinator {
         self.navigationController = sourceNavigationController
         self.productImageUploader = productImageUploader
         self.storage = storage
+        self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
     func start() {
         switch source {
         case .productsTab, .productOnboarding:
-            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible()))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
         }
 
-        ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
+        analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
-        // TODO-10688: Replace this with eligibility check
-        let isEligibleForAI = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productCreationAI)
-        guard !isEligibleForAI && !shouldSkipBottomSheet() else {
-            return presentActionSheetWithAI()
-        }
-        if shouldSkipBottomSheet() {
+        if shouldSkipBottomSheet {
             presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
-        } else if shouldPresentProductCreationBottomSheet() {
+        } else if shouldShowAIActionSheet {
+            presentActionSheetWithAI()
+        } else if shouldPresentProductCreationBottomSheet {
             presentProductCreationTypeBottomSheet()
         } else {
             presentProductTypeBottomSheet(creationType: .manual)
@@ -116,30 +123,36 @@ final class AddProductCoordinator: Coordinator {
 // MARK: Navigation
 private extension AddProductCoordinator {
 
+    /// Whether the action sheet with the option for product creation with AI should be presented.
+    ///
+    var shouldShowAIActionSheet: Bool {
+        addProductWithAIEligibilityChecker.isEligible
+    }
+
     /// Defines if the product creation bottom sheet should be presented.
     /// Currently returns `true` when the store is eligible for displaying template options.
     ///
-    func shouldPresentProductCreationBottomSheet() -> Bool {
-        isTemplateOptionsEligible()
-    }
-
-    /// Returns `true` when the number of products is fewer than 3.
-    ///
-    func isTemplateOptionsEligible() -> Bool {
-        productsResultsController.numberOfObjects < 3
+    var shouldPresentProductCreationBottomSheet: Bool {
+        isTemplateOptionsEligible
     }
 
     /// Defines if it should skip the bottom sheet before the product form is shown.
     /// Currently returns `true` when the source is product description AI announcement modal.
     ///
-    func shouldSkipBottomSheet() -> Bool {
+    var shouldSkipBottomSheet: Bool {
         source == .productDescriptionAIAnnouncementModal
     }
 
     /// Returns `true` when there are existing products.
     ///
-    func shouldShowGroupedProductType() -> Bool {
+    var shouldShowGroupedProductType: Bool {
         storeHasProducts
+    }
+
+    /// Returns `true` when the number of non-sample products is fewer than 3.
+    ///
+    var isTemplateOptionsEligible: Bool {
+        productsResultsController.fetchedObjects.filter { $0.isSampleItem == false }.count < 3
     }
 
     /// Presents a bottom sheet for users to choose if they want a create a product manually or via a template.
@@ -168,8 +181,9 @@ private extension AddProductCoordinator {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(event: .ProductCreation
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedBottomSheetProductType in
+            guard let self else { return }
+            self.analytics.track(event: .ProductCreation
                 .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
                                         creationType: creationType))
             self.navigationController.dismiss(animated: true) {
@@ -255,6 +269,7 @@ private extension AddProductCoordinator {
     func presentActionSheetWithAI() {
         let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
             self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
                 self?.addProductWithAIBottomSheetPresenter = nil
                 self?.startProductCreationWithAI()
             }
@@ -267,22 +282,27 @@ private extension AddProductCoordinator {
 
         addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
+        analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
 
     func startProductCreationWithAI() {
-        let coordinator = AddProductWithAICoordinator(siteID: siteID,
-                                                      source: source,
-                                                      sourceNavigationController: navigationController,
-                                                      onProductCreated: { [weak self] product in
+        let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
+                                                                                         source: source,
+                                                                                         onCancel: { [weak self] in
+            self?.navigationController.dismiss(animated: true)
+        },
+                                                                                         onCompletion: { [weak self] product in
             self?.onProductCreated(product)
-        })
-        self.addProductWithAICoordinator = coordinator
-        coordinator.start()
+            self?.navigationController.dismiss(animated: true) {
+                self?.presentProduct(product, formType: .edit, isAIContent: true)
+            }
+        }))
+        navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product) {
+    func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -292,7 +312,7 @@ private extension AddProductCoordinator {
                                       isLocalID: true),
                            originalStatuses: model.imageStatuses)
         let viewModel = ProductFormViewModel(product: model,
-                                             formType: .add,
+                                             formType: formType,
                                              productImageActionHandler: productImageActionHandler)
         viewModel.onProductCreated = { [weak self] product in
             guard let self else { return }
@@ -305,6 +325,7 @@ private extension AddProductCoordinator {
             }
         }
         let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       isAIContent: isAIContent,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
@@ -355,7 +376,7 @@ private extension AddProductCoordinator {
                 return .manual
             }
         }()
-        ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
+        analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 
     /// Presents the celebratory view for the first created product.

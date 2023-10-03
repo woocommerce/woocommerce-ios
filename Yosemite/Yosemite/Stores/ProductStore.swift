@@ -128,10 +128,34 @@ public class ProductStore: Store {
             generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
         case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
-        case let .generateProductDetails(siteID, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductName(siteID, keywords, language, completion):
+            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
+        case let .generateProduct(siteID,
+                                  productName,
+                                  keywords,
+                                  language,
+                                  tone,
+                                  currencySymbol,
+                                  dimensionUnit,
+                                  weightUnit,
+                                  categories,
+                                  tags,
+                                  completion):
+            generateProduct(siteID: siteID,
+                            productName: productName,
+                            keywords: keywords,
+                            language: language,
+                            tone: tone,
+                            currencySymbol: currencySymbol,
+                            dimensionUnit: dimensionUnit,
+                            weightUnit: weightUnit,
+                            categories: categories,
+                            tags: tags,
+                            completion: completion)
         }
     }
 }
@@ -388,17 +412,6 @@ private extension ProductStore {
         })
     }
 
-    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
-        productIDs
-            .compactMap {
-                let predicate = NSPredicate(format: "productID == %lld", $0)
-                let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: predicate,
-                                                          sortedBy: nil).first
-                return product
-            }.map { $0.toReadOnly() }
-    }
-
     /// Adds a product.
     ///
     func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
@@ -616,9 +629,18 @@ private extension ProductStore {
         }
     }
 
-    func generateProductDetails(siteID: Int64, scannedTexts: [String], completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+    func generateProductDetails(siteID: Int64,
+                                productName: String?,
+                                scannedTexts: [String],
+                                completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
+        let keywords: [String] = {
+            guard let productName else {
+                return scannedTexts
+            }
+            return scannedTexts + [productName]
+        }()
         let prompt = [
-            "Write a name and description of a product for an online store given the array of scanned text strings from a packaging photo at the end.",
+            "Write a name and description of a product for an online store given the keywords at the end.",
             "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
             "and the detected language as the locale identifier in `language` field.",
             "The output should be in valid JSON format.",
@@ -627,7 +649,7 @@ private extension ProductStore {
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
             "and use them in your sentences without listing them out." +
-            "\(scannedTexts)"
+            "\(keywords)"
         ].joined(separator: "\n")
         Task { @MainActor in
             do {
@@ -643,6 +665,27 @@ private extension ProductStore {
         }
     }
 
+    func generateProductName(siteID: Int64,
+                             keywords: String,
+                             language: String,
+                             completion: @escaping (Result<String, Error>) -> Void) {
+        let prompt = [
+            "You are a WooCommerce SEO and marketing expert.",
+            "Provide a product title to enhance the store's SEO performance and sales " +
+            "based on the following product keywords: \(keywords).",
+            "Your response should be in language \(language).",
+            "Do not explain the suggestion, strictly return the product name only."
+        ].joined(separator: "\n")
+
+        Task { @MainActor in
+            let result = await Result {
+                let description = try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName)
+                return description
+            }
+            completion(result)
+        }
+    }
+
     func fetchNumberOfProducts(siteID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
         Task { @MainActor in
             do {
@@ -651,6 +694,35 @@ private extension ProductStore {
             } catch {
                 completion(.failure(error))
             }
+        }
+    }
+
+    func generateProduct(siteID: Int64,
+                         productName: String,
+                         keywords: String,
+                         language: String,
+                         tone: String,
+                         currencySymbol: String,
+                         dimensionUnit: String?,
+                         weightUnit: String?,
+                         categories: [ProductCategory],
+                         tags: [ProductTag],
+                         completion: @escaping (Result<Product, Error>) -> Void) {
+        Task { @MainActor in
+            let result = await Result {
+                let product = try await generativeContentRemote.generateProduct(siteID: siteID,
+                                                                                    productName: productName,
+                                                                                    keywords: keywords,
+                                                                                    language: language,
+                                                                                    tone: tone,
+                                                                                    currencySymbol: currencySymbol,
+                                                                                    dimensionUnit: dimensionUnit,
+                                                                                    weightUnit: weightUnit,
+                                                                                    categories: categories,
+                                                                                    tags: tags)
+                return product
+            }
+            completion(result)
         }
     }
 }
@@ -921,6 +993,19 @@ extension ProductStore {
         let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
             let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             storageBundledItem.update(with: readOnlyBundleItem)
+
+            // Removes all default variation attributes and adds new ones from the readonly version.
+            if let defaultVariationAttributes = storageBundledItem.defaultVariationAttributes {
+                storageBundledItem.removeFromDefaultVariationAttributes(defaultVariationAttributes)
+            }
+
+            let storageDefaultVariationAttributes = readOnlyBundleItem.defaultVariationAttributes.map {
+                let storageVariationAttribute = storage.insertNewObject(ofType: Storage.GenericAttribute.self)
+                storageVariationAttribute.update(with: $0)
+                return storageVariationAttribute
+            }
+            storageBundledItem.addToDefaultVariationAttributes(NSOrderedSet(array: storageDefaultVariationAttributes))
+
             return storageBundledItem
         }
         storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))

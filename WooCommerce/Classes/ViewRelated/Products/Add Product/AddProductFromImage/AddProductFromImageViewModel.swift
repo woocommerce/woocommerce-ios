@@ -73,18 +73,21 @@ final class AddProductFromImageViewModel: ObservableObject {
     }
 
     private let siteID: Int64
+    private let productName: String?
     private let stores: StoresManager
     private let imageTextScanner: ImageTextScannerProtocol
     private let analytics: Analytics
 
     init(siteID: Int64,
          source: AddProductCoordinator.Source,
+         productName: String?,
          stores: StoresManager = ServiceLocator.stores,
          imageTextScanner: ImageTextScannerProtocol = ImageTextScanner(),
          analytics: Analytics = ServiceLocator.analytics,
          onAddImage: @escaping (MediaPickingSource) async -> MediaPickerImage?) {
         self.siteID = siteID
         self.stores = stores
+        self.productName = productName
         self.addProductSource = source
         self.imageTextScanner = imageTextScanner
         self.analytics = analytics
@@ -204,6 +207,7 @@ private extension AddProductFromImageViewModel {
     func generateProductDetails(from scannedTexts: [String]) async -> Result<ProductDetailsFromScannedTexts, Error> {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.generateProductDetails(siteID: siteID,
+                                                                 productName: productName,
                                                                  scannedTexts: scannedTexts) { result in
                 continuation.resume(returning: result)
             })

@@ -15,7 +15,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
                                                                   productStatus: nil,
-                                                                  productType: nil,
+                                                                  promotableProductType: nil,
                                                                   productCategory: nil,
                                                                   numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)
@@ -25,7 +25,9 @@ final class FilterProductListViewModelTests: XCTestCase {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
-                                                         productType: .grouped,
+                                                         promotableProductType: PromotableProductType(productType: .grouped,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
                                                          productCategory: filterProductCategory,
                                                          numberOfActiveFilters: 4)
 
@@ -41,7 +43,9 @@ final class FilterProductListViewModelTests: XCTestCase {
         // Given
         let filters = FilterProductListViewModel.Filters(stockStatus: .inStock,
                                                          productStatus: .draft,
-                                                         productType: .grouped,
+                                                         promotableProductType: PromotableProductType(productType: .grouped,
+                                                                                                      isAvailable: true,
+                                                                                                      promoteUrl: nil),
                                                          productCategory: filterProductCategory,
                                                          numberOfActiveFilters: 4)
 
@@ -52,7 +56,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         // Then
         let expectedCriteria = FilterProductListViewModel.Filters(stockStatus: nil,
                                                                   productStatus: nil,
-                                                                  productType: nil,
+                                                                  promotableProductType: nil,
                                                                   productCategory: nil,
                                                                   numberOfActiveFilters: 0)
         XCTAssertEqual(viewModel.criteria, expectedCriteria)

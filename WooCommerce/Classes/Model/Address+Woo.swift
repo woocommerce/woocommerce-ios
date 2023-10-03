@@ -86,6 +86,25 @@ extension Address {
         self == .empty
     }
 
+    /// Erases the address components that are also part of a Tax Rate. Call this if you want to unlink an address from a tax rate.
+    /// 
+    func resettingTaxRateComponents() -> Address {
+        copy(city: "",
+             state: "",
+             postcode: "",
+             country: "")
+    }
+
+    /// Changes the location components (city, state, postcode, country) to those of the passed tax rate. The other components remain unmodified.
+    /// 
+    func applyingTaxRate(taxRate: TaxRate) -> Address {
+        resettingTaxRateComponents().copy(city: taxRate.cities.first ?? taxRate.city,
+                                          state: taxRate.state,
+                                          postcode: taxRate.postcodes.first ?? taxRate.postcode,
+                                          country: taxRate.country)
+
+    }
+
     /// Generates an Address object from a TaxRate object data
     ///
     static func from(taxRate: TaxRate) -> Address {

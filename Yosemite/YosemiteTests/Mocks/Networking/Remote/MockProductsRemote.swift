@@ -39,6 +39,8 @@ final class MockProductsRemote {
     /// The results to return based on the given site ID in `loadNumberOfProducts`.
     private var loadNumberOfProductsResultsBySiteID = [Int64: Result<Int64, Error>]()
 
+    private var searchProductsResultsByQuery = [String: Result<[Product], Error>]()
+
     /// The number of times that `loadProduct()` was invoked.
     private(set) var invocationCountOfLoadProduct: Int = 0
 
@@ -85,6 +87,12 @@ final class MockProductsRemote {
     ///
     func whenLoadingNumberOfProducts(siteID: Int64, thenReturn result: Result<Int64, Error>) {
         loadNumberOfProductsResultsBySiteID[siteID] = result
+    }
+
+    /// Set the value passed to the `completion` block if `searchProducts()` is called.
+    ///
+    func whenSearchingProducts(query: String, thenReturn result: Result<[Product], Error>) {
+        searchProductsResultsByQuery[query] = result
     }
 }
 
@@ -187,6 +195,9 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         searchProductWithProductType = productType
         searchProductWithProductStatus = productStatus
         searchProductWithProductCategory = productCategory
+        if let result = searchProductsResultsByQuery[keyword] {
+            completion(result)
+        }
     }
 
     func searchProductsBySKU(for siteID: Int64,

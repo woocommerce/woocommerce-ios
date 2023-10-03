@@ -97,7 +97,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         errorState = .none
         do {
-            let language = try await identifyLanguage()
+            async let language = try identifyLanguage()
+            await fetchSettingsIfNeeded()
             let aiTone = userDefaults.aiTone(for: siteID)
             let product = try await generateProduct(language: language,
                                                     tone: aiTone)

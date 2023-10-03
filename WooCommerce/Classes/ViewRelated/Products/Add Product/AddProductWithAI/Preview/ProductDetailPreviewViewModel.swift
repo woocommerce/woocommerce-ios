@@ -212,6 +212,24 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: - Site settings
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func fetchGeneralSettings() async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+                if let error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+            stores.dispatch(action)
+        }
+    }
+}
+
 // MARK: Generating product
 //
 private extension ProductDetailPreviewViewModel {

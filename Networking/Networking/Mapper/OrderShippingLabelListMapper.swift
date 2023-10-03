@@ -1,5 +1,3 @@
-import Foundation
-
 /// A wrapper of shipping labels and settings from `Load Shipping Labels` response.
 public struct OrderShippingLabelListResponse {
     /// A list of shipping labels.
@@ -32,25 +30,14 @@ struct OrderShippingLabelListMapper: Mapper {
             .orderID: orderID
         ]
 
-        let data: OrderShippingLabelListData = try {
-            if hasDataEnvelope(in: response) {
-                return try decoder.decode(OrderShippingLabelListEnvelope.self, from: response).data
-            } else {
-                return try decoder.decode(OrderShippingLabelListData.self, from: response)
-            }
-        }()
+        let data: OrderShippingLabelListData
+        if hasDataEnvelope(in: response) {
+            data = try decoder.decode(Envelope<OrderShippingLabelListData>.self, from: response).data
+        } else {
+            data = try decoder.decode(OrderShippingLabelListData.self, from: response)
+        }
+
         return OrderShippingLabelListResponse(shippingLabels: data.shippingLabels, settings: data.settings)
-    }
-}
-
-/// Disposable Entity:
-/// `Load Shipping Labels` endpoint returns the data in the `data` key.
-///
-private struct OrderShippingLabelListEnvelope: Decodable {
-    let data: OrderShippingLabelListData
-
-    private enum CodingKeys: String, CodingKey {
-        case data = "data"
     }
 }
 

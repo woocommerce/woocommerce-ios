@@ -1,6 +1,3 @@
-import Foundation
-
-
 /// Mapper: OrderStats
 ///
 struct OrderStatsV4Mapper: Mapper {
@@ -19,29 +16,9 @@ struct OrderStatsV4Mapper: Mapper {
     /// (Attempts) to convert a dictionary into an OrderStats entity.
     ///
     func map(response: Data) throws -> OrderStatsV4 {
-        let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID,
-            .granularity: granularity
-        ]
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(OrderStatsV4Envelope.self, from: response).orderStats
-        } else {
-            return try decoder.decode(OrderStatsV4.self, from: response)
-        }
-    }
-}
-
-
-/// OrderStatsV4Envelope Disposable Entity
-///
-/// `Order Stats` endpoint returns the requested stats in the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct OrderStatsV4Envelope: Decodable {
-    let orderStats: OrderStatsV4
-
-    private enum CodingKeys: String, CodingKey {
-        case orderStats = "data"
+        try extract(
+            from: response,
+            decodingUserInfo: [.siteID: siteID, .granularity: granularity]
+        )
     }
 }

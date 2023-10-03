@@ -22,20 +22,16 @@ struct ProductTagListMapper: Mapper {
 
         switch responseType {
         case .load:
-            if hasDataEnvelope {
-                return try decoder.decode(ProductTagListEnvelope.self, from: response).tags
-            } else {
-                return try decoder.decode([ProductTag].self, from: response)
-            }
+            return try extract(from: response, siteID: siteID)
         case .create:
-            let tags: [ProductTagFromBatchCreation] = try {
-                if hasDataEnvelope {
-                    return try decoder.decode(ProductTagListBatchCreateEnvelope.self, from: response).data.tags
-                } else {
-                    return try decoder.decode(ProductTagListBatchCreateContainer.self, from: response).tags
-                }
-            }()
-            return tags
+            let container: ProductTagListBatchCreateContainer
+            if hasDataEnvelope {
+                container = try decoder.decode(Envelope<ProductTagListBatchCreateContainer>.self, from: response).data
+            } else {
+                container = try decoder.decode(ProductTagListBatchCreateContainer.self, from: response)
+            }
+
+            return container.tags
                 .filter { $0.error == nil }
                 .compactMap { (tagCreated) -> ProductTag? in
                     if let name = tagCreated.name, let slug = tagCreated.slug {
@@ -45,11 +41,14 @@ struct ProductTagListMapper: Mapper {
                 }
 
         case .delete:
+            let container: ProductTagListBatchDeleteContainer
             if hasDataEnvelope {
-                return try decoder.decode(ProductTagListBatchDeleteEnvelope.self, from: response).data.tags
+                container = try decoder.decode(Envelope<ProductTagListBatchDeleteContainer>.self, from: response).data
             } else {
-                return try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response).tags
+                container = try decoder.decode(ProductTagListBatchDeleteContainer.self, from: response)
             }
+
+            return container.tags
         }
     }
 
@@ -60,49 +59,11 @@ struct ProductTagListMapper: Mapper {
     }
 }
 
-
-/// ProductTagListEnvelope Disposable Entity:
-/// `Load All Products Tags` endpoint returns the products tags in the `data` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductTagListEnvelope: Decodable {
-    let tags: [ProductTag]
-
-    private enum CodingKeys: String, CodingKey {
-        case tags = "data"
-    }
-}
-
-
-/// ProductTagListBatchCreateEnvelope Disposable Entity:
-/// `Batch Create Products Tags` endpoint returns the products tags under the `data` key, nested under `create`  key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductTagListBatchCreateEnvelope: Decodable {
-    let data: ProductTagListBatchCreateContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
-    }
-}
-
 private struct ProductTagListBatchCreateContainer: Decodable {
     let tags: [ProductTagFromBatchCreation]
 
     private enum CodingKeys: String, CodingKey {
         case tags = "create"
-    }
-}
-
-/// ProductTagListBatchDeleteEnvelope Disposable Entity:
-/// `Batch Delete Products Tags` endpoint returns the products tags under the `data` key, nested under `delete` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductTagListBatchDeleteEnvelope: Decodable {
-    let data: ProductTagListBatchDeleteContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

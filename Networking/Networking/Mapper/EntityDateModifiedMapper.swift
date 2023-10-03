@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: Date Modified for an entity, Wrapped in `data` Key or not
 ///
 struct EntityDateModifiedMapper: Mapper {
@@ -10,22 +8,14 @@ struct EntityDateModifiedMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 
+        let entity: ModifiedEntity
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ModifiedEntityEnvelope.self, from: response).modifiedEntity.dateModified
+            entity = try decoder.decode(Envelope<ModifiedEntity>.self, from: response).data
         } else {
-            return try decoder.decode(ModifiedEntity.self, from: response).dateModified
+            entity = try decoder.decode(ModifiedEntity.self, from: response)
         }
-    }
-}
 
-/// Disposable Entity:
-/// Allows us to parse the date modified with JSONDecoder.
-///
-private struct ModifiedEntityEnvelope: Decodable {
-    let modifiedEntity: ModifiedEntity
-
-    private enum CodingKeys: String, CodingKey {
-        case modifiedEntity = "data"
+        return entity.dateModified
     }
 }
 

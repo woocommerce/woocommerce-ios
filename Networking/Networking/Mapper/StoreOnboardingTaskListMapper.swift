@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: StoreOnboardingTask
 ///
 struct StoreOnboardingTaskListMapper: Mapper {
@@ -9,8 +7,8 @@ struct StoreOnboardingTaskListMapper: Mapper {
 
         if hasDataEnvelope(in: response) {
             taskGroup = try decoder
-                .decode(StoreOnboardingTaskEnvelope.self, from: response)
-                .group
+                .decode(Envelope<[StoreOnboardingTaskGroup]>.self, from: response)
+                .data
         } else {
             taskGroup = try decoder.decode([StoreOnboardingTaskGroup].self, from: response)
         }
@@ -35,13 +33,5 @@ private struct StoreOnboardingTaskGroup: Decodable {
     private enum CodingKeys: String, CodingKey {
         case id
         case tasks
-    }
-}
-
-private struct StoreOnboardingTaskEnvelope: Decodable {
-    let group: [StoreOnboardingTaskGroup]
-
-    private enum CodingKeys: String, CodingKey {
-        case group = "data"
     }
 }

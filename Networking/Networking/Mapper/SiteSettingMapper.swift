@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper for a single SiteSetting
 ///
 struct SiteSettingMapper: Mapper {
@@ -25,23 +23,6 @@ struct SiteSettingMapper: Mapper {
             .settingGroupKey: settingsGroup.rawValue
         ]
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(SiteSettingEnvelope.self, from: response).setting
-        } else {
-            return try decoder.decode(SiteSetting.self, from: response)
-        }
-    }
-}
-
-
-/// SiteSettingEnvelope Disposable Entity:
-/// The plugins endpoint returns the document within a `data` key. This entity
-/// allows us to do parse the returned plugin model with JSONDecoder.
-///
-private struct SiteSettingEnvelope: Decodable {
-    let setting: SiteSetting
-
-    private enum CodingKeys: String, CodingKey {
-        case setting = "data"
+        return try extract(from: response, using: decoder)
     }
 }

@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: WCPay account
 ///
 struct WCPayAccountMapper: Mapper {
@@ -16,37 +14,12 @@ struct WCPayAccountMapper: Mapper {
 
         /// Prior to WooCommerce Payments plugin version 2.9.0 (Aug 2021) `data` could contain an empty array []
         /// indicating that the plugin was active but the merchant had not on-boarded (and therefore has no account.)
-        if let _ = try? decoder.decode(WCPayNullAccountEnvelope.self, from: response) {
+        if let _ = try? decoder.decode(Envelope<[String]>.self, from: response) {
             return WCPayAccount.noAccount
         } else if let _ = try? decoder.decode([String].self, from: response) {
             return WCPayAccount.noAccount
         }
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(WCPayAccountEnvelope.self, from: response).account
-        } else {
-            return try decoder.decode(WCPayAccount.self, from: response)
-        }
-    }
-}
-
-private struct WCPayNullAccountEnvelope: Decodable {
-    let emptyArray: [String]
-
-    private enum CodingKeys: String, CodingKey {
-        case emptyArray = "data"
-    }
-}
-
-/// WCPayAccountEnvelope Disposable Entity
-///
-/// Account endpoint returns the requested account in the `data` key. This entity
-/// allows us to parse it with JSONDecoder.
-///
-private struct WCPayAccountEnvelope: Decodable {
-    let account: WCPayAccount
-
-    private enum CodingKeys: String, CodingKey {
-        case account = "data"
+        return try extract(from: response, using: decoder)
     }
 }

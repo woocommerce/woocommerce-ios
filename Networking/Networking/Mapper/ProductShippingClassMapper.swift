@@ -1,40 +1,6 @@
-import Foundation
+typealias ProductShippingClassMapper = SiteIDMapper<ProductShippingClass>
 
-/// Mapper: ProductShippingClass
-///
-struct ProductShippingClassMapper: Mapper {
-    /// Site Identifier associated to the ProductShippingClass that will be parsed.
-    ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the ProductShippingClass Endpoints.
-    ///
-    let siteID: Int64
+struct Envelope<Resource>: Decodable where Resource: Decodable {
 
-    /// (Attempts) to convert a dictionary into ProductShippingClass.
-    ///
-    func map(response: Data) throws -> ProductShippingClass {
-        let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
-
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductShippingClassEnvelope.self, from: response).productShippingClass
-        } else {
-            return try decoder.decode(ProductShippingClass.self, from: response)
-        }
-    }
-}
-
-
-/// ProductShippingClassEnvelope Disposable Entity
-///
-/// `Load ProductShippingClass` endpoint returns the requested data in the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct ProductShippingClassEnvelope: Decodable {
-    let productShippingClass: ProductShippingClass
-
-    private enum CodingKeys: String, CodingKey {
-        case productShippingClass = "data"
-    }
+    let data: Resource
 }

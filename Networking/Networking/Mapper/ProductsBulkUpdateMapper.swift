@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: ProductsBulkUpdateMapper
 ///
 struct ProductsBulkUpdateMapper: Mapper {
@@ -17,24 +15,12 @@ struct ProductsBulkUpdateMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
+
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ProductsContainerEnvelope.self, from: response).data.updatedProducts
+            return try decoder.decode(Envelope<ProductsContainer>.self, from: response).data.updatedProducts
         } else {
             return try decoder.decode(ProductsContainer.self, from: response).updatedProducts
         }
-    }
-}
-
-/// ProductsEnvelope Disposable Entity
-///
-/// `products/batch` endpoint returns the requested updated products in a `update` key, nested in a `data` key.
-/// This entity allows us to do parse all the things with JSONDecoder.
-///
-private struct ProductsContainerEnvelope: Decodable {
-    let data: ProductsContainer
-
-    private enum CodingKeys: String, CodingKey {
-        case data
     }
 }
 

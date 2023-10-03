@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: `Coupon`
 ///
 struct CouponMapper: Mapper {
@@ -13,23 +11,10 @@ struct CouponMapper: Mapper {
     func map(response: Data) throws -> Coupon {
         let decoder = Coupon.decoder
         if hasDataEnvelope(in: response) {
-            let coupon = try decoder.decode(CouponEnvelope.self, from: response).coupon
+            let coupon = try decoder.decode(Envelope<Coupon>.self, from: response).data
             return coupon.copy(siteID: siteID)
         } else {
             return try decoder.decode(Coupon.self, from: response).copy(siteID: siteID)
         }
-    }
-}
-
-
-/// CouponEnvelope Disposable Entity:
-/// Load Coupon endpoint returns the coupon in the `data` key.
-/// This entity allows us to parse all the things with JSONDecoder.
-///
-private struct CouponEnvelope: Decodable {
-    let coupon: Coupon
-
-    private enum CodingKeys: String, CodingKey {
-        case coupon = "data"
     }
 }

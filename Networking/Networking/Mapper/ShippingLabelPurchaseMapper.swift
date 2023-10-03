@@ -25,23 +25,14 @@ struct ShippingLabelPurchaseMapper: Mapper {
             .orderID: orderID
         ]
 
+        let container: ShippingLabelPurchaseEnvelope
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(ShippingLabelPurchaseResponse.self, from: response).data.labels
+            container = try decoder.decode(Envelope<ShippingLabelPurchaseEnvelope>.self, from: response).data
         } else {
-            return try decoder.decode(ShippingLabelPurchaseEnvelope.self, from: response).labels
+            container = try decoder.decode(ShippingLabelPurchaseEnvelope.self, from: response)
         }
-    }
-}
 
-/// ShippingLabelPurchaseResponse Disposable Entity
-///
-/// `Purchase Shipping Labels` endpoint returns the data wrapper in the `data` key.
-///
-private struct ShippingLabelPurchaseResponse: Decodable {
-    let data: ShippingLabelPurchaseEnvelope
-
-    private enum CodingKeys: String, CodingKey {
-        case data
+        return container.labels
     }
 }
 

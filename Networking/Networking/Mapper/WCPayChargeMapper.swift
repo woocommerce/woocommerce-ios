@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper: WCPayCharge
 ///
 struct WCPayChargeMapper: Mapper {
@@ -16,23 +14,9 @@ struct WCPayChargeMapper: Mapper {
         /// can cross that bridge when we need those decoded.
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(WCPayChargeEnvelope.self, from: response).charge
-        } else {
-            return try decoder.decode(WCPayCharge.self, from: response)
-        }
-    }
-}
-
-/// WCPayChargeEnvelope Disposable Entity
-///
-/// Account endpoint returns the requested account in the `data` key. This entity
-/// allows us to parse it with JSONDecoder.
-///
-private struct WCPayChargeEnvelope: Decodable {
-    let charge: WCPayCharge
-
-    private enum CodingKeys: String, CodingKey {
-        case charge = "data"
+        return try extract(
+            from: response,
+            using: decoder
+        )
     }
 }

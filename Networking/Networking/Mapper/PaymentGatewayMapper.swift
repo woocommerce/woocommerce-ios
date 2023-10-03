@@ -1,5 +1,3 @@
-import Foundation
-
 /// Mapper for a `PaymentGateway` JSON object
 ///
 struct PaymentGatewayMapper: Mapper {
@@ -18,21 +16,9 @@ struct PaymentGatewayMapper: Mapper {
             .siteID: siteID,
         ]
         if hasDataEnvelope(in: response) {
-            return try decoder.decode(PaymentGatewayEnvelope.self, from: response).paymentGateway
+            return try decoder.decode(Envelope<PaymentGateway>.self, from: response).data
         } else {
             return try decoder.decode(PaymentGateway.self, from: response)
         }
     }
-}
-
-/// PaymentGateway list disposable entity:
-/// `Load Payment Gateway` endpoint returns all of the gateway information within a `body` obejcts in the `data` key. This entity
-/// allows us to parse all the things with JSONDecoder.
-///
-private struct PaymentGatewayEnvelope: Decodable {
-    private enum CodingKeys: String, CodingKey {
-        case paymentGateway = "data"
-    }
-
-    let paymentGateway: PaymentGateway
 }

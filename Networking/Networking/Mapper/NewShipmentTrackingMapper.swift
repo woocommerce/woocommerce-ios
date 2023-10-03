@@ -1,5 +1,3 @@
-/// Mapper: NewShipmentTrackingMapper
-///
 struct NewShipmentTrackingMapper: Mapper {
     /// Site Identifier associated to the shipment trackings that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't
@@ -16,25 +14,13 @@ struct NewShipmentTrackingMapper: Mapper {
     /// (Attempts) to convert a dictionary into an ShipmentTracking entity.
     ///
     func map(response: Data) throws -> ShipmentTracking {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
-        decoder.userInfo = [
-            .siteID: siteID,
-            .orderID: orderID
-        ]
-
-        if hasDataEnvelope(in: response) {
-            return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
-        } else {
-            return try decoder.decode(ShipmentTracking.self, from: response)
-        }
-    }
-}
-
-private struct NewShipmentTrackingMapperEnvelope: Decodable {
-    let shipmentTracking: ShipmentTracking
-
-    private enum CodingKeys: String, CodingKey {
-        case shipmentTracking = "data"
+        return try extract(
+            from: response,
+            decodingUserInfo: [
+                .siteID: siteID,
+                .orderID: orderID
+            ],
+            dateFormatter: DateFormatter.Defaults.yearMonthDayDateFormatter
+        )
     }
 }

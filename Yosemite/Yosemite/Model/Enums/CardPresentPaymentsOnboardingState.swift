@@ -101,8 +101,8 @@ extension CardPresentPaymentOnboardingState {
             return "wcpay_unsupported_version"
         case .pluginNotActivated:
             return "wcpay_not_activated"
-        case .pluginSetupNotCompleted:
-            return "wcpay_setup_not_completed"
+        case .pluginSetupNotCompleted(let plugin):
+            return plugin == .wcPay ? "wcpay_setup_not_completed" : "stripe_extension_not_setup"
         case .pluginInTestModeWithLiveStripeAccount:
             return "wcpay_in_test_mode_with_live_account"
         case .stripeAccountUnderReview:

@@ -481,6 +481,29 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(categories[1].name, "Sample 2")
     }
 
+    func test_createProductCategories_updates_stored_categories_on_success() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .success([.fake().copy(name: "Sample 1"),
+                                                                   .fake().copy(name: "Sample 2")]))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+
+        // When
+        _ = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(storedProductCategoriesCount, 2)
+    }
+
     func test_createProductCategories_returns_error_on_failure() throws {
         // Given
         let network = MockNetwork()

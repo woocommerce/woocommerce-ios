@@ -875,6 +875,7 @@
 		E1BAB2C32913FA6400C3982B /* ResponseDataValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C22913FA6400C3982B /* ResponseDataValidator.swift */; };
 		E1BAB2C52913FB1800C3982B /* WordPressApiValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */; };
 		E1BAB2C72913FB5800C3982B /* WordPressApiError.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */; };
+		EE1D9A9F2ACD6BA60020D817 /* AIProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */; };
 		EE28C7DA2AC17961004A69F4 /* generate-product-failure.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D72AC17960004A69F4 /* generate-product-failure.json */; };
 		EE28C7DB2AC17961004A69F4 /* generate-product-invalid-token.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */; };
 		EE28C7DC2AC17961004A69F4 /* generate-product-success.json in Resources */ = {isa = PBXBuildFile; fileRef = EE28C7D92AC17961004A69F4 /* generate-product-success.json */; };
@@ -1865,6 +1866,7 @@
 		E1BAB2C22913FA6400C3982B /* ResponseDataValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResponseDataValidator.swift; sourceTree = "<group>"; };
 		E1BAB2C42913FB1800C3982B /* WordPressApiValidator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiValidator.swift; sourceTree = "<group>"; };
 		E1BAB2C62913FB5800C3982B /* WordPressApiError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressApiError.swift; sourceTree = "<group>"; };
+		EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProduct.swift; sourceTree = "<group>"; };
 		EE28C7D72AC17960004A69F4 /* generate-product-failure.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-failure.json"; sourceTree = "<group>"; };
 		EE28C7D82AC17961004A69F4 /* generate-product-invalid-token.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-invalid-token.json"; sourceTree = "<group>"; };
 		EE28C7D92AC17961004A69F4 /* generate-product-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "generate-product-success.json"; sourceTree = "<group>"; };
@@ -3218,6 +3220,7 @@
 				45CDAFAA2434CA9300F83C22 /* ProductCatalogVisibility.swift */,
 				458C6DE325AC72A1009B300D /* StoredProductSettings.swift */,
 				EE4D51B12ACC6F1E00783D77 /* ProductCategoryFromBatchCreation.swift */,
+				EE1D9A9E2ACD6BA60020D817 /* AIProduct.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -4172,6 +4175,7 @@
 				3148977027232982007A86BD /* SystemStatus.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				DEC51AF72769A15B009F3DF4 /* SystemStatus+Security.swift in Sources */,
+				EE1D9A9F2ACD6BA60020D817 /* AIProduct.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,
 				261870782540A252006522A1 /* ShippingLineTax.swift in Sources */,

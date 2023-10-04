@@ -43,6 +43,8 @@ public final class ProductCategoryStore: Store {
             synchronizeAllProductCategories(siteID: siteID, fromPageNumber: fromPageNumber, onCompletion: onCompletion)
         case .addProductCategory(siteID: let siteID, name: let name, parentID: let parentID, onCompletion: let onCompletion):
             addProductCategory(siteID: siteID, name: name, parentID: parentID, onCompletion: onCompletion)
+        case .addProductCategories(siteID: let siteID, names: let names, parentID: let parentID, onCompletion: let onCompletion):
+            addProductCategories(siteID: siteID, names: names, parentID: parentID, onCompletion: onCompletion)
         case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
             synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
         case let .updateProductCategory(category, onCompletion):
@@ -117,6 +119,24 @@ private extension ProductCategoryStore {
             case .success(let productCategory):
                 self?.upsertStoredProductCategoriesInBackground([productCategory], siteID: siteID) {
                     onCompletion(.success(productCategory))
+                }
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    /// Create new product categories associated with a given Site ID.
+    ///
+    func addProductCategories(siteID: Int64,
+                              names: [String],
+                              parentID: Int64?,
+                              onCompletion: @escaping (Result<[ProductCategory], Error>) -> Void) {
+        remote.createProductCategories(for: siteID, names: names, parentID: parentID) { [weak self] result in
+            switch result {
+            case .success(let productCategories):
+                self?.upsertStoredProductCategoriesInBackground(productCategories, siteID: siteID) {
+                    onCompletion(.success(productCategories))
                 }
             case .failure(let error):
                 onCompletion(.failure(error))

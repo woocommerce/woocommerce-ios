@@ -40,13 +40,14 @@ struct CollapsibleProductRowCard: View {
                 Text(Localization.priceLabel)
                 CollapsibleProductCardPriceSummary(viewModel: viewModel)
             }
+            Divider()
+                .padding()
             Button(Localization.removeProductLabel) {
                 // TODO gh-10834: Action to remove product
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
             .foregroundColor(Color(.error))
-            Spacer()
         })
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)

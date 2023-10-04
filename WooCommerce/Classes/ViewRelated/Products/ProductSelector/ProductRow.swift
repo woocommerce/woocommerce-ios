@@ -16,6 +16,8 @@ struct SimplifiedProductRow: View {
             ProductStepper(viewModel: viewModel)
                 .renderedIf(viewModel.canChangeQuantity)
         }
+        .padding(.top)
+        .padding(.bottom)
     }
 }
 

@@ -108,6 +108,7 @@ private extension CollapsibleProductRowCard {
     }
 }
 
+#if DEBUG
 struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
@@ -115,3 +116,4 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
         CollapsibleProductRowCard(viewModel: viewModel)
     }
 }
+#endif

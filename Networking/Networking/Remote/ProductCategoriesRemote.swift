@@ -114,6 +114,42 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+
+    /// Create new multiple `ProductCategory` entities.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll add new product categories.
+    ///     - names: Array of category names.
+    ///     - parentID: The ID for the parent of the categories.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductCategories(for siteID: Int64,
+                                        names: [String],
+                                        parentID: Int64?,
+                                        completion: @escaping (Result<[ProductCategory], Error>) -> Void) {
+
+        let parameters = [
+            ParameterKey.create: names.compactMap { name in
+                var json = [ParameterKey.name: name]
+                if let parentID {
+                    json[ParameterKey.parent] = String(parentID)
+                }
+                return json
+            }
+        ]
+
+        let path = Path.categoriesBatch
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductCategoryListMapper(siteID: siteID, responseType: .create)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Updates an existing `ProductCategory`.
     ///
     /// - Parameter category: Details to be updated for a category.
@@ -165,6 +201,7 @@ public extension ProductCategoriesRemote {
 
     private enum Path {
         static let categories = "products/categories"
+        static let categoriesBatch = "products/categories/batch"
     }
 
     private enum ParameterKey {
@@ -172,5 +209,6 @@ public extension ProductCategoriesRemote {
         static let perPage: String = "per_page"
         static let name: String = "name"
         static let parent: String = "parent"
+        static let create: String = "create"
     }
 }

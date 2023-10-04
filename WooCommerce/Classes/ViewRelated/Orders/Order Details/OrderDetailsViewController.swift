@@ -163,6 +163,8 @@ private extension OrderDetailsViewController {
             action: #selector(loadPreviousOrder)
         )
 
+        // The buttons are too far apart when setting them to rightBarButtonItems, let's adjust the inset to provide better visuals
+        upArrowButon.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 0, right: 0)
         upArrowButon.isEnabled = viewModels[safe: currentIndex - 1] != nil
 
         let downArrowButon = UIBarButtonItem(

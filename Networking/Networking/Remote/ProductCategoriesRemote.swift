@@ -56,7 +56,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductCategoryListMapper(siteID: siteID)
+        let mapper = ProductCategoryListMapper(siteID: siteID, responseType: .load)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

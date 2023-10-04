@@ -2546,13 +2546,13 @@ final class ProductStoreTests: XCTestCase {
     }
 
 
-    // MARK: - `generateProduct`
+    // MARK: - `generateAIProduct`
 
-    func test_generateProduct_returns_product_on_success() throws {
+    func test_generateAIProduct_returns_AIProduct_on_success() throws {
         // Given
-        let product = Product.fake()
+        let product: AIProduct = .fake()
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingProduct(thenReturn: .success(product))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .success(product))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2561,16 +2561,16 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProduct(siteID: 123,
-                                                                productName: "Watch",
-                                                                keywords: "Leather strip, silver",
-                                                                language: "en",
-                                                                tone: "Casual",
-                                                                currencySymbol: "INR",
-                                                                dimensionUnit: "cm",
-                                                                weightUnit: "kg",
-                                                                categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+            productStore.onAction(ProductAction.generateAIProduct(siteID: 123,
+                                                                  productName: "Watch",
+                                                                  keywords: "Leather strip, silver",
+                                                                  language: "en",
+                                                                  tone: "Casual",
+                                                                  currencySymbol: "INR",
+                                                                  dimensionUnit: "cm",
+                                                                  weightUnit: "kg",
+                                                                  categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
                 promise(result)
             })
         }
@@ -2580,10 +2580,10 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedProduct, product)
     }
 
-    func test_generateProduct_returns_error_on_failure() throws {
+    func test_generateAIProduct_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingProduct(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2592,16 +2592,16 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProduct(siteID: 123,
-                                                                productName: "Watch",
-                                                                keywords: "Leather strip, silver",
-                                                                language: "en",
-                                                                tone: "Casual",
-                                                                currencySymbol: "INR",
-                                                                dimensionUnit: "cm",
-                                                                weightUnit: "kg",
-                                                                categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+            productStore.onAction(ProductAction.generateAIProduct(siteID: 123,
+                                                                  productName: "Watch",
+                                                                  keywords: "Leather strip, silver",
+                                                                  language: "en",
+                                                                  tone: "Casual",
+                                                                  currencySymbol: "INR",
+                                                                  dimensionUnit: "cm",
+                                                                  weightUnit: "kg",
+                                                                  categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
                 promise(result)
             })
         }

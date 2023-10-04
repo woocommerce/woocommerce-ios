@@ -134,28 +134,28 @@ public class ProductStore: Store {
             generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
-        case let .generateProduct(siteID,
-                                  productName,
-                                  keywords,
-                                  language,
-                                  tone,
-                                  currencySymbol,
-                                  dimensionUnit,
-                                  weightUnit,
-                                  categories,
-                                  tags,
-                                  completion):
-            generateProduct(siteID: siteID,
-                            productName: productName,
-                            keywords: keywords,
-                            language: language,
-                            tone: tone,
-                            currencySymbol: currencySymbol,
-                            dimensionUnit: dimensionUnit,
-                            weightUnit: weightUnit,
-                            categories: categories,
-                            tags: tags,
-                            completion: completion)
+        case let .generateAIProduct(siteID,
+                                    productName,
+                                    keywords,
+                                    language,
+                                    tone,
+                                    currencySymbol,
+                                    dimensionUnit,
+                                    weightUnit,
+                                    categories,
+                                    tags,
+                                    completion):
+            generateAIProduct(siteID: siteID,
+                              productName: productName,
+                              keywords: keywords,
+                              language: language,
+                              tone: tone,
+                              currencySymbol: currencySymbol,
+                              dimensionUnit: dimensionUnit,
+                              weightUnit: weightUnit,
+                              categories: categories,
+                              tags: tags,
+                              completion: completion)
         }
     }
 }
@@ -697,29 +697,29 @@ private extension ProductStore {
         }
     }
 
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag],
-                         completion: @escaping (Result<Product, Error>) -> Void) {
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           completion: @escaping (Result<AIProduct, Error>) -> Void) {
         Task { @MainActor in
             let result = await Result {
-                let product = try await generativeContentRemote.generateProduct(siteID: siteID,
-                                                                                    productName: productName,
-                                                                                    keywords: keywords,
-                                                                                    language: language,
-                                                                                    tone: tone,
-                                                                                    currencySymbol: currencySymbol,
-                                                                                    dimensionUnit: dimensionUnit,
-                                                                                    weightUnit: weightUnit,
-                                                                                    categories: categories,
-                                                                                    tags: tags)
+                let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
+                                                                                  productName: productName,
+                                                                                  keywords: keywords,
+                                                                                  language: language,
+                                                                                  tone: tone,
+                                                                                  currencySymbol: currencySymbol,
+                                                                                  dimensionUnit: dimensionUnit,
+                                                                                  weightUnit: weightUnit,
+                                                                                  categories: categories,
+                                                                                  tags: tags)
                 return product
             }
             completion(result)

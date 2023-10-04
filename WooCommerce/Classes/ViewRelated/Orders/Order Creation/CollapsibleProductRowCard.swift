@@ -2,16 +2,26 @@ import Yosemite
 import SwiftUI
 
 struct CollapsibleProductRowCard: View {
-
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
+
+    private var isExpanded: Binding<Bool> {
+        Binding<Bool>(
+            get: { !self.isCollapsed },
+            set: { self.isCollapsed = !$0 }
+        )
+    }
 
     init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        CollapsibleView(isCollapsible: true, isCollapsed: $isCollapsed, safeAreaInsets: EdgeInsets(), label: {
+        CollapsibleView(isCollapsible: true,
+                        isCollapsed: $isCollapsed,
+                        safeAreaInsets: EdgeInsets(),
+                        shouldShowDividers: isExpanded,
+                        label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
                     Image(systemName: "photo.stack.fill")
@@ -36,8 +46,17 @@ struct CollapsibleProductRowCard: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
             .foregroundColor(Color(.error))
-            Divider()
+            Spacer()
         })
+        .padding(Layout.padding)
+        .frame(maxWidth: .infinity, alignment: .center)
+        .overlay {
+            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                .inset(by: 0.25)
+                .stroke(Color(uiColor: .separator),
+                        lineWidth: Layout.borderLineWidth)
+        }
+        .cornerRadius(Layout.frameCornerRadius)
     }
 }
 
@@ -70,6 +89,8 @@ private struct CollapsibleProductCardPriceSummary: View {
 private extension CollapsibleProductRowCard {
     enum Layout {
         static let padding: CGFloat = 16
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 0.5
     }
 
     enum Localization {

@@ -26,7 +26,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     }
 
     private let addCustomerDetailsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Add Customer Details"]
+        $0.buttons["Add Customer Details"]
     }
 
     private let addShippingButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -117,6 +117,10 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Opens the Customer Details screen.
     /// - Returns: Customer Details screen object.
     public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
+        // Swipe up to get the addCustomerDetailsButton in view.
+        // There's no condition for this because somehow button.exists, button.isHittable and button.isEnabled
+        // all returns true even when the button is not fully in view
+        app.swipeUp()
         addCustomerDetailsButton.tap()
         return try CustomerDetailsScreen()
     }

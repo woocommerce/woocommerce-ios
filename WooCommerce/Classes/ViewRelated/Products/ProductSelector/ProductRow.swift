@@ -1,6 +1,24 @@
 import SwiftUI
 import Kingfisher
 
+struct SimplifiedProductRow: View {
+
+    @ObservedObject var viewModel: ProductRowViewModel
+
+    init(viewModel: ProductRowViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        HStack(alignment: .center) {
+            Text("Order Count")
+            Spacer()
+            ProductStepper(viewModel: viewModel)
+                .renderedIf(viewModel.canChangeQuantity)
+        }
+    }
+}
+
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
 struct ProductRow: View {
@@ -9,10 +27,6 @@ struct ProductRow: View {
     private let multipleSelectionsEnabled: Bool
 
     private let onCheckboxSelected: (() -> Void)?
-
-    /// Whether the product row should display the image thumbnail
-    ///
-    private let shouldShowImageThumbnail: Bool
 
     /// View model to drive the view.
     ///
@@ -35,12 +49,10 @@ struct ProductRow: View {
     }
 
     init(multipleSelectionsEnabled: Bool = false,
-         shouldShowImageThumbnail: Bool = true,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",
          onCheckboxSelected: (() -> Void)? = nil) {
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
-        self.shouldShowImageThumbnail = shouldShowImageThumbnail
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
         self.onCheckboxSelected = onCheckboxSelected
@@ -72,7 +84,6 @@ struct ProductRow: View {
                         .cornerRadius(Layout.cornerRadius)
                         .foregroundColor(Color(UIColor.listSmallIcon))
                         .accessibilityHidden(true)
-                        .renderedIf(shouldShowImageThumbnail)
 
                     // Product details
                     VStack(alignment: .leading) {

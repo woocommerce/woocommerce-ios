@@ -16,7 +16,7 @@ struct CollapsibleProductRowCard: View {
                     Image(systemName: "photo.stack.fill")
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
-                        Text("29 in stock")
+                        Text(viewModel.stockQuantityLabel)
                             .foregroundColor(.gray)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                     }
@@ -24,7 +24,18 @@ struct CollapsibleProductRowCard: View {
             }
 
         }, content: {
-            ProductRow(shouldShowImageThumbnail: false, viewModel: viewModel)
+            SimplifiedProductRow(viewModel: viewModel)
+            HStack {
+                Text("Price")
+                CollapsibleProductCardPriceSummary(viewModel: viewModel)
+            }
+            Button("Remove Product from order") {
+                // TODO gh-10834: Action to remove product
+            }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .center)
+            .foregroundColor(Color(.error))
+            Divider()
         })
     }
 }
@@ -48,7 +59,9 @@ struct CollapsibleProductCardPriceSummary: View {
                     .foregroundColor(.gray)
                 Spacer()
             }
-            Text("$45.00")
+            if let price = viewModel.priceLabel {
+                Text(price)
+            }
         }
     }
 }

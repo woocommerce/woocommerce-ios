@@ -67,6 +67,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
     }
 
+    /// Provides a stock quantity label when applicable
+    ///
+    var stockQuantityLabel: String {
+        createStockQuantityText()
+    }
+
     /// Price label based on a product's price and quantity.
     ///
     var priceLabel: String? {
@@ -321,6 +327,24 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         default:
             return stockStatus.description
+        }
+    }
+
+    /// Returns a text-based stock quantity if there's stock, or a fall-back when stock quantity doesn't apply
+    ///
+    private func createStockQuantityText() -> String {
+        switch stockStatus {
+        case .inStock:
+            if let stockQuantity = stockQuantity, manageStock {
+                let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+                return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
+            } else {
+                return "In Stock"
+            }
+        case .outOfStock:
+            return "Out of Stock"
+        default:
+            return ""
         }
     }
 

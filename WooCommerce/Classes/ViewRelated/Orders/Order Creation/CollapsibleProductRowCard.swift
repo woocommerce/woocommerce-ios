@@ -1,3 +1,4 @@
+import Yosemite
 import SwiftUI
 
 struct CollapsibleProductRowCard: View {
@@ -59,7 +60,7 @@ private struct CollapsibleProductCardPriceSummary: View {
                     .foregroundColor(.gray)
                 Spacer()
             }
-            if let price = viewModel.priceLabel {
+            if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
             }
         }
@@ -78,5 +79,13 @@ private extension CollapsibleProductRowCard {
         static let removeProductLabel = NSLocalizedString(
             "Remove Product from order",
             comment: "Text in the product row card button to remove a product from the current order")
+    }
+}
+
+struct CollapsibleProductRowCard_Previews: PreviewProvider {
+    static var previews: some View {
+        let product = Product.swiftUIPreviewSample()
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+        CollapsibleProductRowCard(viewModel: viewModel)
     }
 }

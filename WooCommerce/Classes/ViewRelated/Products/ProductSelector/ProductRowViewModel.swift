@@ -73,9 +73,28 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         createStockQuantityText()
     }
 
-    /// Price label based on a product's price and quantity.
+    /// Formatted price label for an individual product
     ///
     var priceLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price)
+    }
+
+    /// Formatted price label from multiplying product's price and quantity.
+    ///
+    var priceBeforeDiscountsLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
+        return currencyFormatter.formatAmount(productSubtotal)
+    }
+
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    ///
+    var priceAfterDiscountsLabel: String? {
         guard let price = price else {
             return nil
         }
@@ -106,7 +125,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        [stockOrAttributesLabel, priceLabel, variationsLabel]
+        [stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }
@@ -123,7 +142,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        [name, stockOrAttributesLabel, priceLabel, variationsLabel, skuLabel]
+        [name, stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
             .joined(separator: ". ")
     }

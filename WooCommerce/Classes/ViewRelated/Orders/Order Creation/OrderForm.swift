@@ -334,24 +334,6 @@ private struct NewTaxRateSection: View {
     }
 }
 
-struct CollapsibleProductRow: View {
-
-    @ObservedObject var viewModel: ProductRowViewModel
-    @State private var isCollapsed: Bool = false
-
-    init(viewModel: ProductRowViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        CollapsibleView(isCollapsible: true, isCollapsed: $isCollapsed, safeAreaInsets: EdgeInsets(), label: {
-            Text(viewModel.name)
-        }, content: {
-            ProductRow(viewModel: viewModel)
-        })
-    }
-}
-
 // MARK: Order Sections
 /// Represents the Products section
 ///
@@ -411,7 +393,7 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRow(viewModel: productRow)
+                    CollapsibleProductRowCard(viewModel: productRow)
                         .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
                         .renderedIf(!viewModel.shouldShowCollapsibleProductRows)

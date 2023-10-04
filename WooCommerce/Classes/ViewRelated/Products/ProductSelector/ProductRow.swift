@@ -10,6 +10,10 @@ struct ProductRow: View {
 
     private let onCheckboxSelected: (() -> Void)?
 
+    /// Whether the product row should display the image thumbnail
+    ///
+    private let shouldShowImageThumbnail: Bool
+
     /// View model to drive the view.
     ///
     @ObservedObject var viewModel: ProductRowViewModel
@@ -31,10 +35,12 @@ struct ProductRow: View {
     }
 
     init(multipleSelectionsEnabled: Bool = false,
+         shouldShowImageThumbnail: Bool = true,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",
          onCheckboxSelected: (() -> Void)? = nil) {
         self.multipleSelectionsEnabled = multipleSelectionsEnabled
+        self.shouldShowImageThumbnail = shouldShowImageThumbnail
         self.viewModel = viewModel
         self.accessibilityHint = accessibilityHint
         self.onCheckboxSelected = onCheckboxSelected
@@ -66,6 +72,7 @@ struct ProductRow: View {
                         .cornerRadius(Layout.cornerRadius)
                         .foregroundColor(Color(UIColor.listSmallIcon))
                         .accessibilityHidden(true)
+                        .renderedIf(shouldShowImageThumbnail)
 
                     // Product details
                     VStack(alignment: .leading) {

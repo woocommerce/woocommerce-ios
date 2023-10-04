@@ -69,7 +69,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Price label based on a product's price and quantity.
     ///
-    private var priceLabel: String? {
+    var priceLabel: String? {
         guard let price = price else {
             return nil
         }

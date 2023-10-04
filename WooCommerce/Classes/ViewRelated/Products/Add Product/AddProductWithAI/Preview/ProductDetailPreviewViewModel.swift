@@ -223,10 +223,10 @@ private extension ProductDetailPreviewViewModel {
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                try? await self.fetchGeneralSettings()
+                await self.fetchGeneralSettings()
             }
             group.addTask {
-                try? await self.fetchProductSiteSettings()
+                await self.fetchProductSiteSettings()
             }
         }
 
@@ -237,28 +237,26 @@ private extension ProductDetailPreviewViewModel {
     }
 
     @MainActor
-    func fetchGeneralSettings() async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+    func fetchGeneralSettings() async {
+        await withCheckedContinuation { continuation in
             let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
                 if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
+                    DDLogError("⛔️ Error synchronizing general site settings: \(error)")
                 }
+                continuation.resume()
             }
             stores.dispatch(action)
         }
     }
 
     @MainActor
-    func fetchProductSiteSettings() async throws {
-        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+    func fetchProductSiteSettings() async {
+        await withCheckedContinuation { continuation in
             let action = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
                 if let error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
+                    DDLogError("⛔️ Error synchronizing product site settings: \(error)")
                 }
+                continuation.resume()
             }
             stores.dispatch(action)
         }

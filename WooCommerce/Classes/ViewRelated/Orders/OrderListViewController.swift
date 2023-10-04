@@ -706,23 +706,6 @@ extension OrderListViewController: UITableViewDelegate {
         }
     }
 
-    func allViewModels() -> [OrderDetailsViewModel] {
-        let ids = (0...tableView.numberOfSections - 1)
-            .map { section in
-                (0...tableView.numberOfRows(inSection: section) - 1)
-                    .compactMap { row in
-                        dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
-                    }
-            }
-
-        return ids
-            .flatMap { rows in
-                rows.compactMap { id in
-                    viewModel.detailsViewModel(withID: id)
-                }
-            }
-    }
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         guard let itemIndex = dataSource.indexOfItem(for: indexPath) else {
             return
@@ -931,6 +914,23 @@ private extension OrderListViewController {
         actionSheet.addAction(dontShowAgainAction)
 
         self.present(actionSheet, animated: true)
+    }
+
+    func allViewModels() -> [OrderDetailsViewModel] {
+        let ids = (0...tableView.numberOfSections - 1)
+            .map { section in
+                (0...tableView.numberOfRows(inSection: section) - 1)
+                    .compactMap { row in
+                        dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
+                    }
+            }
+
+        return ids
+            .flatMap { rows in
+                rows.compactMap { id in
+                    viewModel.detailsViewModel(withID: id)
+                }
+            }
     }
 }
 

@@ -337,13 +337,18 @@ private struct NewTaxRateSection: View {
 struct CollapsibleProductRow: View {
 
     @ObservedObject var viewModel: ProductRowViewModel
+    @State private var isCollapsed: Bool = false
 
     init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
-        Text("Collapsible Product Row")
+        CollapsibleView(isCollapsible: true, isCollapsed: $isCollapsed, safeAreaInsets: EdgeInsets(), label: {
+            Text(viewModel.name)
+        }, content: {
+            ProductRow(viewModel: viewModel)
+        })
     }
 }
 

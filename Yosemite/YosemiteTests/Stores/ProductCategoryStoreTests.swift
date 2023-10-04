@@ -7,6 +7,10 @@ import XCTest
 /// ProductCategoryStore Unit Tests
 ///
 final class ProductCategoryStoreTests: XCTestCase {
+    /// Mock Dispatcher!
+    ///
+    private var dispatcher: Dispatcher!
+
     /// Mock Network: Allows us to inject predefined responses!
     ///
     private var network: MockNetwork!
@@ -43,6 +47,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        dispatcher = Dispatcher()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
@@ -54,6 +59,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         store = nil
         network = nil
         storageManager = nil
+        dispatcher = nil
 
         super.tearDown()
     }

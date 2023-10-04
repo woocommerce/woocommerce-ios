@@ -1,8 +1,33 @@
 import Foundation
 
+public protocol ProductCategoriesRemoteProtocol {
+    func loadAllProductCategories(for siteID: Int64,
+                                  pageNumber: Int,
+                                  pageSize: Int,
+                                  completion: @escaping ([ProductCategory]?, Error?) -> Void)
+
+    func loadProductCategory(with categoryID: Int64,
+                             siteID: Int64,
+                             completion: @escaping (Result<ProductCategory, Error>) -> Void) -> Void
+
+    func createProductCategory(for siteID: Int64,
+                               name: String,
+                               parentID: Int64?,
+                               completion: @escaping (Result<ProductCategory, Error>) -> Void)
+
+    func createProductCategories(for siteID: Int64,
+                                 names: [String],
+                                 parentID: Int64?,
+                                 completion: @escaping (Result<[ProductCategory], Error>) -> Void)
+
+    func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory
+
+    func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws
+}
+
 /// Product Categories: Remote Endpoints
 ///
-public final class ProductCategoriesRemote: Remote {
+public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProtocol {
 
     // MARK: - Product Categories
 

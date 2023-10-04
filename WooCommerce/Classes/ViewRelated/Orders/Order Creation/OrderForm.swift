@@ -334,6 +334,19 @@ private struct NewTaxRateSection: View {
     }
 }
 
+struct CollapsibleProductRow: View {
+
+    @ObservedObject var viewModel: ProductRowViewModel
+
+    init(viewModel: ProductRowViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        Text("Collapsible Product Row")
+    }
+}
+
 // MARK: Order Sections
 /// Represents the Products section
 ///
@@ -393,7 +406,10 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
+                    CollapsibleProductRow(viewModel: productRow)
+                        .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
+                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }

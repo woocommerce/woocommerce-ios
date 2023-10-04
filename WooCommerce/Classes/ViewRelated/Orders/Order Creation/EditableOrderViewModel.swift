@@ -78,6 +78,13 @@ final class EditableOrderViewModel: ObservableObject {
     var shouldShowCancelButton: Bool {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
+
+    /// Indicates whether product rows are collapsible
+    ///
+    var shouldShowCollapsibleProductRows: Bool {
+        featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM6)
+    }
+
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {

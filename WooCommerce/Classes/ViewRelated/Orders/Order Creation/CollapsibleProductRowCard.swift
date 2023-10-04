@@ -53,7 +53,7 @@ struct CollapsibleProductRowCard: View {
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(Color(uiColor: .separator),
+                .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black),
                         lineWidth: Layout.borderLineWidth)
         }
         .cornerRadius(Layout.frameCornerRadius)
@@ -90,7 +90,7 @@ private extension CollapsibleProductRowCard {
     enum Layout {
         static let padding: CGFloat = 16
         static let frameCornerRadius: CGFloat = 4
-        static let borderLineWidth: CGFloat = 0.5
+        static let borderLineWidth: CGFloat = 1
     }
 
     enum Localization {

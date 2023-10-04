@@ -26,10 +26,10 @@ struct CollapsibleProductRowCard: View {
         }, content: {
             SimplifiedProductRow(viewModel: viewModel)
             HStack {
-                Text("Price")
+                Text(Localization.priceLabel)
                 CollapsibleProductCardPriceSummary(viewModel: viewModel)
             }
-            Button("Remove Product from order") {
+            Button(Localization.removeProductLabel) {
                 // TODO gh-10834: Action to remove product
             }
             .padding()
@@ -40,7 +40,7 @@ struct CollapsibleProductRowCard: View {
     }
 }
 
-struct CollapsibleProductCardPriceSummary: View {
+private struct CollapsibleProductCardPriceSummary: View {
 
     @ObservedObject var viewModel: ProductRowViewModel
 
@@ -66,6 +66,17 @@ struct CollapsibleProductCardPriceSummary: View {
     }
 }
 
-private enum Layout {
-    static let padding: CGFloat = 16
+private extension CollapsibleProductRowCard {
+    enum Layout {
+        static let padding: CGFloat = 16
+    }
+
+    enum Localization {
+        static let priceLabel = NSLocalizedString(
+            "Price",
+            comment: "Text in the product row card that indicating the price of the product")
+        static let removeProductLabel = NSLocalizedString(
+            "Remove Product from order",
+            comment: "Text in the product row card button to remove a product from the current order")
+    }
 }

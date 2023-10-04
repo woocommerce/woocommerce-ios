@@ -5,7 +5,7 @@ import Storage
 // MARK: - ProductCategoryStore
 //
 public final class ProductCategoryStore: Store {
-    private let remote: ProductCategoriesRemote
+    private let remote: ProductCategoriesRemoteProtocol
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
@@ -13,6 +13,14 @@ public final class ProductCategoryStore: Store {
 
     public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductCategoriesRemote(network: network)
+        super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
+    }
+
+    init(dispatcher: Dispatcher,
+         storageManager: StorageManagerType,
+         network: Network,
+         remote: ProductCategoriesRemoteProtocol) {
+        self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 

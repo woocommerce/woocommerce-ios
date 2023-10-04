@@ -692,12 +692,16 @@ extension OrderListViewController: UITableViewDelegate {
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
+        let allViewModels = allViewModels()
+        let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
+
+        guard let currentIndex = currentIndex else { return }
 
         if isSplitViewInOrdersTabEnabled {
-            splitViewController?.isCollapsed ?? true ? switchDetailsHandler(allViewModels(), indexPath.row) :
+            splitViewController?.isCollapsed ?? true ? switchDetailsHandler(allViewModels, currentIndex) :
             switchDetailsHandler([orderDetailsViewModel], 0)
         } else {
-            let viewController = OrderDetailsViewController(viewModels: allViewModels(), currentIndex: indexPath.row)
+            let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
@@ -710,7 +714,7 @@ extension OrderListViewController: UITableViewDelegate {
                         dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
                     }
             }
-        
+
         return ids
             .flatMap { rows in
                 rows.compactMap { id in

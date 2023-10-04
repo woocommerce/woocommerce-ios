@@ -29,6 +29,10 @@ struct CollapsibleProductRowCard: View {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
                             .foregroundColor(.gray)
+                            .renderedIf(isCollapsed)
+                        Text(viewModel.skuLabel)
+                            .foregroundColor(.gray)
+                            .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                     }
                 }

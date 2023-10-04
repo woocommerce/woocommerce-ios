@@ -395,6 +395,7 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow)
                         .renderedIf(viewModel.shouldShowCollapsibleProductRows)
+                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
                         .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                         .onTapGesture {

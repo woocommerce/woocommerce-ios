@@ -1040,6 +1040,49 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 
+    /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.
+    ///
+    func test_searchProducts_effectively_persists_product_bundle_items() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let mockBundleItem = ProductBundleItem(bundledItemID: 6,
+                                               productID: 16,
+                                               menuOrder: 1,
+                                               title: "Scarf",
+                                               stockStatus: .inStock,
+                                               minQuantity: 2,
+                                               maxQuantity: nil,
+                                               defaultQuantity: 6,
+                                               isOptional: true,
+                                               overridesVariations: true,
+                                               allowedVariations: [12, 18],
+                                               overridesDefaultVariationAttributes: true,
+                                               defaultVariationAttributes: [.init(id: 2, name: "Material", option: "Silk")])
+        let mockProduct = Product.fake().copy(bundledItems: [mockBundleItem])
+        remote.whenSearchingProducts(query: "Accessory", thenReturn: .success([mockProduct]))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                               keyword: "Accessory",
+                                                               pageNumber: self.defaultPageNumber,
+                                                               pageSize: self.defaultPageSize,
+                                                               excludedProductIDs: [],
+                                                               onCompletion: { _ in
+                promise(())
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
+        let storageBundleItem = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.ProductBundleItem.self))
+        assertEqual(mockBundleItem, storageBundleItem.toReadOnly())
+    }
+
     func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
         // Given
         let keyword = "test"

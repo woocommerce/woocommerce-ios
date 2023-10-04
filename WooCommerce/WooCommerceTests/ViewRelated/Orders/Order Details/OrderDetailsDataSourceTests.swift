@@ -647,7 +647,8 @@ private extension OrderDetailsDataSourceTests {
                   totalTax: "1",
                   attributes: [],
                   addOns: [],
-                  parent: nil)
+                  parent: nil,
+                  bundleConfiguration: [])
     }
 
     func makeRefund(refundID: Int64, orderID: Int64, siteID: Int64) -> Refund {

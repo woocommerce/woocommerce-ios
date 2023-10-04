@@ -336,6 +336,53 @@ final class OrdersRemoteTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_update_order_properly_encodes_order_item_bundle_configuration() throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+        let orderItem = OrderItem.fake().copy(itemID: 123, productID: 5, quantity: 2, bundleConfiguration: [
+            // Non-variable bundle item
+            .init(bundledItemID: 20, productID: 51, quantity: 3, isOptionalAndSelected: true, variationID: nil, variationAttributes: nil),
+            // Variable bundle item
+            .init(bundledItemID: 21,
+                  productID: 52,
+                  quantity: 5,
+                  isOptionalAndSelected: nil,
+                  variationID: 77,
+                  variationAttributes: [.init(id: 2, name: "Color", option: "Coral")])
+        ])
+        let order = Order.fake().copy(items: [orderItem])
+
+        // When
+        remote.updateOrder(from: sampleSiteID, order: order, giftCard: nil, fields: [.items]) { result in }
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        let lineItem = try XCTUnwrap((request.parameters["line_items"] as? [[String: AnyHashable]])?.first)
+        let received = try XCTUnwrap(lineItem["bundle_configuration"] as? [[String: AnyHashable]])
+        let expected: [[String: AnyHashable]] = [
+            [
+                "bundled_item_id": 20,
+                "product_id": 51,
+                "quantity": 3,
+                "optional_selected": true
+            ],
+            [
+                "bundled_item_id": 21,
+                "product_id": 52,
+                "quantity": 5,
+                "variation_id": 77,
+                "attributes": [
+                    [
+                        "id": 2,
+                        "name": "Color",
+                        "option": "Coral"
+                    ] as [String: AnyHashable]
+                ] as [AnyHashable]
+            ]
+        ]
+        assertEqual(expected, received)
+    }
+
     func test_update_order_properly_encodes_coupon_lines() throws {
         // Given
         let remote = OrdersRemote(network: network)

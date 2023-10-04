@@ -1251,6 +1251,7 @@ private extension EditableOrderViewModel {
                 }()
 
                 let isAddGiftCardActionEnabled = currencyFormatter.convertToDecimal(order.total)?.compare(NSDecimalNumber.zero) == .orderedDescending
+                let isDiscountBiggerThanZero = orderTotals.discountTotal.compare(NSDecimalNumber.zero) == .orderedDescending
 
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
@@ -1279,7 +1280,7 @@ private extension EditableOrderViewModel {
                                                                                                          taxBasedOnSetting: taxBasedOnSetting),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
-                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
+                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty && isDiscountBiggerThanZero,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,

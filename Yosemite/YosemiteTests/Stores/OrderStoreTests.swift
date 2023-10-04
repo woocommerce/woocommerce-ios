@@ -1654,7 +1654,8 @@ private extension OrderStoreTests {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -1671,7 +1672,8 @@ private extension OrderStoreTests {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2]
     }
@@ -1692,7 +1694,8 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
@@ -1709,7 +1712,8 @@ private extension OrderStoreTests {
                               totalTax: "0.40",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
@@ -1726,7 +1730,8 @@ private extension OrderStoreTests {
                               totalTax: "10.40",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2, item3]
     }
@@ -1747,7 +1752,8 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1]
     }

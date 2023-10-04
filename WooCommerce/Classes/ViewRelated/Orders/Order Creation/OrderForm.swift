@@ -406,6 +406,7 @@ private struct ProductsSection: View {
                         .redacted(reason: viewModel.disabled ? .placeholder : [] )
 
                     Divider()
+                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                 }
 
                 HStack {

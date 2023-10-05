@@ -905,6 +905,61 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.tags, [food])
     }
 
+    func test_generateProductDetails_generates_product_with_new_tags_suggested_by_AI() async throws {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let product = AIProduct.fake().copy(tags: ["Food", "Grocery"])
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "Pen",
+                                                      productDescription: nil,
+                                                      productFeatures: "Ballpoint, Blue ink, ABS plastic",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        // When
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(product))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
+                break
+            }
+        }
+        await viewModel.generateProductDetails()
+
+        // Then
+        let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
+        XCTAssertEqual(generatedProduct.tags.map { $0.name }, ["Food", "Grocery"])
+        XCTAssertEqual(generatedProduct.tags.map { $0.tagID }, [0, 0])
+    }
+
     // MARK: - Save product
 
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {

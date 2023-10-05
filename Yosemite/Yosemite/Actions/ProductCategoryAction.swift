@@ -15,8 +15,8 @@ public enum ProductCategoryAction: Action {
     ///
     case addProductCategory(siteID: Int64, name: String, parentID: Int64?, onCompletion: (Result<ProductCategory, Error>) -> Void)
 
-    /// Creates new product categories associated with a given Site ID.
-    /// `onCompletion` will be invoked when the add operation finishes. `error` will be nil if the operation succeed.
+    /// Creates new product categories associated with a given Site ID, category names, and an optional parent ID
+    /// `onCompletion` will be invoked when the add operation finishes.
     ///
     case addProductCategories(siteID: Int64, names: [String], parentID: Int64?, onCompletion: (Result<[ProductCategory], Error>) -> Void)
 

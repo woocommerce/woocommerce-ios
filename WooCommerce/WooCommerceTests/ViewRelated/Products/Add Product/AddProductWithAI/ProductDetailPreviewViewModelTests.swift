@@ -885,6 +885,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorState, .savingProduct)
     }
 
+    // MARK: - Handle feedback
+
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {
         // Given
         let siteID: Int64 = 123

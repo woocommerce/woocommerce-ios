@@ -459,3 +459,11 @@ private extension ProductDetailPreviewViewModel {
         )
     }
 }
+
+// MARK: - Constants
+//
+private extension ProductDetailPreviewViewModel {
+    enum Default {
+        public static let firstPageNumber = 1
+    }
+}

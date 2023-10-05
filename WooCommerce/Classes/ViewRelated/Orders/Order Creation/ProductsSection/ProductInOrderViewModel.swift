@@ -2,7 +2,7 @@ import Yosemite
 import Combine
 import WooFoundation
 
-/// View model for `ProductInOrder`.
+/// View model for `LegacyProductInOrder`.
 ///
 final class ProductInOrderViewModel: Identifiable {
     /// Encapsulates the necessary information to execute adding discounts to products

@@ -333,6 +333,36 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: - Categories
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func synchronizeAllCategories() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductCategoryAction.synchronizeProductCategories(siteID: siteID,
+                                                                               fromPageNumber: Default.firstPageNumber,
+                                                                               onCompletion: { result in
+                continuation.resume()
+            }))
+        }
+    }
+
+    @MainActor
+    func addCategories(_ names: [String]) async throws -> [ProductCategory] {
+        guard names.isNotEmpty else {
+            return []
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductCategoryAction.addProductCategories(siteID: siteID,
+                                                                       names: names,
+                                                                       parentID: nil,
+                                                                       onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {

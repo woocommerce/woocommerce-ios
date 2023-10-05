@@ -202,7 +202,7 @@ private extension GenerativeContentRemote {
 
         let tagsAsString = {
             guard !tags.isEmpty else {
-                return ""
+                return ", tags: suggest an array of the best matching tags for this product."
             }
 
             return
@@ -212,7 +212,7 @@ private extension GenerativeContentRemote {
 
         let categoriesAsString = {
             guard !categories.isEmpty else {
-                return ""
+                return ", categories: suggest an array of the best matching categories for this product."
             }
 
             return

@@ -1,9 +1,12 @@
 import Yosemite
 import SwiftUI
+import Kingfisher
 
 struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
+
+    @ScaledMetric private var scale: CGFloat = 1
 
     var onRemoveProduct: () -> Void
 
@@ -11,6 +14,14 @@ struct CollapsibleProductRowCard: View {
         Binding<Bool>(
             get: { !self.isCollapsed },
             set: { self.isCollapsed = !$0 }
+        )
+    }
+
+    private var imageProcessor: ImageProcessor {
+        ResizingImageProcessor(referenceSize:
+                .init(width: Layout.productImageSize * scale,
+                      height: Layout.productImageSize * scale),
+                               mode: .aspectFill
         )
     }
 
@@ -27,7 +38,17 @@ struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    Image(systemName: "photo.stack.fill")
+                    KFImage.url(viewModel.imageURL)
+                        .placeholder {
+                            Image(uiImage: .productPlaceholderImage)
+                        }
+                        .setProcessor(imageProcessor)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
+                        .cornerRadius(Layout.productImageCornerRadius)
+                        .foregroundColor(Color(UIColor.listSmallIcon))
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
@@ -99,6 +120,8 @@ private extension CollapsibleProductRowCard {
         static let padding: CGFloat = 16
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
+        static let productImageSize: CGFloat = 56.0
+        static let productImageCornerRadius: CGFloat = 4.0
     }
 
     enum Localization {

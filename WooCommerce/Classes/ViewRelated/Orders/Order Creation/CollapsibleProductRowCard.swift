@@ -1,6 +1,5 @@
 import Yosemite
 import SwiftUI
-import Kingfisher
 
 struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
@@ -17,14 +16,6 @@ struct CollapsibleProductRowCard: View {
         )
     }
 
-    private var imageProcessor: ImageProcessor {
-        ResizingImageProcessor(referenceSize:
-                .init(width: Layout.productImageSize * scale,
-                      height: Layout.productImageSize * scale),
-                               mode: .aspectFill
-        )
-    }
-
     init(viewModel: ProductRowViewModel, onRemoveProduct: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onRemoveProduct = onRemoveProduct
@@ -38,17 +29,11 @@ struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    KFImage.url(viewModel.imageURL)
-                        .placeholder {
-                            Image(uiImage: .productPlaceholderImage)
-                        }
-                        .setProcessor(imageProcessor)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
-                        .cornerRadius(Layout.productImageCornerRadius)
-                        .foregroundColor(Color(UIColor.listSmallIcon))
-                        .accessibilityHidden(true)
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                          productImageSize: Layout.productImageSize,
+                                          scale: scale,
+                                          productImageCornerRadius: Layout.productImageCornerRadius,
+                                          foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)

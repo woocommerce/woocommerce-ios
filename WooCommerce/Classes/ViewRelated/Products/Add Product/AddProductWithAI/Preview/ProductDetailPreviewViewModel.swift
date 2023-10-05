@@ -97,8 +97,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         errorState = .none
         do {
+            try await fetchPrerequisites()
             async let language = try identifyLanguage()
-            await fetchSettingsIfNeeded()
             let aiTone = userDefaults.aiTone(for: siteID)
             let product = try await generateProduct(language: language,
                                                     tone: aiTone)
@@ -266,6 +266,21 @@ private extension ProductDetailPreviewViewModel {
 // MARK: Generating product
 //
 private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func fetchPrerequisites() async throws {
+        await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await self.fetchSettingsIfNeeded()
+            }
+            group.addTask {
+                try await self.synchronizeAllCategories()
+            }
+            group.addTask {
+                try await self.synchronizeAllTags()
+            }
+        }
+    }
+
     @MainActor
     func identifyLanguage() async throws -> String {
         do {

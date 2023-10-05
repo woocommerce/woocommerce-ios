@@ -363,6 +363,34 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: - Tags
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func synchronizeAllTags() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductTagAction.synchronizeAllProductTags(siteID: siteID,
+                                                                       onCompletion: { result in
+                continuation.resume()
+            }))
+        }
+    }
+
+    @MainActor
+    func addTags(_ names: [String]) async throws -> [ProductTag] {
+        guard names.isNotEmpty else {
+            return []
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductTagAction.addProductTags(siteID: siteID,
+                                                            tags: names,
+                                                            onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {

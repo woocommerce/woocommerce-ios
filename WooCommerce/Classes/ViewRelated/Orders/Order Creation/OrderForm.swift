@@ -399,7 +399,7 @@ private struct ProductsSection: View {
                         viewModel.selectOrderItem(productRow.id)
                     })
                     .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
-                        LegacyProductInOrder(viewModel: productViewModel)
+                        ProductInOrder(viewModel: productViewModel)
                     })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )

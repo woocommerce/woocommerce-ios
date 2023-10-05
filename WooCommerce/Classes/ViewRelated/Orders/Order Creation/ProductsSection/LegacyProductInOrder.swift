@@ -134,7 +134,7 @@ private extension LegacyProductInOrder {
     }
 }
 
-struct ProductInOrder_Previews: PreviewProvider {
+struct LegacyProductInOrder_Previews: PreviewProvider {
     static var previews: some View {
         let productRowVM = ProductRowViewModel(productOrVariationID: 1,
                                             name: "Love Ficus",

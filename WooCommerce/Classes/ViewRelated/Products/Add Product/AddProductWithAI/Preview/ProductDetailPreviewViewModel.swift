@@ -122,9 +122,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         errorState = .none
         isSavingProduct = true
         do {
-            let newProduct = try await saveProductRemotely(product: generatedProduct)
+            let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
+            let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
-            onProductCreated(newProduct)
+            onProductCreated(remoteProduct)
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))

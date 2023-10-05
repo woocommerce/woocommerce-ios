@@ -9,6 +9,8 @@ struct CollapsibleProductRowCard: View {
 
     var onRemoveProduct: () -> Void
 
+    var onAddDiscount: () -> Void
+
     private var isExpanded: Binding<Bool> {
         Binding<Bool>(
             get: { !self.isCollapsed },
@@ -16,9 +18,12 @@ struct CollapsibleProductRowCard: View {
         )
     }
 
-    init(viewModel: ProductRowViewModel, onRemoveProduct: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, 
+         onRemoveProduct: @escaping () -> Void,
+         onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onRemoveProduct = onRemoveProduct
+        self.onAddDiscount = onAddDiscount
     }
 
     var body: some View {
@@ -53,6 +58,11 @@ struct CollapsibleProductRowCard: View {
                 Text(Localization.priceLabel)
                 CollapsibleProductCardPriceSummary(viewModel: viewModel)
             }
+            .padding()
+            Button("Add discount") {
+                onAddDiscount()
+            }
+            .buttonStyle(PlusButtonStyle())
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
@@ -124,7 +134,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onRemoveProduct: {})
+        CollapsibleProductRowCard(viewModel: viewModel, onRemoveProduct: {}, onAddDiscount: {})
     }
 }
 #endif

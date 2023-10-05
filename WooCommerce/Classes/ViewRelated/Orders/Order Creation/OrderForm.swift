@@ -395,6 +395,11 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow, onRemoveProduct: {
                         viewModel.removeItemFromOrder(productRow.id)
+                    }, onAddDiscount: {
+                        viewModel.selectOrderItem(productRow.id)
+                    })
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
+                        ProductInOrder(viewModel: productViewModel)
                     })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )

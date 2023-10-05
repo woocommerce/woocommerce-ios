@@ -129,7 +129,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
                                         completion: @escaping (Result<[ProductCategory], Error>) -> Void) {
 
         let parameters = [
-            ParameterKey.create: names.compactMap { name in
+            ParameterKey.create: names.map { name in
                 var json = [ParameterKey.name: name]
                 if let parentID {
                     json[ParameterKey.parent] = String(parentID)

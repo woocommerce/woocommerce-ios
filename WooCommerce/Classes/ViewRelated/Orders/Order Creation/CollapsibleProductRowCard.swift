@@ -5,6 +5,8 @@ struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
 
+    var onRemoveProduct: () -> Void
+
     private var isExpanded: Binding<Bool> {
         Binding<Bool>(
             get: { !self.isCollapsed },
@@ -12,8 +14,9 @@ struct CollapsibleProductRowCard: View {
         )
     }
 
-    init(viewModel: ProductRowViewModel) {
+    init(viewModel: ProductRowViewModel, onRemoveProduct: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onRemoveProduct = onRemoveProduct
     }
 
     var body: some View {
@@ -47,7 +50,7 @@ struct CollapsibleProductRowCard: View {
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
-                // TODO gh-10834: Action to remove product
+                onRemoveProduct()
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
@@ -113,7 +116,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel)
+        CollapsibleProductRowCard(viewModel: viewModel, onRemoveProduct: {})
     }
 }
 #endif

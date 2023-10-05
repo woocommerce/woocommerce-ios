@@ -393,9 +393,14 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow)
-                        .renderedIf(viewModel.shouldShowCollapsibleProductRows)
-                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
+                    CollapsibleProductRowCard(viewModel: productRow, onRemoveProduct: {
+                        guard let orderItem = viewModel.currentOrderItems.first(where: { $0.itemID == productRow.id }) else {
+                            return
+                        }
+                        viewModel.removeItemFromOrder(orderItem)
+                    })
+                    .renderedIf(viewModel.shouldShowCollapsibleProductRows)
+                    .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
                         .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                         .onTapGesture {

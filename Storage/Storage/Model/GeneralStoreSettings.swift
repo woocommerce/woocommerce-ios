@@ -63,6 +63,17 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.firstInPersonPaymentsTransactionsByReaderType = firstInPersonPaymentsTransactionsByReaderType
         self.selectedTaxRateID = selectedTaxRateID
     }
+
+    public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
+        GeneralStoreSettings(isTelemetryAvailable: isTelemetryAvailable,
+                             telemetryLastReportedTime: telemetryLastReportedTime,
+                             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,
+                             preferredInPersonPaymentGateway: preferredInPersonPaymentGateway,
+                             skippedCashOnDeliveryOnboardingStep: skippedCashOnDeliveryOnboardingStep,
+                             lastSelectedStatsTimeRange: lastSelectedStatsTimeRange,
+                             firstInPersonPaymentsTransactionsByReaderType: firstInPersonPaymentsTransactionsByReaderType,
+                             selectedTaxRateID: nil)
+    }
 }
 
 // MARK: Custom Decoding

@@ -18,8 +18,7 @@ struct NewTaxRateSelectorView: View {
     /// Whether the WPAdmin webview is being shown.
     ///
     @State private var showingWPAdminWebView: Bool = false
-
-    @State private var storeSelectedTaxRate = false
+    @State var storeSelectedTaxRate: Bool
 
     var body: some View {
         NavigationView {

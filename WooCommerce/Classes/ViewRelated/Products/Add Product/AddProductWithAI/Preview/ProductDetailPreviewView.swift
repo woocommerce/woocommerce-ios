@@ -5,9 +5,13 @@ import SwiftUI
 struct ProductDetailPreviewView: View {
 
     @ObservedObject private var viewModel: ProductDetailPreviewViewModel
+    @State private var isShowingErrorAlert: Bool = false
 
-    init(viewModel: ProductDetailPreviewViewModel) {
+    private let onDismiss: () -> Void
+
+    init(viewModel: ProductDetailPreviewViewModel, onDismiss: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.onDismiss = onDismiss
     }
 
     var body: some View {
@@ -58,38 +62,30 @@ struct ProductDetailPreviewView: View {
                                            cornerRadius: Layout.cornerRadius)
                     .padding(.bottom, Layout.contentPadding)
 
-                    VStack(spacing: 0) {
+                    VStack(spacing: Layout.separatorHeight) {
                         // Price
                         TitleAndValueDetailRow(title: Localization.price,
                                                value: viewModel.productPrice,
                                                image: UIImage.priceImage,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Inventory
                         TitleAndValueDetailRow(title: Localization.inventory,
                                                value: Localization.inStock,
                                                image: UIImage.inventoryImage,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Categories
                         TitleAndValueDetailRow(title: Localization.categories,
                                                value: viewModel.productCategories,
                                                image: UIImage.categoriesIcon,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Tags
                         TitleAndValueDetailRow(title: Localization.tags,
                                                value: viewModel.productTags,
                                                image: UIImage.tagsIcon,
                                                isLoading: viewModel.isGeneratingDetails)
-                        Divider()
-                            .background(Color(.separator))
 
                         // Shipping details
                         TitleAndValueDetailRow(title: Localization.shipping,
@@ -97,6 +93,7 @@ struct ProductDetailPreviewView: View {
                                                image: UIImage.shippingImage,
                                                isLoading: viewModel.isGeneratingDetails)
                     }
+                    .background(viewModel.isGeneratingDetails ? Color.clear : Color(.separator))
                     .cornerRadius(Layout.cornerRadius)
                 }
 
@@ -105,18 +102,22 @@ struct ProductDetailPreviewView: View {
                              backgroundColor: .init(uiColor: .init(light: .withColorStudio(.wooCommercePurple, shade: .shade0),
                                                                    dark: .tertiarySystemBackground)),
                              onVote: { vote in
-                    viewModel.handleFeedback(vote)
+                    withAnimation {
+                        viewModel.handleFeedback(vote)
+                    }
                 })
-                .renderedIf(viewModel.isGeneratingDetails == false)
+                .renderedIf(viewModel.shouldShowFeedbackView)
             }
             .padding(insets: Layout.insets)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    if viewModel.isGeneratingDetails {
+                    if viewModel.isGeneratingDetails || viewModel.isSavingProduct {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
                         Button(Localization.saveAsDraft) {
-                            viewModel.saveProductAsDraft()
+                            Task {
+                                await viewModel.saveProductAsDraft()
+                            }
                         }
                     }
                 }
@@ -125,6 +126,24 @@ struct ProductDetailPreviewView: View {
                 Task {
                     await viewModel.generateProductDetails()
                 }
+            }
+            .onChange(of: viewModel.errorState) { newValue in
+                isShowingErrorAlert = newValue != .none
+            }
+            .alert(viewModel.errorState.errorMessage, isPresented: $isShowingErrorAlert) {
+                Button(Localization.retry) {
+                    Task {
+                        switch viewModel.errorState {
+                        case .none:
+                            return
+                        case .generatingProduct:
+                            await viewModel.generateProductDetails()
+                        case .savingProduct:
+                            await viewModel.saveProductAsDraft()
+                        }
+                    }
+                }
+                Button(Localization.cancel, action: onDismiss)
             }
         }
     }
@@ -199,6 +218,7 @@ fileprivate extension ProductDetailPreviewView {
         static let contentPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let detailVerticalSpacing: CGFloat = 4
+        static let separatorHeight: CGFloat = 0.5
     }
     enum Constants {
         static let dummyText = "Lorem ipsum dolor sit amet, consectetur adipiscing elit"
@@ -210,7 +230,7 @@ fileprivate extension ProductDetailPreviewView {
             comment: "Title on the add product with AI Preview screen."
         )
         static let subtitle = NSLocalizedString(
-            "Don't worry. You can always change below details later.",
+            "You can always change the below details later.",
             comment: "Subtitle on the add product with AI Preview screen."
         )
         static let feedbackQuestion = NSLocalizedString(
@@ -261,6 +281,8 @@ fileprivate extension ProductDetailPreviewView {
             "Save as draft",
             comment: "Button to save product details on the add product with AI Preview screen."
         )
+        static let cancel = NSLocalizedString("Cancel", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
+        static let retry = NSLocalizedString("Retry", comment: "Button on the error alert displayed on the add product with AI Preview screen.")
     }
 }
 
@@ -270,6 +292,7 @@ struct ProductDetailPreviewView_Previews: PreviewProvider {
         ProductDetailPreviewView(viewModel: .init(siteID: 123,
                                                   productName: "iPhone 15",
                                                   productDescription: "New smart phone",
-                                                  productFeatures: nil))
+                                                  productFeatures: nil) { _ in },
+                                 onDismiss: {})
     }
 }

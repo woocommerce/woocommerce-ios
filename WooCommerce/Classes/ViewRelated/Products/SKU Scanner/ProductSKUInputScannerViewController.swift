@@ -2,8 +2,9 @@ import UIKit
 
 /// Container view controller of barcode scanner for product SKU input.
 final class ProductSKUInputScannerViewController: UIViewController {
-    private lazy var barcodeScannerChildViewController: BarcodeScannerViewController = {
-        return BarcodeScannerViewController(instructionText: Localization.instructionText) { [weak self] result in
+    private lazy var barcodeScannerChildViewController: CodeScannerViewController = {
+        return CodeScannerViewController(instructionText: Localization.instructionText,
+                                            format: .barcode { [weak self] result in
             guard let self = self else { return }
             guard self.hasDetectedBarcode == false else {
                 return
@@ -13,7 +14,7 @@ final class ProductSKUInputScannerViewController: UIViewController {
             }
             self.hasDetectedBarcode = true
             self.onBarcodeScanned(barcode)
-        }
+        })
     }()
 
     private let onBarcodeScanned: (ScannedBarcode) -> Void

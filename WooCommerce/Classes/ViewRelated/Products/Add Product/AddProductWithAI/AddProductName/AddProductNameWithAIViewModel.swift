@@ -3,32 +3,29 @@ import Foundation
 /// View model for `AddProductNameWithAIView`.
 ///
 final class AddProductNameWithAIViewModel: ObservableObject {
-    @Published var productNameContent: String = ""
+    @Published var productNameContent: String
 
     let siteID: Int64
-    private let onUsePackagePhoto: (String?) -> Void
-    private let onContinueWithProductName: (String) -> Void
+    private let analytics: Analytics
 
-    private var productName: String? {
+    var productName: String? {
         guard productNameContent.isNotEmpty else {
             return nil
         }
         return productNameContent
     }
 
-    init(siteID: Int64,
-         onUsePackagePhoto: @escaping (String?) -> Void,
-         onContinueWithProductName: @escaping (String) -> Void) {
+    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.onUsePackagePhoto = onUsePackagePhoto
-        self.onContinueWithProductName = onContinueWithProductName
+        self.productNameContent = ""
+        self.analytics = analytics
     }
 
-    func didTapUsePackagePhoto() {
-        onUsePackagePhoto(productName)
+    func didTapSuggestName() {
+        analytics.track(event: .ProductNameAI.entryPointTapped(hasInputName: productNameContent.isNotEmpty, source: .productCreationAI))
     }
 
     func didTapContinue() {
-        onContinueWithProductName(productNameContent)
+        analytics.track(event: .ProductCreationAI.productNameContinueTapped())
     }
 }

@@ -44,8 +44,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .tapToPayOnIPhoneMilestone2:
-            return true
         case .domainSettings:
             return true
         case .jetpackSetupWithApplicationPassword:

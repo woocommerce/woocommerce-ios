@@ -52,10 +52,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// Enables Tap to Pay on iPhone Milestone 2 (Tap to Pay deeplinks, JITM deeplink handling, JITM customisation) on eligible devices.
-    ///
-    case tapToPayOnIPhoneMilestone2
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard

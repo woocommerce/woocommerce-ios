@@ -33,11 +33,11 @@ final class ProductDetailPreviewViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let onProductCreated: (Product) -> Void
 
-    private let currency: String
-    private let currencyFormatter: CurrencyFormatter
+    private var currency: String
+    private var currencyFormatter: CurrencyFormatter
 
-    private let weightUnit: String?
-    private let dimensionUnit: String?
+    private var weightUnit: String?
+    private var dimensionUnit: String?
     private let shippingValueLocalizer: ShippingValueLocalizer
 
     private var generatedProductSubscription: AnyCancellable?
@@ -97,7 +97,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         errorState = .none
         do {
-            let language = try await identifyLanguage()
+            async let language = try identifyLanguage()
+            await fetchSettingsIfNeeded()
             let aiTone = userDefaults.aiTone(for: siteID)
             let product = try await generateProduct(language: language,
                                                     tone: aiTone)
@@ -209,6 +210,56 @@ private extension ProductDetailPreviewViewModel {
         }
 
         productShippingDetails = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
+    }
+}
+
+// MARK: - Site settings
+//
+private extension ProductDetailPreviewViewModel {
+    func fetchSettingsIfNeeded() async {
+        guard weightUnit == nil || dimensionUnit == nil else {
+            return
+        }
+
+        await withTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await self.fetchGeneralSettings()
+            }
+            group.addTask {
+                await self.fetchProductSiteSettings()
+            }
+        }
+
+        currency = ServiceLocator.currencySettings.symbol(from: ServiceLocator.currencySettings.currencyCode)
+        currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        weightUnit = ServiceLocator.shippingSettingsService.weightUnit
+        dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit
+    }
+
+    @MainActor
+    func fetchGeneralSettings() async {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+                if let error {
+                    DDLogError("⛔️ Error synchronizing general site settings: \(error)")
+                }
+                continuation.resume()
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func fetchProductSiteSettings() async {
+        await withCheckedContinuation { continuation in
+            let action = SettingAction.synchronizeProductSiteSettings(siteID: siteID) { error in
+                if let error {
+                    DDLogError("⛔️ Error synchronizing product site settings: \(error)")
+                }
+                continuation.resume()
+            }
+            stores.dispatch(action)
+        }
     }
 }
 

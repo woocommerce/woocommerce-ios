@@ -570,7 +570,8 @@ extension Networking.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
-            parent: .fake()
+            parent: .fake(),
+            bundleConfiguration: .fake()
         )
     }
 }
@@ -582,6 +583,20 @@ extension Networking.OrderItemAttribute {
             metaID: .fake(),
             name: .fake(),
             value: .fake()
+        )
+    }
+}
+extension Networking.OrderItemBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderItemBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            quantity: .fake(),
+            isOptionalAndSelected: .fake(),
+            variationID: .fake(),
+            variationAttributes: .fake()
         )
     }
 }
@@ -954,7 +969,15 @@ extension Networking.ProductBundleItem {
             productID: .fake(),
             menuOrder: .fake(),
             title: .fake(),
-            stockStatus: .fake()
+            stockStatus: .fake(),
+            minQuantity: .fake(),
+            maxQuantity: .fake(),
+            defaultQuantity: .fake(),
+            isOptional: .fake(),
+            overridesVariations: .fake(),
+            allowedVariations: .fake(),
+            overridesDefaultVariationAttributes: .fake(),
+            defaultVariationAttributes: .fake()
         )
     }
 }

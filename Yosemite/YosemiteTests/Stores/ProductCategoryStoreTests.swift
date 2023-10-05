@@ -7,6 +7,10 @@ import XCTest
 /// ProductCategoryStore Unit Tests
 ///
 final class ProductCategoryStoreTests: XCTestCase {
+    /// Mock Dispatcher!
+    ///
+    private var dispatcher: Dispatcher!
+
     /// Mock Network: Allows us to inject predefined responses!
     ///
     private var network: MockNetwork!
@@ -43,6 +47,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
+        dispatcher = Dispatcher()
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         store = ProductCategoryStore(dispatcher: Dispatcher(),
@@ -54,6 +59,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         store = nil
         network = nil
         storageManager = nil
+        dispatcher = nil
 
         super.tearDown()
     }
@@ -447,6 +453,77 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, .notFound)
+    }
+
+    // MARK: Batch creation of categories
+
+    func test_createProductCategories_returns_categories_on_success() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .success([.fake().copy(name: "Sample 1"),
+                                                                   .fake().copy(name: "Sample 2")]))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let categories = try XCTUnwrap(result.get())
+        XCTAssertEqual(categories[0].name, "Sample 1")
+        XCTAssertEqual(categories[1].name, "Sample 2")
+    }
+
+    func test_createProductCategories_updates_stored_categories_on_success() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .success([.fake().copy(name: "Sample 1"),
+                                                                   .fake().copy(name: "Sample 2")]))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+
+        // When
+        _ = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(storedProductCategoriesCount, 2)
+    }
+
+    func test_createProductCategories_returns_error_on_failure() throws {
+        // Given
+        let network = MockNetwork()
+        let remote = MockProductCategoriesRemote()
+        remote.whenCreatingProductCategories(thenReturn: .failure(NetworkError.timeout))
+        let store = ProductCategoryStore(dispatcher: dispatcher,
+                                         storageManager: storageManager,
+                                         network: network,
+                                         remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductCategoryAction.addProductCategories(siteID: self.sampleSiteID, names: [], parentID: nil) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout)
     }
 }
 

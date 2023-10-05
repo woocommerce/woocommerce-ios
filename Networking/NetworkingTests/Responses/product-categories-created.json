@@ -1,0 +1,40 @@
+{
+  "data": {
+    "create": [
+      {
+        "id": 21,
+        "name": "Headphone",
+        "slug": "headphone",
+        "parent": 3,
+        "description": "",
+        "display": "default",
+        "image": null,
+        "menu_order": 0,
+        "count": 0,
+        "_links": {
+          "self": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/categories/21"
+            }
+          ],
+          "collection": [
+            {
+              "href": "https://example.com/wp-json/wc/v3/products/categories"
+            }
+          ]
+        }
+      },
+      {
+        "id": 0,
+        "error": {
+          "code": "term_exists",
+          "message": "A term with the name provided already exists with this parent.",
+          "data": {
+            "status": 400,
+            "resource_id": 18
+          }
+        }
+      }
+    ]
+  }
+}

@@ -53,10 +53,11 @@ public class WooPaymentsDepositService {
             let lastDeposit = depositsOverview.deposit.lastPaid.first { CurrencyCode(caseInsensitiveRawValue: $0.currency) == currency }
             let overview = WooPaymentsDepositsOverviewByCurrency(
                 currency: currency,
-                automaticDeposits: depositsOverview.account.depositsEnabled,
+                automaticDeposits: depositsOverview.account.depositsSchedule.interval != .manual,
                 depositInterval: depositsOverview.account.depositsSchedule.interval,
                 pendingBalanceAmount: balanceAmount(from: pendingBalance),
                 pendingDepositsCount: pendingBalance?.depositsCount ?? 0,
+                pendingDepositDays: depositsOverview.account.depositsSchedule.delayDays,
                 nextDeposit: nextDepositForView(from: nextDeposit),
                 lastDeposit: lastDepositForView(from: lastDeposit),
                 availableBalance: balanceAmount(from: availableBalance))

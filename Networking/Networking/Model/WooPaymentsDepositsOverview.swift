@@ -140,13 +140,124 @@ public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, Generated
     enum CodingKeys: String, CodingKey {
         case delayDays = "delay_days"
         case interval
+        case weeklyAnchor = "weekly_anchor"
+        case monthlyAnchor = "monthly_anchor"
+    }
+
+    public init(from decoder: Decoder) throws {
+        var container = try decoder.container(keyedBy: CodingKeys.self)
+        delayDays = try container.decode(Int.self, forKey: .delayDays)
+        let weeklyAnchor = try container.decodeIfPresent(WooPaymentsDepositInterval.Weekday.self, forKey: .weeklyAnchor)
+        let monthlyAnchor = try container.decodeIfPresent(Int.self, forKey: .monthlyAnchor)
+        let intervalKey = try container.decode(WooPaymentsDepositInterval.EnumKey.self, forKey: .interval)
+
+        guard let interval = WooPaymentsDepositInterval(key: intervalKey,
+                                                        weeklyAnchor: weeklyAnchor,
+                                                        monthlyAnchor: monthlyAnchor) else {
+            throw DecodingError.dataCorrupted(.init(codingPath: [CodingKeys.interval],
+                                                    debugDescription: "Could not decode deposit schedule interval"))
+        }
+        self.interval = interval
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(delayDays, forKey: .delayDays)
+        try container.encode(interval.key, forKey: .interval)
+        switch interval {
+        case .weekly(let weekday):
+            try container.encode(weekday.rawValue, forKey: .weeklyAnchor)
+        case .monthly(let dayOfMonth):
+            try container.encode(dayOfMonth, forKey: .monthlyAnchor)
+        default:
+            break
+        }
     }
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval
-public enum WooPaymentsDepositInterval: String, Codable, Equatable {
+public enum WooPaymentsDepositInterval: Equatable {
     case daily
-    case weekly
-    case monthly
+    case weekly(anchor: Weekday)
+    case monthly(anchor: Int)
     case manual
+
+    init?(key: EnumKey, weeklyAnchor: Weekday?, monthlyAnchor: Int?) {
+        switch (key, weeklyAnchor, monthlyAnchor) {
+        case (.daily, _, _):
+            self = .daily
+        case (.weekly, .some(let anchor), _):
+            self = .weekly(anchor: anchor)
+        case (.monthly, _, .some(let anchor)):
+            self = .monthly(anchor: anchor)
+        case (.manual, _, _):
+            self = .manual
+        default:
+            return nil
+        }
+    }
+
+    enum EnumKey: String, Codable {
+        case daily
+        case weekly
+        case monthly
+        case manual
+    }
+
+    var key: String {
+        switch self {
+        case .daily:
+            return EnumKey.daily.rawValue
+        case .weekly:
+            return EnumKey.weekly.rawValue
+        case .monthly:
+            return EnumKey.monthly.rawValue
+        case .manual:
+            return EnumKey.manual.rawValue
+        }
+    }
+
+    public enum Weekday: String, Decodable {
+        case sunday
+        case monday
+        case tuesday
+        case wednesday
+        case thursday
+        case friday
+        case saturday
+
+        public var localizedName: String {
+            let dateFormatter = DateFormatter()
+            dateFormatter.locale = .autoupdatingCurrent
+            dateFormatter.calendar = Calendar(identifier: .gregorian)
+
+            // This array is always Sunday-indexed, regardless of locale
+            guard let dayNames = dateFormatter.standaloneWeekdaySymbols,
+                  let localizedDayName = dayNames[safe: dayIndex] else {
+                // This shouldn't really happen... but at least it'll be sort of understandable.
+                return rawValue
+            }
+
+            return localizedDayName
+        }
+
+        private var dayIndex: Int {
+            switch self {
+            case .sunday:
+                return 0
+            case .monday:
+                return 1
+            case .tuesday:
+                return 2
+            case .wednesday:
+                return 3
+            case .thursday:
+                return 4
+            case .friday:
+                return 5
+            case .saturday:
+                return 6
+            }
+        }
+    }
 }

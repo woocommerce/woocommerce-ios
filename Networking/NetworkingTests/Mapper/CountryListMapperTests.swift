@@ -8,11 +8,8 @@ class CountryListMapperTests: XCTestCase {
 
     /// Verifies that the Country List is parsed correctly.
     ///
-    func test_countries_are_properly_parsed() {
-        guard let countries = mapCountriesResponse() else {
-            XCTFail()
-            return
-        }
+    func test_countries_are_properly_parsed() throws {
+        let countries = try XCTUnwrap(mapCountriesResponse())
 
         XCTAssertEqual(countries.count, 3)
         XCTAssertEqual(countries.first?.states.isEmpty, true)
@@ -22,11 +19,8 @@ class CountryListMapperTests: XCTestCase {
         XCTAssertEqual(countries[1].states.first, StateOfACountry(code: "PY-ASU", name: "Asunción"))
     }
 
-    func test_countries_are_properly_parsed_if_the_response_has_no_data_envelope() {
-        guard let countries = mapCountriesResponseWithoutDataEnvelope() else {
-            XCTFail()
-            return
-        }
+    func test_countries_are_properly_parsed_if_the_response_has_no_data_envelope() throws {
+        let countries = try XCTUnwrap(mapCountriesResponseWithoutDataEnvelope())
 
         XCTAssertEqual(countries.count, 3)
         XCTAssertEqual(countries.first?.states.isEmpty, true)
@@ -43,23 +37,23 @@ private extension CountryListMapperTests {
 
     /// Returns the CountryListMapperTests output upon receiving `filename` (Data Encoded)
     ///
-    func mapCountries(from filename: String) -> [Country]? {
+    func mapCountries(from filename: String) throws -> [Country]? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! CountryListMapper().map(response: response)
+        return try CountryListMapper().map(response: response)
     }
 
     /// Returns the [Country] output upon receiving `countries`
     ///
-    func mapCountriesResponse() -> [Country]? {
-        return mapCountries(from: "countries")
+    func mapCountriesResponse() throws -> [Country]? {
+        try mapCountries(from: "countries")
     }
 
     /// Returns the [Country] output upon receiving `countries-without-data`
     ///
-    func mapCountriesResponseWithoutDataEnvelope() -> [Country]? {
-        return mapCountries(from: "countries-without-data")
+    func mapCountriesResponseWithoutDataEnvelope() throws -> [Country]? {
+        try mapCountries(from: "countries-without-data")
     }
 }

@@ -316,7 +316,15 @@ private extension ProductDetailPreviewViewModel {
                                                     existingCategories: existingCategories,
                                                     existingTags: existingTags)
 
-        let categories = existingCategories.filter({ aiProduct.categories.contains($0.name) })
+        var categories = [ProductCategory]()
+
+        aiProduct.categories.forEach { aiCategory in
+            if let match = existingCategories.first(where: { $0.name == aiCategory }) {
+                categories.append(match)
+            } else {
+                categories.append(ProductCategory(categoryID: 0, siteID: siteID, parentID: 0, name: aiCategory, slug: ""))
+            }
+        }
         let tags = existingTags.filter({ aiProduct.tags.contains($0.name) })
 
         return Product(siteID: siteID,

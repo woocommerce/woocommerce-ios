@@ -652,7 +652,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.categories, [biscuit])
     }
 
-    func test_generateProduct_generates_product_with_matching_existing_tags() async throws {
+    func test_generateProductDetails_generates_product_with_matching_existing_tags() async throws {
         // Given
         let sampleSiteID: Int64 = 123
         let food: ProductTag = .fake().copy(siteID: sampleSiteID, name: "Food")

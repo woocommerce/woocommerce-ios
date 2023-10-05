@@ -602,6 +602,7 @@
 		077F39E426A5C98200ABEADC /* SystemStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusStoreTests.swift; sourceTree = "<group>"; };
 		209AD3CB2AC1A68800825D76 /* WooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverviewByCurrency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewByCurrency.swift; sourceTree = "<group>"; };
+		209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverview.swift; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
 		247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };

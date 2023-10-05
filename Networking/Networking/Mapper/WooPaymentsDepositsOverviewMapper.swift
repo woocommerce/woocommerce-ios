@@ -3,7 +3,7 @@ import Foundation
 struct WooPaymentsDepositsOverviewMapper: Mapper {
     func map(response: Data) throws -> WooPaymentsDepositsOverview {
         let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
+        decoder.dateDecodingStrategy = .millisecondsSince1970
 
         if hasDataEnvelope(in: response) {
             return try decoder.decode(WooPaymentsDepositsOverviewEnvelope.self, from: response).depositsOverview

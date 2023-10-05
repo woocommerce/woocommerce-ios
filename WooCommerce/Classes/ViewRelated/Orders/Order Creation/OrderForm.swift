@@ -394,10 +394,7 @@ private struct ProductsSection: View {
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow, onRemoveProduct: {
-                        guard let orderItem = viewModel.currentOrderItems.first(where: { $0.itemID == productRow.id }) else {
-                            return
-                        }
-                        viewModel.removeItemFromOrder(orderItem)
+                        viewModel.removeItemFromOrder(productRow.id)
                     })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )

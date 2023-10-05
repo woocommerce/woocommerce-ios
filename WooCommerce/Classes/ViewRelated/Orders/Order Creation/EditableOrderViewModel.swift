@@ -504,6 +504,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Removes an item from the order.
     ///
     /// - Parameter item: Item to remove from the order
+    ///
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
@@ -515,6 +516,17 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
+    }
+
+    /// Removes an item from the order.
+    ///
+    /// - Parameter productRowID: Item to remove from the order. Uses the unique ID of the product row.
+    ///
+    func removeItemFromOrder(_ productRowID: Int64) {
+        guard let existingItemInOrder = currentOrderItems.first(where: { $0.itemID == productRowID }) else {
+            return
+        }
+        removeItemFromOrder(existingItemInOrder)
     }
 
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {

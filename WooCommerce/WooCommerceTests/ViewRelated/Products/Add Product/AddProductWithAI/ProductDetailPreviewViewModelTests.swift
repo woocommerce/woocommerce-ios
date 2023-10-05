@@ -69,6 +69,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         await viewModel.generateProductDetails()
     }
@@ -119,6 +137,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         await viewModel.generateProductDetails()
     }
@@ -157,6 +193,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 // Then
                 XCTAssertEqual(string, productName + " " + productFeatures)
                 completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
             default:
                 break
             }
@@ -242,6 +296,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         await viewModel.generateProductDetails()
     }
@@ -281,6 +353,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 completion(.success(.fake()))
             case let .identifyLanguage(_, _, _, completion):
                 completion(.success("en"))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
             default:
                 break
             }
@@ -326,6 +416,25 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 break
             }
         }
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         await viewModel.generateProductDetails()
 
         // Then
@@ -356,6 +465,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
         XCTAssertEqual(viewModel.errorState, .none)
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -415,6 +542,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -471,6 +616,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -518,6 +681,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       onProductCreated: { _ in })
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -535,7 +716,6 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let generatedProduct = try XCTUnwrap(viewModel.generatedProduct)
         XCTAssertEqual(generatedProduct.tags, [food])
     }
-
 
     // MARK: - Save product
 
@@ -555,6 +735,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       dimensionUnit: "m",
                                                       stores: stores,
                                                       onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -597,6 +795,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       onProductCreated: { createdProduct = $0 })
 
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -630,6 +846,24 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       stores: stores,
                                                       onProductCreated: { _ in })
         XCTAssertEqual(viewModel.errorState, .none)
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
 
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -697,6 +931,25 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
@@ -735,6 +988,25 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                       storageManager: storage,
                                                       analytics: analytics,
                                                       onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
             case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
@@ -825,6 +1097,25 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 break
             }
         }
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         await viewModel.generateProductDetails()
 
         // When
@@ -866,6 +1157,25 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 break
             }
         }
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
         await viewModel.generateProductDetails()
 
         // When

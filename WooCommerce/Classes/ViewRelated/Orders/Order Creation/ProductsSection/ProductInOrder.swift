@@ -104,6 +104,7 @@ struct ProductInOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .navigationViewStyle(.stack)
         .onReceive(viewModel.viewDismissPublisher) {
             presentationMode.wrappedValue.dismiss()
         }

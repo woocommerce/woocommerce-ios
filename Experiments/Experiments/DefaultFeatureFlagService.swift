@@ -16,7 +16,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // We have a crash with this feature flag enabled. See https://github.com/woocommerce/woocommerce-ios/issues/10815
+            return false
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
@@ -94,11 +95,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .refreshOrderBeforeInPersonPayment:
             return true
         case .manualTaxesInOrderM3:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .productCreationAI:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return true
         case .giftCardInOrderForm:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+            return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         default:

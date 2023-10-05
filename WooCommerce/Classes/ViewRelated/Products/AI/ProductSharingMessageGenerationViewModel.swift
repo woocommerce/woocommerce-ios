@@ -164,10 +164,6 @@ private extension ProductSharingMessageGenerationViewModel {
     }
 }
 
-private enum IdentifyLanguageError: Error {
-    case failedToIdentifyLanguage(underlyingError: Error)
-}
-
 extension ProductSharingMessageGenerationViewModel {
     enum Localization {
         static let title = NSLocalizedString(

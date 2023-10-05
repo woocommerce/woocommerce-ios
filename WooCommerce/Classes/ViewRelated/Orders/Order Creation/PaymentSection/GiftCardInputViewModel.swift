@@ -7,19 +7,24 @@ final class GiftCardInputViewModel: ObservableObject {
     @Published private(set) var isValid: Bool = false
     @Published private(set) var errorMessage: String?
 
-    private let addGiftCard: (_ code: String) -> Void
+    private let setGiftCard: (_ code: String?) -> Void
     private let dismiss: () -> Void
 
-    init(code: String, addGiftCard: @escaping (_ code: String) -> Void, dismiss: @escaping () -> Void) {
+    init(code: String, setGiftCard: @escaping (_ code: String?) -> Void, dismiss: @escaping () -> Void) {
         self.code = code
-        self.addGiftCard = addGiftCard
+        self.setGiftCard = setGiftCard
         self.dismiss = dismiss
         observeCodeForValidCheck()
     }
 
     /// Applies the gift card code to the order.
     func apply() {
-        addGiftCard(code)
+        setGiftCard(code)
+    }
+
+    /// Removes the gift card code from the order.
+    func remove() {
+        setGiftCard(nil)
     }
 
     /// Cancels the gift card input form.
@@ -28,10 +33,21 @@ final class GiftCardInputViewModel: ObservableObject {
     }
 }
 
+extension GiftCardInputViewModel {
+    static func isCodeValid(_ code: String) -> Bool {
+        let format = "^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$"
+
+        let regex = try? NSRegularExpression(pattern: format, options: .caseInsensitive)
+        let range = NSRange(location: 0, length: code.count)
+
+        return regex?.firstMatch(in: code, options: [], range: range) != nil
+    }
+}
+
 private extension GiftCardInputViewModel {
     func observeCodeForValidCheck() {
         $code.removeDuplicates()
-            .map { self.isCodeValid($0) }
+            .map { Self.isCodeValid($0) }
             .assign(to: &$isValid)
 
         $isValid.combineLatest($code)
@@ -39,15 +55,6 @@ private extension GiftCardInputViewModel {
                 isValid || code.isEmpty ? nil: Localization.errorMessage
             }
             .assign(to: &$errorMessage)
-    }
-
-    func isCodeValid(_ code: String) -> Bool {
-        let format = "^[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$"
-
-        let regex = try? NSRegularExpression(pattern: format, options: .caseInsensitive)
-        let range = NSRange(location: 0, length: code.count)
-
-        return regex?.firstMatch(in: code, options: [], range: range) != nil
     }
 }
 

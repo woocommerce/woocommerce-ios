@@ -41,4 +41,19 @@ class AddressWooTests: XCTestCase {
         XCTAssertEqual(address.city, taxRate.city)
         XCTAssertEqual(address.postcode, taxRate.postcode)
     }
+
+    func test_resettingTaxRateComponents_erases_tax_rates_field() {
+        // Given
+        let taxRate = TaxRate.fake().copy(country: "US", state: "CA", postcode: "12345", postcodes: ["9999"], city: "Miami", cities: ["New York"])
+        let address = Address.from(taxRate: taxRate)
+
+        // When
+        let newAddress = address.resettingTaxRateComponents()
+
+        // Then
+        XCTAssertTrue(newAddress.state.isEmpty)
+        XCTAssertTrue(newAddress.country.isEmpty)
+        XCTAssertTrue(newAddress.city.isEmpty)
+        XCTAssertTrue(newAddress.postcode.isEmpty)
+    }
 }

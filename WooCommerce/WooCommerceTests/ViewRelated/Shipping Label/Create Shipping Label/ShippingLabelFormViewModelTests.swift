@@ -251,6 +251,88 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(shippingLabelFormViewModel.selectedPackagesDetails, [selectedPackage])
     }
 
+    func test_selectedPackages_returns_package_with_empty_hazmat_string_when_category_is_none() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
+        let expectedPackageID = ShippingLabelPackageAttributes.originalPackagingBoxID
+        let expectedPackageWeight = "10"
+        let expectedDimensions = ProductDimensions(length: "10", width: "10", height: "10")
+        let packageName = "package-name"
+        let givenPackageItem = ShippingLabelPackageItem(productOrVariationID: 0,
+                                                        name: packageName,
+                                                        weight: 10.0,
+                                                        quantity: 1,
+                                                        value: 10.0,
+                                                        dimensions: expectedDimensions,
+                                                        attributes: [])
+
+        let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
+                                                                    totalWeight: expectedPackageWeight,
+                                                                    items: [givenPackageItem],
+                                                                    selectedHazmatCategory: .none)
+
+        let expectedSelectedPackage = ShippingLabelPackageSelected(id: givenPackageAttributes.id,
+                                                                   boxID: expectedPackageID,
+                                                                   length: 10.0,
+                                                                   width: 10.0,
+                                                                   height: 10.0,
+                                                                   weight: 10.0,
+                                                                   isLetter: false,
+                                                                   hazmatCategory: nil,
+                                                                   customsForm: nil)
+
+        // When
+        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: ShippingLabelPackagesResponse.fake())
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [givenPackageAttributes])
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackages, [expectedSelectedPackage])
+    }
+
+    func test_selectedPackages_returns_package_with_valid_hazmat_string_when_category_is_NOT_none() {
+        // Given
+        let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),
+                                                                    originAddress: nil,
+                                                                    destinationAddress: nil,
+                                                                    userDefaults: userDefaults)
+        let expectedPackageID = ShippingLabelPackageAttributes.originalPackagingBoxID
+        let expectedPackageWeight = "10"
+        let expectedDimensions = ProductDimensions(length: "10", width: "10", height: "10")
+        let packageName = "package-name"
+        let givenPackageItem = ShippingLabelPackageItem(productOrVariationID: 0,
+                                                        name: packageName,
+                                                        weight: 10.0,
+                                                        quantity: 1,
+                                                        value: 10.0,
+                                                        dimensions: expectedDimensions,
+                                                        attributes: [])
+
+        let givenPackageAttributes = ShippingLabelPackageAttributes(packageID: expectedPackageID,
+                                                                    totalWeight: expectedPackageWeight,
+                                                                    items: [givenPackageItem],
+                                                                    selectedHazmatCategory: .class7)
+
+        let expectedSelectedPackage = ShippingLabelPackageSelected(id: givenPackageAttributes.id,
+                                                                   boxID: expectedPackageID,
+                                                                   length: 10.0,
+                                                                   width: 10.0,
+                                                                   height: 10.0,
+                                                                   weight: 10.0,
+                                                                   isLetter: false,
+                                                                   hazmatCategory: "CLASS_7",
+                                                                   customsForm: nil)
+
+        // When
+        shippingLabelFormViewModel.handleNewPackagesResponse(packagesResponse: ShippingLabelPackagesResponse.fake())
+        shippingLabelFormViewModel.handlePackageDetailsValueChanges(details: [givenPackageAttributes])
+
+        // Then
+        XCTAssertEqual(shippingLabelFormViewModel.selectedPackages, [expectedSelectedPackage])
+    }
+
     func test_handlePackageDetailsValueChanges_reset_carrier_and_rates_selection() {
         // Given
         let shippingLabelFormViewModel = ShippingLabelFormViewModel(order: MockOrders().makeOrder(),

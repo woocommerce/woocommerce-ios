@@ -869,9 +869,16 @@ private extension AppSettingsStore {
 // MARK: - Tax Rate
 
 private extension AppSettingsStore {
-    func setSelectedTaxRateID(with id: Int64, siteID: Int64) {
+    func setSelectedTaxRateID(with id: Int64?, siteID: Int64) {
         let storeSettings = getStoreSettings(for: siteID)
-        let updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+
+        let updatedSettings: GeneralStoreSettings
+        if let taxRateID = id {
+            updatedSettings = storeSettings.copy(selectedTaxRateID: id)
+        } else {
+            updatedSettings = storeSettings.erasingSelectedTaxRateID()
+        }
+
         setStoreSettings(settings: updatedSettings, for: siteID)
     }
 

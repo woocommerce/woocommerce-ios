@@ -10,6 +10,7 @@ public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
+public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias FallibleCancelable = Hardware.FallibleCancelable

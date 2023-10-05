@@ -328,6 +328,12 @@ extension WooConstants {
         ///
         case dhlExpressInstructions = "https://www.dhl.com/global-en/home/our-divisions/freight/customer-service/dangerous-goods-and-prohibited-items.html"
 
+        case subscriptionsExtension = "https://woocommerce.com/products/woocommerce-subscriptions/"
+
+        case productBundlesExtension = "https://woocommerce.com/products/product-bundles/"
+
+        case compositeProductsExtension = "https://woocommerce.com/products/composite-products/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

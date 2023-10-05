@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-21 15:54:22+0000 */
+/* Translation-Revision-Date: 2023-09-26 11:54:27+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -384,6 +384,9 @@ which should be translated separately and considered part of this sentence. */
    Top header text of the store creation profiler question about the features. */
 "About you" = "À propos de vous";
 
+/* Title on the add product features screen. */
+"About your product" = "À propos de votre produit";
+
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
    Header of the store creation profiler question about the store selling platforms.
@@ -484,6 +487,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Ajouter un fichier";
+
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "Ajouter une carte-cadeau";
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Ajouter un nouvel attribut";
@@ -611,6 +618,9 @@ which should be translated separately and considered part of this sentence. */
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Ajouter chaque option et appuyer sur Retour";
 
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "Ajoutez les fonctionnalités, les avantages ou les détails clés pour faciliter la recherche de votre produit en ligne.";
+
 /* Title for the option to create product manually
    Title of the option to add new product manually */
 "Add manually" = "Ajouter manuellement";
@@ -666,6 +676,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Ajouter votre première boutique";
+
+/* Title on the add product name screen. */
+"Add your product name" = "Ajouter le nom de votre produit";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "L’ajout d’une remise n’est actuellement pas disponible. Retirez d’abord les codes promo.";
@@ -926,8 +939,10 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Nom de l’application";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Appliquer";
@@ -1343,11 +1358,13 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1437,6 +1454,13 @@ which should be translated separately and considered part of this sentence. */
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Impossible d’ajouter le colis";
 
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "Impossible d’appliquer la carte-cadeau à la commande";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "Une erreur rend impossible l’application de la carte-cadeau à la commande : %1$@";
+
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Impossible de dupliquer le produit";
 
@@ -1510,6 +1534,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Catégories";
@@ -1916,6 +1941,7 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1960,10 +1986,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Politique relative aux cookies";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "Copié !";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copier";
@@ -2081,6 +2109,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Créer un code promo";
+
+/* Continue button on the add product features screen */
+"Create Product Details" = "Créer les détails du produit";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2351,6 +2382,9 @@ which should be translated separately and considered part of this sentence. */
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Description";
 
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "Détails";
+
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "Déterminez l’aptitude de votre produit à être expédié par courrier via %1$@.";
 
@@ -2500,6 +2534,9 @@ which should be translated separately and considered part of this sentence. */
 /* Alert button text on a feature announcement which prevents the banner being shown again
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Ne plus afficher";
+
+/* Subtitle on the add product with AI Preview screen. */
+"Don't worry. You can always change below details later." = "Ne vous inquiétez pas. Vous pourrez toujours modifier les détails ci-après ultérieurement.";
 
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
@@ -2845,6 +2882,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Saisissez le nom du transporteur";
+
+/* Placeholder of the gift card code text field in the order form. */
+"Enter code" = "Saisir le code";
 
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Saisir une description";
@@ -3265,6 +3305,11 @@ which should be translated separately and considered part of this sentence. */
 /* Industry option in the store creation category question. */
 "Food and drink" = "Alimentation et boissons";
 
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "Par exemple : tissu doux, coutures solides, design unique";
+
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Mot de passe oublié ?";
 
@@ -3346,7 +3391,8 @@ which should be translated separately and considered part of this sentence. */
 /* Loading state for the suggested text in the add product from image form. */
 "Generating suggestion from photo..." = "Génération d’une suggestion de photo…";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Génération...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3419,9 +3465,19 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Cadeau";
 
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "Carte-cadeau";
+
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "Cartes-cadeaux";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "Carte-cadeau non valide";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "Carte-cadeau non appliquée";
 
 /* No comment provided by engineer. */
 "Gift cards" = "Cartes-cadeaux";
@@ -3648,6 +3704,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Masquer la liste de configuration de la boutique";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "Mettez en avant ce qui rend votre produit unique et laissez l’IA s’occuper du reste.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Mettez en avant les fonctionnalités uniques de votre produit ainsi que votre public à l’aide de mots-clés, pour une description sur mesure.";
 
@@ -3743,7 +3802,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "En stock";
 
 /* Title of the store creation profiler question about the store selling platforms. */
@@ -3932,6 +3992,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Point de terminaison non valide";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "Erreur de carte-cadeau non valide : %1$@";
+
 /* No comment provided by engineer. */
 "Invalid username" = "Identifiant non valide";
 
@@ -3942,6 +4005,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Poids non valide";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Stock";
@@ -3960,6 +4024,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Le message généré est-il utile ?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "Ce résultat est-il utile ?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Île de Man";
@@ -4188,6 +4255,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
+
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "Laissez l’IA générer des titres captivants pour vous.";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Dites-nous comment nous pouvons vous aider";
@@ -5144,6 +5214,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Ou appuyez pour sélectionner l’attribut existant";
 
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "Vous pouvez aussi obtenir d’autres suggestions de noms en un clic.";
+
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Commande n° %1$@";
@@ -5442,6 +5515,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
 "Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Assurez-vous que votre téléphone dispose de la configuration requise suivante : iPhone XS ou plus récent exécutant iOS 16.0 ou une version ultérieure. Contactez l’assistance si cette erreur s’affiche sur un appareil pris en charge.";
 
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "Veuillez vérifier le solde de la carte-cadeau.";
+
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Assurez-vous que votre ID Apple est valide, puis réessayez. Un ID Apple valide est obligatoire pour pouvoir accepter les conditions d’utilisation d’Apple.";
 
@@ -5694,7 +5770,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "Présenter la carte pour procéder au remboursement";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "Prévisualisation ";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5704,7 +5781,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Section header title for product price
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "Prix";
 
 /* Title of the notice when a user updated price for selected products */
@@ -5839,11 +5917,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produit copié";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "Description du produit";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Brouillon de produit sauvegardé";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Lien vers le produit";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "Nom du produit";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produit publié";
@@ -5854,7 +5940,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produit sauvegardé";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "Type de produit";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -6086,6 +6173,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "Remboursement du paiement";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "Régénérer";
@@ -6412,7 +6500,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Enregistrer comme brouillon";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "Enregistrer comme brouillon";
 
 /* Button title to save a shipping label to print later */
@@ -6669,6 +6758,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Définissez le pourcentage de la remise que vous souhaitez offrir.";
 
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Définissez le ton et la voix pour que la présentation de votre corresponde à votre marque.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "Définir le ton et la voix";
+
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "Configurer %1$@";
 
@@ -6774,6 +6869,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Expédition";
 
@@ -6798,9 +6894,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Remboursement des frais d’expédition";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "Zones de livraison";
 
 /* Challenge option in the store creation challenges question. */
 "Shipping and logistics" = "Expédition et logistique";
@@ -7276,6 +7369,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "Soudan";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "Proposer un nom";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "Suggestion de photo";
 
@@ -7357,6 +7453,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Étiquettes";
 
@@ -7540,6 +7637,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Donnez-nous plus d’informations sur votre boutique";
 
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "Présentez-nous votre produit et dites-nous ce qui le rend unique !";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
@@ -7677,6 +7777,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "Le code doit respecter le format XXXX-XXXX-XXXX-XXXX.";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "Le montant du code promo ne peut pas être supérieur à 100 pour les remises sous forme de pourcentage.";
 
@@ -7703,6 +7806,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Lors de la première utilisation de la fonctionnalité Appuyer pour payer sur iPhone, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";
+
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "La carte-cadeau n’est pas appliquée.";
 
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Le nouveau nom de colis personnalisé n’est pas unique.";
@@ -8107,6 +8213,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "Tokélaou";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "Ton et voix";
 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
@@ -8746,6 +8855,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Utilisez notre outil d’intelligence artificielle pour générer rapidement des descriptions de produits. Il vous suffit de saisir des mots-clés, et nous nous chargeons du reste !";
 
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "Utiliser la photo de l’emballage (facultatif)";
+
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Utilisez le mot de passe pour la connexion";
 
@@ -9239,6 +9351,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Write a description" = "Écrire une description";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */

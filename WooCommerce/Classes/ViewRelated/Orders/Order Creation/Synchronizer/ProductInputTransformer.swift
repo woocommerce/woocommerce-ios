@@ -157,6 +157,7 @@ private extension ProductInputTransformer {
                          totalTax: "",
                          attributes: [],
                          addOns: [],
-                         parent: nil)
+                         parent: nil,
+                         bundleConfiguration: [])
     }
 }

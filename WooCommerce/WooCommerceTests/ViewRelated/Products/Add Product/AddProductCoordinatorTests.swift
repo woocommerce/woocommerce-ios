@@ -9,6 +9,8 @@ final class AddProductCoordinatorTests: XCTestCase {
     private var navigationController: UINavigationController!
     private var storageManager: MockStorageManager!
     private let sampleSiteID: Int64 = 100
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
@@ -19,11 +21,18 @@ final class AddProductCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         window.makeKeyAndVisible()
         window.rootViewController = navigationController
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         navigationController = nil
         storageManager = nil
+
+        analytics = nil
+        analyticsProvider = nil
+
         super.tearDown()
     }
 
@@ -89,6 +98,26 @@ final class AddProductCoordinatorTests: XCTestCase {
             coordinator.navigationController.topViewController is ProductFormViewController<ProductFormViewModel>
         }
     }
+
+    // MARK: Analytics
+
+    func test_it_tracks_ai_entry_point_displayed_event_when_presenting_AddProductWithAIActionSheet() throws {
+        // Given
+        let coordinator = makeAddProductCoordinator(
+            addProductWithAIEligibilityChecker: MockProductCreationAIEligibilityChecker(isEligible: true)
+        )
+
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        coordinator.start()
+        waitUntil {
+            coordinator.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_entry_point_displayed"))
+    }
 }
 
 private extension AddProductCoordinatorTests {
@@ -103,6 +132,7 @@ private extension AddProductCoordinatorTests {
                                      sourceNavigationController: navigationController,
                                      storage: storageManager,
                                      addProductWithAIEligibilityChecker: addProductWithAIEligibilityChecker,
+                                     analytics: analytics,
                                      isFirstProduct: false)
     }
 }

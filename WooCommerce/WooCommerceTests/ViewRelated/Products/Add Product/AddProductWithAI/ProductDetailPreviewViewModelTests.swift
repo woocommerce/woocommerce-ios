@@ -1128,6 +1128,140 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorState, .savingProduct)
     }
 
+    func test_saveProductAsDraft_saves_local_categories() async {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let grocery = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Groceries")
+        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+                                              categories: ["Biscuits", "Cookies"])
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
+
+        let sampleCategories = [grocery]
+        sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "iPhone 15",
+                                                      productDescription: nil,
+                                                      productFeatures: "",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            case let .addProductCategories(siteID, names, _, completion):
+                // Then
+                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(names, ["Biscuits", "Cookies"])
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(aiProduct))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(_, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        await viewModel.generateProductDetails()
+
+        // When
+        await viewModel.saveProductAsDraft()
+    }
+
+    func test_saveProductAsDraft_saves_local_tags() async {
+        // Given
+        let sampleSiteID: Int64 = 123
+        let existingTag = ProductTag.fake().copy(siteID: sampleSiteID, name: "Existing tag")
+        let aiProduct = AIProduct.fake().copy(name: "iPhone 15",
+                                              tags: ["Tag 1", "Tag 2"])
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let storage = MockStorageManager()
+        storage.insertSampleSite(readOnlySite: Site.fake().copy(siteID: sampleSiteID))
+
+        let sampleTags = [existingTag, ProductTag.fake().copy(siteID: sampleSiteID)]
+        sampleTags.forEach { storage.insertSampleProductTag(readOnlyProductTag: $0) }
+
+        let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
+                                                      productName: "iPhone 15",
+                                                      productDescription: nil,
+                                                      productFeatures: "",
+                                                      weightUnit: "kg",
+                                                      dimensionUnit: "m",
+                                                      stores: stores,
+                                                      storageManager: storage,
+                                                      onProductCreated: { _ in })
+
+        stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
+            switch action {
+            case let .synchronizeProductCategories(_, _, completion):
+                completion(nil)
+            case let .addProductCategories(_, _, _, completion):
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
+            switch action {
+            case let .synchronizeAllProductTags(_, completion):
+                completion(nil)
+            case let .addProductTags(siteID, tags, completion):
+                // Then
+                XCTAssertEqual(siteID, sampleSiteID)
+                XCTAssertEqual(tags, ["Tag 1", "Tag 2"])
+                completion(.success([]))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateAIProduct(_, _, _, _, _, _, _, _, _, _, completion):
+                completion(.success(aiProduct))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            case let .addProduct(_, onCompletion):
+                onCompletion(.success(.fake()))
+            default:
+                break
+            }
+        }
+
+        await viewModel.generateProductDetails()
+
+        // When
+        await viewModel.saveProductAsDraft()
+    }
+
     // MARK: - Handle feedback
 
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() {

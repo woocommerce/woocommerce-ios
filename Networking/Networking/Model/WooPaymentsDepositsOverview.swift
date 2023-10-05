@@ -10,7 +10,7 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let lastPaid: [WooPaymentsDeposit]
     public let nextScheduled: [WooPaymentsDeposit]
-    public let lastManualDeposits: [WooPaymentsDeposit]
+    public let lastManualDeposits: [WooPaymentsManualDeposit]
 
     enum CodingKeys: String, CodingKey {
         case lastPaid = "last_paid"
@@ -47,14 +47,44 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     }
 }
 
-/// originates from https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
+public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
+    public let currency: String
+    public let date: Date
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        currency = try container.decode(String.self, forKey: .currency)
+        let dateString = try container.decode(String.self, forKey: .date)
+
+        // For some reason, the date here is a string not a milliseconds timestamp.
+        // Manual date parsing allows us to continue to parse the whole response with a single decoder.
+        // ISO8601DateFormatter with custom options should be a better choice here, but didn't work.
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
+        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+
+        guard let date = dateFormatter.date(from: dateString) else {
+            throw DecodingError.typeMismatch(Date.self, .init(codingPath: [CodingKeys.date],
+                                                              debugDescription: "Expected ISO8601 string",
+                                                              underlyingError: nil))
+        }
+        self.date = date
+    }
+}
+
+/// originates from 
+// https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/
+// wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
 public enum WooPaymentsDepositType: String, Codable, Equatable {
     case withdrawal
     case deposit
 }
 
 /// originates from https://stripe.com/docs/api/payouts/object
-/// with additions in WooPayments e.g. https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
+/// with additions in WooPayments e.g. 
+// https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/
+// server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
 public enum WooPaymentsDepositStatus: String, Codable, Equatable {
     case estimated
     case pending
@@ -86,6 +116,7 @@ public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable,
 
 public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let card: Int
+    // TODO: find out other possible source types, or remove
 }
 
 public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {

@@ -18,7 +18,7 @@ struct CollapsibleProductRowCard: View {
         )
     }
 
-    init(viewModel: ProductRowViewModel, 
+    init(viewModel: ProductRowViewModel,
          onRemoveProduct: @escaping () -> Void,
          onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
@@ -59,10 +59,19 @@ struct CollapsibleProductRowCard: View {
                 CollapsibleProductCardPriceSummary(viewModel: viewModel)
             }
             .padding()
-            Button("Add discount") {
-                onAddDiscount()
+            HStack {
+                Button(Localization.addDiscountLabel) {
+                    onAddDiscount()
+                }
+                .buttonStyle(PlusButtonStyle())
+                Spacer()
+                Button {
+                    // TODO: Tooltip behavior gh-10839
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
+                }
             }
-            .buttonStyle(PlusButtonStyle())
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
@@ -126,6 +135,9 @@ private extension CollapsibleProductRowCard {
         static let removeProductLabel = NSLocalizedString(
             "Remove Product from order",
             comment: "Text in the product row card button to remove a product from the current order")
+        static let addDiscountLabel = NSLocalizedString(
+            "Add discount",
+            comment: "Text in the product row card to add a discount to a given product")
     }
 }
 

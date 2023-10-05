@@ -268,7 +268,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func depositsSection(from viewModels: [WooPaymentsDepositsCurrencyOverviewViewModel])-> Section {
-        return Section(header: "Woo Payments Balance", rows: [Row.depositOverview])
+        return Section(header: Localization.wooPaymentsDepositsSectionTitle, rows: [Row.depositOverview])
     }
 
     func configureTableView() {
@@ -408,7 +408,7 @@ private extension InPersonPaymentsMenuViewController {
     func configureDepositOverviews(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "deposit-overviews"
-        cell.configure(image: .bankIcon, text: "WooPayments Deposits")
+        cell.configure(image: .bankIcon, text: Localization.wooPaymentsDeposits)
     }
 
     private func prepareForReuse(_ cell: UITableViewCell) {
@@ -695,6 +695,14 @@ private extension InPersonPaymentsMenuViewController {
         static let paymentActionsSectionTitle = NSLocalizedString(
             "Actions",
             comment: "Title for the section related to actions inside In-Person Payments settings")
+
+        static let wooPaymentsDepositsSectionTitle = NSLocalizedString(
+            "Woo Payments Balance",
+            comment: "Title for the section related to Woo Payments Deposits/Balances.")
+
+        static let wooPaymentsDeposits = NSLocalizedString(
+            "Woo Payments Balance",
+            comment: "Title for the row related to Woo Payments Deposits/Balances.")
 
         static let orderCardReader = NSLocalizedString(
             "Order card reader",

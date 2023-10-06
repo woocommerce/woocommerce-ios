@@ -698,7 +698,11 @@ extension OrderListViewController: UITableViewDelegate {
         guard let currentIndex = currentIndex else { return }
 
         if isSplitViewInOrdersTabEnabled {
-            splitViewController?.isCollapsed ?? true ? switchDetailsHandler(allViewModels, currentIndex) :
+            let allowOrderNavigation = splitViewController?.isCollapsed ?? true
+            // There is no point of having order navigation in the order details view when we have a split screen,
+            // because orders can be easily selected in the left view (orders list).
+            // Passing just one order (the selected one) disables navigation
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex) :
             switchDetailsHandler([orderDetailsViewModel], 0)
         } else {
             let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)

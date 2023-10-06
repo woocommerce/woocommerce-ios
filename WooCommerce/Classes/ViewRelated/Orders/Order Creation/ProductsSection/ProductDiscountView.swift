@@ -56,12 +56,27 @@ struct DiscountLineDetailsView: View {
     }
 
     var body: some View {
-        VStack {
+        VStack(spacing: .zero) {
             Text("Fixed price discount")
+                .renderedIf(viewModel.feeOrDiscountType == .fixed)
+            Text("Percentage discount")
+                .renderedIf(viewModel.feeOrDiscountType == .percentage)
             HStack {
                 inputFixedField
-                Button("$") {}
-                Button("%") {}
+                    .renderedIf(viewModel.feeOrDiscountType == .fixed)
+                inputPercentageField
+                    .renderedIf(viewModel.feeOrDiscountType == .percentage)
+                Section {
+                    if viewModel.isPercentageOptionAvailable {
+                        // TODO: Decouple fees from discounts
+                        Picker("", selection: $viewModel.feeOrDiscountType) {
+                            Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
+                            Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
+                        }
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding()
             }
             HStack {
                 Text("-> 50% discount ")
@@ -89,6 +104,24 @@ struct DiscountLineDetailsView: View {
                 Spacer()
                 BindableTextfield(viewModel.amountPlaceholder,
                                   text: $viewModel.amount,
+                                  focus: .constant(true))
+                    .keyboardType(.numbersAndPunctuation)
+            }
+        }
+        .frame(minHeight: 44)
+        .padding([.leading, .trailing], 16)
+    }
+
+    private var inputPercentageField: some View {
+        AdaptiveStack(horizontalAlignment: .leading) {
+            Text(String.localizedStringWithFormat("Percentage (%1$@)", viewModel.percentSymbol))
+                .bodyStyle()
+                .fixedSize()
+
+            HStack {
+                Spacer()
+                BindableTextfield("0",
+                                  text: $viewModel.percentage,
                                   focus: .constant(true))
                     .keyboardType(.numbersAndPunctuation)
             }

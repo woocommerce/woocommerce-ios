@@ -213,4 +213,8 @@ public enum FeatureFlag: Int {
     /// Enables gift card support in order creation/editing
     ///
     case giftCardInOrderForm
+
+    /// Enables the Woo Payments Deposits item in the Payments menu
+    ///
+    case wooPaymentsDepositsOverviewInPaymentsMenu
 }

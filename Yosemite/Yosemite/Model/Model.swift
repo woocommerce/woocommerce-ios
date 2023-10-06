@@ -10,6 +10,7 @@ public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup
 public typealias Address = Networking.Address
+public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias FallibleCancelable = Hardware.FallibleCancelable
@@ -183,6 +184,7 @@ public typealias WCPayCardPaymentDetails = Networking.WCPayCardPaymentDetails
 public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentReceiptDetails
 public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
 public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
+public typealias WooPaymentsDepositInterval = Networking.WooPaymentsDepositInterval
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
 

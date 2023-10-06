@@ -534,6 +534,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func aboutTapToPayOnIPhoneWasPressed() {
+        ServiceLocator.analytics.track(.aboutTapToPayOnIPhoneTapped)
         // TODO: open the new screen
     }
 

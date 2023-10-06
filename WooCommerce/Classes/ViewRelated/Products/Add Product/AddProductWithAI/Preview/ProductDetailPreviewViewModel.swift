@@ -318,21 +318,29 @@ private extension ProductDetailPreviewViewModel {
                                                     existingTags: existingTags)
 
         var categories = [ProductCategory]()
-
         aiProduct.categories.forEach { aiCategory in
+            // If there exists a `ProductCategory` matching the AI suggestion
             if let match = existingCategories.first(where: { $0.name == aiCategory }) {
                 categories.append(match)
             } else {
+                /// Create a local `ProductCategory` with categoryID as 0, as there is no existing category matching the AI suggestion
+                ///
+                /// We will later upload the local category using `saveLocalCategoriesAndTags` method
+                ///
                 categories.append(ProductCategory(categoryID: 0, siteID: siteID, parentID: 0, name: aiCategory, slug: ""))
             }
         }
 
         var tags = [ProductTag]()
-
         aiProduct.tags.forEach { aiTag in
+            // If there exists a `ProductTag` matching the AI suggestion
             if let match = existingTags.first(where: { $0.name == aiTag }) {
                 tags.append(match)
             } else {
+                /// Create a local `ProductTag` with tagID as 0, as there is no existing tag matching the AI suggestion
+                ///
+                /// We will later upload the local tag using `saveLocalCategoriesAndTags` method
+                ///
                 tags.append(ProductTag(siteID: siteID, tagID: 0, name: aiTag, slug: ""))
             }
         }

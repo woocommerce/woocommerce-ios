@@ -60,7 +60,7 @@ final class OrderDetailsViewController: UIViewController {
 
     private let currentIndex: Int
 
-    private lazy var isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
+    private let isSplitViewInOrdersTabEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab)
 
     // MARK: - View Lifecycle
     init(viewModels: [OrderDetailsViewModel], currentIndex: Int) {

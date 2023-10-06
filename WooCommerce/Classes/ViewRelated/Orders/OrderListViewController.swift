@@ -101,7 +101,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: ([OrderDetailsViewModel], Int) -> Void
+    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _ index: Int) -> Void
 
     /// Currently selected index path in the table view
     ///

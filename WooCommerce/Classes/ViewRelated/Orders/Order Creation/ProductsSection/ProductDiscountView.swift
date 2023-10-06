@@ -1,6 +1,52 @@
 import SwiftUI
 import Yosemite
 
+struct ProductDiscountView: View {
+
+    @Environment(\.presentationMode) var presentation
+
+    private let viewModel: ProductInOrderViewModel
+
+    init(viewModel: ProductInOrderViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        NavigationView {
+            ScrollView {
+                // TODO: Rounded border
+                HStack {
+                    ProductImageThumbnail(productImageURL: viewModel.productRowViewModel.imageURL,
+                                          productImageSize: 56.0,
+                                          scale: 1,
+                                          productImageCornerRadius: 4.0,
+                                          foregroundColor: Color(UIColor.listSmallIcon))
+                    VStack {
+                        Text(viewModel.productRowViewModel.name)
+                        DiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
+                    }
+                }
+            }
+            .navigationTitle(Text("Add Discount"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") {
+                        presentation.wrappedValue.dismiss()
+                    }
+                }
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Add") {
+                        presentation.wrappedValue.dismiss()
+                    }
+                }
+            }
+            .wooNavigationBarStyle()
+            .navigationViewStyle(.stack)
+        }
+    }
+}
+
 struct DiscountLineDetailsView: View {
 
     @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
@@ -11,8 +57,6 @@ struct DiscountLineDetailsView: View {
 
     var body: some View {
         VStack {
-            Text("Debug: New DiscountLineDetailsView goes here")
-                .foregroundColor(.red)
             Text("Fixed price discount")
             HStack {
                 inputFixedField
@@ -54,47 +98,8 @@ struct DiscountLineDetailsView: View {
     }
 }
 
-struct ProductInOrder: View {
-
-    @Environment(\.presentationMode) var presentation
-
-    private let viewModel: ProductInOrderViewModel
-
-    init(viewModel: ProductInOrderViewModel) {
-        self.viewModel = viewModel
-    }
-
-    var body: some View {
-        NavigationView {
-            ScrollView {
-                VStack(spacing: .zero) {
-                    ProductRow(viewModel: viewModel.productRowViewModel)
-                        .padding()
-                    DiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
-                }
-            }
-            .navigationTitle(Text("Add Discount"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
-                        presentation.wrappedValue.dismiss()
-                    }
-                }
-                ToolbarItem(placement: .primaryAction) {
-                    Button("Add") {
-                        presentation.wrappedValue.dismiss()
-                    }
-                }
-            }
-            .wooNavigationBarStyle()
-            .navigationViewStyle(.stack)
-        }
-    }
-}
-
 // MARK: Constants
-private extension ProductInOrder {
+private extension ProductDiscountView {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let noSpacing: CGFloat = 0.0
@@ -130,7 +135,7 @@ struct ProductInOrder_Previews: PreviewProvider {
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel,
                                                 productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
                                                 onRemoveProduct: {})
-        ProductInOrder(viewModel: viewModel)
+        ProductDiscountView(viewModel: viewModel)
     }
 }
 

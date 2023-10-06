@@ -44,7 +44,7 @@ struct CollapsibleProductRowCard: View {
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
-                // TODO gh-10834: Action to remove product
+                viewModel.removeProductIntent()
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)

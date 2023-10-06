@@ -50,14 +50,6 @@ struct ProductRow: View {
     ///
     let accessibilityHint: String
 
-    /// Image processor to resize images in a background thread to avoid blocking the UI
-    ///
-    private var imageProcessor: ImageProcessor {
-        ResizingImageProcessor(
-            referenceSize: .init(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale),
-            mode: .aspectFill)
-    }
-
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
          accessibilityHint: String = "",
@@ -83,17 +75,11 @@ struct ProductRow: View {
                     }
 
                     // Product image
-                    KFImage.url(viewModel.imageURL)
-                        .placeholder {
-                            Image(uiImage: .productPlaceholderImage)
-                        }
-                        .setProcessor(imageProcessor)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
-                        .cornerRadius(Layout.cornerRadius)
-                        .foregroundColor(Color(UIColor.listSmallIcon))
-                        .accessibilityHidden(true)
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                          productImageSize: Layout.productImageSize,
+                                          scale: scale,
+                                          productImageCornerRadius: Layout.cornerRadius,
+                                          foregroundColor: Color(UIColor.listSmallIcon))
 
                     // Product details
                     VStack(alignment: .leading) {

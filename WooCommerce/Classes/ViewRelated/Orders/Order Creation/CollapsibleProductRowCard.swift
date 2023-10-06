@@ -5,6 +5,8 @@ struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
 
+    @ScaledMetric private var scale: CGFloat = 1
+
     private var shouldShowDividers: Bool {
         !isCollapsed
     }
@@ -21,7 +23,11 @@ struct CollapsibleProductRowCard: View {
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
-                    Image(systemName: "photo.stack.fill")
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                          productImageSize: Layout.productImageSize,
+                                          scale: scale,
+                                          productImageCornerRadius: Layout.productImageCornerRadius,
+                                          foregroundColor: Color(UIColor.listSmallIcon))
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
@@ -93,6 +99,8 @@ private extension CollapsibleProductRowCard {
         static let padding: CGFloat = 16
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
+        static let productImageSize: CGFloat = 56.0
+        static let productImageCornerRadius: CGFloat = 4.0
     }
 
     enum Localization {

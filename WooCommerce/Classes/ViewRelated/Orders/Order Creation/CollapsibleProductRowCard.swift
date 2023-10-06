@@ -5,11 +5,8 @@ struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
 
-    private var isExpanded: Binding<Bool> {
-        Binding<Bool>(
-            get: { !self.isCollapsed },
-            set: { self.isCollapsed = !$0 }
-        )
+    private var shouldShowDividers: Bool {
+        !isCollapsed
     }
 
     init(viewModel: ProductRowViewModel) {
@@ -20,7 +17,7 @@ struct CollapsibleProductRowCard: View {
         CollapsibleView(isCollapsible: true,
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: isExpanded,
+                        shouldShowDividers: shouldShowDividers,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {

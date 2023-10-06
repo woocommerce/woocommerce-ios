@@ -9,7 +9,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
     private let isCollapsible: Bool
 
     @Binding private var isCollapsed: Bool
-    @Binding private var shouldShowDividers: Bool
+    private var shouldShowDividers: Bool
 
     private let horizontalPadding: CGFloat = 16
     private let verticalPadding: CGFloat = 8
@@ -17,13 +17,13 @@ struct CollapsibleView<Label: View, Content: View>: View {
     init(isCollapsible: Bool = true,
          isCollapsed: Binding<Bool> = .constant(false),
          safeAreaInsets: EdgeInsets = .zero,
-         shouldShowDividers: Binding<Bool> = .constant(true),
+         shouldShowDividers: Bool = true,
          @ViewBuilder label: () -> Label,
          @ViewBuilder content: () -> Content) {
         self.label = label()
         self.content = content()
         self.safeAreaInsets = safeAreaInsets
-        self._shouldShowDividers = shouldShowDividers
+        self.shouldShowDividers = shouldShowDividers
         self.isCollapsible = isCollapsible
         self._isCollapsed = isCollapsed
     }

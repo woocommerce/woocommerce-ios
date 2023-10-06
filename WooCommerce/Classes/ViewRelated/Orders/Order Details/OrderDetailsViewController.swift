@@ -188,13 +188,15 @@ private extension OrderDetailsViewController {
     }
 
     func loadOrder(with index: Int) {
-        guard let navigationController = isSplitViewInOrdersTabEnabled ?
-                splitViewController?.viewControllers.first as? UINavigationController : navigationController else {
+        let splitViewNavigationController = splitViewController?.viewControllers.first as? UINavigationController
+        let usingNavigationController = isSplitViewInOrdersTabEnabled ? splitViewNavigationController : navigationController
+
+        guard let usingNavigationController = usingNavigationController else {
             return
         }
 
         let viewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: index)
-        navigationController.replaceTopViewController(with: viewController, animated: false)
+        usingNavigationController.replaceTopViewController(with: viewController, animated: false)
     }
 
     /// Setup: EntityListener

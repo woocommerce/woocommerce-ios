@@ -292,19 +292,41 @@ private extension ProductDetailPreviewViewModel {
 
     @MainActor
     func generateProduct(language: String,
-                         tone: AIToneVoice) async throws -> Product {
+                           tone: AIToneVoice) async throws -> Product {
+        let existingCategories = categoryResultController.fetchedObjects
+        let existingTags = tagResultController.fetchedObjects
+
+        let aiProduct = try await generateAIProduct(language: language,
+                                                    tone: tone,
+                                                    existingCategories: existingCategories,
+                                                    existingTags: existingTags)
+
+        let categories = existingCategories.filter({ aiProduct.categories.contains($0.name) })
+        let tags = existingTags.filter({ aiProduct.tags.contains($0.name) })
+
+        return Product(siteID: siteID,
+                       aiProduct: aiProduct,
+                       categories: categories,
+                       tags: tags)
+    }
+
+    @MainActor
+    func generateAIProduct(language: String,
+                           tone: AIToneVoice,
+                           existingCategories: [ProductCategory],
+                           existingTags: [ProductTag]) async throws -> AIProduct {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.generateProduct(siteID: siteID,
-                                                          productName: productName,
-                                                          keywords: productFeatures ?? productDescription ?? "",
-                                                          language: language,
-                                                          tone: tone.rawValue,
-                                                          currencySymbol: currency,
-                                                          dimensionUnit: dimensionUnit,
-                                                          weightUnit: weightUnit,
-                                                          categories: categoryResultController.fetchedObjects,
-                                                          tags: tagResultController.fetchedObjects,
-                                                          completion: { result in
+            stores.dispatch(ProductAction.generateAIProduct(siteID: siteID,
+                                                            productName: productName,
+                                                            keywords: productFeatures ?? productDescription ?? "",
+                                                            language: language,
+                                                            tone: tone.rawValue,
+                                                            currencySymbol: currency,
+                                                            dimensionUnit: dimensionUnit,
+                                                            weightUnit: weightUnit,
+                                                            categories: existingCategories,
+                                                            tags: existingTags,
+                                                            completion: { result in
                 continuation.resume(with: result)
             }))
         }

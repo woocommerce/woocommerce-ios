@@ -7,11 +7,8 @@ struct CollapsibleProductRowCard: View {
 
     var onRemoveProduct: () -> Void
 
-    private var isExpanded: Binding<Bool> {
-        Binding<Bool>(
-            get: { !self.isCollapsed },
-            set: { self.isCollapsed = !$0 }
-        )
+    private var shouldShowDividers: Bool {
+        !isCollapsed
     }
 
     init(viewModel: ProductRowViewModel, onRemoveProduct: @escaping () -> Void) {
@@ -23,7 +20,7 @@ struct CollapsibleProductRowCard: View {
         CollapsibleView(isCollapsible: true,
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: isExpanded,
+                        shouldShowDividers: shouldShowDividers,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -81,7 +78,7 @@ private struct CollapsibleProductCardPriceSummary: View {
             HStack {
                 Text(viewModel.quantity.formatted())
                     .foregroundColor(.gray)
-                Text("x")
+                Image(systemName: "multiply")
                     .foregroundColor(.gray)
                 Text(viewModel.priceLabel ?? "-")
                     .foregroundColor(.gray)
@@ -106,7 +103,7 @@ private extension CollapsibleProductRowCard {
             "Price",
             comment: "Text in the product row card that indicating the price of the product")
         static let removeProductLabel = NSLocalizedString(
-            "Remove Product from order",
+            "Remove product from order",
             comment: "Text in the product row card button to remove a product from the current order")
     }
 }

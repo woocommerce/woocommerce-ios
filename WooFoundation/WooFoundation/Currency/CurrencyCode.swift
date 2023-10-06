@@ -1,3 +1,4 @@
+import Foundation
 /// The 3-letter country code for supported currencies
 ///
 public enum CurrencyCode: String, CaseIterable, Codable {

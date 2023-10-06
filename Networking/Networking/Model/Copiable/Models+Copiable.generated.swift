@@ -4,6 +4,60 @@ import Codegen
 import Foundation
 
 
+extension Networking.AIProduct {
+    public func copy(
+        name: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        shortDescription: CopiableProp<String> = .copy,
+        virtual: CopiableProp<Bool> = .copy,
+        shipping: CopiableProp<AIProduct.Shipping> = .copy,
+        tags: CopiableProp<[String]> = .copy,
+        price: CopiableProp<String> = .copy,
+        categories: CopiableProp<[String]> = .copy
+    ) -> Networking.AIProduct {
+        let name = name ?? self.name
+        let description = description ?? self.description
+        let shortDescription = shortDescription ?? self.shortDescription
+        let virtual = virtual ?? self.virtual
+        let shipping = shipping ?? self.shipping
+        let tags = tags ?? self.tags
+        let price = price ?? self.price
+        let categories = categories ?? self.categories
+
+        return Networking.AIProduct(
+            name: name,
+            description: description,
+            shortDescription: shortDescription,
+            virtual: virtual,
+            shipping: shipping,
+            tags: tags,
+            price: price,
+            categories: categories
+        )
+    }
+}
+
+extension Networking.AIProduct.Shipping {
+    public func copy(
+        length: CopiableProp<String> = .copy,
+        weight: CopiableProp<String> = .copy,
+        width: CopiableProp<String> = .copy,
+        height: CopiableProp<String> = .copy
+    ) -> Networking.AIProduct.Shipping {
+        let length = length ?? self.length
+        let weight = weight ?? self.weight
+        let width = width ?? self.width
+        let height = height ?? self.height
+
+        return Networking.AIProduct.Shipping(
+            length: length,
+            weight: weight,
+            width: width,
+            height: height
+        )
+    }
+}
+
 extension Networking.AddOnGroup {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

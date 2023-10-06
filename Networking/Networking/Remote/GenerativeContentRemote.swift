@@ -44,17 +44,17 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - weightUnit: Weight unit to generate product weight
     ///   - categories: Existing categories
     ///   - tags: Existing tags
-    /// - Returns: Generated `Product`
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag]) async throws -> Product
+    /// - Returns: Generated `AIProduct`
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag]) async throws -> AIProduct
 }
 
 /// Product: Remote Endpoints
@@ -75,7 +75,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             }
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
@@ -91,54 +91,54 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
             }
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         }
     }
 
-    public func generateProduct(siteID: Int64,
-                                productName: String,
-                                keywords: String,
-                                language: String,
-                                tone: String,
-                                currencySymbol: String,
-                                dimensionUnit: String?,
-                                weightUnit: String?,
-                                categories: [ProductCategory],
-                                tags: [ProductTag]) async throws -> Product {
+    public func generateAIProduct(siteID: Int64,
+                                  productName: String,
+                                  keywords: String,
+                                  language: String,
+                                  tone: String,
+                                  currencySymbol: String,
+                                  dimensionUnit: String?,
+                                  weightUnit: String?,
+                                  categories: [ProductCategory],
+                                  tags: [ProductTag]) async throws -> AIProduct {
 
         do {
             guard let token else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
-            return try await generateProduct(siteID: siteID,
-                                             productName: productName,
-                                             keywords: keywords,
-                                             language: language,
-                                             tone: tone,
-                                             currencySymbol: currencySymbol,
-                                             dimensionUnit: dimensionUnit,
-                                             weightUnit: weightUnit,
-                                             categories: categories,
-                                             tags: tags,
-                                             token: token)
+            return try await generateAIProduct(siteID: siteID,
+                                               productName: productName,
+                                               keywords: keywords,
+                                               language: language,
+                                               tone: tone,
+                                               currencySymbol: currencySymbol,
+                                               dimensionUnit: dimensionUnit,
+                                               weightUnit: weightUnit,
+                                               categories: categories,
+                                               tags: tags,
+                                               token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
-            return try await generateProduct(siteID: siteID,
-                                             productName: productName,
-                                             keywords: keywords,
-                                             language: language,
-                                             tone: tone,
-                                             currencySymbol: currencySymbol,
-                                             dimensionUnit: dimensionUnit,
-                                             weightUnit: weightUnit,
-                                             categories: categories,
-                                             tags: tags,
-                                             token: token)
+            return try await generateAIProduct(siteID: siteID,
+                                               productName: productName,
+                                               keywords: keywords,
+                                               language: language,
+                                               tone: tone,
+                                               currencySymbol: currencySymbol,
+                                               dimensionUnit: dimensionUnit,
+                                               weightUnit: weightUnit,
+                                               categories: categories,
+                                               tags: tags,
+                                               token: token)
         }
     }
 }
@@ -188,18 +188,17 @@ private extension GenerativeContentRemote {
         return try await enqueue(request, mapper: mapper)
     }
 
-
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag],
-                         token: String) async throws -> Product {
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           token: String) async throws -> AIProduct {
 
         let tagsAsString = {
             guard !tags.isEmpty else {
@@ -282,9 +281,7 @@ private extension GenerativeContentRemote {
                                     path: Path.textCompletion,
                                     parameters: parameters)
 
-        let mapper = AIProductMapper(siteID: siteID,
-                                     existingCategories: categories,
-                                     existingTags: tags)
+        let mapper = AIProductMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }

@@ -510,26 +510,6 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func presentSetUpTapToPayOnIPhoneViewController() {
-        presentSetUpTapToPayOnIPhoneWithOnboarding()
-    }
-
-    private func presentSetUpTapToPayOnIPhoneWithoutOnboarding() {
-        guard let siteID = stores.sessionManager.defaultStoreID,
-              let _ = pluginState?.preferred else {
-            return
-        }
-
-        let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
-                                                                    configuration: viewModel.cardPresentPaymentsConfiguration,
-                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase)
-        let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
-        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
-        controller.navigationBar.isHidden = true
-
-        navigationController?.present(controller, animated: true)
-    }
-
-    private func presentSetUpTapToPayOnIPhoneWithOnboarding() {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }

@@ -1,1 +1,2 @@
-We're excited to introduce new features in our latest WooCommerce update! Now, you can effortlessly automate tax calculations for new orders by storing tax rates based on location. Also, we're bringing AI to your fingertips - creating products on WPCOM and self-hosted stores with Jetpack AI plugin is now easier than ever. Plus, merchants can sweeten the deal by applying gift cards directly to orders. Enjoy these enhancements and keep the feedback coming! Happy selling!
+- [*] Generate new tags/categories while creating product using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10864]
+

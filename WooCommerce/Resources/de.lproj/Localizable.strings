@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-27 08:54:21+0000 */
+/* Translation-Revision-Date: 2023-10-04 12:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -1055,6 +1055,9 @@ which should be translated separately and considered part of this sentence. */
 /* Site backup title feature on the Free Trial Summary Screen */
 "Automated site backups" = "Automatisierte Website-Backups";
 
+/* Title for the bottom sheet when there is a tax rate stored */
+"Automatically adding tax rate" = "Steuersatz wird automatisch hinzugefügt";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Verkauf automatisch beginnen und beenden";
 
@@ -1345,6 +1348,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1692,6 +1696,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear selection on the product categories list */
 "Clear Selection" = "Auswahl löschen";
 
+/* Title for the button to clear the stored tax rate */
+"Clear address and stop using this rate" = "Adresse löschen und diesen Satz nicht mehr verwenden";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Alle löschen";
 
@@ -1703,6 +1710,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
+   Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
@@ -2535,9 +2543,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Nicht erneut anzeigen";
 
-/* Subtitle on the add product with AI Preview screen. */
-"Don't worry. You can always change below details later." = "Keine Sorge. Du kannst die unten angegebenen Informationen später jederzeit ändern.";
-
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
@@ -2883,9 +2888,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Name des Versanddienstleisters eingeben";
 
-/* Placeholder of the gift card code text field in the order form. */
-"Enter code" = "Code eingeben";
-
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Beschreibung eingeben";
 
@@ -3132,6 +3134,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Läuft ab am: %1$@";
+
+/* Button title to explore an extension that isn't installed */
+"Explore" = "Erkunden";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Erkundige dich, wie du deine Verkäufe im Store steigern kannst.";
@@ -3471,6 +3476,9 @@ which should be translated separately and considered part of this sentence. */
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "Geschenkkarten";
+
+/* Header of the gift card code text field in the order form. */
+"Gift card code" = "Geschenkkartencode";
 
 /* Order gift card error notice message when the gift card is invalid.
    Order gift card error notice title when the gift card is invalid. */
@@ -6224,6 +6232,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "Gebühr aus Bestellung entfernen";
 
+/* Button to remove the gift card code from the order form. */
+"Remove Gift Card" = "Geschenkkarte entfernen";
+
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Bild entfernen";
 
@@ -6325,6 +6336,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
@@ -6531,6 +6543,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "Scanne den Barcode, um die SKU zu aktualisieren";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan code like XXXX-XXXX-XXXX-XXXX" = "Code in folgendem Format scannen: XXXX-XXXX-XXXX-XXXX";
+
+/* Navigation bar title of the gift card code scanner. */
+"Scan gift card" = "Geschenkkarte scannen";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan product barcode" = "Produkt-Barcode scannen";
@@ -6748,6 +6766,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Steuersatz festlegen";
+
+/* Title for the button to add a new tax ratewhen there is a tax rate stored */
+"Set a new tax rate for this order" = "Neuen Steuersatz für diese Bestellung festlegen";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-Mail festlegen";
@@ -7277,6 +7298,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Lagerstatus";
+
+/* Message when the user disables adding tax rates automatically */
+"Stopped automatically adding tax rate" = "Automatisches Hinzufügen des Steuersatzes gestoppt";
 
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "Speicher";
@@ -7986,11 +8010,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "Beim Abrufen deiner Privatsphäre-Einstellungen ist ein Fehler aufgetreten";
 
+/* Error message when generating product details fails on the add product with AI Preview screen. */
+"There was an error generating product details. Please try again." = "Beim Generieren der Produktdetails ist ein Fehler aufgetreten. Bitte versuche es erneut.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Beim Bearbeiten der Rückerstattung ist ein Fehler aufgetreten.";
 
 /* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
 "There was an error retrying this payment. Please go back and start again." = "Beim erneuten Zahlungsversuch ist ein Fehler aufgetreten. Bitte gehe zurück und beginne von vorne.";
+
+/* Error message when saving product as draft on the add product with AI Preview screen. */
+"There was an error saving product details. Please try again." = "Beim Speichern der Produktdetails ist ein Fehler aufgetreten. Bitte versuche es erneut.";
 
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Beim Speichern der Datenschutzeinstellungen ist ein Fehler aufgetreten.";
@@ -9360,6 +9390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Falsches Konto?";
 
+/* Placeholder of the gift card code text field in the order form. */
+"XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
@@ -9387,6 +9420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "Du hast den %1$@-Tarif abonniert! Bis zum %2$@ kannst du alle unsere Funktionen nutzen.";
+
+/* Subtitle on the add product with AI Preview screen. */
+"You can always change the below details later." = "Du kannst die unten angegebenen Informationen später jederzeit ändern.";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Du kannst mehrere auswählen.";
@@ -9822,6 +9858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Halte dein Geschäft am Laufen!";
+
+/* Message when a tax rate is set */
+"🎉 New tax rate set" = "🎉 Neuen Steuersatz festgelegt";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Bestellung fertiggestellt";

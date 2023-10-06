@@ -5,15 +5,12 @@ struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
 
-    var onRemoveProduct: () -> Void
-
     private var shouldShowDividers: Bool {
         !isCollapsed
     }
 
-    init(viewModel: ProductRowViewModel, onRemoveProduct: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
-        self.onRemoveProduct = onRemoveProduct
     }
 
     var body: some View {
@@ -47,7 +44,7 @@ struct CollapsibleProductRowCard: View {
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
-                onRemoveProduct()
+                viewModel.removeProductIntent()
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
@@ -113,7 +110,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onRemoveProduct: {})
+        CollapsibleProductRowCard(viewModel: viewModel)
     }
 }
 #endif

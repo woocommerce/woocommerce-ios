@@ -11,6 +11,10 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public let minimumAllowedChargeAmount: NSDecimalNumber
     public let stripeSmallestCurrencyUnitMultiplier: Decimal
 
+    /// `contactlessLimitAmount` is the upper limit for card transactions, expressed in the smallest currency unit.
+    /// This limit may have different implications depending on the store's territory.
+    public let contactlessLimitAmount: Int?
+
     init(countryCode: String,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
@@ -18,7 +22,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
          supportedReaders: [CardReaderType],
          supportedPluginVersions: [PaymentPluginVersionSupport],
          minimumAllowedChargeAmount: NSDecimalNumber,
-         stripeSmallestCurrencyUnitMultiplier: Decimal) {
+         stripeSmallestCurrencyUnitMultiplier: Decimal,
+         contactlessLimitAmount: Int?) {
         self.countryCode = countryCode
         self.paymentMethods = paymentMethods
         self.currencies = currencies
@@ -27,6 +32,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
         self.supportedPluginVersions = supportedPluginVersions
         self.minimumAllowedChargeAmount = minimumAllowedChargeAmount
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+        self.contactlessLimitAmount = contactlessLimitAmount
     }
 
     public init(country: String, shouldAllowTapToPayInUK: Bool = false) {
@@ -44,7 +50,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                     .init(plugin: .stripe, minimumVersion: "6.2.0")
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                stripeSmallestCurrencyUnitMultiplier: 100
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: nil
             )
         case "CA":
             self.init(
@@ -55,7 +62,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedReaders: [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                stripeSmallestCurrencyUnitMultiplier: 100
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: 25000
             )
         case "GB":
             self.init(
@@ -66,7 +74,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedReaders: shouldAllowTapToPayInUK ? [.wisepad3, .appleBuiltIn] : [.wisepad3],
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
-                stripeSmallestCurrencyUnitMultiplier: 100
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: 10000
             )
         default:
             self.init(
@@ -77,7 +86,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedReaders: [],
                 supportedPluginVersions: [],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                stripeSmallestCurrencyUnitMultiplier: 100
+                stripeSmallestCurrencyUnitMultiplier: 100,
+                contactlessLimitAmount: nil
             )
         }
     }

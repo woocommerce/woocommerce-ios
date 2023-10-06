@@ -88,7 +88,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                              supportedReaders: [.wisepad3],
                                                              supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
                                                              minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+                                                             stripeSmallestCurrencyUnitMultiplier: 100,
+                                                             contactlessLimitAmount: nil)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -113,7 +114,8 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                              supportedReaders: [.appleBuiltIn],
                                                              supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
                                                              minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+                                                             stripeSmallestCurrencyUnitMultiplier: 100,
+                                                             contactlessLimitAmount: nil)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)

@@ -98,6 +98,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+        case .tapToPayOnIPhoneInUK:
+            return buildConfig == .localDeveloper
         default:
             return true
         }

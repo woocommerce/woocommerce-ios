@@ -205,4 +205,8 @@ public enum FeatureFlag: Int {
     /// Enables the Woo Payments Deposits item in the Payments menu
     ///
     case wooPaymentsDepositsOverviewInPaymentsMenu
+
+    /// Enables Tap to Pay for UK Woo Payments stores
+    /// 
+    case tapToPayOnIPhoneInUK
 }

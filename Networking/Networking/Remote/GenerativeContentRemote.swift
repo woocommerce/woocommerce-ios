@@ -202,24 +202,22 @@ private extension GenerativeContentRemote {
 
         let tagsAsString = {
             guard !tags.isEmpty else {
-                return ""
+                return ", tags: suggest an array of the best matching tags for this product."
             }
 
             return
                 ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching tags for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones."
+                "suggest an array of the best matching tags for this product. You can suggest new tags as well."
         }()
 
         let categoriesAsString = {
             guard !categories.isEmpty else {
-                return ""
+                return ", categories: suggest an array of the best matching categories for this product."
             }
 
             return
                 ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching categories for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones."
+                "suggest an array of the best matching categories for this product. You can suggest new categories as well."
         }()
 
         let shippingJson = {

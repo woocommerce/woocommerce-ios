@@ -300,11 +300,11 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("categories:"))
-        XCTAssertTrue(prompt.contains("Snacks, Makeup, Clothes"))
+        XCTAssertTrue(prompt.contains("categories: Given the list of available categories ```Snacks, Makeup, Clothes```, "
+                                      + "suggest an array of the best matching categories for this product. You can suggest new categories as well."))
     }
 
-    func test_generateAIProduct_prompt_does_not_have_categories_if_no_categories_available() async throws {
+    func test_generateAIProduct_prompt_asks_for_new_categories_if_no_categories_available() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
@@ -326,8 +326,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertFalse(prompt.contains("categories:"))
-        XCTAssertFalse(prompt.contains("Snacks, Makeup, Clothes"))
+        XCTAssertTrue(prompt.contains("categories: suggest an array of the best matching categories for this product."))
     }
 
     func test_generateAIProduct_prompt_has_existing_tags() async throws {
@@ -352,11 +351,11 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertTrue(prompt.contains("tags:"))
-        XCTAssertTrue(prompt.contains("Food, Grocery"))
+        XCTAssertTrue(prompt.contains("tags: Given the list of available tags ```Food, Grocery```, "
+                                      + "suggest an array of the best matching tags for this product. You can suggest new tags as well."))
     }
 
-    func test_generateAIProduct_prompt_does_not_have_tags_if_no_tags_available() async throws {
+    func test_generateAIProduct_prompt_asks_for_new_tags_if_no_tags_available() async throws {
         // Given
         let remote = GenerativeContentRemote(network: network)
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/jetpack-openai-query/jwt", filename: "jwt-token-success")
@@ -377,8 +376,7 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.last as? DotcomRequest)
         let prompt = try XCTUnwrap(request.parameters?["prompt"] as? String)
-        XCTAssertFalse(prompt.contains("tags:"))
-        XCTAssertFalse(prompt.contains("Food, Grocery"))
+        XCTAssertTrue(prompt.contains("tags: suggest an array of the best matching tags for this product."))
     }
 
     func test_generateAIProduct_with_success_returns_AIProduct() async throws {

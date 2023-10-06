@@ -10,15 +10,12 @@ import enum Networking.ApplicationPasswordUseCaseError
 ///
 final class PostSiteCredentialLoginChecker {
     private let stores: StoresManager
-    private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
 
-    init(applicationPasswordUseCase: ApplicationPasswordUseCase,
-         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
+    init(roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.applicationPasswordUseCase = applicationPasswordUseCase
         self.roleEligibilityUseCase = roleEligibilityUseCase
         self.stores = stores
         self.analytics = analytics
@@ -26,13 +23,22 @@ final class PostSiteCredentialLoginChecker {
 
     /// Checks whether the user is eligible to use the app.
     ///
-    func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+    func checkEligibility(for siteURL: String,
+                          applicationPasswordUseCase: ApplicationPasswordUseCase,
+                          from navigationController: UINavigationController,
+                          onSuccess: @escaping () -> Void) {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
-            self?.checkRoleEligibility(in: navigationController) {
-                self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
-            }
+            self?.checkEligibilityPostApplicationPassword(for: siteURL, from: navigationController, onSuccess: onSuccess)
+        }
+    }
+
+    /// Checks whether the user is eligible to use the app when an application password is available.
+    ///
+    func checkEligibilityPostApplicationPassword(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+        checkRoleEligibility(in: navigationController) { [weak self] in
+            self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
         }
     }
 }

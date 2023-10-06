@@ -5,6 +5,7 @@ import WordPressUI
 import Yosemite
 import class Networking.UserAgent
 import enum Experiments.ABTest
+import struct Networking.ApplicationPasswordStorage
 import struct Networking.Settings
 import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
@@ -116,7 +117,57 @@ class AuthenticationManager: Authentication {
                                                                         rootViewController: rootViewController)
         }
 
+        if isAppLoginUrl(url) {
+            guard let queryDictionary = url.query?.dictionaryFromQueryString(),
+                  let siteURL = queryDictionary.string(forKey: "site_url") else {
+                DDLogError("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                return false
+            }
+
+            if let wporgUsername = queryDictionary.string(forKey: "username"),
+               let applicationPassword = queryDictionary.string(forKey: "application_password"),
+               let uuid = queryDictionary.string(forKey: "uuid") {
+                login(siteURL: siteURL, wporgUsername: wporgUsername, applicationPassword: applicationPassword, uuid: uuid, rootViewController: rootViewController)
+                return true
+            }
+        }
+
         return false
+    }
+
+    private func login(siteURL: String, wporgUsername: String, applicationPassword: String, uuid: String, rootViewController: UIViewController) {
+        // TODO: separate to a function
+        // TODO: check if password is necessary
+        ServiceLocator.stores.authenticate(credentials: .wporg(username: wporgUsername,
+                                                               password: "",
+                                                               siteAddress: siteURL))
+        let keychain = Keychain(service: WooConstants.keychainServiceName)
+        let storage = ApplicationPasswordStorage(keychain: keychain)
+        storage.saveApplicationPassword(.init(wpOrgUsername: wporgUsername,
+                                              password: Secret(applicationPassword),
+                                              uuid: uuid))
+
+        guard let navigationController = (rootViewController as? UINavigationController) ?? rootViewController.navigationController else {
+            // TODO: ensure that this doesn't happen
+            return
+        }
+        let checker = PostSiteCredentialLoginChecker()
+        checker.checkEligibilityPostApplicationPassword(for: siteURL, from: navigationController) { [weak self] in
+            guard let self else { return }
+            // Tracking `signedIn` after the user logged in using site creds & application password is created
+            // to ensure that we are measuring only the users who can actually start using the app
+            WordPressAuthenticator.track(.signedIn)
+
+            // navigates to home screen immediately with a placeholder store ID
+            self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+        }
+        self.postSiteCredentialLoginChecker = checker
+    }
+
+    private func isAppLoginUrl(_ url: URL) -> Bool {
+        // TODO: move to constants
+        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)://app-login"
+        return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
     /// Injects `loggedOutAppSettings`
@@ -750,8 +801,8 @@ private extension AuthenticationManager {
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController) {
-        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase)
-        checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
+        let checker = PostSiteCredentialLoginChecker()
+        checker.checkEligibility(for: siteURL, applicationPasswordUseCase: useCase, from: navigationController) { [weak self] in
             guard let self else { return }
             // Tracking `signedIn` after the user logged in using site creds & application password is created
             // to ensure that we are measuring only the users who can actually start using the app

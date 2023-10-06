@@ -358,12 +358,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                 let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
                 return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
             } else {
-                return "In Stock"
+                return stockStatus.description
             }
-        case .outOfStock:
-            return "Out of Stock"
         default:
-            return ""
+            return stockStatus.description
         }
     }
 

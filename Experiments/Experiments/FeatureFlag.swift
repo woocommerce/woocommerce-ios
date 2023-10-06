@@ -178,6 +178,10 @@ public enum FeatureFlag: Int {
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
 
+    /// Enables the Milestone 6 of the Orders with Coupons project: UX improvements
+    ///
+    case ordersWithCouponsM6
+
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
@@ -209,4 +213,8 @@ public enum FeatureFlag: Int {
     /// Enables gift card support in order creation/editing
     ///
     case giftCardInOrderForm
+
+    /// Enables the Woo Payments Deposits item in the Payments menu
+    ///
+    case wooPaymentsDepositsOverviewInPaymentsMenu
 }

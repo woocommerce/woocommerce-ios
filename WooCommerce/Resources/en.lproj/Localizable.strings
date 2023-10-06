@@ -9884,4 +9884,3 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* A message that tells the user why the app needs access to Bluetooth. */
 "infoplist.NSBluetoothAlwaysUsageDescription" = "This app uses Bluetooth to connect to supported card readers.";
-

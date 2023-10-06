@@ -138,7 +138,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel)
+        CollapsibleProductRowCard(viewModel: viewModel, onAddDiscount: {})
     }
 }
 #endif

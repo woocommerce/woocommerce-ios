@@ -397,7 +397,11 @@ private struct ProductsSection: View {
                         viewModel.selectOrderItem(productRow.id)
                     })
                     .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
-                        ProductDiscountView(viewModel: productViewModel)
+                        ProductDiscountView(imageURL: productRow.imageURL,
+                                            name: productRow.name,
+                                            stockLabel: productRow.stockQuantityLabel,
+                                            productRowViewModel: productRow,
+                                            discountViewModel: productViewModel.discountDetailsViewModel)
                     })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )

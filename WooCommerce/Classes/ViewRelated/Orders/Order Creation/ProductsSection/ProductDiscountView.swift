@@ -2,29 +2,60 @@ import SwiftUI
 import Yosemite
 
 struct ProductDiscountView: View {
+    private let imageURL: URL?
+    private let name: String
+    private let stockLabel: String
+    private let productRowViewModel: ProductRowViewModel
 
     @Environment(\.presentationMode) var presentation
 
-    private let viewModel: ProductInOrderViewModel
+    @ObservedObject private var discountViewModel: FeeOrDiscountLineDetailsViewModel
 
-    init(viewModel: ProductInOrderViewModel) {
-        self.viewModel = viewModel
+    init(imageURL: URL?,
+         name: String,
+         stockLabel: String,
+         productRowViewModel: ProductRowViewModel,
+         discountViewModel: FeeOrDiscountLineDetailsViewModel) {
+        self.imageURL = imageURL
+        self.name = name
+        self.stockLabel = stockLabel
+        self.productRowViewModel = productRowViewModel
+        self.discountViewModel = discountViewModel
     }
 
     var body: some View {
         NavigationView {
             ScrollView {
-                // TODO: Rounded border
-                HStack {
-                    ProductImageThumbnail(productImageURL: viewModel.productRowViewModel.imageURL,
+                HStack(alignment: .center, spacing: 8.0) {
+                    ProductImageThumbnail(productImageURL: imageURL,
                                           productImageSize: 56.0,
                                           scale: 1,
                                           productImageCornerRadius: 4.0,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack {
-                        Text(viewModel.productRowViewModel.name)
-                        DiscountLineDetailsView(viewModel: viewModel.discountDetailsViewModel)
+                        Text(name)
+                        Text(stockLabel)
+                            .foregroundColor(.gray)
+                        CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
                     }
+                }
+                .overlay {
+                    RoundedRectangle(cornerRadius: 4.0)
+                        .inset(by: 0.25)
+                        .stroke(Color(uiColor: .separator), lineWidth: 1.0)
+                }
+                .cornerRadius(4.0)
+                .padding()
+                VStack {
+                    DiscountLineDetailsView(viewModel: discountViewModel)
+                    Text("Debug: \(discountViewModel.amount)")
+                    Button("Remove Discount") {
+                        // TODO
+                    }
+                    .padding()
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .foregroundColor(Color(.error))
+                    .buttonStyle(RoundedBorderedStyle(borderColor: .red))
                 }
             }
             .navigationTitle(Text("Add Discount"))
@@ -78,19 +109,6 @@ struct DiscountLineDetailsView: View {
                 .pickerStyle(.segmented)
                 .padding()
             }
-            HStack {
-                Text("-> 50% discount ")
-                    .foregroundColor(.gray)
-                Text("-15.00")
-                    .foregroundColor(.green)
-            }
-            HStack {
-                Text("Price after discount")
-                Text("45.00")
-                    .bold()
-            }
-            Button("Remove Discount") {}
-            .errorStyle()
         }
     }
 
@@ -151,24 +169,6 @@ private extension ProductDiscountView {
         static let discountTitle = NSLocalizedString("Discount", comment: "Title for the Discount section on the Product Details screen during order creation")
         static let editDiscount = NSLocalizedString("Edit", comment: "Text for the button to edit a discount to a product during order creation")
         static let discountAmount = NSLocalizedString("Amount", comment: "Title for the discount amount of a product during order creation")
-    }
-}
-
-struct ProductInOrder_Previews: PreviewProvider {
-    static var previews: some View {
-        let productRowViewModel = ProductRowViewModel(productOrVariationID: 1,
-                                            name: "Love Ficus",
-                                            sku: "123456",
-                                            price: "20",
-                                            stockStatusKey: "instock",
-                                            stockQuantity: 7,
-                                            manageStock: true,
-                                            canChangeQuantity: false,
-                                            imageURL: nil)
-        let viewModel = ProductInOrderViewModel(productRowViewModel: productRowViewModel,
-                                                productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
-                                                onRemoveProduct: {})
-        ProductDiscountView(viewModel: viewModel)
     }
 }
 

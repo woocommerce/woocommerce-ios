@@ -4,7 +4,7 @@ import WooFoundation
 
 /// View model for `LegacyProductInOrder`.
 ///
-final class ProductInOrderViewModel: Identifiable {
+final class ProductInOrderViewModel: Identifiable, ObservableObject {
     /// Encapsulates the necessary information to execute adding discounts to products
     /// 
     struct DiscountConfiguration {

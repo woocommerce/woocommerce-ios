@@ -85,7 +85,7 @@ struct CollapsibleProductRowCard: View {
     }
 }
 
-private struct CollapsibleProductCardPriceSummary: View {
+struct CollapsibleProductCardPriceSummary: View {
 
     @ObservedObject var viewModel: ProductRowViewModel
 

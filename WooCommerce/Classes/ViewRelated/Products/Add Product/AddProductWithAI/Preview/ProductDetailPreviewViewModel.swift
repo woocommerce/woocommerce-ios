@@ -427,20 +427,26 @@ private extension ProductDetailPreviewViewModel {
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {
+    /// Saves the local categories and tags to remote
+    ///
     @MainActor
     func saveLocalCategoriesAndTags(_ product: Product) async throws -> Product {
         async let categories: [ProductCategory] = try await {
+            // Find the categories with ID as 0 (local items) and add those to remote
             let categoriesToBeAdded = product.categories.filter { $0.categoryID == 0 }
             let newCategories = try await addCategories(categoriesToBeAdded.map { $0.name })
 
+            // Combine the existing categories with the new remote categories
             let existingCategories = product.categories.filter { $0.categoryID != 0 }
             return existingCategories + newCategories
         }()
 
         async let tags: [ProductTag] = try await {
+            // Find the tags with ID as 0 (local items) and add those to remote
             let tagsToBeAdded = product.tags.filter { $0.tagID == 0 }
             let newTags = try await addTags(tagsToBeAdded.map { $0.name })
 
+            // Combine the existing tags with the new remote tags
             let existingTags = product.tags.filter { $0.tagID != 0 }
             return existingTags + newTags
         }()

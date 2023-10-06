@@ -100,7 +100,7 @@ private extension CollapsibleProductRowCard {
             "Price",
             comment: "Text in the product row card that indicating the price of the product")
         static let removeProductLabel = NSLocalizedString(
-            "Remove Product from order",
+            "Remove product from order",
             comment: "Text in the product row card button to remove a product from the current order")
     }
 }

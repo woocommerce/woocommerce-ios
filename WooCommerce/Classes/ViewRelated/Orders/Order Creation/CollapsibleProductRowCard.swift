@@ -75,7 +75,7 @@ private struct CollapsibleProductCardPriceSummary: View {
             HStack {
                 Text(viewModel.quantity.formatted())
                     .foregroundColor(.gray)
-                Text("x")
+                Image(systemName: "multiply")
                     .foregroundColor(.gray)
                 Text(viewModel.priceLabel ?? "-")
                     .foregroundColor(.gray)

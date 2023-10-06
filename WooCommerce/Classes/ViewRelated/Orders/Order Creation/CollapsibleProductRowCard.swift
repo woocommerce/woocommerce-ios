@@ -7,22 +7,14 @@ struct CollapsibleProductRowCard: View {
 
     @ScaledMetric private var scale: CGFloat = 1
 
-    var onRemoveProduct: () -> Void
-
     var onAddDiscount: () -> Void
 
-    private var isExpanded: Binding<Bool> {
-        Binding<Bool>(
-            get: { !self.isCollapsed },
-            set: { self.isCollapsed = !$0 }
-        )
+    private var shouldShowDividers: Bool {
+        !isCollapsed
     }
 
-    init(viewModel: ProductRowViewModel,
-         onRemoveProduct: @escaping () -> Void,
-         onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
-        self.onRemoveProduct = onRemoveProduct
         self.onAddDiscount = onAddDiscount
     }
 
@@ -30,7 +22,7 @@ struct CollapsibleProductRowCard: View {
         CollapsibleView(isCollapsible: true,
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: isExpanded,
+                        shouldShowDividers: shouldShowDividers,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -75,7 +67,7 @@ struct CollapsibleProductRowCard: View {
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {
-                onRemoveProduct()
+                viewModel.removeProductIntent()
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
@@ -106,7 +98,7 @@ private struct CollapsibleProductCardPriceSummary: View {
             HStack {
                 Text(viewModel.quantity.formatted())
                     .foregroundColor(.gray)
-                Text("x")
+                Image(systemName: "multiply")
                     .foregroundColor(.gray)
                 Text(viewModel.priceLabel ?? "-")
                     .foregroundColor(.gray)
@@ -133,7 +125,7 @@ private extension CollapsibleProductRowCard {
             "Price",
             comment: "Text in the product row card that indicating the price of the product")
         static let removeProductLabel = NSLocalizedString(
-            "Remove Product from order",
+            "Remove product from order",
             comment: "Text in the product row card button to remove a product from the current order")
         static let addDiscountLabel = NSLocalizedString(
             "Add discount",
@@ -146,7 +138,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onRemoveProduct: {}, onAddDiscount: {})
+        CollapsibleProductRowCard(viewModel: viewModel)
     }
 }
 #endif

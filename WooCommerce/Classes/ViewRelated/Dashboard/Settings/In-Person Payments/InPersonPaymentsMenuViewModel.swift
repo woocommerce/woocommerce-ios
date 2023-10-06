@@ -43,6 +43,7 @@ final class InPersonPaymentsMenuViewModel {
     @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
+    @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -61,6 +62,7 @@ final class InPersonPaymentsMenuViewModel {
         checkTapToPaySupport(siteID: siteID)
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
         registerForNotifications()
+        updateDepositsOverview()
     }
 
     private func synchronizePaymentGateways(siteID: Int64) {
@@ -122,6 +124,26 @@ final class InPersonPaymentsMenuViewModel {
                                                          onDismiss: { [weak self] in
             self?.showWebView = nil
         })
+    }
+
+    private func updateDepositsOverview() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+            let siteID,
+            let credentials = stores.sessionManager.defaultCredentials else {
+            return
+        }
+        let depositService = WooPaymentsDepositService(siteID: siteID,
+                                                       credentials: credentials)
+        Task {
+            let overview = await depositService.fetchDepositsOverview()
+            depositsOverviewViewModels = overview.map {
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            }
+        }
+    }
+
+    func depositOverviewViewModel(depositIndex: Int) -> WooPaymentsDepositsCurrencyOverviewViewModel? {
+        return depositsOverviewViewModels[depositIndex]
     }
 
     deinit {

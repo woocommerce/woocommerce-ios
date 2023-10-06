@@ -102,7 +102,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertFalse(eligiblity)
     }
 
-    func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_is_in_configuration() {
+    func test_isEligibleForTapToPayOnIPhone_true_when_built_in_reader_is_in_configuration() {
         // Given
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)

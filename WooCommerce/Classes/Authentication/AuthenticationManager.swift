@@ -120,6 +120,7 @@ class AuthenticationManager: Authentication {
             guard let queryDictionary = url.query?.dictionaryFromQueryString(),
             let siteURL = queryDictionary.string(forKey: "siteUrl") else {
                 print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
                 return false
             }
 
@@ -134,6 +135,7 @@ class AuthenticationManager: Authentication {
             }
         }
 
+        analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
         return false
     }
 

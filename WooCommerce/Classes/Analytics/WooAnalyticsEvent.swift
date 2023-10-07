@@ -2664,8 +2664,8 @@ extension WooAnalyticsEvent {
         }
 
         enum Flows: String {
-            case wpCom
-            case noWpCom
+            case wpCom = "wp_com"
+            case noWpCom = "no_wp_com"
         }
 
         static func appLoginLinkSuccess(flow: Flows) -> WooAnalyticsEvent {

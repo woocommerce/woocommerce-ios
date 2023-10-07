@@ -121,6 +121,7 @@ class AuthenticationManager: Authentication {
                   let siteURL = queryDictionary.string(forKey: "siteUrl"),
                   siteURL.isNotEmpty else {
                 print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }
 
@@ -137,6 +138,7 @@ class AuthenticationManager: Authentication {
             }
         }
 
+        showLoginURLFailure(rootViewController: rootViewController)
         return false
     }
 
@@ -154,6 +156,15 @@ class AuthenticationManager: Authentication {
         loginFields.restrictToWPCom = false
         loginFields.username = username
         NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showLoginURLFailure(rootViewController: UIViewController) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = rootViewController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: "Deu ruim"))
     }
 
     private func isAppLoginUrl(_ url: URL) -> Bool {

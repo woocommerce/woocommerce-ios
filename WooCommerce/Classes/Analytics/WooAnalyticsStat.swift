@@ -96,6 +96,8 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSiteCredentialResetPasswordTapped = "login_jetpack_site_credential_reset_password_button_tapped"
     case loginJetpackSiteCredentialDidShowErrorAlert = "login_jetpack_site_credential_did_show_error_alert"
     case loginJetpackSiteCredentialDidFinishLogin = "login_jetpack_site_credential_did_finish_login"
+    case loginAppLoginLinkSuccess = "login_app_login_link_success"
+    case loginMalformedAppLoginLink = "login_malformed_app_login_link"
 
     // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
     //

@@ -118,17 +118,20 @@ class AuthenticationManager: Authentication {
 
         if isAppLoginUrl(url) {
             guard let queryDictionary = url.query?.dictionaryFromQueryString(),
-            let siteURL = queryDictionary.string(forKey: "siteUrl") else {
+                  let siteURL = queryDictionary.string(forKey: "siteUrl"),
+                  siteURL.isNotEmpty else {
                 print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
                 return false
             }
 
-            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail") {
+            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
+               wpcomEmail.isNotEmpty {
                 showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
                 return true
             }
 
-            if let wporgUsername = queryDictionary.string(forKey: "username") {
+            if let wporgUsername = queryDictionary.string(forKey: "username"),
+               wporgUsername.isNotEmpty {
                 showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
                 return true
             }

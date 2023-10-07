@@ -125,11 +125,13 @@ class AuthenticationManager: Authentication {
             }
 
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail") {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
                 showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
                 return true
             }
 
             if let wporgUsername = queryDictionary.string(forKey: "username") {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
                 showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
                 return true
             }

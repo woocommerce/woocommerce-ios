@@ -2672,8 +2672,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [Keys.flow.rawValue: flow.rawValue])
         }
 
-        static func appLoginLinkMalformed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginMalformedAppLoginLink, properties: [:])
+        static func appLoginLinkMalformed(url: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginMalformedAppLoginLink, properties: [Keys.url.rawValue: url])
         }
     }
 }

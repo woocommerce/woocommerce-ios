@@ -2654,6 +2654,20 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - App Login Deep Link
+//
+extension WooAnalyticsEvent {
+    enum AppLoginDeepLink {
+        static func appLoginLinkSuccess() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [:])
+        }
+
+        static func appLoginLinkMalformed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginMalformedAppLoginLink, properties: [:])
+        }
+    }
+}
+
 // MARK: - Remote Requests
 //
 extension WooAnalyticsEvent {

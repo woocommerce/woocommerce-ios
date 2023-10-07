@@ -2658,8 +2658,18 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum AppLoginDeepLink {
-        static func appLoginLinkSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [:])
+        enum Keys: String {
+            case flow
+            case url
+        }
+
+        enum Flows: String {
+            case wpCom
+            case noWpCom
+        }
+
+        static func appLoginLinkSuccess(flow: Flows) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [Keys.flow.rawValue: flow.rawValue])
         }
 
         static func appLoginLinkMalformed() -> WooAnalyticsEvent {

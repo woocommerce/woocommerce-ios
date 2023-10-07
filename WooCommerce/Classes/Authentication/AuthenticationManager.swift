@@ -164,7 +164,7 @@ class AuthenticationManager: Authentication {
             noticePresenter.presentingViewController = rootViewController
             return noticePresenter
         }()
-        contextNoticePresenter.enqueue(notice: .init(title: "Deu ruim"))
+        contextNoticePresenter.enqueue(notice: .init(title: AuthenticationConstants.appLinkLoginFailureMessage))
     }
 
     private func isAppLoginUrl(_ url: URL) -> Bool {

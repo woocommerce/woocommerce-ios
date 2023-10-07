@@ -1,2 +1,1 @@
-- [*] Generate new tags/categories while creating product using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10864]
-
+We're excited to introduce new features in our latest WooCommerce update! When creating products on WPCOM and self-hosted stores with the Jetpack AI plugin, it will now suggest new tags and categories for you. Enjoy these enhancements and keep the feedback coming! Happy selling!

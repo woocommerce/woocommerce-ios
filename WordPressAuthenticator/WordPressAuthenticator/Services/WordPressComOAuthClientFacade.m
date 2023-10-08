@@ -33,13 +33,13 @@
                         password:(NSString *)password
                  multifactorCode:(NSString *)multifactorCode
                          success:(void (^)(NSString *authToken))success
-                needsMultiFactor:(void (^)(void))needsMultifactor
+                needsMultiFactor:(void (^)(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo))needsMultifactor
                          failure:(void (^)(NSError *error))failure
 {
-    [self.client authenticateWithUsername:username password:password multifactorCode:multifactorCode success:success failure:^(NSError *error) {
+    [self.client authenticateWithUsername:username password:password multifactorCode:multifactorCode needsMultifactor:needsMultifactor success:success failure:^(NSError * error) {
         if (error.code == WordPressComOAuthErrorNeedsMultifactorCode) {
             if (needsMultifactor != nil) {
-                needsMultifactor();
+                needsMultifactor(0, nil);
             }
         } else {
             if (failure != nil) {

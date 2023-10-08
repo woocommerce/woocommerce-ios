@@ -9,7 +9,7 @@
                         password:(NSString *)password
                  multifactorCode:(NSString *)multifactorCode
                          success:(void (^)(NSString *authToken))success
-                needsMultiFactor:(void (^)(void))needsMultifactor
+                needsMultiFactor:(void (^)(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo))needsMultifactor
                          failure:(void (^)(NSError *error))failure;
 
 - (void)requestOneTimeCodeWithUsername:(NSString *)username

@@ -7,6 +7,7 @@
 15.7
 -----
 - [*] Generate new tags/categories while creating product using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10864]
+- [*] Fix: in order details where an order item is a variable product with attributes and has add-ons, the variation attributes are shown now. [https://github.com/woocommerce/woocommerce-ios/pull/10877]
 
 15.6
 -----

@@ -142,6 +142,20 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         currencyFormatter.formatAmount(finalAmountDecimal)
     }
 
+    /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
+    ///
+    func calculatePriceAfterDiscount(_ price: String) -> String {
+        guard let price = currencyFormatter.convertToDecimal(price) else {
+            return ""
+        }
+        guard let discount = currencyFormatter.convertToDecimal(finalAmountString ?? "") else {
+            return ""
+        }
+        let priceAfterDiscount = price.subtracting(discount)
+
+        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+    }
+
     /// The base amount to apply percentage fee or discount on.
     ///
     private let baseAmountForPercentage: Decimal

@@ -59,7 +59,7 @@ struct ProductDiscountView: View {
                     HStack {
                         Text("Price after discount")
                         Spacer()
-                        Text("Debug: $0.00")
+                        Text(discountViewModel.calculatePriceAfterDiscount(productRowViewModel.price ?? ""))
                     }
                     .padding()
                     Divider()

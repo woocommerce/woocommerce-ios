@@ -36,7 +36,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Product price
     ///
-    private let price: String?
+    private(set) var price: String?
 
     /// Product stock status
     ///

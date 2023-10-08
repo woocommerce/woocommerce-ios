@@ -34,11 +34,10 @@ struct ProductDiscountView: View {
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack {
                         Text(name)
-                        Text(stockLabel)
-                            .foregroundColor(.gray)
                         CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
                     }
                 }
+                .padding()
                 .overlay {
                     RoundedRectangle(cornerRadius: 4.0)
                         .inset(by: 0.25)
@@ -46,9 +45,24 @@ struct ProductDiscountView: View {
                 }
                 .cornerRadius(4.0)
                 .padding()
-                VStack {
+                VStack(alignment: .leading) {
                     DiscountLineDetailsView(viewModel: discountViewModel)
-                    Text("Debug: \(discountViewModel.amount)")
+                    HStack {
+                        Text("Debug: $15.00 discount")
+                            .foregroundStyle(.gray)
+                        Spacer()
+                        Text("-" + (discountViewModel.finalAmountString ?? "0.00"))
+                            .foregroundStyle(.green)
+                    }
+                    .padding()
+                    .renderedIf(discountViewModel.finalAmountString != nil)
+                    HStack {
+                        Text("Price after discount")
+                        Spacer()
+                        Text("Debug: $0.00")
+                    }
+                    .padding()
+                    Divider()
                     Button("Remove Discount") {
                         // TODO
                     }
@@ -87,11 +101,13 @@ struct DiscountLineDetailsView: View {
     }
 
     var body: some View {
-        VStack(spacing: .zero) {
+        VStack(alignment: .leading, spacing: .zero) {
             Text("Fixed price discount")
                 .renderedIf(viewModel.feeOrDiscountType == .fixed)
+                .padding()
             Text("Percentage discount")
                 .renderedIf(viewModel.feeOrDiscountType == .percentage)
+                .padding()
             HStack {
                 inputFixedField
                     .renderedIf(viewModel.feeOrDiscountType == .fixed)
@@ -101,9 +117,14 @@ struct DiscountLineDetailsView: View {
                     if viewModel.isPercentageOptionAvailable {
                         // TODO: Decouple fees from discounts
                         Picker("", selection: $viewModel.feeOrDiscountType) {
-                            Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
-                            Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
+                            Text(viewModel.currencySymbol)
+                                .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
+                                .pickerStyle(SegmentedPickerStyle())
+                            Text(viewModel.percentSymbol)
+                                .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
+                                .pickerStyle(SegmentedPickerStyle())
                         }
+                        .frame(minWidth: 44)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -114,31 +135,28 @@ struct DiscountLineDetailsView: View {
 
     private var inputFixedField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
-            Text(String.localizedStringWithFormat("Amount (%1$@)", viewModel.currencySymbol))
-                .bodyStyle()
-                .fixedSize()
-
             HStack {
-                Spacer()
-                BindableTextfield(viewModel.amountPlaceholder,
-                                  text: $viewModel.amount,
+                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(viewModel.currencySymbol) Enter amount" : viewModel.amountPlaceholder,
+                                  text: $viewModel.amount, // TODO: viewModel.currencySymbol + amount
                                   focus: .constant(true))
                     .keyboardType(.numbersAndPunctuation)
             }
         }
         .frame(minHeight: 44)
         .padding([.leading, .trailing], 16)
+        .overlay {
+            RoundedRectangle(cornerRadius: 4.0)
+                .inset(by: 0.25)
+                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: 1.0)
+        }
+        .cornerRadius(4.0)
+        .padding()
     }
 
     private var inputPercentageField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
-            Text(String.localizedStringWithFormat("Percentage (%1$@)", viewModel.percentSymbol))
-                .bodyStyle()
-                .fixedSize()
-
             HStack {
-                Spacer()
-                BindableTextfield("0",
+                BindableTextfield(viewModel.amountPlaceholder == "0" ? "Enter percentage \(viewModel.currencySymbol)" : viewModel.amountPlaceholder,
                                   text: $viewModel.percentage,
                                   focus: .constant(true))
                     .keyboardType(.numbersAndPunctuation)
@@ -146,6 +164,13 @@ struct DiscountLineDetailsView: View {
         }
         .frame(minHeight: 44)
         .padding([.leading, .trailing], 16)
+        .overlay {
+            RoundedRectangle(cornerRadius: 4.0)
+                .inset(by: 0.25)
+                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: 1.0)
+        }
+        .cornerRadius(4.0)
+        .padding()
     }
 }
 

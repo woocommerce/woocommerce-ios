@@ -7,6 +7,7 @@
 #import "WordPressXMLRPCAPIFacade.h"
 #import "WPAuthenticator-Swift.h"
 #import "WordPressAuthenticatorTests-Swift.h"
+@import WordPressKit;
 
 
 SpecBegin(LoginFacade)
@@ -86,10 +87,10 @@ describe(@"signInWithLoginFields", ^{
         it(@"should call LoginServceDelegate's needsMultifactorCode when authentication requires it", ^{
             // Intercept success callback and execute it when appropriate
             [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
-                void (^ __unsafe_unretained needsMultifactorStub)(void);
+                void (^ __unsafe_unretained needsMultifactorStub)(NSInteger, SocialLogin2FANonceInfo *);
                 [invocation getArgument:&needsMultifactorStub atIndex:6];
                 
-                needsMultifactorStub();
+                needsMultifactorStub(0, nil);
             }];
             [[mockLoginFacadeDelegate expect] needsMultifactorCode];
             
@@ -97,7 +98,26 @@ describe(@"signInWithLoginFields", ^{
             
             [mockLoginFacadeDelegate verify];
         });
-        
+
+        it(@"should call LoginServceDelegate's needsMultifactorCode:userID:nonceInfo when authentication requires it", ^{
+            // Expected parameters
+            NSInteger userID = 1234;
+            SocialLogin2FANonceInfo * info = [SocialLogin2FANonceInfo new];
+
+            // Intercept success callback and execute it when appropriate
+            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
+                void (^ __unsafe_unretained needsMultifactorStub)(NSInteger, SocialLogin2FANonceInfo *);
+                [invocation getArgument:&needsMultifactorStub atIndex:6];
+
+                needsMultifactorStub(userID, info);
+            }];
+            [[mockLoginFacadeDelegate expect] needsMultifactorCodeForUserID:userID andNonceInfo:info];
+
+            [loginFacade signInWithLoginFields:loginFields];
+
+            [mockLoginFacadeDelegate verify];
+        });
+
         it(@"should call LoginFacadeDelegate's displayRemoteError when there has been an error", ^{
             NSError *error = [NSError errorWithDomain:@"org.wordpress" code:-1 userInfo:@{ NSLocalizedDescriptionKey : @"Error" }];
             // Intercept success callback and execute it when appropriate

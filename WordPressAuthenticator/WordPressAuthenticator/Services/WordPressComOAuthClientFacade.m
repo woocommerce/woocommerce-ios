@@ -58,9 +58,9 @@
 }
 
 - (void)requestSocial2FACodeWithUserID:(NSInteger)userID
-                                nonce:(NSString *)nonce
-                                 success:(void (^)(NSString *newNonce))success
-                                 failure:(void (^)(NSError *error, NSString *newNonce))failure
+                                 nonce:(NSString *)nonce
+                               success:(void (^)(NSString *newNonce))success
+                               failure:(void (^)(NSError *error, NSString *newNonce))failure
 {
     [self.client requestSocial2FACodeWithUserID:userID nonce:nonce success:success failure:failure];
 }
@@ -88,6 +88,33 @@
                             failure:(void (^)(NSError *error))failure
 {
     [self.client authenticateSocialLoginUser:userID authType:authType twoStepCode:twoStepCode twoStepNonce:twoStepNonce success:success failure:failure];
+}
+
+- (void) requestWebauthnChallengeWithUserID: (NSInteger)userID
+                               twoStepNonce:(NSString *)twoStepNonce
+                                    success:(void (^)(WebauthnChallengeInfo *challengeData))success
+                                    failure:(void (^)(NSError *error))failure {
+    [self.client requestWebauthnChallengeWithUserID:userID twoStepNonce:twoStepNonce success:success failure:failure];
+}
+
+- (void) authenticateWebauthnSignatureWithUserID:(NSInteger)userID
+                                    twoStepNonce:(NSString *)twoStepNonce
+                                    credentialID:(NSData *)credentialID
+                                  clientDataJson:(NSData *)clientDataJson
+                               authenticatorData:(NSData *)authenticatorData
+                                       signature:(NSData *)signature
+                                      userHandle:(NSData *)userHandle
+                                         success:(void (^)(NSString *authToken))success
+                                         failure:(void (^)(NSError *error))failure {
+    [self.client authenticateWebauthnSignatureWithUserId:userID
+                                            twoStepNonce:twoStepNonce
+                                            credentialID:credentialID
+                                          clientDataJson:clientDataJson
+                                       authenticatorData:authenticatorData
+                                               signature:signature
+                                              userHandle:userHandle
+                                                 success:success
+                                                 failure:failure];
 }
 
 @end

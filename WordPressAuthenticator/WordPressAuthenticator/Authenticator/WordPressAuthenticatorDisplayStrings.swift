@@ -12,6 +12,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 	public let siteCredentialInstructions: String
     public let usernamePasswordInstructions: String
     public let twoFactorInstructions: String
+    public let twoFactorOtherFormsInstructions: String
     public let magicLinkSignupInstructions: String
     public let openMailSignupInstructions: String
     public let openMailLoginInstructions: String
@@ -48,6 +49,7 @@ public struct WordPressAuthenticatorDisplayStrings {
     public let resetPasswordButtonTitle: String
     public let getLoginLinkButtonTitle: String
     public let textCodeButtonTitle: String
+    public let securityKeyButtonTitle: String
     public let loginTermsOfService: String
     public let signupTermsOfService: String
     public let whatIsWPComLinkTitle: String
@@ -70,6 +72,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 siteCredentialInstructions: String = defaultStrings.siteCredentialInstructions,
                 usernamePasswordInstructions: String = defaultStrings.usernamePasswordInstructions,
                 twoFactorInstructions: String = defaultStrings.twoFactorInstructions,
+                twoFactorOtherFormsInstructions: String = defaultStrings.twoFactorOtherFormsInstructions,
                 magicLinkSignupInstructions: String = defaultStrings.magicLinkSignupInstructions,
                 openMailSignupInstructions: String = defaultStrings.openMailSignupInstructions,
                 openMailLoginInstructions: String = defaultStrings.openMailLoginInstructions,
@@ -93,6 +96,7 @@ public struct WordPressAuthenticatorDisplayStrings {
                 resetPasswordButtonTitle: String = defaultStrings.resetPasswordButtonTitle,
                 getLoginLinkButtonTitle: String = defaultStrings.getLoginLinkButtonTitle,
                 textCodeButtonTitle: String = defaultStrings.textCodeButtonTitle,
+                securityKeyButtonTitle: String = defaultStrings.securityKeyButtonTitle,
                 loginTermsOfService: String = defaultStrings.loginTermsOfService,
                 signupTermsOfService: String = defaultStrings.signupTermsOfService,
                 whatIsWPComLinkTitle: String = defaultStrings.whatIsWPComLinkTitle,
@@ -113,6 +117,7 @@ public struct WordPressAuthenticatorDisplayStrings {
 		self.siteCredentialInstructions = siteCredentialInstructions
         self.usernamePasswordInstructions = usernamePasswordInstructions
         self.twoFactorInstructions = twoFactorInstructions
+        self.twoFactorOtherFormsInstructions = twoFactorOtherFormsInstructions
         self.magicLinkSignupInstructions = magicLinkSignupInstructions
         self.openMailSignupInstructions = openMailSignupInstructions
         self.openMailLoginInstructions = openMailLoginInstructions
@@ -136,6 +141,7 @@ public struct WordPressAuthenticatorDisplayStrings {
         self.resetPasswordButtonTitle = resetPasswordButtonTitle
         self.getLoginLinkButtonTitle = getLoginLinkButtonTitle
         self.textCodeButtonTitle = textCodeButtonTitle
+        self.securityKeyButtonTitle = securityKeyButtonTitle
         self.loginTermsOfService = loginTermsOfService
         self.signupTermsOfService = signupTermsOfService
         self.whatIsWPComLinkTitle = whatIsWPComLinkTitle
@@ -167,8 +173,10 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                           comment: "Enter your account information for {site url}. Asks the user to enter a username and password for their self-hosted site."),
             usernamePasswordInstructions: NSLocalizedString("Log in with your WordPress.com username and password.",
                                                             comment: "Instructions on the WordPress.com username / password log in form."),
-            twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.",
+            twoFactorInstructions: NSLocalizedString("Please enter the verification code from your authenticator app.",
                                                      comment: "Instruction text on the two-factor screen."),
+            twoFactorOtherFormsInstructions: NSLocalizedString("Or choose another form of authentication.",
+                                                               comment: "Instruction text for other forms of two-factor auth methods."),
             magicLinkSignupInstructions: NSLocalizedString("We'll email you a signup link to create your new WordPress.com account.",
                                                            comment: "Instruction text on the Sign Up screen."),
             openMailSignupInstructions: NSLocalizedString("We've emailed you a signup link to create your new WordPress.com account. Check your email on this device, and tap the link in the email you receive from WordPress.com.",
@@ -210,8 +218,10 @@ public extension WordPressAuthenticatorDisplayStrings {
                                                         comment: "The button title for a secondary call-to-action button. When the user can't remember their password."),
             getLoginLinkButtonTitle: NSLocalizedString("Get a login link by email",
                                                        comment: "The button title for a secondary call-to-action button. When the user wants to try sending a magic link instead of entering a password."),
-            textCodeButtonTitle: NSLocalizedString("Text me a code instead",
+            textCodeButtonTitle: NSLocalizedString("Text me a code via SMS",
                                                    comment: "The button's title text to send a 2FA code via SMS text message."),
+            securityKeyButtonTitle: NSLocalizedString("Enter a security key",
+                                                      comment: "The button's title text to enter a security key."),
             loginTermsOfService: NSLocalizedString("By continuing, you agree to our _Terms of Service_.", comment: "Legal disclaimer for logging in. The underscores _..._ denote underline."),
             signupTermsOfService: NSLocalizedString("If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_.", comment: "Legal disclaimer for signing up. The underscores _..._ denote underline."),
             whatIsWPComLinkTitle: NSLocalizedString("What is WordPress.com?",

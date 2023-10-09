@@ -334,3 +334,11 @@ private struct TextCompletionResponseMapper: Mapper {
         let completion: String
     }
 }
+
+// MARK: - Helper to check token validity
+//
+private extension JWToken {
+    func isTokenValid(for currentSelectedSiteID: Int64) -> Bool {
+        expiryDate > Date() && siteID == currentSelectedSiteID
+    }
+}

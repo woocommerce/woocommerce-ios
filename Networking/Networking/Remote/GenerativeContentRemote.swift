@@ -70,7 +70,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                              base: String,
                              feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
@@ -86,7 +86,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                  string: String,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
@@ -110,7 +110,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                   tags: [ProductTag]) async throws -> AIProduct {
 
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await generateAIProduct(siteID: siteID,

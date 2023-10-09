@@ -59,15 +59,23 @@ struct CollapsibleProductRowCard: View {
                     .buttonStyle(PlusButtonStyle())
                 } else {
                     HStack {
-                        Button("Discount" + "✎") {
+                        Button(action: {
                             onAddDiscount()
-                        }
+                        }, label: {
+                            HStack {
+                                Text(Localization.discountLabel)
+                                Image(uiImage: .pencilImage)
+                                    .resizable()
+                                    .frame(width: Layout.iconSize, height: Layout.iconSize)
+                            }
+                        })
                         Spacer()
                         Text("-" + (viewModel.discountLabel ?? "0.00"))
                             .foregroundColor(.green)
                     }
                 }
                 Spacer()
+                    .renderedIf(viewModel.discount == nil)
                 Button {
                     // TODO: Tooltip behavior gh-10839
                 } label: {
@@ -77,7 +85,7 @@ struct CollapsibleProductRowCard: View {
                 .renderedIf(viewModel.discount == nil)
             }
             HStack {
-                Text("Price after discount")
+                Text(Localization.priceAfterDiscountLabel)
                 Spacer()
                 Text(viewModel.priceAfterDiscountLabel ?? "")
             }
@@ -137,6 +145,7 @@ private extension CollapsibleProductRowCard {
         static let borderLineWidth: CGFloat = 1
         static let productImageSize: CGFloat = 56.0
         static let productImageCornerRadius: CGFloat = 4.0
+        static let iconSize: CGFloat = 16
     }
 
     enum Localization {
@@ -149,6 +158,12 @@ private extension CollapsibleProductRowCard {
         static let addDiscountLabel = NSLocalizedString(
             "Add discount",
             comment: "Text in the product row card to add a discount to a given product")
+        static let discountLabel = NSLocalizedString(
+            "Discount",
+            comment: "Text in the product row card when a discount has already been added to a product")
+        static let priceAfterDiscountLabel = NSLocalizedString(
+            "Price after discount",
+            comment: "The label that points to the updated price of a product after a discount has been applied")
     }
 }
 

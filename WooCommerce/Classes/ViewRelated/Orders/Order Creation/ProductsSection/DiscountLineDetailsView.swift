@@ -23,7 +23,6 @@ struct DiscountLineDetailsView: View {
                     .renderedIf(viewModel.feeOrDiscountType == .percentage)
                 Section {
                     if viewModel.isPercentageOptionAvailable {
-                        // TODO: Decouple fees from discounts
                         Picker("", selection: $viewModel.feeOrDiscountType) {
                             Text(viewModel.currencySymbol)
                                 .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
@@ -90,7 +89,7 @@ private extension DiscountLineDetailsView {
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
     }
-    
+
     enum Localization {
         static let fixedPriceDiscountLabel = NSLocalizedString(
             "Fixed price discount",

@@ -1,6 +1,7 @@
 import UIKit
 import WordPressKit
 import SVProgressHUD
+import AuthenticationServices
 
 /// TwoFAViewController: view to enter 2FA code.
 ///
@@ -195,6 +196,42 @@ private extension TwoFAViewController {
         syncWPComAndPresentEpilogue(credentials: credentials)
     }
 
+    // MARK: - Security Keys
+
+    @available(iOS 15, *)
+    func loginWithSecurityKeys() {
+
+        guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
+            return
+        }
+
+        configureViewLoading(true)
+
+        Task { @MainActor in
+            guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
+                return // TODO: show error, log error, exit flow?
+            }
+
+            signChallenge(challengeInfo)
+        }
+    }
+
+    @available(iOS 15, *)
+    func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
+
+        loginFields.nonceInfo?.updateNonce(with: challengeInfo.twoStepNonce)
+        loginFields.webauthnChallengeInfo = challengeInfo
+
+        let challenge = Data(base64URLEncoded: challengeInfo.challenge) ?? Data()
+        let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: challengeInfo.rpID)
+        let platformKeyRequest = platformProvider.createCredentialAssertionRequest(challenge: challenge)
+        let authController = ASAuthorizationController(authorizationRequests: [platformKeyRequest])
+
+        authController.delegate = self
+        authController.presentationContextProvider = self
+        authController.performRequests()
+    }
+
     // MARK: - Code Validation
 
     enum CodeValidation {
@@ -227,6 +264,53 @@ private extension TwoFAViewController {
         configureSubmitButton(animating: false)
     }
 
+}
+
+// MARK: - Security Keys
+extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+
+        guard #available(iOS 15, *),
+              let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
+              let challengeInfo = loginFields.webauthnChallengeInfo else {
+            return // TODO: show error, log error, exit flow?
+        }
+
+        // 1 password do not delivers raw client data information
+        let rawClientData: Data = {
+            if credential.rawClientDataJSON.count > 0 {
+                return credential.rawClientDataJSON
+            }
+
+            let clientParams = [
+                "type": "webauthn.get",
+                "challenge": challengeInfo.challenge,
+                "origin": "https://\(challengeInfo.rpID)"
+            ]
+
+            return (try? JSONSerialization.data(withJSONObject: clientParams, options: .withoutEscapingSlashes)) ?? Data()
+        }()
+
+        loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
+                                                  twoStepNonce: challengeInfo.twoStepNonce,
+                                                  credentialID: credential.credentialID,
+                                                  clientDataJson: rawClientData,
+                                                  authenticatorData: credential.rawAuthenticatorData,
+                                                  signature: credential.signature,
+                                                  userHandle: credential.userID)
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        // TODO: show error, log error, exit flow?
+        print("-------------------------------------------------")
+        print("Completed with Error: \(error)")
+        print("-------------------------------------------------")
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        view.window!
+    }
 }
 
 // MARK: - UITextFieldDelegate
@@ -376,7 +460,7 @@ private extension TwoFAViewController {
         rows.append(.alternateInstructions)
         rows.append(.sendCode)
 
-        if loginFields.nonceInfo?.nonceWebauthn != nil {
+        if #available(iOS 15, *), loginFields.nonceInfo?.nonceWebauthn != nil {
             rows.append(.enterSecurityKey)
         }
     }
@@ -454,6 +538,9 @@ private extension TwoFAViewController {
 
             // TODO: Track .enterSecurityKey
             // TODO: Request Security Key
+            if #available(iOS 15, *) {
+                loginWithSecurityKeys()
+            }
         }
     }
 

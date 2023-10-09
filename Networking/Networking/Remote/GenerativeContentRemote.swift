@@ -64,7 +64,7 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         case tokenNotFound
     }
 
-    private var token: String?
+    private var token: JWToken?
 
     public func generateText(siteID: Int64,
                              base: String,
@@ -144,18 +144,18 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
 }
 
 private extension GenerativeContentRemote {
-    func fetchToken(siteID: Int64) async throws -> String {
+    func fetchToken(siteID: Int64) async throws -> JWToken {
         let path = "sites/\(siteID)/\(Path.jwtToken)"
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
-        let mapper = JWTTokenResponseMapper()
+        let mapper = JWTokenMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
     func generateText(siteID: Int64,
                       base: String,
                       feature: GenerativeContentRemoteFeature,
-                      token: String) async throws -> String {
-        let parameters = [ParameterKey.token: token,
+                      token: JWToken) async throws -> String {
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: base,
                           ParameterKey.feature: feature.rawValue,
                           ParameterKey.fields: ParameterValue.completion]
@@ -170,13 +170,13 @@ private extension GenerativeContentRemote {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
-                          token: String) async throws -> String {
+                          token: JWToken) async throws -> String {
         let prompt = [
             "What is the ISO language code of the language used in the below text?" +
             "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
-        let parameters = [ParameterKey.token: token,
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: prompt,
                           ParameterKey.feature: feature.rawValue,
                           ParameterKey.fields: ParameterValue.completion]
@@ -198,7 +198,7 @@ private extension GenerativeContentRemote {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
-                           token: String) async throws -> AIProduct {
+                           token: JWToken) async throws -> AIProduct {
 
         let tagsAsString = {
             guard !tags.isEmpty else {
@@ -270,7 +270,7 @@ private extension GenerativeContentRemote {
 
         let prompt = input + "\n" + expectedJsonFormat
 
-        let parameters = [ParameterKey.token: token,
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: prompt,
                           ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
                           ParameterKey.fields: ParameterValue.completion]

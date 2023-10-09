@@ -538,7 +538,7 @@ extension InPersonPaymentsMenuViewController {
         let hostingController = UIHostingController(
             rootView: AboutTapToPayView(viewModel: AboutTapToPayViewModel(
                     configuration: viewModel.cardPresentPaymentsConfiguration,
-                    buttonAction: { }))
+                    buttonAction: setUpTapToPayOnIPhoneWasPressed))
         )
         show(hostingController, sender: self)
 

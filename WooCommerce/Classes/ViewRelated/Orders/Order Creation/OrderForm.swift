@@ -391,6 +391,7 @@ private struct ProductsSection: View {
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
                 }
+                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow)

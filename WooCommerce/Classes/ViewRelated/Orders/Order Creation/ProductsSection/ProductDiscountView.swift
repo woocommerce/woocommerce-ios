@@ -26,11 +26,11 @@ struct ProductDiscountView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                HStack(alignment: .center, spacing: 8.0) {
+                HStack(alignment: .center, spacing: Layout.spacing) {
                     ProductImageThumbnail(productImageURL: imageURL,
-                                          productImageSize: 56.0,
+                                          productImageSize: Layout.productImageSize,
                                           scale: 1,
-                                          productImageCornerRadius: 4.0,
+                                          productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
                     VStack {
                         Text(name)
@@ -39,11 +39,11 @@ struct ProductDiscountView: View {
                 }
                 .padding()
                 .overlay {
-                    RoundedRectangle(cornerRadius: 4.0)
+                    RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                         .inset(by: 0.25)
-                        .stroke(Color(uiColor: .separator), lineWidth: 1.0)
+                        .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
                 }
-                .cornerRadius(4.0)
+                .cornerRadius(Layout.frameCornerRadius)
                 .padding()
                 VStack(alignment: .leading) {
                     DiscountLineDetailsView(viewModel: discountViewModel)
@@ -93,6 +93,15 @@ struct ProductDiscountView: View {
     }
 }
 
+private extension ProductDiscountView {
+    enum Layout {
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 1
+        static let productImageSize: CGFloat = 56
+        static let spacing: CGFloat = 8
+    }
+}
+
 struct DiscountLineDetailsView: View {
 
     @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
@@ -125,7 +134,7 @@ struct DiscountLineDetailsView: View {
                                 .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
                                 .pickerStyle(SegmentedPickerStyle())
                         }
-                        .frame(minWidth: 44, minHeight: 44)
+                        .frame(minWidth: Layout.rowHeight, minHeight: Layout.rowHeight)
                         .fixedSize(horizontal: true, vertical: false)
                     }
                 }
@@ -144,14 +153,14 @@ struct DiscountLineDetailsView: View {
                     .keyboardType(.numbersAndPunctuation)
             }
         }
-        .frame(maxWidth: .infinity, minHeight: 44)
-        .padding([.leading, .trailing], 16)
+        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
+        .padding([.leading, .trailing], Layout.padding)
         .overlay {
-            RoundedRectangle(cornerRadius: 4.0)
+            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: 1.0)
+                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
         }
-        .cornerRadius(4.0)
+        .cornerRadius(Layout.frameCornerRadius)
         .padding()
     }
 
@@ -164,15 +173,24 @@ struct DiscountLineDetailsView: View {
                     .keyboardType(.numbersAndPunctuation)
             }
         }
-        .frame(minHeight: 44)
-        .padding([.leading, .trailing], 16)
+        .frame(minHeight: Layout.rowHeight)
+        .padding([.leading, .trailing], Layout.padding)
         .overlay {
-            RoundedRectangle(cornerRadius: 4.0)
+            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: 1.0)
+                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
         }
-        .cornerRadius(4.0)
+        .cornerRadius(Layout.frameCornerRadius)
         .padding()
+    }
+}
+
+private extension DiscountLineDetailsView {
+    enum Layout {
+        static let padding: CGFloat = 16
+        static let rowHeight: CGFloat = 44
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 1
     }
 }
 

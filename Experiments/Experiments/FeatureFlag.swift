@@ -217,4 +217,8 @@ public enum FeatureFlag: Int {
     /// Enables the Woo Payments Deposits item in the Payments menu
     ///
     case wooPaymentsDepositsOverviewInPaymentsMenu
+
+    /// Enables the functionality related to order custom amounts on M1
+    ///
+    case orderCustomAmountsM1
 }

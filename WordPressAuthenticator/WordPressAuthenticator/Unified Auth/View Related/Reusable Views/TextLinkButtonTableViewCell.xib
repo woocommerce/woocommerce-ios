@@ -21,7 +21,7 @@
                     <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="ago-9i-5Yl">
                         <rect key="frame" x="16" y="11" width="288" height="22"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="ku4-hw-2bT">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="1000" verticalHuggingPriority="1000" horizontalCompressionResistancePriority="250" verticalCompressionResistancePriority="250" image="phone-icon" translatesAutoresizingMaskIntoConstraints="NO" id="ku4-hw-2bT">
                                 <rect key="frame" x="0.0" y="0.0" width="22" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="ku4-hw-2bT" secondAttribute="height" multiplier="1:1" id="Ys5-4A-JpX"/>
@@ -40,7 +40,7 @@
                             </button>
                         </subviews>
                         <constraints>
-                            <constraint firstItem="ku4-hw-2bT" firstAttribute="height" secondItem="ofe-LL-CbC" secondAttribute="height" id="rUj-4s-lBg"/>
+                            <constraint firstItem="ku4-hw-2bT" firstAttribute="centerY" secondItem="ofe-LL-CbC" secondAttribute="centerY" id="kBp-hz-l1i"/>
                         </constraints>
                     </stackView>
                     <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="xr7-80-xLk">
@@ -75,6 +75,7 @@
         </tableViewCell>
     </objects>
     <resources>
+        <image name="phone-icon" width="11" height="18"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

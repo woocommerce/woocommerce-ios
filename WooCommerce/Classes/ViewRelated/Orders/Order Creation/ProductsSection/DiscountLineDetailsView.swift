@@ -21,22 +21,18 @@ struct DiscountLineDetailsView: View {
                     .renderedIf(viewModel.feeOrDiscountType == .fixed)
                 inputPercentageField
                     .renderedIf(viewModel.feeOrDiscountType == .percentage)
-                Section {
-                    if viewModel.isPercentageOptionAvailable {
-                        Picker("", selection: $viewModel.feeOrDiscountType) {
-                            Text(viewModel.currencySymbol)
-                                .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
-                                .pickerStyle(SegmentedPickerStyle())
-                            Text(viewModel.percentSymbol)
-                                .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
-                                .pickerStyle(SegmentedPickerStyle())
-                        }
-                        .frame(minWidth: Layout.rowHeight, minHeight: Layout.rowHeight)
-                        .fixedSize(horizontal: true, vertical: false)
+                HStack(spacing: 0) {
+                    Button(viewModel.currencySymbol) {
+                        viewModel.feeOrDiscountType = .fixed
                     }
+                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .fixed)
+                    .fixedSize(horizontal: true, vertical: false)
+                    Button(viewModel.percentSymbol) {
+                        viewModel.feeOrDiscountType = .percentage
+                    }
+                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
+                    .fixedSize(horizontal: true, vertical: false)
                 }
-                .pickerStyle(.segmented)
-                .padding()
             }
         }
     }
@@ -79,6 +75,28 @@ struct DiscountLineDetailsView: View {
         }
         .cornerRadius(Layout.frameCornerRadius)
         .padding()
+    }
+}
+
+fileprivate extension View {
+    func buttonStyle(isPrimary: Bool) -> some View {
+        self.modifier(DiscountButtonStyleModifier(isPrimary: isPrimary))
+    }
+}
+
+fileprivate struct DiscountButtonStyleModifier: ViewModifier {
+    var isPrimary: Bool
+
+    func body(content: Content) -> some View {
+        Group {
+            if isPrimary {
+                content
+                    .buttonStyle(PrimaryButtonStyle())
+            } else {
+                content
+                    .buttonStyle(SecondaryButtonStyle())
+            }
+        }
     }
 }
 

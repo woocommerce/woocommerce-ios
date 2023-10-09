@@ -48,12 +48,16 @@ struct ProductDiscountView: View {
                 VStack(alignment: .leading) {
                     DiscountLineDetailsView(viewModel: discountViewModel)
                     HStack {
+                        Image(systemName: "arrow.turn.down.right")
+                            .foregroundColor(.gray)
+                        Text("Discount")
+                            .foregroundColor(.gray)
                         Spacer()
                         Text("-" + (discountViewModel.finalAmountString ?? "0.00"))
                             .foregroundStyle(.green)
                     }
                     .padding()
-                    .renderedIf(discountViewModel.finalAmountString != nil)
+                    .renderedIf(discountViewModel.amount != "" || discountViewModel.percentage != "")
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()

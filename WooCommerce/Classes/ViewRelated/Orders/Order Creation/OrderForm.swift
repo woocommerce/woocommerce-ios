@@ -411,7 +411,7 @@ private struct ProductsSection: View {
                             viewModel.selectOrderItem(productRow.id)
                         }
                         .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
-                            LegacyProductInOrder(viewModel: productViewModel)
+                            ProductInOrder(viewModel: productViewModel)
                         }
                         .redacted(reason: viewModel.disabled ? .placeholder : [] )
 

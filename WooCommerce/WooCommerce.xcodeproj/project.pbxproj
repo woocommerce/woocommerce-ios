@@ -1799,7 +1799,7 @@
 		CCA1D5FE293F537400B40560 /* DeltaPercentage.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */; };
 		CCA1D6022943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */; };
 		CCB366AF274518EC007D437A /* EditableOrderViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */; };
-		CCC284112768C18500F6CC8B /* LegacyProductInOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC284102768C18500F6CC8B /* LegacyProductInOrder.swift */; };
+		CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCC284102768C18500F6CC8B /* ProductInOrder.swift */; };
 		CCCC29DD25E5757C0046B96F /* RenameAttributesViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */; };
 		CCCC29E325E576810046B96F /* RenameAttributesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */; };
 		CCCC5B1326CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */; };
@@ -4311,7 +4311,7 @@
 		CCA1D5FD293F537400B40560 /* DeltaPercentage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeltaPercentage.swift; sourceTree = "<group>"; };
 		CCA1D6012943636100B40560 /* AnalyticsReportCardCurrentPeriodViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsReportCardCurrentPeriodViewModel.swift; sourceTree = "<group>"; };
 		CCB366AE274518EC007D437A /* EditableOrderViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableOrderViewModelTests.swift; sourceTree = "<group>"; };
-		CCC284102768C18500F6CC8B /* LegacyProductInOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyProductInOrder.swift; sourceTree = "<group>"; };
+		CCC284102768C18500F6CC8B /* ProductInOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInOrder.swift; sourceTree = "<group>"; };
 		CCCC29DC25E5757C0046B96F /* RenameAttributesViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RenameAttributesViewController.xib; sourceTree = "<group>"; };
 		CCCC29E225E576810046B96F /* RenameAttributesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RenameAttributesViewController.swift; sourceTree = "<group>"; };
 		CCCC5B1226CC2B9F0034FB63 /* ShippingLabelCustomPackageFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomPackageFormViewModelTests.swift; sourceTree = "<group>"; };
@@ -9308,7 +9308,7 @@
 			isa = PBXGroup;
 			children = (
 				683421632ACE9391009021D7 /* ProductDiscountView.swift */,
-				CCC284102768C18500F6CC8B /* LegacyProductInOrder.swift */,
+				CCC284102768C18500F6CC8B /* ProductInOrder.swift */,
 				CC440E1D2770C6AF0074C264 /* ProductInOrderViewModel.swift */,
 			);
 			path = ProductsSection;
@@ -12250,7 +12250,7 @@
 				026D68492A0E060A00D8C22C /* LocalNotificationScheduler.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				028FA466257E021100F88A48 /* RefundShippingLabelViewModel.swift in Sources */,
-				CCC284112768C18500F6CC8B /* LegacyProductInOrder.swift in Sources */,
+				CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */,
 				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
 				263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */,
 				02D681A929C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift in Sources */,

@@ -3,7 +3,7 @@ import Yosemite
 
 /// View to show a single product in an order, with the option to remove it from the order.
 ///
-struct LegacyProductInOrder: View {
+struct ProductInOrder: View {
 
     @Environment(\.presentationMode) private var presentation
 
@@ -112,7 +112,7 @@ struct LegacyProductInOrder: View {
 }
 
 // MARK: Constants
-private extension LegacyProductInOrder {
+private extension ProductInOrder {
     enum Layout {
         static let sectionSpacing: CGFloat = 16.0
         static let noSpacing: CGFloat = 0.0
@@ -134,7 +134,7 @@ private extension LegacyProductInOrder {
     }
 }
 
-struct LegacyProductInOrder_Previews: PreviewProvider {
+struct ProductInOrder_Previews: PreviewProvider {
     static var previews: some View {
         let productRowVM = ProductRowViewModel(productOrVariationID: 1,
                                             name: "Love Ficus",
@@ -148,6 +148,6 @@ struct LegacyProductInOrder_Previews: PreviewProvider {
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
                                                 productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
                                                 onRemoveProduct: {})
-        LegacyProductInOrder(viewModel: viewModel)
+        ProductInOrder(viewModel: viewModel)
     }
 }

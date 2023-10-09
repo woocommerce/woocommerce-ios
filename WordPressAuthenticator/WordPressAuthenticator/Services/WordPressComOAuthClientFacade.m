@@ -106,7 +106,7 @@
                                       userHandle:(NSData *)userHandle
                                          success:(void (^)(NSString *authToken))success
                                          failure:(void (^)(NSError *error))failure {
-    [self.client authenticateWebauthnSignatureWithUserId:userID
+    [self.client authenticateWebauthnSignatureWithUserID:userID
                                             twoStepNonce:twoStepNonce
                                             credentialID:credentialID
                                           clientDataJson:clientDataJson

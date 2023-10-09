@@ -13,6 +13,8 @@ struct CollapsibleProductRowCard: View {
         !isCollapsed
     }
 
+    private let minusSign: String = NumberFormatter().minusSign
+
     init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onAddDiscount = onAddDiscount
@@ -70,8 +72,10 @@ struct CollapsibleProductRowCard: View {
                             }
                         })
                         Spacer()
-                        Text("-" + (viewModel.discountLabel ?? "0.00"))
-                            .foregroundColor(.green)
+                        if let discountLabel = viewModel.discountLabel {
+                            Text(minusSign + discountLabel)
+                                .foregroundColor(.green)
+                        }
                     }
                 }
                 Spacer()

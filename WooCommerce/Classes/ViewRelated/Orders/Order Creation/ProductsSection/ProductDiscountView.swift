@@ -7,6 +7,8 @@ struct ProductDiscountView: View {
     private let stockLabel: String
     private let productRowViewModel: ProductRowViewModel
 
+    private let minusSign: String = NumberFormatter().minusSign
+
     @Environment(\.presentationMode) var presentation
 
     @ObservedObject private var discountViewModel: FeeOrDiscountLineDetailsViewModel
@@ -50,18 +52,22 @@ struct ProductDiscountView: View {
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
                             .foregroundColor(.gray)
-                        Text("Discount")
+                        Text(Localization.discountLabel)
                             .foregroundColor(.gray)
                         Spacer()
-                        Text("-" + (discountViewModel.finalAmountString ?? "0.00"))
-                            .foregroundStyle(.green)
+                        if let discountAmount = discountViewModel.finalAmountString {
+                            Text(minusSign + discountAmount)
+                                .foregroundStyle(.green)
+                        }
                     }
                     .padding()
                     .renderedIf(discountViewModel.hasInputAmount)
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
-                        Text(discountViewModel.calculatePriceAfterDiscount(productRowViewModel.price ?? ""))
+                        if let price = productRowViewModel.price {
+                            Text(discountViewModel.calculatePriceAfterDiscount(price))
+                        }
                     }
                     .padding()
                     Divider()
@@ -121,5 +127,8 @@ private extension ProductDiscountView {
         static let addDiscountLabel = NSLocalizedString(
             "Add Discount",
             comment: "Text for the button to add a discount to a product in the order screen")
+        static let discountLabel = NSLocalizedString(
+                    "Discount",
+                    comment: "Text in the product row card when a discount has been added to a product")
     }
 }

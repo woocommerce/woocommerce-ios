@@ -37,10 +37,10 @@ private extension AboutTapToPayViewModel {
     }
 }
 
-class AboutTapToPayContactlessLimitViewModel: ObservableObject {
+class AboutTapToPayContactlessLimitViewModel {
     private let configuration: CardPresentPaymentsConfiguration
 
-    @Published private(set) var contactlessLimitDetails: String
+    let contactlessLimitDetails: String
 
     lazy var webViewModel: WebViewSheetViewModel = {
         WebViewSheetViewModel(

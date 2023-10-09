@@ -22,11 +22,7 @@ private extension NavigateToEnterWPCOMPassword {
             return
         }
 
-        // TODO: test the dismissal & error handling
         controller.loginFields = loginFields
-//        controller.dismissBlock = dismissBlock
-//        controller.errorToPresent = errorToPresent
-
         navigationController?.pushViewController(controller, animated: true)
     }
 }

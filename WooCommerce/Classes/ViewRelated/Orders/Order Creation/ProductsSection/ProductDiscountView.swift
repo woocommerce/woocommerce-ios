@@ -48,8 +48,6 @@ struct ProductDiscountView: View {
                 VStack(alignment: .leading) {
                     DiscountLineDetailsView(viewModel: discountViewModel)
                     HStack {
-                        Text("Debug: $15.00 discount")
-                            .foregroundStyle(.gray)
                         Spacer()
                         Text("-" + (discountViewModel.finalAmountString ?? "0.00"))
                             .foregroundStyle(.green)
@@ -64,12 +62,14 @@ struct ProductDiscountView: View {
                     .padding()
                     Divider()
                     Button("Remove Discount") {
-                        // TODO
+                        discountViewModel.removeValue()
+                        presentation.wrappedValue.dismiss()
                     }
                     .padding()
                     .frame(maxWidth: .infinity, alignment: .center)
                     .foregroundColor(Color(.error))
                     .buttonStyle(RoundedBorderedStyle(borderColor: .red))
+                    .renderedIf(discountViewModel.amount != "" || discountViewModel.percentage != "")
                 }
             }
             .navigationTitle(Text("Add Discount"))
@@ -82,6 +82,7 @@ struct ProductDiscountView: View {
                 }
                 ToolbarItem(placement: .primaryAction) {
                     Button("Add") {
+                        discountViewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
                 }
@@ -124,7 +125,8 @@ struct DiscountLineDetailsView: View {
                                 .tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
                                 .pickerStyle(SegmentedPickerStyle())
                         }
-                        .frame(minWidth: 44)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .fixedSize(horizontal: true, vertical: false)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -142,7 +144,7 @@ struct DiscountLineDetailsView: View {
                     .keyboardType(.numbersAndPunctuation)
             }
         }
-        .frame(minHeight: 44)
+        .frame(maxWidth: .infinity, minHeight: 44)
         .padding([.leading, .trailing], 16)
         .overlay {
             RoundedRectangle(cornerRadius: 4.0)
@@ -171,29 +173,6 @@ struct DiscountLineDetailsView: View {
         }
         .cornerRadius(4.0)
         .padding()
-    }
-}
-
-// MARK: Constants
-private extension ProductDiscountView {
-    enum Layout {
-        static let sectionSpacing: CGFloat = 16.0
-        static let noSpacing: CGFloat = 0.0
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString("Product", comment: "Title for the Product screen during order creation")
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
-        static let addDiscount = NSLocalizedString("Add discount",
-                                              comment: "Text for the button to add a discount to a product during order creation")
-        static let couponsAndDiscountAlert = NSLocalizedString("Adding discount is currently not available. Remove coupons first.",
-                                              comment: "Alert on the Product Details screen during order creation when" +
-                                                               "we cannot add a discount because we have coupons")
-        static let remove = NSLocalizedString("Remove Product from Order",
-                                              comment: "Text for the button to remove a product from the order during order creation")
-        static let discountTitle = NSLocalizedString("Discount", comment: "Title for the Discount section on the Product Details screen during order creation")
-        static let editDiscount = NSLocalizedString("Edit", comment: "Text for the button to edit a discount to a product during order creation")
-        static let discountAmount = NSLocalizedString("Amount", comment: "Title for the discount amount of a product during order creation")
     }
 }
 

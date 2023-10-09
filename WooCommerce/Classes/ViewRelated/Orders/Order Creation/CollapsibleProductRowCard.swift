@@ -50,12 +50,23 @@ struct CollapsibleProductRowCard: View {
                 Text(Localization.priceLabel)
                 CollapsibleProductCardPriceSummary(viewModel: viewModel)
             }
-            .padding()
+            .padding(.bottom)
             HStack {
-                Button(Localization.addDiscountLabel) {
-                    onAddDiscount()
+                if viewModel.discount == nil {
+                    Button(Localization.addDiscountLabel) {
+                        onAddDiscount()
+                    }
+                    .buttonStyle(PlusButtonStyle())
+                } else {
+                    HStack {
+                        Button("Discount" + "✎") {
+                            onAddDiscount()
+                        }
+                        Spacer()
+                        Text("-" + (viewModel.discountLabel ?? "0.00"))
+                            .foregroundColor(.green)
+                    }
                 }
-                .buttonStyle(PlusButtonStyle())
                 Spacer()
                 Button {
                     // TODO: Tooltip behavior gh-10839
@@ -63,7 +74,15 @@ struct CollapsibleProductRowCard: View {
                     Image(systemName: "questionmark.circle")
                         .foregroundColor(Color(.wooCommercePurple(.shade60)))
                 }
+                .renderedIf(viewModel.discount == nil)
             }
+            HStack {
+                Text("Price after discount")
+                Spacer()
+                Text(viewModel.priceAfterDiscountLabel ?? "")
+            }
+            .padding(.top)
+            .renderedIf(viewModel.discount != nil)
             Divider()
                 .padding()
             Button(Localization.removeProductLabel) {

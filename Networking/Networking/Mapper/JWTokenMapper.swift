@@ -34,7 +34,7 @@ struct JWTokenMapper: Mapper {
 
         let siteID =  try {
             guard let payload,
-                  let siteID = payload[PayloadKey.blodID] as? Int64 else {
+                  let siteID = payload[PayloadKey.blogID] as? Int64 else {
                 throw JWTokenMapperError.blogIDNotFound
             }
 
@@ -52,7 +52,7 @@ struct JWTokenMapper: Mapper {
 private extension JWTokenMapper {
     enum PayloadKey {
         static let expiryDate = "exp"
-        static let blodID = "blog_id"
+        static let blogID = "blog_id"
     }
 }
 

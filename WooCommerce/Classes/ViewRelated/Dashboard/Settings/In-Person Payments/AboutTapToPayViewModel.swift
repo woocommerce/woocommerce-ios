@@ -88,11 +88,14 @@ private extension CardPresentPaymentsConfiguration {
     }
 
     var limitParagraph: String {
-        guard let amount = formattedContactlessLimitAmount else {
+        guard let amount = formattedContactlessLimitAmount,
+              countryCode == "GB" else {
+            // N.B. This is not ideal, because some countries have an article, e.g. 'the United States', and some don't.
+            // Since it's a fallback, this is a fair trade off, but for the ideal string, the country name should be embedded.
             return String(format: Localization.contactlessLimitFallback, localizedCountryName)
         }
-        // TODO: make it "In the United Kingdom..." not just "In United Kingdom..."
-        return String(format: Localization.contactlessLimitWithAmount, localizedCountryName, amount)
+
+        return String(format: Localization.contactlessLimitWithAmountGB, amount)
     }
 
     var formattedContactlessLimitAmount: String? {
@@ -109,11 +112,12 @@ private extension CardPresentPaymentsConfiguration {
         static let contactlessLimitFallback = NSLocalizedString(
             "In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit.",
             comment: "A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will " +
-            "be replaced with the country name of the store.")
+            "be replaced with the country name of the store, which is a trade off as it can't be contextually " +
+            "translated, however this string is only used when there's a problem decoding the limit, so it's acceptable.")
 
-        static let contactlessLimitWithAmount = NSLocalizedString(
-            "In %1$@, cards may only be used with Tap to Pay for transactions up to %2$@.",
-            comment: "A description of the contactless limit, shown on the About Tap to Pay screen. %1$@ will " +
-            "be replaced with the country name of the store, %2$@ with the limit amount in the local currency.")
+        static let contactlessLimitWithAmountGB = NSLocalizedString(
+            "In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@.",
+            comment: "A description of the contactless limit, shown on the About Tap to Pay screen. This string is for " +
+            "the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale.")
     }
 }

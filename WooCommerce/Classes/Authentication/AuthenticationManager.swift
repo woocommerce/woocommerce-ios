@@ -168,8 +168,7 @@ class AuthenticationManager: Authentication {
     }
 
     private func isAppLoginUrl(_ url: URL) -> Bool {
-        // TODO-jc: move to constants
-        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)://app-login"
+        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)\(WooConstants.appLoginURLPrefix)"
         return url.absoluteString.hasPrefix(expectedPrefix)
     }
 

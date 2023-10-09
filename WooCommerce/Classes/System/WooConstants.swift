@@ -73,6 +73,10 @@ enum WooConstants {
     /// Default store name when creating a site with free trial
     ///
     static let defaultStoreName = "Store Name"
+
+    /// App login deep link prefix
+    ///
+    static let appLoginURLPrefix = "://app-login"
 }
 
 // MARK: URLs

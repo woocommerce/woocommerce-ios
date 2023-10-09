@@ -309,19 +309,6 @@ private extension GenerativeContentRemote {
     }
 }
 
-// MARK: - Mapper to parse the JWT token
-//
-private struct JWTTokenResponseMapper: Mapper {
-    func map(response: Data) throws -> String {
-        let decoder = JSONDecoder()
-        return try decoder.decode(JWTTokenResponse.self, from: response).token
-    }
-
-    struct JWTTokenResponse: Decodable {
-        let token: String
-    }
-}
-
 // MARK: - Mapper to parse the `text-completion` endpoint response
 //
 private struct TextCompletionResponseMapper: Mapper {

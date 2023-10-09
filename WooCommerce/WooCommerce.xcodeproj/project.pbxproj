@@ -1720,6 +1720,7 @@
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
+		B9F148942AD43E1B008FC795 /* AddCustomAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */; };
 		B9F3DAAD29BB71B100DDD545 /* CollectPaymentAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */; };
 		B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */; };
 		B9F3DAB129BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */; };
@@ -4230,6 +4231,7 @@
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
+		B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountView.swift; sourceTree = "<group>"; };
 		B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectPaymentAppIntent.swift; sourceTree = "<group>"; };
 		B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAppIntent.swift; sourceTree = "<group>"; };
 		B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AppIntents.swift"; sourceTree = "<group>"; };
@@ -9150,6 +9152,14 @@
 			path = PermanentNotice;
 			sourceTree = "<group>";
 		};
+		B9F148922AD43E05008FC795 /* CustomAmounts */ = {
+			isa = PBXGroup;
+			children = (
+				B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */,
+			);
+			path = CustomAmounts;
+			sourceTree = "<group>";
+		};
 		B9F3DAAB29BB714900DDD545 /* App Intents */ = {
 			isa = PBXGroup;
 			children = (
@@ -9626,6 +9636,7 @@
 		CCFC50532743BBBF001E505F /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B9F148922AD43E05008FC795 /* CustomAmounts */,
 				B935D35A2A9F44A10067B927 /* Taxes */,
 				B958B4D82983E3E00010286B /* DurationRecorder */,
 				B651474327D644DE00C9C4E6 /* CustomerNoteSection */,
@@ -13536,6 +13547,7 @@
 				EE5B5BC42AB83749009BCBD6 /* AddProductWithAIContainerView.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */,
+				B9F148942AD43E1B008FC795 /* AddCustomAmountView.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				024D4E942A2E1E240090E0E6 /* BlazeWebViewModel.swift in Sources */,
 				456C7EEB25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift in Sources */,

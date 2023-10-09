@@ -321,6 +321,7 @@ public enum WooAnalyticsStat: String {
     case tapToPaySetupOnboardingCancelTapped = "tap_to_pay_set_up_onboarding_cancel_tapped"
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
+    case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"

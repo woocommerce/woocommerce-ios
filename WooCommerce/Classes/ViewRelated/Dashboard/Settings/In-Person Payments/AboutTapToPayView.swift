@@ -4,6 +4,7 @@ import WooFoundation
 
 struct AboutTapToPayView: View {
     @ObservedObject var viewModel: AboutTapToPayViewModel
+    @State private var showingWebView: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -43,14 +44,22 @@ struct AboutTapToPayView: View {
 
             VStack(alignment: .leading, spacing: Layout.spacing) {
                 Button(Localization.setUpTapToPayOnIPhoneButtonTitle) {
-                    // no-op
+                    viewModel.callToActionTapped()
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .renderedIf(viewModel.shouldShowButton)
 
-                InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel())
+                InPersonPaymentsLearnMore(viewModel: .tapToPay(source: .aboutTapToPay))
+                    .customOpenURL(action: { _ in
+                        showingWebView = true
+                    })
             }
             .padding()
+        }
+        .sheet(isPresented: $showingWebView) {
+            WebViewSheet(viewModel: viewModel.webViewModel) {
+                showingWebView = false
+            }
         }
         .navigationTitle(Localization.aboutTapToPayNavigationTitle)
         .navigationBarTitleDisplayMode(.inline)
@@ -125,6 +134,7 @@ private extension AboutTapToPayView {
 
 struct AboutTapToPayContactlessLimitView: View {
     let viewModel: AboutTapToPayContactlessLimitViewModel
+    @State private var showingWebView: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: Layout.spacing) {
@@ -136,7 +146,8 @@ struct AboutTapToPayContactlessLimitView: View {
             Text(viewModel.contactlessLimitDetails)
             Text(Localization.overLimitSuggestion)
             Button(Localization.limitButtonTitle) {
-                // no-op
+                viewModel.orderCardReaderPressed()
+                showingWebView = true
             }
             .buttonStyle(TextButtonStyle())
         }
@@ -146,6 +157,11 @@ struct AboutTapToPayContactlessLimitView: View {
             name: .wooCommercePurple,
             shade: .shade0))
         .cornerRadius(Layout.cornerRadius)
+        .sheet(isPresented: $showingWebView) {
+            WebViewSheet(viewModel: viewModel.webViewModel) {
+                showingWebView = false
+            }
+        }
     }
 }
 

@@ -9,12 +9,31 @@ class AboutTapToPayViewModel: ObservableObject {
     @Published var shouldShowContactlessLimit: Bool = false
     @Published var shouldShowButton: Bool = false
 
+    lazy var webViewModel: WebViewSheetViewModel = {
+        WebViewSheetViewModel(
+            url: WooConstants.URLs.inPersonPaymentsLearnMoreWCPayTapToPay.asURL(),
+            navigationTitle: Localization.webViewTitle,
+            authenticated: false)
+    }()
+
     init(configuration: CardPresentPaymentsConfiguration,
          buttonAction: (() -> Void)?) {
         self.configuration = configuration
         self.buttonAction = buttonAction
         shouldShowButton = buttonAction != nil
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
+    }
+
+    func callToActionTapped() {
+        buttonAction?()
+    }
+}
+
+private extension AboutTapToPayViewModel {
+    enum Localization {
+        static let webViewTitle = NSLocalizedString(
+            "About Tap to Pay",
+            comment: "Title for the webview used by merchants to view more details about Tap to Pay on iPhone")
     }
 }
 
@@ -23,14 +42,45 @@ class AboutTapToPayContactlessLimitViewModel: ObservableObject {
 
     @Published private(set) var contactlessLimitDetails: String
 
+    lazy var webViewModel: WebViewSheetViewModel = {
+        WebViewSheetViewModel(
+            url: configuration.purchaseCardReaderUrl(utmProvider:
+                                                        WooCommerceComUTMProvider(
+                                                            campaign: Constants.utmCampaign,
+                                                            source: Constants.utmSource,
+                                                            content: nil,
+                                                            siteID: ServiceLocator.stores.sessionManager.defaultStoreID)),
+            navigationTitle: Localization.webViewTitle,
+            authenticated: true)
+    }()
+
     init(configuration: CardPresentPaymentsConfiguration) {
         self.configuration = configuration
         self.contactlessLimitDetails = configuration.limitParagraph
+    }
+
+    func orderCardReaderPressed() {
+        ServiceLocator.analytics.track(.aboutTapToPayOrderCardReaderTapped)
+    }
+}
+
+private extension AboutTapToPayContactlessLimitViewModel {
+    private enum Constants {
+        static let utmCampaign = "about_tap_to_pay_contactless_limit"
+        static let utmSource = "about_tap_to_pay"
+    }
+
+    private enum Localization {
+        static let webViewTitle = NSLocalizedString(
+            "Card Readers",
+            comment: "Title for the webview used by merchants to place an order for a card reader, for use with " +
+            "In-Person Payments.")
     }
 }
 
 private extension CardPresentPaymentsConfiguration {
     var localizedCountryName: String {
+        // TODO: extract CountryCode and use it in the configuration
         guard let countryCode = SiteAddress.CountryCode(rawValue: countryCode) else {
             return self.countryCode
         }

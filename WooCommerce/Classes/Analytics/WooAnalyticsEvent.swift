@@ -2062,6 +2062,7 @@ extension WooAnalyticsEvent {
             case paymentMethods
             case tapToPaySummary
             case manageCardReader
+            case aboutTapToPay
 
             var trackingValue: String {
                 switch self {
@@ -2073,6 +2074,8 @@ extension WooAnalyticsEvent {
                     return "tap_to_pay_summary"
                 case .manageCardReader:
                     return "manage_card_reader"
+                case .aboutTapToPay:
+                    return "about_tap_to_pay"
                 }
             }
         }

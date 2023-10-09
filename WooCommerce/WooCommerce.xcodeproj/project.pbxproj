@@ -700,6 +700,7 @@
 		174CA86A27D90A6200126524 /* AutomatticAbout in Frameworks */ = {isa = PBXBuildFile; productRef = 174CA86927D90A6200126524 /* AutomatticAbout */; };
 		174CA86C27D90E8900126524 /* WooAboutScreenConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174CA86B27D90E8900126524 /* WooAboutScreenConfiguration.swift */; };
 		174CA86E27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174CA86D27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift */; };
+		201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */; };
 		202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 202D2A592AC5933100E4ABC0 /* TopTabView.swift */; };
 		203A5C312AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */; };
 		209AD3D02AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CF2AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift */; };
@@ -3208,6 +3209,7 @@
 		09F5DE5C27CF948000E5A4D2 /* BulkUpdateOptionsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulkUpdateOptionsModel.swift; sourceTree = "<group>"; };
 		174CA86B27D90E8900126524 /* WooAboutScreenConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAboutScreenConfiguration.swift; sourceTree = "<group>"; };
 		174CA86D27DBFD2D00126524 /* ShareAppTextItemActivitySource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareAppTextItemActivitySource.swift; sourceTree = "<group>"; };
+		201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutTapToPayViewModel.swift; sourceTree = "<group>"; };
 		202D2A592AC5933100E4ABC0 /* TopTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopTabView.swift; sourceTree = "<group>"; };
 		203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverviewView.swift; sourceTree = "<group>"; };
 		209AD3CF2AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsCurrencyOverviewViewModel.swift; sourceTree = "<group>"; };
@@ -10888,6 +10890,7 @@
 			children = (
 				E107FCDD26C1295600BAF51B /* Onboarding Errors */,
 				20E188832AD059A50053E945 /* AboutTapToPayView.swift */,
+				201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */,
 				E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */,
 				E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */,
 				E1906E9926C4126300CA6819 /* InPersonPaymentsMenuViewController.swift */,
@@ -13488,6 +13491,7 @@
 				B95864082A657D2F002C4C6E /* EnhancedCouponListViewController.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
+				201F5AC52AD4061800EF6C55 /* AboutTapToPayViewModel.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				0279F0DF252DC12D0098D7DE /* ProductLoaderViewControllerModel+Init.swift in Sources */,

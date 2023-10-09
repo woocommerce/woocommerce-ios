@@ -1,9 +1,12 @@
 import SwiftUI
+import Yosemite
 import WooFoundation
 
 struct AboutTapToPayView: View {
+    @ObservedObject var viewModel: AboutTapToPayViewModel
+
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             ScrollView(.vertical) {
                 VStack {
                     VStack(alignment: .leading, spacing: Layout.spacing) {
@@ -12,6 +15,10 @@ struct AboutTapToPayView: View {
                         Text(Localization.aboutTapToPayDescription)
                     }
                     .padding(.vertical)
+
+                    AboutTapToPayContactlessLimitView(
+                        viewModel: AboutTapToPayContactlessLimitViewModel(configuration: viewModel.configuration))
+                    .renderedIf(viewModel.shouldShowContactlessLimit)
 
                     VStack(alignment: .leading, spacing: Layout.spacing) {
                         Text(Localization.howItWorksHeading)
@@ -32,26 +39,29 @@ struct AboutTapToPayView: View {
 
             Spacer()
 
-            Divider()
+            Divider().renderedIf(viewModel.shouldShowButton)
 
             VStack(alignment: .leading, spacing: Layout.spacing) {
                 Button(Localization.setUpTapToPayOnIPhoneButtonTitle) {
                     // no-op
                 }
                 .buttonStyle(PrimaryButtonStyle())
+                .renderedIf(viewModel.shouldShowButton)
 
                 InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel())
             }
             .padding()
         }
-        .fixedSize(horizontal: false, vertical: true)
         .navigationTitle(Localization.aboutTapToPayNavigationTitle)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
     NavigationView {
-        AboutTapToPayView()
+        AboutTapToPayView(viewModel: AboutTapToPayViewModel(
+            configuration: .init(country: "GB"),
+            buttonAction: { }))
     }
 }
 
@@ -62,7 +72,7 @@ private extension AboutTapToPayView {
             comment: "Main heading for the About Tap to Pay on iPhone screen")
 
         static let aboutTapToPayDescription = NSLocalizedString(
-            "Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit " + 
+            "Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit " +
             "cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader.",
             comment: "Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro.")
 
@@ -109,5 +119,55 @@ private extension AboutTapToPayView {
 
     enum Layout {
         static let spacing: CGFloat = 8
+    }
+}
+
+
+struct AboutTapToPayContactlessLimitView: View {
+    let viewModel: AboutTapToPayContactlessLimitViewModel
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: Layout.spacing) {
+            HStack {
+                Image(systemName: "info.circle")
+                Text(Localization.importantInformation)
+            }
+            .headlineStyle()
+            Text(viewModel.contactlessLimitDetails)
+            Text(Localization.overLimitSuggestion)
+            Button(Localization.limitButtonTitle) {
+                // no-op
+            }
+            .buttonStyle(TextButtonStyle())
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .background(Color.withColorStudio(
+            name: .wooCommercePurple,
+            shade: .shade0))
+        .cornerRadius(Layout.cornerRadius)
+    }
+}
+
+private extension AboutTapToPayContactlessLimitView {
+    enum Localization {
+        static let importantInformation = NSLocalizedString(
+            "Important information",
+            comment: "Heading for the details pane showing the contactless limit on About Tap to Pay")
+
+        static let overLimitSuggestion = NSLocalizedString(
+            "To accept payments above this limit, consider purchasing a card reader.",
+            comment: "A suggestion to buy a hardware card reader to handle transactions above the contactless limit, " +
+            "shown on the About Tap to Pay screen")
+
+        static let limitButtonTitle = NSLocalizedString(
+            "Learn more about card readers",
+            comment: "A button to view more about hardware card readers to handle transactions above the contactless " +
+            "limit, shown on the About Tap to Pay screen")
+    }
+
+    enum Layout {
+        static let spacing: CGFloat = 16
+        static let cornerRadius: CGFloat = 8
     }
 }

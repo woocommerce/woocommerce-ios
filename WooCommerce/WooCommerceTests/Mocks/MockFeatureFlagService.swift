@@ -10,7 +10,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isSupportRequestEnabled: Bool
     private let isDashboardStoreOnboardingEnabled: Bool
     private let jetpackSetupWithApplicationPassword: Bool
-    private let isTapToPayOnIPhoneMilestone2On: Bool
     private let isReadOnlySubscriptionsEnabled: Bool
     private let isProductDescriptionAIEnabled: Bool
     private let isProductDescriptionAIFromStoreOnboardingEnabled: Bool
@@ -32,7 +31,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isSupportRequestEnabled: Bool = false,
          isDashboardStoreOnboardingEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
-         isTapToPayOnIPhoneMilestone2On: Bool = false,
          isReadOnlySubscriptionsEnabled: Bool = false,
          isProductDescriptionAIEnabled: Bool = false,
          isProductDescriptionAIFromStoreOnboardingEnabled: Bool = false,
@@ -53,7 +51,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isDashboardStoreOnboardingEnabled = isDashboardStoreOnboardingEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
-        self.isTapToPayOnIPhoneMilestone2On = isTapToPayOnIPhoneMilestone2On
         self.isReadOnlySubscriptionsEnabled = isReadOnlySubscriptionsEnabled
         self.isProductDescriptionAIEnabled = isProductDescriptionAIEnabled
         self.isProductDescriptionAIFromStoreOnboardingEnabled = isProductDescriptionAIFromStoreOnboardingEnabled
@@ -86,8 +83,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isDashboardStoreOnboardingEnabled
         case .jetpackSetupWithApplicationPassword:
             return jetpackSetupWithApplicationPassword
-        case .tapToPayOnIPhoneMilestone2:
-            return isTapToPayOnIPhoneMilestone2On
         case .readOnlySubscriptions:
             return isReadOnlySubscriptionsEnabled
         case .productDescriptionAI:

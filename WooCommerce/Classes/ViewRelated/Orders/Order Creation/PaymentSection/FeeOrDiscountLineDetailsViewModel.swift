@@ -120,6 +120,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
     }
 
+    /// Returns true when a discount is entered, either fixed or percentage.
+    ///
+    var hasInputAmount: Bool {
+        amount.isNotEmpty || percentage.isNotEmpty
+    }
+
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {

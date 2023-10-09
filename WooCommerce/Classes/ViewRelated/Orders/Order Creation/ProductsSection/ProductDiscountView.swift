@@ -57,7 +57,7 @@ struct ProductDiscountView: View {
                             .foregroundStyle(.green)
                     }
                     .padding()
-                    .renderedIf(discountViewModel.amount != "" || discountViewModel.percentage != "")
+                    .renderedIf(discountViewModel.hasInputAmount)
                     HStack {
                         Text(Localization.priceAfterDiscountLabel)
                         Spacer()
@@ -73,7 +73,7 @@ struct ProductDiscountView: View {
                     .frame(maxWidth: .infinity, alignment: .center)
                     .foregroundColor(Color(.error))
                     .buttonStyle(RoundedBorderedStyle(borderColor: .red))
-                    .renderedIf(discountViewModel.amount != "" || discountViewModel.percentage != "")
+                    .renderedIf(discountViewModel.hasInputAmount)
                 }
             }
             .navigationTitle(Text(Localization.addDiscountLabel))

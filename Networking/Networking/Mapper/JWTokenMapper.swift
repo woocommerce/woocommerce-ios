@@ -20,11 +20,7 @@ struct JWTokenMapper: Mapper {
                 return nil
             }
 
-            guard let json = try? JSONSerialization.jsonObject(with: bodyData, options: []),
-                  let payload = json as? [String: Any] else {
-                return nil
-            }
-            return payload
+            return try? JSONSerialization.jsonObject(with: bodyData, options: []) as? [String: Any]
         }()
 
         let expiryDate = try {

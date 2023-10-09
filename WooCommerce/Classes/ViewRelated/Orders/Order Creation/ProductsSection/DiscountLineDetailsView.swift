@@ -10,10 +10,10 @@ struct DiscountLineDetailsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text("Fixed price discount")
+            Text(Localization.fixedPriceDiscountLabel)
                 .renderedIf(viewModel.feeOrDiscountType == .fixed)
                 .padding()
-            Text("Percentage discount")
+            Text(Localization.percentagePriceDiscountLabel)
                 .renderedIf(viewModel.feeOrDiscountType == .percentage)
                 .padding()
             HStack {
@@ -45,7 +45,7 @@ struct DiscountLineDetailsView: View {
     private var inputFixedField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
             HStack {
-                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(viewModel.currencySymbol) Enter amount" : viewModel.amountPlaceholder,
+                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(viewModel.currencySymbol) \(Localization.fixedPriceDiscountInputPlaceholder)" : viewModel.amountPlaceholder,
                                   text: $viewModel.amount, // TODO: viewModel.currencySymbol + amount
                                   focus: .constant(true))
                     .keyboardType(.numbersAndPunctuation)
@@ -65,7 +65,7 @@ struct DiscountLineDetailsView: View {
     private var inputPercentageField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
             HStack {
-                BindableTextfield(viewModel.amountPlaceholder == "0" ? "Enter percentage \(viewModel.currencySymbol)" : viewModel.amountPlaceholder,
+                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(Localization.percentagePriceDiscountInputPlaceholder) \(viewModel.currencySymbol)" : viewModel.amountPlaceholder,
                                   text: $viewModel.percentage,
                                   focus: .constant(true))
                     .keyboardType(.numbersAndPunctuation)
@@ -89,6 +89,21 @@ private extension DiscountLineDetailsView {
         static let rowHeight: CGFloat = 44
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
+    }
+    
+    enum Localization {
+        static let fixedPriceDiscountLabel = NSLocalizedString(
+            "Fixed price discount",
+            comment: "Label that shows the type of discount selected by a merchant in the discount view")
+        static let fixedPriceDiscountInputPlaceholder = NSLocalizedString(
+            "Enter amount",
+            comment: "Text for the input textfield placeholder when no value has been added yet")
+        static let percentagePriceDiscountLabel = NSLocalizedString(
+            "Percentage discount",
+            comment: "Label that shows the type of discount selected by a merchant in the discount view")
+        static let percentagePriceDiscountInputPlaceholder = NSLocalizedString(
+            "Enter percentage",
+            comment: "Text for the input textfield placeholder when no value has been added yet")
     }
 }
 

@@ -55,13 +55,13 @@ struct ProductDiscountView: View {
                     .padding()
                     .renderedIf(discountViewModel.finalAmountString != nil)
                     HStack {
-                        Text("Price after discount")
+                        Text(Localization.priceAfterDiscountLabel)
                         Spacer()
                         Text(discountViewModel.calculatePriceAfterDiscount(productRowViewModel.price ?? ""))
                     }
                     .padding()
                     Divider()
-                    Button("Remove Discount") {
+                    Button(Localization.removeDiscountButton) {
                         discountViewModel.removeValue()
                         presentation.wrappedValue.dismiss()
                     }
@@ -72,16 +72,16 @@ struct ProductDiscountView: View {
                     .renderedIf(discountViewModel.amount != "" || discountViewModel.percentage != "")
                 }
             }
-            .navigationTitle(Text("Add Discount"))
+            .navigationTitle(Text(Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") {
+                    Button(Localization.cancelButton) {
                         presentation.wrappedValue.dismiss()
                     }
                 }
                 ToolbarItem(placement: .primaryAction) {
-                    Button("Add") {
+                    Button(Localization.addButton) {
                         discountViewModel.saveData()
                         presentation.wrappedValue.dismiss()
                     }
@@ -99,5 +99,23 @@ private extension ProductDiscountView {
         static let borderLineWidth: CGFloat = 1
         static let productImageSize: CGFloat = 56
         static let spacing: CGFloat = 8
+    }
+
+    enum Localization {
+        static let addButton = NSLocalizedString(
+            "Add",
+            comment: "Text for the add button in the discounts details screen")
+        static let cancelButton = NSLocalizedString(
+            "Cancel",
+            comment: "Text for the cancel button in the discounts details screen")
+        static let removeDiscountButton = NSLocalizedString(
+            "Remove Discount",
+            comment: "Text for button to remove a discount in the discounts details screen")
+        static let priceAfterDiscountLabel = NSLocalizedString(
+            "Price after discount",
+            comment: "The label that points to the updated price of a product after a discount has been applied")
+        static let addDiscountLabel = NSLocalizedString(
+            "Add Discount",
+            comment: "Text for the button to add a discount to a product in the order screen")
     }
 }

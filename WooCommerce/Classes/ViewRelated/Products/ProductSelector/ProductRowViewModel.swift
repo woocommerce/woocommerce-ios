@@ -137,6 +137,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     private(set) var discount: Decimal?
 
+    var hasDiscount: Bool {
+        discount != nil
+    }
+
     /// Variations label for a variable product.
     ///
     private var variationsLabel: String? {

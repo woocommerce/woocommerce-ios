@@ -45,10 +45,10 @@ struct DiscountLineDetailsView: View {
     private var inputFixedField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
             HStack {
-                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(viewModel.currencySymbol) \(Localization.fixedPriceDiscountInputPlaceholder)" : viewModel.amountPlaceholder,
-                                  text: $viewModel.amount, // TODO: viewModel.currencySymbol + amount
+                BindableTextfield(Localization.fixedPriceDiscountInputPlaceholder,
+                                  text: $viewModel.amount,
                                   focus: .constant(true))
-                    .keyboardType(.numbersAndPunctuation)
+                .keyboardType(.numbersAndPunctuation)
             }
         }
         .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
@@ -65,13 +65,13 @@ struct DiscountLineDetailsView: View {
     private var inputPercentageField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
             HStack {
-                BindableTextfield(viewModel.amountPlaceholder == "0" ? "\(Localization.percentagePriceDiscountInputPlaceholder) \(viewModel.currencySymbol)" : viewModel.amountPlaceholder,
+                BindableTextfield(Localization.percentagePriceDiscountInputPlaceholder,
                                   text: $viewModel.percentage,
                                   focus: .constant(true))
-                    .keyboardType(.numbersAndPunctuation)
+                .keyboardType(.numbersAndPunctuation)
             }
         }
-        .frame(minHeight: Layout.rowHeight)
+        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
         .padding([.leading, .trailing], Layout.padding)
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)

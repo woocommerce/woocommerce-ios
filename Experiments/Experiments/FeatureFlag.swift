@@ -210,11 +210,11 @@ public enum FeatureFlag: Int {
     ///
     case wooPaymentsDepositsOverviewInPaymentsMenu
 
-    /// Enables the functionality related to order custom amounts on M1
-    ///
-    case orderCustomAmountsM1
-    
     /// Enables Tap to Pay for UK Woo Payments stores
     /// 
     case tapToPayOnIPhoneInUK
+
+    /// Enables the functionality related to order custom amounts on M1
+    ///
+    case orderCustomAmountsM1
 }

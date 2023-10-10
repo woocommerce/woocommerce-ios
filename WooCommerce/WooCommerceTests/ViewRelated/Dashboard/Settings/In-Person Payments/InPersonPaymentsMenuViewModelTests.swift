@@ -81,15 +81,16 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
-                                                             paymentMethods: [.cardPresent],
-                                                             currencies: [.INR],
-                                                             paymentGateways: [WCPayAccount.gatewayID],
-                                                             supportedReaders: [.wisepad3],
-                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100,
-                                                             contactlessLimitAmount: nil)
+        let configuration = CardPresentPaymentsConfiguration(
+            countryCode: "IN",
+            paymentMethods: [.cardPresent],
+            currencies: [.INR],
+            paymentGateways: [WCPayAccount.gatewayID],
+            supportedReaders: [.wisepad3],
+            supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+            minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            contactlessLimitAmount: nil, minimumOperatingSystemVersionOverride: nil)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -107,15 +108,16 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
-                                                             paymentMethods: [.cardPresent],
-                                                             currencies: [.INR],
-                                                             paymentGateways: [WCPayAccount.gatewayID],
-                                                             supportedReaders: [.appleBuiltIn],
-                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100,
-                                                             contactlessLimitAmount: nil)
+        let configuration = CardPresentPaymentsConfiguration(
+            countryCode: "IN",
+            paymentMethods: [.cardPresent],
+            currencies: [.INR],
+            paymentGateways: [WCPayAccount.gatewayID],
+            supportedReaders: [.appleBuiltIn],
+            supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+            minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            contactlessLimitAmount: nil, minimumOperatingSystemVersionOverride: nil)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -123,7 +125,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
                 switch action {
-                case .checkDeviceSupport(_, _, _, let completion):
+                case .checkDeviceSupport(_, _, _, _, let completion):
                     completion(true)
                     promise(())
                 default:

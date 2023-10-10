@@ -65,7 +65,8 @@ extension StripeCardReaderService: CardReaderService {
 
     public func checkSupport(for cardReaderType: CardReaderType,
                              configProvider: CardReaderConfigProvider,
-                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+                             discoveryMethod: CardReaderDiscoveryMethod,
+                             minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         guard let deviceType = cardReaderType.toStripe() else {
             return false
         }
@@ -77,7 +78,12 @@ extension StripeCardReaderService: CardReaderService {
                                                      simulated: shouldUseSimulatedCardReader)
         switch result {
         case .success:
-            return true
+            if let minimumOperatingSystemVersionOverride {
+                return ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
+            } else {
+                return true
+            }
+
         case .failure:
             return false
         }

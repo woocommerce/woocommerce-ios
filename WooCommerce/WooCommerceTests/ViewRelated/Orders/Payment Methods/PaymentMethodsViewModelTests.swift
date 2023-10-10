@@ -756,7 +756,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .selectedPaymentGatewayAccount(onCompletion):
                 onCompletion(PaymentGatewayAccount.fake())
-            case .checkDeviceSupport(_, _, _, _):
+            case .checkDeviceSupport(_, _, _, _, _):
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -887,7 +887,7 @@ private extension PaymentMethodsViewModelTests {
     private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .checkDeviceSupport(_, _, .localMobile, completion):
+            case let .checkDeviceSupport(_, _, .localMobile, _, completion):
                 completion(tapToPayDeviceAvailability)
             default:
                 break

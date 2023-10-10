@@ -329,7 +329,7 @@ private extension PaymentMethodsViewModel {
             siteID: siteID,
             cardReaderType: .appleBuiltIn,
             discoveryMethod: .localMobile,
-            minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionOverride,
+            minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionForTapToPay,
             onCompletion: onCompletion)
         stores.dispatch(action)
     }

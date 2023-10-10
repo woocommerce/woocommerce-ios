@@ -71,11 +71,12 @@ final class InPersonPaymentsMenuViewModel {
     }
 
     private func checkTapToPaySupport(siteID: Int64) {
+        let configuration = cardPresentPaymentsConfiguration
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: siteID,
             cardReaderType: .appleBuiltIn,
             discoveryMethod: .localMobile,
-            minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionOverride) { [weak self] deviceSupportsTapToPay in
+            minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { [weak self] deviceSupportsTapToPay in
                 guard let self = self else { return }
                 self.isEligibleForTapToPayOnIPhone = (
                     self.isEligibleForCardPresentPayments &&

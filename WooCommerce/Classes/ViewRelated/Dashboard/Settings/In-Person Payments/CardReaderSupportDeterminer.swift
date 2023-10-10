@@ -70,7 +70,7 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
                 siteID: siteID,
                 cardReaderType: .appleBuiltIn,
                 discoveryMethod: .localMobile,
-                minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionOverride) { result in
+                minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { result in
                     continuation.resume(returning: result)
                 }
             stores.dispatch(action)

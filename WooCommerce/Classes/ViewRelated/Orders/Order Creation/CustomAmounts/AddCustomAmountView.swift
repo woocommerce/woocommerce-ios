@@ -8,41 +8,47 @@ struct AddCustomAmountView: View {
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
-                Spacer()
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
+                        Spacer()
 
-                Text(Localization.amountTitle)
-                    .font(.title3)
-                    .foregroundColor(Color(.textSubtle))
+                        Text(Localization.amountTitle)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
 
-                FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
+                        FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
-                Text(Localization.nameTitle)
-                    .font(.title3)
-                    .foregroundColor(Color(.textSubtle))
+                        Text(Localization.nameTitle)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
 
-                TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
-                    .secondaryTitleStyle()
-                    .foregroundColor(Color(.textSubtle))
-                    .multilineTextAlignment(.center)
+                        TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
+                            .secondaryTitleStyle()
+                            .foregroundColor(Color(.textSubtle))
+                            .multilineTextAlignment(.center)
 
-                Spacer()
+                        Spacer()
 
-                Button(Localization.doneButtonTitle) {
-                    viewModel.doneButtonPressed()
-                    dismiss()
+                        Button(Localization.doneButtonTitle) {
+                            viewModel.doneButtonPressed()
+                            dismiss()
+                        }
+                        .buttonStyle(PrimaryButtonStyle())
+                        .disabled(viewModel.shouldDisableDoneButton)
+                    }
+                    .padding()
+                    .navigationTitle(Localization.navigationTitle)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .frame(minHeight: geometry.size.height)
+                    .navigationBarItems(leading: Button(action: {
+                        dismiss()
+                    }) {
+                        Text(Localization.navigationCancelButtonTitle)
+                    })
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(viewModel.shouldDisableDoneButton)
+                .frame(width: geometry.size.width)
             }
-            .padding()
-            .navigationTitle(Localization.navigationTitle)
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarItems(leading: Button(action: {
-                dismiss()
-            }) {
-                Text(Localization.navigationCancelButtonTitle)
-            })
         }
 
         .wooNavigationBarStyle()

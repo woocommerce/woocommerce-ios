@@ -24,6 +24,7 @@ final class SiteAddress {
         return getValueFromSiteSettings(Constants.postalCode) ?? ""
     }
 
+    //TODO: make this an optional CountryCode
     var countryCode: String {
         return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first ?? ""
     }
@@ -36,7 +37,7 @@ final class SiteAddress {
         guard
             let code = getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first,
             let countryCode = CountryCode(rawValue: code) else {
-                return nil
+            return nil
         }
 
         return countryCode.readableCountry
@@ -377,6 +378,8 @@ extension CountryCode {
             // Z
         case .ZM: return NSLocalizedString("Zambia", comment: "Country option for a site address.")
         case .ZW: return NSLocalizedString("Zimbabwe", comment: "Country option for a site address.")
+
+        case .unknown: return NSLocalizedString("Unknown country", comment: "Fallback country option for a site address.")
         }
     }
 }

@@ -3,6 +3,7 @@ import Foundation
 import Storage
 import Yosemite
 import Experiments
+import WooFoundation
 
 private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
@@ -432,12 +433,12 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.sessionManager.defaultStoreID
     }
 
-    var storeCountryCode: String? {
+    var storeCountryCode: CountryCode? {
         let siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager).siteSettings
         let storeAddress = SiteAddress(siteSettings: siteSettings)
         let storeCountryCode = storeAddress.countryCode
 
-        return storeCountryCode.nonEmptyString()
+        return CountryCode(rawValue: storeCountryCode)
     }
 
     var storedPreferredPlugin: CardPresentPaymentsPlugin? {

@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class CardPresentConfigurationLoader {
     init(stores: StoresManager = ServiceLocator.stores) {
@@ -9,8 +10,15 @@ final class CardPresentConfigurationLoader {
     }
 
     var configuration: CardPresentPaymentsConfiguration {
-        .init(
-            country: SiteAddress().countryCode
+        // The `.unknown` country avoids us unwrapping an optional everywhere.
+        // The configuration it results in will not support any card payments.
+        guard let countryCode = CountryCode(rawValue: SiteAddress().countryCode) else {
+            DDLogError("⛔️ Could not determine card payment configuration for country \(SiteAddress().countryCode)")
+            return .init(country: .unknown)
+        }
+
+        return .init(
+            country: countryCode
         )
     }
 }

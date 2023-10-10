@@ -305,4 +305,6 @@ public enum CountryCode: String, CaseIterable {
     // Z
     case ZM
     case ZW
+
+    case unknown
 }

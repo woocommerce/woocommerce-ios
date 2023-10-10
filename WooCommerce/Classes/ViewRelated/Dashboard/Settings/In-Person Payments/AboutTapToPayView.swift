@@ -66,11 +66,13 @@ struct AboutTapToPayView: View {
     }
 }
 
-#Preview {
-    NavigationView {
-        AboutTapToPayView(viewModel: AboutTapToPayViewModel(
-            configuration: .init(country: "GB"),
-            buttonAction: { }))
+struct AboutTapToPayView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            AboutTapToPayView(viewModel: AboutTapToPayViewModel(
+                configuration: .init(country: "GB"),
+                buttonAction: { }))
+        }
     }
 }
 

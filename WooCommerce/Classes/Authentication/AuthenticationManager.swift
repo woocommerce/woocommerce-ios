@@ -146,10 +146,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = true
         loginFields.username = email
-        NavigateToEnterWPCOMPassword(loginFields: loginFields, onDismiss: {
-            NavigateToRoot().execute(from: rootViewController)
-        })
-        .execute(from: rootViewController)
+        NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
     }
 
     private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
@@ -157,9 +154,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = false
         loginFields.username = username
-        NavigateToEnterSiteCredentials(loginFields: loginFields, onDismiss: {
-            NavigateToRoot().execute(from: rootViewController)
-        }).execute(from: rootViewController)
+        NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
     }
 
     private func showLoginURLFailure(rootViewController: UIViewController) {

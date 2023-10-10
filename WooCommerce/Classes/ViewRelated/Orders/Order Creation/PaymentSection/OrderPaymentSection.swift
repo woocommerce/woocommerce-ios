@@ -168,6 +168,7 @@ private extension OrderPaymentSection {
                     .resizable()
                     .frame(width: 16, height: 16)
             }
+            .renderedIf(viewModel.shouldDisableAddingCoupons)
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")

@@ -120,7 +120,7 @@ class AuthenticationManager: Authentication {
             guard let queryDictionary = url.query?.dictionaryFromQueryString(),
                   let siteURL = queryDictionary.string(forKey: "siteUrl"),
                   siteURL.isNotEmpty else {
-                print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
                 showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }

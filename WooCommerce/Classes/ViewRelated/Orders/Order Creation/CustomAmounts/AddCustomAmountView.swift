@@ -2,7 +2,7 @@ import SwiftUI
 import WooFoundation
 
 struct AddCustomAmountView: View {
-    @ObservedObject private(set) var viewModel = AddCustomAmountViewModel()
+    @ObservedObject private(set) var viewModel: AddCustomAmountViewModel
 
     @Environment(\.dismiss) var dismiss
 
@@ -21,7 +21,7 @@ struct AddCustomAmountView: View {
                     .font(.title3)
                     .foregroundColor(Color(.textSubtle))
 
-                TextField(Localization.customAmountPlaceholder, text: $viewModel.name)
+                TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                     .secondaryTitleStyle()
                     .foregroundColor(Color(.textSubtle))
                     .multilineTextAlignment(.center)
@@ -29,6 +29,8 @@ struct AddCustomAmountView: View {
                 Spacer()
 
                 Button(Localization.doneButtonTitle) {
+                    viewModel.doneButtonPressed()
+                    dismiss()
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .disabled(viewModel.shouldDisableDoneButton)
@@ -57,12 +59,10 @@ private extension AddCustomAmountView {
     enum Localization {
         static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
         static let nameTitle = NSLocalizedString("Name", comment: "Title above the name field on the add custom amount view in orders.")
-        static let customAmountPlaceholder = NSLocalizedString("Custom amount", 
-                                                               comment: "Placeholder for the name field on the add custom amount view in orders.")
-        static let doneButtonTitle = NSLocalizedString("Add Custom Amount", 
+        static let doneButtonTitle = NSLocalizedString("Add Custom Amount",
                                                        comment: "Button title to confirm the custom amount on the add custom amount view in orders.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
-                                                                   comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+                                                                comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
     }
 }

@@ -486,7 +486,10 @@ private struct ProductsSection: View {
                     .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
                     .buttonStyle(PlusButtonStyle())
                     .sheet(isPresented: $showAddCustomAmount, content: {
-                        AddCustomAmountView()
+                        AddCustomAmountView(viewModel: AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+                            // TODO: Send amount and name to view model
+                            debugPrint("Adding custom amount of \(amount) with name \(name)")
+                        }))
                     })
                 }
                 .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)

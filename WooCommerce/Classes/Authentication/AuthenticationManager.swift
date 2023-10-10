@@ -124,7 +124,6 @@ class AuthenticationManager: Authentication {
                 showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }
-
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
                wpcomEmail.isNotEmpty {
                 showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
@@ -147,7 +146,10 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = true
         loginFields.username = email
-        NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
+        NavigateToEnterWPCOMPassword(loginFields: loginFields, onDismiss: {
+            NavigateToRoot().execute(from: rootViewController)
+        })
+        .execute(from: rootViewController)
     }
 
     private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
@@ -155,7 +157,9 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = false
         loginFields.username = username
-        NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
+        NavigateToEnterSiteCredentials(loginFields: loginFields, onDismiss: {
+            NavigateToRoot().execute(from: rootViewController)
+        }).execute(from: rootViewController)
     }
 
     private func showLoginURLFailure(rootViewController: UIViewController) {

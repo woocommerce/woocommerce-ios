@@ -257,11 +257,10 @@ platform :ios do
     ensure_git_status_clean
     ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
 
-    message = "Completing code freeze for: #{current_release_version}\n"
-    if options[:skip_confirm]
-      UI.message(message)
-    else
-      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    UI.important("Completing code freeze for: #{current_release_version}")
+
+    unless options[:skip_confirm]
+      UI.user_error!('Aborted by user request') unless UI.confirm('Do you want to continue?')
     end
 
     generate_strings_file_for_glotpress
@@ -471,11 +470,10 @@ platform :ios do
     ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
     ensure_git_status_clean
 
-    message = "Finalizing release: #{current_release_version}\n"
-    if options[:skip_confirm]
-      UI.message(message)
-    else
-      UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
+    UI.important("Finalizing release: #{current_release_version}")
+
+    unless options[:skip_confirm]
+      UI.user_error!('Aborted by user request') unless UI.confirm('Do you want to continue?')
     end
 
     UI.message('Checking app strings translation status...')
@@ -495,7 +493,6 @@ platform :ios do
 
     # Bump the build code
     UI.message 'Bumping build code...'
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
     VERSION_FILE.write(version_long: next_build_code)
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
     UI.message "Done! New Build Code: #{current_build_code}"
@@ -581,20 +578,18 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_to_app_store_connect do |options|
-    ensure_sentry_installed
-
     unless options[:skip_prechecks]
-      message = "Building version #{current_release_version} (#{current_build_code}) and uploading to TestFlight\n"
-      if options[:skip_confirm]
-        UI.message(message)
-      else
-        UI.user_error!('Aborted by user request') unless UI.confirm("#{message}Do you want to continue?")
-      end
-
-      # Check local repo status
       ensure_git_status_clean unless is_ci
       ios_build_preflight(derived_data_path: DERIVED_DATA_DIR)
       xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    end
+
+    ensure_sentry_installed
+
+    UI.important("Building version #{current_release_version} (#{current_build_code}) and uploading to TestFlight")
+
+    unless options[:skip_confirm]
+      UI.user_error!('Aborted by user request') unless UI.confirm('Do you want to continue?')
     end
 
     appstore_code_signing

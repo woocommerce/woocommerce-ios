@@ -43,6 +43,8 @@ struct OrderPaymentSection: View {
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
+    @ScaledMetric private var scale: CGFloat = 1.0
+
     var body: some View {
         Divider()
 
@@ -166,7 +168,7 @@ private extension OrderPaymentSection {
             } label: {
                 Image(systemName: "questionmark.circle")
                     .resizable()
-                    .frame(width: 16, height: 16)
+                    .frame(width: Constants.sectionPadding, height: Constants.sectionPadding)
             }
             .renderedIf(viewModel.shouldDisableAddingCoupons)
         }
@@ -174,11 +176,11 @@ private extension OrderPaymentSection {
         .accessibilityIdentifier("add-coupon-button")
         .overlay {
             VStack(alignment: .leading) {
-                Text("Coupons unavailable")
+                Text(Localization.couponsTooltipTitle)
                     .font(.body)
                     .foregroundColor(.white)
                     .fontWeight(.bold)
-                Text("To add Coupons, please remove your Product Discounts")
+                Text(Localization.couponsTooltipDescription)
                     .font(.body)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
@@ -189,9 +191,9 @@ private extension OrderPaymentSection {
             .padding()
             .background {
                 Color.black
-                    .cornerRadius(4)
+                    .cornerRadius(Constants.infoTooltipCornerRadius)
             }
-            .offset(CGSize(width: 0, height: (44 * 1) + 16))
+            .offset(CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding))
             .opacity(1)
             .padding()
             .renderedIf(shouldShowCouponsInfoTooltip)
@@ -376,6 +378,12 @@ private extension OrderPaymentSection {
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
         static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate location added automatically",
                                                                         comment: "Notice in editable order details when the tax rate was added to the order")
+        static let couponsTooltipTitle = NSLocalizedString(
+            "Coupons unavailable",
+            comment: "Title text for the coupons row informational tooltip")
+        static let couponsTooltipDescription = NSLocalizedString(
+            "To add Coupons, please remove your Product Discounts",
+            comment: "Description text for the coupons row informational tooltip")
     }
 
     enum Constants {
@@ -385,6 +393,7 @@ private extension OrderPaymentSection {
         static let taxesAdaptativeStacksSpacing: CGFloat = 4
         static let sectionPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
+        static let infoTooltipCornerRadius: CGFloat = 4
     }
 }
 

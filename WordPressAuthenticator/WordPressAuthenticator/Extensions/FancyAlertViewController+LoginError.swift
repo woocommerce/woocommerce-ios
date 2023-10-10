@@ -13,9 +13,11 @@ extension FancyAlertViewController {
 
     typealias ButtonConfig = FancyAlertViewController.Config.ButtonConfig
 
-    private static func defaultButton() -> ButtonConfig {
+    private static func defaultButton(onTap: (() -> ())? = nil) -> ButtonConfig {
         return ButtonConfig(Strings.OK) { controller, _ in
-            controller.dismiss(animated: true, completion: nil)
+            controller.dismiss(animated: true, completion: {
+                onTap?()
+            })
         }
     }
 
@@ -144,7 +146,7 @@ extension FancyAlertViewController {
     /// - Parameter message: The error message to show.
     /// - Parameter sourceTag: tag of the source of the error
     ///
-    static func alertForGenericErrorMessageWithHelpButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
+    static func alertForGenericErrorMessageWithHelpButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag, onDismiss: (() -> ())? = nil) -> FancyAlertViewController {
 
         // If support is not enabled, don't add a Help Button since it won't do anything.
         var moreHelpButton: ButtonConfig?
@@ -172,7 +174,7 @@ extension FancyAlertViewController {
                                                      bodyText: message,
                                                      headerImage: nil,
                                                      dividerPosition: .top,
-                                                     defaultButton: defaultButton(),
+                                                     defaultButton: defaultButton(onTap: onDismiss),
                                                      cancelButton: nil,
                                                      moreInfoButton: moreHelpButton,
                                                      titleAccessoryButton: nil,

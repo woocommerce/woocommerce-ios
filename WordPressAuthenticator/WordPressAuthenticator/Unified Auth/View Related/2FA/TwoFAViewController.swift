@@ -202,14 +202,14 @@ private extension TwoFAViewController {
     func loginWithSecurityKeys() {
 
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
-            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+            return displaySecurityKeyUnknownErrorAndExitFlow()
         }
 
         configureViewLoading(true)
 
         Task { @MainActor in
             guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
-                return // TODO: exit flow
+                return displaySecurityKeyUnknownErrorAndExitFlow()
             }
 
             signChallenge(challengeInfo)
@@ -230,6 +230,14 @@ private extension TwoFAViewController {
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performRequests()
+    }
+
+    // When an security key error occurs, we need to restart the flow to regenerate the necessary nonces.
+    func displaySecurityKeyUnknownErrorAndExitFlow() {
+        configureViewLoading(false)
+        displayErrorAlert(LocalizedText.unknownError, sourceTag: .loginWebauthn, onDismiss: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 
     // MARK: - Code Validation
@@ -275,7 +283,7 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
               let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
-            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+            return displaySecurityKeyUnknownErrorAndExitFlow()
         }
 
         loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
@@ -302,8 +310,7 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         WPAuthenticatorLogError("Error signing challenge: \(error.localizedDescription)")
-        displayError(message: LocalizedText.unknownError)
-        // TODO: exit flow
+        displaySecurityKeyUnknownErrorAndExitFlow()
     }
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {

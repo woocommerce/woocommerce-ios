@@ -5,6 +5,10 @@ struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
     @State private var isCollapsed: Bool = true
 
+    /// Indicates if the coupons informational tooltip should be shown or not.
+    ///
+    @State private var shouldShowCouponsInfoTooltip: Bool = false
+
     @ScaledMetric private var scale: CGFloat = 1
 
     var onAddDiscount: () -> Void
@@ -54,39 +58,7 @@ struct CollapsibleProductRowCard: View {
             }
             .padding(.bottom)
             HStack {
-                if viewModel.discount == nil {
-                    Button(Localization.addDiscountLabel) {
-                        onAddDiscount()
-                    }
-                    .buttonStyle(PlusButtonStyle())
-                } else {
-                    HStack {
-                        Button(action: {
-                            onAddDiscount()
-                        }, label: {
-                            HStack {
-                                Text(Localization.discountLabel)
-                                Image(uiImage: .pencilImage)
-                                    .resizable()
-                                    .frame(width: Layout.iconSize, height: Layout.iconSize)
-                            }
-                        })
-                        Spacer()
-                        if let discountLabel = viewModel.discountLabel {
-                            Text(minusSign + discountLabel)
-                                .foregroundColor(.green)
-                        }
-                    }
-                }
-                Spacer()
-                    .renderedIf(!viewModel.hasDiscount)
-                Button {
-                    // TODO: Tooltip behavior gh-10839
-                } label: {
-                    Image(systemName: "questionmark.circle")
-                        .foregroundColor(Color(.wooCommercePurple(.shade60)))
-                }
-                .renderedIf(!viewModel.hasDiscount)
+                discountRow
             }
             HStack {
                 Text(Localization.priceAfterDiscountLabel)
@@ -103,6 +75,29 @@ struct CollapsibleProductRowCard: View {
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)
             .foregroundColor(Color(.error))
+            .overlay {
+                VStack(alignment: .leading) {
+                    Text("Discounts unavailable")
+                        .font(.body)
+                        .foregroundColor(.white)
+                        .fontWeight(.bold)
+                    Text("To add a Product Discount, please remove all Coupons from your order")
+                        .font(.body)
+                        .multilineTextAlignment(.leading)
+                        .lineLimit(nil)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .foregroundColor(.gray)
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background {
+                    Color.black
+                        .cornerRadius(4)
+                }
+                .opacity(1)
+                .padding()
+                .renderedIf(shouldShowCouponsInfoTooltip)
+            }
         })
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
@@ -113,6 +108,44 @@ struct CollapsibleProductRowCard: View {
                         lineWidth: Layout.borderLineWidth)
         }
         .cornerRadius(Layout.frameCornerRadius)
+    }
+}
+
+private extension CollapsibleProductRowCard {
+    @ViewBuilder var discountRow: some View {
+        if viewModel.discount == nil {
+            Button(Localization.addDiscountLabel) {
+                onAddDiscount()
+            }
+            .buttonStyle(PlusButtonStyle())
+        } else {
+            HStack {
+                Button(action: {
+                    onAddDiscount()
+                }, label: {
+                    HStack {
+                        Text(Localization.discountLabel)
+                        Image(uiImage: .pencilImage)
+                            .resizable()
+                            .frame(width: Layout.iconSize, height: Layout.iconSize)
+                    }
+                })
+                Spacer()
+                if let discountLabel = viewModel.discountLabel {
+                    Text(minusSign + discountLabel)
+                        .foregroundColor(.green)
+                }
+            }
+        }
+        Spacer()
+            .renderedIf(!viewModel.hasDiscount)
+        Button {
+            shouldShowCouponsInfoTooltip.toggle()
+        } label: {
+            Image(systemName: "questionmark.circle")
+                .foregroundColor(Color(.wooCommercePurple(.shade60)))
+        }
+        .renderedIf(!viewModel.hasDiscount)
     }
 }
 

@@ -8,7 +8,6 @@ import WooFoundation
 final class SimplePaymentsAmountViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
-    private let usLocale = Locale(identifier: "en_US")
     private let usStoreSettings = CurrencySettings() // Default is US settings
 
     private var subscriptions = Set<AnyCancellable>()

@@ -6,7 +6,7 @@ import WooFoundation
 class CardPresentConfigurationTests: XCTestCase {
     // MARK: - US Tests
     func test_configuration_for_US() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.USD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay, Constants.PaymentGateway.stripe])
@@ -17,7 +17,7 @@ class CardPresentConfigurationTests: XCTestCase {
 
     // MARK: - Canada Tests
     func test_configuration_for_Canada() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "CA")
+        let configuration = CardPresentPaymentsConfiguration(country: .CA)
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.CAD])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])

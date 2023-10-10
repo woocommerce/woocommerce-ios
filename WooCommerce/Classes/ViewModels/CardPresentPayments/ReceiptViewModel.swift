@@ -1,12 +1,13 @@
 import Combine
 import MessageUI
 import Yosemite
+import WooFoundation
 
 /// ViewModel supporting the receipt preview.
 final class ReceiptViewModel {
     private let order: Order
     private let receipt: CardPresentReceiptParameters
-    private let countryCode: String
+    private let countryCode: CountryCode
     private let stores: StoresManager
     private let analytics: Analytics
 
@@ -26,7 +27,7 @@ final class ReceiptViewModel {
     ///   - analytics: analytics to track receipt events
     init(order: Order,
          receipt: CardPresentReceiptParameters,
-         countryCode: String,
+         countryCode: CountryCode,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.order = order
@@ -66,7 +67,7 @@ final class ReceiptViewModel {
     /// Called when the user initiates emailing a receipt. Returns a tuple of:
     /// - Observable of necessary data for the email form
     /// - Country code for analytics in the email form
-    func emailReceiptTapped() -> AnyPublisher<(formData: CardPresentPaymentReceiptEmailCoordinator.EmailFormData, countryCode: String), Never> {
+    func emailReceiptTapped() -> AnyPublisher<(formData: CardPresentPaymentReceiptEmailCoordinator.EmailFormData, countryCode: CountryCode), Never> {
         analytics.track(event: .InPersonPayments
             .receiptEmailTapped(countryCode: countryCode,
                                 cardReaderModel: nil))

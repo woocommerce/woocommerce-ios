@@ -295,17 +295,9 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
             return credential.rawClientDataJSON
         }
 
-        let clientParams = [
-            "type": "webauthn.get",
-            "challenge": challengeInfo.challenge,
-            "origin": "https://\(challengeInfo.rpID)"
-        ]
-
-        do {
-            return try JSONSerialization.data(withJSONObject: clientParams, options: .withoutEscapingSlashes)
-        } catch {
-            return nil
-        }
+        // We build this manually because we need to guarantee this exact element order.
+        let rawClientJSON = "{\"type\":\"webauthn.get\",\"challenge\":\"\(challengeInfo.challenge)\",\"origin\":\"https://\(challengeInfo.rpID)\"}"
+        return rawClientJSON.data(using: .utf8)
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {

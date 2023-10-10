@@ -10,6 +10,8 @@ struct CollapsibleProductRowCard: View {
     @State private var shouldShowCouponsInfoTooltip: Bool = false
 
     @ScaledMetric private var scale: CGFloat = 1
+    
+    var parentOrderHasCoupons: Bool
 
     var onAddDiscount: () -> Void
 
@@ -19,8 +21,9 @@ struct CollapsibleProductRowCard: View {
 
     private let minusSign: String = NumberFormatter().minusSign
 
-    init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, parentOrderHasCoupons: Bool, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.parentOrderHasCoupons = parentOrderHasCoupons
         self.onAddDiscount = onAddDiscount
     }
 
@@ -59,6 +62,7 @@ struct CollapsibleProductRowCard: View {
             .padding(.bottom)
             HStack {
                 discountRow
+                    .disabled(parentOrderHasCoupons)
             }
             HStack {
                 Text(Localization.priceAfterDiscountLabel)
@@ -209,7 +213,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onAddDiscount: {})
+        CollapsibleProductRowCard(viewModel: viewModel, parentOrderHasCoupons: false, onAddDiscount: {})
     }
 }
 #endif

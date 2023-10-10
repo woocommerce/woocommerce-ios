@@ -144,7 +144,7 @@ struct SimplePaymentsAmount: View {
             Text(Localization.instructions)
                 .secondaryBodyStyle()
 
-            FormattableAmountTextField(formattedAmount: viewModel.formattedAmount, amountTextColor: viewModel.amountTextColor, amount: $viewModel.amount)
+            FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
             Spacer()
 

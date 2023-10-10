@@ -17,7 +17,7 @@ struct AddCustomAmountView: View {
                     .font(.title3)
                     .foregroundColor(Color(.textSubtle))
 
-                FormattableAmountTextField(formattedAmount: viewModel.formattedAmount, amountTextColor: viewModel.amountTextColor, amount: $viewModel.amount)
+                FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
                 Text("Name")
                     .font(.title3)
@@ -32,7 +32,7 @@ struct AddCustomAmountView: View {
 
                 Button("Add Custom Amount") {
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.loading))
+                .buttonStyle(PrimaryButtonStyle())
                 .disabled(viewModel.shouldDisableDoneButton)
             }
             .padding()

@@ -345,6 +345,15 @@ extension StripeCardReaderService: CardReaderService {
         case .succeeded:
             return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentSucceeded)
                 .eraseToAnyPublisher()
+        case .requiresAction:
+            /// This case shouldn't happen, but Stripe advise checking the nextAction in the JSON if it does.
+            /// We're not doing that yet, because it's challenging to test. In future we
+            /// can assess whether it's needed from analytics of this specific error.
+            /// It will be tracked as `woocommerceios_card_present_collect_payment_failed`
+            // swiftlint:disable:next line_length
+            // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresAction
+            return Fail(error: CardReaderServiceError.retryNotPossibleRequiresAction)
+                    .eraseToAnyPublisher()
         @unknown default:
             return Fail(error: CardReaderServiceError.retryNotPossibleUnknownCause)
                 .eraseToAnyPublisher()

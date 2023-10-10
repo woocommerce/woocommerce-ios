@@ -10,7 +10,7 @@ struct CollapsibleProductRowCard: View {
     @State private var shouldShowCouponsInfoTooltip: Bool = false
 
     @ScaledMetric private var scale: CGFloat = 1
-    
+
     var parentOrderHasCoupons: Bool
 
     var onAddDiscount: () -> Void

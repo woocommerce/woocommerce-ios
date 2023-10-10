@@ -393,9 +393,7 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow,
-                                              parentOrderHasCoupons: viewModel.orderHasCoupons,
-                                              onAddDiscount: {
+                    CollapsibleProductRowCard(viewModel: productRow, onAddDiscount: {
                         viewModel.selectOrderItem(productRow.id)
                     })
                     .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in

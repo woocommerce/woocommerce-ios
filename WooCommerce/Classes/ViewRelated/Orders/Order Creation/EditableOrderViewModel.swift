@@ -85,10 +85,6 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM6)
     }
 
-    var orderHasCoupons: Bool {
-        paymentDataViewModel.shouldDisableAddingCoupons
-    }
-
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {

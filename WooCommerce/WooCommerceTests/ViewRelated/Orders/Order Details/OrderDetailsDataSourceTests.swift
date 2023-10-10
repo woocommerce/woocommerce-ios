@@ -388,7 +388,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 
@@ -421,7 +421,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 

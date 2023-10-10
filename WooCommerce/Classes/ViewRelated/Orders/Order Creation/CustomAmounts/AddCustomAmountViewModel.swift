@@ -9,7 +9,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
     let onCustomAmountEntered: CustomAmountEntered
 
-    init(locale: Locale = Locale.autoupdatingCurrent, 
+    init(locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)

@@ -77,11 +77,11 @@ struct CollapsibleProductRowCard: View {
             .foregroundColor(Color(.error))
             .overlay {
                 VStack(alignment: .leading) {
-                    Text("Discounts unavailable")
+                    Text(Localization.discountTooltipTitle)
                         .font(.body)
                         .foregroundColor(.white)
                         .fontWeight(.bold)
-                    Text("To add a Product Discount, please remove all Coupons from your order")
+                    Text(Localization.discountTooltipDescription)
                         .font(.body)
                         .multilineTextAlignment(.leading)
                         .lineLimit(nil)
@@ -92,10 +92,9 @@ struct CollapsibleProductRowCard: View {
                 .padding()
                 .background {
                     Color.black
-                        .cornerRadius(4)
+                        .cornerRadius(Layout.frameCornerRadius)
                 }
                 .opacity(1)
-                .padding()
                 .renderedIf(shouldShowCouponsInfoTooltip)
             }
         })
@@ -201,6 +200,12 @@ private extension CollapsibleProductRowCard {
         static let priceAfterDiscountLabel = NSLocalizedString(
             "Price after discount",
             comment: "The label that points to the updated price of a product after a discount has been applied")
+        static let discountTooltipTitle = NSLocalizedString(
+            "Discounts unavailable",
+            comment: "Title text for the product discount row informational tooltip")
+        static let discountTooltipDescription = NSLocalizedString(
+            "To add a Product Discount, please remove all Coupons from your order",
+            comment: "Description text for the product discount row informational tooltip")
     }
 }
 

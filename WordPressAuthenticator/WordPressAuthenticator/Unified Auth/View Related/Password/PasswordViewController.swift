@@ -194,6 +194,17 @@ class PasswordViewController: LoginViewController {
     }
 }
 
+// MARK: - LoginFacadeDelegate
+
+extension PasswordViewController {
+    // Used when the account has support for security keys.
+    //
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(false)
+        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+    }
+}
+
 // MARK: - Validation and Continue
 
 private extension PasswordViewController {

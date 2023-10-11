@@ -6,6 +6,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
 
     /// Private properties
     ///
+    @IBOutlet private weak var iconView: UIImageView!
     @IBOutlet private weak var button: UIButton!
     @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var borderWidth: NSLayoutConstraint!
@@ -26,7 +27,7 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         styleBorder()
     }
 
-    public func configureButton(text: String?, accessibilityTrait: UIAccessibilityTraits = .button, showBorder: Bool = false) {
+    public func configureButton(text: String?, icon: UIImage? = nil, accessibilityTrait: UIAccessibilityTraits = .button, showBorder: Bool = false) {
         button.setTitle(text, for: .normal)
 
         let buttonTitleColor = WordPressAuthenticator.shared.unifiedStyle?.textButtonColor ?? WordPressAuthenticator.shared.style.textButtonColor
@@ -36,6 +37,10 @@ class TextLinkButtonTableViewCell: UITableViewCell {
         button.accessibilityTraits = accessibilityTrait
 
         borderView.isHidden = !showBorder
+
+        iconView.image = icon
+        iconView.isHidden = icon == nil
+        iconView.tintColor = buttonTitleColor
     }
 
     /// Toggle button enabled / disabled

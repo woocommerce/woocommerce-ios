@@ -373,7 +373,12 @@ private extension TwoFAViewController {
             rows.append(.errorMessage)
         }
 
+        rows.append(.alternateInstructions)
         rows.append(.sendCode)
+
+        if loginFields.nonceInfo?.nonceWebauthn != nil {
+            rows.append(.enterSecurityKey)
+        }
     }
 
     /// Configure cells.
@@ -382,10 +387,14 @@ private extension TwoFAViewController {
         switch cell {
         case let cell as TextLabelTableViewCell where row == .instructions:
             configureInstructionLabel(cell)
+        case let cell as TextLabelTableViewCell where row == .alternateInstructions:
+            configureAlternateInstructionLabel(cell)
         case let cell as TextFieldTableViewCell:
             configureTextField(cell)
-        case let cell as TextLinkButtonTableViewCell:
+        case let cell as TextLinkButtonTableViewCell where row == .sendCode:
             configureTextLinkButton(cell)
+        case let cell as TextLinkButtonTableViewCell where row == .enterSecurityKey:
+            configureEnterSecurityKeyLinkButton(cell)
         case let cell as TextLabelTableViewCell where row == .errorMessage:
             configureErrorLabel(cell)
         default:
@@ -397,6 +406,12 @@ private extension TwoFAViewController {
     ///
     func configureInstructionLabel(_ cell: TextLabelTableViewCell) {
         cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.twoFactorInstructions)
+    }
+
+    /// Configure the alternate instruction cell.
+    ///
+    func configureAlternateInstructionLabel(_ cell: TextLabelTableViewCell) {
+        cell.configureLabel(text: WordPressAuthenticator.shared.displayStrings.twoFactorOtherFormsInstructions)
     }
 
     /// Configure the textfield cell.
@@ -419,13 +434,26 @@ private extension TwoFAViewController {
     /// Configure the link cell.
     ///
     func configureTextLinkButton(_ cell: TextLinkButtonTableViewCell) {
-        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle)
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.textCodeButtonTitle, icon: .phoneIcon)
 
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
 
             self.tracker.track(click: .sendCodeWithText)
             self.requestCode()
+        }
+    }
+
+    /// Configure the security key link cell.
+    ///
+    func configureEnterSecurityKeyLinkButton(_ cell: TextLinkButtonTableViewCell) {
+        cell.configureButton(text: WordPressAuthenticator.shared.displayStrings.securityKeyButtonTitle, icon: .keyIcon)
+
+        cell.actionHandler = { [weak self] in
+            guard let self = self else { return }
+
+            // TODO: Track .enterSecurityKey
+            // TODO: Request Security Key
         }
     }
 
@@ -466,7 +494,9 @@ private extension TwoFAViewController {
     enum Row {
         case instructions
         case code
+        case alternateInstructions
         case sendCode
+        case enterSecurityKey
         case errorMessage
 
         var reuseIdentifier: String {
@@ -475,7 +505,11 @@ private extension TwoFAViewController {
                 return TextLabelTableViewCell.reuseIdentifier
             case .code:
                 return TextFieldTableViewCell.reuseIdentifier
+            case .alternateInstructions:
+                return TextLabelTableViewCell.reuseIdentifier
             case .sendCode:
+                return TextLinkButtonTableViewCell.reuseIdentifier
+            case .enterSecurityKey:
                 return TextLinkButtonTableViewCell.reuseIdentifier
             case .errorMessage:
                 return TextLabelTableViewCell.reuseIdentifier

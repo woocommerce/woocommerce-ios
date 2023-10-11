@@ -3,7 +3,7 @@ import Networking
 
 // MARK: - BlazeAction: Defines all of the Actions supported by the BlazeStore.
 //
-public enum BlazeAction {
+public enum BlazeAction: Action {
 
     /// Retrieves and stores Blaze Campaign for a site
     ///

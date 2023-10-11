@@ -34,7 +34,7 @@ struct ProductDiscountView: View {
                                           scale: 1,
                                           productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text(name)
                         CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
                     }

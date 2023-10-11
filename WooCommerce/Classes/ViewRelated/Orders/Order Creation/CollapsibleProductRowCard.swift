@@ -19,6 +19,12 @@ struct CollapsibleProductRowCard: View {
 
     private let minusSign: String = NumberFormatter().minusSign
 
+    private func dismissTooltip() {
+        if shouldShowCouponsInfoTooltip {
+            shouldShowCouponsInfoTooltip.toggle()
+        }
+    }
+
     init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onAddDiscount = onAddDiscount
@@ -49,7 +55,9 @@ struct CollapsibleProductRowCard: View {
                     }
                 }
             }
-
+            .onTapGesture {
+                dismissTooltip()
+            }
         }, content: {
             SimplifiedProductRow(viewModel: viewModel)
             HStack {
@@ -98,6 +106,9 @@ struct CollapsibleProductRowCard: View {
                 .renderedIf(shouldShowCouponsInfoTooltip)
             }
         })
+        .onTapGesture {
+            dismissTooltip()
+        }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
         .overlay {

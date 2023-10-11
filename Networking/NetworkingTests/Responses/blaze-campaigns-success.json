@@ -52,7 +52,7 @@
                 "title": "Fried-egg Bacon Bagel",
                 "snippet": "The Fried-egg Bacon Bagel is the perfect breakfast choice! Packed with crispy...",
                 "clickUrl": "https://example.com/product/fried-egg-bacon-bagel/",
-                "imageUrl": "https://i0.wp.com/public-api.wordpress.com/wpcom/v2/wordads/dsp/api/v1/dsp/creatives/1/image?w=600&zoom=2"
+                "imageUrl": "https://exampl.com/image?w=600&zoom=2"
             },
             "image_mime_type": "image/jpeg",
             "content_image": "undefined",

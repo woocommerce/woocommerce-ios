@@ -61,7 +61,7 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
         self.siteID = siteID
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        campaignID = try container.decode(Int64.self, forKey: .campaignID)
+        campaignID = try container.decode(Int64.self, forKey: .campaignId)
         name = try container.decode(String.self, forKey: .name)
         uiStatus = try container.decode(String.self, forKey: .uiStatus)
 
@@ -69,9 +69,9 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
         contentImageURL = content.imageURL
         contentClickURL = content.clickURL
 
-        let stats = try container.decode(Stats.self, forKey: .stats)
-        totalImpressions = stats.totalImpressions
-        totalClicks = stats.totalClicks
+        let stats = try container.decode(Stats.self, forKey: .campaignStats)
+        totalImpressions = stats.impressionsTotal
+        totalClicks = stats.clicksTotal
         totalBudget = stats.totalBudget
     }
 }
@@ -80,24 +80,18 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
 //
 private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
-        case campaignID = "campaignId"
+        case campaignId
         case name
         case uiStatus
         case contentConfig
-        case stats = "campaignStats"
+        case campaignStats
     }
 
     /// Private subtype for parsing stat details.
     struct Stats: Decodable {
-        public let totalImpressions: Int64
-        public let totalClicks: Int64
+        public let impressionsTotal: Int64
+        public let clicksTotal: Int64
         public let totalBudget: Double
-
-        enum CodingKeys: String, CodingKey {
-            case totalImpressions = "impressions_total"
-            case totalClicks = "clicks_total"
-            case totalBudget = "total_budget"
-        }
     }
 
     /// Private subtype for parsing content details.

@@ -11,6 +11,7 @@ struct BlazeCampaignListMapper: Mapper {
     ///
     func map(response: Data) throws -> [BlazeCampaign] {
         let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = .convertFromSnakeCase
         decoder.userInfo = [
             .siteID: siteID
         ]

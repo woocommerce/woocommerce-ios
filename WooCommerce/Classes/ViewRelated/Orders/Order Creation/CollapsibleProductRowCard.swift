@@ -89,8 +89,9 @@ struct CollapsibleProductRowCard: View {
             .frame(maxWidth: .infinity, alignment: .center)
             .foregroundColor(Color(.error))
             .overlay {
-                TooltipView()
-                    .renderedIf(shouldShowInfoTooltip)
+                TooltipView(toolTipTitle: Localization.discountTooltipTitle,
+                            toolTipDescription: Localization.discountTooltipDescription, offset: nil)
+                .renderedIf(shouldShowInfoTooltip)
             }
         })
         .onTapGesture {
@@ -108,7 +109,20 @@ struct CollapsibleProductRowCard: View {
     }
 }
 
-private struct TooltipView: View {
+struct TooltipView: View {
+
+    private let toolTipTitle: String
+    private let toolTipDescription: String
+    private var offset: CGSize? = nil
+    private let safeAreaInsets: EdgeInsets
+
+    init(toolTipTitle: String, toolTipDescription: String, offset: CGSize?, safeAreaInsets: EdgeInsets = .zero) {
+        self.toolTipTitle = toolTipTitle
+        self.toolTipDescription = toolTipDescription
+        self.offset = offset
+        self.safeAreaInsets = safeAreaInsets
+    }
+
     var body: some View {
         ZStack(alignment: .topTrailing) {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius )
@@ -120,11 +134,11 @@ private struct TooltipView: View {
                 .offset(x: Layout.tooltipPointerOffset, y: Layout.tooltipPointerOffset)
 
             VStack(alignment: .leading) {
-                Text(Localization.discountTooltipTitle)
+                Text(toolTipTitle)
                     .font(.body)
                     .foregroundColor(.white)
                     .fontWeight(.bold)
-                Text(Localization.discountTooltipDescription)
+                Text(toolTipDescription)
                     .font(.body)
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
@@ -133,7 +147,9 @@ private struct TooltipView: View {
             }
             .padding()
         }
-        .frame(maxWidth: .infinity)
+        .offset(offset ?? CGSize(width: 0, height: 0))
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .padding(insets: safeAreaInsets)
     }
 
     private struct TooltipPointerView: Shape {
@@ -151,15 +167,6 @@ private struct TooltipView: View {
         static let frameCornerRadius: CGFloat = 4
         static let tooltipPointerSize: CGFloat = 20
         static let tooltipPointerOffset: CGFloat = -10
-    }
-
-    private enum Localization {
-        static let discountTooltipTitle = NSLocalizedString(
-            "Discounts unavailable",
-            comment: "Title text for the product discount row informational tooltip")
-        static let discountTooltipDescription = NSLocalizedString(
-            "To add a Product Discount, please remove all Coupons from your order",
-            comment: "Description text for the product discount row informational tooltip")
     }
 }
 
@@ -256,6 +263,12 @@ private extension CollapsibleProductRowCard {
         static let priceAfterDiscountLabel = NSLocalizedString(
             "Price after discount",
             comment: "The label that points to the updated price of a product after a discount has been applied")
+        static let discountTooltipTitle = NSLocalizedString(
+            "Discounts unavailable",
+            comment: "Title text for the product discount row informational tooltip")
+        static let discountTooltipDescription = NSLocalizedString(
+            "To add a Product Discount, please remove all Coupons from your order",
+            comment: "Description text for the product discount row informational tooltip")
     }
 }
 

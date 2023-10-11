@@ -177,26 +177,10 @@ private extension OrderPaymentSection {
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .overlay {
-            VStack(alignment: .leading) {
-                Text(Localization.couponsTooltipTitle)
-                    .font(.body)
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-                Text(Localization.couponsTooltipDescription)
-                    .font(.body)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .foregroundColor(.gray)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
-            .background {
-                Color.black
-                    .cornerRadius(Constants.infoTooltipCornerRadius)
-            }
-            .offset(CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding))
-            .opacity(1)
+            TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
+                        toolTipDescription: Localization.couponsTooltipDescription,
+                        offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                        safeAreaInsets: EdgeInsets())
             .padding()
             .renderedIf(shouldShowCouponsInfoTooltip)
         }

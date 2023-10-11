@@ -89,26 +89,8 @@ struct CollapsibleProductRowCard: View {
             .frame(maxWidth: .infinity, alignment: .center)
             .foregroundColor(Color(.error))
             .overlay {
-                VStack(alignment: .leading) {
-                    Text(Localization.discountTooltipTitle)
-                        .font(.body)
-                        .foregroundColor(.white)
-                        .fontWeight(.bold)
-                    Text(Localization.discountTooltipDescription)
-                        .font(.body)
-                        .multilineTextAlignment(.leading)
-                        .lineLimit(nil)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .foregroundColor(.gray)
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background {
-                    Color.black
-                        .cornerRadius(Layout.frameCornerRadius)
-                }
-                .opacity(1)
-                .renderedIf(shouldShowInfoTooltip)
+                TooltipView()
+                    .renderedIf(shouldShowInfoTooltip)
             }
         })
         .onTapGesture {
@@ -123,6 +105,61 @@ struct CollapsibleProductRowCard: View {
                         lineWidth: Layout.borderLineWidth)
         }
         .cornerRadius(Layout.frameCornerRadius)
+    }
+}
+
+private struct TooltipView: View {
+    var body: some View {
+        ZStack(alignment: .topTrailing) {
+            RoundedRectangle(cornerRadius: Layout.frameCornerRadius )
+                .fill(Color.black)
+
+            TooltipPointerView()
+                .fill(Color.black)
+                .frame(width: Layout.tooltipPointerSize, height: Layout.tooltipPointerSize)
+                .offset(x: Layout.tooltipPointerOffset, y: Layout.tooltipPointerOffset)
+
+            VStack(alignment: .leading) {
+                Text(Localization.discountTooltipTitle)
+                    .font(.body)
+                    .foregroundColor(.white)
+                    .fontWeight(.bold)
+                Text(Localization.discountTooltipDescription)
+                    .font(.body)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .foregroundColor(.gray)
+            }
+            .padding()
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private struct TooltipPointerView: Shape {
+        func path(in rect: CGRect) -> Path {
+            var path = Path()
+            path.move(to: CGPoint(x: rect.midX, y: rect.minY))
+            path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
+            path.addLine(to: CGPoint(x: rect.maxY, y: rect.maxY))
+            path.closeSubpath()
+            return path
+        }
+    }
+
+    private enum Layout {
+        static let frameCornerRadius: CGFloat = 4
+        static let tooltipPointerSize: CGFloat = 20
+        static let tooltipPointerOffset: CGFloat = -10
+    }
+
+    private enum Localization {
+        static let discountTooltipTitle = NSLocalizedString(
+            "Discounts unavailable",
+            comment: "Title text for the product discount row informational tooltip")
+        static let discountTooltipDescription = NSLocalizedString(
+            "To add a Product Discount, please remove all Coupons from your order",
+            comment: "Description text for the product discount row informational tooltip")
     }
 }
 
@@ -219,12 +256,6 @@ private extension CollapsibleProductRowCard {
         static let priceAfterDiscountLabel = NSLocalizedString(
             "Price after discount",
             comment: "The label that points to the updated price of a product after a discount has been applied")
-        static let discountTooltipTitle = NSLocalizedString(
-            "Discounts unavailable",
-            comment: "Title text for the product discount row informational tooltip")
-        static let discountTooltipDescription = NSLocalizedString(
-            "To add a Product Discount, please remove all Coupons from your order",
-            comment: "Description text for the product discount row informational tooltip")
     }
 }
 

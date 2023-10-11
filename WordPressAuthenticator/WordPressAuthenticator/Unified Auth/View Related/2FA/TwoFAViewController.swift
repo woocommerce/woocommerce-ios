@@ -1,6 +1,7 @@
 import UIKit
 import WordPressKit
 import SVProgressHUD
+import AuthenticationServices
 
 /// TwoFAViewController: view to enter 2FA code.
 ///
@@ -195,6 +196,42 @@ private extension TwoFAViewController {
         syncWPComAndPresentEpilogue(credentials: credentials)
     }
 
+    // MARK: - Security Keys
+
+    @available(iOS 15, *)
+    func loginWithSecurityKeys() {
+
+        guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
+            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+        }
+
+        configureViewLoading(true)
+
+        Task { @MainActor in
+            guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
+                return // TODO: exit flow
+            }
+
+            signChallenge(challengeInfo)
+        }
+    }
+
+    @available(iOS 15, *)
+    func signChallenge(_ challengeInfo: WebauthnChallengeInfo) {
+
+        loginFields.nonceInfo?.updateNonce(with: challengeInfo.twoStepNonce)
+        loginFields.webauthnChallengeInfo = challengeInfo
+
+        let challenge = Data(base64URLEncoded: challengeInfo.challenge) ?? Data()
+        let platformProvider = ASAuthorizationPlatformPublicKeyCredentialProvider(relyingPartyIdentifier: challengeInfo.rpID)
+        let platformKeyRequest = platformProvider.createCredentialAssertionRequest(challenge: challenge)
+
+        let authController = ASAuthorizationController(authorizationRequests: [platformKeyRequest])
+        authController.delegate = self
+        authController.presentationContextProvider = self
+        authController.performRequests()
+    }
+
     // MARK: - Code Validation
 
     enum CodeValidation {
@@ -227,6 +264,51 @@ private extension TwoFAViewController {
         configureSubmitButton(animating: false)
     }
 
+}
+
+// MARK: - Security Keys
+extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizationControllerPresentationContextProviding {
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
+
+        guard #available(iOS 15, *),
+              let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
+              let challengeInfo = loginFields.webauthnChallengeInfo,
+              let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
+            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+        }
+
+        loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
+                                                  twoStepNonce: challengeInfo.twoStepNonce,
+                                                  credentialID: credential.credentialID,
+                                                  clientDataJson: clientDataJson,
+                                                  authenticatorData: credential.rawAuthenticatorData,
+                                                  signature: credential.signature,
+                                                  userHandle: credential.userID)
+    }
+
+    // Some password managers(like 1P) don't deliver `rawClientDataJSON`. In those cases we need to assemble it manually.
+    @available(iOS 15, *)
+    func extractClientData(from credential: ASAuthorizationPlatformPublicKeyCredentialAssertion, challengeInfo: WebauthnChallengeInfo) -> Data? {
+
+        if credential.rawClientDataJSON.count > 0 {
+            return credential.rawClientDataJSON
+        }
+
+        // We build this manually because we need to guarantee this exact element order.
+        let rawClientJSON = "{\"type\":\"webauthn.get\",\"challenge\":\"\(challengeInfo.challenge)\",\"origin\":\"https://\(challengeInfo.rpID)\"}"
+        return rawClientJSON.data(using: .utf8)
+    }
+
+    func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
+        WPAuthenticatorLogError("Error signing challenge: \(error.localizedDescription)")
+        displayError(message: LocalizedText.unknownError)
+        // TODO: exit flow
+    }
+
+    func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
+        view.window!
+    }
 }
 
 // MARK: - UITextFieldDelegate
@@ -376,7 +458,7 @@ private extension TwoFAViewController {
         rows.append(.alternateInstructions)
         rows.append(.sendCode)
 
-        if loginFields.nonceInfo?.nonceWebauthn != nil {
+        if #available(iOS 15, *), loginFields.nonceInfo?.nonceWebauthn != nil {
             rows.append(.enterSecurityKey)
         }
     }
@@ -452,8 +534,10 @@ private extension TwoFAViewController {
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
 
-            // TODO: Track .enterSecurityKey
-            // TODO: Request Security Key
+            self.tracker.track(click: .enterSecurityKey)
+            if #available(iOS 15, *) {
+                self.loginWithSecurityKeys()
+            }
         }
     }
 
@@ -522,6 +606,7 @@ private extension TwoFAViewController {
         static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field.")
         static let invalidCode = NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length")
         static let smsSent = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
+        static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again later!", comment: "Generic error on the 2FA screen")
     }
 
 }

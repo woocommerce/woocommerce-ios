@@ -7,11 +7,11 @@ import Storage
 //
 public final class BlazeStore: Store {
     private let remote: BlazeRemoteProtocol
-    
+
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.writerDerivedStorage
     }()
-    
+
     init(dispatcher: Dispatcher,
          storageManager: StorageManagerType,
          network: Network,
@@ -19,7 +19,7 @@ public final class BlazeStore: Store {
         self.remote = remote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
-    
+
     /// Initializes a new BlazeStore.
     /// - Parameters:
     ///   - dispatcher: The dispatcher used to subscribe to `BlazeAction`.
@@ -34,7 +34,7 @@ public final class BlazeStore: Store {
                   network: network,
                   remote: BlazeRemote(network: network))
     }
-    
+
     // MARK: - Actions
     
     /// Registers for supported Actions.
@@ -42,7 +42,7 @@ public final class BlazeStore: Store {
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: BlazeAction.self)
     }
-    
+
     /// Receives and executes Actions.
     /// - Parameters:
     ///   - action: An action to handle. Must be a `BlazeAction`

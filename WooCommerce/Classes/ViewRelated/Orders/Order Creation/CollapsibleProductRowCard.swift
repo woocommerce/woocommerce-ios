@@ -151,6 +151,9 @@ private extension CollapsibleProductRowCard {
                         .foregroundColor(.green)
                 }
             }
+            // Redacts the discount editing row while product data is reloaded during remote sync.
+            // This avoids showing an out-of-date discount while hasn't synched
+            .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
         }
         Spacer()
             .renderedIf(!viewModel.hasDiscount)

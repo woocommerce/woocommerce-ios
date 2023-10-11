@@ -51,7 +51,7 @@ struct DiscountLineDetailsView: View {
         .padding([.leading, .trailing], Layout.padding)
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: 0.25)
+                .inset(by: Layout.inputFieldOverlayInset)
                 .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
         }
         .cornerRadius(Layout.frameCornerRadius)
@@ -71,7 +71,7 @@ struct DiscountLineDetailsView: View {
         .padding([.leading, .trailing], Layout.padding)
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: 0.25)
+                .inset(by: Layout.inputFieldOverlayInset)
                 .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
         }
         .cornerRadius(Layout.frameCornerRadius)
@@ -107,6 +107,7 @@ private extension DiscountLineDetailsView {
         static let rowHeight: CGFloat = 44
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
+        static let inputFieldOverlayInset: CGFloat = 0.25
     }
 
     enum Localization {

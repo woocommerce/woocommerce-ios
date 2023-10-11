@@ -42,7 +42,7 @@ struct ProductDiscountView: View {
                 .padding()
                 .overlay {
                     RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                        .inset(by: 0.25)
+                        .inset(by: Layout.inputFieldOverlayInset)
                         .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
                 }
                 .cornerRadius(Layout.frameCornerRadius)
@@ -109,6 +109,7 @@ private extension ProductDiscountView {
         static let borderLineWidth: CGFloat = 1
         static let productImageSize: CGFloat = 56
         static let spacing: CGFloat = 8
+        static let inputFieldOverlayInset: CGFloat = 0.25
     }
 
     enum Localization {

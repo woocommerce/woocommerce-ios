@@ -18,6 +18,9 @@ final class TwoFAViewController: LoginViewController {
     private var pasteboardChangeCountBeforeBackground: Int?
     private var shouldChangeVoiceOverFocus: Bool = false
 
+    /// Tracks when the initial challenge request was made.
+    private var initialChallengeRequestTime: Date?
+
     override var sourceTag: WordPressSupportSourceTag {
         get {
             return .login2FA
@@ -111,13 +114,21 @@ final class TwoFAViewController: LoginViewController {
     override func configureViewLoading(_ loading: Bool) {
         super.configureViewLoading(loading)
         codeField?.isEnabled = !loading
+        initialChallengeRequestTime = nil
     }
 
     override func displayRemoteError(_ error: Error) {
         displayError(message: "")
 
-        configureViewLoading(false)
         let err = error as NSError
+
+        // If the error happened because the security key challenge request started more than 1 minute ago, show a timeout error.
+        // This check is needed because the server sends a generic error.
+        if let initialChallengeRequestTime, Date().timeIntervalSince(initialChallengeRequestTime) >= 60, err.code == .zero {
+            return displaySecurityKeyErrorMessageAndExitFlow(message: LocalizedText.timeoutError)
+        }
+
+        configureViewLoading(false)
         if err.domain == "WordPressComOAuthError" && err.code == WordPressComOAuthError.invalidOneTimePassword.rawValue {
             // Invalid verification code.
             displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
@@ -202,14 +213,15 @@ private extension TwoFAViewController {
     func loginWithSecurityKeys() {
 
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
-            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+            return displaySecurityKeyErrorMessageAndExitFlow()
         }
 
         configureViewLoading(true)
+        initialChallengeRequestTime = Date()
 
         Task { @MainActor in
             guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
-                return // TODO: exit flow
+                return displaySecurityKeyErrorMessageAndExitFlow()
             }
 
             signChallenge(challengeInfo)
@@ -230,6 +242,14 @@ private extension TwoFAViewController {
         authController.delegate = self
         authController.presentationContextProvider = self
         authController.performRequests()
+    }
+
+    // When an security key error occurs, we need to restart the flow to regenerate the necessary nonces.
+    func displaySecurityKeyErrorMessageAndExitFlow(message: String = LocalizedText.unknownError) {
+        configureViewLoading(false)
+        displayErrorAlert(message, sourceTag: .loginWebauthn, onDismiss: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 
     // MARK: - Code Validation
@@ -271,11 +291,17 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 
+        // Validate necessary data
         guard #available(iOS 15, *),
               let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
-            return displayError(message: LocalizedText.unknownError) // TODO: exit flow
+            return displaySecurityKeyErrorMessageAndExitFlow()
+        }
+
+        // Validate that the submitted passkey is allowed.
+        guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64URLEncodedString()) else {
+            return displaySecurityKeyErrorMessageAndExitFlow(message: LocalizedText.invalidKey)
         }
 
         loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
@@ -302,8 +328,7 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         WPAuthenticatorLogError("Error signing challenge: \(error.localizedDescription)")
-        displayError(message: LocalizedText.unknownError)
-        // TODO: exit flow
+        displaySecurityKeyErrorMessageAndExitFlow()
     }
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
@@ -606,7 +631,11 @@ private extension TwoFAViewController {
         static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field.")
         static let invalidCode = NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length")
         static let smsSent = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
-        static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again later!", comment: "Generic error on the 2FA screen")
+        static let invalidKey = NSLocalizedString("Whoops, that security key does not seem valid. Please try again with another one",
+                                                  comment: "Error when the uses chooses an invalid security key on the 2FA screen.")
+        static let timeoutError = NSLocalizedString("Time's up, but don't worry, your security is our priority. Please try again!",
+                                                    comment: "Error when the uses takes more than 1 minute to submit a security key.")
+        static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again!", comment: "Generic error on the 2FA screen")
     }
 
 }

@@ -75,6 +75,8 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
     }
 }
 
+// MARK: Public subtypes
+//
 public extension BlazeCampaign {
     enum Status: String, Decodable {
         case scheduled
@@ -94,6 +96,8 @@ public extension BlazeCampaign {
     }
 }
 
+// MARK: Private subtypes
+//
 private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
         case campaignID = "campaignId"
@@ -107,6 +111,7 @@ private extension BlazeCampaign {
         case creativeHTML = "creativeHtml"
     }
 
+    /// Private subtype for parsing stat details.
     struct Stats: Decodable {
         public let totalImpressions: Int64
         public let totalClicks: Int64
@@ -119,29 +124,18 @@ private extension BlazeCampaign {
         }
     }
 
+    /// Private subtype for parsing content details.
     struct ContentConfig: Decodable {
-        public let title: String?
-        public let snippet: String?
         public let clickURL: String?
         public let imageURL: String?
 
-        public init(title: String?, snippet: String?, clickURL: String?, imageURL: String?) {
-            self.title = title
-            self.snippet = snippet
-            self.clickURL = clickURL
-            self.imageURL = imageURL
-        }
-
         enum CodingKeys: String, CodingKey {
-            case title
-            case snippet
             case clickURL = "clickUrl"
             case imageURL = "imageUrl"
         }
     }
 
-    // MARK: - Decoding Errors
-    //
+    /// Decoding Errors
     enum DecodingError: Error {
         case missingSiteID
     }

@@ -24,8 +24,16 @@ final class SiteAddress {
         return getValueFromSiteSettings(Constants.postalCode) ?? ""
     }
 
-    var countryCode: String {
-        return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first ?? ""
+    var countryCode: CountryCode {
+        guard let countryComponent = getCountryAndStateComponents().first else {
+            DDLogError("⛔️ Could not determine country code for site address: no country component found.")
+            return .unknown
+        }
+        guard let countryCode = CountryCode(rawValue: countryComponent) else {
+            DDLogError("⛔️ Could not determine country code for country: \(countryComponent)")
+            return .unknown
+        }
+        return countryCode
     }
 
     /// Returns the name of the country associated with the current store.
@@ -33,21 +41,23 @@ final class SiteAddress {
     /// This method will transform `HK:KOWLOON` into `Hong Kong`
     /// Will return nil if it can not figure out a valid country name
     var countryName: String? {
-        guard
-            let code = getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").first,
-            let countryCode = CountryCode(rawValue: code) else {
-                return nil
+        guard countryCode != .unknown else {
+            return nil
         }
 
         return countryCode.readableCountry
     }
 
     var state: String {
-        return getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":").last ?? ""
+        return getCountryAndStateComponents().last ?? ""
     }
 
     init(siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings) {
         self.siteSettings = siteSettings
+    }
+
+    private func getCountryAndStateComponents() -> [String] {
+        getValueFromSiteSettings(Constants.countryAndState)?.components(separatedBy: ":") ?? []
     }
 
     private func getValueFromSiteSettings(_ settingID: String) -> String? {
@@ -377,6 +387,8 @@ extension CountryCode {
             // Z
         case .ZM: return NSLocalizedString("Zambia", comment: "Country option for a site address.")
         case .ZW: return NSLocalizedString("Zimbabwe", comment: "Country option for a site address.")
+
+        case .unknown: return NSLocalizedString("Unknown country", comment: "Fallback country option for a site address.")
         }
     }
 }

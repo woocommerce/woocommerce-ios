@@ -427,7 +427,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
+                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: .US),
                                                 currencySettings: currencySettings,
                                                 siteSettings: [siteSetting],
                                                 userIsAdmin: true,
@@ -733,6 +733,6 @@ private extension OrderDetailsDataSourceTests {
 
 private extension OrderDetailsDataSourceTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US")
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }
 }

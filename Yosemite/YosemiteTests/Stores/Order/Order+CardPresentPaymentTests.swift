@@ -2,10 +2,11 @@
 
 import Foundation
 import XCTest
+import WooFoundation
 
 final class Order_CardPresentPaymentTests: XCTestCase {
     private static let currency = "USD"
-    private static let country = "US"
+    private static let country = CountryCode.US
     private let configuration = CardPresentPaymentsConfiguration(country: Order_CardPresentPaymentTests.country)
     private let eligibleOrder = Order.fake().copy(status: .pending,
                                                currency: Order_CardPresentPaymentTests.currency,

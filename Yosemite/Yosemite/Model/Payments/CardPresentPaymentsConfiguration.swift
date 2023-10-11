@@ -2,7 +2,7 @@ import Foundation
 import WooFoundation
 
 public struct CardPresentPaymentsConfiguration: Equatable {
-    public let countryCode: String
+    public let countryCode: CountryCode
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
@@ -11,7 +11,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     public let minimumAllowedChargeAmount: NSDecimalNumber
     public let stripeSmallestCurrencyUnitMultiplier: Decimal
 
-    init(countryCode: String,
+    init(countryCode: CountryCode,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
@@ -29,10 +29,10 @@ public struct CardPresentPaymentsConfiguration: Equatable {
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
     }
 
-    public init(country: String) {
+    public init(country: CountryCode) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
-        case "US":
+        case .US:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],
@@ -46,7 +46,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
-        case "CA":
+        case .CA:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent, .interacPresent],
@@ -57,7 +57,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100
             )
-        case "GB":
+        case .GB:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],
@@ -89,7 +89,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     /// Given a two character country code, returns a URL where the merchant can purchase a card reader.
     ///
     public func purchaseCardReaderUrl(utmProvider: UTMParametersProviding) -> URL {
-        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode
+        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode.rawValue
         return utmProvider.urlWithUtmParams(string: urlString) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }

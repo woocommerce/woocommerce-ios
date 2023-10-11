@@ -854,6 +854,7 @@
 		DEC51B02276AFB35009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */; };
 		DED91DDD2AD62DCB00CDCC53 /* BlazeCampaign.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DDC2AD62DCB00CDCC53 /* BlazeCampaign.swift */; };
 		DED91DDF2AD63C2800CDCC53 /* blaze-campaigns-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */; };
+		DED91DE12AD63CB900CDCC53 /* BlazeCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE02AD63CB900CDCC53 /* BlazeCampaignListMapper.swift */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -1853,6 +1854,7 @@
 		DEC51B01276AFB34009F3DF4 /* SystemStatus+DropinMustUsePlugin.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SystemStatus+DropinMustUsePlugin.swift"; sourceTree = "<group>"; };
 		DED91DDC2AD62DCB00CDCC53 /* BlazeCampaign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaign.swift; sourceTree = "<group>"; };
 		DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-campaigns-success.json"; sourceTree = "<group>"; };
+		DED91DE02AD63CB900CDCC53 /* BlazeCampaignListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListMapper.swift; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -2926,6 +2928,7 @@
 			children = (
 				EE57C10F297927A000BC31E7 /* ApplicationPassword */,
 				B567AF2820A0FA1E00AB6C62 /* Mapper.swift */,
+				DED91DE02AD63CB900CDCC53 /* BlazeCampaignListMapper.swift */,
 				B505F6CC20BEE37E00BB1B69 /* AccountMapper.swift */,
 				93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */,
 				2685C0F9263B5D5300D9EE97 /* AddOnGroupMapper.swift */,
@@ -4053,6 +4056,7 @@
 				456930AB264EB85A009ED69D /* ShippingLabelCarriersAndRatesMapper.swift in Sources */,
 				CCF48AD4262864CB0034EA83 /* ShippingLabelAccountSettings.swift in Sources */,
 				CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */,
+				DED91DE12AD63CB900CDCC53 /* BlazeCampaignListMapper.swift in Sources */,
 				0359EA0F27AAC6410048DE2D /* WCPayPaymentMethodDetails.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				57E8FED3246616AC0057CD68 /* Result+Extensions.swift in Sources */,

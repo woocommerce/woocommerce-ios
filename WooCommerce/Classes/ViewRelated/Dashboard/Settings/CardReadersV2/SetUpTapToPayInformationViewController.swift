@@ -143,12 +143,10 @@ private struct AboutTapToPayViewInNavigationView: View {
 
     var body: some View {
         NavigationView {
-            AboutTapToPayView(viewModel: AboutTapToPayViewModel(
-                configuration: CardPresentConfigurationLoader().configuration,
-                buttonAction: nil))
+            AboutTapToPayView()
             .toolbar() {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.closeButton) {
+                    Button(Localization.doneButton) {
                         dismiss()
                     }
                 }
@@ -226,9 +224,9 @@ private enum Localization {
         "Cancel",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
 
-    static let closeButton = NSLocalizedString(
-        "Close",
-        comment: "Close navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
+    static let doneButton = NSLocalizedString(
+        "Done",
+        comment: "Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
 }
 
 

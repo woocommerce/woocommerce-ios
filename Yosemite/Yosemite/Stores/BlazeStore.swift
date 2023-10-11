@@ -23,8 +23,8 @@ public final class BlazeStore: Store {
     /// Initializes a new BlazeStore.
     /// - Parameters:
     ///   - dispatcher: The dispatcher used to subscribe to `BlazeAction`.
-    ///   - storageManager: The storage layer used to store and retrieve persisted coupons.
-    ///   - network: The network layer used to fetch Coupons
+    ///   - storageManager: The storage layer used to store and retrieve persisted Blaze campaigns.
+    ///   - network: The network layer used to fetch Blaze campaigns
     ///
     public override convenience init(dispatcher: Dispatcher,
                                      storageManager: StorageManagerType,
@@ -45,7 +45,7 @@ public final class BlazeStore: Store {
     
     /// Receives and executes Actions.
     /// - Parameters:
-    ///   - action: An action to handle. Must be a `CouponAction`
+    ///   - action: An action to handle. Must be a `BlazeAction`
     ///
     override public func onAction(_ action: Action) {
         guard let action = action as? BlazeAction else {
@@ -104,7 +104,7 @@ private extension BlazeStore {
         }
     }
 
-    /// Updates or Inserts the specified Coupon entities
+    /// Updates or Inserts the specified Blaze campaign entities
     ///
     func upsertStoredCampaigns(readOnlyCampaigns: [Networking.BlazeCampaign],
                                in storage: StorageType,

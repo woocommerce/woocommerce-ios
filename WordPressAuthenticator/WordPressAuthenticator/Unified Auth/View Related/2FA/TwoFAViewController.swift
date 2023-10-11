@@ -556,7 +556,7 @@ private extension TwoFAViewController {
 
             self.tracker.track(click: .enterSecurityKey)
             if #available(iOS 15, *) {
-                loginWithSecurityKeys()
+                self.loginWithSecurityKeys()
             }
         }
     }

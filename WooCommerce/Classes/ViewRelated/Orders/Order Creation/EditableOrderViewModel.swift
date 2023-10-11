@@ -196,9 +196,10 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
             // TODO: Send amount and name to view model
             debugPrint("Adding custom amount of \(amount) with name \(name)")
+            self?.addFee(with: amount, name: name)
         })
     }()
 
@@ -335,7 +336,7 @@ final class EditableOrderViewModel: ObservableObject {
             return removeFee()
         }
 
-        addFee(formattedFeeLine)
+        setFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -1709,14 +1710,23 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(_ formattedFeeLine: String) {
-        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
-        orderSynchronizer.setFee.send(feeLine)
+    func addFee(with total: String, name: String? = nil) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+        orderSynchronizer.addFee.send(feeLine)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func setFee(_ formattedFeeLine: String) {
+        orderSynchronizer.setFee.send(OrderFactory.newOrderFee(total: formattedFeeLine))
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
     }
 
     func removeFee() {
-        orderSynchronizer.setFee.send(nil)
+        guard let fee = orderSynchronizer.order.fees.first else {
+            return
+        }
+
+        orderSynchronizer.removeFee.send(fee)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 

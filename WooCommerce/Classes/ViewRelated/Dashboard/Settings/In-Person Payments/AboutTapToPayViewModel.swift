@@ -79,16 +79,12 @@ private extension AboutTapToPayContactlessLimitViewModel {
 }
 
 private extension CardPresentPaymentsConfiguration {
-    var localizedCountryName: String {
-        return countryCode.readableCountry
-    }
-
     var limitParagraph: String {
         guard let amount = formattedContactlessLimitAmount,
               countryCode == .GB else {
             // N.B. This is not ideal, because some countries have an article, e.g. 'the United States', and some don't.
             // Since it's a fallback, this is a fair trade off, but for the ideal string, the country name should be embedded.
-            return String(format: Localization.contactlessLimitFallback, localizedCountryName)
+            return String(format: Localization.contactlessLimitFallback, countryCode.readableCountry)
         }
 
         return String(format: Localization.contactlessLimitWithAmountGB, amount)

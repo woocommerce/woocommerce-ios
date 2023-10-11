@@ -631,6 +631,18 @@ final class AuthenticationManagerTests: XCTestCase {
             XCTAssertEqual(switchStoreUseCase.destinationStoreIDs, [])
         })
     }
+
+    func test_when_handleAuthenticationUrl_is_called_with_WPCOM_credentials_then_expected_analytics_is_triggered() {
+        // Given
+        let deepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
+        let manager = AuthenticationManager(analytics: analytics)
+
+        // When
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
+
+        // Then
+        XCTAssertTrue(wasHandled)
+    }
 }
 
 private extension AuthenticationManagerTests {

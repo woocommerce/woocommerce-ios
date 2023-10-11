@@ -677,16 +677,28 @@ final class AuthenticationManagerTests: XCTestCase {
     }
 
     func test_when_handleAuthenticationUrl_is_called_with_empty_WPCOM_credentials_then_returns_false() throws {
-            // Given
-            let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail="
-            let manager = AuthenticationManager(analytics: analytics)
+        // Given
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail="
+        let manager = AuthenticationManager(analytics: analytics)
 
-            // When
-            let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+        // When
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
 
-            // Then
-            XCTAssertFalse(wasHandled)
+        // Then
+        XCTAssertFalse(wasHandled)
         }
+
+    func test_when_handleAuthenticationUrl_is_called_with_empty_store_credentials_then_returns_false() {
+        // Given
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username="
+        let manager = AuthenticationManager(analytics: analytics)
+
+        // When
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+        
+        // Then
+        XCTAssertFalse(wasHandled)
+    }
 
     func test_when_handleAuthenticationUrl_is_called_with_invalid_url_parameters_then_returns_false() throws {
         // Given

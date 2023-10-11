@@ -121,8 +121,8 @@ class AuthenticationManager: Authentication {
                   let siteURL = queryDictionary.string(forKey: "siteUrl"),
                   siteURL.isNotEmpty else {
                 DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
-                showLoginURLFailure(rootViewController: rootViewController)
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
+                showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),

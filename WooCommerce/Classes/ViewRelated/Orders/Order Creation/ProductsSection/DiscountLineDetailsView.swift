@@ -33,6 +33,7 @@ struct DiscountLineDetailsView: View {
                     .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
                     .fixedSize(horizontal: true, vertical: false)
                 }
+                .padding(.trailing)
             }
         }
     }

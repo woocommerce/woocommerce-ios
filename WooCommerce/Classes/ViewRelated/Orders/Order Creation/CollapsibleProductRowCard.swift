@@ -166,7 +166,7 @@ private extension CollapsibleProductRowCard {
             Image(systemName: "questionmark.circle")
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
         }
-        .renderedIf(!viewModel.hasDiscount)
+        .renderedIf(!viewModel.hasDiscount || shouldDisallowDiscounts)
     }
 }
 

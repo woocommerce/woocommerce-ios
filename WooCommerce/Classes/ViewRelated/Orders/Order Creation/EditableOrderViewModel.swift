@@ -1278,7 +1278,7 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
-                                            shouldDisableAddingCoupons: order.items.isEmpty,
+                                            shouldDisableAddingCoupons: order.items.isEmpty || order.discountTotal != "0.00",
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             isGiftCardEnabled: isGiftCardEnabled,
                                             isAddGiftCardActionEnabled: isAddGiftCardActionEnabled,

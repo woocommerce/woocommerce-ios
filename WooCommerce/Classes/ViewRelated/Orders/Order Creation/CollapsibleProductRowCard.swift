@@ -7,7 +7,7 @@ struct CollapsibleProductRowCard: View {
 
     /// Indicates if the coupons informational tooltip should be shown or not.
     ///
-    @State private var shouldShowCouponsInfoTooltip: Bool = false
+    @State private var shouldShowInfoTooltip: Bool = false
 
     @ScaledMetric private var scale: CGFloat = 1
 
@@ -20,8 +20,8 @@ struct CollapsibleProductRowCard: View {
     private let minusSign: String = NumberFormatter().minusSign
 
     private func dismissTooltip() {
-        if shouldShowCouponsInfoTooltip {
-            shouldShowCouponsInfoTooltip.toggle()
+        if shouldShowInfoTooltip {
+            shouldShowInfoTooltip.toggle()
         }
     }
 
@@ -103,7 +103,7 @@ struct CollapsibleProductRowCard: View {
                         .cornerRadius(Layout.frameCornerRadius)
                 }
                 .opacity(1)
-                .renderedIf(shouldShowCouponsInfoTooltip)
+                .renderedIf(shouldShowInfoTooltip)
             }
         })
         .onTapGesture {
@@ -150,7 +150,7 @@ private extension CollapsibleProductRowCard {
         Spacer()
             .renderedIf(!viewModel.hasDiscount)
         Button {
-            shouldShowCouponsInfoTooltip.toggle()
+            shouldShowInfoTooltip.toggle()
         } label: {
             Image(systemName: "questionmark.circle")
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))

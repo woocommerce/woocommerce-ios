@@ -340,7 +340,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
     }
 
-    func test_view_model_is_updated_when_product_is_removed_from_order() {
+    func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -356,6 +356,28 @@ final class EditableOrderViewModelTests: XCTestCase {
         let expectedRemainingRow = viewModel.productRows[1]
         let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
         viewModel.removeItemFromOrder(itemToRemove)
+
+        // Then
+        XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))
+        XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
+    }
+
+    func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() {
+        // Given
+        let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
+        let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        storageManager.insertProducts([product0, product1])
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // Given products are added to order
+        productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
+        productSelectorViewModel.changeSelectionStateForProduct(with: product1.productID)
+        productSelectorViewModel.completeMultipleSelection()
+
+        // When
+        let expectedRemainingRow = viewModel.productRows[1]
+        let itemToRemove = OrderItem.fake().copy(itemID: viewModel.productRows[0].id)
+        viewModel.removeItemFromOrder(itemToRemove.itemID)
 
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product0.productID }))

@@ -67,9 +67,34 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
     }
 
-    /// Price label based on a product's price and quantity.
+    /// Provides a stock quantity label when applicable
     ///
-    private var priceLabel: String? {
+    var stockQuantityLabel: String {
+        createStockQuantityText()
+    }
+
+    /// Formatted price label for an individual product
+    ///
+    var priceLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price)
+    }
+
+    /// Formatted price label from multiplying product's price and quantity.
+    ///
+    var priceBeforeDiscountsLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
+        return currencyFormatter.formatAmount(productSubtotal)
+    }
+
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    ///
+    var priceAfterDiscountsLabel: String? {
         guard let price = price else {
             return nil
         }
@@ -100,7 +125,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        [stockOrAttributesLabel, priceLabel, variationsLabel]
+        [stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }
@@ -117,7 +142,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        [name, stockOrAttributesLabel, priceLabel, variationsLabel, skuLabel]
+        [name, stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
             .joined(separator: ". ")
     }
@@ -311,6 +336,22 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Create the stock text based on a product's stock status/quantity.
     ///
     private func createStockText() -> String {
+        switch stockStatus {
+        case .inStock:
+            if let stockQuantity = stockQuantity, manageStock {
+                let localizedStockQuantity = NumberFormatter.localizedString(from: stockQuantity as NSDecimalNumber, number: .decimal)
+                return String.localizedStringWithFormat(Localization.stockFormat, localizedStockQuantity)
+            } else {
+                return stockStatus.description
+            }
+        default:
+            return stockStatus.description
+        }
+    }
+
+    /// Returns a text-based stock quantity if there's stock, or a fall-back when stock quantity doesn't apply
+    ///
+    private func createStockQuantityText() -> String {
         switch stockStatus {
         case .inStock:
             if let stockQuantity = stockQuantity, manageStock {

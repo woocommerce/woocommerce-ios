@@ -58,7 +58,7 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: nonSubscriptionProduct)
         storageManager.insertSampleOrder(readOnlyOrder: cppEligibleOrder)
 
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
 
         // When
         let result = waitFor { promise in

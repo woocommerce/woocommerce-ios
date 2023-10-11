@@ -12,7 +12,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private var onboardingCache: CardPresentPaymentOnboardingStateCache!
     private var sut: TapToPayReconnectionController!
     private let sampleSiteID: Int64 = 12891
-    private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: "US")
+    private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
     override func setUp() {
         let sessionManager = SessionManager.makeForTesting()

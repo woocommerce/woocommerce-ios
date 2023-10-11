@@ -1,12 +1,13 @@
 import SwiftUI
+import WooFoundation
 
 /// Shows a header label and a list of countries for selection in the store creation profiler flow.
 struct StoreCreationCountrySectionView: View {
     private let header: String
-    private let countryCodes: [SiteAddress.CountryCode]
+    private let countryCodes: [CountryCode]
     @ObservedObject private var viewModel: StoreCreationCountryQuestionViewModel
 
-    init(header: String, countryCodes: [SiteAddress.CountryCode], viewModel: StoreCreationCountryQuestionViewModel) {
+    init(header: String, countryCodes: [CountryCode], viewModel: StoreCreationCountryQuestionViewModel) {
         self.header = header
         self.countryCodes = countryCodes
         self.viewModel = viewModel

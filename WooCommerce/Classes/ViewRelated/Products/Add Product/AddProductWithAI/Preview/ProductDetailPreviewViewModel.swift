@@ -14,6 +14,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
 
     @Published private(set) var productName: String
     @Published private(set) var productDescription: String?
+    @Published private(set) var productShortDescription: String?
     @Published private(set) var productType: String?
     @Published private(set) var productPrice: String?
     @Published private(set) var productCategories: String?
@@ -97,8 +98,8 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         isGeneratingDetails = true
         errorState = .none
         do {
+            try await fetchPrerequisites()
             async let language = try identifyLanguage()
-            await fetchSettingsIfNeeded()
             let aiTone = userDefaults.aiTone(for: siteID)
             let product = try await generateProduct(language: language,
                                                     tone: aiTone)
@@ -122,9 +123,10 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         errorState = .none
         isSavingProduct = true
         do {
-            let newProduct = try await saveProductRemotely(product: generatedProduct)
+            let productUpdatedWithRemoteCategoriesAndTags = try await saveLocalCategoriesAndTags(generatedProduct)
+            let remoteProduct = try await saveProductRemotely(product: productUpdatedWithRemoteCategoriesAndTags)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
-            onProductCreated(newProduct)
+            onProductCreated(remoteProduct)
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
@@ -155,7 +157,8 @@ private extension ProductDetailPreviewViewModel {
 
     func updateProductDetails(with product: Product) {
         productName = product.name
-        productDescription = product.fullDescription ?? product.shortDescription
+        productShortDescription = product.shortDescription
+        productDescription = product.fullDescription
         productType = product.virtual ? Localization.virtualProductType : Localization.physicalProductType
 
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
@@ -267,6 +270,21 @@ private extension ProductDetailPreviewViewModel {
 //
 private extension ProductDetailPreviewViewModel {
     @MainActor
+    func fetchPrerequisites() async throws {
+        await withThrowingTaskGroup(of: Void.self) { group in
+            group.addTask {
+                await self.fetchSettingsIfNeeded()
+            }
+            group.addTask {
+                try await self.synchronizeAllCategories()
+            }
+            group.addTask {
+                try await self.synchronizeAllTags()
+            }
+        }
+    }
+
+    @MainActor
     func identifyLanguage() async throws -> String {
         do {
             let productInfo = {
@@ -301,8 +319,33 @@ private extension ProductDetailPreviewViewModel {
                                                     existingCategories: existingCategories,
                                                     existingTags: existingTags)
 
-        let categories = existingCategories.filter({ aiProduct.categories.contains($0.name) })
-        let tags = existingTags.filter({ aiProduct.tags.contains($0.name) })
+        var categories = [ProductCategory]()
+        aiProduct.categories.forEach { aiCategory in
+            // If there exists a `ProductCategory` matching the AI suggestion
+            if let match = existingCategories.first(where: { $0.name == aiCategory }) {
+                categories.append(match)
+            } else {
+                /// Create a local `ProductCategory` with categoryID as 0, as there is no existing category matching the AI suggestion
+                ///
+                /// We will later upload the local category using `saveLocalCategoriesAndTags` method
+                ///
+                categories.append(ProductCategory(categoryID: 0, siteID: siteID, parentID: 0, name: aiCategory, slug: ""))
+            }
+        }
+
+        var tags = [ProductTag]()
+        aiProduct.tags.forEach { aiTag in
+            // If there exists a `ProductTag` matching the AI suggestion
+            if let match = existingTags.first(where: { $0.name == aiTag }) {
+                tags.append(match)
+            } else {
+                /// Create a local `ProductTag` with tagID as 0, as there is no existing tag matching the AI suggestion
+                ///
+                /// We will later upload the local tag using `saveLocalCategoriesAndTags` method
+                ///
+                tags.append(ProductTag(siteID: siteID, tagID: 0, name: aiTag, slug: ""))
+            }
+        }
 
         return Product(siteID: siteID,
                        aiProduct: aiProduct,
@@ -333,9 +376,95 @@ private extension ProductDetailPreviewViewModel {
     }
 }
 
+// MARK: - Categories
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func synchronizeAllCategories() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductCategoryAction.synchronizeProductCategories(siteID: siteID,
+                                                                               fromPageNumber: Default.firstPageNumber,
+                                                                               onCompletion: { result in
+                continuation.resume()
+            }))
+        }
+    }
+
+    @MainActor
+    func addCategories(_ names: [String]) async throws -> [ProductCategory] {
+        guard names.isNotEmpty else {
+            return []
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductCategoryAction.addProductCategories(siteID: siteID,
+                                                                       names: names,
+                                                                       parentID: nil,
+                                                                       onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
+// MARK: - Tags
+//
+private extension ProductDetailPreviewViewModel {
+    @MainActor
+    func synchronizeAllTags() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductTagAction.synchronizeAllProductTags(siteID: siteID,
+                                                                       onCompletion: { result in
+                continuation.resume()
+            }))
+        }
+    }
+
+    @MainActor
+    func addTags(_ names: [String]) async throws -> [ProductTag] {
+        guard names.isNotEmpty else {
+            return []
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductTagAction.addProductTags(siteID: siteID,
+                                                            tags: names,
+                                                            onCompletion: { result in
+                continuation.resume(with: result)
+            }))
+        }
+    }
+}
+
 // MARK: - Saving product
 //
 private extension ProductDetailPreviewViewModel {
+    /// Saves the local categories and tags to remote
+    ///
+    @MainActor
+    func saveLocalCategoriesAndTags(_ product: Product) async throws -> Product {
+        async let categories: [ProductCategory] = try await {
+            // Find the categories with ID as 0 (local items) and add those to remote
+            let categoriesToBeAdded = product.categories.filter { $0.categoryID == 0 }
+            let newCategories = try await addCategories(categoriesToBeAdded.map { $0.name })
+
+            // Combine the existing categories with the new remote categories
+            let existingCategories = product.categories.filter { $0.categoryID != 0 }
+            return existingCategories + newCategories
+        }()
+
+        async let tags: [ProductTag] = try await {
+            // Find the tags with ID as 0 (local items) and add those to remote
+            let tagsToBeAdded = product.tags.filter { $0.tagID == 0 }
+            let newTags = try await addTags(tagsToBeAdded.map { $0.name })
+
+            // Combine the existing tags with the new remote tags
+            let existingTags = product.tags.filter { $0.tagID != 0 }
+            return existingTags + newTags
+        }()
+
+        return product.copy(categories: try await categories,
+                            tags: try await tags)
+    }
+
     /// Saves the provided product remotely.
     ///
     @MainActor
@@ -399,5 +528,13 @@ private extension ProductDetailPreviewViewModel {
             "There was an error saving product details. Please try again.",
             comment: "Error message when saving product as draft on the add product with AI Preview screen."
         )
+    }
+}
+
+// MARK: - Constants
+//
+private extension ProductDetailPreviewViewModel {
+    enum Default {
+        public static let firstPageNumber = 1
     }
 }

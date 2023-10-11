@@ -595,7 +595,7 @@ private extension ShippingLabelFormViewModel {
                               city: siteAddress.city,
                               state: siteAddress.state,
                               postcode: siteAddress.postalCode,
-                              country: siteAddress.countryCode,
+                              country: siteAddress.countryCode.rawValue,
                               phone: userDefaults[.storePhoneNumber] ?? "",
                               email: account?.email)
         return fromAddressToShippingLabelAddress(address: address)
@@ -713,7 +713,7 @@ private extension ShippingLabelFormViewModel {
                       value: item.value,
                       weight: item.weight,
                       hsTariffNumber: "",
-                      originCountry: originAddress?.country ?? SiteAddress().countryCode,
+                      originCountry: originAddress?.country ?? SiteAddress().countryCode.rawValue,
                       productID: item.productOrVariationID)
             }
             return ShippingLabelCustomsForm(packageID: package.id, packageName: packageName, items: items)

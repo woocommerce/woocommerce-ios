@@ -632,7 +632,7 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
-    func test_when_handleAuthenticationUrl_is_called_with_WPCOM_credentials_then_expected_analytics_is_triggered() {
+    func test_when_handleAuthenticationUrl_is_called_with_WPCOM_credentials_then_expected_analytics_is_triggered() throws {
         // Given
         let deepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
@@ -642,6 +642,21 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         XCTAssertTrue(wasHandled)
+        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_app_login_link_success" }))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
+        XCTAssertEqual(eventProperties["flow"] as? String, "wp_com")
+    }
+
+    func test_when_handleAuthenticationUrl_is_called_with_empty_WPCOM_credentials_then_returns_false() throws {
+        // Given
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail="
+        let manager = AuthenticationManager(analytics: analytics)
+
+        // When
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+
+        // Then
+        XCTAssertFalse(wasHandled)
     }
 }
 

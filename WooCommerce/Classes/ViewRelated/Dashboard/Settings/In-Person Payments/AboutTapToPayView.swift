@@ -70,7 +70,7 @@ struct AboutTapToPayView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             AboutTapToPayView(viewModel: AboutTapToPayViewModel(
-                configuration: .init(country: "GB"),
+                configuration: .init(country: .GB),
                 buttonAction: { }))
         }
     }

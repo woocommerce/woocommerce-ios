@@ -29,7 +29,7 @@ class CardPresentConfigurationTests: XCTestCase {
 
     // MARK: - United Kingdom Tests
     func test_configuration_for_United_Kingdom() throws {
-        let configuration = CardPresentPaymentsConfiguration(country: "GB", shouldAllowTapToPayInUK: true)
+        let configuration = CardPresentPaymentsConfiguration(country: .GB, shouldAllowTapToPayInUK: true)
         XCTAssertTrue(configuration.isSupportedCountry)
         XCTAssertEqual(configuration.currencies, [.GBP])
         XCTAssertEqual(configuration.paymentGateways, [Constants.PaymentGateway.wcpay])

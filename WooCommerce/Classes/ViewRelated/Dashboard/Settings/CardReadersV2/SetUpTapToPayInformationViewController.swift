@@ -68,6 +68,7 @@ struct SetUpTapToPayInformationView: View {
     @ObservedObject var viewModel: SetUpTapToPayInformationViewModel
     var showURL: ((URL) -> Void)? = nil
     var learnMoreUrl: URL? = nil
+    @State var showingAboutTapToPay: Bool = false
 
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
@@ -123,21 +124,36 @@ struct SetUpTapToPayInformationView: View {
                     viewModel: LearnMoreViewModel(
                         formatText: Localization.learnMore,
                         tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
-                .customOpenURL(action: { url in
-                    switch url {
-                    case LearnMoreViewModel.learnMoreURL:
-                        if let url = learnMoreUrl {
-                            showURL?(url)
-                        }
-                    default:
-                        showURL?(url)
-                    }
+                .customOpenURL(action: { _ in
+                    showingAboutTapToPay = true
                 })
             }
             .scrollVerticallyIfNeeded()
         }
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
+        .sheet(isPresented: $showingAboutTapToPay) {
+            AboutTapToPayViewInNavigationView()
+        }
+    }
+}
+
+private struct AboutTapToPayViewInNavigationView: View {
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationView {
+            AboutTapToPayView(viewModel: AboutTapToPayViewModel(
+                configuration: CardPresentConfigurationLoader().configuration,
+                buttonAction: nil))
+            .toolbar() {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.closeButton) {
+                        dismiss()
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -209,6 +225,10 @@ private enum Localization {
     static let cancelButton = NSLocalizedString(
         "Cancel",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
+
+    static let closeButton = NSLocalizedString(
+        "Close",
+        comment: "Close navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
 }
 
 

@@ -40,21 +40,41 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
     func test_doneButtonPressed_then_passes_amount_and_name() {
         // Given
+        let amount = "23"
+        let name = "Custom amount name"
+
         var passedName: String?
         var passedAmount: String?
+
         let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
             passedAmount = amount
             passedName = name
         })
 
-        viewModel.formattableAmountTextFieldViewModel.amount = "$23"
-        viewModel.name = "Custom amount name"
-        
+        viewModel.formattableAmountTextFieldViewModel.amount = amount
+        viewModel.name = name
+
         // When
         viewModel.doneButtonPressed()
 
         // Then
-        XCTAssertEqual(passedName, viewModel.name)
-        XCTAssertEqual(passedAmount, viewModel.formattableAmountTextFieldViewModel.amount)
+        XCTAssertEqual(passedName, name)
+        XCTAssertEqual(passedAmount, amount)
+    }
+
+    func test_reset_then_reset_values() {
+        // Given
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _ in })
+        viewModel.formattableAmountTextFieldViewModel.amount = "2"
+        viewModel.name = "test"
+        viewModel.shouldDisableDoneButton = false
+
+        // When
+        viewModel.reset()
+
+        // Then
+        XCTAssertTrue(viewModel.formattableAmountTextFieldViewModel.amount.isEmpty)
+        XCTAssertTrue(viewModel.name.isEmpty)
+        XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 }

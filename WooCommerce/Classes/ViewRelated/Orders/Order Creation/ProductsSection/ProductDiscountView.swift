@@ -82,7 +82,7 @@ struct ProductDiscountView: View {
                     .renderedIf(discountViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(Localization.addDiscountLabel))
+            .navigationTitle(Text(productRowViewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -128,6 +128,9 @@ private extension ProductDiscountView {
         static let addDiscountLabel = NSLocalizedString(
             "Add Discount",
             comment: "Text for the button to add a discount to a product in the order screen")
+        static let editDiscountLabel = NSLocalizedString(
+            "Edit Discount",
+            comment: "Text for the button to edit an existing discount to a product in the order screen")
         static let discountLabel = NSLocalizedString(
                     "Discount",
                     comment: "Text in the product row card when a discount has been added to a product")

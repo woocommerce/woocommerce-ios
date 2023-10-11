@@ -20,13 +20,13 @@
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="addOns" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="ProductAddOn" inverseName="group" inverseEntity="ProductAddOn"/>
     </entity>
-    <entity name="BlazeCampaign" representedClassName="BlazeCampaign" syncable="YES" codeGenerationType="class">
+    <entity name="BlazeCampaign" representedClassName="BlazeCampaign" syncable="YES">
         <attribute name="campaignID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="contentClickURL" optional="YES" attributeType="String"/>
         <attribute name="contentImageURL" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
+        <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="status" attributeType="String" defaultValueString=""/>
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="totalClicks" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalImpressions" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

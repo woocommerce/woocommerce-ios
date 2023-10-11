@@ -391,9 +391,25 @@ private struct ProductsSection: View {
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
                 }
+                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
 
                 ForEach(viewModel.productRows) { productRow in
+                    CollapsibleProductRowCard(viewModel: productRow,
+                                              shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                              onAddDiscount: {
+                        viewModel.selectOrderItem(productRow.id)
+                    })
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
+                        ProductDiscountView(imageURL: productRow.imageURL,
+                                            name: productRow.name,
+                                            stockLabel: productRow.stockQuantityLabel,
+                                            productRowViewModel: productRow,
+                                            discountViewModel: productViewModel.discountDetailsViewModel)
+                    })
+                    .renderedIf(viewModel.shouldShowCollapsibleProductRows)
+                    .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
+                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                         .onTapGesture {
                             viewModel.selectOrderItem(productRow.id)
                         }
@@ -403,6 +419,7 @@ private struct ProductsSection: View {
                         .redacted(reason: viewModel.disabled ? .placeholder : [] )
 
                     Divider()
+                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                 }
 
                 HStack {
@@ -468,6 +485,13 @@ private struct ProductsSection: View {
                     })
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
+
+                HStack {
+                    Button(OrderForm.Localization.addCustomAmount) {}
+                    .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
+                    .buttonStyle(PlusButtonStyle())
+                }
+                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
@@ -509,6 +533,8 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
+        static let addCustomAmount = NSLocalizedString("Add custom amount",
+                                                   comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
@@ -531,6 +557,7 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
+        static let addCustomAmountIdentifier = "new-order-add-custom-amount-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
     }
 }

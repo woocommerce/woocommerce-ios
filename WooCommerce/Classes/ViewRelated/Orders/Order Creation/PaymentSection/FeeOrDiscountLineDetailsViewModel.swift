@@ -120,6 +120,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
     }
 
+    /// Returns true when a discount is entered, either fixed or percentage.
+    ///
+    var hasInputAmount: Bool {
+        amount.isNotEmpty || percentage.isNotEmpty
+    }
+
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
@@ -140,6 +146,17 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     ///
     var finalAmountString: String? {
         currencyFormatter.formatAmount(finalAmountDecimal)
+    }
+
+    /// Returns the formatted string value of a price, substracting the current stored discount entered by the merchant
+    ///
+    func calculatePriceAfterDiscount(_ price: String) -> String {
+        guard let price = currencyFormatter.convertToDecimal(price),
+              let discount = currencyFormatter.convertToDecimal(finalAmountString ?? "") else {
+            return ""
+        }
+        let priceAfterDiscount = price.subtracting(discount)
+        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
     }
 
     /// The base amount to apply percentage fee or discount on.

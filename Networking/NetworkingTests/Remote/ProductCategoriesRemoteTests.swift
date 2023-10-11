@@ -119,6 +119,45 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    // MARK: - Batch creation of categories
+
+    func test_createProductCategories_returns_product_categories_on_success() throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/categories/batch", filename: "product-categories-created")
+
+        // When
+        let result: Result<[ProductCategory], Error> = waitFor { promise in
+            remote.createProductCategories(for: self.sampleSiteID, names: ["Headphone"], parentID: 0) { aResult in
+                promise(aResult)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let categories = try XCTUnwrap(result.get())
+        XCTAssertEqual(categories.first?.name, "Headphone")
+    }
+
+    func test_createProductCategories_properly_relays_errors() throws {
+        // Given
+        let remote = ProductCategoriesRemote(network: network)
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: "products/categories/batch", error: error)
+
+        // When
+        let result: Result<[ProductCategory], Error> = waitFor {promise in
+            remote.createProductCategories(for: self.sampleSiteID, names: ["Headphone"], parentID: 0) { aResult in
+                promise(aResult)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
     func test_loadProductCategory_then_returns_parsed_ProductCategory() {
         // Given
         let remote = ProductCategoriesRemote(network: network)

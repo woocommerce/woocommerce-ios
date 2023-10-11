@@ -388,7 +388,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 
@@ -421,13 +421,13 @@ final class OrderDetailsDataSourceTests: XCTestCase {
             .copy(
                 siteID: sampleSiteID,
                 settingID: "woocommerce_default_country",
-                value: SiteAddress.CountryCode.US.rawValue,
+                value: CountryCode.US.rawValue,
                 settingGroupKey: SiteSettingGroup.general.rawValue
             )
 
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: "US"),
+                                                cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration(country: .US),
                                                 currencySettings: currencySettings,
                                                 siteSettings: [siteSetting],
                                                 userIsAdmin: true,
@@ -647,7 +647,8 @@ private extension OrderDetailsDataSourceTests {
                   totalTax: "1",
                   attributes: [],
                   addOns: [],
-                  parent: nil)
+                  parent: nil,
+                  bundleConfiguration: [])
     }
 
     func makeRefund(refundID: Int64, orderID: Int64, siteID: Int64) -> Refund {
@@ -732,6 +733,6 @@ private extension OrderDetailsDataSourceTests {
 
 private extension OrderDetailsDataSourceTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US")
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }
 }

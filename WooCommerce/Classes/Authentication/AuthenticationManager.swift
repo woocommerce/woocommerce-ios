@@ -118,25 +118,29 @@ class AuthenticationManager: Authentication {
 
         if isAppLoginUrl(url) {
             guard let queryDictionary = url.query?.dictionaryFromQueryString(),
-            let siteURL = queryDictionary.string(forKey: "siteUrl") else {
-                print("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                  let siteURL = queryDictionary.string(forKey: "siteUrl"),
+                  siteURL.isNotEmpty else {
+                DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                showLoginURLFailure(rootViewController: rootViewController)
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
                 return false
             }
-
-            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail") {
+            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
+               wpcomEmail.isNotEmpty {
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
                 showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
                 return true
             }
 
-            if let wporgUsername = queryDictionary.string(forKey: "username") {
+            if let wporgUsername = queryDictionary.string(forKey: "username"),
+               wporgUsername.isNotEmpty {
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
                 showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
                 return true
             }
         }
 
+        showLoginURLFailure(rootViewController: rootViewController)
         analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
         return false
     }
@@ -157,9 +161,17 @@ class AuthenticationManager: Authentication {
         NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
     }
 
+    private func showLoginURLFailure(rootViewController: UIViewController) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = rootViewController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: AuthenticationConstants.appLinkLoginFailureMessage))
+    }
+
     private func isAppLoginUrl(_ url: URL) -> Bool {
-        // TODO-jc: move to constants
-        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)://app-login"
+        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)\(WooConstants.appLoginURLPrefix)"
         return url.absoluteString.hasPrefix(expectedPrefix)
     }
 

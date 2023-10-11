@@ -223,7 +223,7 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
         ], viewModel.addOns)
     }
 
-    func test_subtitle_does_not_include_attributes_when_addOns_are_available() {
+    func test_subtitle_includes_non_addOn_attributes_when_addOns_are_available() {
         // Given
         let item = makeAggregateOrderItem(quantity: 2,
                                           price: 3.5,
@@ -231,7 +231,8 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                           sku: "",
                                           attributes: [
                                             .init(metaID: 2, name: "Woo", value: "Wao"),
-                                            .init(metaID: 25, name: "Wooo", value: "Waoo")
+                                            .init(metaID: 25, name: "Wooo", value: "Waoo"),
+                                            .init(metaID: 2, name: "Sugar level", value: "25%")
                                           ])
             .copy(addOns: [.init(addOnID: 1, key: "Sugar level", value: "25%")])
 
@@ -243,7 +244,7 @@ final class ProductDetailsCellViewModelTests: XCTestCase {
                                                     isChildWithParent: true)
 
         // Then
-        let subtitle = String.localizedStringWithFormat(Localization.subtitleFormat, "2", "$3.50")
+        let subtitle = String.localizedStringWithFormat(Localization.subtitleWithAttributesFormat, "Wao, Waoo", "2", "$3.50")
         XCTAssertEqual(viewModel.subtitle, subtitle)
         XCTAssertTrue(viewModel.addOns.addOns.isNotEmpty)
     }
@@ -270,7 +271,8 @@ private extension ProductDetailsCellViewModelTests {
                   totalTax: "",
                   attributes: attributes,
                   addOns: [],
-                  parent: nil)
+                  parent: nil,
+                  bundleConfiguration: [])
     }
 
     func makeAggregateOrderItem(quantity: Decimal,

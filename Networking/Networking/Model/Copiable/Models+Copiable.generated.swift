@@ -4,6 +4,60 @@ import Codegen
 import Foundation
 
 
+extension Networking.AIProduct {
+    public func copy(
+        name: CopiableProp<String> = .copy,
+        description: CopiableProp<String> = .copy,
+        shortDescription: CopiableProp<String> = .copy,
+        virtual: CopiableProp<Bool> = .copy,
+        shipping: CopiableProp<AIProduct.Shipping> = .copy,
+        tags: CopiableProp<[String]> = .copy,
+        price: CopiableProp<String> = .copy,
+        categories: CopiableProp<[String]> = .copy
+    ) -> Networking.AIProduct {
+        let name = name ?? self.name
+        let description = description ?? self.description
+        let shortDescription = shortDescription ?? self.shortDescription
+        let virtual = virtual ?? self.virtual
+        let shipping = shipping ?? self.shipping
+        let tags = tags ?? self.tags
+        let price = price ?? self.price
+        let categories = categories ?? self.categories
+
+        return Networking.AIProduct(
+            name: name,
+            description: description,
+            shortDescription: shortDescription,
+            virtual: virtual,
+            shipping: shipping,
+            tags: tags,
+            price: price,
+            categories: categories
+        )
+    }
+}
+
+extension Networking.AIProduct.Shipping {
+    public func copy(
+        length: CopiableProp<String> = .copy,
+        weight: CopiableProp<String> = .copy,
+        width: CopiableProp<String> = .copy,
+        height: CopiableProp<String> = .copy
+    ) -> Networking.AIProduct.Shipping {
+        let length = length ?? self.length
+        let weight = weight ?? self.weight
+        let width = width ?? self.width
+        let height = height ?? self.height
+
+        return Networking.AIProduct.Shipping(
+            length: length,
+            weight: weight,
+            width: width,
+            height: height
+        )
+    }
+}
+
 extension Networking.AddOnGroup {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
@@ -102,6 +156,42 @@ extension Networking.Announcement {
             isLocalized: isLocalized,
             responseLocale: responseLocale,
             features: features
+        )
+    }
+}
+
+extension Networking.BlazeCampaign {
+    public func copy(
+        siteID: CopiableProp<Int64> = .copy,
+        campaignID: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        uiStatus: CopiableProp<String> = .copy,
+        contentImageURL: NullableCopiableProp<String> = .copy,
+        contentClickURL: NullableCopiableProp<String> = .copy,
+        totalImpressions: CopiableProp<Int64> = .copy,
+        totalClicks: CopiableProp<Int64> = .copy,
+        totalBudget: CopiableProp<Double> = .copy
+    ) -> Networking.BlazeCampaign {
+        let siteID = siteID ?? self.siteID
+        let campaignID = campaignID ?? self.campaignID
+        let name = name ?? self.name
+        let uiStatus = uiStatus ?? self.uiStatus
+        let contentImageURL = contentImageURL ?? self.contentImageURL
+        let contentClickURL = contentClickURL ?? self.contentClickURL
+        let totalImpressions = totalImpressions ?? self.totalImpressions
+        let totalClicks = totalClicks ?? self.totalClicks
+        let totalBudget = totalBudget ?? self.totalBudget
+
+        return Networking.BlazeCampaign(
+            siteID: siteID,
+            campaignID: campaignID,
+            name: name,
+            uiStatus: uiStatus,
+            contentImageURL: contentImageURL,
+            contentClickURL: contentClickURL,
+            totalImpressions: totalImpressions,
+            totalClicks: totalClicks,
+            totalBudget: totalBudget
         )
     }
 }
@@ -720,7 +810,8 @@ extension Networking.OrderItem {
         totalTax: CopiableProp<String> = .copy,
         attributes: CopiableProp<[OrderItemAttribute]> = .copy,
         addOns: CopiableProp<[OrderItemProductAddOn]> = .copy,
-        parent: NullableCopiableProp<Int64> = .copy
+        parent: NullableCopiableProp<Int64> = .copy,
+        bundleConfiguration: CopiableProp<[OrderItemBundleItem]> = .copy
     ) -> Networking.OrderItem {
         let itemID = itemID ?? self.itemID
         let name = name ?? self.name
@@ -738,6 +829,7 @@ extension Networking.OrderItem {
         let attributes = attributes ?? self.attributes
         let addOns = addOns ?? self.addOns
         let parent = parent ?? self.parent
+        let bundleConfiguration = bundleConfiguration ?? self.bundleConfiguration
 
         return Networking.OrderItem(
             itemID: itemID,
@@ -755,7 +847,8 @@ extension Networking.OrderItem {
             totalTax: totalTax,
             attributes: attributes,
             addOns: addOns,
-            parent: parent
+            parent: parent,
+            bundleConfiguration: bundleConfiguration
         )
     }
 }
@@ -774,6 +867,33 @@ extension Networking.OrderItemAttribute {
             metaID: metaID,
             name: name,
             value: value
+        )
+    }
+}
+
+extension Networking.OrderItemBundleItem {
+    public func copy(
+        bundledItemID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
+        quantity: CopiableProp<Decimal> = .copy,
+        isOptionalAndSelected: NullableCopiableProp<Bool> = .copy,
+        variationID: NullableCopiableProp<Int64> = .copy,
+        variationAttributes: NullableCopiableProp<[ProductVariationAttribute]> = .copy
+    ) -> Networking.OrderItemBundleItem {
+        let bundledItemID = bundledItemID ?? self.bundledItemID
+        let productID = productID ?? self.productID
+        let quantity = quantity ?? self.quantity
+        let isOptionalAndSelected = isOptionalAndSelected ?? self.isOptionalAndSelected
+        let variationID = variationID ?? self.variationID
+        let variationAttributes = variationAttributes ?? self.variationAttributes
+
+        return Networking.OrderItemBundleItem(
+            bundledItemID: bundledItemID,
+            productID: productID,
+            quantity: quantity,
+            isOptionalAndSelected: isOptionalAndSelected,
+            variationID: variationID,
+            variationAttributes: variationAttributes
         )
     }
 }
@@ -1405,20 +1525,44 @@ extension Networking.ProductBundleItem {
         productID: CopiableProp<Int64> = .copy,
         menuOrder: CopiableProp<Int64> = .copy,
         title: CopiableProp<String> = .copy,
-        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy
+        stockStatus: CopiableProp<ProductBundleItemStockStatus> = .copy,
+        minQuantity: CopiableProp<Decimal> = .copy,
+        maxQuantity: NullableCopiableProp<Decimal> = .copy,
+        defaultQuantity: CopiableProp<Decimal> = .copy,
+        isOptional: CopiableProp<Bool> = .copy,
+        overridesVariations: CopiableProp<Bool> = .copy,
+        allowedVariations: CopiableProp<[Int64]> = .copy,
+        overridesDefaultVariationAttributes: CopiableProp<Bool> = .copy,
+        defaultVariationAttributes: CopiableProp<[ProductVariationAttribute]> = .copy
     ) -> Networking.ProductBundleItem {
         let bundledItemID = bundledItemID ?? self.bundledItemID
         let productID = productID ?? self.productID
         let menuOrder = menuOrder ?? self.menuOrder
         let title = title ?? self.title
         let stockStatus = stockStatus ?? self.stockStatus
+        let minQuantity = minQuantity ?? self.minQuantity
+        let maxQuantity = maxQuantity ?? self.maxQuantity
+        let defaultQuantity = defaultQuantity ?? self.defaultQuantity
+        let isOptional = isOptional ?? self.isOptional
+        let overridesVariations = overridesVariations ?? self.overridesVariations
+        let allowedVariations = allowedVariations ?? self.allowedVariations
+        let overridesDefaultVariationAttributes = overridesDefaultVariationAttributes ?? self.overridesDefaultVariationAttributes
+        let defaultVariationAttributes = defaultVariationAttributes ?? self.defaultVariationAttributes
 
         return Networking.ProductBundleItem(
             bundledItemID: bundledItemID,
             productID: productID,
             menuOrder: menuOrder,
             title: title,
-            stockStatus: stockStatus
+            stockStatus: stockStatus,
+            minQuantity: minQuantity,
+            maxQuantity: maxQuantity,
+            defaultQuantity: defaultQuantity,
+            isOptional: isOptional,
+            overridesVariations: overridesVariations,
+            allowedVariations: allowedVariations,
+            overridesDefaultVariationAttributes: overridesDefaultVariationAttributes,
+            defaultVariationAttributes: defaultVariationAttributes
         )
     }
 }

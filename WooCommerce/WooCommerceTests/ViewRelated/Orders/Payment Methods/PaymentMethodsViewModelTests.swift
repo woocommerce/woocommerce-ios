@@ -521,7 +521,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
 
         // When
         simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: false, on: stores)
@@ -542,7 +542,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
 
         simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
 
@@ -563,7 +563,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "CA")
+        let configuration = CardPresentPaymentsConfiguration(country: .CA)
 
         simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
 
@@ -584,7 +584,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
             case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
@@ -611,7 +611,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        let configuration = CardPresentPaymentsConfiguration(country: .US)
 
         simulate(cardPaymentEligibility: false, tapToPayDeviceAvailability: true, on: stores)
 
@@ -632,7 +632,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let storage = MockStorageManager()
-        let configuration = CardPresentPaymentsConfiguration.init(country: "AQ")
+        let configuration = CardPresentPaymentsConfiguration(country: .AQ)
 
         simulate(cardPaymentEligibility: true, tapToPayDeviceAvailability: true, on: stores)
 
@@ -756,7 +756,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
             switch action {
             case let .selectedPaymentGatewayAccount(onCompletion):
                 onCompletion(PaymentGatewayAccount.fake())
-            case .checkDeviceSupport(_, _, _, _):
+            case .checkDeviceSupport(_, _, _, _, _):
                 break
             default:
                 XCTFail("Unexpected action: \(action)")
@@ -887,7 +887,7 @@ private extension PaymentMethodsViewModelTests {
     private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {
-            case let .checkDeviceSupport(_, _, .localMobile, completion):
+            case let .checkDeviceSupport(_, _, .localMobile, _, completion):
                 completion(tapToPayDeviceAvailability)
             default:
                 break

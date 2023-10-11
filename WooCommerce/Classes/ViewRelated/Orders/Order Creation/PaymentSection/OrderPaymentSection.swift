@@ -88,6 +88,8 @@ struct OrderPaymentSection: View {
             }
 
             addCouponRow
+            // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
+            // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
                 .zIndex(1)
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
                     NavigationView {

@@ -856,6 +856,7 @@
 		DED91DDF2AD63C2800CDCC53 /* blaze-campaigns-success.json in Resources */ = {isa = PBXBuildFile; fileRef = DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */; };
 		DED91DE12AD63CB900CDCC53 /* BlazeCampaignListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE02AD63CB900CDCC53 /* BlazeCampaignListMapper.swift */; };
 		DED91DE32AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */; };
+		DED91DE52AD64B2900CDCC53 /* BlazeRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */; };
 		DEEDA4442975003800F845AB /* settings-general-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEDA4432975003800F845AB /* settings-general-without-data.json */; };
 		DEEF8E6529C832B500D47411 /* wordpress-site-info-with-auth-url.json in Resources */ = {isa = PBXBuildFile; fileRef = DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */; };
 		DEEF8E6829C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */; };
@@ -1857,6 +1858,7 @@
 		DED91DDE2AD63C2800CDCC53 /* blaze-campaigns-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "blaze-campaigns-success.json"; sourceTree = "<group>"; };
 		DED91DE02AD63CB900CDCC53 /* BlazeCampaignListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListMapper.swift; sourceTree = "<group>"; };
 		DED91DE22AD63EE300CDCC53 /* BlazeCampaignListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListMapperTests.swift; sourceTree = "<group>"; };
+		DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeRemote.swift; sourceTree = "<group>"; };
 		DEEDA4432975003800F845AB /* settings-general-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "settings-general-without-data.json"; sourceTree = "<group>"; };
 		DEEF8E6429C832B500D47411 /* wordpress-site-info-with-auth-url.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wordpress-site-info-with-auth-url.json"; sourceTree = "<group>"; };
 		DEEF8E6729C858AD00D47411 /* OneTimeApplicationPasswordUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OneTimeApplicationPasswordUseCase.swift; sourceTree = "<group>"; };
@@ -2394,6 +2396,7 @@
 				DE2E8EA02953115C002E4B14 /* WordPressSiteRemote.swift */,
 				EE2C09BB29AF0AAD009396F9 /* StoreOnboardingTasksRemote.swift */,
 				0286981329ED2D6400853B88 /* GenerativeContentRemote.swift */,
+				DED91DE42AD64B2900CDCC53 /* BlazeRemote.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -3976,6 +3979,7 @@
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,
 				CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */,
 				457A574025D1817E000797AD /* ShippingLabelAddressVerification.swift in Sources */,
+				DED91DE52AD64B2900CDCC53 /* BlazeRemote.swift in Sources */,
 				74ABA1D1213F22CA00FFAD30 /* TopEarnersStatsRemote.swift in Sources */,
 				DEC51AF127699E7A009F3DF4 /* SystemStatus+Page.swift in Sources */,
 				EE99814E295AA7430074AE68 /* RequestAuthenticator.swift in Sources */,

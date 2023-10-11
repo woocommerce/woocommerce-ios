@@ -5,13 +5,11 @@ import XCTest
 final class PaymentsRouteTests: XCTestCase {
 
     private var deepLinkForwarder: MockDeepLinkForwarder!
-    private var featureFlagService: MockFeatureFlagService!
     private var sut: PaymentsRoute!
 
     override func setUp() {
         deepLinkForwarder = MockDeepLinkForwarder()
-        featureFlagService = MockFeatureFlagService(isTapToPayOnIPhoneMilestone2On: true)
-        sut = PaymentsRoute(deepLinkForwarder: deepLinkForwarder, featureFlagService: featureFlagService)
+        sut = PaymentsRoute(deepLinkForwarder: deepLinkForwarder)
     }
 
     func test_canHandle_returns_true_for_set_up_tap_to_pay_deep_link_path() {

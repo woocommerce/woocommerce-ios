@@ -52,14 +52,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// Enables Tap to Pay on iPhone Milestone 2 (Tap to Pay deeplinks, JITM deeplink handling, JITM customisation) on eligible devices.
-    ///
-    case tapToPayOnIPhoneMilestone2
-
-    /// Enables badging the route to Set up Tap to Pay on iPhone on eligible devices
-    ///
-    case tapToPayBadge
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard
@@ -217,4 +209,12 @@ public enum FeatureFlag: Int {
     /// Enables the Woo Payments Deposits item in the Payments menu
     ///
     case wooPaymentsDepositsOverviewInPaymentsMenu
+
+    /// Enables Tap to Pay for UK Woo Payments stores
+    /// 
+    case tapToPayOnIPhoneInUK
+
+    /// Enables the functionality related to order custom amounts on M1
+    ///
+    case orderCustomAmountsM1
 }

@@ -13,6 +13,10 @@ struct CollapsibleProductRowCard: View {
 
     var onAddDiscount: () -> Void
 
+    // Tracks if discount editing should be enabled or disabled. False by default
+    //
+    var shouldDisableDiscountEditing: Bool = false
+
     private var shouldShowDividers: Bool {
         !isCollapsed
     }
@@ -25,8 +29,9 @@ struct CollapsibleProductRowCard: View {
         }
     }
 
-    init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.onAddDiscount = onAddDiscount
     }
 
@@ -46,10 +51,10 @@ struct CollapsibleProductRowCard: View {
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .renderedIf(isCollapsed)
                         Text(viewModel.skuLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                     }
@@ -171,11 +176,11 @@ struct CollapsibleProductCardPriceSummary: View {
         HStack {
             HStack {
                 Text(viewModel.quantity.formatted())
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Image(systemName: "multiply")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Text(viewModel.priceLabel ?? "-")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
@@ -225,7 +230,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onAddDiscount: {})
+        CollapsibleProductRowCard(viewModel: viewModel, shouldDisableDiscountEditing: false, onAddDiscount: {})
     }
 }
 #endif

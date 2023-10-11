@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-27 12:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-03 15:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -1055,6 +1055,9 @@ which should be translated separately and considered part of this sentence. */
 /* Site backup title feature on the Free Trial Summary Screen */
 "Automated site backups" = "Otomatik site yedeklemeleri";
 
+/* Title for the bottom sheet when there is a tax rate stored */
+"Automatically adding tax rate" = "Vergi oranını otomatik olarak ekleme";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Bir satışı otomatik başlat ve durdur";
 
@@ -1345,6 +1348,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1692,6 +1696,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear selection on the product categories list */
 "Clear Selection" = "Seçimi Temizle";
 
+/* Title for the button to clear the stored tax rate */
+"Clear address and stop using this rate" = "Adresi temizleyin ve bu oranı kullanmayı bırakın";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tümünü temizle";
 
@@ -1703,6 +1710,7 @@ which should be translated separately and considered part of this sentence. */
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
+   Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
@@ -2535,9 +2543,6 @@ which should be translated separately and considered part of this sentence. */
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Don't show again" = "Tekrar gösterme";
 
-/* Subtitle on the add product with AI Preview screen. */
-"Don't worry. You can always change below details later." = "Endişelenmeyin. Aşağıdaki ayrıntıları daha sonra her zaman değiştirebilirsiniz.";
-
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
@@ -2883,9 +2888,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Kargo şirketi adını girin";
 
-/* Placeholder of the gift card code text field in the order form. */
-"Enter code" = "Kod girin";
-
 /* Placeholder of Description row of item details in Customs screen of Shipping Label flow */
 "Enter description" = "Açıklama gir";
 
@@ -3132,6 +3134,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Süre sonu: %1$@";
+
+/* Button title to explore an extension that isn't installed */
+"Explore" = "Keşfet";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Mağaza satışlarınızı nasıl artırabileceğinizi keşfedin.";
@@ -3471,6 +3476,9 @@ which should be translated separately and considered part of this sentence. */
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "Hediye Kartları";
+
+/* Header of the gift card code text field in the order form. */
+"Gift card code" = "Hediye kartı kodu";
 
 /* Order gift card error notice message when the gift card is invalid.
    Order gift card error notice title when the gift card is invalid. */
@@ -6224,6 +6232,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "Ücreti Siparişten Kaldır";
 
+/* Button to remove the gift card code from the order form. */
+"Remove Gift Card" = "Hediye Kartını Kaldır";
+
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Görseli Kaldır";
 
@@ -6325,6 +6336,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
@@ -6531,6 +6543,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation bar title for scanning a barcode to use as a product's SKU. */
 "Scan barcode to update SKU" = "SKU'yu güncellemek için barkodu tarayın";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan code like XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX biçimindeki kodu tarayın";
+
+/* Navigation bar title of the gift card code scanner. */
+"Scan gift card" = "Hediye kartını tara";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan product barcode" = "Ürün barkodunu tarayın";
@@ -6748,6 +6766,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Vergi Oranını Belirle";
+
+/* Title for the button to add a new tax ratewhen there is a tax rate stored */
+"Set a new tax rate for this order" = "Bu sipariş için yeni bir vergi oranı belirleyin";
 
 /* Tells user to set an email that support can use for replies */
 "Set email" = "E-postayı belirleyin";
@@ -7277,6 +7298,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Stok durumu";
+
+/* Message when the user disables adding tax rates automatically */
+"Stopped automatically adding tax rate" = "Vergi oranını otomatik olarak ekleme durduruldu";
 
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "Depolama";
@@ -7986,11 +8010,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "Gizlilik ayarlarınız alınırken bir hata oluştu";
 
+/* Error message when generating product details fails on the add product with AI Preview screen. */
+"There was an error generating product details. Please try again." = "Ürün ayrıntıları oluşturulurken hata oluştu. Lütfen tekrar deneyin.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Geri ödeme yapılırken bir hata oluştu";
 
 /* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
 "There was an error retrying this payment. Please go back and start again." = "Bu ödeme tekrar denenirken bir hata oluştu. Lütfen geri dönüp tekrar başlatın.";
+
+/* Error message when saving product as draft on the add product with AI Preview screen. */
+"There was an error saving product details. Please try again." = "Ürün ayrıntıları kaydedilirken hata oluştu. Lütfen tekrar deneyin.";
 
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Gizlilik tercihleriniz kaydedilirken bir hata oluştu.";
@@ -9360,6 +9390,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Hesap yanlış mı?";
 
+/* Placeholder of the gift card code text field in the order form. */
+"XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
+
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
 
@@ -9387,6 +9420,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@ paketine abonesiniz! %2$@ tarihine kadar tüm özelliklerimize erişebilirsiniz.";
+
+/* Subtitle on the add product with AI Preview screen. */
+"You can always change the below details later." = "Aşağıdaki ayrıntıları daha sonra her zaman değiştirebilirsiniz.";
 
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Birden çok seçebilirsiniz.";
@@ -9822,6 +9858,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 İşinizi ilerletin!";
+
+/* Message when a tax rate is set */
+"🎉 New tax rate set" = "🎉 Yeni vergi oranı ayarlama";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Sipariş Tamamlandı";

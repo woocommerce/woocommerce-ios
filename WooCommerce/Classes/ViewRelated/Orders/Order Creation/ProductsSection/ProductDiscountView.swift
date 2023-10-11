@@ -34,7 +34,7 @@ struct ProductDiscountView: View {
                                           scale: 1,
                                           productImageCornerRadius: Layout.frameCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
-                    VStack {
+                    VStack(alignment: .leading) {
                         Text(name)
                         CollapsibleProductCardPriceSummary(viewModel: productRowViewModel)
                     }
@@ -42,7 +42,7 @@ struct ProductDiscountView: View {
                 .padding()
                 .overlay {
                     RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                        .inset(by: 0.25)
+                        .inset(by: Layout.inputFieldOverlayInset)
                         .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
                 }
                 .cornerRadius(Layout.frameCornerRadius)
@@ -51,13 +51,13 @@ struct ProductDiscountView: View {
                     DiscountLineDetailsView(viewModel: discountViewModel)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         Text(Localization.discountLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         Spacer()
                         if let discountAmount = discountViewModel.finalAmountString {
                             Text(minusSign + discountAmount)
-                                .foregroundStyle(.green)
+                                .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }
                     .padding()
@@ -82,7 +82,7 @@ struct ProductDiscountView: View {
                     .renderedIf(discountViewModel.hasInputAmount)
                 }
             }
-            .navigationTitle(Text(Localization.addDiscountLabel))
+            .navigationTitle(Text(productRowViewModel.hasDiscount ? Localization.editDiscountLabel : Localization.addDiscountLabel))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
@@ -109,6 +109,7 @@ private extension ProductDiscountView {
         static let borderLineWidth: CGFloat = 1
         static let productImageSize: CGFloat = 56
         static let spacing: CGFloat = 8
+        static let inputFieldOverlayInset: CGFloat = 0.25
     }
 
     enum Localization {
@@ -127,6 +128,9 @@ private extension ProductDiscountView {
         static let addDiscountLabel = NSLocalizedString(
             "Add Discount",
             comment: "Text for the button to add a discount to a product in the order screen")
+        static let editDiscountLabel = NSLocalizedString(
+            "Edit Discount",
+            comment: "Text for the button to edit an existing discount to a product in the order screen")
         static let discountLabel = NSLocalizedString(
                     "Discount",
                     comment: "Text in the product row card when a discount has been added to a product")

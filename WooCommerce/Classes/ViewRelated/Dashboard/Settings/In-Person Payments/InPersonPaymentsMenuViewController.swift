@@ -34,8 +34,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         cardPresentPaymentsOnboardingUseCase.state.isCompleted
     }
 
-    private let setUpFlowOnlyEnabledAfterOnboardingComplete: Bool
-
     /// Main TableView
     ///
     private lazy var tableView: UITableView = {
@@ -75,7 +73,6 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         self.viewModel = InPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
-        self.setUpFlowOnlyEnabledAfterOnboardingComplete = !featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2)
         self.viewDidLoadAction = viewDidLoadAction
 
         super.init(nibName: nil, bundle: nil)
@@ -388,12 +385,6 @@ private extension InPersonPaymentsMenuViewController {
         cell.configure(image: .tapToPayOnIPhoneIcon,
                        text: Localization.tapToPayOnIPhone,
                        showBadge: viewModel.shouldBadgeTapToPayOnIPhone)
-
-        if setUpFlowOnlyEnabledAfterOnboardingComplete {
-            cell.accessoryType = enableSetUpTapToPayOnIPhoneCell ? .disclosureIndicator : .none
-            cell.selectionStyle = enableSetUpTapToPayOnIPhoneCell ? .default : .none
-            updateEnabledState(in: cell, shouldBeEnabled: enableSetUpTapToPayOnIPhoneCell)
-        }
     }
 
     func configureTapToPayOnIPhoneFeedback(cell: LeftImageTableViewCell) {
@@ -519,15 +510,7 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func presentSetUpTapToPayOnIPhoneViewController() {
-        if setUpFlowOnlyEnabledAfterOnboardingComplete {
-            guard enableSetUpTapToPayOnIPhoneCell else {
-                return
-            }
-
-            presentSetUpTapToPayOnIPhoneWithoutOnboarding()
-        } else {
-            presentSetUpTapToPayOnIPhoneWithOnboarding()
-        }
+        presentSetUpTapToPayOnIPhoneWithOnboarding()
     }
 
     private func presentSetUpTapToPayOnIPhoneWithoutOnboarding() {

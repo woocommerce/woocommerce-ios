@@ -36,7 +36,7 @@ public final class BlazeStore: Store {
     }
 
     // MARK: - Actions
-    
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -52,7 +52,7 @@ public final class BlazeStore: Store {
             assertionFailure("BlazeStore received an unsupported action")
             return
         }
-        
+
         switch action {
         case let .synchronizeCampaigns(siteID, pageNumber, onCompletion):
             synchronizeCampaigns(siteID: siteID,
@@ -71,10 +71,9 @@ private extension BlazeStore {
                 let results = try await remote.loadCampaigns(for: siteID, pageNumber: pageNumber)
                 let shouldClearData = pageNumber == Default.firstPageNumber
                 let hasNextPage = !results.isEmpty // optimistic check because we don't have page size for this API.
-                upsertStoredCampaignsInBackground(readOnlyCampaigns: results, siteID: siteID) {
+                upsertStoredCampaignsInBackground(readOnlyCampaigns: results, siteID: siteID, shouldClearExistingCampaigns: shouldClearData) {
                     onCompletion(.success(hasNextPage))
                 }
-                
             } catch {
                 onCompletion(.failure(error))
             }
@@ -121,4 +120,3 @@ private extension BlazeStore {
         }
     }
 }
-    

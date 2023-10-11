@@ -162,19 +162,19 @@ extension Networking.Announcement {
 
 extension Networking.BlazeCampaign {
     public func copy(
+        siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
-        status: CopiableProp<BlazeCampaign.Status> = .copy,
-        uiStatus: CopiableProp<BlazeCampaign.Status> = .copy,
+        uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
         contentClickURL: NullableCopiableProp<String> = .copy,
         totalImpressions: CopiableProp<Int64> = .copy,
         totalClicks: CopiableProp<Int64> = .copy,
         totalBudget: CopiableProp<Double> = .copy
     ) -> Networking.BlazeCampaign {
+        let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
         let name = name ?? self.name
-        let status = status ?? self.status
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
         let contentClickURL = contentClickURL ?? self.contentClickURL
@@ -183,9 +183,9 @@ extension Networking.BlazeCampaign {
         let totalBudget = totalBudget ?? self.totalBudget
 
         return Networking.BlazeCampaign(
+            siteID: siteID,
             campaignID: campaignID,
             name: name,
-            status: status,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,
             contentClickURL: contentClickURL,

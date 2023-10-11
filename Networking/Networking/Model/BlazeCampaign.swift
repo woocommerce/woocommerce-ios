@@ -5,18 +5,18 @@ import Codegen
 ///
 public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiable {
 
+    /// Site Identifier.
+    ///
+    public let siteID: Int64
+
     /// ID of the campaign
     public let campaignID: Int64
 
     /// Name of the campaign
     public let name: String
 
-    /// A raw campaign status on the server.
-    public let status: Status
-
-    /// A subset of ``BlazeCampaign/status-swift.property`` values where some
-    /// cases are skipped for simplicity and mapped to other more common ones.
-    public let uiStatus: Status
+    /// Status of the campaign to show to users.
+    public let uiStatus: String
 
     /// URL of the image for the campaign
     public let contentImageURL: String?
@@ -33,18 +33,18 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
     /// Total budget for the campaign
     public let totalBudget: Double
 
-    public init(campaignID: Int64,
+    public init(siteID: Int64,
+                campaignID: Int64,
                 name: String,
-                status: Status,
-                uiStatus: Status,
+                uiStatus: String,
                 contentImageURL: String?,
                 contentClickURL: String?,
                 totalImpressions: Int64,
                 totalClicks: Int64,
                 totalBudget: Double) {
+        self.siteID = siteID
         self.campaignID = campaignID
         self.name = name
-        self.status = status
         self.uiStatus = uiStatus
         self.contentImageURL = contentImageURL
         self.contentClickURL = contentClickURL
@@ -58,11 +58,12 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
             throw DecodingError.missingSiteID
         }
 
+        self.siteID = siteID
+
         let container = try decoder.container(keyedBy: CodingKeys.self)
         campaignID = try container.decode(Int64.self, forKey: .campaignID)
         name = try container.decode(String.self, forKey: .name)
-        status = try container.decode(Status.self, forKey: .status)
-        uiStatus = try container.decode(Status.self, forKey: .uiStatus)
+        uiStatus = try container.decode(String.self, forKey: .uiStatus)
 
         let content = try container.decode(ContentConfig.self, forKey: .contentConfig)
         contentImageURL = content.imageURL
@@ -75,40 +76,15 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
     }
 }
 
-// MARK: Public subtypes
-//
-public extension BlazeCampaign {
-    enum Status: String, Decodable {
-        case scheduled
-        case created
-        case rejected
-        case approved
-        case active
-        case canceled
-        case finished
-        case processing
-        case unknown
-
-        public init(from decoder: Decoder) throws {
-            let status = try? String(from: decoder)
-            self = status.flatMap(Status.init) ?? .unknown
-        }
-    }
-}
-
 // MARK: Private subtypes
 //
 private extension BlazeCampaign {
     enum CodingKeys: String, CodingKey {
         case campaignID = "campaignId"
         case name
-        case status
         case uiStatus
-        case budgetCents
-        case targetURL = "targetUrl"
         case contentConfig
         case stats = "campaignStats"
-        case creativeHTML = "creativeHtml"
     }
 
     /// Private subtype for parsing stat details.

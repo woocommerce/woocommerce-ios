@@ -25,7 +25,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        configuration = CardPresentPaymentsConfiguration(country: "US")
+        configuration = CardPresentPaymentsConfiguration(country: .US)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -82,7 +82,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                       analytics: analytics)
 
         let configuration = CardPresentPaymentsConfiguration(
-            countryCode: "IN",
+            countryCode: .IN,
             paymentMethods: [.cardPresent],
             currencies: [.INR],
             paymentGateways: [WCPayAccount.gatewayID],
@@ -110,7 +110,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
                                                                       analytics: analytics)
 
         let configuration = CardPresentPaymentsConfiguration(
-            countryCode: "IN",
+            countryCode: .IN,
             paymentMethods: [.cardPresent],
             currencies: [.INR],
             paymentGateways: [WCPayAccount.gatewayID],

@@ -2,7 +2,7 @@ import Foundation
 import WooFoundation
 
 public struct CardPresentPaymentsConfiguration: Equatable {
-    public let countryCode: String
+    public let countryCode: CountryCode
     public let paymentMethods: [WCPayPaymentMethodType]
     public let currencies: [CurrencyCode]
     public let paymentGateways: [String]
@@ -21,7 +21,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     /// This can be removed if Stripe make `supportsReaders` location aware
     public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion?
 
-    init(countryCode: String,
+    init(countryCode: CountryCode,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
          paymentGateways: [String],
@@ -43,10 +43,10 @@ public struct CardPresentPaymentsConfiguration: Equatable {
         self.minimumOperatingSystemVersionForTapToPay = minimumOperatingSystemVersionForTapToPay
     }
 
-    public init(country: String, shouldAllowTapToPayInUK: Bool = false) {
+    public init(country: CountryCode, shouldAllowTapToPayInUK: Bool = false) {
         /// Changing `minimumVersion` values here? You'll need to also update `CardPresentPaymentsOnboardingUseCaseTests`
         switch country {
-        case "US":
+        case .US:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],
@@ -62,7 +62,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: nil,
                 minimumOperatingSystemVersionForTapToPay: nil
             )
-        case "CA":
+        case .CA:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent, .interacPresent],
@@ -75,7 +75,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 contactlessLimitAmount: 25000,
                 minimumOperatingSystemVersionForTapToPay: nil
             )
-        case "GB":
+        case .GB:
             self.init(
                 countryCode: country,
                 paymentMethods: [.cardPresent],
@@ -113,7 +113,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     /// Given a two character country code, returns a URL where the merchant can purchase a card reader.
     ///
     public func purchaseCardReaderUrl(utmProvider: UTMParametersProviding) -> URL {
-        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode
+        let urlString = Constants.purchaseReaderForCountryUrlBase + countryCode.rawValue
         return utmProvider.urlWithUtmParams(string: urlString) ?? Constants.fallbackInPersonPaymentsUrl
     }
 }

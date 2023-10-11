@@ -25,7 +25,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         noticePresenter = MockNoticePresenter()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        configuration = CardPresentPaymentsConfiguration(country: .US)
         dependencies = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel.Dependencies(
             stores: stores,
             noticePresenter: noticePresenter,

@@ -80,6 +80,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ordersWithCouponsM4:
             return true
+        case .ordersWithCouponsM6:
+            return false
         case .betterCustomerSelectionInOrder:
             return true
         case .manualTaxesInOrderM2:
@@ -98,6 +100,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
+        case .orderCustomAmountsM1:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
             return buildConfig == .localDeveloper
         default:

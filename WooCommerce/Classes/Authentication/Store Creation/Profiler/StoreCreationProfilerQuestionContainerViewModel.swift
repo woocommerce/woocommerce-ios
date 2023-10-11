@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 enum StoreCreationProfilerQuestion: Int, CaseIterable {
     case sellingStatus = 1
@@ -36,7 +37,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
             storeAnswers()
         }
     }
-    private var storeCountry: SiteAddress.CountryCode? {
+    private var storeCountry: CountryCode? {
         didSet {
             storeAnswers()
         }
@@ -93,7 +94,7 @@ final class StoreCreationProfilerQuestionContainerViewModel: ObservableObject {
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerCountryQuestion))
     }
 
-    func saveCountry(_ answer: SiteAddress.CountryCode) {
+    func saveCountry(_ answer: CountryCode) {
         storeCountry = answer
         currentQuestion = .challenges
         analytics.track(event: .StoreCreation.siteCreationStep(step: .profilerChallengesQuestion))

@@ -1,10 +1,11 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 struct ReceiptActionCoordinator {
     static func printReceipt(for order: Order,
                              params: CardPresentReceiptParameters,
-                             countryCode: String,
+                             countryCode: CountryCode,
                              cardReaderModel: String?,
                              stores: StoresManager,
                              analytics: Analytics = ServiceLocator.analytics) async {

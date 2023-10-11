@@ -51,9 +51,9 @@ struct ProductDiscountView: View {
                     DiscountLineDetailsView(viewModel: discountViewModel)
                     HStack {
                         Image(systemName: "arrow.turn.down.right")
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         Text(Localization.discountLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                         Spacer()
                         if let discountAmount = discountViewModel.finalAmountString {
                             Text(minusSign + discountAmount)

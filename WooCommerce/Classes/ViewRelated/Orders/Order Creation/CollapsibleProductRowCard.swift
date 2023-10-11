@@ -36,10 +36,10 @@ struct CollapsibleProductRowCard: View {
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .renderedIf(isCollapsed)
                         Text(viewModel.skuLabel)
-                            .foregroundColor(.gray)
+                            .foregroundColor(.secondary)
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                     }
@@ -128,11 +128,11 @@ struct CollapsibleProductCardPriceSummary: View {
         HStack {
             HStack {
                 Text(viewModel.quantity.formatted())
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Image(systemName: "multiply")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Text(viewModel.priceLabel ?? "-")
-                    .foregroundColor(.gray)
+                    .foregroundColor(.secondary)
                 Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {

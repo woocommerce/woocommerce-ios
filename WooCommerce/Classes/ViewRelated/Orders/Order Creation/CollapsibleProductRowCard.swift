@@ -74,7 +74,7 @@ struct CollapsibleProductRowCard: View {
                         Spacer()
                         if let discountLabel = viewModel.discountLabel {
                             Text(minusSign + discountLabel)
-                                .foregroundColor(.green)
+                                .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }
                 }

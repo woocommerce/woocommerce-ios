@@ -57,7 +57,7 @@ struct ProductDiscountView: View {
                         Spacer()
                         if let discountAmount = discountViewModel.finalAmountString {
                             Text(minusSign + discountAmount)
-                                .foregroundStyle(.green)
+                                .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }
                     .padding()

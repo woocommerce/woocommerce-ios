@@ -695,7 +695,19 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // When
         let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
-        
+
+        // Then
+        XCTAssertFalse(wasHandled)
+    }
+
+    func test_when_handleAuthenticationUrl_is_called_with_empty_site_url_then_returns_false() {
+        // Given
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=&username=user@automattic.com"
+        let manager = AuthenticationManager(analytics: analytics)
+
+        // When
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+
         // Then
         XCTAssertFalse(wasHandled)
     }

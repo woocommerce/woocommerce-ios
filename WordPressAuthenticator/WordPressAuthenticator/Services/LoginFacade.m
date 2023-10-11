@@ -102,9 +102,13 @@
             [self.delegate finishedLoginWithAuthToken:authToken requiredMultifactorCode:loginFields.requiredMultifactor];
         }
         [self trackSuccess];
-    } needsMultiFactor:^{
-        if ([self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
+    } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
+        if (nonceInfo == nil && [self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
+        }
+
+        if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
+            [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
         }
     } failure:^(NSError *error) {
         [self track:WPAnalyticsStatLoginFailed error:error];

@@ -125,4 +125,10 @@ struct AuthenticationConstants {
         "Enter the password for your account.",
         comment: "Instructional text shown when requesting the user's password for WPCom login."
     )
+
+    /// Error message when an app deep link login fails
+    ///
+    static let appLinkLoginFailureMessage = NSLocalizedString(
+        "We couldn't process your app login request",
+        comment: "A message displayed through a bottom notice letting the user know that the login from the app link failed")
 }

@@ -20,6 +20,8 @@ extension ReaderDisplayMessage {
             return Localization.tryAnotherCard
         case .tryAnotherReadMethod:
             return Localization.tryAnotherReadMethod
+        case .cardRemovedTooEarly:
+            return Localization.cardRemovedTooEarly
         @unknown default:
             DDLogWarn("Unlocalized IPP ReaderDisplayMessage recieved")
             return Terminal.stringFromReaderDisplayMessage(self)
@@ -55,6 +57,10 @@ extension ReaderDisplayMessage {
             "Try Another Read Method",
             comment: "Message from the in-person payment card reader prompting user to retry a payment using a " +
             "different method, e.g. swipe, tap, insert")
+        static let cardRemovedTooEarly = NSLocalizedString(
+            "The payment card was removed too early, please try again.",
+            comment: "Message from the in-person payment card reader prompting user to retry a payment using the " +
+            "same card because it was removed too early.")
     }
 }
 

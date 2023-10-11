@@ -15,6 +15,12 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     /// This limit may have different implications depending on the store's territory.
     public let contactlessLimitAmount: Int?
 
+    /// `minimumOperatingSystemVersionOverride` allows us to override Stripe's `supportsReaders` check
+    /// such that if it returns `true`, we additionally check for the user's phone meeting this version.
+    /// E.g. we check for iOS 16.4 if they're connected to a GB store, which Stripe only check during discovery.
+    /// This can be removed if Stripe make `supportsReaders` location aware
+    public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion?
+
     init(countryCode: CountryCode,
          paymentMethods: [WCPayPaymentMethodType],
          currencies: [CurrencyCode],
@@ -23,7 +29,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
          supportedPluginVersions: [PaymentPluginVersionSupport],
          minimumAllowedChargeAmount: NSDecimalNumber,
          stripeSmallestCurrencyUnitMultiplier: Decimal,
-         contactlessLimitAmount: Int?) {
+         contactlessLimitAmount: Int?,
+         minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion?) {
         self.countryCode = countryCode
         self.paymentMethods = paymentMethods
         self.currencies = currencies
@@ -33,6 +40,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
         self.minimumAllowedChargeAmount = minimumAllowedChargeAmount
         self.stripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
         self.contactlessLimitAmount = contactlessLimitAmount
+        self.minimumOperatingSystemVersionForTapToPay = minimumOperatingSystemVersionForTapToPay
     }
 
     public init(country: CountryCode, shouldAllowTapToPayInUK: Bool = false) {
@@ -51,7 +59,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 ],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
-                contactlessLimitAmount: nil
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: nil
             )
         case .CA:
             self.init(
@@ -63,7 +72,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
-                contactlessLimitAmount: 25000
+                contactlessLimitAmount: 25000,
+                minimumOperatingSystemVersionForTapToPay: nil
             )
         case .GB:
             self.init(
@@ -75,7 +85,10 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.4.0")],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.3"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
-                contactlessLimitAmount: 10000
+                contactlessLimitAmount: 10000,
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16,
+                                                                minorVersion: 4,
+                                                                patchVersion: 0)
             )
         default:
             self.init(
@@ -87,7 +100,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 supportedPluginVersions: [],
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
-                contactlessLimitAmount: nil
+                contactlessLimitAmount: nil,
+                minimumOperatingSystemVersionForTapToPay: nil
             )
         }
     }
@@ -107,4 +121,14 @@ public struct CardPresentPaymentsConfiguration: Equatable {
 private enum Constants {
     static let fallbackInPersonPaymentsUrl = URL(string: "https://woocommerce.com/in-person-payments/")!
     static let purchaseReaderForCountryUrlBase = "https://woocommerce.com/products/hardware/"
+}
+
+extension OperatingSystemVersion: Equatable {
+
+    public static func == (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
+        return lhs.majorVersion == rhs.minorVersion &&
+        lhs.minorVersion == rhs.minorVersion &&
+        lhs.patchVersion == rhs.patchVersion
+    }
+
 }

@@ -85,10 +85,15 @@ public final class CardPresentPaymentStore: Store {
         case .loadAccounts(let siteID, let onCompletion):
             loadAccounts(siteID: siteID,
                          onCompletion: onCompletion)
-        case .checkDeviceSupport(let siteID, let cardReaderType, let discoveryMethod, let completion):
+        case .checkDeviceSupport(let siteID,
+                                 let cardReaderType,
+                                 let discoveryMethod,
+                                 let minimumOperatingSystemVersionOverride,
+                                 let completion):
             checkDeviceSupport(siteID: siteID,
                                cardReaderType: cardReaderType,
                                discoveryMethod: discoveryMethod,
+                               minimumOperatingSystemVersionOverride: minimumOperatingSystemVersionOverride,
                                onCompletion: completion)
         case .startCardReaderDiscovery(let siteID, let discoveryMethod, let onReaderDiscovered, let onError):
             startCardReaderDiscovery(siteID: siteID,
@@ -143,9 +148,14 @@ private extension CardPresentPaymentStore {
     func checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
                             discoveryMethod: CardReaderDiscoveryMethod,
+                            minimumOperatingSystemVersionOverride: OperatingSystemVersion?,
                             onCompletion: (Bool) -> Void) {
         prepareConfigProvider(siteID: siteID)
-        onCompletion(cardReaderService.checkSupport(for: cardReaderType, configProvider: commonReaderConfigProvider, discoveryMethod: discoveryMethod))
+        onCompletion(cardReaderService.checkSupport(
+            for: cardReaderType,
+            configProvider: commonReaderConfigProvider,
+            discoveryMethod: discoveryMethod,
+            minimumOperatingSystemVersionOverride: minimumOperatingSystemVersionOverride))
     }
 
     func prepareConfigProvider(siteID: Int64) {

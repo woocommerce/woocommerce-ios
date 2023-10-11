@@ -54,6 +54,8 @@ public enum CardReaderServiceError: Error {
 
     case retryNotPossibleProcessingInProgress
 
+    case retryNotPossibleRequiresAction
+
     case retryNotPossibleUnknownCause
 }
 
@@ -79,7 +81,11 @@ extension CardReaderServiceError: LocalizedError {
                 "This app needs permission to access Bluetooth to connect to a card reader, please change the privacy settings if you wish to allow this.",
                 comment: "Explanation in the alert presented when the user tries to connect a Bluetooth card reader with insufficient permissions"
             )
-        case .retryNotPossibleNoActivePayment, .retryNotPossibleActivePaymentCancelled, .retryNotPossibleProcessingInProgress, .retryNotPossibleUnknownCause:
+        case .retryNotPossibleNoActivePayment,
+                .retryNotPossibleActivePaymentCancelled,
+                .retryNotPossibleProcessingInProgress,
+                .retryNotPossibleRequiresAction,
+                .retryNotPossibleUnknownCause:
             return NSLocalizedString(
                 "We were unable to retry the payment – please start again.",
                 comment: "Explanation in the alert presented when a retry of a payment fails"

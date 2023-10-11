@@ -41,4 +41,8 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
     }
+
+    func reset() {
+        amount = ""
+    }
 }

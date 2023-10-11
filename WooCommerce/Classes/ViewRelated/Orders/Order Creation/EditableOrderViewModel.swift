@@ -195,6 +195,13 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
+    lazy private(set) var addCustomAmountViewModel = {
+        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+            // TODO: Send amount and name to view model
+            debugPrint("Adding custom amount of \(amount) with name \(name)")
+        })
+    }()
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false
@@ -730,6 +737,10 @@ final class EditableOrderViewModel: ObservableObject {
     func onClearAddressFromBottomSheetTapped() {
         analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
         forgetTaxRate()
+    }
+
+    func onDismissAddCustomAmountView() {
+        addCustomAmountViewModel.reset()
     }
 }
 

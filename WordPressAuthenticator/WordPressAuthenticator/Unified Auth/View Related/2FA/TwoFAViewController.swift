@@ -291,12 +291,17 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
 
+        // Validate necessary data
         guard #available(iOS 15, *),
               let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
-            displayErrorAlert(LocalizedText.unknownError, sourceTag: .loginWebauthn)
             return displaySecurityKeyErrorMessageAndExitFlow()
+        }
+        
+        // Validate that the submitted passkey is allowed.
+        guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64EncodedString()) else {
+            return displaySecurityKeyErrorMessageAndExitFlow(message: LocalizedText.invalidKey)
         }
 
         loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
@@ -626,7 +631,10 @@ private extension TwoFAViewController {
         static let numericalCode = NSLocalizedString("A verification code will only contain numbers.", comment: "Shown when a user types a non-number into the two factor field.")
         static let invalidCode = NSLocalizedString("That doesn't appear to be a valid verification code.", comment: "Shown when a user pastes a code into the two factor field that contains letters or is the wrong length")
         static let smsSent = NSLocalizedString("SMS Sent", comment: "One Time Code has been sent via SMS")
-        static let timeoutError = NSLocalizedString("Time's up, but don't worry, your security is our priority. Please try again!", comment: "Generic error on the 2FA screen")
+        static let invalidKey = NSLocalizedString("Whoops, that security key does not seem valid. Please try again with another one",
+                                                  comment: "Error when the uses chooses an invalid security key on the 2FA screen.")
+        static let timeoutError = NSLocalizedString("Time's up, but don't worry, your security is our priority. Please try again!", 
+                                                    comment: "Error when the uses takes more than 1 minute to submit a security key.")
         static let unknownError = NSLocalizedString("Whoops, something went wrong. Please try again!", comment: "Generic error on the 2FA screen")
     }
 

@@ -393,7 +393,18 @@ private struct ProductsSection: View {
                 }
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow)
+                    CollapsibleProductRowCard(viewModel: productRow,
+                                              shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                              onAddDiscount: {
+                        viewModel.selectOrderItem(productRow.id)
+                    })
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
+                        ProductDiscountView(imageURL: productRow.imageURL,
+                                            name: productRow.name,
+                                            stockLabel: productRow.stockQuantityLabel,
+                                            productRowViewModel: productRow,
+                                            discountViewModel: productViewModel.discountDetailsViewModel)
+                    })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)

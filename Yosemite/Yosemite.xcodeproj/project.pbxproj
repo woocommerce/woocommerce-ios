@@ -420,6 +420,8 @@
 		DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */; };
 		DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */; };
 		DED91DEE2AD673CF00CDCC53 /* BlazeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */; };
+		DED91DF02AD6756600CDCC53 /* BlazeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */; };
+		DED91DF22AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */; };
 		DEFD6D9326443A4000E51E0D /* SitePluginAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */; };
 		DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */; };
 		DEFD6D972644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */; };
@@ -886,6 +888,8 @@
 		DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStoreTests.swift; sourceTree = "<group>"; };
 		DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStoreTests.swift; sourceTree = "<group>"; };
 		DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAction.swift; sourceTree = "<group>"; };
+		DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStore.swift; sourceTree = "<group>"; };
+		DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaign+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		DEFD6D9226443A4000E51E0D /* SitePluginAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginAction.swift; sourceTree = "<group>"; };
 		DEFD6D9426443CA100E51E0D /* SitePluginStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStore.swift; sourceTree = "<group>"; };
 		DEFD6D962644423100E51E0D /* SitePlugin+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SitePlugin+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1322,6 +1326,7 @@
 				B5EED1A720F4F3CF00652449 /* Account+ReadOnlyConvertible.swift */,
 				93E75079226E2D6C00BAF88A /* AccountSettings+ReadOnlyConvertible.swift */,
 				03FBDA3D2632E29600ACE257 /* Coupon+ReadOnlyConvertible.swift */,
+				DED91DF12AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift */,
 				2685C10C263C900500D9EE97 /* AddOnGroup+ReadOnlyConvertible.swift */,
 				03101F0029DD7D9D00769CF3 /* CardReaderType+ReadOnlyConvertible.swift */,
 				45E4620D2684C45500011BF2 /* Country+ReadOnlyConvertible.swift */,
@@ -1470,6 +1475,7 @@
 				B5BC736420D1A98500B5B6FA /* AccountStore.swift */,
 				D87F614B22657B150031A13B /* AppSettingsStore.swift */,
 				2685C116263C98CF00D9EE97 /* AddOnGroupStore.swift */,
+				DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */,
 				D83B093825DECFD800B21F45 /* CardPresentPaymentStore.swift */,
 				741F34812195EA71005F5BD9 /* CommentStore.swift */,
 				03FBDA25263296A100ACE257 /* CouponStore.swift */,
@@ -2223,10 +2229,12 @@
 				74A7689020D45F9300F9D437 /* OrderAction.swift in Sources */,
 				D88E234525AE0EB90023F3B1 /* OrderFeeLine+ReadOnlyConvertible.swift in Sources */,
 				2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */,
+				DED91DF02AD6756600CDCC53 /* BlazeStore.swift in Sources */,
 				02FF055323D983F30058E6E7 /* URL+Media.swift in Sources */,
 				022F00BE24725BAF008CD97F /* NotificationCountStore.swift in Sources */,
 				31799AFA27050D9C00D78179 /* WCPayReaderLocation+ReaderLocation.swift in Sources */,
 				7499936620EFBC7200CF01CD /* OrderNoteStore.swift in Sources */,
+				DED91DF22AD679D300CDCC53 /* BlazeCampaign+ReadOnlyConvertible.swift in Sources */,
 				DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */,
 				74858DB421C02B5A00754F3E /* OrderNote+ReadOnlyType.swift in Sources */,
 				0248B3652459018100A271A4 /* ResultsController+FilterProducts.swift in Sources */,

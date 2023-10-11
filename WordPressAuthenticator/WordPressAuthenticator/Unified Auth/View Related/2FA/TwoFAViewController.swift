@@ -300,7 +300,7 @@ extension TwoFAViewController: ASAuthorizationControllerDelegate, ASAuthorizatio
         }
 
         // Validate that the submitted passkey is allowed.
-        guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64EncodedString()) else {
+        guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64URLEncodedString()) else {
             return displaySecurityKeyErrorMessageAndExitFlow(message: LocalizedText.invalidKey)
         }
 

@@ -9,14 +9,19 @@ struct CollapsibleProductRowCard: View {
 
     var onAddDiscount: () -> Void
 
+    // Tracks if discount editing should be enabled or disabled. False by default
+    //
+    var shouldDisableDiscountEditing: Bool = false
+
     private var shouldShowDividers: Bool {
         !isCollapsed
     }
 
     private let minusSign: String = NumberFormatter().minusSign
 
-    init(viewModel: ProductRowViewModel, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.onAddDiscount = onAddDiscount
     }
 
@@ -77,6 +82,9 @@ struct CollapsibleProductRowCard: View {
                                 .foregroundColor(Color(uiColor: .withColorStudio(.green, shade: .shade50)))
                         }
                     }
+                    // Redacts the discount editing row while product data is reloaded during remote sync.
+                    // This avoids showing an out-of-date discount while hasn't synched
+                    .redacted(reason: shouldDisableDiscountEditing ? .placeholder : [] )
                 }
                 Spacer()
                     .renderedIf(!viewModel.hasDiscount)
@@ -176,7 +184,7 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, onAddDiscount: {})
+        CollapsibleProductRowCard(viewModel: viewModel, shouldDisableDiscountEditing: false, onAddDiscount: {})
     }
 }
 #endif

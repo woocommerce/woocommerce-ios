@@ -191,6 +191,10 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
+    var orderHasCoupons: Bool {
+        orderSynchronizer.order.coupons.isNotEmpty
+    }
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false

@@ -45,8 +45,7 @@ struct OrderPaymentSection: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    init(viewModel: EditableOrderViewModel.PaymentDataViewModel, 
-         shouldShowCouponsInfoTooltip: Binding<Bool>) {
+    init(viewModel: EditableOrderViewModel.PaymentDataViewModel, shouldShowCouponsInfoTooltip: Binding<Bool>) {
         self.viewModel = viewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
     }

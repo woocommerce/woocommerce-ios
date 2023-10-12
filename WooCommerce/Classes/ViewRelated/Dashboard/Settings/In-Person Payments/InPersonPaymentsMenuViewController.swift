@@ -385,7 +385,7 @@ private extension InPersonPaymentsMenuViewController {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "set-up-tap-to-pay"
         cell.configure(image: .tapToPayOnIPhoneIcon,
-                       text: Localization.tapToPayOnIPhone,
+                       text: viewModel.titleForTapToPayOnIPhone,
                        showBadge: viewModel.shouldBadgeTapToPayOnIPhone)
     }
 
@@ -443,6 +443,14 @@ private extension InPersonPaymentsMenuViewController {
         }.store(in: &cancellables)
 
         viewModel.$shouldBadgeTapToPayOnIPhone.sink { [weak self] _ in
+            self?.configureSections()
+            // ensures that the cell will be configured with the correct value for the badge
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }.store(in: &cancellables)
+
+        viewModel.$titleForTapToPayOnIPhone.sink { [weak self] _ in
             self?.configureSections()
             // ensures that the cell will be configured with the correct value for the badge
             DispatchQueue.main.async {
@@ -729,11 +737,6 @@ private extension InPersonPaymentsMenuViewController {
             "Collect Payment",
             comment: "Navigates to Collect a payment via the Simple Payment screen"
         )
-
-        static let tapToPayOnIPhone = NSLocalizedString(
-            "Set up Tap to Pay on iPhone",
-            comment: "Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. " +
-            "The destination screen also allows for a test payment, after set up.")
 
         static let aboutTapToPayOnIPhone = NSLocalizedString(
             "About Tap to Pay on iPhone",

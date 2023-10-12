@@ -41,6 +41,9 @@ struct BlazeCampaignListView: View {
                 }
             }
         }
+        .onAppear {
+            viewModel.loadCampaigns()
+        }
     }
 }
 

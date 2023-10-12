@@ -18,6 +18,12 @@ final class BlazeCampaignListViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
 
+    /// Keeps track of the current state of the syncing
+    @Published private(set) var syncState: SyncState = .empty
+
+    /// Tracks if the infinite scroll indicator should be displayed.
+    @Published private(set) var shouldShowBottomActivityIndicator = false
+
     /// Supports infinite scroll.
     private let paginationTracker: PaginationTracker
     private let pageFirstIndex: Int = PaginationTracker.Defaults.pageFirstIndex
@@ -41,6 +47,13 @@ final class BlazeCampaignListViewModel: ObservableObject {
         self.storageManager = storageManager
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
+
+        configureResultsController()
+        configurePaginationTracker()
+    }
+
+    func loadCampaigns() {
+        paginationTracker.syncFirstPage()
     }
 
     /// Called when the next page should be loaded.
@@ -54,5 +67,79 @@ final class BlazeCampaignListViewModel: ObservableObject {
         paginationTracker.resync(reason: nil) {
             completion()
         }
+    }
+}
+
+// MARK: Configuration
+
+private extension BlazeCampaignListViewModel {
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try resultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
+
+    /// Updates row view models and sync state.
+    func updateResults() {
+        items = resultsController.fetchedObjects
+        transitionToResultsUpdatedState()
+    }
+}
+
+extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
+    func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
+        transitionToSyncingState()
+
+        let action = BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: pageNumber) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let hasNextPage):
+                onCompletion?(.success(hasNextPage))
+
+            case .failure(let error):
+                DDLogError("⛔️ Error synchronizing Blaze campaigns: \(error)")
+                onCompletion?(.failure(error))
+            }
+        }
+        stores.dispatch(action)
+    }
+}
+
+// MARK: State Machine
+
+extension BlazeCampaignListViewModel {
+    /// Represents possible states for syncing inbox notes.
+    enum SyncState: Equatable {
+        case syncingFirstPage
+        case results
+        case empty
+    }
+
+    /// Update states for sync from remote.
+    func transitionToSyncingState() {
+        shouldShowBottomActivityIndicator = true
+        if items.isEmpty {
+            syncState = .syncingFirstPage
+        }
+    }
+
+    /// Update states after sync is complete.
+    func transitionToResultsUpdatedState() {
+        shouldShowBottomActivityIndicator = false
+        syncState = items.isNotEmpty ? .results: .empty
     }
 }

@@ -108,9 +108,6 @@ class AuthenticationManager: Authentication {
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        let source = options[.sourceApplication] as? String
-        let annotation = options[.annotation]
-
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
@@ -125,6 +122,7 @@ class AuthenticationManager: Authentication {
                 showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }
+
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
                wpcomEmail.isNotEmpty {
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))

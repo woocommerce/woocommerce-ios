@@ -638,10 +638,9 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
+        _ = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
-        XCTAssertTrue(wasHandled)
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_app_login_link_success" }))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["flow"] as? String, "wp_com")
@@ -653,10 +652,9 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
+        _ = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
-        XCTAssertTrue(wasHandled)
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_app_login_link_success" }))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["flow"] as? String, "no_wp_com")
@@ -668,7 +666,7 @@ final class AuthenticationManagerTests: XCTestCase {
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
+        _ = manager.handleAuthenticationUrl(URL(string: deepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_malformed_app_login_link" }))

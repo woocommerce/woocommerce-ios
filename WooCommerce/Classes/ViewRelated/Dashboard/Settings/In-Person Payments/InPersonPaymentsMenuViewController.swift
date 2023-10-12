@@ -210,7 +210,7 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
                            shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
                            depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]? = nil) {
-        var composingSections: [Section?] = [actionsSection]
+        var composingSections: [Section?] = [actionsSection, settingsSection]
 
         let depositsOverviewViewModels = depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels
         if #available(iOS 16.0, *),
@@ -232,7 +232,11 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+    }
+
+    var settingsSection: Section? {
+        return Section(header: Localization.paymentSettingsSectionTitle, rows: [.toggleEnableCashOnDelivery])
     }
 
     func tapToPayOnIPhoneSection(shouldShowFeedbackRow: Bool) -> Section? {
@@ -690,6 +694,10 @@ private extension InPersonPaymentsMenuViewController {
         static let paymentActionsSectionTitle = NSLocalizedString(
             "Actions",
             comment: "Title for the section related to actions inside In-Person Payments settings")
+
+        static let paymentSettingsSectionTitle = NSLocalizedString(
+            "Settings",
+            comment: "Title for the section related to changing payment settings inside the In-Person Payments menu")
 
         static let wooPaymentsDepositsSectionTitle = NSLocalizedString(
             "Woo Payments Balance",

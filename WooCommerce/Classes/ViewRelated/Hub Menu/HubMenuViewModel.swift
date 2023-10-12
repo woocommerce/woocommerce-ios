@@ -188,10 +188,10 @@ final class HubMenuViewModel: ObservableObject {
         guard let site = stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        navigationController?.show(webViewController, sender: self)
+
         ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
+        navigationController?.show(controller, sender: self)
     }
 
     private func observeSiteForUIUpdates() {

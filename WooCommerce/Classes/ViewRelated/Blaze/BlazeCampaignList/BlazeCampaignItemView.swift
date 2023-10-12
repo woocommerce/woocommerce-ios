@@ -41,7 +41,7 @@ struct BlazeCampaignItemView: View {
 
                 // campaign total impressions
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text("Impressions")
+                    Text(Localization.impressions)
                         .subheadlineStyle()
                     Text("1245")
                         .font(.title2)
@@ -52,7 +52,7 @@ struct BlazeCampaignItemView: View {
 
                 // campaign total clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text("Clicks")
+                    Text(Localization.clicks)
                         .subheadlineStyle()
                     Text("1245")
                         .font(.title2)
@@ -63,7 +63,7 @@ struct BlazeCampaignItemView: View {
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
-                    Text("Budget")
+                    Text(Localization.budget)
                         .subheadlineStyle()
                     Text("1245")
                         .font(.title2)
@@ -93,6 +93,12 @@ private extension BlazeCampaignItemView {
         static let cornerRadius: CGFloat = 8
         static let titleSpacing: CGFloat = 4
         static let statsVerticalSpacing: CGFloat = 6
+    }
+
+    enum Localization {
+        static let impressions = NSLocalizedString("Impressions", comment: "Title label for the total impressions of a Blaze ads campaign")
+        static let clicks = NSLocalizedString("Clicks", comment: "Title label for the total clicks of a Blaze ads campaign")
+        static let budget = NSLocalizedString("Budget", comment: "Title label for the total budget of a Blaze campaign")
     }
 }
 

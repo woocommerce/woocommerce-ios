@@ -59,7 +59,7 @@ final class BlazeStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_synchronizeCampaigns_returns_false_for_hasNextPage_when_number_of_retrieved_is_zero() throws {
+    func test_synchronizeCampaigns_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
         // Given
         remote.whenLoadingCampaign(thenReturn: .success([]))
         let store = BlazeStore(dispatcher: Dispatcher(),

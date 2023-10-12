@@ -121,23 +121,27 @@ class AuthenticationManager: Authentication {
                   let siteURL = queryDictionary.string(forKey: "siteUrl"),
                   siteURL.isNotEmpty else {
                 DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
                 showLoginURLFailure(rootViewController: rootViewController)
                 return false
             }
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
                wpcomEmail.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
                 showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
                 return true
             }
 
             if let wporgUsername = queryDictionary.string(forKey: "username"),
                wporgUsername.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
                 showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
                 return true
             }
         }
 
         showLoginURLFailure(rootViewController: rootViewController)
+        analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
         return false
     }
 

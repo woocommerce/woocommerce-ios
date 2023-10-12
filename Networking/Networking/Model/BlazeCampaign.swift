@@ -15,7 +15,7 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
     /// Name of the campaign
     public let name: String
 
-    /// Status of the campaign to show to users.
+    /// Raw status of the campaign to show to users.
     public let uiStatus: String
 
     /// URL of the image for the campaign
@@ -73,6 +73,27 @@ public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiabl
         totalImpressions = stats.impressionsTotal
         totalClicks = stats.clicksTotal
         totalBudget = stats.totalBudget
+    }
+}
+
+// MARK: Public subtypes
+//
+public extension BlazeCampaign {
+    enum Status: String {
+        case scheduled
+        case created
+        case rejected
+        case approved
+        case active
+        case canceled
+        case finished
+        case processing
+        case unknown
+    }
+
+    /// Status of the current campaign.
+    var status: Status {
+        Status(rawValue: uiStatus) ?? .unknown
     }
 }
 

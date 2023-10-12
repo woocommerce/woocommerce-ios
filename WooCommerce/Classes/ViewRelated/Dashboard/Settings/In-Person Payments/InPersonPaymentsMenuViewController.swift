@@ -399,9 +399,10 @@ private extension InPersonPaymentsMenuViewController {
     func configureTapToPayOnIPhoneFeedback(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "tap-to-pay-feedback"
-        cell.configure(image: UIImage(color: .clear, havingSize: CGSize(width: 24, height: 24)),
+        cell.configure(image: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate),
                        text: Localization.tapToPayOnIPhoneFeedback)
-        cell.textLabel?.textColor = .primary
+        cell.imageView?.tintColor = .textLink
+        cell.textLabel?.textColor = .textLink
         cell.accessoryType = .none
     }
 

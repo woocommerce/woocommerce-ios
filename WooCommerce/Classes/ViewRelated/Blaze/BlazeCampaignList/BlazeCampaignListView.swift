@@ -23,21 +23,19 @@ struct BlazeCampaignListView: View {
     }
 
     var body: some View {
-        NavigationView {
-            ScrollView {
-                LazyVStack {
-                    ForEach(viewModel.items) {
-                        BlazeCampaignItemView(campaign: $0)
-                    }
+        ScrollView {
+            LazyVStack {
+                ForEach(viewModel.items) {
+                    BlazeCampaignItemView(campaign: $0)
                 }
             }
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.create) {
-                        // TODO
-                    }
+        }
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(Localization.create) {
+                    // TODO
                 }
             }
         }

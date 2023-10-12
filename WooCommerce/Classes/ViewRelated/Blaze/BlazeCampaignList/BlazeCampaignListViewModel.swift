@@ -104,8 +104,7 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
 
-        let action = BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: pageNumber) { [weak self] result in
-            guard let self = self else { return }
+        let action = BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: pageNumber) { result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))

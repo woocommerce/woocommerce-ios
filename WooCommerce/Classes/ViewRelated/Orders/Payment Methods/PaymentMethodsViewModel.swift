@@ -325,10 +325,12 @@ private extension PaymentMethodsViewModel {
     }
 
     private func localMobileReaderSupported(onCompletion: @escaping ((Bool) -> Void)) {
-        let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
-                                                                 cardReaderType: .appleBuiltIn,
-                                                                 discoveryMethod: .localMobile,
-                                                                 onCompletion: onCompletion)
+        let action = CardPresentPaymentAction.checkDeviceSupport(
+            siteID: siteID,
+            cardReaderType: .appleBuiltIn,
+            discoveryMethod: .localMobile,
+            minimumOperatingSystemVersionOverride: cardPresentPaymentsConfiguration.minimumOperatingSystemVersionForTapToPay,
+            onCompletion: onCompletion)
         stores.dispatch(action)
     }
 

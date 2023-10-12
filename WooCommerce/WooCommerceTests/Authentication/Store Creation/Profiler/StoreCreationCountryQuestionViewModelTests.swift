@@ -1,6 +1,7 @@
 import Combine
 import XCTest
 @testable import WooCommerce
+import WooFoundation
 
 @MainActor
 final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
@@ -29,7 +30,7 @@ final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
         let viewModel = StoreCreationCountryQuestionViewModel(currentLocale: .init(identifier: "zzzz")) { _ in } onSupport: {}
 
         // Then
-        XCTAssertEqual(viewModel.countryCodes, SiteAddress.CountryCode.allCases.sorted(by: { $0.readableCountry < $1.readableCountry }))
+        XCTAssertEqual(viewModel.countryCodes, CountryCode.allCases.sorted(by: { $0.readableCountry < $1.readableCountry }))
     }
 
     func test_countryCodes_do_not_include_currentCountryCode_from_locale() throws {
@@ -38,7 +39,7 @@ final class StoreCreationCountryQuestionViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.countryCodes.contains(.FR))
-        XCTAssertEqual(viewModel.countryCodes.count, SiteAddress.CountryCode.allCases.count - 1)
+        XCTAssertEqual(viewModel.countryCodes.count, CountryCode.allCases.count - 1)
     }
 
     func test_selecting_a_country_updates_selectedCountryCode() throws {

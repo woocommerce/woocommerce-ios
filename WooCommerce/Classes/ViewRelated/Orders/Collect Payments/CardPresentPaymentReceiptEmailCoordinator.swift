@@ -1,11 +1,12 @@
 import MessageUI
 import UIKit
 import struct Yosemite.Order
+import WooFoundation
 
 /// Coordinates the navigation from a given view controller to present a mail composer for a card-present payment receipt.
 final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
     private let analytics: Analytics
-    private let countryCode: String
+    private let countryCode: CountryCode
     private let cardReaderModel: String?
 
     private var completion: (() -> Void)?
@@ -22,7 +23,7 @@ final class CardPresentPaymentReceiptEmailCoordinator: NSObject {
         let storeName: String?
     }
 
-    init(analytics: Analytics = ServiceLocator.analytics, countryCode: String, cardReaderModel: String?) {
+    init(analytics: Analytics = ServiceLocator.analytics, countryCode: CountryCode, cardReaderModel: String?) {
         self.analytics = analytics
         self.countryCode = countryCode
         self.cardReaderModel = cardReaderModel

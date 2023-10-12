@@ -32,7 +32,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         noticePresenter = MockNoticePresenter()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        configuration = CardPresentPaymentsConfiguration.init(country: "US")
+        configuration = CardPresentPaymentsConfiguration(country: .US)
 
         dependencies = InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies(
             stores: stores,

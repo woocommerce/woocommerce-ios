@@ -66,11 +66,13 @@ final class CardReaderSupportDeterminer: CardReaderSupportDetermining {
     @MainActor
     func deviceSupportsLocalMobileReader() async -> Bool {
         await withCheckedContinuation { continuation in
-            let action = CardPresentPaymentAction.checkDeviceSupport(siteID: siteID,
-                                                                     cardReaderType: .appleBuiltIn,
-                                                                     discoveryMethod: .localMobile) { result in
-                continuation.resume(returning: result)
-            }
+            let action = CardPresentPaymentAction.checkDeviceSupport(
+                siteID: siteID,
+                cardReaderType: .appleBuiltIn,
+                discoveryMethod: .localMobile,
+                minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { result in
+                    continuation.resume(returning: result)
+                }
             stores.dispatch(action)
         }
     }

@@ -1,3 +1,5 @@
+import WooFoundation
+
 /// Represents the possible states for onboarding to In-Person payments
 public enum CardPresentPaymentOnboardingState: Equatable {
     /// The app is loading the required data to check for the current state
@@ -21,11 +23,11 @@ public enum CardPresentPaymentOnboardingState: Equatable {
 
     /// Store is not located in one of the supported countries.
     ///
-    case countryNotSupported(countryCode: String)
+    case countryNotSupported(countryCode: CountryCode)
 
     /// Only Stripe is installed and activated, but the store is not located in one of the supported countries for Stripe (but it is for WCPay).
     ///
-    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugin, countryCode: String)
+    case countryNotSupportedStripe(plugin: CardPresentPaymentsPlugin, countryCode: CountryCode)
 
     /// No CPP plugin is installed on the store.
     ///

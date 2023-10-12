@@ -20,7 +20,8 @@ public struct NoOpCardReaderService: CardReaderService {
 
     public func checkSupport(for cardReaderType: CardReaderType,
                              configProvider: CardReaderConfigProvider,
-                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+                             discoveryMethod: CardReaderDiscoveryMethod,
+                             minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         return false
     }
 

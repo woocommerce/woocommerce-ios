@@ -335,6 +335,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
+        prepareForReuse(cell)
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none

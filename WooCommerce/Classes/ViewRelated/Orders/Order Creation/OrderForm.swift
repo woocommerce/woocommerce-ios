@@ -108,6 +108,8 @@ struct OrderForm: View {
     @State private var shouldShowNewTaxRateSelector = false
     @State private var shouldShowStoredTaxRateSheet = false
 
+    @State private var shouldShowInformationalCouponTooltip = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -136,7 +138,9 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                OrderPaymentSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
@@ -225,6 +229,9 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+        .onTapGesture {
+            shouldShowInformationalCouponTooltip = false
+        }
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {

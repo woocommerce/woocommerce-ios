@@ -53,6 +53,6 @@ private extension BlazeCampaignListView {
 
 struct BlazeCampaignListView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignListView(viewModel: .init())
+        BlazeCampaignListView(viewModel: .init(siteID: 123))
     }
 }

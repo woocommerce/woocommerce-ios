@@ -23,7 +23,31 @@ struct BlazeCampaignListView: View {
     }
 
     var body: some View {
-        Text("Hello, World!")
+        NavigationView {
+            ScrollView {
+                LazyVStack {
+                    ForEach(viewModel.items) {
+                        BlazeCampaignItemView(campaign: $0)
+                    }
+                }
+            }
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.create) {
+                        // TODO
+                    }
+                }
+            }
+        }
+    }
+}
+
+private extension BlazeCampaignListView {
+    enum Localization {
+        static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
+        static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")
     }
 }
 

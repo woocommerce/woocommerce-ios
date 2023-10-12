@@ -32,7 +32,7 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
 private extension BlazeRemote {
     enum Paths {
         static func campaignSearch(siteID: Int64) -> String {
-            "/wordads/dsp/api/v1/search/campaigns/site/\(siteID)"
+            "sites/\(siteID)/wordads/dsp/api/v1/search/campaigns/site/\(siteID)"
         }
     }
 

@@ -187,17 +187,20 @@ private extension TwoFAViewController {
     /// proceeds with the submit action.
     ///
     func validateForm() {
-        if let nonce = loginFields.nonceInfo {
-            loginWithNonce(info: nonce)
-            return
+        guard let nonceInfo = loginFields.nonceInfo else {
+            return validateFormAndLogin()
         }
-        validateFormAndLogin()
+
+        let (authType, nonce) = nonceInfo.authTypeAndNonce(for: loginFields.multifactorCode)
+        if nonce.isEmpty {
+            return validateFormAndLogin()
+        }
+
+        loginWithNonce(nonce, authType: authType, code: loginFields.multifactorCode)
     }
 
-    func loginWithNonce(info nonceInfo: SocialLogin2FANonceInfo) {
+    func loginWithNonce(_ nonce: String, authType: String, code: String) {
         configureViewLoading(true)
-        let code = loginFields.multifactorCode
-        let (authType, nonce) = nonceInfo.authTypeAndNonce(for: code)
         loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: code, twoStepNonce: nonce)
     }
 

@@ -739,7 +739,7 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let aboutTapToPayOnIPhone = NSLocalizedString(
-            "About Tap to Pay on iPhone",
+            "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
             "of Tap to Pay on iPhone, relevant to the store territory.")
 

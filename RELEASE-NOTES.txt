@@ -4,6 +4,7 @@
 -----
 - [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
 - [*] The Set up Tap to Pay on iPhone row in the Payments menu now reflects when you've completed set up for the current device and store [https://github.com/woocommerce/woocommerce-ios/pull/10923]
+- [*] The Set up Tap to Pay on iPhone Learn More button opens more details about Tap to Pay [https://github.com/woocommerce/woocommerce-ios/pull/10934]
 
 15.7
 -----

@@ -27,7 +27,11 @@ struct BlazeCampaignItemView: View {
 
                 // campaign status and name
                 VStack(alignment: .leading, spacing: Layout.titleSpacing) {
-                    BadgeView(text: campaign.status.rawValue.uppercased())
+                    BadgeView(
+                        text: campaign.status.rawValue.uppercased(),
+                        customizations: .init(textColor: campaign.status.textColor,
+                                              backgroundColor: campaign.status.backgroundColor)
+                    )
                     Text(campaign.name)
                         .headlineStyle()
                 }
@@ -113,7 +117,7 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
     static let campaign: BlazeCampaign = .init(siteID: 123,
                                                campaignID: 11,
                                                name: "Fluffy bunny pouch",
-                                               uiStatus: BlazeCampaign.Status.active.rawValue,
+                                               uiStatus: BlazeCampaign.Status.finished.rawValue,
                                                contentImageURL: nil,
                                                contentClickURL: nil,
                                                totalImpressions: 112,
@@ -121,5 +125,38 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
                                                totalBudget: 35)
     static var previews: some View {
         BlazeCampaignItemView(campaign: campaign)
+    }
+}
+
+// MARK: Customizations for campaign status
+private extension BlazeCampaign.Status {
+    var textColor: Color {
+        switch self {
+        case .active, .approved, .created, .scheduled:
+            return .withColorStudio(name: .green, shade: .shade60)
+        case .finished:
+            return .withColorStudio(name: .blue, shade: .shade80)
+        case .canceled, .rejected:
+            return .withColorStudio(name: .red, shade: .shade60)
+        case .processing:
+            return .withColorStudio(name: .yellow, shade: .shade70)
+        case .unknown:
+            return .withColorStudio(name: .gray, shade: .shade70)
+        }
+    }
+
+    var backgroundColor: Color {
+        switch self {
+        case .active, .approved, .created, .scheduled:
+            return .withColorStudio(name: .green, shade: .shade5)
+        case .finished:
+            return .withColorStudio(name: .blue, shade: .shade5)
+        case .canceled, .rejected:
+            return .withColorStudio(name: .red, shade: .shade5)
+        case .processing:
+            return .withColorStudio(name: .yellow, shade: .shade5)
+        case .unknown:
+            return .withColorStudio(name: .gray, shade: .shade5)
+        }
     }
 }

@@ -104,7 +104,7 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
 
-        let action = BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: pageNumber) { result in
+        let action = BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: pageNumber) { [weak self] result in
             switch result {
             case .success(let hasNextPage):
                 onCompletion?(.success(hasNextPage))
@@ -113,6 +113,7 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
                 DDLogError("⛔️ Error synchronizing Blaze campaigns: \(error)")
                 onCompletion?(.failure(error))
             }
+            self?.updateResults()
         }
         stores.dispatch(action)
     }
@@ -139,6 +140,6 @@ extension BlazeCampaignListViewModel {
     /// Update states after sync is complete.
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
-        syncState = campaigns.isNotEmpty ? .results: .empty
+        syncState = campaigns.isNotEmpty ? .results : .empty
     }
 }

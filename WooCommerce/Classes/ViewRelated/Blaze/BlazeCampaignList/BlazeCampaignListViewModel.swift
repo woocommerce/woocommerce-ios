@@ -11,7 +11,7 @@ extension BlazeCampaign: Identifiable {
 
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
-    @Published private(set) var items: [BlazeCampaign] = []
+    @Published private(set) var campaigns: [BlazeCampaign] = []
 
     private let siteID: Int64
     private let stores: StoresManager
@@ -95,7 +95,7 @@ private extension BlazeCampaignListViewModel {
 
     /// Updates row view models and sync state.
     func updateResults() {
-        items = resultsController.fetchedObjects
+        campaigns = resultsController.fetchedObjects
         transitionToResultsUpdatedState()
     }
 }
@@ -131,7 +131,7 @@ extension BlazeCampaignListViewModel {
     /// Update states for sync from remote.
     func transitionToSyncingState() {
         shouldShowBottomActivityIndicator = true
-        if items.isEmpty {
+        if campaigns.isEmpty {
             syncState = .syncingFirstPage
         }
     }
@@ -139,6 +139,6 @@ extension BlazeCampaignListViewModel {
     /// Update states after sync is complete.
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
-        syncState = items.isNotEmpty ? .results: .empty
+        syncState = campaigns.isNotEmpty ? .results: .empty
     }
 }

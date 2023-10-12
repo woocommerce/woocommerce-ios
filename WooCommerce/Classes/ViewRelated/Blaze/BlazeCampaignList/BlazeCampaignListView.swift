@@ -35,14 +35,29 @@ struct BlazeCampaignListView: View {
     }
 
     var body: some View {
-        ScrollView {
-            LazyVStack(spacing: Layout.contentSpacing) {
-                ForEach(viewModel.items) {
-                    BlazeCampaignItemView(campaign: $0)
+        Group {
+            switch viewModel.syncState {
+            case .results:
+                RefreshableInfiniteScrollList(spacing: Layout.contentSpacing,
+                                              isLoading: viewModel.shouldShowBottomActivityIndicator,
+                                              loadAction: viewModel.onLoadNextPageAction,
+                                              refreshAction: { completion in
+                    viewModel.onRefreshAction(completion: completion)
+                }) {
+                    ForEach(viewModel.campaigns) { item in
+                        BlazeCampaignItemView(campaign: item)
+                    }
                 }
+            case .empty:
+                EmptyState(title: Localization.emptyStateTitle,
+                           description: Localization.emptyStateMessage,
+                           image: .emptyProductsImage)
+                    .frame(maxHeight: .infinity)
+            case .syncingFirstPage:
+                ActivityIndicator(isAnimating: .constant(true), style: .medium)
             }
-            .padding(Layout.contentSpacing)
         }
+        .padding(Layout.contentSpacing)
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -65,6 +80,11 @@ private extension BlazeCampaignListView {
     enum Localization {
         static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
         static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")
+        static let emptyStateTitle = NSLocalizedString("No campaigns yet", comment: "Title of the empty state of the Blaze campaign list view")
+        static let emptyStateMessage = NSLocalizedString(
+            "Boost your sales by promoting your products",
+            comment: "Subtitle of the empty state of the Blaze campaign list view"
+        )
     }
 }
 

@@ -10,6 +10,9 @@ struct RefreshableInfiniteScrollList<Content: View>: View {
     ///
     private let isLoading: Bool
 
+    /// Spacing between each item in the list.
+    private let spacing: CGFloat
+
     /// Action to load more content.
     ///
     private let loadAction: () -> Void
@@ -22,10 +25,12 @@ struct RefreshableInfiniteScrollList<Content: View>: View {
     ///
     /// - Parameters:
     ///   - isLoading: Whether the list is loading more content. Used to determine whether to show the infinite scroll indicator.
+    ///   - spacing: Spacing between each item in the list.
     ///   - loadAction: Action to load more content.
     ///   - refreshAction: Called when the user pulls-to-refresh content in the scroll list.
     ///   - listContent: Content to render in the list.
-    init(isLoading: Bool,
+    init(spacing: CGFloat = 0,
+         isLoading: Bool,
          loadAction: @escaping () -> Void,
          refreshAction: @escaping RefreshableScrollView<Content>.RefreshAction,
          @ViewBuilder listContent: () -> Content) {
@@ -33,11 +38,12 @@ struct RefreshableInfiniteScrollList<Content: View>: View {
         self.isLoading = isLoading
         self.loadAction = loadAction
         self.refreshAction = refreshAction
+        self.spacing = spacing
     }
 
     var body: some View {
         RefreshableScrollView(refreshAction: refreshAction) {
-            LazyVStack(spacing: 0) {
+            LazyVStack(spacing: spacing) {
                 listContent
 
                 InfiniteScrollIndicator(showContent: isLoading)

@@ -38,6 +38,9 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         stores.sessionManager.defaultStoreID ?? 0
     }
 
+    private let currencyFormatter: CurrencyFormatter
+    private let trialPaymentAmount: String
+
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -46,6 +49,9 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
         self.configuration = configuration
         self.stores = stores
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        self.currencyFormatter = currencyFormatter
+        self.trialPaymentAmount = currencyFormatter.formatAmount(configuration.minimumAllowedChargeAmount) ?? "0.50"
 
         beginConnectedReaderObservation()
         updateFormattedPaymentAmount()
@@ -67,7 +73,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
     private func updateFormattedPaymentAmount() {
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        guard let formattedAmount = currencyFormatter.formatAmount(Constants.tapToPayTryAPaymentAmount,
+        guard let formattedAmount = currencyFormatter.formatAmount(trialPaymentAmount,
                                                                    with: configuration.currencies.first?.rawValue) else {
             return
         }
@@ -78,7 +84,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         loading = true
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
                                                            status: .pending,
-                                                           amount: Constants.tapToPayTryAPaymentAmount,
+                                                           amount: trialPaymentAmount,
                                                            taxable: false) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
@@ -138,10 +144,6 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 }
 
 extension SetUpTapToPayTryPaymentPromptViewModel {
-    enum Constants {
-        static let tapToPayTryAPaymentAmount = "0.50"
-    }
-
     enum Localization {
         static let errorCreatingTestPayment = NSLocalizedString(
             "The trial payment could not be started, please try again, or contact support if this problem persists.",

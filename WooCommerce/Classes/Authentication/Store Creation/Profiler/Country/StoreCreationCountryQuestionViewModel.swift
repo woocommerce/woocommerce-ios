@@ -1,10 +1,9 @@
 import Combine
 import Foundation
+import WooFoundation
 
 /// View model for `StoreCreationCountryQuestionView`, an optional profiler question about store country in the store creation flow.
 final class StoreCreationCountryQuestionViewModel: StoreCreationProfilerQuestionViewModel, ObservableObject {
-    typealias CountryCode = SiteAddress.CountryCode
-
     let topHeader: String = Localization.header
 
     let title: String = Localization.title

@@ -108,6 +108,8 @@ struct OrderForm: View {
     @State private var shouldShowNewTaxRateSelector = false
     @State private var shouldShowStoredTaxRateSheet = false
 
+    @State private var shouldShowInformationalCouponTooltip = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -136,7 +138,9 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                OrderPaymentSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
@@ -225,6 +229,9 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+        .onTapGesture {
+            shouldShowInformationalCouponTooltip = false
+        }
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -391,6 +398,7 @@ private struct ProductsSection: View {
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
                 }
+                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
@@ -485,6 +493,13 @@ private struct ProductsSection: View {
                     })
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
+
+                HStack {
+                    Button(OrderForm.Localization.addCustomAmount) {}
+                    .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
+                    .buttonStyle(PlusButtonStyle())
+                }
+                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
@@ -526,6 +541,8 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
+        static let addCustomAmount = NSLocalizedString("Add custom amount",
+                                                   comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
@@ -548,6 +565,7 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
+        static let addCustomAmountIdentifier = "new-order-add-custom-amount-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
     }
 }

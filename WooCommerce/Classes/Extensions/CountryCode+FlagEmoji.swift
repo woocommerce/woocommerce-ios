@@ -1,6 +1,7 @@
 import Foundation
+import WooFoundation
 
-extension SiteAddress.CountryCode {
+extension CountryCode {
     /// Returns the flag emoji based on the country code if available.
     /// Reference: https://stackoverflow.com/a/30403199/9185596
     var flagEmoji: String? {

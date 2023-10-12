@@ -35,6 +35,7 @@ class AuthenticatedState: StoresManagerState {
                              fileStorage: PListFileStorage(),
                              generalAppSettings: ServiceLocator.generalAppSettings),
             AddOnGroupStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            BlazeStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CouponStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CustomerStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

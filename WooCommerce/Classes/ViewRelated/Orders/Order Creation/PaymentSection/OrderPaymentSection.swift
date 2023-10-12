@@ -37,13 +37,18 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the coupons informational tooltip should be shown or not.
     ///
-    @State private var shouldShowCouponsInfoTooltip: Bool = false
+    @Binding private var shouldShowCouponsInfoTooltip: Bool
 
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    init(viewModel: EditableOrderViewModel.PaymentDataViewModel, shouldShowCouponsInfoTooltip: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
+    }
 
     var body: some View {
         Divider()
@@ -177,26 +182,10 @@ private extension OrderPaymentSection {
         .padding()
         .accessibilityIdentifier("add-coupon-button")
         .overlay {
-            VStack(alignment: .leading) {
-                Text(Localization.couponsTooltipTitle)
-                    .font(.body)
-                    .foregroundColor(.white)
-                    .fontWeight(.bold)
-                Text(Localization.couponsTooltipDescription)
-                    .font(.body)
-                    .multilineTextAlignment(.leading)
-                    .lineLimit(nil)
-                    .fixedSize(horizontal: false, vertical: true)
-                    .foregroundColor(.gray)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .padding()
-            .background {
-                Color.black
-                    .cornerRadius(Constants.infoTooltipCornerRadius)
-            }
-            .offset(CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding))
-            .opacity(1)
+            TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
+                        toolTipDescription: Localization.couponsTooltipDescription,
+                        offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                        safeAreaInsets: EdgeInsets())
             .padding()
             .renderedIf(shouldShowCouponsInfoTooltip)
         }
@@ -403,7 +392,8 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel)
+        OrderPaymentSection(viewModel: viewModel,
+                            shouldShowCouponsInfoTooltip: .constant(true))
             .previewLayout(.sizeThatFits)
     }
 }

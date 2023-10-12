@@ -1,6 +1,7 @@
 import Combine
 import Foundation
 import Yosemite
+import WooFoundation
 
 /// Tracks events during card reader connection flow, including reader connection and optional/required software update events.
 final class CardReaderConnectionAnalyticsTracker {
@@ -18,7 +19,7 @@ final class CardReaderConnectionAnalyticsTracker {
         (connectedReader ?? candidateReader)?.readerType.model ?? ""
     }
 
-    private var countryCode: String {
+    private var countryCode: CountryCode {
         configuration.countryCode
     }
 

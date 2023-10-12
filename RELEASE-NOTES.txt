@@ -2,6 +2,7 @@
 
 15.8
 -----
+- [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
 
 
 15.7

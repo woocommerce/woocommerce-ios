@@ -145,10 +145,10 @@ struct TooltipView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .foregroundColor(.gray)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
         }
         .offset(offset ?? CGSize(width: 0, height: 0))
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .padding(insets: safeAreaInsets)
     }
 

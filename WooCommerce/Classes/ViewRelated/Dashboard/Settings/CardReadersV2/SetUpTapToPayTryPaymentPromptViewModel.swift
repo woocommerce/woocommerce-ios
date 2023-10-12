@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 import Combine
+import WooFoundation
 
 final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresentedViewModel, ObservableObject {
     private(set) var shouldShow: CardReaderSettingsTriState = .isUnknown
@@ -25,8 +26,11 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
     }
     @Published var summaryActive: Bool = false
 
+    @Published var formattedPaymentAmount: String = ""
+
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never> = PassthroughSubject()
     private let analytics: Analytics = ServiceLocator.analytics
+    private let configuration: CardPresentPaymentsConfiguration
 
     private var subscriptions = Set<AnyCancellable>()
 
@@ -36,12 +40,15 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
 
     init(didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)?,
          connectionAnalyticsTracker: CardReaderConnectionAnalyticsTracker,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores) {
         self.didChangeShouldShow = didChangeShouldShow
         self.connectionAnalyticsTracker = connectionAnalyticsTracker
+        self.configuration = configuration
         self.stores = stores
 
         beginConnectedReaderObservation()
+        updateFormattedPaymentAmount()
     }
 
     /// Set up to observe readers connecting / disconnecting
@@ -56,6 +63,15 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
             self.reevaluateShouldShow()
         }
         stores.dispatch(connectedAction)
+    }
+
+    private func updateFormattedPaymentAmount() {
+        let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
+        guard let formattedAmount = currencyFormatter.formatAmount(Constants.tapToPayTryAPaymentAmount,
+                                                                   with: configuration.currencies.first?.rawValue) else {
+            return
+        }
+        formattedPaymentAmount = formattedAmount
     }
 
     private func startTestPayment() {

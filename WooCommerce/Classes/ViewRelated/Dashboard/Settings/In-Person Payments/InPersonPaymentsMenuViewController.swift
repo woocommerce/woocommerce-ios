@@ -245,7 +245,7 @@ private extension InPersonPaymentsMenuViewController {
             rows.append(.tapToPayOnIPhoneFeedback)
         }
 
-        return Section(header: nil, rows: rows)
+        return Section(header: Localization.tapToPaySectionTitle, rows: rows)
     }
 
     var cardReadersSection: Section? {
@@ -693,6 +693,10 @@ private extension InPersonPaymentsMenuViewController {
             "Woo Payments Balance",
             comment: "Title for the section related to Woo Payments Deposits/Balances.")
 
+        static let tapToPaySectionTitle = NSLocalizedString(
+            "Tap to Pay",
+            comment: "Title for the Tap to Pay section in the In-Person payments settings")
+
         static let wooPaymentsDeposits = NSLocalizedString(
             "Woo Payments Balance",
             comment: "Title for the row related to Woo Payments Deposits/Balances.")
@@ -744,7 +748,7 @@ private extension InPersonPaymentsMenuViewController {
             "of Tap to Pay on iPhone, relevant to the store territory.")
 
         static let tapToPayOnIPhoneFeedback = NSLocalizedString(
-            "Share Tap to Pay on iPhone Feedback",
+            "Share Feedback",
             comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone.")
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(

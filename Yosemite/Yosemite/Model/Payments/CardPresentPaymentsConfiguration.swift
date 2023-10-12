@@ -124,11 +124,9 @@ private enum Constants {
 }
 
 extension OperatingSystemVersion: Equatable {
-
     public static func == (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
-        return lhs.majorVersion == rhs.minorVersion &&
+        return lhs.majorVersion == rhs.majorVersion &&
         lhs.minorVersion == rhs.minorVersion &&
         lhs.patchVersion == rhs.patchVersion
     }
-
 }

@@ -91,7 +91,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
             stripeSmallestCurrencyUnitMultiplier: 100,
             contactlessLimitAmount: nil,
-            minimumOperatingSystemVersionForTapToPay: nil)
+            minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -119,7 +119,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
             stripeSmallestCurrencyUnitMultiplier: 100,
             contactlessLimitAmount: nil,
-            minimumOperatingSystemVersionForTapToPay: nil)
+            minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)

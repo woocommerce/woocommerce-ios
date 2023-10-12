@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension OperatingSystemVersion {
 
     /// Provides a localized string for the Operating System version

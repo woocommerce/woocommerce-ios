@@ -12,6 +12,8 @@ enum BlazeSource {
     case productListBanner
     /// From the banner on My Store tab.
     case myStoreBanner
+    /// Form the Blaze campaign list
+    case campaignList
 }
 
 /// View model for Blaze webview.

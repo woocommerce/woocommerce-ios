@@ -98,7 +98,6 @@ struct BlazeCampaignItemView: View {
             RoundedRectangle(cornerRadius: 8)
                 .stroke(Color(uiColor: .separator))
         }
-        .padding(Layout.contentSpacing)
     }
 }
 

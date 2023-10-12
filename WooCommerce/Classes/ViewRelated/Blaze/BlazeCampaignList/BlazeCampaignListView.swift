@@ -4,7 +4,17 @@ import SwiftUI
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
     init(viewModel: BlazeCampaignListViewModel) {
+
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
+
+        rootView.onCreateCampaign = { [weak self] in
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                return
+            }
+            let viewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil)
+            let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+            self?.navigationController?.show(webViewController, sender: self)
+        }
     }
 
     @available(*, unavailable)
@@ -18,24 +28,27 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
 struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
 
+    var onCreateCampaign: () -> Void = {}
+
     init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
     }
 
     var body: some View {
         ScrollView {
-            LazyVStack {
+            LazyVStack(spacing: Layout.contentSpacing) {
                 ForEach(viewModel.items) {
                     BlazeCampaignItemView(campaign: $0)
                 }
             }
+            .padding(Layout.contentSpacing)
         }
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.create) {
-                    // TODO
+                    onCreateCampaign()
                 }
             }
         }
@@ -46,6 +59,9 @@ struct BlazeCampaignListView: View {
 }
 
 private extension BlazeCampaignListView {
+    enum Layout {
+        static let contentSpacing: CGFloat = 16
+    }
     enum Localization {
         static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
         static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")

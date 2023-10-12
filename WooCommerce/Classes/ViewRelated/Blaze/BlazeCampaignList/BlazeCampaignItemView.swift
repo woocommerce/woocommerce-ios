@@ -15,7 +15,7 @@ struct BlazeCampaignItemView: View {
 
     var body: some View {
         VStack(spacing: Layout.contentSpacing) {
-            AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .top, spacing: Layout.contentSpacing) {
+            AdaptiveStack(horizontalAlignment: .leading, verticalAlignment: .center, spacing: Layout.contentSpacing) {
                 // campaign image
                 VStack {
                     Image(uiImage: .productPlaceholderImage)
@@ -28,7 +28,7 @@ struct BlazeCampaignItemView: View {
                 // campaign status and name
                 VStack(alignment: .leading, spacing: Layout.titleSpacing) {
                     BadgeView(
-                        text: campaign.status.rawValue.uppercased(),
+                        text: campaign.status.displayText.uppercased(),
                         customizations: .init(textColor: campaign.status.textColor,
                                               backgroundColor: campaign.status.backgroundColor)
                     )
@@ -130,6 +130,29 @@ struct BlazeCampaignItemView_Previews: PreviewProvider {
 
 // MARK: Customizations for campaign status
 private extension BlazeCampaign.Status {
+    var displayText: String {
+        switch self {
+        case .active:
+            return Localization.active
+        case .approved:
+            return Localization.approved
+        case .created:
+            return Localization.created
+        case .scheduled:
+            return Localization.scheduled
+        case .finished:
+            return Localization.completed
+        case .canceled:
+            return Localization.canceled
+        case .rejected:
+            return Localization.rejected
+        case .processing:
+            return Localization.inModeration
+        case .unknown:
+            return Localization.unknown
+        }
+    }
+
     var textColor: Color {
         switch self {
         case .active, .approved, .created, .scheduled:
@@ -158,5 +181,17 @@ private extension BlazeCampaign.Status {
         case .unknown:
             return .withColorStudio(name: .gray, shade: .shade5)
         }
+    }
+
+    enum Localization {
+        static let active = NSLocalizedString("Active", comment: "Status name of an active Blaze campaign")
+        static let approved = NSLocalizedString("Approved", comment: "Status name of an approved Blaze campaign")
+        static let created = NSLocalizedString("Created", comment: "Status name of a newly created Blaze campaign")
+        static let scheduled = NSLocalizedString("Scheduled", comment: "Status name of a scheduled Blaze campaign")
+        static let completed = NSLocalizedString("Completed", comment: "Status name of a completed Blaze campaign")
+        static let canceled = NSLocalizedString("Canceled", comment: "Status name of a canceled Blaze campaign")
+        static let rejected = NSLocalizedString("Rejected", comment: "Status name of a rejected Blaze campaign")
+        static let inModeration = NSLocalizedString("In Moderation", comment: "Status name of a Blaze campaign under moderation")
+        static let unknown = NSLocalizedString("Unknown", comment: "Status name of a Blaze campaign without specified state")
     }
 }

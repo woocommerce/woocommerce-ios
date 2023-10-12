@@ -37,13 +37,19 @@ struct OrderPaymentSection: View {
 
     /// Indicates if the coupons informational tooltip should be shown or not.
     ///
-    @State private var shouldShowCouponsInfoTooltip: Bool = false
+    @Binding private var shouldShowCouponsInfoTooltip: Bool
 
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
     @ScaledMetric private var scale: CGFloat = 1.0
+
+    init(viewModel: EditableOrderViewModel.PaymentDataViewModel, 
+         shouldShowCouponsInfoTooltip: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
+    }
 
     var body: some View {
         Divider()
@@ -387,7 +393,8 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel)
+        OrderPaymentSection(viewModel: viewModel,
+                            shouldShowCouponsInfoTooltip: .constant(true))
             .previewLayout(.sizeThatFits)
     }
 }

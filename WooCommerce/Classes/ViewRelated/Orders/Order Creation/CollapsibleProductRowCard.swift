@@ -133,7 +133,7 @@ struct CollapsibleProductRowCard: View {
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
-        if viewModel.discount == nil || shouldDisallowDiscounts {
+        if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
                 onAddDiscount()
             }

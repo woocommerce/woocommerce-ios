@@ -29,7 +29,7 @@ final class BlazeRemoteTests: XCTestCase {
         // Given
         let remote = BlazeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
 
         // When
         let results = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
@@ -53,7 +53,7 @@ final class BlazeRemoteTests: XCTestCase {
     func test_loadCampaigns_sends_correct_parameters() async throws {
         // Given
         let remote = BlazeRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
 
         // When
         let results = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
@@ -72,7 +72,7 @@ final class BlazeRemoteTests: XCTestCase {
         let remote = BlazeRemote(network: network)
 
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
-        network.simulateError(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", error: expectedError)
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", error: expectedError)
 
         do {
             // When

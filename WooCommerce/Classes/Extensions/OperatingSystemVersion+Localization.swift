@@ -14,23 +14,11 @@ extension OperatingSystemVersion {
 
         switch self {
         case let version where version.patchVersion > 0:
-            formatString = NSLocalizedString(
-                "os.version.format.major.minor.patch",
-                value: "%1$@.%2$@.%3$@",
-                comment: "A format string for a software version with major, minor, and patch components. " +
-                "%1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch.")
+            formatString = Localization.patchVersionFormat
         case let version where version.minorVersion > 0:
-            formatString = NSLocalizedString(
-                "os.version.format.major.minor",
-                value: "%1$@.%2$@",
-                comment: "A format string for a software version with major and minor components. " +
-                "%1$@ will be replaced with the major, %2$@ with the minor.")
+            formatString = Localization.minorVersionFormat
         default:
-            formatString = NSLocalizedString(
-                "os.version.format.major.only",
-                value: "%1$@",
-                comment: "A format string for a software version with only a major component. " +
-                "%1$@ will be replaced with the major version number.")
+            formatString = Localization.majorVersionFormat
         }
 
         let formatter = NumberFormatter()
@@ -43,5 +31,25 @@ extension OperatingSystemVersion {
 
 
         return String(format: formatString, major, minor, patch)
+    }
+
+    private enum Localization {
+        static let patchVersionFormat = NSLocalizedString(
+            "os.version.format.major.minor.patch",
+            value: "%1$@.%2$@.%3$@",
+            comment: "A format string for a software version with major, minor, and patch components. " +
+            "%1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch.")
+
+        static let minorVersionFormat = NSLocalizedString(
+            "os.version.format.major.minor",
+            value: "%1$@.%2$@",
+            comment: "A format string for a software version with major and minor components. " +
+            "%1$@ will be replaced with the major, %2$@ with the minor.")
+
+        static let majorVersionFormat = NSLocalizedString(
+            "os.version.format.major.only",
+            value: "%1$@",
+            comment: "A format string for a software version with only a major component. " +
+            "%1$@ will be replaced with the major version number.")
     }
 }

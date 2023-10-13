@@ -35,9 +35,20 @@ struct OrderPaymentSection: View {
     ///
     @State private var selectedCouponLineDetailsViewModel: CouponLineDetailsViewModel? = nil
 
+    /// Indicates if the coupons informational tooltip should be shown or not.
+    ///
+    @Binding private var shouldShowCouponsInfoTooltip: Bool
+
     ///   Environment safe areas
     ///
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+
+    @ScaledMetric private var scale: CGFloat = 1.0
+
+    init(viewModel: EditableOrderViewModel.PaymentDataViewModel, shouldShowCouponsInfoTooltip: Binding<Bool>) {
+        self.viewModel = viewModel
+        self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
+    }
 
     var body: some View {
         Divider()
@@ -82,35 +93,38 @@ struct OrderPaymentSection: View {
             }
 
             addCouponRow
+            // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
+            // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
+                .zIndex(1)
                 .sheet(isPresented: $shouldShowAddCouponLineDetails) {
                     NavigationView {
                         CouponListView(siteID: viewModel.siteID,
                                        emptyStateActionTitle: Localization.goToCoupons,
                                        emptyStateAction: {
-                                            shouldShowGoToCouponsAlert = true
-                                        },
+                            shouldShowGoToCouponsAlert = true
+                        },
                                        onCouponSelected: { coupon in
-                                            viewModel.addNewCouponLineClosure(coupon)
-                                            shouldShowAddCouponLineDetails = false
-                                        })
+                            viewModel.addNewCouponLineClosure(coupon)
+                            shouldShowAddCouponLineDetails = false
+                        })
                         .navigationTitle(Localization.addCoupon)
-                            .navigationBarTitleDisplayMode(.inline)
-                            .toolbar {
-                                ToolbarItem(placement: .navigationBarLeading) {
-                                    Button(Localization.cancelButton) {
-                                        shouldShowAddCouponLineDetails = false
-                                    }
+                        .navigationBarTitleDisplayMode(.inline)
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarLeading) {
+                                Button(Localization.cancelButton) {
+                                    shouldShowAddCouponLineDetails = false
                                 }
                             }
-                            .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
-                                Alert(title: Text(Localization.goToCoupons),
-                                      message: Text(Localization.goToCouponsAlertMessage),
-                                      primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
-                                    viewModel.onGoToCouponsClosure()
-                                    MainTabBarController.presentCoupons()
-                                }),
-                                      secondaryButton: .cancel())
-                            })
+                        }
+                        .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
+                            Alert(title: Text(Localization.goToCoupons),
+                                  message: Text(Localization.goToCouponsAlertMessage),
+                                  primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
+                                viewModel.onGoToCouponsClosure()
+                                MainTabBarController.presentCoupons()
+                            }),
+                                  secondaryButton: .cancel())
+                        })
                     }
                 }
 
@@ -128,8 +142,8 @@ struct OrderPaymentSection: View {
                 .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
                     TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
                                              onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
-                        .background(FullScreenCoverClearBackgroundView())
-                    }
+                    .background(FullScreenCoverClearBackgroundView())
+                }
 
             VStack(alignment: .leading, spacing: .zero) {
                 TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
@@ -146,8 +160,38 @@ struct OrderPaymentSection: View {
         taxRateAddedAutomaticallyRow
             .renderedIf(viewModel.shouldShowStoredTaxRateAddedAutomatically)
     }
+}
 
-    @ViewBuilder private var shippingRow: some View {
+private extension OrderPaymentSection {
+    @ViewBuilder var addCouponRow: some View {
+        HStack(spacing: 0) {
+            Button(Localization.addCoupon) {
+                shouldShowAddCouponLineDetails = true
+            }
+            .buttonStyle(PlusButtonStyle())
+            .disabled(viewModel.shouldDisableAddingCoupons)
+            Button() {
+                shouldShowCouponsInfoTooltip.toggle()
+            } label: {
+                Image(systemName: "questionmark.circle")
+                    .resizable()
+                    .frame(width: Constants.sectionPadding, height: Constants.sectionPadding)
+            }
+            .renderedIf(viewModel.shouldDisableAddingCoupons)
+        }
+        .padding()
+        .accessibilityIdentifier("add-coupon-button")
+        .overlay {
+            TooltipView(toolTipTitle: Localization.couponsTooltipTitle,
+                        toolTipDescription: Localization.couponsTooltipDescription,
+                        offset: CGSize(width: 0, height: (Constants.rowMinHeight * scale) + Constants.sectionPadding),
+                        safeAreaInsets: EdgeInsets())
+            .padding()
+            .renderedIf(shouldShowCouponsInfoTooltip)
+        }
+    }
+
+    @ViewBuilder var shippingRow: some View {
         if viewModel.shouldShowShippingTotal {
             TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
                 shouldShowShippingLineDetails = true
@@ -162,7 +206,7 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var feesRow: some View {
+    @ViewBuilder var feesRow: some View {
         if viewModel.shouldShowFees {
             TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
                 shouldShowFeeLineDetails = true
@@ -177,17 +221,7 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var addCouponRow: some View {
-        Button(Localization.addCoupon) {
-            shouldShowAddCouponLineDetails = true
-        }
-        .buttonStyle(PlusButtonStyle())
-        .padding()
-        .accessibilityIdentifier("add-coupon-button")
-        .disabled(viewModel.shouldDisableAddingCoupons)
-    }
-
-    @ViewBuilder private var addGiftCardRow: some View {
+    @ViewBuilder var addGiftCardRow: some View {
         Button(Localization.addGiftCard) {
             shouldShowGiftCardForm = true
             viewModel.addGiftCardClosure()
@@ -201,7 +235,7 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private func editGiftCardRow(giftCard: String) -> some View {
+    @ViewBuilder func editGiftCardRow(giftCard: String) -> some View {
         HStack {
             Button {
                 shouldShowGiftCardForm = true
@@ -215,7 +249,7 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var giftCardInput: some View {
+    @ViewBuilder var giftCardInput: some View {
         GiftCardInputView(viewModel: .init(code: viewModel.giftCardToApply ?? "",
                                            setGiftCard: { code in
             viewModel.setGiftCardClosure(code)
@@ -225,7 +259,7 @@ struct OrderPaymentSection: View {
         }))
     }
 
-    @ViewBuilder private var appliedGiftCardsSection: some View {
+    @ViewBuilder var appliedGiftCardsSection: some View {
         VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
             ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
                 TitleAndValueRow(title: giftCard.code, value: .content(giftCard.amount), selectionStyle: .none)
@@ -234,7 +268,7 @@ struct OrderPaymentSection: View {
         .renderedIf(viewModel.appliedGiftCards.isNotEmpty)
     }
 
-    @ViewBuilder private var taxesSection: some View {
+    @ViewBuilder var taxesSection: some View {
         VStack(alignment: .leading, spacing: Constants.taxesSectionVerticalSpacing) {
             taxSectionTitle
             taxLines
@@ -244,7 +278,7 @@ struct OrderPaymentSection: View {
         .padding(Constants.sectionPadding)
     }
 
-    @ViewBuilder private var taxSectionTitle: some View {
+    @ViewBuilder var taxSectionTitle: some View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
             Text(Localization.taxesTotal)
                 .bodyStyle()
@@ -266,7 +300,7 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var taxLines: some View {
+    @ViewBuilder var taxLines: some View {
         ForEach(viewModel.taxLineViewModels, id: \.title) { viewModel in
             HStack {
                 AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
@@ -285,13 +319,13 @@ struct OrderPaymentSection: View {
         }
     }
 
-    @ViewBuilder private var taxBasedOnLine: some View {
+    @ViewBuilder var taxBasedOnLine: some View {
         Text(viewModel.taxBasedOnSetting?.displayString ?? "")
             .footnoteStyle()
             .multilineTextAlignment(.leading)
     }
 
-    @ViewBuilder private var taxRateAddedAutomaticallyRow: some View {
+    @ViewBuilder var taxRateAddedAutomaticallyRow: some View {
         VStack {
             HStack(alignment: .top, spacing: Constants.taxRateAddedAutomaticallyRowHorizontalSpacing) {
                 Image(systemName: "info.circle")
@@ -325,7 +359,7 @@ private extension OrderPaymentSection {
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
-        static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
+        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
                                                    "when creating a new order that navigates to the Coupons Section")
@@ -335,6 +369,12 @@ private extension OrderPaymentSection {
         static let cancelButton = NSLocalizedString("Cancel", comment: "Cancel button title when showing the coupon list selector")
         static let taxRateAddedAutomaticallyRowText = NSLocalizedString("Tax rate location added automatically",
                                                                         comment: "Notice in editable order details when the tax rate was added to the order")
+        static let couponsTooltipTitle = NSLocalizedString(
+            "Coupons unavailable",
+            comment: "Title text for the coupons row informational tooltip")
+        static let couponsTooltipDescription = NSLocalizedString(
+            "To add Coupons, please remove your Product Discounts",
+            comment: "Description text for the coupons row informational tooltip")
     }
 
     enum Constants {
@@ -344,6 +384,7 @@ private extension OrderPaymentSection {
         static let taxesAdaptativeStacksSpacing: CGFloat = 4
         static let sectionPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
+        static let infoTooltipCornerRadius: CGFloat = 4
     }
 }
 
@@ -351,7 +392,8 @@ struct OrderPaymentSection_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = EditableOrderViewModel.PaymentDataViewModel(itemsTotal: "20.00", orderTotal: "20.00")
 
-        OrderPaymentSection(viewModel: viewModel)
+        OrderPaymentSection(viewModel: viewModel,
+                            shouldShowCouponsInfoTooltip: .constant(true))
             .previewLayout(.sizeThatFits)
     }
 }

@@ -359,7 +359,7 @@ private extension OrderPaymentSection {
         static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
-        static let addCoupon = NSLocalizedString("Add coupon", comment: "Title for the Coupon screen during order creation")
+        static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
                                                    "when creating a new order that navigates to the Coupons Section")

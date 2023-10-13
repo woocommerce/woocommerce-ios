@@ -74,7 +74,7 @@ struct SetUpTapToPayCompleteView: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
 
-            Button(Localization.doneButton, action: {
+            Button(Localization.continueButton, action: {
                 viewModel.doneTapped()
             })
             .buttonStyle(PrimaryButtonStyle())
@@ -107,13 +107,12 @@ private extension SetUpTapToPayCompleteView {
         )
 
         static let setUpCompleteDetail = NSLocalizedString(
-            "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from " +
-            "Order Details. Choose Tap to Pay on iPhone as the payment method.",
+            "Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments.",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > Detail"
         )
 
-        static let doneButton = NSLocalizedString(
-            "Done",
+        static let continueButton = NSLocalizedString(
+            "Continue",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the " +
             "next for testing Tap to Pay on iPhone"
         )

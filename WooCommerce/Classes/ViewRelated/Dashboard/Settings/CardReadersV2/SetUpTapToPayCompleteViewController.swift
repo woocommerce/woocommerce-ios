@@ -29,6 +29,8 @@ final class SetUpTapToPayCompleteViewController: UIHostingController<SetUpTapToP
 struct SetUpTapToPayCompleteView: View {
     @ObservedObject var viewModel: SetUpTapToPayCompleteViewModel
 
+    @State var showingAboutTapToPay: Bool = false
+
     @Environment(\.verticalSizeClass) var verticalSizeClass
 
     var isCompact: Bool {
@@ -78,8 +80,19 @@ struct SetUpTapToPayCompleteView: View {
                 viewModel.doneTapped()
             })
             .buttonStyle(PrimaryButtonStyle())
+
+            InPersonPaymentsLearnMore(
+                viewModel: LearnMoreViewModel(
+                    formatText: Localization.learnMore,
+                    tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
+            .customOpenURL(action: { _ in
+                showingAboutTapToPay = true
+            })
         }
         .padding()
+        .sheet(isPresented: $showingAboutTapToPay) {
+            AboutTapToPayViewInNavigationView()
+        }
     }
 }
 
@@ -115,6 +128,15 @@ private extension SetUpTapToPayCompleteView {
             "Continue",
             comment: "Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the " +
             "next for testing Tap to Pay on iPhone"
+        )
+
+        static let learnMore = NSLocalizedString(
+            "%1$@ about accepting payments with Tap to Pay on iPhone.",
+            comment: """
+                     A label prompting users to learn more about Tap to Pay on iPhone"
+                     %1$@ is a placeholder that always replaced with \"Learn more\" string,
+                     which should be translated separately and considered part of this sentence.
+                     """
         )
     }
 }

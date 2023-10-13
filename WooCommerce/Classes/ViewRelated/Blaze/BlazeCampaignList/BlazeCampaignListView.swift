@@ -1,19 +1,21 @@
 import SwiftUI
+import struct Yosemite.Site
 
 /// Hosting controller for `BlazeCampaignListView`
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
-    init(viewModel: BlazeCampaignListViewModel) {
+    init(site: Site, viewModel: BlazeCampaignListViewModel) {
 
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
             let viewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil)
             let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
             self?.navigationController?.show(webViewController, sender: self)
+        }
+
+        rootView.onOpenCampaign = { _ in
+            // TODO
         }
     }
 
@@ -29,6 +31,7 @@ struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
 
     var onCreateCampaign: () -> Void = {}
+    var onOpenCampaign: (Int64) -> Void = {}
 
     init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
@@ -46,6 +49,9 @@ struct BlazeCampaignListView: View {
                 }) {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
+                            .onTapGesture {
+                                onOpenCampaign(item.campaignID)
+                            }
                     }
                 }
             case .empty:

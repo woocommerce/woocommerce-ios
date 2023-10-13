@@ -193,7 +193,7 @@ final class HubMenuViewModel: ObservableObject {
 
         if featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
             // shows campaign list for the new Blaze experience.
-            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
+            let controller = BlazeCampaignListHostingController(site: site, viewModel: .init(siteID: site.siteID))
             navigationController?.show(controller, sender: self)
         } else {
             let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)

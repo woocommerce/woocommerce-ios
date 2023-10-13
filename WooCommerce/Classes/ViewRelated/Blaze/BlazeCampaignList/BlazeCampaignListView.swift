@@ -12,13 +12,15 @@ enum BlazeCampaignSource: String {
 /// Hosting controller for `BlazeCampaignListView`
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
-    init(site: Site, viewModel: BlazeCampaignListViewModel) {
 
+    init(site: Site, viewModel: BlazeCampaignListViewModel) {
         super.init(rootView: BlazeCampaignListView(viewModel: viewModel, siteURL: site.url.trimHTTPScheme()))
 
         rootView.onCreateCampaign = { [weak self] in
-            let viewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil)
-            let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+            let webViewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil) {
+                viewModel.loadCampaigns()
+            }
+            let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
             self?.navigationController?.show(webViewController, sender: self)
         }
     }

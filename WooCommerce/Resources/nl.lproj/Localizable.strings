@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-13 16:25:21+0000 */
+/* Translation-Revision-Date: 2023-10-13 16:26:27+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -1074,7 +1074,7 @@ which should be translated separately and considered part of this sentence. */
 "Available funds" = "Beschikbare bedragen";
 
 /* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
-"Available funds are deposited automatically, %1$@." = "Beschikbare bedragen worden automatisch %$1@ gestort.";
+"Available funds are deposited automatically, %1$@." = "Beschikbare bedragen worden automatisch %1$@ gestort.";
 
 /* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
 "Available funds are deposited manually, on request." = "Beschikbare bedragen worden handmatig op verzoek gestort.";

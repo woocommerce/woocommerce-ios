@@ -32,7 +32,8 @@ struct AboutTapToPayView: View {
                     }
                     .padding(.vertical)
 
-                    Text(Localization.systemRequirementsDetails)
+                    Text(String(format: Localization.systemRequirementsDetails,
+                                viewModel.formattedMinimumOperatingSystemVersionForTapToPay))
                         .footnoteStyle(isError: false)
                 }
                 .padding()
@@ -113,10 +114,10 @@ private extension AboutTapToPayView {
             comment: "Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete.")
 
         static let systemRequirementsDetails = NSLocalizedString(
-            "Requires iPhone XS or later with iOS 16 or later. The Contactless Symbol is a trademark owned by and " +
+            "Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and " +
             "used with permission of EMVCo, LLC.",
             comment: "Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on " +
-            "iPhone screen.")
+            "iPhone screen. %1$@ will be replaced with the relevant iOS version number.")
 
         static let setUpTapToPayOnIPhoneButtonTitle = NSLocalizedString(
             "Set Up Tap to Pay on iPhone",

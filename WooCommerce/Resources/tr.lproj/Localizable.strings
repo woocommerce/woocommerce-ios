@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-03 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-11 09:54:21+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -137,6 +137,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d iş günü ";
+
+/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposit" = "%1$d depozito";
+
+/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposits" = "%1$d depozito";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d ürün";
@@ -1063,6 +1069,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic ailesi";
+
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"Available funds" = "Mevcut fonlar";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are deposited automatically, %1$@." = "Mevcut fonlar otomatik olarak (%1$@) yatırılır.";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are deposited manually, on request." = "Mevcut fonlar talep üzerine manuel olarak yatırılır.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Ortalama sipariş değeri";
@@ -2377,6 +2392,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Danimarka";
 
+/* Section header for the deposits list in the WooPayments Deposits overview */
+"Deposits" = "Depozito";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Ürününü tanımla";
 
@@ -2576,6 +2594,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Bitti";
@@ -3045,6 +3064,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "%1$d numaralı sipariş güncellenirken hata oluştu";
 
+/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+"Est. %1$@" = "Tahmini %1$@";
+
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Tahmini kurulum süresi";
 
@@ -3365,6 +3387,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "Tüm Özellikler Listesi";
+
+/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+"Funds become available after pending for %1$d days." = "Fonlar, %1$d gün beklemenin ardından kullanılabilir hale gelir.";
 
 /* Country option for a site address. */
 "Gabon" = "Gabon";
@@ -4248,6 +4273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Mağazanız hakkında topladığımız veriler ve bu verilerin paylaşımını kontrol etme seçenekleriniz hakkında daha fazla bilgi edinin.";
 
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"Learn more about when you'll receive your funds" = "Fonlarınızı ne zaman alacağınız hakkında daha fazla bilgi edinin";
+
 /* Country option for a site address. */
 "Lebanon" = "Lübnan";
 
@@ -4768,6 +4796,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Myanmar" = "Myanmar";
 
+/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+"N\/A" = "Yok";
+
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
@@ -4862,6 +4893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5235,6 +5267,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Order Card Reader" = "Kart Okuyucu Siparişi";
 
+/* Text in the product row card that indicates the product quantity in an order */
+"Order Count" = "Sipariş Sayısı";
+
 /* Order notes section title */
 "Order Notes" = "Sipariş Notları";
 
@@ -5339,7 +5374,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Paket boyutları sıfırdan büyük olmalıdır. Devam etmek için lütfen ürün sayfanızın Gönderim kısmındaki öğenizin ölçülerini güncelleyin.";
 
-/* The title for the customer payment cell */
+/* Row title for the last paid deposit in the WooPayments Deposits overview
+   The title for the customer payment cell */
 "Paid" = "Ödendi";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -5455,6 +5491,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "İnceleme Bekliyor";
+
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"Pending funds" = "Bekleyen fonlar";
 
 /* Display label for the product's pending status */
 "Pending review" = "İnceleme bekliyor";
@@ -5787,6 +5826,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Price Settings navigation title
    Section header title for product price
+   Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price
@@ -6252,6 +6292,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "Ürünü kaldır";
+
+/* Text in the product row card button to remove a product from the current order */
+"Remove product from order" = "Ürünü siparişten kaldır";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Varyasyonu kaldır";
@@ -9311,6 +9354,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
+/* Title for the row related to Woo Payments Deposits/Balances.
+   Title for the section related to Woo Payments Deposits/Balances. */
+"Woo Payments Balance" = "Woo Payments Bakiyesi";
+
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Woo! Harika bir başlangıç yaptınız!";
 
@@ -9697,6 +9744,18 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "Şu anda Avrupa Birliği (AB) gümrük kurallarını uygulayan ülkelere gönderim yaparken her öğeyi net bir şekilde açıklamanız gerekiyor. Örneğin, kıyafet gönderiyorsanız, açıklamanın kabul edilebilir olması için bunun ne tür bir kıyafet olduğunu (ör. erkek gömleği, kadın yeleği, erkek ceketi) belirtmeniz gerekiyor. Aksi takdirde gümrükte gönderimler gecikebilir veya kesintiye uğrayabilir.";
 
+/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+"every %1$@" = "her %1$@";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+"every day" = "her gün";
+
+/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+"every month" = "her ay";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+"every month on the %1$@" = "her ayın %1$@. günü";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "örnek.com";
@@ -9724,6 +9783,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "Elle para iadesi";
+
+/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+"manually, on request" = "manuel olarak, talep üzerine";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Ay";

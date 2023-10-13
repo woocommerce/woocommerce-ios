@@ -136,8 +136,3 @@ struct BlazeCampaignListView_Previews: PreviewProvider {
         BlazeCampaignListView(viewModel: .init(siteID: 123), siteURL: "https://example.com")
     }
 }
-
-/// Conformance to display sheet based on URL.
-extension URL: Identifiable {
-    public var id: String { absoluteString }
-}

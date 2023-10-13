@@ -17,6 +17,10 @@ struct CollapsibleProductRowCard: View {
     //
     var shouldDisableDiscountEditing: Bool = false
 
+    // Tracks if discount should be allowed or disallowed.
+    //
+    var shouldDisallowDiscounts: Bool = false
+
     private var shouldShowDividers: Bool {
         !isCollapsed
     }
@@ -29,9 +33,10 @@ struct CollapsibleProductRowCard: View {
         }
     }
 
-    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, shouldDisallowDiscounts: Bool, onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
+        self.shouldDisallowDiscounts = shouldDisallowDiscounts
         self.onAddDiscount = onAddDiscount
     }
 
@@ -172,11 +177,12 @@ struct TooltipView: View {
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
-        if viewModel.discount == nil {
+        if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
                 onAddDiscount()
             }
             .buttonStyle(PlusButtonStyle())
+            .disabled(shouldDisallowDiscounts)
         } else {
             HStack {
                 Button(action: {
@@ -207,7 +213,7 @@ private extension CollapsibleProductRowCard {
             Image(systemName: "questionmark.circle")
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
         }
-        .renderedIf(!viewModel.hasDiscount)
+        .renderedIf(!viewModel.hasDiscount || shouldDisallowDiscounts)
     }
 }
 
@@ -277,7 +283,10 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel, shouldDisableDiscountEditing: false, onAddDiscount: {})
+        CollapsibleProductRowCard(viewModel: viewModel,
+                                  shouldDisableDiscountEditing: false,
+                                  shouldDisallowDiscounts: false,
+                                  onAddDiscount: {})
     }
 }
 #endif

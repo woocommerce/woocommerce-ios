@@ -1,1 +1,7 @@
-Immerse yourself in the latest WooCommerce app release! We're introducing an AI-powered feature that allows you to generate new tags/categories while creating a product, making your product management smarter and more efficient. Also, we've addressed a fix in the order details section. Now, if an order item is a variable product with attributes and add-ons, the variation attributes will be displayed. Dive into these enhancements for a smoother, more intuitive experience.
+- [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
+- [*] The Set up Tap to Pay on iPhone row in the Payments menu now reflects when you've completed set up for the current device and store [https://github.com/woocommerce/woocommerce-ios/pull/10923]
+- [*] The Set up Tap to Pay on iPhone Learn More button opens more details about Tap to Pay [https://github.com/woocommerce/woocommerce-ios/pull/10934]
+- [internal] Use minimumAllowedChargeAmount, not 0.50, for the Try a Payment flow [https://github.com/woocommerce/woocommerce-ios/pull/10937]
+- [*] Changes to the Payments menu to make it clearer [https://github.com/woocommerce/woocommerce-ios/pull/10936]
+- [*] Order creation: We updated the UX by allowing direct product discounts to be added, and improved the Product Discount screen [https://github.com/woocommerce/woocommerce-ios/pull/10929]
+

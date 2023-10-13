@@ -1,5 +1,5 @@
 import SwiftUI
-import Yosemite
+import struct Yosemite.BlazeCampaign
 
 /// Customizations for campaign status
 extension BlazeCampaign.Status {
@@ -56,7 +56,7 @@ extension BlazeCampaign.Status {
         }
     }
 
-    enum Localization {
+    private enum Localization {
         static let active = NSLocalizedString("Active", comment: "Status name of an active Blaze campaign")
         static let approved = NSLocalizedString("Approved", comment: "Status name of an approved Blaze campaign")
         static let created = NSLocalizedString("Created", comment: "Status name of a newly created Blaze campaign")

@@ -1,21 +1,25 @@
 import SwiftUI
 import struct Yosemite.Site
 
+/// Blaze campaign entry points.
+enum BlazeCampaignSource: String {
+    /// From the Blaze section on My Store tab.
+    case myStoreSection = "my_store_section"
+    /// From the Blaze campaign list
+    case campaignList = "campaign_list"
+}
+
 /// Hosting controller for `BlazeCampaignListView`
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
     init(site: Site, viewModel: BlazeCampaignListViewModel) {
 
-        super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
+        super.init(rootView: BlazeCampaignListView(viewModel: viewModel, siteURL: site.url.trimHTTPScheme()))
 
         rootView.onCreateCampaign = { [weak self] in
             let viewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil)
             let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
             self?.navigationController?.show(webViewController, sender: self)
-        }
-
-        rootView.onOpenCampaign = { _ in
-            // TODO
         }
     }
 
@@ -29,12 +33,15 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
 ///
 struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
+    @State private var selectedCampaignURL: URL?
 
     var onCreateCampaign: () -> Void = {}
-    var onOpenCampaign: (Int64) -> Void = { _ in }
 
-    init(viewModel: BlazeCampaignListViewModel) {
+    private let siteURL: String
+
+    init(viewModel: BlazeCampaignListViewModel, siteURL: String) {
         self.viewModel = viewModel
+        self.siteURL = siteURL
     }
 
     var body: some View {
@@ -50,7 +57,10 @@ struct BlazeCampaignListView: View {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
-                                onOpenCampaign(item.campaignID)
+                                let path = String(format: Constants.campaignDetailsURLFormat,
+                                                  item.campaignID, siteURL,
+                                                  BlazeCampaignSource.campaignList.rawValue)
+                                selectedCampaignURL = URL(string: path)
                             }
                     }
                 }
@@ -76,12 +86,37 @@ struct BlazeCampaignListView: View {
         .onAppear {
             viewModel.loadCampaigns()
         }
+        .sheet(item: $selectedCampaignURL) { url in
+            detailView(url: url)
+        }
     }
 }
 
 private extension BlazeCampaignListView {
+    @ViewBuilder
+    func detailView(url: URL) -> some View {
+        NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: url)
+            .navigationTitle(Localization.detailTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        selectedCampaignURL = nil
+                    }, label: {
+                        Text(Localization.done)
+                    })
+                }
+            }
+        }
+    }
+
     enum Layout {
         static let contentSpacing: CGFloat = 16
+    }
+    enum Constants {
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
     enum Localization {
         static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
@@ -91,11 +126,18 @@ private extension BlazeCampaignListView {
             "Drive more sales to your store with Blaze",
             comment: "Subtitle of the empty state of the Blaze campaign list view"
         )
+        static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
+        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
     }
 }
 
 struct BlazeCampaignListView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignListView(viewModel: .init(siteID: 123))
+        BlazeCampaignListView(viewModel: .init(siteID: 123), siteURL: "https://example.com")
     }
+}
+
+/// Conformance to display sheet based on URL.
+extension URL: Identifiable {
+    public var id: String { absoluteString }
 }

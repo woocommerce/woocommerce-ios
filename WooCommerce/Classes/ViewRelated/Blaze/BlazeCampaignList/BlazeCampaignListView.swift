@@ -31,7 +31,7 @@ struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
 
     var onCreateCampaign: () -> Void = {}
-    var onOpenCampaign: (Int64) -> Void = {}
+    var onOpenCampaign: (Int64) -> Void = { _ in }
 
     init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
@@ -88,7 +88,7 @@ private extension BlazeCampaignListView {
         static let create = NSLocalizedString("Create", comment: "Title of the button to create a new campaign on the Blaze campaign list view")
         static let emptyStateTitle = NSLocalizedString("No campaigns yet", comment: "Title of the empty state of the Blaze campaign list view")
         static let emptyStateMessage = NSLocalizedString(
-            "Boost your sales by promoting your products",
+            "Drive more sales to your store with Blaze",
             comment: "Subtitle of the empty state of the Blaze campaign list view"
         )
     }

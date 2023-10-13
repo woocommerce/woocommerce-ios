@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-10 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-13 16:25:21+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -9754,7 +9754,7 @@ which should be translated separately and considered part of this sentence. */
 "every month" = "elke maand";
 
 /* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
-"every month on the %1$@" = "elke maand op de %$1@";
+"every month on the %1$@" = "elke maand op de %1$@";
 
 /* Placeholder for the site url textfield.
    Site Address placeholder */

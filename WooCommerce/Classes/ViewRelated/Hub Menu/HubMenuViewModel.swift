@@ -190,8 +190,16 @@ final class HubMenuViewModel: ObservableObject {
         }
 
         ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
-        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
-        navigationController?.show(controller, sender: self)
+
+        if featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
+            // shows campaign list for the new Blaze experience.
+            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
+            navigationController?.show(controller, sender: self)
+        } else {
+            let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
+            let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+            navigationController?.show(webViewController, sender: self)
+        }
     }
 
     private func observeSiteForUIUpdates() {

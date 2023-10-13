@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.8
+Effortlessly navigate between orders, add discounts and coupons with ease, and enjoy enhanced product creation AI in this update. Thank you for choosing WooCommerce.
+
 ## 15.7
 Immerse yourself in the latest WooCommerce app release! We're introducing an AI-powered feature that allows you to generate new tags/categories while creating a product, making your product management smarter and more efficient. Also, we've addressed a fix in the order details section. Now, if an order item is a variable product with attributes and add-ons, the variation attributes will be displayed. Dive into these enhancements for a smoother, more intuitive experience.
 

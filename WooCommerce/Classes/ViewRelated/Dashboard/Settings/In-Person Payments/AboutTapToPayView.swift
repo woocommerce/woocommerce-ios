@@ -3,7 +3,9 @@ import Yosemite
 import WooFoundation
 
 struct AboutTapToPayView: View {
-    @ObservedObject var viewModel: AboutTapToPayViewModel
+    @ObservedObject var viewModel: AboutTapToPayViewModel = AboutTapToPayViewModel(
+        configuration: CardPresentConfigurationLoader().configuration,
+        buttonAction: nil)
     @State private var showingWebView: Bool = false
 
     var body: some View {
@@ -48,7 +50,6 @@ struct AboutTapToPayView: View {
                     viewModel.callToActionTapped()
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .renderedIf(viewModel.shouldShowButton)
 
                 InPersonPaymentsLearnMore(viewModel: .tapToPay(source: .aboutTapToPay))
                     .customOpenURL(action: { _ in
@@ -56,6 +57,7 @@ struct AboutTapToPayView: View {
                     })
             }
             .padding()
+            .renderedIf(viewModel.shouldShowButton)
         }
         .sheet(isPresented: $showingWebView) {
             WebViewSheet(viewModel: viewModel.webViewModel) {

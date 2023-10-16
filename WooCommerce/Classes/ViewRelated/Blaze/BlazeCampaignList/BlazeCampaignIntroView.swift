@@ -22,7 +22,7 @@ struct BlazeCampaignIntroView: View {
 
 
                     Text(Localization.title)
-                        .titleStyle()
+                        .largeTitleStyle()
                         .padding(.bottom, Layout.elementVerticalSpacing)
 
                     BulletPointView(text: Localization.descriptionPoint1)

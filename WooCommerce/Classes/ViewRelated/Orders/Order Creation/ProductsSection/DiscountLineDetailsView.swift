@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct DiscountLineDetailsView: View {
-
     @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
 
     init(viewModel: FeeOrDiscountLineDetailsViewModel) {
@@ -10,34 +9,56 @@ struct DiscountLineDetailsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
+            switch viewModel.feeOrDiscountType {
+            case .fixed:
+                fixedDiscountView
+            case .percentage:
+                percentageDiscountView
+            }
+        }
+    }
+}
+
+private extension DiscountLineDetailsView {
+    private var buttons: some View {
+        HStack(spacing: 0) {
+            Button(viewModel.currencySymbol) {
+                viewModel.feeOrDiscountType = .fixed
+            }
+            .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .fixed)
+            .fixedSize(horizontal: true, vertical: false)
+            Button(viewModel.percentSymbol) {
+                viewModel.feeOrDiscountType = .percentage
+            }
+            .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
+            .fixedSize(horizontal: true, vertical: false)
+        }
+    }
+
+    private var fixedDiscountView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
             Text(Localization.fixedPriceDiscountLabel)
-                .renderedIf(viewModel.feeOrDiscountType == .fixed)
-                .padding()
-            Text(Localization.percentagePriceDiscountLabel)
-                .renderedIf(viewModel.feeOrDiscountType == .percentage)
                 .padding()
             HStack {
                 inputFixedField
-                    .renderedIf(viewModel.feeOrDiscountType == .fixed)
-                inputPercentageField
-                    .renderedIf(viewModel.feeOrDiscountType == .percentage)
-                HStack(spacing: 0) {
-                    Button(viewModel.currencySymbol) {
-                        viewModel.feeOrDiscountType = .fixed
-                    }
-                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .fixed)
-                    .fixedSize(horizontal: true, vertical: false)
-                    Button(viewModel.percentSymbol) {
-                        viewModel.feeOrDiscountType = .percentage
-                    }
-                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
-                    .fixedSize(horizontal: true, vertical: false)
-                }
+                buttons
                 .padding(.trailing)
             }
         }
     }
 
+    private var percentageDiscountView: some View {
+        VStack(alignment: .leading, spacing: .zero) {
+            Text(Localization.percentagePriceDiscountLabel)
+                .padding()
+            HStack {
+                inputPercentageField
+                buttons
+                .padding(.trailing)
+            }
+        }
+    }
+    
     private var inputFixedField: some View {
         AdaptiveStack(horizontalAlignment: .leading) {
             HStack {

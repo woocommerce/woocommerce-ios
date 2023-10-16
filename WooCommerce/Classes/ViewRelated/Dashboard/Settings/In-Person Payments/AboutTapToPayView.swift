@@ -192,3 +192,28 @@ private extension AboutTapToPayContactlessLimitView {
         static let cornerRadius: CGFloat = 8
     }
 }
+
+struct AboutTapToPayViewInNavigationView: View {
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationView {
+            AboutTapToPayView()
+            .toolbar() {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.doneButton) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+private extension AboutTapToPayViewInNavigationView {
+    enum Localization {
+        static let doneButton = NSLocalizedString(
+            "Done",
+            comment: "Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
+    }
+}

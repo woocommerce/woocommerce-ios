@@ -14,7 +14,8 @@ struct DiscountLineDetailsView: View {
                 LineDetailView(label: {
                     Text(Localization.fixedPriceDiscountLabel)
                 }, content: {
-                    inputFixedField
+                    InputField(placeholder: Localization.fixedPriceDiscountInputPlaceholder,
+                               text: $viewModel.amount)
                     discountTypeButtonToggle
                         .padding()
                 })
@@ -22,7 +23,8 @@ struct DiscountLineDetailsView: View {
                 LineDetailView(label: {
                     Text(Localization.percentagePriceDiscountLabel)
                 }, content: {
-                    inputPercentageField
+                    InputField(placeholder: Localization.percentagePriceDiscountInputPlaceholder,
+                               text: $viewModel.percentage)
                     discountTypeButtonToggle
                         .padding()
                 })
@@ -47,36 +49,25 @@ private extension DiscountLineDetailsView {
         }
     }
 
-    private var inputFixedField: some View {
-                BindableTextfield(Localization.fixedPriceDiscountInputPlaceholder,
-                                  text: $viewModel.amount,
-                                  focus: .constant(true))
-                .keyboardType(.numbersAndPunctuation)
-        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
-        .padding([.leading, .trailing], Layout.padding)
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: Layout.inputFieldOverlayInset)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
-        }
-        .cornerRadius(Layout.frameCornerRadius)
-        .padding()
-    }
+    struct InputField: View {
+        let placeholder: String
+        @Binding var text: String
 
-    private var inputPercentageField: some View {
-                BindableTextfield(Localization.percentagePriceDiscountInputPlaceholder,
-                                  text: $viewModel.percentage,
-                                  focus: .constant(true))
-                .keyboardType(.numbersAndPunctuation)
-        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
-        .padding([.leading, .trailing], Layout.padding)
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: Layout.inputFieldOverlayInset)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
+        var body: some View {
+            BindableTextfield(placeholder,
+                              text: $text,
+                              focus: .constant(true))
+            .keyboardType(.numbersAndPunctuation)
+            .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
+            .padding([.leading, .trailing], Layout.padding)
+            .overlay {
+                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                    .inset(by: Layout.inputFieldOverlayInset)
+                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
+            }
+            .cornerRadius(Layout.frameCornerRadius)
+            .padding()
         }
-        .cornerRadius(Layout.frameCornerRadius)
-        .padding()
     }
 }
 

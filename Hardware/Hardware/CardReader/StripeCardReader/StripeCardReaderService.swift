@@ -78,6 +78,7 @@ extension StripeCardReaderService: CardReaderService {
                                                      simulated: shouldUseSimulatedCardReader)
         switch result {
         case .success:
+            /// Note that while this will now never be nil, we can still remove this check if Stripe update `supportsReaders` to be country-aware
             if let minimumOperatingSystemVersionOverride {
                 return ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
             } else {

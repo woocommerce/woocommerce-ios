@@ -3,7 +3,7 @@ import Yosemite
 import WooFoundation
 
 class AboutTapToPayViewModel: ObservableObject {
-    @Published var configuration: CardPresentPaymentsConfiguration
+    let configuration: CardPresentPaymentsConfiguration
     private let buttonAction: (() -> Void)?
 
     @Published var shouldShowContactlessLimit: Bool = false
@@ -16,12 +16,15 @@ class AboutTapToPayViewModel: ObservableObject {
             authenticated: false)
     }()
 
+    let formattedMinimumOperatingSystemVersionForTapToPay: String
+
     init(configuration: CardPresentPaymentsConfiguration,
          buttonAction: (() -> Void)?) {
         self.configuration = configuration
         self.buttonAction = buttonAction
         shouldShowButton = buttonAction != nil
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
+        self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
     }
 
     func callToActionTapped() {

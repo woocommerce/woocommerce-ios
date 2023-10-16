@@ -1,5 +1,5 @@
 import SwiftUI
-import Yosemite
+import struct Yosemite.BlazeCampaign
 import Kingfisher
 
 /// View to display basic details for a Blaze campaign.

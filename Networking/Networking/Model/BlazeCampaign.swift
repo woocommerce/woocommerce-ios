@@ -3,7 +3,7 @@ import Codegen
 
 /// Ads campaign powered by Blaze
 ///
-public final class BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiable {
+public struct BlazeCampaign: Decodable, GeneratedFakeable, GeneratedCopiable {
 
     /// Site Identifier.
     ///

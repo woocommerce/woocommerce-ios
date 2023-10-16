@@ -1407,6 +1407,10 @@ extension UIImage {
     static var unlimitedProductsIcon: UIImage {
         UIImage(imageLiteralResourceName: "unlimited-products-icon")
     }
+
+    static var feedbackOutlineIcon: UIImage {
+        UIImage(named: "icon-feedback-outline")!
+    }
 }
 
 private extension UIImage {

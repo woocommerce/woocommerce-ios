@@ -11,9 +11,11 @@ struct BlazeCampaignIntroView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 Image(uiImage: .blaze)
+                    .padding(.bottom, Layout.elementVerticalSpacing)
 
                 Text(Localization.title)
                     .titleStyle()
+                    .padding(.bottom, Layout.elementVerticalSpacing)
 
                 BulletPointView(text: Localization.descriptionPoint1)
                 BulletPointView(text: Localization.descriptionPoint2)
@@ -32,11 +34,10 @@ struct BulletPointView: View {
         HStack(alignment: .top, spacing: 4) {
             Image(systemName: "circle.fill")
                 .font(.system(size: 8))
-                .offset(y: 5)
-                .padding(.bottom, Layout.elementVerticalSpacing)
+                .offset(y: 6)
             Text(text)
                 .bodyStyle()
-
+                .padding(.leading, 4)
         }
         .padding(.bottom, 8)
     }
@@ -68,7 +69,7 @@ private extension BlazeCampaignIntroView {
 }
 
 private enum Layout {
-    static let contentPadding: EdgeInsets = .init(top: 39, leading: 0, bottom: 16, trailing: 0)
+    static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
 }
 

@@ -8,28 +8,30 @@ struct BlazeCampaignIntroView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Image(uiImage: .blaze)
-                    .frame(width: 100, height: 100)
-                    .clipShape(Circle())
-                    .background(
-                        Circle()
-                            .fill(Color(red: 242/255, green: 112/255, blue: 35/255, opacity: 0.08))
-                    )
-                    .padding(.bottom, Layout.elementVerticalSpacing)
+        NavigationView {
+            ScrollView {
+                VStack(alignment: .leading) {
+                    Image(uiImage: .blaze)
+                        .frame(width: 100, height: 100)
+                        .clipShape(Circle())
+                        .background(
+                            Circle()
+                                .fill(Color(red: 242/255, green: 112/255, blue: 35/255, opacity: 0.08))
+                        )
+                        .padding(.bottom, Layout.elementVerticalSpacing)
 
 
-                Text(Localization.title)
-                    .titleStyle()
-                    .padding(.bottom, Layout.elementVerticalSpacing)
+                    Text(Localization.title)
+                        .titleStyle()
+                        .padding(.bottom, Layout.elementVerticalSpacing)
 
-                BulletPointView(text: Localization.descriptionPoint1)
-                BulletPointView(text: Localization.descriptionPoint2)
-                BulletPointView(text: Localization.descriptionPoint3)
-                BulletPointView(text: Localization.descriptionPoint4)
+                    BulletPointView(text: Localization.descriptionPoint1)
+                    BulletPointView(text: Localization.descriptionPoint2)
+                    BulletPointView(text: Localization.descriptionPoint3)
+                    BulletPointView(text: Localization.descriptionPoint4)
+                }
+                .padding(Layout.contentPadding)
             }
-            .padding(Layout.contentPadding)
             .safeAreaInset(edge: .bottom) {
                 VStack {
                     Divider()
@@ -40,6 +42,14 @@ struct BlazeCampaignIntroView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(16)
+                }
+            }
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(Localization.cancel) {
+                        // todo
+                    }
                 }
             }
         }
@@ -87,6 +97,10 @@ private extension BlazeCampaignIntroView {
         static let startBlazeCampaign = NSLocalizedString(
             "Start Blaze Campaign",
             comment: "Start Blaze Campaign button label"
+        )
+        static let cancel = NSLocalizedString(
+            "Cancel",
+            comment: "Button to dismiss Blaze Campaign intro."
         )
     }
 }

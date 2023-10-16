@@ -2248,6 +2248,9 @@
 		DECE1400279A595200816ECD /* Coupon+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = DECE13FF279A595200816ECD /* Coupon+Woo.swift */; };
 		DED91DFA2AD78A3A00CDCC53 /* BlazeCampaignItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */; };
 		DED974092AD7A55600122EB4 /* BlazeCampaignStatus+Customizations.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED974082AD7A55600122EB4 /* BlazeCampaignStatus+Customizations.swift */; };
+		DED9740B2AD7D09E00122EB4 /* BlazeCampaignListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */; };
+		DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */; };
+		DED974112AD8F05A00122EB4 /* URL+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED974102AD8F05A00122EB4 /* URL+Identifiable.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
@@ -4779,6 +4782,9 @@
 		DECE13FF279A595200816ECD /* Coupon+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Coupon+Woo.swift"; sourceTree = "<group>"; };
 		DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignItemView.swift; sourceTree = "<group>"; };
 		DED974082AD7A55600122EB4 /* BlazeCampaignStatus+Customizations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BlazeCampaignStatus+Customizations.swift"; sourceTree = "<group>"; };
+		DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListView.swift; sourceTree = "<group>"; };
+		DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModel.swift; sourceTree = "<group>"; };
+		DED974102AD8F05A00122EB4 /* URL+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Identifiable.swift"; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
@@ -9803,6 +9809,7 @@
 				EE2A57D629E399CC009F61E1 /* CaseIterable+Helpers.swift */,
 				02D29A9129F7C39200473D6D /* UIImage+Text.swift */,
 				EE45E2BE2A409E250085F227 /* UIColor+Tooltip.swift */,
+				DED974102AD8F05A00122EB4 /* URL+Identifiable.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -10788,6 +10795,8 @@
 			isa = PBXGroup;
 			children = (
 				DED91DF92AD78A3A00CDCC53 /* BlazeCampaignItemView.swift */,
+				DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */,
+				DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */,
 			);
 			path = BlazeCampaignList;
 			sourceTree = "<group>";
@@ -12520,6 +12529,7 @@
 				0273708024C0094500167204 /* ProductListMultiSelectorDataSource.swift in Sources */,
 				459D324327849B0B001155AA /* ReviewDetailView.swift in Sources */,
 				DE3877E2283CCBC20075D87E /* BottomSheetListSelector.swift in Sources */,
+				DED9740B2AD7D09E00122EB4 /* BlazeCampaignListView.swift in Sources */,
 				E1ED16E4266E10A10037B8DB /* ApplicationLogViewModel.swift in Sources */,
 				02F6800925807CD300C3BAD2 /* GridStackView.swift in Sources */,
 				DE279BB126EA184A002BA963 /* ShippingLabelPackageListViewModel.swift in Sources */,
@@ -12535,6 +12545,7 @@
 				02D3B68529657061009BF0BC /* SupportButton.swift in Sources */,
 				2664210126F3E1BB001FC5B4 /* ModalHostingPresentationController.swift in Sources */,
 				D8B4D5F026C2C7EC00F34E94 /* InPersonPaymentsStripeAccountPendingView.swift in Sources */,
+				DED974112AD8F05A00122EB4 /* URL+Identifiable.swift in Sources */,
 				B92639FF293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift in Sources */,
 				02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
@@ -13225,6 +13236,7 @@
 				B5C3876421C41B9F006CE970 /* UIApplication+Woo.swift in Sources */,
 				09E41E1D27B90B3C00BFCB7C /* BulkUpdateViewModel.swift in Sources */,
 				032E481D2982996E00469D92 /* CardPresentModalBuiltInConnectingFailedNonRetryable.swift in Sources */,
+				DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */,
 				0379C51B27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift in Sources */,
 				D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */,
 				209AD3D02AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift in Sources */,

@@ -29,7 +29,8 @@ final class BlazeRemoteTests: XCTestCase {
         // Given
         let remote = BlazeRemote(network: network)
 
-        network.simulateResponse(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaigns-success")
 
         // When
         let results = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
@@ -53,10 +54,11 @@ final class BlazeRemoteTests: XCTestCase {
     func test_loadCampaigns_sends_correct_parameters() async throws {
         // Given
         let remote = BlazeRemote(network: network)
-        network.simulateResponse(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", filename: "blaze-campaigns-success")
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-campaigns-success")
 
         // When
-        let results = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
+        _ = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
@@ -72,11 +74,12 @@ final class BlazeRemoteTests: XCTestCase {
         let remote = BlazeRemote(network: network)
 
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
-        network.simulateError(requestUrlSuffix: "/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)", error: expectedError)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1/search/campaigns/site/\(sampleSiteID)"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
 
         do {
             // When
-            let results = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
+            _ = try await remote.loadCampaigns(for: sampleSiteID, pageNumber: 1)
 
             // Then
             XCTFail("Request should fail")

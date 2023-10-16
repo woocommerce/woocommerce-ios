@@ -11,7 +11,14 @@ struct BlazeCampaignIntroView: View {
         ScrollView {
             VStack(alignment: .leading) {
                 Image(uiImage: .blaze)
+                    .frame(width: 100, height: 100)
+                    .clipShape(Circle())
+                    .background(
+                        Circle()
+                            .fill(Color(red: 242/255, green: 112/255, blue: 35/255, opacity: 0.08))
+                    )
                     .padding(.bottom, Layout.elementVerticalSpacing)
+
 
                 Text(Localization.title)
                     .titleStyle()

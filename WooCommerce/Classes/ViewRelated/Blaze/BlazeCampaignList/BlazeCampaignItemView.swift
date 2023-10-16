@@ -64,7 +64,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total clicks
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -75,7 +75,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 // campaign total budget
                 VStack(alignment: .leading, spacing: Layout.statsVerticalSpacing) {
@@ -86,7 +86,7 @@ struct BlazeCampaignItemView: View {
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
-                .frame(maxWidth: .infinity)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
                 Spacer()
             }

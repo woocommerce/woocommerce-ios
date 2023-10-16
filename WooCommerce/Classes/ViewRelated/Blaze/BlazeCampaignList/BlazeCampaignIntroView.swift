@@ -23,6 +23,17 @@ struct BlazeCampaignIntroView: View {
                 BulletPointView(text: Localization.descriptionPoint4)
             }
             .padding(Layout.contentPadding)
+            .safeAreaInset(edge: .bottom) {
+                VStack {
+                    Divider()
+                        .frame(height: Layout.dividerHeight)
+                        .foregroundColor(Color(.separator))
+                    Button(Localization.startBlazeCampaign) {
+                        // todo
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                }
+            }
         }
     }
 }
@@ -65,12 +76,17 @@ private extension BlazeCampaignIntroView {
             "Track performance, start and stop your Blaze campaign anytime.",
             comment: "Fourth item in the description for Blaze campaign intro view"
         )
+        static let startBlazeCampaign = NSLocalizedString(
+            "Start Blaze Campaign",
+            comment: "Start Blaze Campaign button label"
+        )
     }
 }
 
 private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
+    static let dividerHeight: CGFloat = 1
 }
 
 struct BlazeCampaignIntroView_Previews: PreviewProvider {

@@ -31,7 +31,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Blaze campaign ResultsController.
     private lazy var resultsController: ResultsController<StorageBlazeCampaign> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: true)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
         let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
                                                                         matching: predicate,
                                                                         sortedBy: [sortDescriptorByID])

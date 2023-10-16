@@ -11,15 +11,43 @@ struct DiscountLineDetailsView: View {
         VStack(alignment: .leading, spacing: .zero) {
             switch viewModel.feeOrDiscountType {
             case .fixed:
-                fixedDiscountView
+                DiscountView(label: { Text(Localization.fixedPriceDiscountLabel) }) {
+                    inputFixedField
+                    buttons
+                        .padding()
+                }
             case .percentage:
-                percentageDiscountView
+                DiscountView(label: { Text(Localization.percentagePriceDiscountLabel) }) {
+                    inputPercentageField
+                    buttons
+                        .padding()
+                }
             }
         }
     }
 }
 
 private extension DiscountLineDetailsView {
+    struct DiscountView<Label: View, Content: View>: View {
+        private let label: Label
+        private let content: Content
+
+        init(@ViewBuilder label: () -> Label, @ViewBuilder content: () -> Content) {
+            self.label = label()
+            self.content = content()
+        }
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: .zero) {
+                label
+                    .padding()
+                HStack {
+                    content
+                }
+            }
+        }
+    }
+
     private var buttons: some View {
         HStack(spacing: 0) {
             Button(viewModel.currencySymbol) {
@@ -32,30 +60,6 @@ private extension DiscountLineDetailsView {
             }
             .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
             .fixedSize(horizontal: true, vertical: false)
-        }
-    }
-
-    private var fixedDiscountView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.fixedPriceDiscountLabel)
-                .padding()
-            HStack {
-                inputFixedField
-                buttons
-                .padding(.trailing)
-            }
-        }
-    }
-
-    private var percentageDiscountView: some View {
-        VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.percentagePriceDiscountLabel)
-                .padding()
-            HStack {
-                inputPercentageField
-                buttons
-                .padding(.trailing)
-            }
         }
     }
 

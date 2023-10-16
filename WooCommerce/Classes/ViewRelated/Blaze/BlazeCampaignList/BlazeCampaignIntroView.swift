@@ -62,13 +62,13 @@ private struct BulletPointView: View {
     var body: some View {
         HStack(alignment: .top, spacing: 4) {
             Image(systemName: "circle.fill")
-                .font(.system(size: 8))
-                .offset(y: 6)
+                .font(.system(size: 4))
+                .offset(y: 8)
             Text(text)
                 .bodyStyle()
                 .padding(.leading, 4)
         }
-        .padding(.bottom, 8)
+        .padding(Layout.bulletPointPadding)
     }
 }
 
@@ -107,6 +107,7 @@ private extension BlazeCampaignIntroView {
 
 private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
+    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 8, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
     static let dividerHeight: CGFloat = 1
 }

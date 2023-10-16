@@ -107,7 +107,7 @@ private extension BlazeCampaignIntroView {
 
 private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
-    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 8, trailing: 16)
+    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 2, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
     static let dividerHeight: CGFloat = 1
 }

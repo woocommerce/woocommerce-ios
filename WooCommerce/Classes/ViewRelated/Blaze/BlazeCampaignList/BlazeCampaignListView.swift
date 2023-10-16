@@ -113,7 +113,9 @@ private extension BlazeCampaignListView {
             }
         }
     }
+}
 
+private extension BlazeCampaignListView {
     enum Layout {
         static let contentSpacing: CGFloat = 16
     }

@@ -18,6 +18,7 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
 
         rootView.onCreateCampaign = { [weak self] in
             let webViewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil) {
+                self?.navigationController?.popViewController(animated: true)
                 viewModel.loadCampaigns()
             }
             let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)

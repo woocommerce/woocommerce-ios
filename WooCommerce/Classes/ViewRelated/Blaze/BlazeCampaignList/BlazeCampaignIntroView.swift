@@ -32,6 +32,7 @@ struct BlazeCampaignIntroView: View {
                         // todo
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .padding(16)
                 }
             }
         }

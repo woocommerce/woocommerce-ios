@@ -38,7 +38,7 @@ struct BlazeCampaignIntroView: View {
     }
 }
 
-struct BulletPointView: View {
+private struct BulletPointView: View {
     let text: String
 
     var body: some View {

@@ -78,7 +78,7 @@ struct SetUpTapToPayPaymentPromptView: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(Localization.setUpTryPaymentPromptDescription)
+            Text(String(format: Localization.setUpTryPaymentPromptDescription, viewModel.formattedPaymentAmount))
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding()
@@ -147,15 +147,15 @@ private enum Constants {
 private extension SetUpTapToPayPaymentPromptView {
     enum Localization {
         static let setUpTryPaymentPromptTitle = NSLocalizedString(
-            "Try a payment",
+            "Would you like to try a payment",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that " +
             "Tap to Pay on iPhone is ready"
         )
 
         static let setUpTryPaymentPromptDescription = NSLocalizedString(
-            "Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your " +
-            "debit or credit card: you can refund it when you're done.",
-            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description"
+            "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done.",
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced " +
+            "with the amount of the trial payment, in the store's currency."
         )
 
         static let tryAPaymentButton = NSLocalizedString(
@@ -165,7 +165,7 @@ private extension SetUpTapToPayPaymentPromptView {
         )
 
         static let skipButton = NSLocalizedString(
-            "Skip",
+            "Return to Payments",
             comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip " +
             "to the trial payment and dismiss the Set up Tap to Pay on iPhone flow"
         )

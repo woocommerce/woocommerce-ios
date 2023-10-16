@@ -81,7 +81,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM4:
             return true
         case .ordersWithCouponsM6:
-            return false
+            return true
         case .betterCustomerSelectionInOrder:
             return true
         case .manualTaxesInOrderM2:
@@ -104,6 +104,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
             return buildConfig == .localDeveloper
+        case .optimizedBlazeExperience:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

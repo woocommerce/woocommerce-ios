@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-03 15:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-10 11:54:22+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -137,6 +137,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d 個工作天";
+
+/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposit" = "存款：%1$d";
+
+/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposits" = "存款：%1$d";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d 件商品";
@@ -1063,6 +1069,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 品牌系列";
+
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"Available funds" = "可用款項";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are deposited automatically, %1$@." = "可用款項將自動於%1$@存入。";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are deposited manually, on request." = "可用款項將依要求手動存入。";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "平均訂單金額";
@@ -2377,6 +2392,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "丹麥";
 
+/* Section header for the deposits list in the WooPayments Deposits overview */
+"Deposits" = "存款";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "請描述你的產品";
 
@@ -2576,6 +2594,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "完成";
@@ -3045,6 +3064,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "更新訂單 (編號：%1$d) 時發生錯誤";
 
+/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+"Est. %1$@" = "預計存入日期：%1$@";
+
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "預估設定時間";
 
@@ -3365,6 +3387,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "完整功能清單";
+
+/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+"Funds become available after pending for %1$d days." = "款項待確認 %1$d 天後，現在已可提供。";
 
 /* Country option for a site address. */
 "Gabon" = "加彭";
@@ -4248,6 +4273,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "深入瞭解我們針對你的商店所收集的相關資料，以及可控制此資料分享的選項。";
 
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"Learn more about when you'll receive your funds" = "深入瞭解何時會收到款項";
+
 /* Country option for a site address. */
 "Lebanon" = "黎巴嫩";
 
@@ -4768,6 +4796,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Myanmar" = "緬甸";
 
+/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+"N\/A" = "N\/A";
+
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
@@ -4862,6 +4893,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5235,6 +5267,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Order Card Reader" = "訂購讀卡機";
 
+/* Text in the product row card that indicates the product quantity in an order */
+"Order Count" = "訂單數";
+
 /* Order notes section title */
 "Order Notes" = "訂單備註";
 
@@ -5339,7 +5374,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "包裹尺寸必須大於零。 請在產品頁面的「出貨」部分更新產品尺寸以繼續操作。";
 
-/* The title for the customer payment cell */
+/* Row title for the last paid deposit in the WooPayments Deposits overview
+   The title for the customer payment cell */
 "Paid" = "已付費";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -5455,6 +5491,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "待審中";
+
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"Pending funds" = "待確認款項";
 
 /* Display label for the product's pending status */
 "Pending review" = "待審中";
@@ -5787,6 +5826,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Price Settings navigation title
    Section header title for product price
+   Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
    Title of the cell in Product Price Settings > Price
@@ -6252,6 +6292,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "移除商品";
+
+/* Text in the product row card button to remove a product from the current order */
+"Remove product from order" = "從訂單中移除商品";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "移除款式";
@@ -9311,6 +9354,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
+/* Title for the row related to Woo Payments Deposits/Balances.
+   Title for the section related to Woo Payments Deposits/Balances. */
+"Woo Payments Balance" = "Woo Payments 餘額";
+
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Woo！ 你有一個不錯的開始！";
 
@@ -9697,6 +9744,18 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "如需運送至遵循歐盟 (EU) 海關規定的國家\/地區，現在必須清楚描述每件商品。 舉例來說，若要寄送衣服，你必須指明衣服種類 (例如，男性襯衫、女童背心、男童外套)，海關才會採納相關資訊。 否則貨件可能會在海關階段延誤或中斷。";
 
+/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+"every %1$@" = "每 %1$@";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+"every day" = "每天";
+
+/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+"every month" = "每月";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+"every month on the %1$@" = "可於每月 %1$@存入";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -9724,6 +9783,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "手動退款";
+
+/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+"manually, on request" = "依要求手動存入";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "月";

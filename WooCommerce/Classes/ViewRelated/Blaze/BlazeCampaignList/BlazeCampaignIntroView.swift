@@ -16,7 +16,7 @@ struct BlazeCampaignIntroView: View {
                         .clipShape(Circle())
                         .background(
                             Circle()
-                                .fill(Color(.withColorStudio(.orange, shade: .shade0)))
+                                .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))
                         )
                         .padding(.bottom, Layout.elementVerticalSpacing)
 

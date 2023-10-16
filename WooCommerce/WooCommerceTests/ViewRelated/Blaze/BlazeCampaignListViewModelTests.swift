@@ -183,6 +183,101 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadCampaigns, 2)
         XCTAssertEqual(syncPageNumber, 2)
     }
+
+    // MARK: - Row view models
+
+    func test_campaignModels_match_loaded_campaigns() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            self.insertCampaigns([campaign])
+            onCompletion(.success(true))
+        }
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertEqual(viewModel.campaigns.first, campaign)
+    }
+
+    func test_campaignModels_are_empty_when_loaded_campaigns_are_empty() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(false))
+        }
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertEqual(viewModel.campaigns, [])
+    }
+
+    func test_campaignModels_are_sorted_by_id() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaignWithSmallerID = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 1)
+        let campaignWithLargerID = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 3)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            let items = [campaignWithSmallerID, campaignWithLargerID]
+            self.insertCampaigns(items)
+            onCompletion(.success(false))
+        }
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then notes are first sorted by descending ID
+        XCTAssertEqual(viewModel.campaigns.count, 2)
+        assertEqual(viewModel.campaigns[0], campaignWithLargerID)
+        assertEqual(viewModel.campaigns[1], campaignWithSmallerID)
+    }
+
+    // MARK: - `onRefreshAction`
+
+    func test_onRefreshAction_resyncs_the_first_page() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var invocationCountOfLoadCampaigns = 0
+        var syncPageNumber: Int?
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, pageNumber, onCompletion) = action else {
+                return
+            }
+            invocationCountOfLoadCampaigns += 1
+            syncPageNumber = pageNumber
+
+            onCompletion(.success(false))
+        }
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        waitFor { promise in
+            viewModel.onRefreshAction {
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertEqual(syncPageNumber, 1)
+        XCTAssertEqual(invocationCountOfLoadCampaigns, 1)
+    }
 }
 
 private extension BlazeCampaignListViewModelTests {

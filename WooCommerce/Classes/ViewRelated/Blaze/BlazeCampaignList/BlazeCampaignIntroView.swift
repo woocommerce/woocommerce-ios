@@ -8,16 +8,19 @@ struct BlazeCampaignIntroView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        VStack(alignment: .leading) {
-            Image(uiImage: .blaze)
+        ScrollView {
+            VStack(alignment: .leading) {
+                Image(uiImage: .blaze)
 
-            Text(Localization.title)
-                .titleStyle()
+                Text(Localization.title)
+                    .titleStyle()
 
-            BulletPointView(text: Localization.descriptionPoint1)
-            BulletPointView(text: Localization.descriptionPoint2)
-            BulletPointView(text: Localization.descriptionPoint3)
-            BulletPointView(text: Localization.descriptionPoint4)
+                BulletPointView(text: Localization.descriptionPoint1)
+                BulletPointView(text: Localization.descriptionPoint2)
+                BulletPointView(text: Localization.descriptionPoint3)
+                BulletPointView(text: Localization.descriptionPoint4)
+            }
+            .padding(Layout.contentPadding)
         }
     }
 }
@@ -27,10 +30,13 @@ struct BulletPointView: View {
 
     var body: some View {
         HStack(alignment: .top, spacing: 4) {
-            Text("• ")
+            Image(systemName: "circle.fill")
+                .font(.system(size: 8))
+                .offset(y: 5)
+                .padding(.bottom, Layout.elementVerticalSpacing)
             Text(text)
-                .fixedSize(horizontal: false, vertical: true)
-                .multilineTextAlignment(.leading)
+                .bodyStyle()
+
         }
         .padding(.bottom, 8)
     }
@@ -59,6 +65,11 @@ private extension BlazeCampaignIntroView {
             comment: "Fourth item in the description for Blaze campaign intro view"
         )
     }
+}
+
+private enum Layout {
+    static let contentPadding: EdgeInsets = .init(top: 39, leading: 0, bottom: 16, trailing: 0)
+    static let elementVerticalSpacing: CGFloat = 24
 }
 
 struct BlazeCampaignIntroView_Previews: PreviewProvider {

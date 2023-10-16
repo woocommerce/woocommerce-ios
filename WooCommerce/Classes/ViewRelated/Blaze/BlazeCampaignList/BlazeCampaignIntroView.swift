@@ -2,7 +2,6 @@ import SwiftUI
 
 /// View to display the introduction to the Blaze campaign
 ///
-
 struct BlazeCampaignIntroView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -56,6 +55,8 @@ struct BlazeCampaignIntroView: View {
     }
 }
 
+/// View to display a single text with a bullet point preceding it.
+///
 private struct BulletPointView: View {
     let text: String
 

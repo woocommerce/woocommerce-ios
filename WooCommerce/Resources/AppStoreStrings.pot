@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.7-whats-new"
+msgctxt "v15.8-whats-new"
 msgid ""
-"Immerse yourself in the latest WooCommerce app release! We're introducing an AI-powered feature that allows you to generate new tags/categories while creating a product, making your product management smarter and more efficient. Also, we've addressed a fix in the order details section. Now, if an order item is a variable product with attributes and add-ons, the variation attributes will be displayed. Dive into these enhancements for a smoother, more intuitive experience.\n"
+"Effortlessly navigate between orders, add discounts and coupons with ease, and enjoy enhanced product creation AI in this update. Thank you for choosing WooCommerce.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

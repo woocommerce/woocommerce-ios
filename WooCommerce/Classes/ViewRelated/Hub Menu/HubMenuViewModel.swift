@@ -422,30 +422,81 @@ extension HubMenuViewModel {
     }
 
     enum Localization {
-        static let settings = NSLocalizedString("Settings", comment: "Title of the hub menu settings button")
-        static let settingsDescription = NSLocalizedString("Update your preferences", comment: "Description of the hub menu settings button")
-        static let payments = NSLocalizedString("Payments",
-                                                comment: "Title of the hub menu payments button")
-        static let paymentsDescription = NSLocalizedString("Join the mobile payments", comment: "Description of the hub menu payments button")
-        static let blaze = NSLocalizedString("Blaze",
-                                             comment: "Title of the hub menu Blaze button")
-        static let blazeDescription = NSLocalizedString("Promote products with Blaze", comment: "Description of the hub menu Blaze button")
-        static let myStore = NSLocalizedString("My Store",
-                                               comment: "Title of the hub menu view in case there is no title for the store")
-        static let woocommerceAdmin = NSLocalizedString("WooCommerce Admin",
-                                                        comment: "Title of one of the hub menu options")
-        static let woocommerceAdminDescription = NSLocalizedString("Manage more on admin", comment: "Description of one of the hub menu options")
-        static let viewStore = NSLocalizedString("View Store",
-                                                 comment: "Title of one of the hub menu options")
-        static let viewStoreDescription = NSLocalizedString("View your store", comment: "Description of one of the hub menu options")
-        static let inbox = NSLocalizedString("Inbox", comment: "Title of the Inbox menu in the hub menu")
-        static let inboxDescription = NSLocalizedString("Stay up-to-date", comment: "Description of the Inbox menu in the hub menu")
-        static let coupon = NSLocalizedString("Coupons", comment: "Title of the Coupons menu in the hub menu")
-        static let couponDescription = NSLocalizedString("Boost sales with special offers", comment: "Description of the Coupons menu in the hub menu")
-        static let reviews = NSLocalizedString("Reviews", comment: "Title of one of the hub menu options")
-        static let reviewsDescription = NSLocalizedString("Capture reviews for your store", comment: "Description of one of the hub menu options")
-        static let subscriptions = NSLocalizedString("Subscriptions", comment: "Title of one of the hub menu options")
-        static let subscriptionsDescription = NSLocalizedString("Manage your subscription", comment: "Description of one of the hub menu options")
+        static let settings = NSLocalizedString(
+            "Settings",
+            comment: "Title of the hub menu settings button")
+
+        static let settingsDescription = NSLocalizedString(
+            "Update your preferences",
+            comment: "Description of the hub menu settings button")
+
+        static let payments = NSLocalizedString(
+            "Payments",
+            comment: "Title of the hub menu payments button")
+
+        static let paymentsDescription = NSLocalizedString(
+            "Take payments on the go",
+            comment: "Description of the hub menu payments button")
+
+        static let blaze = NSLocalizedString(
+            "Blaze",
+            comment: "Title of the hub menu Blaze button")
+
+        static let blazeDescription = NSLocalizedString(
+            "Promote products with Blaze",
+            comment: "Description of the hub menu Blaze button")
+
+        static let myStore = NSLocalizedString(
+            "My Store",
+            comment: "Title of the hub menu view in case there is no title for the store")
+
+        static let woocommerceAdmin = NSLocalizedString(
+            "WooCommerce Admin",
+            comment: "Title of one of the hub menu options")
+
+        static let woocommerceAdminDescription = NSLocalizedString(
+            "Manage more on admin",
+            comment: "Description of one of the hub menu options")
+
+        static let viewStore = NSLocalizedString(
+            "View Store",
+            comment: "Title of one of the hub menu options")
+
+        static let viewStoreDescription = NSLocalizedString(
+            "View your store",
+            comment: "Description of one of the hub menu options")
+
+        static let inbox = NSLocalizedString(
+            "Inbox",
+            comment: "Title of the Inbox menu in the hub menu")
+
+        static let inboxDescription = NSLocalizedString(
+            "Stay up-to-date",
+            comment: "Description of the Inbox menu in the hub menu")
+
+        static let coupon = NSLocalizedString(
+            "Coupons",
+            comment: "Title of the Coupons menu in the hub menu")
+
+        static let couponDescription = NSLocalizedString(
+            "Boost sales with special offers",
+            comment: "Description of the Coupons menu in the hub menu")
+
+        static let reviews = NSLocalizedString(
+            "Reviews",
+            comment: "Title of one of the hub menu options")
+
+        static let reviewsDescription = NSLocalizedString(
+            "Capture reviews for your store",
+            comment: "Description of one of the hub menu options")
+
+        static let subscriptions = NSLocalizedString(
+            "Subscriptions",
+            comment: "Title of one of the hub menu options")
+
+        static let subscriptionsDescription = NSLocalizedString(
+            "Manage your subscription",
+            comment: "Description of one of the hub menu options")
     }
 }
 

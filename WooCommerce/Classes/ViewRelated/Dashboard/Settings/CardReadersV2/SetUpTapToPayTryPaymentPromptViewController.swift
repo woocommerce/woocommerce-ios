@@ -78,7 +78,7 @@ struct SetUpTapToPayPaymentPromptView: View {
                 .padding()
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(Localization.setUpTryPaymentPromptDescription)
+            Text(String(format: Localization.setUpTryPaymentPromptDescription, viewModel.formattedPaymentAmount))
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding()
@@ -153,9 +153,10 @@ private extension SetUpTapToPayPaymentPromptView {
         )
 
         static let setUpTryPaymentPromptDescription = NSLocalizedString(
-            "Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your " +
+            "Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your " +
             "debit or credit card: you can refund it when you're done.",
-            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description"
+            comment: "Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced " +
+            "with the amount of the trial payment, in the store's currency."
         )
 
         static let tryAPaymentButton = NSLocalizedString(

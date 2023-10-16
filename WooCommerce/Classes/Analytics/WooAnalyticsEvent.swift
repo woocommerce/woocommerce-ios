@@ -2658,6 +2658,30 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - App Login Deep Link
+//
+extension WooAnalyticsEvent {
+    enum AppLoginDeepLink {
+        enum Keys: String {
+            case flow
+            case url
+        }
+
+        enum Flows: String {
+            case wpCom = "wp_com"
+            case noWpCom = "no_wp_com"
+        }
+
+        static func appLoginLinkSuccess(flow: Flows) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginAppLoginLinkSuccess, properties: [Keys.flow.rawValue: flow.rawValue])
+        }
+
+        static func appLoginLinkMalformed(url: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginMalformedAppLoginLink, properties: [Keys.url.rawValue: url])
+        }
+    }
+}
+
 // MARK: - Remote Requests
 //
 extension WooAnalyticsEvent {

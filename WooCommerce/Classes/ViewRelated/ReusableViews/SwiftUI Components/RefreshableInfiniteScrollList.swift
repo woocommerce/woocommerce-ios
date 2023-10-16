@@ -24,8 +24,8 @@ struct RefreshableInfiniteScrollList<Content: View>: View {
     /// Creates a list with the provided content and an infinite scroll indicator.
     ///
     /// - Parameters:
-    ///   - isLoading: Whether the list is loading more content. Used to determine whether to show the infinite scroll indicator.
     ///   - spacing: Spacing between each item in the list.
+    ///   - isLoading: Whether the list is loading more content. Used to determine whether to show the infinite scroll indicator.
     ///   - loadAction: Action to load more content.
     ///   - refreshAction: Called when the user pulls-to-refresh content in the scroll list.
     ///   - listContent: Content to render in the list.

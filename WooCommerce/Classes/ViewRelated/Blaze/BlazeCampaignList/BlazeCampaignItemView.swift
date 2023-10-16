@@ -38,7 +38,8 @@ struct BlazeCampaignItemView: View {
                                               backgroundColor: campaign.status.backgroundColor)
                     )
                     Text(campaign.name)
-                        .headlineStyle()
+                        .font(.headline)
+                        .fontWeight(.semibold)
                 }
                 .fixedSize(horizontal: false, vertical: false)
 
@@ -61,6 +62,7 @@ struct BlazeCampaignItemView: View {
                         .subheadlineStyle()
                     Text("\(campaign.totalImpressions)")
                         .font(.title2)
+                        .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
@@ -72,6 +74,7 @@ struct BlazeCampaignItemView: View {
                         .subheadlineStyle()
                     Text("\(campaign.totalClicks)")
                         .font(.title2)
+                        .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
@@ -83,6 +86,7 @@ struct BlazeCampaignItemView: View {
                         .subheadlineStyle()
                     Text(String(format: "%.2f", campaign.totalBudget))
                         .font(.title2)
+                        .fontWeight(.semibold)
                         .foregroundColor(.init(UIColor.text))
                 }
                 .fixedSize()
@@ -96,8 +100,9 @@ struct BlazeCampaignItemView: View {
         .padding(Layout.contentSpacing)
         .overlay {
             RoundedRectangle(cornerRadius: 8)
-                .stroke(Color(uiColor: .separator))
+                .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
         }
+        .padding(Layout.strokeWidth)
     }
 }
 
@@ -108,6 +113,7 @@ private extension BlazeCampaignItemView {
         static let cornerRadius: CGFloat = 8
         static let titleSpacing: CGFloat = 4
         static let statsVerticalSpacing: CGFloat = 6
+        static let strokeWidth: CGFloat = 0.5
     }
 
     enum Localization {

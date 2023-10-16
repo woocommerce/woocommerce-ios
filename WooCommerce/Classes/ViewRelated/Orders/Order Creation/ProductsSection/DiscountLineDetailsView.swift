@@ -11,44 +11,28 @@ struct DiscountLineDetailsView: View {
         VStack(alignment: .leading, spacing: .zero) {
             switch viewModel.feeOrDiscountType {
             case .fixed:
-                DiscountView(label: { Text(Localization.fixedPriceDiscountLabel) }) {
+                LineDetailView(label: {
+                    Text(Localization.fixedPriceDiscountLabel)
+                }, content: {
                     inputFixedField
-                    buttons
+                    discountTypeButtonToggle
                         .padding()
-                }
+                })
             case .percentage:
-                DiscountView(label: { Text(Localization.percentagePriceDiscountLabel) }) {
+                LineDetailView(label: {
+                    Text(Localization.percentagePriceDiscountLabel)
+                }, content: {
                     inputPercentageField
-                    buttons
+                    discountTypeButtonToggle
                         .padding()
-                }
+                })
             }
         }
     }
 }
 
 private extension DiscountLineDetailsView {
-    struct DiscountView<Label: View, Content: View>: View {
-        private let label: Label
-        private let content: Content
-
-        init(@ViewBuilder label: () -> Label, @ViewBuilder content: () -> Content) {
-            self.label = label()
-            self.content = content()
-        }
-
-        var body: some View {
-            VStack(alignment: .leading, spacing: .zero) {
-                label
-                    .padding()
-                HStack {
-                    content
-                }
-            }
-        }
-    }
-
-    private var buttons: some View {
+    private var discountTypeButtonToggle: some View {
         HStack(spacing: 0) {
             Button(viewModel.currencySymbol) {
                 viewModel.feeOrDiscountType = .fixed

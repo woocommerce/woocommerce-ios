@@ -58,16 +58,12 @@ private extension DiscountLineDetailsView {
             }
         }
     }
-    
+
     private var inputFixedField: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
-            HStack {
                 BindableTextfield(Localization.fixedPriceDiscountInputPlaceholder,
                                   text: $viewModel.amount,
                                   focus: .constant(true))
                 .keyboardType(.numbersAndPunctuation)
-            }
-        }
         .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
         .padding([.leading, .trailing], Layout.padding)
         .overlay {
@@ -80,14 +76,10 @@ private extension DiscountLineDetailsView {
     }
 
     private var inputPercentageField: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
-            HStack {
                 BindableTextfield(Localization.percentagePriceDiscountInputPlaceholder,
                                   text: $viewModel.percentage,
                                   focus: .constant(true))
                 .keyboardType(.numbersAndPunctuation)
-            }
-        }
         .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
         .padding([.leading, .trailing], Layout.padding)
         .overlay {

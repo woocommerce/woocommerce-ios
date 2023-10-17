@@ -129,7 +129,8 @@ private extension BlazeCampaignDashboardView {
                     .foregroundColor(Color(.textTertiary))
             }
             .padding(insets: Layout.insets)
-            .background(Color(.systemColor(.systemGray6)))
+            .background(Color(uiColor: .init(light: UIColor.systemGray6,
+                                             dark: UIColor.systemGray5)))
             .cornerRadius(Layout.cornerRadius)
         }
     }

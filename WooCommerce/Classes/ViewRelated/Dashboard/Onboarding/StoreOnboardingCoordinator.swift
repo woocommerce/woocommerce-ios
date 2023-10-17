@@ -175,6 +175,7 @@ private extension StoreOnboardingCoordinator {
         let controller = CelebrationHostingController(
             title: Localization.Celebration.title,
             subtitle: Localization.Celebration.subtitle,
+            closeButtonTitle: Localization.Celebration.done,
             onTappingDone: { [weak self] in
             self?.wooPaySetupCelebrationViewBottomSheetPresenter?.dismiss()
             self?.wooPaySetupCelebrationViewBottomSheetPresenter = nil
@@ -225,6 +226,8 @@ private extension StoreOnboardingCoordinator {
 
             static let subtitle = NSLocalizedString("Congratulations! You've successfully navigated through the setup and your payment system is ready to roll.",
                                                         comment: "Subtitle in Woo Payments setup  celebration screen.")
+            static let done = NSLocalizedString("Done",
+                                                 comment: "Dismiss button title in Woo Payments setup celebration screen.")
         }
     }
 }

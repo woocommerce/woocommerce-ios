@@ -5,10 +5,12 @@ import SwiftUI
 final class CelebrationHostingController: UIHostingController<CelebrationView> {
     init(title: String,
          subtitle: String,
+         closeButtonTitle: String,
          image: UIImage = .checkSuccessImage,
          onTappingDone: @escaping () -> Void) {
         super.init(rootView: CelebrationView(title: title,
                                              subtitle: subtitle,
+                                             closeButtonTitle: closeButtonTitle,
                                              image: image,
                                              onTappingDone: onTappingDone))
     }
@@ -23,21 +25,24 @@ final class CelebrationHostingController: UIHostingController<CelebrationView> {
 struct CelebrationView: View {
     private let title: String
     private let subtitle: String
+    private let closeButtonTitle: String
     private let image: UIImage
     private let onTappingDone: () -> Void
 
     init(title: String,
          subtitle: String,
+         closeButtonTitle: String,
          image: UIImage = .checkSuccessImage,
          onTappingDone: @escaping () -> Void) {
         self.title = title
         self.subtitle = subtitle
+        self.closeButtonTitle = closeButtonTitle
         self.image = image
         self.onTappingDone = onTappingDone
     }
 
     var body: some View {
-        VStack(spacing: Layout.verticalSpacing) {
+        ScrollableVStack(spacing: Layout.verticalSpacing) {
             Image(uiImage: image)
                 .padding(.vertical, Layout.imageVerticalPadding)
 
@@ -53,7 +58,7 @@ struct CelebrationView: View {
             }
             .padding(.horizontal, Layout.textHorizontalPadding)
 
-            Button(Localization.done) {
+            Button(closeButtonTitle) {
                 onTappingDone()
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -71,21 +76,18 @@ private extension CelebrationView {
         static let buttonHorizontalPadding: CGFloat = 16
         static let insets: EdgeInsets = .init(top: 40, leading: 0, bottom: 16, trailing: 0)
     }
-
-    enum Localization {
-        static let done = NSLocalizedString("Done",
-                                             comment: "Dismiss button title in Woo Payments setup celebration screen.")
-    }
 }
 
 struct CelebrationView_Previews: PreviewProvider {
     static var previews: some View {
         CelebrationView(title: "Success!",
                         subtitle: "You did it!",
+                        closeButtonTitle: "Done",
                         onTappingDone: {})
 
         CelebrationView(title: "Success!",
                         subtitle: "You did it!",
+                        closeButtonTitle: "Done",
                         onTappingDone: {})
             .preferredColorScheme(.dark)
     }

@@ -11,9 +11,7 @@ struct BlazeCampaignIntroView: View {
             ScrollView {
                 VStack(alignment: .leading) {
                     Image(uiImage: .blaze)
-                        .resizable()
                         .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                        .clipShape(Circle())
                         .background(
                             Circle()
                                 .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))

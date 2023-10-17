@@ -41,7 +41,7 @@ struct BlazeCampaignIntroView: View {
                         // todo
                     }
                     .buttonStyle(PrimaryButtonStyle())
-                    .padding(16)
+                    .padding(Layout.buttonPadding)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -112,6 +112,8 @@ private enum Layout {
     static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 2, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
     static let dividerHeight: CGFloat = 1
+    static let logoSize: CGFloat = 100
+    static let buttonPadding: CGFloat = 16
 }
 
 struct BlazeCampaignIntroView_Previews: PreviewProvider {

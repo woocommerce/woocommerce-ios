@@ -2540,6 +2540,20 @@ final class EditableOrderViewModelTests: XCTestCase {
         ]
         assertEqual(expectedGiftCards, viewModel.paymentDataViewModel.appliedGiftCards)
     }
+
+    func test_when_order_has_no_coupons_then_shouldDisallowDiscounts_is_false() {
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        XCTAssertFalse(viewModel.shouldDisallowDiscounts)
+    }
+
+    func test_when_order_has_coupons_then_shouldDisallowDiscounts_is_true() {
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID)
+
+        viewModel.saveCouponLine(result: .added(newCode: "Some coupon"))
+
+        XCTAssertTrue(viewModel.shouldDisallowDiscounts)
+    }
 }
 
 private extension MockStorageManager {

@@ -367,4 +367,23 @@ class ProductRowViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
+
+    func test_when_product_row_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+        let price = "2.50"
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product, discount: nil, quantity: 1, canChangeQuantity: true)
+
+        XCTAssertFalse(viewModel.hasDiscount)
+    }
+
+    func test_when_product_row_discount_is_not_nil_then_viewModel_hasDiscount() {
+        let price = "2.50"
+        let discount: Decimal = 0.50
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
+
+        XCTAssertTrue(viewModel.hasDiscount)
+    }
 }

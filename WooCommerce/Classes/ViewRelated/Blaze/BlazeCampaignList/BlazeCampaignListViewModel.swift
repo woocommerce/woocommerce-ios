@@ -169,7 +169,7 @@ extension UserDefaults {
         return hasDisplayed?[idAsString] == true
     }
 
-    /// Mark the tip after Blaze campaign creation as displayed a site.
+    /// Mark the tip after Blaze campaign creation as displayed for a site.
     ///
     func setBlazePostCreationTipAsDisplayed(for siteID: Int64) {
         let idAsString = "\(siteID)"

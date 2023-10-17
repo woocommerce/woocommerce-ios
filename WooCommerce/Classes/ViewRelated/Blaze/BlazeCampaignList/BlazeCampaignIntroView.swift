@@ -56,24 +56,6 @@ struct BlazeCampaignIntroView: View {
     }
 }
 
-/// View to display a single text with a bullet point preceding it.
-///
-private struct BulletPointView: View {
-    let text: String
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 4) {
-            Image(systemName: "circle.fill")
-                .font(.system(size: 4))
-                .offset(y: 8)
-            Text(text)
-                .bodyStyle()
-                .padding(.leading, 4)
-        }
-        .padding(Layout.bulletPointPadding)
-    }
-}
-
 private extension BlazeCampaignIntroView {
     enum Localization {
         static let title = NSLocalizedString(
@@ -109,7 +91,6 @@ private extension BlazeCampaignIntroView {
 
 private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
-    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 0, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
     static let bulletPointVerticalSpacing: CGFloat = 4
     static let dividerHeight: CGFloat = 1

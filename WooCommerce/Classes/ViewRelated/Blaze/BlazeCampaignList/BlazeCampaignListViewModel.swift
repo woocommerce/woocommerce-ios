@@ -79,7 +79,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func checkIfPostCreationTipIsNeeded() {
         let hasDisplayed = userDefaults.hasDisplayedTipAfterBlazeCampaignCreation(for: siteID)
         if !hasDisplayed {
-            shouldDisplayPostCampaignCreationTip = hasDisplayed
+            shouldDisplayPostCampaignCreationTip = true
             userDefaults.setBlazePostCreationTipAsDisplayed(for: siteID)
         }
     }

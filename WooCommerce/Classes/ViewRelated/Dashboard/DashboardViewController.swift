@@ -988,6 +988,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.viewModel.updateBlazeBannerVisibility()
             }
+            group.addTask { [weak self] in
+                await self?.viewModel.reloadBlazeCampaignView()
+            }
         }
     }
 }

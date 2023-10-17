@@ -17,7 +17,6 @@ import struct Experiments.CachedABTestVariationProvider
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
-    
 
     /// Store Picker Coordinator
     ///

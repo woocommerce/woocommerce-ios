@@ -87,7 +87,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         // Then
         assertEqual(sampleSiteID, connectionControllerFactory.spyCreateConnectionControllerSiteID)
         assertEqual(false, connectionControllerFactory.spyCreateConnectionControllerAllowTermsOfServiceAcceptance)
-        assertEqual(sampleConfiguration, connectionControllerFactory.spyCreateConnectionControllerConfiguration)
+        XCTAssertEqual(sampleConfiguration, connectionControllerFactory.spyCreateConnectionControllerConfiguration)
         assertEqual(CardReaderConnectionAnalyticsTracker.ConnectionType.automaticReconnection,
                     connectionControllerFactory.spyCreateConnectionControllerAnalyticsTracker?.connectionType)
     }

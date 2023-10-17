@@ -3,7 +3,9 @@ import Yosemite
 import WooFoundation
 
 struct AboutTapToPayView: View {
-    @ObservedObject var viewModel: AboutTapToPayViewModel
+    @ObservedObject var viewModel: AboutTapToPayViewModel = AboutTapToPayViewModel(
+        configuration: CardPresentConfigurationLoader().configuration,
+        buttonAction: nil)
     @State private var showingWebView: Bool = false
 
     var body: some View {
@@ -32,7 +34,8 @@ struct AboutTapToPayView: View {
                     }
                     .padding(.vertical)
 
-                    Text(Localization.systemRequirementsDetails)
+                    Text(String(format: Localization.systemRequirementsDetails,
+                                viewModel.formattedMinimumOperatingSystemVersionForTapToPay))
                         .footnoteStyle(isError: false)
                 }
                 .padding()
@@ -47,7 +50,6 @@ struct AboutTapToPayView: View {
                     viewModel.callToActionTapped()
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .renderedIf(viewModel.shouldShowButton)
 
                 InPersonPaymentsLearnMore(viewModel: .tapToPay(source: .aboutTapToPay))
                     .customOpenURL(action: { _ in
@@ -55,6 +57,7 @@ struct AboutTapToPayView: View {
                     })
             }
             .padding()
+            .renderedIf(viewModel.shouldShowButton)
         }
         .sheet(isPresented: $showingWebView) {
             WebViewSheet(viewModel: viewModel.webViewModel) {
@@ -113,10 +116,10 @@ private extension AboutTapToPayView {
             comment: "Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete.")
 
         static let systemRequirementsDetails = NSLocalizedString(
-            "Requires iPhone XS or later with iOS 16 or later. The Contactless Symbol is a trademark owned by and " +
+            "Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and " +
             "used with permission of EMVCo, LLC.",
             comment: "Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on " +
-            "iPhone screen.")
+            "iPhone screen. %1$@ will be replaced with the relevant iOS version number.")
 
         static let setUpTapToPayOnIPhoneButtonTitle = NSLocalizedString(
             "Set Up Tap to Pay on iPhone",
@@ -187,5 +190,30 @@ private extension AboutTapToPayContactlessLimitView {
     enum Layout {
         static let spacing: CGFloat = 16
         static let cornerRadius: CGFloat = 8
+    }
+}
+
+struct AboutTapToPayViewInNavigationView: View {
+    @Environment(\.dismiss) var dismiss
+
+    var body: some View {
+        NavigationView {
+            AboutTapToPayView()
+            .toolbar() {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.doneButton) {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+private extension AboutTapToPayViewInNavigationView {
+    enum Localization {
+        static let doneButton = NSLocalizedString(
+            "Done",
+            comment: "Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
     }
 }

@@ -18,8 +18,8 @@ public struct CardPresentPaymentsConfiguration: Equatable {
     /// `minimumOperatingSystemVersionOverride` allows us to override Stripe's `supportsReaders` check
     /// such that if it returns `true`, we additionally check for the user's phone meeting this version.
     /// E.g. we check for iOS 16.4 if they're connected to a GB store, which Stripe only check during discovery.
-    /// This can be removed if Stripe make `supportsReaders` location aware
-    public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion?
+    /// This usage can be removed if Stripe make `supportsReaders` location aware
+    public let minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion
 
     init(countryCode: CountryCode,
          paymentMethods: [WCPayPaymentMethodType],
@@ -30,7 +30,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
          minimumAllowedChargeAmount: NSDecimalNumber,
          stripeSmallestCurrencyUnitMultiplier: Decimal,
          contactlessLimitAmount: Int?,
-         minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion?) {
+         minimumOperatingSystemVersionForTapToPay: OperatingSystemVersion) {
         self.countryCode = countryCode
         self.paymentMethods = paymentMethods
         self.currencies = currencies
@@ -60,7 +60,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: nil
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
             )
         case .CA:
             self.init(
@@ -73,7 +73,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: 25000,
-                minimumOperatingSystemVersionForTapToPay: nil
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
             )
         case .GB:
             self.init(
@@ -101,7 +101,7 @@ public struct CardPresentPaymentsConfiguration: Equatable {
                 minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
                 stripeSmallestCurrencyUnitMultiplier: 100,
                 contactlessLimitAmount: nil,
-                minimumOperatingSystemVersionForTapToPay: nil
+                minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0)
             )
         }
     }
@@ -124,11 +124,9 @@ private enum Constants {
 }
 
 extension OperatingSystemVersion: Equatable {
-
     public static func == (lhs: OperatingSystemVersion, rhs: OperatingSystemVersion) -> Bool {
-        return lhs.majorVersion == rhs.minorVersion &&
+        return lhs.majorVersion == rhs.majorVersion &&
         lhs.minorVersion == rhs.minorVersion &&
         lhs.patchVersion == rhs.patchVersion
     }
-
 }

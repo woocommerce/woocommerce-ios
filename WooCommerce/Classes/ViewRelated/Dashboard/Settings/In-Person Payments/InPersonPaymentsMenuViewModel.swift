@@ -187,12 +187,12 @@ private enum Constants {
 private extension InPersonPaymentsMenuViewModel {
     enum Localization {
         static let setUpTapToPayOnIPhoneRowTitle = NSLocalizedString(
-            "Set up Tap to Pay on iPhone",
+            "Set Up Tap to Pay on iPhone",
             comment: "Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. " +
             "The destination screen also allows for a test payment, after set up.")
 
         static let tryOutTapToPayOnIPhoneRowTitle = NSLocalizedString(
-            "Try out Tap to Pay on iPhone",
+            "Try Out Tap to Pay on iPhone",
             comment: "Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it " +
             "primarily allows for a test payment. The full name is expected by Apple.")
     }

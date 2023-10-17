@@ -210,7 +210,7 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
                            shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
                            depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]? = nil) {
-        var composingSections: [Section?] = [actionsSection]
+        var composingSections: [Section?] = [actionsSection, settingsSection]
 
         let depositsOverviewViewModels = depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels
         if #available(iOS 16.0, *),
@@ -232,7 +232,11 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+    }
+
+    var settingsSection: Section? {
+        return Section(header: Localization.paymentSettingsSectionTitle, rows: [.toggleEnableCashOnDelivery])
     }
 
     func tapToPayOnIPhoneSection(shouldShowFeedbackRow: Bool) -> Section? {
@@ -245,7 +249,7 @@ private extension InPersonPaymentsMenuViewController {
             rows.append(.tapToPayOnIPhoneFeedback)
         }
 
-        return Section(header: nil, rows: rows)
+        return Section(header: Localization.tapToPaySectionTitle, rows: rows)
     }
 
     var cardReadersSection: Section? {
@@ -335,6 +339,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
+        prepareForReuse(cell)
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none
@@ -399,9 +404,10 @@ private extension InPersonPaymentsMenuViewController {
     func configureTapToPayOnIPhoneFeedback(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "tap-to-pay-feedback"
-        cell.configure(image: UIImage(color: .clear, havingSize: CGSize(width: 24, height: 24)),
+        cell.configure(image: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate),
                        text: Localization.tapToPayOnIPhoneFeedback)
-        cell.textLabel?.textColor = .primary
+        cell.imageView?.tintColor = .textLink
+        cell.textLabel?.textColor = .textLink
         cell.accessoryType = .none
     }
 
@@ -689,9 +695,17 @@ private extension InPersonPaymentsMenuViewController {
             "Actions",
             comment: "Title for the section related to actions inside In-Person Payments settings")
 
+        static let paymentSettingsSectionTitle = NSLocalizedString(
+            "Settings",
+            comment: "Title for the section related to changing payment settings inside the In-Person Payments menu")
+
         static let wooPaymentsDepositsSectionTitle = NSLocalizedString(
             "Woo Payments Balance",
             comment: "Title for the section related to Woo Payments Deposits/Balances.")
+
+        static let tapToPaySectionTitle = NSLocalizedString(
+            "Tap to Pay",
+            comment: "Title for the Tap to Pay section in the In-Person payments settings")
 
         static let wooPaymentsDeposits = NSLocalizedString(
             "Woo Payments Balance",
@@ -739,12 +753,12 @@ private extension InPersonPaymentsMenuViewController {
         )
 
         static let aboutTapToPayOnIPhone = NSLocalizedString(
-            "About Tap to Pay on iPhone",
+            "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
             "of Tap to Pay on iPhone, relevant to the store territory.")
 
         static let tapToPayOnIPhoneFeedback = NSLocalizedString(
-            "Share Tap to Pay on iPhone Feedback",
+            "Share Feedback",
             comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone.")
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(

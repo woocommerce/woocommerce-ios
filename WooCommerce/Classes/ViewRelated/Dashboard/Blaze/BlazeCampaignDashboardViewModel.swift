@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 
 /// View model for `BlazeCampaignDashboardView`.
 final class BlazeCampaignDashboardViewModel: ObservableObject {
@@ -35,15 +36,36 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    /// Blaze campaign ResultsController.
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        sortedBy: [sortDescriptorByID])
+        return resultsController
+    }()
+
+    /// Product ResultsController.
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading

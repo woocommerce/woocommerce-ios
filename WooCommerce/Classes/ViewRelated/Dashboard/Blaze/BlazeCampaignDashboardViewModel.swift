@@ -53,7 +53,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Product ResultsController.
     private lazy var productResultsController: ResultsController<StorageProduct> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "date", ascending: true)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProduct.date, ascending: false)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()

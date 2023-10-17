@@ -19,7 +19,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var state: State
 
-    @Published private(set) var shouldShowInDashboard: Bool = false
+    @Published private(set) var shouldShowInDashboard: Bool = true
 
     private(set) var isRedacted: Bool = true
 

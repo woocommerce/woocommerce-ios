@@ -71,19 +71,20 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.state = .loading
     }
 
+    @MainActor
     func reload() async {
-        await update(state: .loading)
+        update(state: .loading)
         guard await blazeEligibilityChecker.isSiteEligible() else {
-            await update(state: .empty)
+            update(state: .empty)
             return
         }
 
         if let campaign = try? await loadLatestBlazeCampaign() {
-            await update(state: .showCampaign(campaign: campaign))
+            update(state: .showCampaign(campaign: campaign))
         } else if let product = try? await loadFirstPublishedProduct() {
-            await update(state: .showProduct(product: product))
+            update(state: .showProduct(product: product))
         } else {
-            await update(state: .empty)
+            update(state: .empty)
         }
     }
 }

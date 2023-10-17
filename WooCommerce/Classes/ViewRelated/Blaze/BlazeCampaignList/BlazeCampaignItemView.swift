@@ -102,8 +102,13 @@ struct BlazeCampaignItemView: View {
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
         .padding(Layout.contentSpacing)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: .init(light: UIColor.clear,
+                                           dark: UIColor.systemGray5)))
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
         }
         .padding(Layout.strokeWidth)

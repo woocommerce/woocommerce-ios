@@ -21,10 +21,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = true
 
-    private(set) var isRedacted: Bool = true
+    private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
-        if case .showCampaign(_) = state {
+        if case .showCampaign = state {
             return true
         } else {
             return false
@@ -148,13 +148,13 @@ private extension BlazeCampaignDashboardViewModel {
         self.state = state
         switch state {
         case .loading:
-            isRedacted = true
+            shouldRedactView = true
             shouldShowInDashboard = true
         case .showCampaign, .showProduct:
-            isRedacted = false
+            shouldRedactView = false
             shouldShowInDashboard = true
         case .empty:
-            isRedacted = true
+            shouldRedactView = true
             shouldShowInDashboard = false
         }
         onStateChange?()

@@ -88,30 +88,61 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 }
 
+// MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
     func loadLatestBlazeCampaign() async throws -> BlazeCampaign? {
-        // TODO: Replace with remote call
-        try await Task.sleep(nanoseconds: 150_000_000)
-        if Bool.random() {
-            // swiftlint:disable:next line_length
-            return .init(siteID: siteID, campaignID: 1, name: "Test", uiStatus: "finished", contentImageURL: "https://m.media-amazon.com/images/I/718JGhYeDXL.jpg", contentClickURL: "https://www.google.com/", totalImpressions: 1434, totalClicks: 211, totalBudget: 6563.2)
-        } else {
-            return nil
-        }
+        try await synchronizeBlazeCampaigns()
+        try blazeCampaignResultsController.performFetch()
+        return blazeCampaignResultsController.fetchedObjects.first
     }
 
     @MainActor
+    func synchronizeBlazeCampaigns() async throws {
+        try await withCheckedThrowingContinuation({ continuation in
+            stores.dispatch(BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: Store.Default.firstPageNumber) { result in
+                switch result {
+                case .success:
+                    return continuation.resume(returning: ())
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
+                    return continuation.resume(throwing: error)
+                }
+            })
+        })
+    }
+}
+
+
+// MARK: - Products
+private extension BlazeCampaignDashboardViewModel {
+    @MainActor
     func loadFirstPublishedProduct() async throws -> Product? {
-        // TODO: Replace with remote call
-        try await Task.sleep(nanoseconds: 150_000_000)
-        if Bool.random() {
-            return Product.swiftUIPreviewSample()
-        } else {
+        guard try await checkIfStoreHasPublishedProducts() else {
             return nil
         }
+        try productResultsController.performFetch()
+        return productResultsController.fetchedObjects.first(where: { $0.statusKey == ProductStatus.published.rawValue })
     }
 
+    @MainActor
+    private func checkIfStoreHasPublishedProducts() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: .published, onCompletion: { result in
+                switch result {
+                case .success(let hasProducts):
+                    continuation.resume(returning: hasProducts)
+                case .failure(let error):
+                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze campaign view: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            }))
+        }
+    }
+}
+
+// MARK: - Helpers
+private extension BlazeCampaignDashboardViewModel {
     @MainActor
     func update(state: State) {
         self.state = state

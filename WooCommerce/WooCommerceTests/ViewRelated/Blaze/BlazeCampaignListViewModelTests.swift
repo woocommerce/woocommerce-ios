@@ -278,6 +278,35 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(syncPageNumber, 1)
         XCTAssertEqual(invocationCountOfLoadCampaigns, 1)
     }
+
+    // MARK: - checkIfPostCreationTipIsNeeded
+
+    func test_checkIfPostCreationTipIsNeeded_sets_shouldDisplayPostCampaignCreationTip_to_true_if_the_tip_has_not_been_displayed() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, userDefaults: userDefaults)
+
+        // When
+        viewModel.checkIfPostCreationTipIsNeeded()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisplayPostCampaignCreationTip)
+    }
+
+    func test_checkIfPostCreationTipIsNeeded_keeps_shouldDisplayPostCampaignCreationTip_as_false_if_the_tip_has_been_displayed() throws {
+        // Given
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        userDefaults[.hasDisplayedTipAfterBlazeCampaignCreation] = ["\(sampleSiteID)": true]
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, userDefaults: userDefaults)
+
+        // When
+        viewModel.checkIfPostCreationTipIsNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisplayPostCampaignCreationTip)
+    }
 }
 
 private extension BlazeCampaignListViewModelTests {

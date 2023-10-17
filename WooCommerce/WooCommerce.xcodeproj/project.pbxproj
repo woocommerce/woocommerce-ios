@@ -2339,7 +2339,7 @@
 		EE2EDFE12987A189004E702B /* MockABTestVariationProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */; };
 		EE3272A429A88F750015F8D0 /* StoreOnboardingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */; };
 		EE3B17AF2A9EFE97004D3E0C /* WooPaymentsSetupInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */; };
-		EE3B17B62AA03837004D3E0C /* WooPaymentSetupCelebrationView.swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17B52AA03837004D3E0C /* WooPaymentSetupCelebrationView.swift.swift */; };
+		EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17B52AA03837004D3E0C /* CelebrationView.swift */; };
 		EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */; };
 		EE45E29F2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */; };
 		EE45E2B72A409BA40085F227 /* Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B22A409B9E0085F227 /* Tooltip.swift */; };
@@ -4873,7 +4873,7 @@
 		EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockABTestVariationProvider.swift; sourceTree = "<group>"; };
 		EE3272A329A88F750015F8D0 /* StoreOnboardingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingViewModelTests.swift; sourceTree = "<group>"; };
 		EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooPaymentsSetupInstructionsView.swift; sourceTree = "<group>"; };
-		EE3B17B52AA03837004D3E0C /* WooPaymentSetupCelebrationView.swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooPaymentSetupCelebrationView.swift.swift; sourceTree = "<group>"; };
+		EE3B17B52AA03837004D3E0C /* CelebrationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationView.swift; sourceTree = "<group>"; };
 		EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationViewModel.swift; sourceTree = "<group>"; };
 		EE45E2B02A409B9D0085F227 /* ProductDescriptionAITooltipUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAITooltipUseCase.swift; sourceTree = "<group>"; };
@@ -7573,6 +7573,7 @@
 		45D875D72611EA3D00226C3F /* SwiftUI Components */ = {
 			isa = PBXGroup;
 			children = (
+				EE3B17B52AA03837004D3E0C /* CelebrationView.swift */,
 				D449C51926DE6B5000D75B02 /* IconListItem.swift */,
 				D449C51A26DE6B5000D75B02 /* LargeTitle.swift */,
 				D449C51826DE6B5000D75B02 /* ReportList.swift */,
@@ -11012,7 +11013,6 @@
 		EE3B17AB2A9EF478004D3E0C /* Payments */ = {
 			isa = PBXGroup;
 			children = (
-				EE3B17B52AA03837004D3E0C /* WooPaymentSetupCelebrationView.swift.swift */,
 				DE5FBB902A9EF25A0072FB35 /* WooPaymentSetupWebViewModel.swift */,
 				EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */,
 				02D681A829C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift */,
@@ -12387,7 +12387,7 @@
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
-				EE3B17B62AA03837004D3E0C /* WooPaymentSetupCelebrationView.swift.swift in Sources */,
+				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,
 				EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,

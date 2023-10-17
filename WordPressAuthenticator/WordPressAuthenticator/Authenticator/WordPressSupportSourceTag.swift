@@ -32,6 +32,9 @@ extension WordPressSupportSourceTag {
     public static var login2FA: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "login2FA", origin: "origin:login-2fa")
     }
+    public static var loginWebauthn: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "loginWebauthn", origin: "origin:login-webauthn")
+    }
     public static var loginMagicLink: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginMagicLink", origin: "origin:login-magic-link")
     }

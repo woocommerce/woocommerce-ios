@@ -211,6 +211,10 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case sendCodeWithText = "send_code_with_text"
 
+        /// Used on the 2FA screen to use a security key  instead of using the authenticator app
+        ///
+        case enterSecurityKey = "enter_security_key"
+
         /// Used on the 2FA screen to submit authentication code
         ///
         case submitTwoFactorCode = "submit_2fa_code"

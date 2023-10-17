@@ -31,6 +31,9 @@ public class LoginFields: NSObject {
     /// Used to restrict login to WordPress.com
     public var restrictToWPCom = false
 
+    /// Used on the webauthn/security key flow.
+    public var webauthnChallengeInfo: WebauthnChallengeInfo?
+
     /// Used by the SignupViewController. Signup currently asks for both a
     /// username and an email address.  This can be factored away when we revamp
     /// the signup flow.

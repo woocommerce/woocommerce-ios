@@ -13,7 +13,10 @@ enum BlazeCampaignSource: String {
 ///
 final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaignListView> {
 
+    /// View model for the list.
     private let viewModel: BlazeCampaignListViewModel
+    
+    /// Whether the list is displayed right after a campaign is created.
     private let isPostCreation: Bool
 
     init(site: Site,

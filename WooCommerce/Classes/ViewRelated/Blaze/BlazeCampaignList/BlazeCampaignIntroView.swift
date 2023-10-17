@@ -11,11 +11,14 @@ struct BlazeCampaignIntroView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.elementVerticalSpacing) {
                     Image(uiImage: .blaze)
+                        .resizable()
                         .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
                         .background(
                             Circle()
                                 .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))
+                                .frame(width: Layout.logoBackgroundSize * scale, height: Layout.logoBackgroundSize * scale)
                         )
+
 
 
                     Text(Localization.title)
@@ -110,7 +113,8 @@ private enum Layout {
     static let elementVerticalSpacing: CGFloat = 24
     static let bulletPointVerticalSpacing: CGFloat = 4
     static let dividerHeight: CGFloat = 1
-    static let logoSize: CGFloat = 100
+    static let logoSize: CGFloat = 64
+    static let logoBackgroundSize: CGFloat = 120
     static let buttonPadding: CGFloat = 16
 }
 

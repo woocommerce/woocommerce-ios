@@ -10,16 +10,15 @@ struct BlazeCampaignIntroView: View {
         NavigationView {
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.elementVerticalSpacing) {
-                    Image(uiImage: .blaze)
-                        .resizable()
-                        .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
-                        .background(
-                            Circle()
-                                .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))
-                                .frame(width: Layout.logoBackgroundSize * scale, height: Layout.logoBackgroundSize * scale)
-                        )
+                    ZStack {
+                        Circle()
+                            .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))
+                            .frame(width: Layout.logoBackgroundSize * scale, height: Layout.logoBackgroundSize * scale)
 
-
+                        Image(uiImage: .blaze)
+                            .resizable()
+                            .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
+                    }
 
                     Text(Localization.title)
                         .largeTitleStyle()

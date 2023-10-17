@@ -160,7 +160,7 @@ extension BlazeCampaignListViewModel {
     }
 }
 
-private extension UserDefaults {
+extension UserDefaults {
     /// Checks if the Blaze post campaign creation tip has been displayed for a site.
     ///
     func hasDisplayedTipAfterBlazeCampaignCreation(for siteID: Int64) -> Bool {

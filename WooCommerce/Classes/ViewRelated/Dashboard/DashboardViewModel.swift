@@ -88,6 +88,12 @@ final class DashboardViewModel {
         await storeOnboardingViewModel.reloadTasks()
     }
 
+    /// Reloads Blaze dashboard campaign view
+    ///
+    func reloadBlazeCampaignView() async {
+        await blazeCampaignDashboardViewModel.reload()
+    }
+
     /// Syncs store stats for dashboard UI.
     func syncStats(for siteID: Int64,
                    siteTimezone: TimeZone,

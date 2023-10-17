@@ -125,7 +125,9 @@ private extension BlazeCampaignListView {
         CelebrationView(title: Localization.celebrationTitle,
                         subtitle: Localization.celebrationSubtitle,
                         closeButtonTitle: Localization.celebrationCTA,
-                        onTappingDone: {})
+                        onTappingDone: {
+            viewModel.shouldDisplayPostCampaignCreationTip = false
+        })
     }
 
     @ViewBuilder

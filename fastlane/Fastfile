@@ -142,6 +142,9 @@ before_all do |lane|
   # Skip these checks/steps for test lane (not needed for testing)
   next if lane == :test_without_building
 
+  # Check for Release Toolkit updates
+  check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
+
   # Check that the env files exist
   UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values") unless is_ci || File.file?(USER_ENV_FILE_PATH)
   UI.user_error!('project.env not found: Make sure your configuration is up to date with `rake dependencies`') unless File.file?(PROJECT_ENV_FILE_PATH)
@@ -176,8 +179,6 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :code_freeze do |options|
-    # Check for Release Toolkit updates
-    check_for_toolkit_updates unless is_ci || ENV['FASTLANE_SKIP_TOOLKIT_UPDATE_CHECK']
 
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 

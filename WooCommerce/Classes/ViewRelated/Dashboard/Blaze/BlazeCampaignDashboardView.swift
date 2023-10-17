@@ -71,7 +71,7 @@ struct BlazeCampaignDashboardView: View {
                     .subheadlineStyle()
                     .renderedIf(!viewModel.shouldShowShowAllCampaignsButton)
             }
-            .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+            .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
 
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
@@ -93,7 +93,7 @@ struct BlazeCampaignDashboardView: View {
 
             // Create campaign button
             createCampaignButton
-                .redacted(reason: viewModel.isRedacted ? .placeholder : [])
+                .redacted(reason: viewModel.shouldRedactView ? .placeholder : [])
         }
         .padding(insets: Layout.insets)
         .background(Color(uiColor: .listForeground(modal: false)))

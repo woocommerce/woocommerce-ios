@@ -206,6 +206,11 @@ private struct ProductInfoView: View {
                 .foregroundColor(Color(.textTertiary))
         }
         .padding(Layout.contentPadding)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: .init(light: UIColor.clear,
+                                           dark: UIColor.systemGray5)))
+        )
         .overlay {
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)

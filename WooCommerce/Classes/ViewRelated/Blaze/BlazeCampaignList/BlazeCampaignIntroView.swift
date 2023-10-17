@@ -43,6 +43,7 @@ struct BlazeCampaignIntroView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Layout.buttonPadding)
                 }
+                .background(Color(UIColor.systemBackground))
             }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

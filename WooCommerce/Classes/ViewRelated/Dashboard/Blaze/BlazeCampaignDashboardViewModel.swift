@@ -23,7 +23,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private(set) var isRedacted: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
-        if case .showCampaign(_) = state {
+        if case .showCampaign = state {
             return true
         } else {
             return false

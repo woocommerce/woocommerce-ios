@@ -786,6 +786,9 @@ private extension DashboardViewController {
 // MARK: - Blaze banner
 extension DashboardViewController {
     func observeBlazeBannerVisibility() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) == false else {
+            return
+        }
         viewModel.$showBlazeBanner.removeDuplicates()
             .sink { [weak self] showsBlazeBanner in
                 guard let self else { return }

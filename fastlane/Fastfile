@@ -188,9 +188,9 @@ platform :ios do
     message = <<-MESSAGE
 
       Code Freeze:
-      • New release branch from #{DEFAULT_BRANCH}: release/#{next_release_version}
-      • Current release version and build code: #{current_release_version} (#{current_build_code}).
-      • New release version and build code: #{next_release_version} (#{code_freeze_build_code}).
+      • New release branch from #{DEFAULT_BRANCH}: release/#{release_version_next}
+      • Current release version and build code: #{release_version_current} (#{build_code_current}).
+      • New release version and build code: #{release_version_next} (#{build_code_code_freeze}).
 
     MESSAGE
 
@@ -200,19 +200,19 @@ platform :ios do
     # Create the release branch
     UI.message('Creating release branch...')
     ensure_git_branch(branch: DEFAULT_BRANCH)
-    Fastlane::Helper::GitHelper.create_branch("release/#{next_release_version}", from: DEFAULT_BRANCH)
+    Fastlane::Helper::GitHelper.create_branch("release/#{release_version_next}", from: DEFAULT_BRANCH)
     UI.success("Done! New release branch is: #{git_branch}")
 
     # Bump the release version and build code and write it to the `xcconfig` file
     UI.message('Bumping release version and build code...')
     VERSION_FILE.write(
-      version_short: next_release_version,
-      version_long: code_freeze_build_code
+      version_short: release_version_next,
+      version_long: build_code_code_freeze
     )
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
-    UI.success("Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}")
+    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
-    new_version = current_release_version
+    new_version = release_version_current
     extract_release_notes_for_version(
       version: new_version,
       release_notes_file_path: File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt'),
@@ -260,7 +260,7 @@ platform :ios do
     # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
     ensure_git_branch(branch: '^release/')
 
-    UI.important("Completing code freeze for: #{current_release_version}")
+    UI.important("Completing code freeze for: #{release_version_current}")
     UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
 
     generate_strings_file_for_glotpress
@@ -270,7 +270,7 @@ platform :ios do
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{current_release_version}")
+      trigger_beta_build(branch_to_build: "release/#{release_version_current}")
     else
       UI.message('Aborting code freeze completion. See you later 👋')
     end
@@ -300,7 +300,7 @@ platform :ios do
     ios_update_metadata_source(
       po_file_path: File.join(RESOURCES_FOLDER, 'AppStoreStrings.pot'),
       source_files: files,
-      release_version: options.fetch(:version, current_release_version)
+      release_version: options.fetch(:version, release_version_current)
     )
   end
 
@@ -331,14 +331,14 @@ platform :ios do
     # Check versions
     message = <<-MESSAGE
 
-      Current build code: #{current_build_code}
-      New build code: #{next_build_code}
+      Current build code: #{build_code_current}
+      New build code: #{build_code_next}
 
     MESSAGE
 
     # Check branch
-    unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: current_release_version)
-      UI.user_error!("#{message}Release branch for version #{current_release_version} doesn't exist. Abort.")
+    unless !options[:base_version].nil? || Fastlane::Helper::GitHelper.checkout_and_pull(release: release_version_current)
+      UI.user_error!("#{message}Release branch for version #{release_version_current} doesn't exist. Abort.")
     end
 
     # Check user override
@@ -354,16 +354,16 @@ platform :ios do
     # Bump the build code
     UI.message('Bumping build code...')
     ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
-    VERSION_FILE.write(version_long: next_build_code)
+    VERSION_FILE.write(version_long: build_code_next)
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
-    UI.success("Done! New Build Code: #{current_build_code}")
+    UI.success("Done! New Build Code: #{build_code_current}")
 
     if prompt_for_confirmation(
       message: 'Ready to push changes to remote and trigger the beta build?',
       bypass: ENV.fetch('RELEASE_TOOLKIT_SKIP_PUSH_CONFIRM', nil)
     )
       push_to_git_remote(tags: false)
-      trigger_beta_build(branch_to_build: "release/#{current_release_version}")
+      trigger_beta_build(branch_to_build: "release/#{release_version_current}")
     else
       UI.message('Aborting beta deployment. See you later 👋')
     end
@@ -384,7 +384,7 @@ platform :ios do
   desc 'Creates a new hotfix branch for the given version:x.y.z. The branch will be cut from the tag x.y of the previous release'
   lane :new_hotfix_release do |options|
     new_version = options[:version] || UI.input('Version number for the new hotfix?')
-    hotfix_build_code = hotfix_build_code(release_version: new_version)
+    build_code_hotfix = build_code_hotfix(release_version: new_version)
 
     # Parse the provided version into an AppVersion object
     parsed_version = VERSION_FORMATTER.parse(new_version)
@@ -393,11 +393,11 @@ platform :ios do
     # Check versions
     message = <<-MESSAGE
 
-      Current release version: #{current_release_version}
+      Current release version: #{release_version_current}
       New hotfix version: #{new_version}
 
-      Current build code: #{current_build_code}
-      New build code: #{hotfix_build_code}
+      Current build code: #{build_code_current}
+      New build code: #{build_code_hotfix}
 
       Branching from tag: #{previous_version}
 
@@ -421,9 +421,9 @@ platform :ios do
     UI.message('Bumping hotfix version and build code...')
     VERSION_FILE.write(
       version_short: new_version,
-      version_long: hotfix_build_code
+      version_long: build_code_hotfix
     )
-    UI.success("Done! New Release Version: #{current_release_version}. New Build Code: #{current_build_code}")
+    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
   end
@@ -446,7 +446,7 @@ platform :ios do
 
     UI.important("Triggering hotfix build for version: #{release_version_current}")
     UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
-    trigger_release_build(branch_to_build: "release/#{current_release_version}")
+    trigger_release_build(branch_to_build: "release/#{release_version_current}")
   end
 
   #####################################################################################
@@ -471,7 +471,7 @@ platform :ios do
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
-    UI.important("Finalizing release: #{current_release_version}")
+    UI.important("Finalizing release: #{release_version_current}")
     UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
 
     UI.message('Checking app strings translation status...')
@@ -491,12 +491,12 @@ platform :ios do
 
     # Bump the build code
     UI.message('Bumping build code...')
-    VERSION_FILE.write(version_long: next_build_code)
+    VERSION_FILE.write(version_long: build_code_next)
     Fastlane::Helper::Ios::GitHelper.commit_version_bump
-    UI.success("Done! New Build Code: #{current_build_code}")
+    UI.success("Done! New Build Code: #{build_code_current}")
 
     # Wrap up
-    version = current_release_version
+    version = release_version_current
     removebranchprotection(
       repository: GITHUB_REPO,
       branch: "release/#{version}"
@@ -586,7 +586,7 @@ platform :ios do
 
     ensure_sentry_installed
 
-    UI.important("Building version #{current_release_version} (#{current_build_code}) and uploading to TestFlight")
+    UI.important("Building version #{release_version_current} (#{build_code_current}) and uploading to TestFlight")
     UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
 
     appstore_code_signing
@@ -610,7 +610,7 @@ platform :ios do
     archive_zip_path = File.join(File.dirname(Dir.pwd), 'WooCommerce.xarchive.zip')
     zip(path: lane_context[SharedValues::XCODEBUILD_ARCHIVE], output_path: archive_zip_path)
 
-    version = options[:beta_release] ? current_build_code : current_release_version
+    version = options[:beta_release] ? build_code_current : release_version_current
     create_release(
       repository: GITHUB_REPO,
       version:,
@@ -744,7 +744,7 @@ platform :ios do
 
     upload_to_app_store(
       app_identifier: APP_STORE_VERSION_BUNDLE_IDENTIFIER,
-      app_version: current_release_version,
+      app_version: release_version_current,
       team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
@@ -928,7 +928,7 @@ platform :ios do
     # FIXME: Replace this with a call to the future replacement of `gp_downloadmetadata` once it's implemented in the release-toolkit (see paaHJt-31O-p2).
     locales_map = GLOTPRESS_TO_ASC_METADATA_LOCALE_CODES
     target_files = {
-      "v#{current_release_version}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
+      "v#{release_version_current}-whats-new": { desc: 'release_notes.txt', max_size: 4000 },
       app_store_name: { desc: 'name.txt', max_size: 30 },
       app_store_subtitle: { desc: 'subtitle.txt', max_size: 30 },
       app_store_desc: { desc: 'description.txt', max_size: 4000 },
@@ -986,7 +986,7 @@ platform :ios do
       'app_store_keywords' => { desc: 'keywords.txt' },
       'app_store_subtitle' => { desc: 'subtitle.txt' },
       'app_store_promo_text' => { desc: 'promotional_text.txt' },
-      "v#{current_release_version}-whats-new" => { desc: 'whats_new.txt' },
+      "v#{release_version_current}-whats-new" => { desc: 'whats_new.txt' },
 
       # Screenshots
       'app_store_screenshot-1' => { desc: 'app_store_screenshot_1.txt' },
@@ -1293,7 +1293,7 @@ end
 
 # Returns the release version of the app in the format `1.2` or `1.2.3` if it is a hotfix
 #
-def current_release_version
+def release_version_current
   # Read the current release version from the .xcconfig file and parse it into an AppVersion object
   current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
   # Return the formatted release version
@@ -1302,7 +1302,7 @@ end
 
 #  Returns the next release version of the app in the format `1.2` or `1.2.3` if it is a hotfix
 #
-def next_release_version
+def release_version_next
   # Read the current release version from the .xcconfig file and parse it into an AppVersion object
   current_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
   # Calculate the next release version
@@ -1313,7 +1313,7 @@ end
 
 # Returns the current build code of the app
 #
-def current_build_code
+def build_code_current
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
@@ -1324,20 +1324,20 @@ end
 
 # Returns the build code of the app for the code freeze. It is the release version name plus sets the build number to 0
 #
-def code_freeze_build_code
+def build_code_code_freeze
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
-  current_release_version = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
+  release_version_current = VERSION_FORMATTER.parse(VERSION_FILE.read_release_version)
   # Calculate the next release version, which will be used as the basis of the new build code
-  code_freeze_build_code = VERSION_CALCULATOR.next_release_version(version: current_release_version)
+  build_code_code_freeze = VERSION_CALCULATOR.next_release_version(version: release_version_current)
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version: code_freeze_build_code)
+  BUILD_CODE_FORMATTER.build_code(version: build_code_code_freeze)
 end
 
 # Returns the build code of the app for the code freeze. It is the hotfix version name plus sets the build number to 0
 #
-def hotfix_build_code(release_version:)
+def build_code_hotfix(release_version:)
   version = VERSION_FORMATTER.parse(release_version)
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version:)
@@ -1345,15 +1345,15 @@ end
 
 # Returns the next build code of the app
 #
-def next_build_code
+def build_code_next
   # Read the current build code from the .xcconfig file and parse it into an AppVersion object
   # The AppVersion is used because WCiOS uses the four part (1.2.3.4) build code format, so the version
   # calculator can be used to calculate the next four-part version
-  current_build_code = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
+  build_code_current = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
   # Calculate the next build code
-  next_build_code = VERSION_CALCULATOR.next_build_number(version: current_build_code)
+  build_code_next = VERSION_CALCULATOR.next_build_number(version: build_code_current)
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version: next_build_code)
+  BUILD_CODE_FORMATTER.build_code(version: build_code_next)
 end
 
 def buildkite_ci?

@@ -172,7 +172,10 @@ private extension StoreOnboardingCoordinator {
 
     func showWooPaySetupCelebrationView() {
         wooPaySetupCelebrationViewBottomSheetPresenter = buildBottomSheetPresenter()
-        let controller = WooPaymentSetupCelebrationHostingController(onTappingDone: { [weak self] in
+        let controller = CelebrationHostingController(
+            title: Localization.Celebration.title,
+            subtitle: Localization.Celebration.subtitle,
+            onTappingDone: { [weak self] in
             self?.wooPaySetupCelebrationViewBottomSheetPresenter?.dismiss()
             self?.wooPaySetupCelebrationViewBottomSheetPresenter = nil
         })
@@ -214,6 +217,14 @@ private extension StoreOnboardingCoordinator {
                 "To change again, visit Store Settings.",
                 comment: "Subtitle on the notice presented when the store name is updated"
             )
+        }
+
+        enum Celebration {
+            static let title = NSLocalizedString("You did it!",
+                                                      comment: "Title in Woo Payments setup celebration screen.")
+
+            static let subtitle = NSLocalizedString("Congratulations! You've successfully navigated through the setup and your payment system is ready to roll.",
+                                                        comment: "Subtitle in Woo Payments setup  celebration screen.")
         }
     }
 }

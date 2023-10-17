@@ -1,10 +1,16 @@
 import SwiftUI
 
-/// Hosting controller for `WooPaymentSetupCelebrationView`.
+/// Hosting controller for `CelebrationView`.
 ///
-final class WooPaymentSetupCelebrationHostingController: UIHostingController<WooPaymentSetupCelebrationView> {
-    init(onTappingDone: @escaping () -> Void) {
-        super.init(rootView: WooPaymentSetupCelebrationView(onTappingDone: onTappingDone))
+final class CelebrationHostingController: UIHostingController<CelebrationView> {
+    init(title: String,
+         subtitle: String,
+         image: UIImage = .checkSuccessImage,
+         onTappingDone: @escaping () -> Void) {
+        super.init(rootView: CelebrationView(title: title,
+                                             subtitle: subtitle,
+                                             image: image,
+                                             onTappingDone: onTappingDone))
     }
 
     @available(*, unavailable)
@@ -13,25 +19,34 @@ final class WooPaymentSetupCelebrationHostingController: UIHostingController<Woo
     }
 }
 
-/// Celebration view presented after Woo Payment setup
-struct WooPaymentSetupCelebrationView: View {
+/// Celebration view presented after a successful task.
+struct CelebrationView: View {
+    private let title: String
+    private let subtitle: String
+    private let image: UIImage
     private let onTappingDone: () -> Void
 
-    init(onTappingDone: @escaping () -> Void) {
+    init(title: String,
+         subtitle: String,
+         image: UIImage = .checkSuccessImage,
+         onTappingDone: @escaping () -> Void) {
+        self.title = title
+        self.subtitle = subtitle
+        self.image = image
         self.onTappingDone = onTappingDone
     }
 
     var body: some View {
         VStack(spacing: Layout.verticalSpacing) {
-            Image(uiImage: .checkSuccessImage)
+            Image(uiImage: image)
                 .padding(.vertical, Layout.imageVerticalPadding)
 
             Group {
-                Text(Localization.title)
+                Text(title)
                     .headlineStyle()
                     .multilineTextAlignment(.center)
 
-                Text(Localization.subtitle)
+                Text(subtitle)
                     .foregroundColor(Color(.text))
                     .subheadlineStyle()
                     .multilineTextAlignment(.center)
@@ -48,7 +63,7 @@ struct WooPaymentSetupCelebrationView: View {
     }
 }
 
-private extension WooPaymentSetupCelebrationView {
+private extension CelebrationView {
     enum Layout {
         static let verticalSpacing: CGFloat = 16
         static let imageVerticalPadding: CGFloat = 18
@@ -58,22 +73,20 @@ private extension WooPaymentSetupCelebrationView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("You did it!",
-                                                  comment: "Title in Woo Payments setup celebration screen.")
-
-        static let subtitle = NSLocalizedString("Congratulations! You've successfully navigated through the setup and your payment system is ready to roll.",
-                                                    comment: "Subtitle in Woo Payments setup  celebration screen.")
-
         static let done = NSLocalizedString("Done",
                                              comment: "Dismiss button title in Woo Payments setup celebration screen.")
     }
 }
 
-struct WooPaymentSetupCelebrationView_Previews: PreviewProvider {
+struct CelebrationView_Previews: PreviewProvider {
     static var previews: some View {
-        WooPaymentSetupCelebrationView(onTappingDone: {})
+        CelebrationView(title: "Success!",
+                        subtitle: "You did it!",
+                        onTappingDone: {})
 
-        WooPaymentSetupCelebrationView(onTappingDone: {})
+        CelebrationView(title: "Success!",
+                        subtitle: "You did it!",
+                        onTappingDone: {})
             .preferredColorScheme(.dark)
     }
 }

@@ -179,10 +179,12 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :code_freeze do |options|
+    # Verify that there's nothing in progress in the working copy
+    ensure_git_status_clean
 
+    # Check out the up-to-date default branch, the designated starting point for the code freeze
     Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
-    ensure_git_status_clean
 
     confirmation_message = <<-MESSAGE
 
@@ -255,10 +257,12 @@ platform :ios do
   #####################################################################################
   desc 'Creates a new release branch from the current trunk'
   lane :complete_code_freeze do |options|
+    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
 
     UI.important("Completing code freeze for: #{current_release_version}")
+    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
+    ensure_git_branch(branch: '^release/')
 
     unless options[:skip_confirm]
       UI.user_error!('Aborted by user request') unless UI.confirm('Do you want to continue?')
@@ -323,11 +327,11 @@ platform :ios do
   #####################################################################################
   desc 'Updates a release branch for a new beta release'
   lane :new_beta_release do |options|
-    # Checkout default branch and update
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-
-    # Check local repo status
+    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
+
+    # Check out the up-to-date default branch, the designated starting point for the code freeze
+    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
 
     # Check versions
     message = <<-MESSAGE
@@ -445,7 +449,10 @@ platform :ios do
   #####################################################################################
   desc 'Performs the final checks and triggers a release build for the hotfix in the current branch'
   lane :finalize_hotfix_release do
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
+    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
+    ensure_git_branch(branch: '^release/')
+
+    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
     UI.message = "Triggering hotfix build for version: #{current_release_version}"
@@ -468,7 +475,10 @@ platform :ios do
   desc 'Trigger the final release build on CI'
   lane :finalize_release do |options|
     UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if ios_current_branch_is_hotfix
-    ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
+    # Verify that the current branch is a release branch. Notice that `ensure_git_branch` expects a RegEx parameter
+    ensure_git_branch(branch: '^release/')
+
+    # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean
 
     UI.important("Finalizing release: #{current_release_version}")
@@ -580,7 +590,9 @@ platform :ios do
   desc 'Builds and uploads for distribution'
   lane :build_and_upload_to_app_store_connect do |options|
     unless options[:skip_prechecks]
+      # Verify that there's nothing in progress in the working copy
       ensure_git_status_clean unless is_ci
+
       ios_build_preflight(derived_data_path: DERIVED_DATA_DIR)
       xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
     end

@@ -418,9 +418,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
-    // MARK: `isRedacted`
+    // MARK: `shouldRedactView`
 
-    func test_isRedacted_is_true_while_reloading() async {
+    func test_shouldRedactView_is_true_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
@@ -436,7 +436,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
                 // Then
-                XCTAssertTrue(sut.isRedacted)
+                XCTAssertTrue(sut.shouldRedactView)
                 onCompletion(.success(false))
             }
         }
@@ -445,7 +445,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
     }
 
-    func test_isRedacted_is_false_after_reload_finishes_when_blaze_campaign_available() async {
+    func test_shouldRedactView_is_false_after_reload_finishes_when_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
@@ -468,10 +468,10 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertFalse(sut.isRedacted)
+        XCTAssertFalse(sut.shouldRedactView)
     }
 
-    func test_isRedacted_is_false_after_reload_finishes_when_product_available() async {
+    func test_shouldRedactView_is_false_after_reload_finishes_when_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
@@ -503,10 +503,10 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertFalse(sut.isRedacted)
+        XCTAssertFalse(sut.shouldRedactView)
     }
 
-    func test_isRedacted_is_true_after_reload_finishes_with_no_data() async {
+    func test_shouldRedactView_is_true_after_reload_finishes_with_no_data() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
@@ -534,7 +534,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         await sut.reload()
 
         // Then
-        XCTAssertTrue(sut.isRedacted)
+        XCTAssertTrue(sut.shouldRedactView)
     }
 
     // MARK: `shouldShowShowAllCampaignsButton`

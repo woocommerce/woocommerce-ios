@@ -240,6 +240,49 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
+    func test_it_shows_latest_published_in_dashboard() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let product1: Product = .fake().copy(siteID: sampleSiteID,
+                                             statusKey: (ProductStatus.published.rawValue))
+        storageManager.insertSampleProduct(readOnlyProduct: product1)
+
+        let product2: Product = .fake().copy(siteID: sampleSiteID,
+                                             statusKey: (ProductStatus.published.rawValue))
+        storageManager.insertSampleProduct(readOnlyProduct: product2)
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .synchronizeCampaigns(_, _, let onCompletion):
+                onCompletion(.success(false))
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        await sut.reload()
+
+        // Then
+        if case .showProduct(let product) = sut.state {
+            XCTAssertEqual(product, product2)
+        } else {
+            XCTFail("Wrong state")
+        }
+    }
+
     // MARK: `state`
 
     func test_state_is_loading_while_reloading() async {

@@ -44,7 +44,6 @@ struct BlazeCampaignIntroView: View {
                     .padding(Layout.buttonPadding)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {

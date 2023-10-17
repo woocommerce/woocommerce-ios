@@ -17,6 +17,7 @@ import struct Experiments.CachedABTestVariationProvider
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    
 
     /// Store Picker Coordinator
     ///
@@ -107,9 +108,9 @@ class AuthenticationManager: Authentication {
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) throws -> Bool {
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
-            throw fatalError("Shouldn't be called")
+            fatalError("Shouldn't be called")
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
         }

@@ -9,24 +9,24 @@ struct BlazeCampaignIntroView: View {
     var body: some View {
         NavigationView {
             ScrollView {
-                VStack(alignment: .leading) {
+                VStack(alignment: .leading, spacing: Layout.elementVerticalSpacing) {
                     Image(uiImage: .blaze)
                         .frame(width: Layout.logoSize * scale, height: Layout.logoSize * scale)
                         .background(
                             Circle()
                                 .fill(Color(.withColorStudio(.orange, shade: .shade40)).opacity(0.08))
                         )
-                        .padding(.bottom, Layout.elementVerticalSpacing)
 
 
                     Text(Localization.title)
                         .largeTitleStyle()
-                        .padding(.bottom, Layout.elementVerticalSpacing)
 
-                    BulletPointView(text: Localization.descriptionPoint1)
-                    BulletPointView(text: Localization.descriptionPoint2)
-                    BulletPointView(text: Localization.descriptionPoint3)
-                    BulletPointView(text: Localization.descriptionPoint4)
+                    VStack(alignment: .leading, spacing: Layout.bulletPointVerticalSpacing) {
+                        BulletPointView(text: Localization.descriptionPoint1)
+                        BulletPointView(text: Localization.descriptionPoint2)
+                        BulletPointView(text: Localization.descriptionPoint3)
+                        BulletPointView(text: Localization.descriptionPoint4)
+                    }
                 }
                 .padding(Layout.contentPadding)
             }
@@ -106,8 +106,9 @@ private extension BlazeCampaignIntroView {
 
 private enum Layout {
     static let contentPadding: EdgeInsets = .init(top: 76, leading: 16, bottom: 16, trailing: 16)
-    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 2, trailing: 16)
+    static let bulletPointPadding: EdgeInsets = .init(top: 0, leading: 8, bottom: 0, trailing: 16)
     static let elementVerticalSpacing: CGFloat = 24
+    static let bulletPointVerticalSpacing: CGFloat = 4
     static let dividerHeight: CGFloat = 1
     static let logoSize: CGFloat = 100
     static let buttonPadding: CGFloat = 16

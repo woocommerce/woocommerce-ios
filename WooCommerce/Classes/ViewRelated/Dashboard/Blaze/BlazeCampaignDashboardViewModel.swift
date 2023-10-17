@@ -85,7 +85,7 @@ private extension BlazeCampaignDashboardViewModel {
         // TODO: Replace with remote call
         try await Task.sleep(nanoseconds: 150_000_000)
         if Bool.random() {
-            return Product.swiftUIPreviewSample()
+            return ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID)
         } else {
             return nil
         }

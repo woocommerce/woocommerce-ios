@@ -8,6 +8,8 @@ import Yosemite
 final class AuthenticationManagerTests: XCTestCase {
     private var navigationController: UINavigationController!
     private let window = UIWindow(frame: UIScreen.main.bounds)
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
 
     override func setUp() {
         super.setUp()
@@ -16,12 +18,16 @@ final class AuthenticationManagerTests: XCTestCase {
         navigationController = .init()
         window.rootViewController = navigationController
         WordPressAuthenticator.initializeAuthenticator()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         navigationController = nil
         window.resignKey()
         window.rootViewController = nil
+        analyticsProvider = nil
+        analytics = nil
 
         super.tearDown()
     }

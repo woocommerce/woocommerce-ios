@@ -60,6 +60,7 @@ final class StoreCreationCoordinator: Coordinator {
     }
 
     func start() {
+        analytics.track(event: .StoreCreation.siteCreationFlowStarted(source: source.analyticsValue))
         Task { @MainActor in
             let storeCreationNavigationController = WooNavigationController()
             startStoreCreation(from: storeCreationNavigationController)

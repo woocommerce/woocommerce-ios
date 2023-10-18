@@ -95,10 +95,6 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: TopBannerView?
 
-    /// Hosting controller for the banner to highlight the Blaze feature.
-    /// 
-    private var blazeBannerHostingController: BlazeBannerHostingController?
-
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {

@@ -92,25 +92,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 // MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func loadLatestBlazeCampaign(fetchFromRemote: Bool) async throws -> BlazeCampaign? {
-        if fetchFromRemote {
-            try await synchronizeBlazeCampaigns()
-        }
-        try blazeCampaignResultsController.performFetch()
-        return blazeCampaignResultsController.fetchedObjects.first
-    }
-
-    @MainActor
-    func synchronizeBlazeCampaigns() async throws {
-        try await withCheckedThrowingContinuation({ continuation in
+    func synchronizeBlazeCampaigns() async {
+        await withCheckedContinuation({ continuation in
             stores.dispatch(BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: Store.Default.firstPageNumber) { result in
-                switch result {
-                case .success:
-                    return continuation.resume(returning: ())
-                case .failure(let error):
+                if case .failure(let error) = result {
                     DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
-                    return continuation.resume(throwing: error)
                 }
+                continuation.resume(returning: ())
             })
         })
     }
@@ -120,7 +108,7 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    private func synchronizeFirstPublishedProduct() async {
+    func synchronizeFirstPublishedProduct() async {
         await withCheckedContinuation { continuation in
             stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
                                                               pageNumber: Store.Default.firstPageNumber,

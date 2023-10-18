@@ -52,11 +52,15 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     /// Product ResultsController.
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ ", siteID, ProductStatus.published.rawValue)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
                                                  sortOrder: .dateDescending)
     }()
+
+    private var latestPublishedProduct: Product? {
+        productResultsController.fetchedObjects.first
+    }
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
@@ -89,7 +93,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         // Load published product as Blaze campaigns not available
         await synchronizeFirstPublishedProduct()
-        guard productResultsController.fetchedObjects.isEmpty else {
+        guard latestPublishedProduct == nil else {
             return
         }
 
@@ -159,7 +163,7 @@ private extension BlazeCampaignDashboardViewModel {
     func updateResults() {
         if let campaign = blazeCampaignResultsController.fetchedObjects.first {
             update(state: .showCampaign(campaign: campaign))
-        } else if let product = productResultsController.fetchedObjects.first(where: { $0.statusKey == ProductStatus.published.rawValue }) {
+        } else if let product = latestPublishedProduct {
             update(state: .showProduct(product: product))
         } else {
             update(state: .empty)

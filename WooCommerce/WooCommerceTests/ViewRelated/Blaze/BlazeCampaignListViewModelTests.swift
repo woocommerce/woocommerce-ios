@@ -307,6 +307,59 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.shouldDisplayPostCampaignCreationTip)
     }
+
+    // MARK: - shouldShowIntroView
+
+    func test_shouldShowIntroView_is_false_when_there_are_existing_campaigns() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            self.insertCampaigns([campaign])
+            onCompletion(.success(true))
+        }
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_shouldShowIntroView_is_true_only_when_loading_campaigns_for_the_first_time_and_there_are_no_existing_campaigns() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(true))
+        }
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
+
+        // When
+        viewModel.shouldShowIntroView = false
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
 }
 
 private extension BlazeCampaignListViewModelTests {

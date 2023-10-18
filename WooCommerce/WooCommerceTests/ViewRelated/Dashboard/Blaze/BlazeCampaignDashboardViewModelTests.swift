@@ -1,6 +1,7 @@
 import Foundation
 import XCTest
 import Yosemite
+import protocol Storage.StorageType
 
 @testable import WooCommerce
 
@@ -8,8 +9,16 @@ import Yosemite
 ///
 final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
+
     private var stores: MockStoresManager!
+
+    /// Mock Storage: InMemory
     private var storageManager: MockStorageManager!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
 
     override func setUp() {
         super.setUp()
@@ -115,12 +124,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_it_shows_in_dashboard_if_blaze_campaign_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID,
-                                                                         statusKey: (ProductStatus.published.rawValue)))
-
-        let blazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        blazeCampaign.update(with: BlazeCampaign.fake().copy(siteID: sampleSiteID))
-
+        let blazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -129,6 +133,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
+                self.insertCampaigns([blazeCampaign])
                 onCompletion(.success(false))
             }
         }
@@ -240,7 +245,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowInDashboard)
     }
 
-    func test_it_shows_latest_published_in_dashboard() async {
+    func test_it_shows_latest_published_product_in_dashboard() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let product1: Product = .fake().copy(siteID: sampleSiteID,
@@ -288,10 +293,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_state_is_loading_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -310,6 +311,21 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                // Then
+                if case .loading = sut.state {
+                    // Loading state as expected
+                } else {
+                    XCTFail("Wrong state")
+                }
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
         // When
         await sut.reload()
     }
@@ -318,9 +334,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -329,6 +342,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
+                self.insertCampaigns([fakeBlazeCampaign])
                 onCompletion(.success(false))
             }
         }
@@ -344,7 +358,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
-    func test_state_is_showProduct_if_published_product_available() async {
+    func test_state_is_showProduct_if_published_product_available_and_blaze_campaign_not_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
@@ -423,10 +437,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldRedactView_is_true_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -441,6 +451,17 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                // Then
+                XCTAssertTrue(sut.shouldRedactView)
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
         // When
         await sut.reload()
     }
@@ -449,9 +470,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -460,6 +478,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
+                self.insertCampaigns([fakeBlazeCampaign])
                 onCompletion(.success(false))
             }
         }
@@ -542,10 +561,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldShowShowAllCampaignsButton_is_false_while_reloading() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -560,6 +575,17 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             }
         }
 
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                // Then
+                XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
         // When
         await sut.reload()
     }
@@ -568,9 +594,6 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
-        let storageBlazeCampaign = storageManager.viewStorage.insertNewObject(ofType: StorageBlazeCampaign.self)
-        storageBlazeCampaign.update(with: fakeBlazeCampaign)
-
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -579,6 +602,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
+                self.insertCampaigns([fakeBlazeCampaign])
                 onCompletion(.success(false))
             }
         }
@@ -654,5 +678,15 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
+    }
+}
+
+private extension BlazeCampaignDashboardViewModelTests {
+    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaign]) {
+        readOnlyCampaigns.forEach { campaign in
+            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaign.self)
+            newCampaign.update(with: campaign)
+        }
+        storage.saveIfNeeded()
     }
 }

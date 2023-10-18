@@ -397,7 +397,46 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
     }
 
-    func test_state_is_empty_if_no_data_available() async {
+    func test_state_is_empty_if_draft_product_available_and_blaze_campaign_not_available() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.draft.rawValue))
+        storageManager.insertSampleProduct(readOnlyProduct: fakeProduct)
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .synchronizeCampaigns(_, _, let onCompletion):
+                onCompletion(.success(false))
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        await sut.reload()
+
+        // Then
+        if case .empty = sut.state {
+            // empty state as expected
+        } else {
+            XCTFail("Wrong state")
+        }
+    }
+
+    func test_state_is_empty_if_no_blaze_campaign_no_product_available() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,

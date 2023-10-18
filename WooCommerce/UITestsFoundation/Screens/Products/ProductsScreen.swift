@@ -2,7 +2,7 @@ import ScreenObject
 import XCTest
 
 public final class ProductsScreen: ScreenObject {
-    
+
     private let productsNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
         $0.navigationBars["Products"]
     }
@@ -49,7 +49,7 @@ public final class ProductsScreen: ScreenObject {
 
         try super.init(
             expectedElementGetters: [
-                productsNavigationBarGetter, 
+                productsNavigationBarGetter,
                 productAddButtonGetter,
                 productSearchButtonGetter
             ],

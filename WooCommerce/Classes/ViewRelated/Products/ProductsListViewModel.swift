@@ -11,16 +11,13 @@ class ProductListViewModel {
 
     let siteID: Int64
     private let stores: StoresManager
-    private let userDefaults: UserDefaults
 
     private(set) var selectedProducts: Set<Product> = .init()
 
     init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
-         userDefaults: UserDefaults = .standard) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.userDefaults = userDefaults
     }
 
     var selectedProductsCount: Int {
@@ -153,37 +150,5 @@ class ProductListViewModel {
             }
         }
         stores.dispatch(batchAction)
-    }
-}
-
-extension ProductListViewModel {
-    @MainActor
-    private func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
-                switch result {
-                case .success(let hasProducts):
-                    continuation.resume(returning: hasProducts)
-                case .failure(let error):
-                    DDLogError("⛔️ Product list — Error fetching products to show the Blaze banner: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
-    }
-
-    @MainActor
-    private func checkIfStoreHasOrders(siteID: Int64) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: siteID, onCompletion: { result in
-                switch result {
-                case .success(let hasOrders):
-                    continuation.resume(returning: hasOrders)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching order to show the Blaze banner: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
     }
 }

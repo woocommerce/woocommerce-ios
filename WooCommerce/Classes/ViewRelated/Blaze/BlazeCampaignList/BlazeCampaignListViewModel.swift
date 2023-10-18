@@ -13,7 +13,13 @@ extension BlazeCampaign: Identifiable {
 final class BlazeCampaignListViewModel: ObservableObject {
     @Published private(set) var campaigns: [BlazeCampaign] = []
     @Published var shouldDisplayPostCampaignCreationTip = false
-    @Published var shouldShowIntroView = false
+    @Published var shouldShowIntroView = false {
+        didSet {
+            if shouldShowIntroView {
+                didShowIntroView = true
+            }
+        }
+    }
 
     /// Tracks whether the intro view has been presented.
     private var didShowIntroView = false
@@ -133,7 +139,9 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
                 DDLogError("⛔️ Error synchronizing Blaze campaigns: \(error)")
                 onCompletion?(.failure(error))
             }
+
             self?.updateResults()
+            self?.displayIntroViewIfNeeded()
         }
         stores.dispatch(action)
     }
@@ -161,9 +169,11 @@ extension BlazeCampaignListViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = campaigns.isNotEmpty ? .results : .empty
+    }
+
+    func displayIntroViewIfNeeded() {
         if !didShowIntroView {
-            shouldShowIntroView = campaigns.isEmpty
-            didShowIntroView = true
+            shouldShowIntroView = syncState == .empty
         }
     }
 }

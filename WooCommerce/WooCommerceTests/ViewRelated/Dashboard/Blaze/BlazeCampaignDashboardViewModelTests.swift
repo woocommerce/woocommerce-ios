@@ -37,8 +37,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     func test_shouldShowInDashboard_is_true_by_default() async {
         // Given
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: sampleSiteID,
-                                                                         statusKey: (ProductStatus.published.rawValue)))
+        insertProduct(.fake().copy(siteID: sampleSiteID,
+                                   statusKey: (ProductStatus.published.rawValue)))
 
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
@@ -61,9 +61,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: self.sampleSiteID,
-                                                                                      statusKey: (ProductStatus.published.rawValue)))
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
+                                                statusKey: (ProductStatus.published.rawValue)))
                 onCompletion(.success(true))
             default:
                 break
@@ -94,9 +94,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: self.sampleSiteID,
-                                                                                 statusKey: (ProductStatus.published.rawValue)))
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
+                                                statusKey: (ProductStatus.published.rawValue)))
                 onCompletion(.success(true))
             default:
                 break
@@ -154,7 +154,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -194,9 +194,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: .fake().copy(siteID: self.sampleSiteID,
-                                                                                 statusKey: (ProductStatus.published.rawValue)))
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
+                                                statusKey: (ProductStatus.published.rawValue)))
                 onCompletion(.success(true))
             default:
                 break
@@ -221,7 +221,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -247,7 +247,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let product1: Product = .fake().copy(siteID: sampleSiteID,
                                              statusKey: (ProductStatus.published.rawValue))
-        storageManager.insertSampleProduct(readOnlyProduct: product1)
+        insertProduct(product1)
 
         let product2: Product = .fake().copy(siteID: sampleSiteID,
                                              statusKey: (ProductStatus.published.rawValue))
@@ -260,14 +260,14 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: product2)
+                self.insertProduct(product2)
                 onCompletion(.success(false))
             }
         }
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -310,7 +310,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 if case .loading = sut.state {
                     // Loading state as expected
@@ -375,8 +375,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: fakeProduct)
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(fakeProduct)
                 onCompletion(.success(true))
             default:
                 break
@@ -414,8 +414,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: fakeProduct)
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(fakeProduct)
                 onCompletion(.success(true))
             default:
                 break
@@ -450,7 +450,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -489,7 +489,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 XCTAssertTrue(sut.shouldRedactView)
                 onCompletion(.success(true))
@@ -546,8 +546,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: fakeProduct)
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(fakeProduct)
                 onCompletion(.success(true))
             default:
                 break
@@ -578,7 +578,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -613,7 +613,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 // Then
                 XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
                 onCompletion(.success(true))
@@ -670,8 +670,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                self.storageManager.insertSampleProduct(readOnlyProduct: fakeProduct)
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                self.insertProduct(fakeProduct)
                 onCompletion(.success(true))
             default:
                 break
@@ -702,7 +702,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
@@ -837,6 +837,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 }
 
 private extension BlazeCampaignDashboardViewModelTests {
+    func insertProduct(_ readOnlyProduct: Product) {
+        let newProduct = storage.insertNewObject(ofType: StorageProduct.self)
+        newProduct.update(with: readOnlyProduct)
+        storage.saveIfNeeded()
+    }
+
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaign]) {
         readOnlyCampaigns.forEach { campaign in
             let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaign.self)

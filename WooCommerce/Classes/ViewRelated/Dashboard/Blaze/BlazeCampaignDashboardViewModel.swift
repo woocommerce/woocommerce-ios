@@ -72,16 +72,16 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     @MainActor
-    func reload() async {
+    func reload(fetchFromRemote: Bool = true) async {
         update(state: .loading)
         guard await blazeEligibilityChecker.isSiteEligible() else {
             update(state: .empty)
             return
         }
 
-        if let campaign = try? await loadLatestBlazeCampaign() {
+        if let campaign = try? await loadLatestBlazeCampaign(fetchFromRemote: fetchFromRemote) {
             update(state: .showCampaign(campaign: campaign))
-        } else if let product = try? await loadFirstPublishedProduct() {
+        } else if let product = try? await loadFirstPublishedProduct(fetchFromRemote: fetchFromRemote) {
             update(state: .showProduct(product: product))
         } else {
             update(state: .empty)
@@ -92,8 +92,10 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 // MARK: - Blaze campaigns
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func loadLatestBlazeCampaign() async throws -> BlazeCampaign? {
-        try await synchronizeBlazeCampaigns()
+    func loadLatestBlazeCampaign(fetchFromRemote: Bool) async throws -> BlazeCampaign? {
+        if fetchFromRemote {
+            try await synchronizeBlazeCampaigns()
+        }
         try blazeCampaignResultsController.performFetch()
         return blazeCampaignResultsController.fetchedObjects.first
     }
@@ -118,9 +120,11 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func loadFirstPublishedProduct() async throws -> Product? {
-        guard try await checkIfStoreHasPublishedProducts() else {
-            return nil
+    func loadFirstPublishedProduct(fetchFromRemote: Bool) async throws -> Product? {
+        if fetchFromRemote {
+            guard try await checkIfStoreHasPublishedProducts() else {
+                return nil
+            }
         }
         try productResultsController.performFetch()
         return productResultsController.fetchedObjects.first(where: { $0.statusKey == ProductStatus.published.rawValue })

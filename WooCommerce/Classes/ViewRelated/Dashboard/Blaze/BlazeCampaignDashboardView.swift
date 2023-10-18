@@ -32,7 +32,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 
     private func reload() {
         Task { @MainActor in
-            await viewModel.reload()
+            await viewModel.reload(fetchFromRemote: false)
         }
     }
 }

@@ -6,6 +6,15 @@ struct BlazeCampaignIntroView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    private let onStartCampaign: () -> Void
+    private let onDismiss: () -> Void
+
+    init(onStartCampaign: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
+        self.onStartCampaign = onStartCampaign
+        self.onDismiss = onDismiss
+    }
+
     var body: some View {
         NavigationView {
             ScrollView {
@@ -38,7 +47,7 @@ struct BlazeCampaignIntroView: View {
                         .frame(height: Layout.dividerHeight)
                         .foregroundColor(Color(.separator))
                     Button(Localization.startBlazeCampaign) {
-                        // todo
+                        onStartCampaign()
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Layout.buttonPadding)
@@ -48,7 +57,7 @@ struct BlazeCampaignIntroView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.cancel) {
-                        // todo
+                        onDismiss()
                     }
                 }
             }
@@ -101,6 +110,6 @@ private enum Layout {
 
 struct BlazeCampaignIntroView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignIntroView()
+        BlazeCampaignIntroView(onStartCampaign: {}, onDismiss: {})
     }
 }

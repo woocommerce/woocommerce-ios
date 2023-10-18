@@ -801,6 +801,10 @@ extension DashboardViewController {
                 }
             }
             .store(in: &subscriptions)
+
+        Task { @MainActor [weak self] in
+            await self?.viewModel.reloadBlazeCampaignView()
+        }
     }
 
     func showBlazeCampaignView() {
@@ -1010,6 +1014,9 @@ private extension DashboardViewController {
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.viewModel.updateBlazeBannerVisibility()
+            }
+            Task { @MainActor [weak self] in
+                await self?.viewModel.reloadBlazeCampaignView()
             }
         }.store(in: &subscriptions)
     }

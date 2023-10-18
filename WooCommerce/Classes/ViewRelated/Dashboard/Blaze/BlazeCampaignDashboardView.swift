@@ -25,14 +25,14 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         reload()
     }
 
     private func reload() {
         Task { @MainActor in
-            await viewModel.reload(fetchFromRemote: false)
+            await viewModel.reload()
         }
     }
 }

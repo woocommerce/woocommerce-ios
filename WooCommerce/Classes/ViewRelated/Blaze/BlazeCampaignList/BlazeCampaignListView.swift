@@ -117,6 +117,14 @@ struct BlazeCampaignListView: View {
         .sheet(isPresented: $viewModel.shouldDisplayPostCampaignCreationTip) {
             celebrationBottomSheet()
         }
+        .sheet(isPresented: $viewModel.shouldShowIntroView) {
+            BlazeCampaignIntroView(onStartCampaign: {
+                viewModel.shouldShowIntroView = false
+                onCreateCampaign()
+            }, onDismiss: {
+                viewModel.shouldShowIntroView = false
+            })
+        }
     }
 }
 

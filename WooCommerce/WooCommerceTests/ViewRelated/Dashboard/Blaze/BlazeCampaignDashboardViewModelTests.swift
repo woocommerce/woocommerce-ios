@@ -60,7 +60,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue)))
 
         mockSynchronizeCampaigns()
@@ -80,7 +80,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue)))
 
         mockSynchronizeCampaigns()
@@ -103,10 +103,10 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
-                self.insertCampaigns([blazeCampaign])
+                self?.insertCampaigns([blazeCampaign])
                 onCompletion(.success(false))
             }
         }
@@ -146,7 +146,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: sampleSiteID,
                                                                      statusKey: (ProductStatus.published.rawValue)))
         mockSynchronizeCampaigns()
 
@@ -546,7 +546,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
 
         // When
-        self.insertCampaigns([fakeBlazeCampaign])
+        insertCampaigns([fakeBlazeCampaign])
 
         // Then
         if case .showCampaign(let campaign) = sut.state {
@@ -578,7 +578,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         }
 
         // When
-        self.insertProduct(fakeProduct)
+        insertProduct(fakeProduct)
 
         // Then
         if case .showProduct(let product) = sut.state {
@@ -605,11 +605,11 @@ private extension BlazeCampaignDashboardViewModelTests {
     }
 
     func mockSynchronizeProducts(insertProductToStorage product: Product? = nil) {
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+        stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
             case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 if let product {
-                    self.insertProduct(product)
+                    self?.insertProduct(product)
                 }
                 onCompletion(.success(true))
             default:
@@ -619,11 +619,11 @@ private extension BlazeCampaignDashboardViewModelTests {
     }
 
     func mockSynchronizeCampaigns(insertCampaignToStorage blazeCampaign: BlazeCampaign? = nil) {
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+        stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
                 if let blazeCampaign {
-                    self.insertCampaigns([blazeCampaign])
+                    self?.insertCampaigns([blazeCampaign])
                 }
                 onCompletion(.success(false))
             }

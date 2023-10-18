@@ -164,4 +164,39 @@ private extension BlazeCampaignDashboardViewModel {
         }
         onStateChange?()
     }
+
+    func updateResults() {
+        if let campaign = blazeCampaignResultsController.fetchedObjects.first {
+            update(state: .showCampaign(campaign: campaign))
+        } else if let product = productResultsController.fetchedObjects.first(where: { $0.statusKey == ProductStatus.published.rawValue }) {
+            update(state: .showProduct(product: product))
+        } else {
+            update(state: .empty)
+        }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        blazeCampaignResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        blazeCampaignResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try blazeCampaignResultsController.performFetch()
+            try productResultsController.performFetch()
+            updateResults()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
+    }
 }

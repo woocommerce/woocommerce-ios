@@ -2,7 +2,7 @@
 
 15.9
 -----
-
+- [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
 
 15.8
 -----

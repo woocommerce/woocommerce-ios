@@ -109,7 +109,6 @@ class AuthenticationManager: Authentication {
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
-            fatalError("Shouldn't be called")
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
         }

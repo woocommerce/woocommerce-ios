@@ -215,6 +215,7 @@ public enum WooAnalyticsStat: String {
     case siteCreated = "login_woocommerce_site_created"
     case siteCreationFailed = "site_creation_failed"
     case siteCreationDismissed = "site_creation_dismissed"
+    case siteCreationFlowStarted = "site_creation_flow_started"
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"

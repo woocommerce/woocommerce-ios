@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct DiscountLineDetailsView: View {
-
     @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
 
     init(viewModel: FeeOrDiscountLineDetailsViewModel) {
@@ -10,72 +9,65 @@ struct DiscountLineDetailsView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
-            Text(Localization.fixedPriceDiscountLabel)
-                .renderedIf(viewModel.feeOrDiscountType == .fixed)
-                .padding()
-            Text(Localization.percentagePriceDiscountLabel)
-                .renderedIf(viewModel.feeOrDiscountType == .percentage)
-                .padding()
-            HStack {
-                inputFixedField
-                    .renderedIf(viewModel.feeOrDiscountType == .fixed)
-                inputPercentageField
-                    .renderedIf(viewModel.feeOrDiscountType == .percentage)
-                HStack(spacing: 0) {
-                    Button(viewModel.currencySymbol) {
-                        viewModel.feeOrDiscountType = .fixed
-                    }
-                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .fixed)
-                    .fixedSize(horizontal: true, vertical: false)
-                    Button(viewModel.percentSymbol) {
-                        viewModel.feeOrDiscountType = .percentage
-                    }
-                    .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
-                    .fixedSize(horizontal: true, vertical: false)
-                }
-                .padding(.trailing)
+            switch viewModel.feeOrDiscountType {
+            case .fixed:
+                LineDetailView(label: {
+                    Text(Localization.fixedPriceDiscountLabel)
+                }, content: {
+                    InputField(placeholder: Localization.fixedPriceDiscountInputPlaceholder,
+                               text: $viewModel.amount)
+                    discountTypeButtonToggle
+                        .padding()
+                })
+            case .percentage:
+                LineDetailView(label: {
+                    Text(Localization.percentagePriceDiscountLabel)
+                }, content: {
+                    InputField(placeholder: Localization.percentagePriceDiscountInputPlaceholder,
+                               text: $viewModel.percentage)
+                    discountTypeButtonToggle
+                        .padding()
+                })
             }
         }
     }
+}
 
-    private var inputFixedField: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
-            HStack {
-                BindableTextfield(Localization.fixedPriceDiscountInputPlaceholder,
-                                  text: $viewModel.amount,
-                                  focus: .constant(true))
-                .keyboardType(.numbersAndPunctuation)
+private extension DiscountLineDetailsView {
+    private var discountTypeButtonToggle: some View {
+        HStack(spacing: 0) {
+            Button(viewModel.currencySymbol) {
+                viewModel.feeOrDiscountType = .fixed
             }
+            .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .fixed)
+            .fixedSize(horizontal: true, vertical: false)
+            Button(viewModel.percentSymbol) {
+                viewModel.feeOrDiscountType = .percentage
+            }
+            .buttonStyle(isPrimary: viewModel.feeOrDiscountType == .percentage)
+            .fixedSize(horizontal: true, vertical: false)
         }
-        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
-        .padding([.leading, .trailing], Layout.padding)
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: Layout.inputFieldOverlayInset)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
-        }
-        .cornerRadius(Layout.frameCornerRadius)
-        .padding()
     }
 
-    private var inputPercentageField: some View {
-        AdaptiveStack(horizontalAlignment: .leading) {
-            HStack {
-                BindableTextfield(Localization.percentagePriceDiscountInputPlaceholder,
-                                  text: $viewModel.percentage,
-                                  focus: .constant(true))
-                .keyboardType(.numbersAndPunctuation)
+    struct InputField: View {
+        let placeholder: String
+        @Binding var text: String
+
+        var body: some View {
+            BindableTextfield(placeholder,
+                              text: $text,
+                              focus: .constant(true))
+            .keyboardType(.numbersAndPunctuation)
+            .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
+            .padding([.leading, .trailing], Layout.padding)
+            .overlay {
+                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                    .inset(by: Layout.inputFieldOverlayInset)
+                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
             }
+            .cornerRadius(Layout.frameCornerRadius)
+            .padding()
         }
-        .frame(maxWidth: .infinity, minHeight: Layout.rowHeight)
-        .padding([.leading, .trailing], Layout.padding)
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: Layout.inputFieldOverlayInset)
-                .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
-        }
-        .cornerRadius(Layout.frameCornerRadius)
-        .padding()
     }
 }
 

@@ -496,7 +496,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   blazeEligibilityChecker: checker)
 
         mockSynchronizeCampaigns()
-        mockSynchronizeProducts()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
         await sut.reload()

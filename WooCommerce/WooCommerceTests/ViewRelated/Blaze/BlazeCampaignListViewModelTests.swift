@@ -5,7 +5,6 @@ import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 @testable import WooCommerce
 
-@MainActor
 final class BlazeCampaignListViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 322

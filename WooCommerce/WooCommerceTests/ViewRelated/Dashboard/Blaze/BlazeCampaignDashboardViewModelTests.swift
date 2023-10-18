@@ -7,6 +7,7 @@ import protocol Storage.StorageType
 
 /// Test cases for `BlazeCampaignDashboardViewModel`.
 ///
+@MainActor
 final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 122
 

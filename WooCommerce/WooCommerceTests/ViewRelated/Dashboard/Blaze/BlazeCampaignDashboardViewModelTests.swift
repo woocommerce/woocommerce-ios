@@ -715,6 +715,120 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
     }
+
+    // MARK: Reload from storage
+
+    func test_reload_does_not_hit_product_remote_when_fetchFromRemote_is_false() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        waitForExpectation { exp in
+            exp.isInverted = true
+            stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                switch action {
+                case .checkIfStoreHasProducts:
+                    exp.fulfill()
+                default:
+                    break
+                }
+            }
+        }
+
+        // When
+        await sut.reload(fetchFromRemote: false)
+    }
+
+    func test_reload_hits_product_remote_by_default() async {
+        // Given
+        var invocationCountOfHasProducts = 0
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .synchronizeCampaigns(_, _, let onCompletion):
+                onCompletion(.success(false))
+            }
+        }
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                invocationCountOfHasProducts += 1
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(invocationCountOfHasProducts, 1)
+    }
+
+    func test_reload_does_not_hit_blaze_remote_when_fetchFromRemote_is_false() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        waitForExpectation { exp in
+            exp.isInverted = true
+            stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+                switch action {
+                case .synchronizeCampaigns(_, _, _):
+                    exp.fulfill()
+                }
+            }
+        }
+
+        // When
+        await sut.reload(fetchFromRemote: false)
+    }
+
+    func test_reload_hits_blaze_remote_by_default() async {
+        // Given
+        var invocationCountOfLoadCampaigns = 0
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  blazeEligibilityChecker: checker)
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .checkIfStoreHasProducts(_, _, let onCompletion):
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .synchronizeCampaigns(_, _, let onCompletion):
+                invocationCountOfLoadCampaigns += 1
+                onCompletion(.success(true))
+            }
+        }
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertEqual(invocationCountOfLoadCampaigns, 1)
+    }
 }
 
 private extension BlazeCampaignDashboardViewModelTests {

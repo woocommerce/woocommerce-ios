@@ -120,27 +120,22 @@ private extension BlazeCampaignDashboardViewModel {
 // MARK: - Products
 private extension BlazeCampaignDashboardViewModel {
     @MainActor
-    func loadFirstPublishedProduct(fetchFromRemote: Bool) async throws -> Product? {
-        if fetchFromRemote {
-            guard try await checkIfStoreHasPublishedProducts() else {
-                return nil
-            }
-        }
-        try productResultsController.performFetch()
-        return productResultsController.fetchedObjects.first(where: { $0.statusKey == ProductStatus.published.rawValue })
-    }
-
-    @MainActor
-    private func checkIfStoreHasPublishedProducts() async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: .published, onCompletion: { result in
-                switch result {
-                case .success(let hasProducts):
-                    continuation.resume(returning: hasProducts)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze campaign view: \(error)")
-                    continuation.resume(throwing: error)
+    private func synchronizeFirstPublishedProduct() async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
+                                                              pageNumber: Store.Default.firstPageNumber,
+                                                              pageSize: 1,
+                                                              stockStatus: nil,
+                                                              productStatus: .published,
+                                                              productType: nil,
+                                                              productCategory: nil,
+                                                              sortOrder: .dateDescending,
+                                                              shouldDeleteStoredProductsOnFirstPage: false,
+                                                              onCompletion: { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Dashboard — Error fetching first published product to show the Blaze campaign view: \(error)")
                 }
+                continuation.resume(returning: ())
             }))
         }
     }

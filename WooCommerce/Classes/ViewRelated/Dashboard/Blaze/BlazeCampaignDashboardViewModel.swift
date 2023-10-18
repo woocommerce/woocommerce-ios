@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 import Combine
+import protocol Storage.StorageManagerType
 
 /// View model for `BlazeCampaignDashboardView`.
 final class BlazeCampaignDashboardViewModel: ObservableObject {
@@ -35,18 +36,45 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     private let siteID: Int64
     private let stores: StoresManager
+    private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
 
+    /// Blaze campaign ResultsController.
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
+        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        sortedBy: [sortDescriptorByID])
+        return resultsController
+    }()
+
+    /// Product ResultsController.
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ ", siteID, ProductStatus.published.rawValue)
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                 matching: predicate,
+                                                 sortOrder: .dateDescending)
+    }()
+
+    private var latestPublishedProduct: Product? {
+        productResultsController.fetchedObjects.first
+    }
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
         self.stores = stores
+        self.storageManager = storageManager
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
+
+        configureResultsController()
     }
 
     @MainActor
@@ -57,41 +85,65 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
             return
         }
 
-        if let campaign = try? await loadLatestBlazeCampaign() {
-            update(state: .showCampaign(campaign: campaign))
-        } else if let product = try? await loadFirstPublishedProduct() {
-            update(state: .showProduct(product: product))
-        } else {
-            update(state: .empty)
+        // Load Blaze campaigns
+        await synchronizeBlazeCampaigns()
+        guard blazeCampaignResultsController.fetchedObjects.isEmpty else {
+            return
+        }
+
+        // Load published product as Blaze campaigns not available
+        await synchronizeFirstPublishedProduct()
+        guard latestPublishedProduct == nil else {
+            return
+        }
+
+        // No Blaze campaign or published product available
+        update(state: .empty)
+    }
+}
+
+// MARK: - Blaze campaigns
+private extension BlazeCampaignDashboardViewModel {
+    @MainActor
+    func synchronizeBlazeCampaigns() async {
+        await withCheckedContinuation({ continuation in
+            stores.dispatch(BlazeAction.synchronizeCampaigns(siteID: siteID, pageNumber: Store.Default.firstPageNumber) { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Dashboard — Error synchronizing Blaze campaigns: \(error)")
+                }
+                continuation.resume(returning: ())
+            })
+        })
+    }
+}
+
+
+// MARK: - Products
+private extension BlazeCampaignDashboardViewModel {
+    @MainActor
+    func synchronizeFirstPublishedProduct() async {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
+                                                              pageNumber: Store.Default.firstPageNumber,
+                                                              pageSize: 1,
+                                                              stockStatus: nil,
+                                                              productStatus: .published,
+                                                              productType: nil,
+                                                              productCategory: nil,
+                                                              sortOrder: .dateDescending,
+                                                              shouldDeleteStoredProductsOnFirstPage: false,
+                                                              onCompletion: { result in
+                if case .failure(let error) = result {
+                    DDLogError("⛔️ Dashboard — Error fetching first published product to show the Blaze campaign view: \(error)")
+                }
+                continuation.resume(returning: ())
+            }))
         }
     }
 }
 
+// MARK: - Helpers
 private extension BlazeCampaignDashboardViewModel {
-    @MainActor
-    func loadLatestBlazeCampaign() async throws -> BlazeCampaign? {
-        // TODO: Replace with remote call
-        try await Task.sleep(nanoseconds: 150_000_000)
-        if Bool.random() {
-            // swiftlint:disable:next line_length
-            return .init(siteID: siteID, campaignID: 1, name: "Test", uiStatus: "finished", contentImageURL: "https://m.media-amazon.com/images/I/718JGhYeDXL.jpg", contentClickURL: "https://www.google.com/", totalImpressions: 1434, totalClicks: 211, totalBudget: 6563.2)
-        } else {
-            return nil
-        }
-    }
-
-    @MainActor
-    func loadFirstPublishedProduct() async throws -> Product? {
-        // TODO: Replace with remote call
-        try await Task.sleep(nanoseconds: 150_000_000)
-        if Bool.random() {
-            return ProductFactory().createNewProduct(type: .simple, isVirtual: false, siteID: siteID)
-        } else {
-            return nil
-        }
-    }
-
-    @MainActor
     func update(state: State) {
         self.state = state
         switch state {
@@ -106,5 +158,40 @@ private extension BlazeCampaignDashboardViewModel {
             shouldShowInDashboard = false
         }
         onStateChange?()
+    }
+
+    func updateResults() {
+        if let campaign = blazeCampaignResultsController.fetchedObjects.first {
+            update(state: .showCampaign(campaign: campaign))
+        } else if let product = latestPublishedProduct {
+            update(state: .showProduct(product: product))
+        } else {
+            update(state: .empty)
+        }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        blazeCampaignResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        blazeCampaignResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+        }
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
+        do {
+            try blazeCampaignResultsController.performFetch()
+            try productResultsController.performFetch()
+            updateResults()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
+        }
     }
 }

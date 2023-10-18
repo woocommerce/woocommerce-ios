@@ -24,17 +24,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        reload()
-    }
-
-    private func reload() {
-        Task { @MainActor in
-            await viewModel.reload()
-        }
-    }
 }
 
 /// Blaze campaigns in dashboard screen.

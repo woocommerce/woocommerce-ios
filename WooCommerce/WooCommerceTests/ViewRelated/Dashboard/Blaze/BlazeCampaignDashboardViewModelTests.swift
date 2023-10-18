@@ -716,38 +716,12 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertFalse(sut.shouldShowShowAllCampaignsButton)
     }
 
-    // MARK: Reload from storage
+    // MARK: Listen from storage
 
-    func test_reload_does_not_hit_product_remote_when_fetchFromRemote_is_false() async {
+    func test_state_is_showCampaign_if_blaze_campaign_is_added_to_storage() async {
         // Given
-        var invocationCountOfHasProducts = 0
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                invocationCountOfHasProducts += 1
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        // When
-        await sut.reload(fetchFromRemote: false)
-
-        // Then
-        XCTAssertEqual(invocationCountOfHasProducts, 0)
-    }
-
-    func test_reload_hits_product_remote_by_default() async {
-        // Given
-        var invocationCountOfHasProducts = 0
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -762,25 +736,37 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
-                invocationCountOfHasProducts += 1
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
             }
         }
 
-        // When
         await sut.reload()
 
+        if case .empty = sut.state {
+            // Expected empty state when no Blaze campaign or published product
+        } else {
+            XCTFail("Wrong state")
+        }
+
+        // When
+        self.insertCampaigns([fakeBlazeCampaign])
+
         // Then
-        XCTAssertEqual(invocationCountOfHasProducts, 1)
+        if case .showCampaign(let campaign) = sut.state {
+            XCTAssertEqual(campaign, fakeBlazeCampaign)
+        } else {
+            XCTFail("Wrong state")
+        }
     }
 
-    func test_reload_does_not_hit_blaze_remote_when_fetchFromRemote_is_false() async {
+    func test_state_is_showProduct_if_published_product_is_added_to_storage() async {
         // Given
-        var invocationCountOfLoadCampaigns = 0
         let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
         let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
                                                   stores: stores,
                                                   storageManager: storageManager,
@@ -789,50 +775,36 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
             case .synchronizeCampaigns(_, _, let onCompletion):
-                invocationCountOfLoadCampaigns += 1
-                onCompletion(.success(true))
+                onCompletion(.success(false))
             }
         }
-
-
-        // When
-        await sut.reload(fetchFromRemote: false)
-
-        // Then
-        XCTAssertEqual(invocationCountOfLoadCampaigns, 0)
-    }
-
-    func test_reload_hits_blaze_remote_by_default() async {
-        // Given
-        var invocationCountOfLoadCampaigns = 0
-        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
-        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
-                                                  stores: stores,
-                                                  storageManager: storageManager,
-                                                  blazeEligibilityChecker: checker)
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-            case .checkIfStoreHasProducts(_, _, let onCompletion):
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
                 onCompletion(.success(true))
             default:
                 break
             }
         }
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                invocationCountOfLoadCampaigns += 1
-                onCompletion(.success(true))
-            }
+        await sut.reload()
+
+        if case .empty = sut.state {
+            // Expected empty state when no Blaze campaign or published product
+        } else {
+            XCTFail("Wrong state")
         }
 
         // When
-        await sut.reload()
+        self.insertProduct(fakeProduct)
 
         // Then
-        XCTAssertEqual(invocationCountOfLoadCampaigns, 1)
+        if case .showProduct(let product) = sut.state {
+            XCTAssertEqual(product, fakeProduct)
+        } else {
+            XCTFail("Wrong state")
+        }
     }
 }
 

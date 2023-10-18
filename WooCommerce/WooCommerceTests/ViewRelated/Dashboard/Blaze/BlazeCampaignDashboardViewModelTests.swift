@@ -59,23 +59,10 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
-                                                statusKey: (ProductStatus.published.rawValue)))
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+                                                                     statusKey: (ProductStatus.published.rawValue)))
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -92,23 +79,10 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
-                                                statusKey: (ProductStatus.published.rawValue)))
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+                                                                     statusKey: (ProductStatus.published.rawValue)))
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -151,22 +125,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        // When
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeProducts()
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -185,23 +145,9 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(.fake().copy(siteID: self.sampleSiteID,
-                                                statusKey: (ProductStatus.published.rawValue)))
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeProducts(insertProductToStorage: .fake().copy(siteID: self.sampleSiteID,
+                                                                     statusKey: (ProductStatus.published.rawValue)))
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -219,21 +165,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
-
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeProducts()
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -257,22 +190,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                self.insertProduct(product2)
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeProducts(insertProductToStorage: product2)
+        mockSynchronizeCampaigns()
 
         // When
         await sut.reload()
@@ -336,13 +255,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                self.insertCampaigns([fakeBlazeCampaign])
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
 
         // When
         await sut.reload()
@@ -366,22 +279,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(fakeProduct)
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
         await sut.reload()
@@ -405,22 +304,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(fakeProduct)
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
         await sut.reload()
@@ -441,21 +326,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -511,13 +383,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                self.insertCampaigns([fakeBlazeCampaign])
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
 
         // When
         await sut.reload()
@@ -537,22 +403,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(fakeProduct)
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
 
         // When
         await sut.reload()
@@ -569,21 +421,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -635,13 +474,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                self.insertCampaigns([fakeBlazeCampaign])
-                onCompletion(.success(false))
-            }
-        }
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
 
         // When
         await sut.reload()
@@ -661,22 +494,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                self.insertProduct(fakeProduct)
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -693,21 +512,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         // When
         await sut.reload()
@@ -727,21 +533,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         await sut.reload()
 
@@ -772,21 +565,8 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
                                                   storageManager: storageManager,
                                                   blazeEligibilityChecker: checker)
 
-        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            switch action {
-            case .synchronizeCampaigns(_, _, let onCompletion):
-                onCompletion(.success(false))
-            }
-        }
-
-        stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            switch action {
-            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
-                onCompletion(.success(true))
-            default:
-                break
-            }
-        }
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
 
         await sut.reload()
 
@@ -821,5 +601,31 @@ private extension BlazeCampaignDashboardViewModelTests {
             newCampaign.update(with: campaign)
         }
         storage.saveIfNeeded()
+    }
+
+    func mockSynchronizeProducts(insertProductToStorage product: Product? = nil) {
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, let onCompletion):
+                if let product {
+                    self.insertProduct(product)
+                }
+                onCompletion(.success(true))
+            default:
+                break
+            }
+        }
+    }
+
+    func mockSynchronizeCampaigns(insertCampaignToStorage blazeCampaign: BlazeCampaign? = nil) {
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .synchronizeCampaigns(_, _, let onCompletion):
+                if let blazeCampaign {
+                    self.insertCampaigns([blazeCampaign])
+                }
+                onCompletion(.success(false))
+            }
+        }
     }
 }

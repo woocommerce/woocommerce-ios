@@ -689,11 +689,11 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_valid_WPCOM_credentials_then_returns_true() throws {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
+        let validDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: validDeepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
         XCTAssertTrue(wasHandled)
@@ -713,11 +713,11 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_valid_store_credentials_then_returns_true() {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username=user@automattic.com"
+        let validDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: validDeepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
         XCTAssertTrue(wasHandled)
@@ -737,11 +737,11 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_valid_site_url_then_returns_true() {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&username=user@automattic.com"
+        let validDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&username=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
-        let wasHandled = manager.handleAuthenticationUrl(URL(string: invalidDeepLink)!, options: [:], rootViewController: UIViewController())
+        let wasHandled = manager.handleAuthenticationUrl(URL(string: validDeepLink)!, options: [:], rootViewController: UIViewController())
 
         // Then
         XCTAssertTrue(wasHandled)

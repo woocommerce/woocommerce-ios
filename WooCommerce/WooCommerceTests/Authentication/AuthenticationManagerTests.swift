@@ -635,7 +635,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_WPCOM_credentials_then_expected_analytics_is_triggered() throws {
         // Given
-        let deepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
+        let deepLink = "woocommerce://app-login?siteUrl=mywoostore.com&wpcomEmail=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -649,7 +649,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_store_credentials_then_expected_analytics_is_triggered() throws {
         // Given
-        let deepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username=user@automattic.com"
+        let deepLink = "woocommerce://app-login?siteUrl=mywoostore.com&username=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -677,7 +677,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_empty_WPCOM_credentials_then_returns_false() throws {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail="
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&wpcomEmail="
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -689,7 +689,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_valid_WPCOM_credentials_then_returns_true() throws {
         // Given
-        let validDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&wpcomEmail=user@automattic.com"
+        let validDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&wpcomEmail=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -701,7 +701,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_empty_store_credentials_then_returns_false() {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username="
+        let invalidDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&username="
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -713,7 +713,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_valid_store_credentials_then_returns_true() {
         // Given
-        let validDeepLink = "woocommerce://app-login?siteUrl=https://mywoostore.com&username=user@automattic.com"
+        let validDeepLink = "woocommerce://app-login?siteUrl=mywoostore.com&username=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When
@@ -749,7 +749,7 @@ final class AuthenticationManagerTests: XCTestCase {
 
     func test_when_handleAuthenticationUrl_is_called_with_invalid_url_parameters_then_returns_false() throws {
         // Given
-        let invalidDeepLink = "woocommerce://app-login?url=https://mywoostore.com&email=user@automattic.com"
+        let invalidDeepLink = "woocommerce://app-login?url=mywoostore.com&email=user@automattic.com"
         let manager = AuthenticationManager(analytics: analytics)
 
         // When

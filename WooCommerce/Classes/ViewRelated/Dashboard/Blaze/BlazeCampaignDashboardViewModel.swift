@@ -69,23 +69,32 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
+
+        configureResultsController()
     }
 
     @MainActor
-    func reload(fetchFromRemote: Bool = true) async {
+    func reload() async {
         update(state: .loading)
         guard await blazeEligibilityChecker.isSiteEligible() else {
             update(state: .empty)
             return
         }
 
-        if let campaign = try? await loadLatestBlazeCampaign(fetchFromRemote: fetchFromRemote) {
-            update(state: .showCampaign(campaign: campaign))
-        } else if let product = try? await loadFirstPublishedProduct(fetchFromRemote: fetchFromRemote) {
-            update(state: .showProduct(product: product))
-        } else {
-            update(state: .empty)
+        // Load Blaze campaigns
+        await synchronizeBlazeCampaigns()
+        guard blazeCampaignResultsController.fetchedObjects.isEmpty else {
+            return
         }
+
+        // Load published product as Blaze campaigns not available
+        await synchronizeFirstPublishedProduct()
+        guard productResultsController.fetchedObjects.isEmpty else {
+            return
+        }
+
+        // No Blaze campaign or published product available
+        update(state: .empty)
     }
 }
 
@@ -131,7 +140,6 @@ private extension BlazeCampaignDashboardViewModel {
 
 // MARK: - Helpers
 private extension BlazeCampaignDashboardViewModel {
-    @MainActor
     func update(state: State) {
         self.state = state
         switch state {

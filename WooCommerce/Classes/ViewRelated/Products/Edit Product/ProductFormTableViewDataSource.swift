@@ -103,6 +103,8 @@ private extension ProductFormTableViewDataSource {
             configureLearnMoreAI(cell: cell)
         case .separator:
             configureSeparator(cell: cell)
+        case .promoteWithBlaze:
+            configurePromoteWithBlaze(cell: cell)
         }
     }
     func configureImages(cell: UITableViewCell, isEditable: Bool, allowsMultipleImages: Bool, isVariation: Bool) {
@@ -275,6 +277,10 @@ private extension ProductFormTableViewDataSource {
         }))
         cell.selectionStyle = .none
         cell.hideSeparator()
+    }
+
+    func configurePromoteWithBlaze(cell: UITableViewCell) {
+        // todo
     }
 
     func configureSeparator(cell: UITableViewCell) {

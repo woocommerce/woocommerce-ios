@@ -3,6 +3,7 @@ import Foundation
 import Storage
 import Yosemite
 import Experiments
+import WooFoundation
 
 private typealias SystemPlugin = Yosemite.SystemPlugin
 private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
@@ -271,7 +272,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func checkOnboardingState() -> CardPresentPaymentOnboardingState {
-        guard let countryCode = storeCountryCode else {
+        guard storeCountryCode != .unknown else {
             DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
             return .genericError
         }
@@ -285,7 +286,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         // If isSupportedCountry is false, IPP is not supported in the country through any
         // payment gateway
         guard configuration.isSupportedCountry else {
-            return .countryNotSupported(countryCode: countryCode)
+            return .countryNotSupported(countryCode: storeCountryCode)
         }
 
         switch (wcPay, stripe) {
@@ -355,11 +356,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
     func stripeGatewayOnlyOnboardingState(plugin: SystemPlugin) -> CardPresentPaymentOnboardingState {
         guard isStripeSupportedInCountry else {
-            guard let countryCode = storeCountryCode else {
+            guard storeCountryCode != .unknown else {
                 DDLogError("[CardPresentPaymentsOnboarding] Couldn't determine country for store")
                 return .genericError
             }
-            return .countryNotSupportedStripe(plugin: .stripe, countryCode: countryCode)
+            return .countryNotSupportedStripe(plugin: .stripe, countryCode: storeCountryCode)
         }
 
         guard cardPresentPluginsDataProvider.isStripeVersionSupported(plugin: plugin)
@@ -432,12 +433,10 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.sessionManager.defaultStoreID
     }
 
-    var storeCountryCode: String? {
+    var storeCountryCode: CountryCode {
         let siteSettings = SelectedSiteSettings(stores: stores, storageManager: storageManager).siteSettings
         let storeAddress = SiteAddress(siteSettings: siteSettings)
-        let storeCountryCode = storeAddress.countryCode
-
-        return storeCountryCode.nonEmptyString()
+        return storeAddress.countryCode
     }
 
     var storedPreferredPlugin: CardPresentPaymentsPlugin? {
@@ -557,12 +556,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func trackCardPresentPluginActionFailed(_ error: Error, trigger: PluginFailureTrigger) {
-        guard let countryCode = self.storeCountryCode else {
-            return
-        }
-
         analytics.track(event: .InPersonPayments.cardPresentOnboardingCtaFailed(reason: trigger.rawValue,
-                                                                                countryCode: countryCode,
+                                                                                countryCode: storeCountryCode,
                                                                                 error: error))
     }
 }

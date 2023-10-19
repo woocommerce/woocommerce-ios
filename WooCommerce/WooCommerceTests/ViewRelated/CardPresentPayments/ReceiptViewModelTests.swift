@@ -20,7 +20,7 @@ final class ReceiptViewModelTests: XCTestCase {
 
     func test_generateContent_dispatches_ReceiptAction_and_sends_content() {
         // Given
-        let viewModel = ReceiptViewModel(order: .fake(), receipt: .fake(), countryCode: "", stores: stores)
+        let viewModel = ReceiptViewModel(order: .fake(), receipt: .fake(), countryCode: .unknown, stores: stores)
         let mockContent = "A receipt"
         stores.whenReceivingAction(ofType: ReceiptAction.self) { action in
             if case let .generateContent(_, _, onContent) = action {
@@ -43,7 +43,7 @@ final class ReceiptViewModelTests: XCTestCase {
     func test_emailReceiptTapped_after_generateContent_does_not_dispatch_ReceiptAction_and_returns_latest_content() {
         // Given
         let order = Order.fake()
-        let viewModel = ReceiptViewModel(order: order, receipt: .fake(), countryCode: "CA", stores: stores)
+        let viewModel = ReceiptViewModel(order: order, receipt: .fake(), countryCode: .CA, stores: stores)
 
         let mockStoreName = "All the sweets"
         var sessionManager = stores.sessionManager
@@ -70,7 +70,7 @@ final class ReceiptViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(dataAndCountryCode.formData, .init(content: mockContent, order: order, storeName: mockStoreName))
-        XCTAssertEqual(dataAndCountryCode.countryCode, "CA")
+        XCTAssertEqual(dataAndCountryCode.countryCode, .CA)
         XCTAssertEqual(generateContentInvocationCount, 1)
     }
 
@@ -80,7 +80,7 @@ final class ReceiptViewModelTests: XCTestCase {
         let analyticsProvider = MockAnalyticsProvider()
         let viewModel = ReceiptViewModel(order: order,
                                          receipt: .fake(),
-                                         countryCode: "CA",
+                                         countryCode: .CA,
                                          analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When

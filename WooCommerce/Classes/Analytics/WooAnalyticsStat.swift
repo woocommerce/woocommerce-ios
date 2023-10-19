@@ -96,6 +96,8 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSiteCredentialResetPasswordTapped = "login_jetpack_site_credential_reset_password_button_tapped"
     case loginJetpackSiteCredentialDidShowErrorAlert = "login_jetpack_site_credential_did_show_error_alert"
     case loginJetpackSiteCredentialDidFinishLogin = "login_jetpack_site_credential_did_finish_login"
+    case loginAppLoginLinkSuccess = "login_app_login_link_success"
+    case loginMalformedAppLoginLink = "login_malformed_app_login_link"
 
     // MARK: Install/Setup Jetpack (`LoginJetpackSetupView`)
     //
@@ -321,6 +323,7 @@ public enum WooAnalyticsStat: String {
     case tapToPaySetupOnboardingCancelTapped = "tap_to_pay_set_up_onboarding_cancel_tapped"
     case tapToPaySetupSuccessDoneTapped = "tap_to_pay_set_up_success_done_tapped"
     case tapToPaySummaryShown = "tap_to_pay_summary_shown"
+    case aboutTapToPayOrderCardReaderTapped = "about_tap_to_pay_order_card_reader_tapped"
 
     // MARK: Cash on Delivery Enable events
     case enableCashOnDeliverySuccess = "enable_cash_on_delivery_success"
@@ -988,6 +991,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
     case setUpTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
+    case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

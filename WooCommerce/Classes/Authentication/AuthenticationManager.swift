@@ -116,7 +116,63 @@ class AuthenticationManager: Authentication {
                                                                         rootViewController: rootViewController)
         }
 
+        if isAppLoginUrl(url) {
+            guard let queryDictionary = url.query?.dictionaryFromQueryString(),
+                  let siteURL = queryDictionary.string(forKey: "siteUrl"),
+                  siteURL.isNotEmpty else {
+                DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
+                showLoginURLFailure(rootViewController: rootViewController)
+                return false
+            }
+            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
+               wpcomEmail.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
+                showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
+                return true
+            }
+
+            if let wporgUsername = queryDictionary.string(forKey: "username"),
+               wporgUsername.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
+                showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
+                return true
+            }
+        }
+
+        showLoginURLFailure(rootViewController: rootViewController)
+        analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
         return false
+    }
+
+    private func showWPCOMLogin(siteURL: String, email: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = true
+        loginFields.username = email
+        NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = false
+        loginFields.username = username
+        NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showLoginURLFailure(rootViewController: UIViewController) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = rootViewController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: AuthenticationConstants.appLinkLoginFailureMessage))
+    }
+
+    private func isAppLoginUrl(_ url: URL) -> Bool {
+        let expectedPrefix = "\(ApiCredentials.dotcomAuthScheme)\(WooConstants.appLoginURLPrefix)"
+        return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
     /// Injects `loggedOutAppSettings`

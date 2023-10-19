@@ -39,6 +39,15 @@ struct ProductDetailPreviewView: View {
                                    isLoading: viewModel.isGeneratingDetails)
                 }
 
+                // Product short description
+                VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
+                    Text(Localization.productShortDescription)
+                        .foregroundColor(.primary)
+                        .subheadlineStyle()
+                    BasicDetailRow(content: viewModel.productShortDescription,
+                                   isLoading: viewModel.isGeneratingDetails)
+                }
+
                 // Product description
                 VStack(alignment: .leading, spacing: Layout.contentVerticalSpacing) {
                     Text(Localization.productDescription)
@@ -240,6 +249,10 @@ fileprivate extension ProductDetailPreviewView {
         static let productName = NSLocalizedString(
             "Product name",
             comment: "Title of the name field on the add product with AI Preview screen."
+        )
+        static let productShortDescription = NSLocalizedString(
+            "Product short description",
+            comment: "Title of the short description field on the add product with AI Preview screen."
         )
         static let productDescription = NSLocalizedString(
             "Product description",

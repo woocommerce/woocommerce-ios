@@ -36,7 +36,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Product price
     ///
-    private let price: String?
+    private(set) var price: String?
 
     /// Product stock status
     ///
@@ -82,6 +82,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return currencyFormatter.formatAmount(price)
     }
 
+    /// Formatted discount label for an individual product
+    ///
+    var discountLabel: String? {
+        guard let discount = discount else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(discount)
+    }
+
     /// Formatted price label from multiplying product's price and quantity.
     ///
     var priceBeforeDiscountsLabel: String? {
@@ -93,8 +102,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     }
 
     /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// e.g: If price is $5 and discount is $1, outputs "$5.00 - $1.00"
     ///
-    var priceAfterDiscountsLabel: String? {
+    var priceAndDiscountsLabel: String? {
         guard let price = price else {
             return nil
         }
@@ -110,7 +120,26 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    private let discount: Decimal?
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// e.g: If price is $5 and discount is $1, outputs "$4.00"
+    ///
+    var priceAfterDiscountLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
+            return nil
+        }
+        let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+
+        return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+    }
+
+    private(set) var discount: Decimal?
+
+    var hasDiscount: Bool {
+        discount != nil
+    }
 
     /// Variations label for a variable product.
     ///
@@ -125,7 +154,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Label showing product details. Can include stock status or attributes, price, and variations (if any).
     ///
     var productDetailsLabel: String {
-        [stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel]
+        [stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel]
             .compactMap({ $0 })
             .joined(separator: " • ")
     }
@@ -142,7 +171,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Custom accessibility label for product.
     ///
     var productAccessibilityLabel: String {
-        [name, stockOrAttributesLabel, priceAfterDiscountsLabel, variationsLabel, skuLabel]
+        [name, stockOrAttributesLabel, priceAndDiscountsLabel, variationsLabel, skuLabel]
             .compactMap({ $0 })
             .joined(separator: ". ")
     }

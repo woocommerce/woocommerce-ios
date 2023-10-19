@@ -88,7 +88,7 @@ final class OrderDetailsDataSource: NSObject {
         let plugin = resultsControllers.sitePlugins.first { $0.name == SitePlugin.SupportedPlugin.WCShip }
         let isPluginInstalled = plugin != nil && resultsControllers.sitePlugins.count > 0
         let isPluginActive = plugin?.status.isActive ?? false
-        let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == SiteAddress.CountryCode.US.rawValue
+        let isCountryCodeUS = SiteAddress(siteSettings: siteSettings).countryCode == CountryCode.US
         let isCurrencyUSD = currencySettings.currencyCode == .USD
 
         guard isFeatureFlagEnabled,

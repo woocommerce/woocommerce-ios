@@ -110,6 +110,17 @@ public extension StorageType {
         }
     }
 
+    // MARK: - BlazeCampaign
+
+    /// Deletes all of the stored Blaze campaigns for the provided siteID.
+    ///
+    func deleteBlazeCampaigns(siteID: Int64) {
+        let campaigns = loadAllBlazeCampaigns(siteID: siteID)
+        for campaign in campaigns {
+            deleteObject(campaign)
+        }
+    }
+
     // MARK: - Coupons
 
     /// Deletes all of the stored Coupons for the provided siteID.

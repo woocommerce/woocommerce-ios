@@ -123,6 +123,31 @@ final class GenerativeContentRemoteTests: XCTestCase {
         XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
     }
 
+    func test_generateText_generates_token_if_token_expired() async throws {
+        // Given
+        let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
+        let textCompletionPath = "text-completion"
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generative-text-success")
+
+        // When
+        _ = try await remote.generateText(siteID: sampleSiteID,
+                                          base: "generate a product description for wapuu pencil",
+                                          feature: .productDescription)
+        // Then
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
+
+        // When
+        _ = try await remote.generateText(siteID: sampleSiteID,
+                                          base: "generate a product description for wapuu pencil",
+                                          feature: .productDescription)
+
+        // Then
+        // Ensures that token is requested again
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
+    }
+
     // MARK: - `identifyLanguage`
 
     func test_identifyLanguage_sends_correct_fields_value() async throws {
@@ -225,6 +250,31 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
         XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+    }
+
+    func test_identifyLanguage_generates_token_if_token_expired() async throws {
+        // Given
+        let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
+        let textCompletionPath = "text-completion"
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "identify-language-success")
+
+        // When
+        _ = try await remote.identifyLanguage(siteID: sampleSiteID,
+                                              string: "Woo is awesome.",
+                                              feature: .productDescription)
+        // Then
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
+
+        // When
+        _ = try await remote.identifyLanguage(siteID: sampleSiteID,
+                                              string: "Woo is awesome.",
+                                              feature: .productDescription)
+
+        // Then
+        // Ensures that token is requested again
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
     }
 
     // MARK: - `generateAIProduct`
@@ -515,6 +565,45 @@ final class GenerativeContentRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
         XCTAssertEqual(numberOfTextCompletionRequests(in: network.requestsForResponseData), 4)
+    }
+
+    func test_generateAIProduct_generates_token_if_token_expired() async throws {
+        // Given
+        let jwtRequestPath = "sites/\(sampleSiteID)/jetpack-openai-query/jwt"
+        let textCompletionPath = "text-completion"
+        let remote = GenerativeContentRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: jwtRequestPath, filename: "jwt-token-expired-token")
+        network.simulateResponse(requestUrlSuffix: textCompletionPath, filename: "generate-product-success")
+
+        // When
+        _ = try await remote.generateAIProduct(siteID: sampleSiteID,
+                                               productName: "Cookie",
+                                               keywords: "Crunchy, Crispy",
+                                               language: "en",
+                                               tone: "Casual",
+                                               currencySymbol: "INR",
+                                               dimensionUnit: "cm",
+                                               weightUnit: "kg",
+                                               categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                               tags: [ProductTag.fake(), ProductTag.fake()])
+        // Then
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 1)
+
+        // When
+        _ = try await remote.generateAIProduct(siteID: sampleSiteID,
+                                               productName: "Cookie",
+                                               keywords: "Crunchy, Crispy",
+                                               language: "en",
+                                               tone: "Casual",
+                                               currencySymbol: "INR",
+                                               dimensionUnit: "cm",
+                                               weightUnit: "kg",
+                                               categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                               tags: [ProductTag.fake(), ProductTag.fake()])
+
+        // Then
+        // Ensures that token is requested again
+        XCTAssertEqual(numberOfJwtRequests(in: network.requestsForResponseData), 2)
     }
 }
 

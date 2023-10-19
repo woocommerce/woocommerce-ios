@@ -606,6 +606,6 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
 
 private extension BluetoothCardReaderSettingsConnectedViewModelTests {
     enum Mocks {
-        static let configuration = CardPresentPaymentsConfiguration(country: "US")
+        static let configuration = CardPresentPaymentsConfiguration(country: .US)
     }
 }

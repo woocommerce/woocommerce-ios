@@ -28,10 +28,6 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             self?.navigateToCampaignCreation(source: .introView, productID: productID)
         }
 
-        rootView.productTapped = { [weak self] productID in
-            self?.navigateToCampaignCreation(source: .myStoreProductItem, productID: productID)
-        }
-
         rootView.showAllCampaignsTapped = { [weak self] in
             self?.showCampaignList(isPostCreation: false)
         }
@@ -81,9 +77,6 @@ private extension BlazeCampaignDashboardViewHostingController {
 struct BlazeCampaignDashboardView: View {
 
     /// Set externally in the hosting controller.
-    var productTapped: ((Int64) -> Void)?
-
-    /// Set externally in the hosting controller.
     var showAllCampaignsTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
@@ -119,11 +112,8 @@ struct BlazeCampaignDashboardView: View {
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
                     .onTapGesture {
-                        viewModel.checkIfIntroViewIsNeeded()
                         selectedProductID = product.productID
-                        if !viewModel.shouldShowIntroView {
-                            productTapped?(product.productID)
-                        }
+                        viewModel.shouldShowIntroView = true
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)

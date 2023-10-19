@@ -95,8 +95,6 @@ extension BlazeSource {
             return "my_store_banner"
         case .campaignList:
             return "campaign_list"
-        case .myStoreProductItem:
-            return "my_store_product_item"
         case .myStoreSectionCreateCampaignButton:
             return "my_store_section_create_campaign_button"
         case .introView:

@@ -72,8 +72,6 @@ private extension BlazeCampaignDashboardViewHostingController {
 
 /// Blaze campaigns in dashboard screen.
 struct BlazeCampaignDashboardView: View {
-    /// Set externally in the hosting controller.
-    var campaignTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
     var productTapped: ((Int64) -> Void)?
@@ -85,6 +83,7 @@ struct BlazeCampaignDashboardView: View {
     var createCampaignTapped: (() -> Void)?
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
+    @State private var selectedCampaignURL: URL?
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -114,7 +113,14 @@ struct BlazeCampaignDashboardView: View {
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
                     .onTapGesture {
-                        campaignTapped?()
+                        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                            return
+                        }
+                        let path = String(format: Constants.campaignDetailsURLFormat,
+                                          campaign.campaignID,
+                                          site.url.trimHTTPScheme(),
+                                          BlazeCampaignSource.myStoreSection.rawValue)
+                        selectedCampaignURL = URL(string: path)
                     }
             }
 
@@ -130,6 +136,9 @@ struct BlazeCampaignDashboardView: View {
         }
         .padding(insets: Layout.insets)
         .background(Color(uiColor: .listForeground(modal: false)))
+        .sheet(item: $selectedCampaignURL) { url in
+            detailView(url: url)
+        }
     }
 }
 
@@ -167,6 +176,24 @@ private extension BlazeCampaignDashboardView {
             .cornerRadius(Layout.cornerRadius)
         }
     }
+
+    func detailView(url: URL) -> some View {
+        NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: url)
+            .navigationTitle(Localization.detailTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        selectedCampaignURL = nil
+                    }, label: {
+                        Text(Localization.done)
+                    })
+                }
+            }
+        }
+    }
 }
 
 private extension BlazeCampaignDashboardView {
@@ -177,6 +204,10 @@ private extension BlazeCampaignDashboardView {
         }
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
+    }
+
+    enum Constants {
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
 
     enum Localization {
@@ -199,6 +230,10 @@ private extension BlazeCampaignDashboardView {
             "Create campaign",
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
+
+        static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
+
+        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
     }
 }
 

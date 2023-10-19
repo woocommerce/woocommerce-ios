@@ -20,8 +20,12 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        rootView.createCampaignTapped = { [weak self] isFromIntro in
-            self?.navigateToCampaignCreation(source: isFromIntro ? .introView : .myStoreSectionCreateCampaignButton)
+        rootView.createCampaignTapped = { [weak self] in
+            self?.navigateToCampaignCreation(source: .myStoreSectionCreateCampaignButton)
+        }
+
+        rootView.startCampaignFromIntroTapped = { [weak self] productID in
+            self?.navigateToCampaignCreation(source: .introView, productID: productID)
         }
 
         rootView.productTapped = { [weak self] productID in
@@ -45,7 +49,7 @@ private extension BlazeCampaignDashboardViewHostingController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let webViewModel = BlazeWebViewModel(source: source, site: site, productID: nil) { [weak self] in
+        let webViewModel = BlazeWebViewModel(source: source, site: site, productID: productID) { [weak self] in
             self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -83,10 +87,14 @@ struct BlazeCampaignDashboardView: View {
     var showAllCampaignsTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
-    var createCampaignTapped: ((_ isFromIntro: Bool) -> Void)?
+    var createCampaignTapped: (() -> Void)?
+
+    /// Set externally in the hosting controller.
+    var startCampaignFromIntroTapped: ((_ productID: Int64?) -> Void)?
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
     @State private var selectedCampaignURL: URL?
+    @State private var selectedProductID: Int64?
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -112,6 +120,7 @@ struct BlazeCampaignDashboardView: View {
                 ProductInfoView(product: product)
                     .onTapGesture {
                         viewModel.checkIfIntroViewIsNeeded()
+                        selectedProductID = product.productID
                         if !viewModel.shouldShowIntroView {
                             productTapped?(product.productID)
                         }
@@ -148,7 +157,7 @@ struct BlazeCampaignDashboardView: View {
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
             BlazeCampaignIntroView(onStartCampaign: {
                 viewModel.shouldShowIntroView = false
-                createCampaignTapped?(true)
+                startCampaignFromIntroTapped?(selectedProductID)
             }, onDismiss: {
                 viewModel.shouldShowIntroView = false
             })
@@ -161,7 +170,7 @@ private extension BlazeCampaignDashboardView {
         Button {
             viewModel.checkIfIntroViewIsNeeded()
             if !viewModel.shouldShowIntroView {
-                createCampaignTapped?(false)
+                createCampaignTapped?()
             }
         } label: {
             Text(Localization.createCampaign)

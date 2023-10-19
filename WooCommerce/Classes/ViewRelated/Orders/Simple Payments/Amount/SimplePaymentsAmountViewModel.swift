@@ -92,7 +92,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         loading = true
 
         // Order created as taxable to delegate taxes calculation to the API.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, 
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
                                                            status: initialOrderStatus,
                                                            amount: formattableAmountTextFieldViewModel.amount, taxable: true) { [weak self] result in
             guard let self = self else { return }

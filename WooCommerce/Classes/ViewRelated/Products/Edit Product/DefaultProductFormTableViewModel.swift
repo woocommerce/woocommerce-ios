@@ -74,6 +74,8 @@ private extension DefaultProductFormTableViewModel {
                     return [descriptionRow, .separator]
                 }
                 return [descriptionRow, .descriptionAI, .learnMoreAboutAI, .separator]
+            case .promoteWithBlaze:
+                return [.promoteWithBlaze]
             default:
                 fatalError("Unexpected action in the primary section: \(action)")
             }

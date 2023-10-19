@@ -280,7 +280,16 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configurePromoteWithBlaze(cell: UITableViewCell) {
-        // todo
+        guard let cell = cell as? LeftImageTableViewCell else {
+            fatalError()
+        }
+        let title = NSLocalizedString(
+            "Promote with Blaze",
+            comment: "Label for button on product form to open Blaze flow"
+        )
+
+        cell.configure(image: .blaze,
+                       text: title)
     }
 
     func configureSeparator(cell: UITableViewCell) {

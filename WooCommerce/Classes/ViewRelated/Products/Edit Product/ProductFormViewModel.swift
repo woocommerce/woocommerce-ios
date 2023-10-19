@@ -681,11 +681,12 @@ private extension ProductFormViewModel {
         stores.dispatch(action)
     }
 
-    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, `isEligibleForBlaze` and `isAddOnsFeatureEnabled` information.
     ///
     func updateActionsFactory() {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
+                                                   isEligibleForBlaze: canPromoteWithBlaze(),
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
@@ -701,6 +702,7 @@ private extension ProductFormViewModel {
         Task { @MainActor in
             let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
+            updateActionsFactory()
         }
     }
 }

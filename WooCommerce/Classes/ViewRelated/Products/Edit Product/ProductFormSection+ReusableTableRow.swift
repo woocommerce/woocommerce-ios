@@ -41,7 +41,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .separator:
             return [SpacerTableViewCell.self]
         case .promoteWithBlaze:
-            return [ButtonTableViewCell.self]
+            return [LeftImageTableViewCell.self]
         }
     }
 
@@ -68,7 +68,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .separator:
             return SpacerTableViewCell.self
         case .promoteWithBlaze:
-            return ButtonTableViewCell.self
+            return LeftImageTableViewCell.self
         }
     }
 }

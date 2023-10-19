@@ -20,6 +20,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
+
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -112,6 +113,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
+
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -315,7 +317,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() {
+        if viewModel.canPromoteWithBlaze() &&
+            !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))

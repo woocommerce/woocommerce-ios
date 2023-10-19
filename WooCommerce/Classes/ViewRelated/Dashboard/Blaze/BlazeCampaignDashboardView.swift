@@ -7,9 +7,12 @@ import Kingfisher
 ///
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
+    private let parentNavigationController: UINavigationController?
 
-    init(viewModel: BlazeCampaignDashboardViewModel) {
+    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
+        self.parentNavigationController = parentNavigationController
+
         super.init(rootView: BlazeCampaignDashboardView(viewModel: viewModel))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
@@ -17,12 +20,53 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        // TODO: Assign callback handlers and handle navigation
+        rootView.createCampaignTapped = { [weak self] in
+            self?.navigateToCampaignCreation(source: .myStoreSectionCreateCampaignButton)
+        }
+
+        rootView.productTapped = { [weak self] productID in
+            self?.navigateToCampaignCreation(source: .myStoreProductItem, productID: productID)
+        }
+
+        rootView.showAllCampaignsTapped = { [weak self] in
+            self?.showCampaignList(isPostCreation: false)
+        }
     }
 
     @available(*, unavailable)
     required dynamic init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+}
+
+private extension BlazeCampaignDashboardViewHostingController {
+    /// Handles navigation to the campaign creation web view
+    func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let webViewModel = BlazeWebViewModel(source: source, site: site, productID: nil) { [weak self] in
+            self?.handlePostCreation()
+        }
+        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+        parentNavigationController?.show(webViewController, sender: self)
+    }
+
+    /// Reloads data and shows campaign list.
+    func handlePostCreation() {
+        parentNavigationController?.popViewController(animated: true)
+        Task {
+            await viewModel.reload()
+        }
+        showCampaignList(isPostCreation: true)
+    }
+
+    func showCampaignList(isPostCreation: Bool) {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let controller = BlazeCampaignListHostingController(site: site, viewModel: .init(siteID: site.siteID), isPostCreation: isPostCreation)
+        parentNavigationController?.show(controller, sender: self)
     }
 }
 
@@ -32,7 +76,7 @@ struct BlazeCampaignDashboardView: View {
     var campaignTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
-    var productTapped: (() -> Void)?
+    var productTapped: ((Int64) -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllCampaignsTapped: (() -> Void)?
@@ -65,7 +109,7 @@ struct BlazeCampaignDashboardView: View {
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
                     .onTapGesture {
-                        productTapped?()
+                        productTapped?(product.productID)
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)

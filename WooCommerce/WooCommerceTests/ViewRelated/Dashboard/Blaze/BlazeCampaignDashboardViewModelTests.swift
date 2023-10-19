@@ -587,6 +587,39 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
             XCTFail("Wrong state")
         }
     }
+
+    // MARK: shouldShowIntroView
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_false_if_there_exists_at_least_one_campaign() {
+        // Given
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        insertCampaigns([campaign])
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_true_if_there_is_no_existing_campaign() {
+        // Given
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
+    }
 }
 
 private extension BlazeCampaignDashboardViewModelTests {

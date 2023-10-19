@@ -61,6 +61,9 @@ private extension BlazeCampaignDashboardViewHostingController {
         showCampaignList(isPostCreation: true)
     }
 
+    /// Navigates to the campaign list.
+    /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
+    ///
     func showCampaignList(isPostCreation: Bool) {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return

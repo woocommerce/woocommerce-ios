@@ -20,8 +20,8 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        rootView.createCampaignTapped = { [weak self] in
-            self?.navigateToCampaignCreation(source: .myStoreSectionCreateCampaignButton)
+        rootView.createCampaignTapped = { [weak self] isFromIntro in
+            self?.navigateToCampaignCreation(source: isFromIntro ? .introView : .myStoreSectionCreateCampaignButton)
         }
 
         rootView.productTapped = { [weak self] productID in
@@ -80,7 +80,7 @@ struct BlazeCampaignDashboardView: View {
     var showAllCampaignsTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
-    var createCampaignTapped: (() -> Void)?
+    var createCampaignTapped: ((_ isFromIntro: Bool) -> Void)?
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
     @State private var selectedCampaignURL: URL?
@@ -108,7 +108,10 @@ struct BlazeCampaignDashboardView: View {
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
                     .onTapGesture {
-                        productTapped?(product.productID)
+                        viewModel.checkIfIntroViewIsNeeded()
+                        if !viewModel.shouldShowIntroView {
+                            productTapped?(product.productID)
+                        }
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
@@ -139,13 +142,24 @@ struct BlazeCampaignDashboardView: View {
         .sheet(item: $selectedCampaignURL) { url in
             detailView(url: url)
         }
+        .sheet(isPresented: $viewModel.shouldShowIntroView) {
+            BlazeCampaignIntroView(onStartCampaign: {
+                viewModel.shouldShowIntroView = false
+                createCampaignTapped?(true)
+            }, onDismiss: {
+                viewModel.shouldShowIntroView = false
+            })
+        }
     }
 }
 
 private extension BlazeCampaignDashboardView {
     var createCampaignButton: some View {
         Button {
-            createCampaignTapped?()
+            viewModel.checkIfIntroViewIsNeeded()
+            if !viewModel.shouldShowIntroView {
+                createCampaignTapped?(false)
+            }
         } label: {
             Text(Localization.createCampaign)
                 .fontWeight(.semibold)

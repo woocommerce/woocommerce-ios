@@ -21,6 +21,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
+    @Published var shouldShowIntroView: Bool = false
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -99,6 +101,12 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         // No Blaze campaign or published product available
         update(state: .empty)
+    }
+
+    func checkIfIntroViewIsNeeded() {
+        if blazeCampaignResultsController.numberOfObjects == 0 {
+            shouldShowIntroView = true
+        }
     }
 }
 

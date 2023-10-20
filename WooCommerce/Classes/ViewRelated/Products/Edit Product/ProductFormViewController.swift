@@ -726,7 +726,7 @@ private extension ProductFormViewController {
     ///
     func observeVariationsPriceChanges() {
         newVariationsPriceSubscription = viewModel.newVariationsPrice.sink { [weak self] in
-            self?.onVariationsPriceChanged()
+            self?.updateFormTableContent()
         }
     }
 
@@ -734,7 +734,7 @@ private extension ProductFormViewController {
     /// Needed to show/hide the `.`
     func observeUpdateBlazeEligibility() {
         updateBlazeEligibility = viewModel.isEligibleForBlazeUpdate.sink { [weak self] in
-            self?.onBlazeEligibilityChanged()
+            self?.updateFormTableContent()
         }
 
     }
@@ -812,14 +812,6 @@ private extension ProductFormViewController {
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
-    }
-
-    func onVariationsPriceChanged() {
-        updateFormTableContent()
-    }
-
-    func onBlazeEligibilityChanged() {
-        updateFormTableContent()
     }
 
     /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.

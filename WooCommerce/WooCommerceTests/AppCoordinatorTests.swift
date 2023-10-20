@@ -495,7 +495,8 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() throws {
         // Given
-        let appCoordinator = makeCoordinator(loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
+        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()
@@ -516,7 +517,8 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() throws {
         // Given
-        let appCoordinator = makeCoordinator(loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()
@@ -536,7 +538,8 @@ final class AppCoordinatorTests: XCTestCase {
 
     func test_authenticationManager_handleAuthenticationUrl_with_login_url_dismisses_modal_and_pushes_view_controller_when_modal_is_shown() throws {
         // Given
-        let appCoordinator = makeCoordinator(loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
+                                             loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()

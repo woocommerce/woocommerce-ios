@@ -45,13 +45,13 @@ extension BlazeCampaign.Status {
 
     var backgroundColor: Color {
         switch self {
-        case .active, .approved, .created, .scheduled:
+        case .active, .approved:
             return .withColorStudio(name: .green, shade: .shade5)
-        case .finished:
+        case .scheduled, .finished:
             return .withColorStudio(name: .blue, shade: .shade5)
         case .canceled, .rejected:
             return .withColorStudio(name: .red, shade: .shade5)
-        case .processing:
+        case .created, .processing:
             return .withColorStudio(name: .yellow, shade: .shade5)
         case .unknown:
             return .withColorStudio(name: .gray, shade: .shade5)

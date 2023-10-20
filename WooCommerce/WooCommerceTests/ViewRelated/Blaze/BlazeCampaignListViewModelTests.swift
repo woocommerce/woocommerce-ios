@@ -214,7 +214,6 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_are_empty_when_loaded_campaigns_are_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
                 return
@@ -402,6 +401,20 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_campaign_detail_selected"}))
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
+    }
+
+    func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCreateCampaign(source: .introView)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_tapped"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
 }
 

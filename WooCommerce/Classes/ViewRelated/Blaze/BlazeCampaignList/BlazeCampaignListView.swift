@@ -113,6 +113,7 @@ struct BlazeCampaignListView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.create) {
                     onCreateCampaign()
+                    viewModel.didSelectCreateCampaign(source: .campaignList)
                 }
             }
         }
@@ -129,6 +130,7 @@ struct BlazeCampaignListView: View {
             BlazeCampaignIntroView(onStartCampaign: {
                 viewModel.shouldShowIntroView = false
                 onCreateCampaign()
+                viewModel.didSelectCreateCampaign(source: .introView)
             }, onDismiss: {
                 viewModel.shouldShowIntroView = false
             })

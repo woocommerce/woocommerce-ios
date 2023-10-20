@@ -98,6 +98,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func didSelectCampaignDetails() {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
     }
+
+    func didSelectCreateCampaign(source: BlazeSource) {
+        analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
+    }
 }
 
 // MARK: Configuration

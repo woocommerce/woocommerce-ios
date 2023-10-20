@@ -23,7 +23,7 @@ final class AppCoordinatorTests: XCTestCase {
         stores = MockStoresManager(sessionManager: sessionManager)
         storageManager = MockStorageManager()
         authenticationManager = AuthenticationManager()
-        authenticationManager.initialize(loggedOutAppSettings: MockLoggedOutAppSettings())
+        authenticationManager.initialize()
     }
 
     override func tearDown() {
@@ -491,6 +491,47 @@ final class AppCoordinatorTests: XCTestCase {
         let eventProperties = try XCTUnwrap(analytics.receivedProperties[indexOfEvent])
         assertEqual(LocalNotification.Scenario.Identifier.Prefix.freeTrialSurvey24hAfterFreeTrialSubscribed, eventProperties["type"] as? String)
         assertEqual(true, eventProperties["is_iap_available"] as? Bool)
+    }
+
+    func test_authenticationManager_handleAuthenticationUrl_with_login_url_updates_root_to_LoginNavigationController_when_onboarding_is_shown() throws {
+        // Given
+        let appCoordinator = makeCoordinator(loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
+        let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
+
+        appCoordinator.start()
+        XCTAssertFalse(window.rootViewController is LoginNavigationController)
+        assertThat(window.rootViewController?.topmostPresentedViewController, isAnInstanceOf: LoginOnboardingViewController.self)
+
+        // When
+        let rootViewController = try XCTUnwrap(window.rootViewController)
+        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: rootViewController))
+
+        // Then
+        waitUntil {
+            self.window.rootViewController is UINavigationController
+        }
+        let loginNavigationController = try XCTUnwrap(window.rootViewController as? LoginNavigationController)
+        XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
+    }
+
+    func test_authenticationManager_handleAuthenticationUrl_with_login_url_pushes_a_view_controller_when_onboarding_is_not_shown() throws {
+        // Given
+        let appCoordinator = makeCoordinator(loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
+
+        appCoordinator.start()
+        waitUntil {
+            self.window.rootViewController is UINavigationController
+        }
+        let loginNavigationController = try XCTUnwrap(window.rootViewController as? LoginNavigationController)
+        XCTAssertEqual(loginNavigationController.viewControllers.count, 1)
+
+        // When
+        XCTAssertTrue(authenticationManager.handleAuthenticationUrl(url, options: [:], rootViewController: loginNavigationController))
+
+        // Then
+        XCTAssertEqual(window.rootViewController, loginNavigationController)
+        XCTAssertEqual(loginNavigationController.viewControllers.count, 2)
     }
 }
 

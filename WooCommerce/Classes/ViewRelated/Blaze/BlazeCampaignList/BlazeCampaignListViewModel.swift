@@ -18,6 +18,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
             if shouldShowIntroView {
                 didShowIntroView = true
                 analytics.track(event: .Blaze.blazeIntroDisplayed())
+                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
             }
         }
     }
@@ -65,6 +66,8 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
         configureResultsController()
         configurePaginationTracker()
+
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
     }
 
     /// Called when loading the first page of campaigns.

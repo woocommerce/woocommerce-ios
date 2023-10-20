@@ -25,6 +25,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         didSet {
             if shouldShowIntroView {
                 analytics.track(event: .Blaze.blazeIntroDisplayed())
+                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
             }
         }
     }
@@ -83,6 +84,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.state = .loading
 
         configureResultsController()
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
     }
 
     @MainActor

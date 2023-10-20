@@ -19,7 +19,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var state: State
 
-    @Published private(set) var shouldShowInDashboard: Bool = false
+    @Published private(set) var shouldShowInDashboard: Bool = false {
+        didSet {
+            if shouldShowInDashboard {
+                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
+            }
+        }
+    }
 
     @Published var shouldShowIntroView: Bool = false {
         didSet {
@@ -84,7 +90,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.state = .loading
 
         configureResultsController()
-        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
     }
 
     @MainActor

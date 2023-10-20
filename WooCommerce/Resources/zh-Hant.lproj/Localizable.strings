@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-10 11:54:22+0000 */
+/* Translation-Revision-Date: 2023-10-17 14:54:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -296,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 此為 WooCommerce Payments 的標準功能 (有其限制)。其他付款服務供應商可能需要額外安裝擴充功能才能使用。";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. 建立訂單或收取款項";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 僅適用於美國；其他國家\/地區需要額外擴充功能才能使用。";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. 點選「收取款項」並選擇「iPhone 卡緊收」。";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "全天候優先支援服務";
@@ -310,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. 向顧客展示你的 iPhone。";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 分鐘";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. 顧客手持卡片，以水平方向置於你的 iPhone 感應支付符號上方。";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. 在你看到「完成」核取記號後，你的商店將處理付款並完成交易。";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -383,6 +398,13 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "能隨著業務增長而擴大";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "關於「卡緊收」";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "關於「iPhone 卡緊收」";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "關於此應用程式";
 
@@ -439,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "啟用";
 
@@ -456,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "新增";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -465,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "新增類別";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "新增優惠券";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "新增自訂金額";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "新增顧客";
@@ -478,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "新增說明 (選填)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "新增折扣";
 
 /* Downloadable file screen navigation title */
@@ -603,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "新增屬性";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "新增優惠券";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "新增信用卡";
 
@@ -618,7 +646,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "手動新增詳情";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "新增折扣";
 
 /* Footer of text field section in Add Attribute Options screen */
@@ -966,6 +995,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "核准";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "已核准";
 
@@ -1247,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "文萊";
 
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "預算";
+
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "新增你想銷售的商品以建立你的目錄。";
 
@@ -1429,6 +1462,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1450,6 +1484,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "取消升級";
+
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "已取消";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -1524,6 +1561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "讀卡機手冊";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "讀卡機";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "讀卡機手冊";
@@ -1721,6 +1761,9 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "清除選取項目";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "點擊率";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1789,7 +1832,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "完成付款流程，並等候 WooCommerce 應用程式的訂單推播通知。";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "已完成";
 
 /* Title for the list of component options in the Component Settings view */
@@ -2117,6 +2161,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "優惠券 (%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "優惠券不適用";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "立即當機";
 
@@ -2197,6 +2244,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "建立、編輯和發佈產品。";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "建立時間";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "為屬性的所有組合建立款式。";
@@ -2442,6 +2492,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "與讀卡機中斷連線";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "折扣";
@@ -2464,6 +2516,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "運送可享折扣²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "折扣不適用";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "探索適用於貴店的進階功能和個人化建議！ 點選以挑選最適合你的方案。";
@@ -2573,6 +2628,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2725,6 +2781,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "編輯說明";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "編輯折扣";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "編輯商品類別 (%1$d)";
@@ -2904,6 +2963,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "輸入優惠券";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "輸入金額";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "輸入貨運業者名稱";
 
@@ -2923,6 +2985,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "輸入密碼";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "輸入百分比";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "請輸入要連結的 WooCommerce 商店位址。";
@@ -3319,6 +3384,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "固定的商品折扣";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "固定的價格折扣";
 
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "彈性、安全的付款選項";
@@ -3758,6 +3826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "你想如何開始？";
 
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "瞭解使用方式";
+
 /* Country option for a site address. */
 "Hungary" = "匈牙利";
 
@@ -3830,6 +3901,18 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "如果你繼續使用 Apple 或 Google 操作且尚未擁有 WordPress.com 帳號，即表示你正在建立帳號，並同意我們的_服務條款_。";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "重要資訊";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "曝光數";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "在 %1$@，與「卡緊收」搭配使用的卡片交易限額為感應交易上限。";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "審核中";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "進行中";
 
@@ -3838,6 +3921,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab
    Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "尚有存貨";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "在英國地區，與「卡緊收」搭配使用的卡片交易限額為 %1$@。";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "你目前使用哪個平台進行銷售？";
@@ -4148,9 +4234,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "隨處皆可加入";
 
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "加入行動付款";
-
 /* Country option for a site address. */
 "Jordan" = "約旦";
 
@@ -4262,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "深入瞭解 Jetpack";
+
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "深入瞭解讀卡機";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "深入瞭解如何使用行動裝置建立標籤";
@@ -5504,6 +5590,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name of percentage discount type */
 "Percentage Discount" = "百分比折扣";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "百分比折扣";
+
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "百分比不能大於 100%";
 
@@ -5560,7 +5649,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "請為讀卡機充電";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "請檢查你的手機是否符合以下要求：執行 iOS 16.0 或以上版本的 iPhone XS 或後續機型。 如果受支援的裝置顯示此錯誤訊息，請聯絡支援團隊。";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "請檢查你的手機是否符合以下要求：執行 iOS 16.4 或以上版本的 iPhone XS 或後續機型。 如果受支援的裝置顯示此錯誤訊息，請聯絡支援團隊。";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "請檢查禮物卡的餘額。";
@@ -5833,6 +5922,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "價格";
 
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "折扣後價格";
+
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "價格已更新";
 
@@ -5987,6 +6079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "商品已儲存";
+
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "商品簡短說明";
 
 /* Title of the product type field on the add product with AI Preview screen.
    Title of the Product Type row on Product main screen */
@@ -6244,6 +6339,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "已拒絕";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "稍後再提醒我";
@@ -6263,7 +6361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "從訂單移除優惠券";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "移除折扣";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6343,6 +6442,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "必填";
+
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "需要 iPhone XS 後續機型或 iOS %1$@ 以上。 「感應支付符號」為 EMVCo, LLC 所擁有，並經其許可所使用的商標。";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "重設活動記錄";
@@ -6611,6 +6713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "排程折扣";
 
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "已排程";
+
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "搜尋";
 
@@ -6810,6 +6915,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "設定稅率";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "設定 iPhone 的點選支付功能";
+
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
 "Set a new tax rate for this order" = "為此訂單設定新稅率";
 
@@ -6834,8 +6943,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "設定 Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "設定 iPhone 的點選支付功能";
 
@@ -6848,6 +6956,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "設定";
 
@@ -6876,14 +6985,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "分享優惠券";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "分享意見反應";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "分享付款連結";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "分享商品";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "分享 iPhone「Tap to Pay」(輕觸付款) 功能的意見";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "分享 URL";
@@ -7543,6 +7652,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍攝相片";
 
+/* Description of the hub menu payments button */
+"Take payments on the go" = "隨時隨地輕鬆收款";
+
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "即將讓您返回以收取款項";
 
@@ -7567,6 +7679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "點選下方按鈕，系統會透過網頁瀏覽器重新導向至你的網路商店。";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "卡緊收";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "iPhone 上的「Tap to Pay」(輕觸付款) 功能";
@@ -7576,6 +7691,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "「iPhone 卡緊收」已準備就緒";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "「iPhone 卡緊收」功能可接受所有類型感應付款，從實體簽帳金融卡、信用卡，到 Apple Pay 和其他的數位錢包等，讓你無需購買實體讀卡機。";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "點選以插入水平尺規";
@@ -7891,6 +8009,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "付款處理商無法處理付款。";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "太早移除付款卡片，請再試一次。";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "此付款方式不支援自動退款。 若要完成退款，請手動將款項轉帳給客戶。";
@@ -8220,6 +8341,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "至";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "若要接受高於此限制的付款，請考慮購買讀卡機。";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "若要新增優惠券，請移除產品折扣";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "若要新增產品折扣，請移除訂單上的所有優惠券";
+
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "若要新增款式，你需要先設定其屬性 (即「顏色」、「尺寸」)";
 
@@ -8392,6 +8522,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "嘗試重新安裝";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "試用「iPhone 卡緊收」";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "重試付款";
 
@@ -8434,8 +8567,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即試試";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "請嘗試收取 $0.50 的款項，瞭解 iPhone 的點選支付功能如何運作。 使用你的簽帳金融卡或信用卡：你可在完成測試後退款。";
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "請嘗試收取 %1$@ 的款項，瞭解「iPhone 卡緊收」功能如何運作。 使用你的簽帳金融卡或信用卡：你可在完成測試後退款。";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "請嘗試使用其他電子郵件登入";
@@ -8738,7 +8871,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "美屬維京群島";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "不明";
@@ -8748,6 +8882,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "未知的軟體版本";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "未知的國家\/地區";
 
 /* No comment provided by engineer. */
 "Unknown error" = "發生未知的錯誤";
@@ -9142,6 +9279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "無法載入你的網站";
 
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "我們無法處理你的應用程式登入要求";
+
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "我們找不到任何稅率";
 
@@ -9304,6 +9444,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "什麼是 Jetpack？";
+
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "什麼是「iPhone 卡緊收」？";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "什麼是 WooCommerce 服務折扣？";
@@ -9796,6 +9939,15 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "沒有上個期間";
 
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
+
 /* No comment provided by engineer. */
 "password" = "密碼";
 
@@ -9871,6 +10023,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "無法擷取今日的統計資料";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "%1$@使用「iPhone 卡緊收」功能接受付款。";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "未知";

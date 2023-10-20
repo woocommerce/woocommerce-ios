@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-13 16:26:27+0000 */
+/* Translation-Revision-Date: 2023-10-18 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -296,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Standaard beschikbaar met WooCommerce Payments (beperkingen van toepassing). Aanvullende extensies zijn mogelijk vereist voor andere betaalproviders.";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. Een bestelling aanmaken of een betaling innen";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Alleen beschikbaar in de VS. Voor andere landen is een aanvullende extensie vereist.";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Tik op ‘Betalingen ontvangen’ en kies ‘Tap to Pay op iPhone’.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "24\/7 ondersteuning met prioriteit";
@@ -310,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. Bied je iPhone aan de klant aan.";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minuten";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Je klant houd hun kaart horizontaal tegen de bovenkant van je iPhone, over het pictogram voor contactloos betalen.";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Nadat je het vinkje ‘Gereed’ ziet, verwerkt de winkel de betaling en is de transactie compleet.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -383,6 +398,13 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Mogelijkheid om te schalen terwijl mijn bedrijf groeit";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "Over Tap to Pay";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "Over Tap to Pay op iPhone";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Over de app";
 
@@ -439,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "Actief";
 
@@ -456,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "Voeg toe";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -465,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Categorie toevoegen";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "Coupon toevoegen";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "Aangepast bedrag toevoegen";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "Klant toevoegen";
@@ -478,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "Beschrijving toevoegen (optioneel)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "Korting toevoegen";
 
 /* Downloadable file screen navigation title */
@@ -603,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Eigenschap toevoegen";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "Coupon toevoegen";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Creditcard toevoegen";
 
@@ -618,7 +646,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "Details handmatig toevoegen";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "Korting toevoegen";
 
 /* Footer of text field section in Add Attribute Options screen */
@@ -966,6 +995,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Goedkeuren";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Goedgekeurd";
 
@@ -1247,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "Brunei";
 
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "Budget";
+
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Breid je catalogus uit door toe te voegen wat je wilt verkopen.";
 
@@ -1429,6 +1462,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1450,6 +1484,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Upgrade annuleren";
+
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "Geannuleerd";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -1524,6 +1561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Handleidingen kaartlezer";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "Kaartlezers";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Handleidingen kaartlezer";
@@ -1721,6 +1761,9 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Selectie wissen";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "Kliks";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1789,7 +1832,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Voltooi de betaling en wacht op een pushbericht over de bestelling in je WooCommerce-app.";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "Voltooid";
 
 /* Title for the list of component options in the Component Settings view */
@@ -2117,6 +2161,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Waardebon (%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "Coupons niet beschikbaar";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Direct crashen";
 
@@ -2197,6 +2244,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Maak, bewerk en publiceer producten.";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "Aangemaakt";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Maakt variaties aan voor alle combinaties van je eigenschappen.";
@@ -2442,6 +2492,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Lezer loskoppelen";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Korting";
@@ -2464,6 +2516,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "Verzending met korting²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "Kortingen niet beschikbaar";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Ontdek geavanceerde functies en gepersonaliseerde aanbevelingen voor jouw winkel! Tik op het abonnement dat het beste bij je past.";
@@ -2573,6 +2628,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2725,6 +2781,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "Beschrijving bewerken";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "Korting bewerken";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "Productcategorieën bewerken (%1$d)";
@@ -2904,6 +2963,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "Voer een coupon in";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "Voer bedrag in";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Voer naam van bezorgservice in";
 
@@ -2923,6 +2985,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Voer wachtwoord in";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "Voer percentage in";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "Voer het adres van de WooCommerce-winkel die je wilt koppelen in.";
@@ -3319,6 +3384,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Vaste productkorting";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "Korting op vaste prijs";
 
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "Flexibele en veilige betalingsopties";
@@ -3758,6 +3826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "Hoe wil je beginnen?";
 
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "Zo werkt het";
+
 /* Country option for a site address. */
 "Hungary" = "Hongarije";
 
@@ -3830,6 +3901,18 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Als je doorgaat met Google of Apple en nog geen WordPress.com-account hebt, maak je een account aan en ga je akkoord met onze _Servicevoorwaarden_.";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "Belangrijke informatie";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "Impressies";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "Kaarten kunnen in %1$@ alleen gebruikt worden met Tap to Pay voor transacties tot de limiet voor contactloos betalen.";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "Wordt gemodereerd";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Bezig";
 
@@ -3838,6 +3921,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab
    Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "Op voorraad";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "Kaarten kunnen in het Verenigd Koninkrijk alleen gebruikt worden met Tap to Pay voor transacties tot %1$@.";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "Op welk platform verkoop je momenteel?";
@@ -4148,9 +4234,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Deelnemen vanaf elke locatie";
 
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "Start ook met mobiele betalingen";
-
 /* Country option for a site address. */
 "Jordan" = "Jordanië";
 
@@ -4262,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Meer informatie over Jetpack";
+
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "Meer informatie over kaartlezers";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Meer informatie over labels met je mobiele apparaat aanmaken";
@@ -5504,6 +5590,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuele korting";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "Procentuele korting";
+
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "Percentages mogen niet hoger zijn dan 100%";
 
@@ -5560,7 +5649,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Laad de lezer op";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Controleer of je telefoon voldoet aan de volgende vereisten: iPhone XS of nieuwer met iOS 16.0 of nieuwer. Neem contact op met de klantenservice als deze fout zich blijft voordoen op een ondersteund apparaat.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Controleer of je telefoon voldoet aan de volgende vereisten: iPhone XS of nieuwer met iOS 16.4 of nieuwer. Neem contact op met de klantenservice als deze fout zich blijft voordoen op een ondersteund apparaat.";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Controleer het resterende bedrag op de cadeaubon.";
@@ -5833,6 +5922,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "Prijs";
 
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "Prijs na korting";
+
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "Prijs is bijgewerkt";
 
@@ -5987,6 +6079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Product opgeslagen.";
+
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "Korte productomschrijving";
 
 /* Title of the product type field on the add product with AI Preview screen.
    Title of the Product Type row on Product main screen */
@@ -6244,6 +6339,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "Afgewezen";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Herinner mij hier later aan";
@@ -6263,7 +6361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "Coupon verwijderen uit bestelling";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "Korting verwijderen";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6343,6 +6442,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Verplicht";
+
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "iPhone XS of nieuwer met iOS %1$@ of hoger vereist. Het pictogram voor contactloos betalen is een handelsmerk dat gebruikt wordt met toestemming en dat eigendom is van EMVCo, LLC.";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Activiteitenlog herstellen";
@@ -6611,6 +6713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Verkoop inplannen";
 
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "Gepland";
+
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Zoeken";
 
@@ -6810,6 +6915,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Belastingtarief instellen";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "Tap to Pay on iPhone instellen";
+
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
 "Set a new tax rate for this order" = "Stel een nieuw belastingtarief in voor deze bestelling";
 
@@ -6834,8 +6943,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Jetpack instellen";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Tap to Pay on iPhone instellen";
 
@@ -6848,6 +6956,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Instellingen";
 
@@ -6876,14 +6985,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Coupon delen";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "Deel feedback";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Betaallink delen";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "Product delen";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "Deel feedback over tik om te betalen op iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "URL delen";
@@ -7543,6 +7652,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Een foto maken";
 
+/* Description of the hub menu payments button */
+"Take payments on the go" = "Neem onderweg betalingen aan";
+
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Je wordt naar een vorige pagina gestuurd om een betaling aan te nemen";
 
@@ -7567,6 +7679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Druk op de knop hieronder om doorgestuurd te worden naar jouw webwinkel via een webbrowser.";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "Tap to Pay";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Tik om te betalen op iPhone";
@@ -7576,6 +7691,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tap to Pay on iPhone is gereed";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Met Tap to Pay op iPhone kan je alle soorten contactloze betalingen accepteren: van fysieke betaal- en creditkaarten, tot Apple Pay en andere digitale wallets, zonder een fysieke kaartlezer aan te hoeven schaffen.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tik om een horizontale liniaal in te voeren";
@@ -7891,6 +8009,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "De betaling kan niet worden verwerkt door de betalingsverwerker.";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "De betaalkaart is te snel verwijderd, probeer het opnieuw.";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "De betaalmethode ondersteunt geen automatische terugbetalingen. Voltooi de terugbetaling door het bedrag handmatig over te maken naar de klant.";
@@ -8220,6 +8341,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Aan";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Overweeg een kaartlezer te kopen om betalingen boven deze limiet te kunnen accepteren.";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "Verwijder je Productkortingen om Coupons toe te voegen";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "Verwijder alle Coupons om een Productkorting toe te voegen";
+
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Om een variatie toe te voegen moet je de eigenschappen (bv. 'kleur', 'maat') eerst instellen";
 
@@ -8392,6 +8522,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Probeer opnieuw te installeren";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "Tap to Pay op iPhone proberen";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Probeer de betaling opnieuw";
 
@@ -8434,8 +8567,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Probeer het nu";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Probeer een betaling van $ 0,50 aan te nemen om te zien hoe Tap to Pay voor iPhone werkt. Gebruik je betaalpas of creditcard; je kunt het terugstorten wanneer je klaar bent.";
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Probeer een betaling van %1$@ aan te nemen om te zien hoe Tap to Pay voor iPhone werkt. Gebruik je betaalpas of creditcard; je kan het terugstorten wanneer je klaar bent.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Probeer met ander e-mailadres";
@@ -8738,7 +8871,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "Amerikaanse Maagdeneilanden";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Onbekend";
@@ -8748,6 +8882,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Onbekende softwareversie";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "Onbekend land";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Onbekende fout";
@@ -9142,6 +9279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "We konden je site niet laden";
 
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "We konden de loginaanvraag van je app niet verwerken";
+
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "We konden geen belastingtarieven vinden";
 
@@ -9304,6 +9444,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Wat is Jetpack?";
+
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "Wat is Tap to Pay op iPhone?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Wat houdt korting op WooCommerce Services in?";
@@ -9796,6 +9939,15 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "geen vorige periode";
 
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
+
 /* No comment provided by engineer. */
 "password" = "Wachtwoord";
 
@@ -9871,6 +10023,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan de statistieken van vandaag niet ophalen";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "%1$@ over betalingen accepteren met Tap to Pay op iPhone.";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "Onbekend";

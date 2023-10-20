@@ -17,6 +17,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
         didSet {
             if shouldShowIntroView {
                 didShowIntroView = true
+                analytics.track(event: .Blaze.blazeIntroDisplayed())
             }
         }
     }

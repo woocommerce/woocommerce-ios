@@ -64,6 +64,11 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeCampaignDetailSelected,
                               properties: [Key.source: source.rawValue])
         }
+
+        /// Tracked when then intro screen for Blaze is displayed.
+        static func blazeIntroDisplayed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeIntroDisplayed, properties: [:])
+        }
     }
 }
 

@@ -21,7 +21,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
-    @Published var shouldShowIntroView: Bool = false
+    @Published var shouldShowIntroView: Bool = false {
+        didSet {
+            if shouldShowIntroView {
+                analytics.track(event: .Blaze.blazeIntroDisplayed())
+            }
+        }
+    }
 
     private(set) var shouldRedactView: Bool = true
 

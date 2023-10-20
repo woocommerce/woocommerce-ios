@@ -1,4 +1,1 @@
-- [***] User can now use their stored passkeys to log in into WordPress.com [https://github.com/woocommerce/woocommerce-ios/pull/10904]
-- [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
-- [*] App login links are now handled when the onboarding screen is shown. [https://github.com/woocommerce/woocommerce-ios/pull/10974]
-
+Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.

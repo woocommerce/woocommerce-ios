@@ -66,7 +66,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
 
         configureResultsController()
         configurePaginationTracker()
+    }
 
+    /// Called when view first appears.
+    func onViewAppear() {
         analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
     }
 

@@ -367,15 +367,52 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: - Analytics
 
+    func test_blazeEntryPointDisplayed_is_tracked_upon_view_appear() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // Confidence check
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+
+        // When
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
+    }
+
     func test_blazeIntroDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() {
         // Given
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // Confidence check
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_intro_displayed"))
 
         // When
         viewModel.shouldShowIntroView = true
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_intro_displayed"))
+    }
+
+    func test_blazeEntryPointDisplayed_is_tracked_when_intro_view_is_shown() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // Confidence check
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+
+        // When
+        viewModel.shouldShowIntroView = true
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
     }
 
     func test_blazeIntroDisplayed_is_not_tracked_when_shouldShowIntroView_is_set_to_false() {

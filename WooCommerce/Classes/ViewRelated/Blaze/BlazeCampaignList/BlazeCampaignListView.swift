@@ -119,6 +119,7 @@ struct BlazeCampaignListView: View {
         }
         .onAppear {
             viewModel.loadCampaigns()
+            viewModel.onViewAppear()
         }
         .sheet(item: $selectedCampaignURL) { url in
             detailView(url: url)

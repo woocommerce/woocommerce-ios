@@ -1,12 +1,19 @@
 import SwiftUI
 import struct Yosemite.Site
 
-/// Blaze campaign entry points.
-enum BlazeCampaignSource: String {
+/// Blaze campaign detail entry points.
+enum BlazeCampaignDetailSource: String {
     /// From the Blaze section on My Store tab.
     case myStoreSection = "my_store_section"
     /// From the Blaze campaign list
     case campaignList = "campaign_list"
+}
+
+enum BlazeCampaignListSource: String {
+    /// From the Menu tab
+    case menu
+    /// From the Blaze section on My Store tab
+    case myStoreSection = "my_store_section"
 }
 
 /// Hosting controller for `BlazeCampaignListView`

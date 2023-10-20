@@ -124,7 +124,7 @@ struct BlazeCampaignDashboardView: View {
                         let path = String(format: Constants.campaignDetailsURLFormat,
                                           campaign.campaignID,
                                           site.url.trimHTTPScheme(),
-                                          BlazeCampaignSource.myStoreSection.rawValue)
+                                          BlazeCampaignDetailSource.myStoreSection.rawValue)
                         selectedCampaignURL = URL(string: path)
                     }
             }
@@ -172,6 +172,7 @@ private extension BlazeCampaignDashboardView {
 
     var showAllCampaignsButton: some View {
         Button {
+            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
             showAllCampaignsTapped?()
         } label: {
             HStack {

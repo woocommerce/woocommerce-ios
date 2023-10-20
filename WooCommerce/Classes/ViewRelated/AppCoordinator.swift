@@ -186,21 +186,22 @@ private extension AppCoordinator {
         authenticationManager.displayAuthenticatorIfLoggedOut = { [weak self] in
             guard let self, self.isLoggedIn == false else { return nil }
             guard let loginNavigationController = self.window.rootViewController as? LoginNavigationController else {
-                self.displayAuthenticator()
-                return self.window.rootViewController as? LoginNavigationController
+                return self.displayAuthenticator() as? LoginNavigationController
             }
             return loginNavigationController
         }
         appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
     }
 
-    func displayAuthenticator() {
+    @discardableResult
+    func displayAuthenticator() -> UIViewController {
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
         ServiceLocator.analytics.track(.openedLogin)
+        return authenticationUI
     }
 
     /// Determines whether the login onboarding should be shown.

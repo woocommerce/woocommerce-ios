@@ -114,6 +114,14 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
             shouldShowIntroView = true
         }
     }
+
+    func didSelectCampaignList() {
+        analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
+    }
+
+    func didSelectCampaignDetails() {
+        analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
+    }
 }
 
 // MARK: - Blaze campaigns

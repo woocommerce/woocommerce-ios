@@ -121,7 +121,7 @@ struct BlazeCampaignDashboardView: View {
                         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                             return
                         }
-                        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
+                        viewModel.didSelectCampaignDetails()
                         let path = String(format: Constants.campaignDetailsURLFormat,
                                           campaign.campaignID,
                                           site.url.trimHTTPScheme(),
@@ -173,7 +173,7 @@ private extension BlazeCampaignDashboardView {
 
     var showAllCampaignsButton: some View {
         Button {
-            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
+            viewModel.didSelectCampaignList()
             showAllCampaignsTapped?()
         } label: {
             HStack {

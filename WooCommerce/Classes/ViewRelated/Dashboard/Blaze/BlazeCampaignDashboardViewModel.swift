@@ -24,7 +24,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     @Published var shouldShowIntroView: Bool = false {
         didSet {
             if shouldShowIntroView {
-                analytics.track(event: .Blaze.blazeIntroDisplayed())
                 analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
             }
         }

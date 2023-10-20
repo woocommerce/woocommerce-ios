@@ -19,13 +19,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var state: State
 
-    @Published private(set) var shouldShowInDashboard: Bool = false {
-        didSet {
-            if shouldShowInDashboard {
-                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
-            }
-        }
-    }
+    @Published private(set) var shouldShowInDashboard: Bool = false
 
     @Published var shouldShowIntroView: Bool = false {
         didSet {
@@ -77,6 +71,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         productResultsController.fetchedObjects.first
     }
 
+    private var visibilitySubscription: AnyCancellable?
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -89,6 +85,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
 
+        observeSectionVisibility()
         configureResultsController()
     }
 
@@ -226,5 +223,14 @@ private extension BlazeCampaignDashboardViewModel {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+    }
+
+    func observeSectionVisibility() {
+        visibilitySubscription = $shouldShowInDashboard
+            .removeDuplicates()
+            .filter { $0 == true }
+            .sink { [weak self] _ in
+                self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
+            }
     }
 }

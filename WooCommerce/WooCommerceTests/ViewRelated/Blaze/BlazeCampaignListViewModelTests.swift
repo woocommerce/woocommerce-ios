@@ -19,10 +19,15 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
         subscriptions = []
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     // MARK: - State transitions
@@ -359,6 +364,44 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    // MARK: - Analytics
+
+    func test_blazeIntroDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.shouldShowIntroView = true
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_intro_displayed"))
+    }
+
+    func test_blazeIntroDisplayed_is_not_tracked_when_shouldShowIntroView_is_set_to_false() {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.shouldShowIntroView = false
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_intro_displayed"))
+    }
+
+    func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_correct_source() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCampaignDetails()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_campaign_detail_selected"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
     }
 }
 

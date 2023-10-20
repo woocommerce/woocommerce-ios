@@ -11,6 +11,7 @@ final class AppCoordinatorTests: XCTestCase {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var authenticationManager: AuthenticationManager!
+    private var coordinator: AppCoordinator?
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -497,6 +498,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: false))
+        coordinator = appCoordinator
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()
@@ -519,6 +521,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        coordinator = appCoordinator
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()
@@ -540,6 +543,7 @@ final class AppCoordinatorTests: XCTestCase {
         // Given
         let appCoordinator = makeCoordinator(authenticationManager: authenticationManager,
                                              loggedOutAppSettings: MockLoggedOutAppSettings(hasFinishedOnboarding: true))
+        coordinator = appCoordinator
         let url = try XCTUnwrap(URL(string: "woocommerce://app-login?siteUrl=http%3A%2F%2Fwcdev.local&username=user"))
 
         appCoordinator.start()

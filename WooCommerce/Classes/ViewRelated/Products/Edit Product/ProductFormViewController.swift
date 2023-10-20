@@ -70,6 +70,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var updateBlazeEligibility: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
@@ -127,6 +128,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productNameSubscription?.cancel()
         updateEnabledSubscription?.cancel()
         newVariationsPriceSubscription?.cancel()
+        updateBlazeEligibility?.cancel()
     }
 
     override func viewDidLoad() {
@@ -145,6 +147,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProductName()
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
+        observeUpdateBlazeEligibility()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -727,6 +730,15 @@ private extension ProductFormViewController {
         }
     }
 
+    /// Updates table rows when Blaze eligibility is computed.
+    /// Needed to show/hide the `.`
+    func observeUpdateBlazeEligibility() {
+        updateBlazeEligibility = viewModel.isEligibleForBlazeUpdate.sink { [weak self] in
+            self?.onBlazeEligibilityChanged()
+        }
+
+    }
+
     /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
     ///
     func reloadLinkedPromoCellAnimated() {
@@ -802,15 +814,25 @@ private extension ProductFormViewController {
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: statuses)
     }
 
+    func onVariationsPriceChanged() {
+        updateFormTableContent()
+    }
+
+    func onBlazeEligibilityChanged() {
+        updateFormTableContent()
+    }
+
     /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
     ///
-    func onVariationsPriceChanged() {
+    func updateFormTableContent() {
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
+
+
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
     /// - Parameters:

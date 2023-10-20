@@ -30,6 +30,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var isEligibleForBlazeUpdate: AnyPublisher<Void, Never> {
+        isEligibleForBlazeSubject.eraseToAnyPublisher()
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
@@ -50,6 +55,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
+    private let isEligibleForBlazeSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
@@ -703,6 +709,7 @@ private extension ProductFormViewModel {
             let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
             updateActionsFactory()
+            isEligibleForBlazeSubject.send()
         }
     }
 }

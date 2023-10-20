@@ -94,6 +94,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
             userDefaults.setBlazePostCreationTipAsDisplayed(for: siteID)
         }
     }
+
+    func didSelectCampaignDetails() {
+        analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
+    }
 }
 
 // MARK: Configuration

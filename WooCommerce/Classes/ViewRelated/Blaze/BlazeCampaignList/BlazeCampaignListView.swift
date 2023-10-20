@@ -89,7 +89,7 @@ struct BlazeCampaignListView: View {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
-                                ServiceLocator.analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
+                                viewModel.didSelectCampaignDetails()
                                 let path = String(format: Constants.campaignDetailsURLFormat,
                                                   item.campaignID, siteURL,
                                                   BlazeCampaignDetailSource.campaignList.rawValue)

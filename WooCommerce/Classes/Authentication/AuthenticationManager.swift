@@ -156,6 +156,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = true
         loginFields.username = email
+        rootViewController.dismiss(animated: false)
         NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
     }
 
@@ -164,6 +165,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = false
         loginFields.username = username
+        rootViewController.dismiss(animated: false)
         NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
     }
 

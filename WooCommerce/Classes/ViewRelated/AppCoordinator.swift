@@ -185,9 +185,9 @@ private extension AppCoordinator {
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         authenticationManager.displayAuthenticatorIfLoggedOut = { [weak self] in
             guard let self, self.isLoggedIn == false else { return nil }
-            guard let loginNavigationController = getNavigationController() as? LoginNavigationController else {
+            guard let loginNavigationController = self.window.rootViewController as? LoginNavigationController else {
                 self.displayAuthenticator()
-                return self.getNavigationController() as? LoginNavigationController
+                return self.window.rootViewController as? LoginNavigationController
             }
             return loginNavigationController
         }

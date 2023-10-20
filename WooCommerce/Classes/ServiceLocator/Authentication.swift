@@ -6,6 +6,9 @@ import WordPressAuthenticator
 ///
 protocol Authentication {
 
+    /// Displays the authentication UI if the app is logged out, and returns the login navigation controller.
+    var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)? { get set }
+
     /// Presents the Support Interface
     ///
     /// - Parameters:
@@ -28,7 +31,7 @@ protocol Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
-    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol)
+    func initialize()
 
     /// Injects `loggedOutAppSettings`
     ///

@@ -50,6 +50,7 @@ private extension BlazeCampaignDashboardViewHostingController {
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         parentNavigationController?.show(webViewController, sender: self)
+        viewModel.didSelectCreateCampaign(source: source)
     }
 
     /// Reloads data and shows campaign list.

@@ -121,6 +121,7 @@ struct BlazeCampaignDashboardView: View {
                         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                             return
                         }
+                        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
                         let path = String(format: Constants.campaignDetailsURLFormat,
                                           campaign.campaignID,
                                           site.url.trimHTTPScheme(),

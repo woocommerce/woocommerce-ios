@@ -58,6 +58,12 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeCampaignListEntryPointSelected,
                               properties: [Key.source: source.rawValue])
         }
+
+        /// Tracked when a Blaze campaign detail is selected.
+        static func blazeCampaignDetailSelected(source: BlazeCampaignDetailSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignDetailSelected,
+                              properties: [Key.source: source.rawValue])
+        }
     }
 }
 

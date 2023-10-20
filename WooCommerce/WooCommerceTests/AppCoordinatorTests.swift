@@ -13,11 +13,12 @@ final class AppCoordinatorTests: XCTestCase {
     private var authenticationManager: AuthenticationManager!
     private var coordinator: AppCoordinator?
 
-    private let window = UIWindow(frame: UIScreen.main.bounds)
+    private var window: UIWindow!
 
     override func setUp() {
         super.setUp()
 
+        window = UIWindow(frame: UIScreen.main.bounds)
         window.makeKeyAndVisible()
 
         sessionManager = .makeForTesting(authenticated: false)

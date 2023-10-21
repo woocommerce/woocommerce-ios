@@ -221,4 +221,8 @@ public enum FeatureFlag: Int {
     /// Enables a new section on the My Store screen and a new entry point to the campaign list.
     ///
     case optimizedBlazeExperience
+
+    /// Enables bundle products support in order creation/editing.
+    ///
+    case bundleProductsInOrderForm
 }

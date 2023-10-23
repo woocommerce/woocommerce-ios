@@ -30,7 +30,7 @@ struct FeesInputTransformer {
 
         return order.copy(fees: updatedLines)
     }
-    
+   
     /// Adds a fee into an existing order.
     ///
     static func append(input: OrderFeeLine, on order: Order) -> Order {

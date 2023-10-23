@@ -288,7 +288,12 @@ private extension ProductFormTableViewDataSource {
             comment: "Label for button on product form to open Blaze flow"
         )
 
-        cell.configure(image: .blaze, text: title, size: CGSize(width: 20, height: 20))
+        cell.configure(
+            image: .blaze,
+            imageSize: CGSize(width: 20, height: 20),
+            text: title,
+            textColor: .accent
+        )
         cell.hideSeparator()
     }
 

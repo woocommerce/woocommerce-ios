@@ -195,8 +195,22 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    var orderHasCoupons: Bool {
+    lazy private(set) var addCustomAmountViewModel = {
+        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+            // TODO: Send amount and name to view model
+            debugPrint("Adding custom amount of \(amount) with name \(name)")
+        })
+    }()
+
+    private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
+    }
+
+    /// Whether product-discounts are disallowed for a given order
+    /// Since coupons and discounts are mutually exclusive, if an order already has coupons then discounts should be disallowed.
+    ///
+    var shouldDisallowDiscounts: Bool {
+        orderHasCoupons
     }
 
     /// Whether gift card is supported in order form.
@@ -734,6 +748,10 @@ final class EditableOrderViewModel: ObservableObject {
     func onClearAddressFromBottomSheetTapped() {
         analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
         forgetTaxRate()
+    }
+
+    func onDismissAddCustomAmountView() {
+        addCustomAmountViewModel.reset()
     }
 }
 

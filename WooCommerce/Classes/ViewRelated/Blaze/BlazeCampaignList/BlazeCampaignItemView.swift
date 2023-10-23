@@ -9,9 +9,12 @@ struct BlazeCampaignItemView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     private let campaign: BlazeCampaign
+    private let showBudget: Bool
 
-    init(campaign: BlazeCampaign) {
+    init(campaign: BlazeCampaign,
+         showBudget: Bool = true) {
         self.campaign = campaign
+        self.showBudget = showBudget
     }
 
     var body: some View {
@@ -91,6 +94,7 @@ struct BlazeCampaignItemView: View {
                 }
                 .fixedSize()
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .renderedIf(showBudget)
 
                 Spacer()
             }
@@ -98,8 +102,13 @@ struct BlazeCampaignItemView: View {
         .fixedSize(horizontal: false, vertical: true)
         .frame(maxWidth: .infinity)
         .padding(Layout.contentSpacing)
+        .background(
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(Color(uiColor: .init(light: UIColor.clear,
+                                           dark: UIColor.systemGray5)))
+        )
         .overlay {
-            RoundedRectangle(cornerRadius: 8)
+            RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .stroke(Color(uiColor: .separator), lineWidth: Layout.strokeWidth)
         }
         .padding(Layout.strokeWidth)

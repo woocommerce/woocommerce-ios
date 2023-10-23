@@ -104,6 +104,10 @@ final class DashboardViewController: UIViewController {
     ///
     private var blazeBannerHostingController: BlazeBannerHostingController?
 
+    /// Hosting controller for the Blaze Campaign View.
+    ///
+    private var blazeCampaignHostingController: BlazeCampaignDashboardViewHostingController?
+
     /// Bottom Jetpack benefits banner, shown when the site is connected to Jetpack without Jetpack-the-plugin.
     private lazy var bottomJetpackBenefitsBannerController = JetpackBenefitsBannerHostingController()
     private var isJetpackBenefitsBannerShown: Bool {
@@ -165,6 +169,7 @@ final class DashboardViewController: UIViewController {
         observeShowWebViewSheet()
         observeAddProductTrigger()
         observeOnboardingVisibility()
+        observeBlazeCampaignViewVisibility()
         observeBlazeBannerVisibility()
         configureStorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
@@ -783,9 +788,59 @@ private extension DashboardViewController {
     }
 }
 
+// MARK: - Blaze campaign view
+extension DashboardViewController {
+    func observeBlazeCampaignViewVisibility() {
+        viewModel.$showBlazeCampaignView.removeDuplicates()
+            .sink { [weak self] showBlazeCampaignView in
+                guard let self else { return }
+                if showBlazeCampaignView {
+                    self.showBlazeCampaignView()
+                } else {
+                    self.removeBlazeCampaignView()
+                }
+            }
+            .store(in: &subscriptions)
+
+        Task { @MainActor [weak self] in
+            await self?.viewModel.reloadBlazeCampaignView()
+        }
+    }
+
+    func showBlazeCampaignView() {
+        if blazeCampaignHostingController != nil {
+            removeBlazeCampaignView()
+        }
+        let hostingController = BlazeCampaignDashboardViewHostingController(
+            viewModel: viewModel.blazeCampaignDashboardViewModel,
+            parentNavigationController: navigationController
+        )
+        guard let campaignView = hostingController.view else {
+            return
+        }
+        campaignView.translatesAutoresizingMaskIntoConstraints = false
+        addViewBelowOnboardingCard(campaignView)
+        addChild(hostingController)
+        hostingController.didMove(toParent: self)
+        blazeCampaignHostingController = hostingController
+    }
+
+    func removeBlazeCampaignView() {
+        guard let blazeCampaignHostingController,
+              blazeCampaignHostingController.parent == self else { return }
+        blazeCampaignHostingController.willMove(toParent: nil)
+        blazeCampaignHostingController.view.removeFromSuperview()
+        blazeCampaignHostingController.removeFromParent()
+        self.blazeCampaignHostingController = nil
+    }
+}
+
 // MARK: - Blaze banner
 extension DashboardViewController {
     func observeBlazeBannerVisibility() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) == false else {
+            return
+        }
         viewModel.$showBlazeBanner.removeDuplicates()
             .sink { [weak self] showsBlazeBanner in
                 guard let self else { return }
@@ -940,6 +995,9 @@ private extension DashboardViewController {
             group.addTask { [weak self] in
                 await self?.viewModel.updateBlazeBannerVisibility()
             }
+            group.addTask { [weak self] in
+                await self?.viewModel.reloadBlazeCampaignView()
+            }
         }
     }
 }
@@ -959,6 +1017,9 @@ private extension DashboardViewController {
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
             Task { @MainActor [weak self] in
                 await self?.viewModel.updateBlazeBannerVisibility()
+            }
+            Task { @MainActor [weak self] in
+                await self?.viewModel.reloadBlazeCampaignView()
             }
         }.store(in: &subscriptions)
     }

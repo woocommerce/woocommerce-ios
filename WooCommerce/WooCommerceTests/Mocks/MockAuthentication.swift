@@ -2,6 +2,8 @@
 import WordPressAuthenticator
 
 final class MockAuthentication: Authentication {
+    var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
+
     private(set) var presentSupportFromScreenInvoked = false
     private(set) var presentSupportFromScreen: CustomHelpCenterContent.Screen?
 
@@ -22,7 +24,7 @@ final class MockAuthentication: Authentication {
         UIViewController()
     }
 
-    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
+    func initialize() {
         // no-op
     }
 

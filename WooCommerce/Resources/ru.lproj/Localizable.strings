@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-10 19:54:05+0000 */
+/* Translation-Revision-Date: 2023-10-17 18:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -296,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Доступно в качестве стандартной опции с WooCommerce Payments (применяются ограничения). Для работы с другими платёжными операторами могут потребоваться дополнительные расширения.";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. Создайте заказ или примите платёж.";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Только для США. Для других стран потребуется дополнительное расширение.";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Нажмите «Принять платёж» и выберите Tap to Pay on iPhone.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "Круглосуточная приоритетная поддержка";
@@ -310,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. Покажите покупателю ваш iPhone.";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4–6 минут";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Покупатель прикладывает свою карту горизонтально к верхней части вашего iPhone, к символу бесконтактной оплаты.";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Если вы видите значок «Выполнено» в виде галочки, это значит, что магазин обрабатывает ваш платёж, а транзакция завершена.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 ГБ";
@@ -383,6 +398,13 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Возможность масштабирования по мере развития бизнеса";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "О функции Tap to Pay (Оплата в касание)";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "Подробнее о функции Tap to Pay on iPhone";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "О приложении";
 
@@ -439,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "Активно";
 
@@ -456,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "Добавить";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -465,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Добавить категорию";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "Добавить купон";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "Добавить индивидуальную сумму";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "Добавить клиента";
@@ -478,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "Добавить описание (необязательно)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "Добавить скидку";
 
 /* Downloadable file screen navigation title */
@@ -603,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Добавить атрибут";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "Добавить купон";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Добавить кредитную карту";
 
@@ -618,7 +646,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "Добавить сведения вручную";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "Добавить скидку";
 
 /* Footer of text field section in Add Attribute Options screen */
@@ -966,6 +995,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Одобрить";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Одобрен";
 
@@ -1247,6 +1277,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "Бруней";
 
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "Бюджет";
+
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Создайте каталог, добавив товары для продажи.";
 
@@ -1429,6 +1462,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1450,6 +1484,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the button displayed when purchasing a plan fails, so the flow can be cancelled.
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Отменить обновление";
+
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "Отменено";
 
 /* Display label for cancelled order status.
    Display label for the subscription status type */
@@ -1524,6 +1561,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Руководства по работе с платёжными терминалами";
+
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "Устройства чтения карт";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Руководства по работе с платёжными терминалами";
@@ -1721,6 +1761,9 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Очистить выбор";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "Щелчки";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
@@ -1789,7 +1832,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Оплатите заказ и дождитесь push-уведомления в приложении WooCommerce.";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "Завершено";
 
 /* Title for the list of component options in the Component Settings view */
@@ -2117,6 +2161,9 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Купоны (%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "Нет доступных купонов";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Немедленное закрытие";
 
@@ -2197,6 +2244,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Создание, редактирование и публикация товаров.";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "Создано";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Создание вариантов для всех комбинаций ваших атрибутов.";
@@ -2442,6 +2492,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Отключить устройство чтения";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Скидка";
@@ -2464,6 +2516,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "Скидки на доставку ²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "Нет доступных скидок";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Получите расширенные возможности и индивидуальные рекомендации для своего магазина! Нажмите и выберите тарифный план, который вам подойдёт.";
@@ -2573,6 +2628,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2725,6 +2781,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "Редактировать описание";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "Изменить скидку";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "Редактировать рубрики товаров (%1$d)";
@@ -2904,6 +2963,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "Введите купон";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "Введите сумму";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Введите название компании-перевозчика";
 
@@ -2923,6 +2985,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Введите пароль";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "Введите процент";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "Введите адрес магазина WooCommerce, к которому требуется подключиться.";
@@ -3319,6 +3384,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Фиксированная скидка на товар";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "Фиксированная скидка";
 
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "Гибкие и безопасные способы оплаты";
@@ -3758,6 +3826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "С чего начнём?";
 
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "Как это работает";
+
 /* Country option for a site address. */
 "Hungary" = "Венгрия";
 
@@ -3830,6 +3901,18 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Если у вас нет учетной записи WordPress.com и вы продолжаете работу в учетной записи Apple или Google, вы принимаете _Условия предоставления услуг_ и для вас создается учетная запись.";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "Важная информация";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "Показы";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "В %1$@ для карт с функцией Tap to Pay установлен платёжный лимит бесконтактных транзакций.";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "На модерации";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Выполняется";
 
@@ -3838,6 +3921,9 @@ which should be translated separately and considered part of this sentence. */
    Label about product's inventory stock status shown on Products tab
    Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "Есть в наличии";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "В Великобритании картой с функцией Tap to Pay можно оплатить только сумму, не превышающую %1$@.";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "Какую платформу вы используете для продажи товаров сейчас?";
@@ -4148,9 +4234,6 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Присоединяйтесь откуда угодно";
 
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "Подключить мобильные платежи";
-
 /* Country option for a site address. */
 "Jordan" = "Иордания";
 
@@ -4262,6 +4345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Дополнительные сведения о Jetpack";
+
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "Подробнее об устройствах чтения карт";
 
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Узнать больше о распечатке этикеток с вашего мобильного устройства";
@@ -5504,6 +5590,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name of percentage discount type */
 "Percentage Discount" = "Процент скидки";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "Процент скидки";
+
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "Значение в процентах не может превышать 100";
 
@@ -5560,7 +5649,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Зарядите терминал";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Убедитесь, что ваш телефон отвечает этим требованиям: iPhone XS или более новая модель под управлением iOS версии 16.0 или выше. Если ошибка появляется на поддерживаемом устройстве, обратитесь в службу поддержки.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Убедитесь, что ваш телефон отвечает этим требованиям: iPhone XS или более новая модель под управлением iOS версии 16.4 или выше. Если ошибка появляется на поддерживаемом устройстве, обратитесь в службу поддержки.";
 
 /* Order gift card error notice message when the gift card is invalid. */
 "Please check the remaining balance of the gift card." = "Проверьте остаток баланса подарочной карты.";
@@ -5833,6 +5922,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "Цена";
 
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "Цена со скидкой";
+
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "Цена обновлена";
 
@@ -5987,6 +6079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Товар сохранен";
+
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "Краткое описание товара";
 
 /* Title of the product type field on the add product with AI Preview screen.
    Title of the Product Type row on Product main screen */
@@ -6244,6 +6339,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Обычная цена: %@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "Отклонено";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Напомнить позже";
@@ -6263,7 +6361,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "Удалить купон из заказа";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "Удалить скидку";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6343,6 +6442,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Обязательно";
+
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Требуется iPhone XS или новее с iOS %1$@ или более поздней версии. Символ бесконтактной оплаты (Contactless Symbol) — торговая марка, принадлежащая компании EMVCo, LLC и используемая с её разрешения.";
 
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Сбросить журнал активности";
@@ -6611,6 +6713,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Запланировать распродажу";
 
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "Запланировано";
+
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Поиск";
 
@@ -6810,6 +6915,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Указать налоговую ставку";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "Настройте Tap to Pay on iPhone";
+
 /* Title for the button to add a new tax ratewhen there is a tax rate stored */
 "Set a new tax rate for this order" = "Установить другую налоговую ставку для этого заказа";
 
@@ -6834,8 +6943,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Установить Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Настройте Tap to Pay on iPhone";
 
@@ -6848,6 +6956,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Настройки";
 
@@ -6876,14 +6985,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Поделиться купоном";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "Отправить отзыв";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Поделиться ссылкой на оплату";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "Поделиться товаром";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "Поделитесь отзывом об оплате в касание на iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "URL-адрес рекомендации";
@@ -7543,6 +7652,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Сделать фото";
 
+/* Description of the hub menu payments button */
+"Take payments on the go" = "Принимайте платежи на ходу";
+
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Возврат на страницу получения платежа";
 
@@ -7567,6 +7679,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Нажмите кнопку ниже, чтобы открыть онлайн-магазин в браузере.";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "Оплата в касание";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Оплата в касание с помощью iPhone";
@@ -7576,6 +7691,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Функция Tap to Pay on iPhone готова к работе";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Функция Tap to Pay on iPhone позволяет принимать все виды бесконтактных платежей: от банковских карт до Apple Pay и других цифровых кошельков — без необходимости приобретать устройство чтения карт.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Нажмите, чтобы вставить горизонтальную линейку";
@@ -7891,6 +8009,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "Платёжной системе не удалось обработать платёж.";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "Карта удалена слишком рано, повторите попытку.";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Этот способ оплаты не поддерживает автоматический возврат средств. Верните средства, отправив деньги покупателю вручную.";
@@ -8220,6 +8341,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "до";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Чтобы принимать платежи сверх лимита, вам может потребоваться устройство чтения карт.";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "Чтобы добавить купоны, удалите скидки на товары";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "Чтобы добавить скидку на товар, удалите из заказа все купоны";
+
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Чтобы добавить вариант, необходимо сначала задать атрибуты (например, \"Цвет\" или \"Размер\").";
 
@@ -8392,6 +8522,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Повторить установку";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "Испытайте функцию Tap to Pay on iPhone";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Оплатить ещё раз";
 
@@ -8434,8 +8567,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Попробовать";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Попробуйте принять платеж 0,50 долл. и посмотрите, как работает Tap to Pay on iPhone. Используйте дебетовую или кредитную карту: по завершении проверки средства будут возвращены.";
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Попробуйте принять платёж %1$@ и посмотрите, как работает функция Tap to Pay on iPhone. Используйте дебетовую или кредитную карту: по завершении проверки средства будут возвращены.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Попробуйте с другим email";
@@ -8738,7 +8871,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "Американские Виргинские острова";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Неизвестно";
@@ -8748,6 +8882,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Неизвестная версия программы";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "Неизвестная страна";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Неизвестная ошибка";
@@ -9142,6 +9279,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Не удалось загрузить сайт";
 
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "Не удалось обработать запрос на вход в приложение";
+
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "Налоговые ставки не найдены";
 
@@ -9304,6 +9444,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button linking to webview that explains what Jetpack isPresented when logging in with a site address that does not have a valid Jetpack installation
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Что такое Jetpack?";
+
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "Что такое Tap to Pay on iPhone?";
 
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Что такое скидка WooCommerce Services?";
@@ -9796,6 +9939,15 @@ which should be translated separately and considered part of this sentence. */
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
 
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
+
 /* No comment provided by engineer. */
 "password" = "Пароль";
 
@@ -9871,6 +10023,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Не удаётся получить статистику за сегодня";
+
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "%1$@ о том, как принимать платежи с помощью функции Tap to Pay on iPhone.";
 
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "неизвестно";

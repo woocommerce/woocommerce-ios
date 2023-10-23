@@ -17,6 +17,7 @@ import struct Experiments.CachedABTestVariationProvider
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
     ///
@@ -81,7 +82,7 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
-    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
+    func initialize() {
         WordPressAuthenticator.initializeWithCustomConfigs()
         WordPressAuthenticator.shared.delegate = self
     }
@@ -114,6 +115,11 @@ class AuthenticationManager: Authentication {
         }
 
         if isAppLoginUrl(url) {
+            guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+                DDLogWarn("App login link error: cannot display authenticator UI.")
+                return false
+            }
+
             guard let queryDictionary = url.query?.dictionaryFromQueryString(),
                   let siteURL = queryDictionary.string(forKey: "siteUrl"),
                   siteURL.isNotEmpty else {
@@ -126,14 +132,14 @@ class AuthenticationManager: Authentication {
             if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
                wpcomEmail.isNotEmpty {
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
-                showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: rootViewController)
+                showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: navigationController)
                 return true
             }
 
             if let wporgUsername = queryDictionary.string(forKey: "username"),
                wporgUsername.isNotEmpty {
                 analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
-                showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: rootViewController)
+                showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: navigationController)
                 return true
             }
         }
@@ -148,6 +154,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = true
         loginFields.username = email
+        rootViewController.dismiss(animated: false)
         NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
     }
 
@@ -156,6 +163,7 @@ class AuthenticationManager: Authentication {
         loginFields.siteAddress = siteURL
         loginFields.restrictToWPCom = false
         loginFields.username = username
+        rootViewController.dismiss(animated: false)
         NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
     }
 

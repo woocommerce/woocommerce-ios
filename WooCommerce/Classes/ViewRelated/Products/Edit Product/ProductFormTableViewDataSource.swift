@@ -288,8 +288,7 @@ private extension ProductFormTableViewDataSource {
             comment: "Label for button on product form to open Blaze flow"
         )
 
-        cell.configure(image: .blaze,
-                       text: title)
+        cell.configure(image: .blaze, text: title, size: CGSize(width: 20, height: 20))
     }
 
     func configureSeparator(cell: UITableViewCell) {

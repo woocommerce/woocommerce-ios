@@ -52,4 +52,15 @@ extension LeftImageTableViewCell {
         imageView?.image = image
         textLabel?.text = text
     }
+
+    // Configure with icon image size
+    func configure(image: UIImage, text: String, size: CGSize) {
+        UIGraphicsBeginImageContext(size)
+        image.draw(in: CGRect(x: 0, y: 0, width: size.width, height: size.height))
+        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        imageView?.image = resizedImage
+        textLabel?.text = text
+    }
 }

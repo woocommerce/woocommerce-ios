@@ -309,7 +309,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
-        let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm) && product.productType == .bundle
+        let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
+        && product.productType == .bundle
+        && product.bundledItems.isNotEmpty
 
         self.init(id: id,
                   productOrVariationID: product.productID,

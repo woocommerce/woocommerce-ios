@@ -33,7 +33,9 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
 
-        remote.loadAllProductVariations(for: sampleSiteID, productID: sampleProductID) { productVariations, error in
+        remote.loadAllProductVariations(for: sampleSiteID,
+                                        productID: sampleProductID,
+                                        variationIDs: []) { productVariations, error in
             XCTAssertNil(error)
             XCTAssertNotNil(productVariations)
             XCTAssertEqual(productVariations?.count, 8)
@@ -108,7 +110,9 @@ final class ProductVariationsRemoteTests: XCTestCase {
         let remote = ProductVariationsRemote(network: network)
         let expectation = self.expectation(description: "Load All Product Variations returns error")
 
-        remote.loadAllProductVariations(for: sampleSiteID, productID: sampleProductID) { (productVariations, error) in
+        remote.loadAllProductVariations(for: sampleSiteID,
+                                        productID: sampleProductID,
+                                        variationIDs: []) { (productVariations, error) in
             XCTAssertNil(productVariations)
             XCTAssertNotNil(error)
             expectation.fulfill()

@@ -17,6 +17,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
         didSet {
             if shouldShowIntroView {
                 didShowIntroView = true
+                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
             }
         }
     }
@@ -66,6 +67,11 @@ final class BlazeCampaignListViewModel: ObservableObject {
         configurePaginationTracker()
     }
 
+    /// Called when view first appears.
+    func onViewAppear() {
+        analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .campaignList))
+    }
+
     /// Called when loading the first page of campaigns.
     func loadCampaigns() {
         paginationTracker.syncFirstPage()
@@ -92,6 +98,14 @@ final class BlazeCampaignListViewModel: ObservableObject {
             shouldDisplayPostCampaignCreationTip = true
             userDefaults.setBlazePostCreationTipAsDisplayed(for: siteID)
         }
+    }
+
+    func didSelectCampaignDetails() {
+        analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
+    }
+
+    func didSelectCreateCampaign(source: BlazeSource) {
+        analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
 }
 

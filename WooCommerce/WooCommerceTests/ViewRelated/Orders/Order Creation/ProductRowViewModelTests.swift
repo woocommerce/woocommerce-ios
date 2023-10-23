@@ -378,6 +378,51 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
     }
+
+    // MARK: - `isConfigurable`
+
+    func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_true_for_bundle_product_when_feature_flag_is_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+        // Then
+        XCTAssertTrue(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_non_bundle_product_when_feature_flag_is_enabled() {
+        let nonBundleProductTypes: [ProductType] = [.simple, .grouped, .affiliate, .variable, .subscription, .variableSubscription, .composite]
+
+        nonBundleProductTypes.forEach { nonBundleProductType in
+            // Given
+            let product = Product.fake().copy(productTypeKey: nonBundleProductType.rawValue)
+
+            // When
+            let viewModel = ProductRowViewModel(product: product,
+                                                canChangeQuantity: false,
+                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+            // Then
+            XCTAssertFalse(viewModel.isConfigurable)
+        }
+    }
 }
 
 private extension ProductRowViewModelTests {

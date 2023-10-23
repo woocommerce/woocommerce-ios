@@ -450,7 +450,7 @@ private extension SiteAddressViewController {
                 return
             }
             // Proceeds to check for the site's WordPress
-            self.guessXMLRPCURL(for: self.loginFields.siteAddress)
+            self.guessXMLRPCURL(for: url.absoluteString)
         }
     }
 

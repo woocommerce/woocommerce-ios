@@ -93,9 +93,19 @@ struct TextButtonStyle: ButtonStyle {
     }
 }
 
+/// Button that includes an icon to the leading edge of the text.
+struct IconButtonStyle: ButtonStyle {
+    /// Image of the icon.
+    let icon: UIImage
+
+    func makeBody(configuration: Configuration) -> some View {
+        return IconButton(configuration: configuration, icon: icon)
+    }
+}
+
 struct PlusButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
-        return PlusButton(configuration: configuration)
+        return IconButton(configuration: configuration, icon: .plusImage)
     }
 }
 
@@ -367,17 +377,18 @@ private struct TextButton: View {
     }
 }
 
-private struct PlusButton: View {
+private struct IconButton: View {
     @Environment(\.isEnabled) var isEnabled
 
     let configuration: ButtonStyleConfiguration
+    let icon: UIImage
 
     var body: some View {
         HStack {
             Label {
                 configuration.label
             } icon: {
-                Image(uiImage: .plusImage)
+                Image(uiImage: icon)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -457,6 +468,15 @@ struct PrimaryButton_Previews: PreviewProvider {
             }
 
             Group {
+                Button("Icon button") {}
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
+
+                Button("Icon button (disabled)") {}
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
+                    .disabled(true)
+            }
+
+            Group {
                 Button("Plus button") {}
                     .buttonStyle(PlusButtonStyle())
 
@@ -516,6 +536,15 @@ struct PrimaryButton_Previews: PreviewProvider {
 
                 Button("Text button (disabled)") {}
                     .buttonStyle(TextButtonStyle())
+                    .disabled(true)
+            }
+
+            Group {
+                Button("Icon button") {}
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
+
+                Button("Icon button (disabled)") {}
+                    .buttonStyle(IconButtonStyle(icon: .cogImage))
                     .disabled(true)
             }
 

@@ -197,8 +197,6 @@ final class EditableOrderViewModel: ObservableObject {
 
     lazy private(set) var addCustomAmountViewModel = {
         return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
-            // TODO: Send amount and name to view model
-            debugPrint("Adding custom amount of \(amount) with name \(name)")
             self?.addFee(with: amount, name: name)
         })
     }()

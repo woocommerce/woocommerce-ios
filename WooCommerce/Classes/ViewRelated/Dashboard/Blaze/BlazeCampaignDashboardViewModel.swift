@@ -29,6 +29,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         }
     }
 
+    @Published var selectedCampaignURL: URL?
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -42,7 +44,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// Set externally in the hosting controller to invalidate the SwiftUI `BlazeCampaignDashboardView`'s intrinsic content size as a workaround with UIKit.
     var onStateChange: (() -> Void)?
 
-    private let siteID: Int64
+    let siteID: Int64
+    let siteURL: String
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let analytics: Analytics
@@ -73,11 +76,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var visibilitySubscription: AnyCancellable?
 
     init(siteID: Int64,
+         siteURL: String = ServiceLocator.stores.sessionManager.defaultStoreURL ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
         self.siteID = siteID
+        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -122,8 +127,14 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
     }
 
-    func didSelectCampaignDetails() {
+    func didSelectCampaignDetails(_ campaign: BlazeCampaign) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
+
+        let path = String(format: Constants.campaignDetailsURLFormat,
+                          campaign.campaignID,
+                          siteURL.trimHTTPScheme(),
+                          BlazeCampaignDetailSource.myStoreSection.rawValue)
+        selectedCampaignURL = URL(string: path)
     }
 
     func didSelectCreateCampaign(source: BlazeSource) {
@@ -231,5 +242,11 @@ private extension BlazeCampaignDashboardViewModel {
             .sink { [weak self] _ in
                 self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
             }
+    }
+}
+
+private extension BlazeCampaignDashboardViewModel {
+    enum Constants {
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
 }

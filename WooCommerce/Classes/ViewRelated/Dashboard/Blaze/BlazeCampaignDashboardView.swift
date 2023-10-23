@@ -87,7 +87,6 @@ struct BlazeCampaignDashboardView: View {
     var startCampaignFromIntroTapped: ((_ productID: Int64?) -> Void)?
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
-    @State private var selectedCampaignURL: URL?
     @State private var selectedProductID: Int64?
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
@@ -119,15 +118,7 @@ struct BlazeCampaignDashboardView: View {
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
                     .onTapGesture {
-                        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                            return
-                        }
-                        viewModel.didSelectCampaignDetails()
-                        let path = String(format: Constants.campaignDetailsURLFormat,
-                                          campaign.campaignID,
-                                          site.url.trimHTTPScheme(),
-                                          BlazeCampaignDetailSource.myStoreSection.rawValue)
-                        selectedCampaignURL = URL(string: path)
+                        viewModel.didSelectCampaignDetails(campaign)
                     }
             }
 
@@ -143,7 +134,7 @@ struct BlazeCampaignDashboardView: View {
         }
         .padding(insets: Layout.insets)
         .background(Color(uiColor: .listForeground(modal: false)))
-        .sheet(item: $selectedCampaignURL) { url in
+        .sheet(item: $viewModel.selectedCampaignURL) { url in
             campaignDetailView(url: url)
         }
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
@@ -205,7 +196,7 @@ private extension BlazeCampaignDashboardView {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        selectedCampaignURL = nil
+                        viewModel.selectedCampaignURL = nil
                     }, label: {
                         Text(Localization.done)
                     })
@@ -223,10 +214,6 @@ private extension BlazeCampaignDashboardView {
         }
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
-    }
-
-    enum Constants {
-        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
 
     enum Localization {

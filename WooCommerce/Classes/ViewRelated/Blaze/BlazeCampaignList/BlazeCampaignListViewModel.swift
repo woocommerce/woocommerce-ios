@@ -12,10 +12,22 @@ extension BlazeCampaign: Identifiable {
 /// View model for `BlazeCampaignListView`
 final class BlazeCampaignListViewModel: ObservableObject {
     @Published private(set) var campaigns: [BlazeCampaign] = []
+    @Published var shouldDisplayPostCampaignCreationTip = false
+    @Published var shouldShowIntroView = false {
+        didSet {
+            if shouldShowIntroView {
+                didShowIntroView = true
+            }
+        }
+    }
+
+    /// Tracks whether the intro view has been presented.
+    private var didShowIntroView = false
 
     private let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let userDefaults: UserDefaults
     private let analytics: Analytics
 
     /// Keeps track of the current state of the syncing
@@ -41,10 +53,12 @@ final class BlazeCampaignListViewModel: ObservableObject {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
+         userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
         self.storageManager = storageManager
+        self.userDefaults = userDefaults
         self.analytics = analytics
         self.paginationTracker = PaginationTracker(pageFirstIndex: pageFirstIndex)
 
@@ -52,6 +66,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
         configurePaginationTracker()
     }
 
+    /// Called when loading the first page of campaigns.
     func loadCampaigns() {
         paginationTracker.syncFirstPage()
     }
@@ -66,6 +81,16 @@ final class BlazeCampaignListViewModel: ObservableObject {
     func onRefreshAction(completion: @escaping () -> Void) {
         paginationTracker.resync(reason: nil) {
             completion()
+        }
+    }
+
+    /// Called after a Blaze campaign is successfully created.
+    ///
+    func checkIfPostCreationTipIsNeeded() {
+        let hasDisplayed = userDefaults.hasDisplayedTipAfterBlazeCampaignCreation(for: siteID)
+        if !hasDisplayed {
+            shouldDisplayPostCampaignCreationTip = true
+            userDefaults.setBlazePostCreationTipAsDisplayed(for: siteID)
         }
     }
 }
@@ -114,7 +139,9 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
                 DDLogError("⛔️ Error synchronizing Blaze campaigns: \(error)")
                 onCompletion?(.failure(error))
             }
+
             self?.updateResults()
+            self?.displayIntroViewIfNeeded()
         }
         stores.dispatch(action)
     }
@@ -142,5 +169,33 @@ extension BlazeCampaignListViewModel {
     func transitionToResultsUpdatedState() {
         shouldShowBottomActivityIndicator = false
         syncState = campaigns.isNotEmpty ? .results : .empty
+    }
+
+    func displayIntroViewIfNeeded() {
+        if !didShowIntroView {
+            shouldShowIntroView = syncState == .empty
+        }
+    }
+}
+
+extension UserDefaults {
+    /// Checks if the Blaze post campaign creation tip has been displayed for a site.
+    ///
+    func hasDisplayedTipAfterBlazeCampaignCreation(for siteID: Int64) -> Bool {
+        let hasDisplayed = self[.hasDisplayedTipAfterBlazeCampaignCreation] as? [String: Bool]
+        let idAsString = "\(siteID)"
+        return hasDisplayed?[idAsString] == true
+    }
+
+    /// Mark the tip after Blaze campaign creation as displayed for a site.
+    ///
+    func setBlazePostCreationTipAsDisplayed(for siteID: Int64) {
+        let idAsString = "\(siteID)"
+        if var hasDisplayed = self[.hasDisplayedTipAfterBlazeCampaignCreation] as? [String: Bool] {
+            hasDisplayed[idAsString] = true
+            self[.hasDisplayedTipAfterBlazeCampaignCreation] = hasDisplayed
+        } else {
+            self[.hasDisplayedTipAfterBlazeCampaignCreation] = [idAsString: true]
+        }
     }
 }

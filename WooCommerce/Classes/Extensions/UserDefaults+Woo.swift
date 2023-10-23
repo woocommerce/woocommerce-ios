@@ -45,6 +45,9 @@ extension UserDefaults {
 
         // AI prompt tone
         case aiPromptTone
+
+        // Celebration view after Blaze campaign creation
+        case hasDisplayedTipAfterBlazeCampaignCreation
     }
 }
 

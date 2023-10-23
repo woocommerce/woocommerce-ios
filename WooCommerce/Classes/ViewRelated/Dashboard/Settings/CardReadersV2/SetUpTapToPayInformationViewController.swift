@@ -138,23 +138,6 @@ struct SetUpTapToPayInformationView: View {
     }
 }
 
-private struct AboutTapToPayViewInNavigationView: View {
-    @Environment(\.dismiss) var dismiss
-
-    var body: some View {
-        NavigationView {
-            AboutTapToPayView()
-            .toolbar() {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.doneButton) {
-                        dismiss()
-                    }
-                }
-            }
-        }
-    }
-}
-
 private enum Constants {
     // maxHeight should be 208, but that hides the button on iPhone SE
     // TODO: make this 208, or proportional to screen height for small screens
@@ -223,10 +206,6 @@ private enum Localization {
     static let cancelButton = NSLocalizedString(
         "Cancel",
         comment: "Settings > Set up Tap to Pay on iPhone > Information > Cancel button")
-
-    static let doneButton = NSLocalizedString(
-        "Done",
-        comment: "Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow")
 }
 
 

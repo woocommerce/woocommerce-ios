@@ -28,6 +28,11 @@ extension WooAnalyticsEvent {
                               properties: [Key.source: source.rawValue])
         }
 
+        static func siteCreationFlowStarted(source: Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .siteCreationFlowStarted,
+                              properties: [Key.source: source.rawValue])
+        }
+
         /// Tracked when a site is created from the store creation flow.
         static func siteCreated(source: Source, siteURL: String, flow: Flow, isFreeTrial: Bool, waitingTime: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .siteCreated,

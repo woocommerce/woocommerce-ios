@@ -17,7 +17,7 @@ final class AppCoordinator {
     private let window: UIWindow
     private let stores: StoresManager
     private let storageManager: StorageManagerType
-    private let authenticationManager: Authentication
+    private var authenticationManager: Authentication
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let loggedOutAppSettings: LoggedOutAppSettingsProtocol
@@ -176,19 +176,32 @@ private extension AppCoordinator {
     /// Configures the WPAuthenticator and sets the authenticator UI as the window's root view.
     func configureAndDisplayAuthenticator() {
         configureAuthenticator()
+        displayAuthenticator()
+    }
 
+    /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
+    func configureAuthenticator() {
+        authenticationManager.initialize()
+        authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
+        authenticationManager.displayAuthenticatorIfLoggedOut = { [weak self] in
+            guard let self, self.isLoggedIn == false else { return nil }
+            guard let loginNavigationController = self.window.rootViewController as? LoginNavigationController else {
+                return self.displayAuthenticator() as? LoginNavigationController
+            }
+            return loginNavigationController
+        }
+        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+    }
+
+    @discardableResult
+    func displayAuthenticator() -> UIViewController {
         let authenticationUI = authenticationManager.authenticationUI()
         setWindowRootViewControllerAndAnimateIfNeeded(authenticationUI) { [weak self] _ in
             guard let self = self else { return }
             self.tabBarController.removeViewControllers()
         }
         ServiceLocator.analytics.track(.openedLogin)
-    }
-
-    /// Configures the WPAuthenticator for usage in both logged-in and logged-out states.
-    func configureAuthenticator() {
-        authenticationManager.initialize(loggedOutAppSettings: loggedOutAppSettings)
-        appleIDCredentialChecker.observeLoggedInStateForAppleIDObservations()
+        return authenticationUI
     }
 
     /// Determines whether the login onboarding should be shown.
@@ -202,10 +215,7 @@ private extension AppCoordinator {
             return false
         }
 
-        guard loggedOutAppSettings.hasFinishedOnboarding == false else {
-            return false
-        }
-        return true
+        return loggedOutAppSettings.hasFinishedOnboarding == false
     }
 
     /// Presents onboarding on top of the authentication UI under certain criteria.

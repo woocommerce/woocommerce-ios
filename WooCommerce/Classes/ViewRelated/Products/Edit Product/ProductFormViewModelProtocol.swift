@@ -47,7 +47,7 @@ protocol ProductFormViewModelProtocol {
     var newVariationsPrice: AnyPublisher<Void, Never> { get }
 
     /// Emits a void value informing when Blaze eligibility is computed
-    var isEligibleForBlazeUpdate: AnyPublisher<Void, Never> { get }
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> { get }
 
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }

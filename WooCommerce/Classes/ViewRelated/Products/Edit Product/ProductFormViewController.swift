@@ -128,7 +128,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productNameSubscription?.cancel()
         updateEnabledSubscription?.cancel()
         newVariationsPriceSubscription?.cancel()
-        updateBlazeEligibility?.cancel()
+        blazeEligibilitySubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -733,7 +733,7 @@ private extension ProductFormViewController {
     /// Updates table rows when Blaze eligibility is computed.
     /// Needed to show/hide the `.`
     func observeUpdateBlazeEligibility() {
-        updateBlazeEligibility = viewModel.isEligibleForBlazeUpdate.sink { [weak self] in
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
             self?.updateFormTableContent()
         }
 

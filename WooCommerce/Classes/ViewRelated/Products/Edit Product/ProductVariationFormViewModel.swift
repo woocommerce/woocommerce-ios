@@ -27,7 +27,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// Unused in variations but needed to satisfy protocol
-    var isEligibleForBlazeUpdate: AnyPublisher<Void, Never> {
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
         Just(Void()).eraseToAnyPublisher()
     }
 
@@ -56,9 +56,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     private let productVariationSubject: PassthroughSubject<EditableProductVariationModel, Never> = PassthroughSubject<EditableProductVariationModel, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never>
-
-    private let isEligibleForBlazeSubject: PassthroughSubject<Void, Never>
-
 
     /// The product variation before any potential edits; reset after a remote update.
     private var originalProductVariation: EditableProductVariationModel {
@@ -129,7 +126,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         self.editable = formType != .readonly
         self.actionsFactory = ProductVariationFormActionsFactory(productVariation: productVariation, editable: editable)
         self.isUpdateEnabledSubject = PassthroughSubject<Bool, Never>()
-        self.isEligibleForBlazeSubject = PassthroughSubject<Void, Never>()
         self.productImagesUploader = productImagesUploader
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }

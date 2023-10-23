@@ -21,15 +21,22 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
         storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         storageManager = nil
         stores = nil
+        analyticsProvider = nil
+        analytics = nil
         super.tearDown()
     }
 
@@ -586,6 +593,96 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         } else {
             XCTFail("Wrong state")
         }
+    }
+
+    // MARK: shouldShowIntroView
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_false_if_there_exists_at_least_one_campaign() {
+        // Given
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        insertCampaigns([campaign])
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_checkIfIntroViewIsNeeded_sets_shouldShowIntroView_to_true_if_there_is_no_existing_campaign() {
+        // Given
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, storageManager: storageManager)
+
+        // Confidence check
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+
+        // When
+        viewModel.checkIfIntroViewIsNeeded()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
+    }
+
+    // MARK: Analytics
+
+    func test_blazeEntryPointDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() throws {
+        // Given
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.shouldShowIntroView = true
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_displayed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
+    }
+
+    func test_didSelectCampaignList_tracks_blazeCampaignListEntryPointSelected_with_the_correct_source() throws {
+        // Given
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCampaignList()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_list_entry_point_selected"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_campaign_list_entry_point_selected"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "my_store_section")
+    }
+
+    func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_the_correct_source() throws {
+        // Given
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCampaignDetails()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_campaign_detail_selected"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "my_store_section")
+    }
+
+    func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
+        // Given
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCreateCampaign(source: .introView)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_tapped"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
 }
 

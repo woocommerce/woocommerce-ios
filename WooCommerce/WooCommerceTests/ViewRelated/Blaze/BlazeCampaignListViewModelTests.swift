@@ -19,10 +19,15 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
         subscriptions = []
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     // MARK: - State transitions
@@ -209,7 +214,6 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
     func test_campaignModels_are_empty_when_loaded_campaigns_are_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             guard case let .synchronizeCampaigns(_, _, onCompletion) = action else {
                 return
@@ -359,6 +363,70 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    // MARK: - Analytics
+
+    func test_blazeEntryPointDisplayed_is_tracked_upon_view_appear() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // Confidence check
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+
+        // When
+        viewModel.onViewAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
+    }
+
+    func test_blazeEntryPointDisplayed_is_tracked_when_intro_view_is_shown() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // Confidence check
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+
+        // When
+        viewModel.shouldShowIntroView = true
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_entry_point_displayed"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "intro_view")
+    }
+
+    func test_didSelectCampaignDetails_tracks_blazeCampaignDetailSelected_with_correct_source() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCampaignDetails()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "blaze_campaign_detail_selected"}))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "campaign_list")
+    }
+
+    func test_didSelectCreateCampaign_tracks_blazeEntryPointTapped() throws {
+        // Given
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
+
+        // When
+        viewModel.didSelectCreateCampaign(source: .introView)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_tapped"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
+        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(properties["source"] as? String, "intro_view")
     }
 }
 

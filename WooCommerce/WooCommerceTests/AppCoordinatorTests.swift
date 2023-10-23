@@ -11,6 +11,7 @@ final class AppCoordinatorTests: XCTestCase {
     private var stores: MockStoresManager!
     private var storageManager: MockStorageManager!
     private var authenticationManager: AuthenticationManager!
+    private var coordinator: AppCoordinator?
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
@@ -23,7 +24,7 @@ final class AppCoordinatorTests: XCTestCase {
         stores = MockStoresManager(sessionManager: sessionManager)
         storageManager = MockStorageManager()
         authenticationManager = AuthenticationManager()
-        authenticationManager.initialize(loggedOutAppSettings: MockLoggedOutAppSettings())
+        authenticationManager.initialize()
     }
 
     override func tearDown() {

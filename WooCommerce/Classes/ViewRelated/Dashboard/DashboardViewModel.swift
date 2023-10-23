@@ -315,10 +315,6 @@ final class DashboardViewModel {
     /// Sets up observer to decide Blaze campaign view visibility
     ///
     private func setupObserverForBlazeCampaignView() {
-        guard featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) else {
-            return
-        }
-
         blazeCampaignDashboardViewModel.$shouldShowInDashboard
             .assign(to: &$showBlazeCampaignView)
     }

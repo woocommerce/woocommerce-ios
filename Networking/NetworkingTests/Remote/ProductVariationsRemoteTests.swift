@@ -121,6 +121,36 @@ final class ProductVariationsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    func test_loadAllProductVariations_with_non_empty_variationIDs_adds_include_parameter() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        let includedVariationIDs: [Int64] = [17, 671]
+
+        // When
+        remote.loadAllProductVariations(for: sampleSiteID,
+                                        productID: sampleProductID,
+                                        variationIDs: includedVariationIDs) { _, _ in }
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParameters)
+        let expectedParam = "include=17,671"
+        XCTAssertTrue(queryParameters.contains(expectedParam), "Expected to have param: \(expectedParam)")
+    }
+
+    func test_loadAllProductVariations_with_empty_variationIDs_does_not_add_include_parameter() throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+
+        // When
+        remote.loadAllProductVariations(for: sampleSiteID,
+                                        productID: sampleProductID,
+                                        variationIDs: []) { _, _ in }
+
+        // Then
+        let queryParametersDictionary = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertFalse(queryParametersDictionary.contains(where: { $0.key == "include" }))
+    }
+
     // MARK: - Load single product variation tests
 
     /// Verifies that loadProductVariation properly parses the `product-variation` sample response.

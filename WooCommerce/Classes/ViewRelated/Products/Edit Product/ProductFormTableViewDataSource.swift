@@ -289,6 +289,7 @@ private extension ProductFormTableViewDataSource {
         )
 
         cell.configure(image: .blaze, text: title, size: CGSize(width: 20, height: 20))
+        cell.hideSeparator()
     }
 
     func configureSeparator(cell: UITableViewCell) {
@@ -297,7 +298,7 @@ private extension ProductFormTableViewDataSource {
         }
         cell.selectionStyle = .none
         cell.backgroundColor = .listBackground
-        cell.showSeparator()
+        cell.hideSeparator()
         cell.configure(height: Constants.settingsHeaderHeight)
     }
 

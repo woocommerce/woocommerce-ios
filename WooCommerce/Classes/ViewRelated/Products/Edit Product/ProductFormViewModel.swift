@@ -31,7 +31,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// Emits a void value informing when Blaze eligibility is computed
-    var isEligibleForBlazeUpdate: AnyPublisher<Void, Never> {
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
         isEligibleForBlazeSubject.eraseToAnyPublisher()
     }
 

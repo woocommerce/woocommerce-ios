@@ -89,14 +89,16 @@ struct CollapsibleProductRowCard: View {
             Divider()
                 .padding()
 
-            Button(Localization.configureBundleProduct) {
-                viewModel.configure?()
-            }
-            .buttonStyle(IconButtonStyle(icon: .cogImage))
-            .renderedIf(viewModel.isConfigurable)
+            Group {
+                Button(Localization.configureBundleProduct) {
+                    viewModel.configure?()
+                }
+                .buttonStyle(IconButtonStyle(icon: .cogImage))
 
-            Divider()
-                .padding()
+                Divider()
+                    .padding()
+            }
+            .renderedIf(viewModel.isConfigurable)
 
             Button(Localization.removeProductLabel) {
                 viewModel.removeProductIntent()

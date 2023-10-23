@@ -144,7 +144,7 @@ struct BlazeCampaignDashboardView: View {
         .padding(insets: Layout.insets)
         .background(Color(uiColor: .listForeground(modal: false)))
         .sheet(item: $selectedCampaignURL) { url in
-            detailView(url: url)
+            campaignDetailView(url: url)
         }
         .sheet(isPresented: $viewModel.shouldShowIntroView) {
             BlazeCampaignIntroView(onStartCampaign: {
@@ -196,7 +196,7 @@ private extension BlazeCampaignDashboardView {
         }
     }
 
-    func detailView(url: URL) -> some View {
+    func campaignDetailView(url: URL) -> some View {
         NavigationView {
             AuthenticatedWebView(isPresented: .constant(true),
                                  url: url)

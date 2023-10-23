@@ -55,7 +55,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
-    private let isEligibleForBlazeSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligiblityUpdateSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 

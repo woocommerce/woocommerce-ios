@@ -195,8 +195,17 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    var orderHasCoupons: Bool {
+    /// Whether an Order has coupons applied
+    ///
+    private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
+    }
+
+    /// Whether product-discounts are disallowed for a given order
+    /// Since coupons and discounts are mutually exclusive, if an order already has coupons then discounts should be disallowed.
+    ///
+    var shouldDisallowDiscounts: Bool {
+        orderHasCoupons
     }
 
     /// Whether gift card is supported in order form.

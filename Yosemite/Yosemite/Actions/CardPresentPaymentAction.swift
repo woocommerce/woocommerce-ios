@@ -26,6 +26,7 @@ public enum CardPresentPaymentAction: Action {
     case checkDeviceSupport(siteID: Int64,
                             cardReaderType: CardReaderType,
                             discoveryMethod: CardReaderDiscoveryMethod,
+                            minimumOperatingSystemVersionOverride: OperatingSystemVersion?,
                             onCompletion: (Bool) -> Void)
 
     /// Start the Card Reader discovery process.

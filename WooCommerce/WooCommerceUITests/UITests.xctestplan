@@ -20,7 +20,8 @@
 
     ],
     "maximumTestRepetitions" : 2,
-    "testRepetitionMode" : "retryOnFailure"
+    "testRepetitionMode" : "retryOnFailure",
+    "uiTestingScreenshotsLifetime" : "keepAlways"
   },
   "testTargets" : [
     {

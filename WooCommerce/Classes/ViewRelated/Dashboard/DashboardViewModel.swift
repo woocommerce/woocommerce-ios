@@ -21,11 +21,15 @@ final class DashboardViewModel {
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
+    let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
+
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
 
     @Published private(set) var showBlazeBanner: Bool = false
+
+    @Published private(set) var showBlazeCampaignView: Bool = false
 
     /// Trigger to start the Add Product flow
     ///
@@ -66,8 +70,10 @@ final class DashboardViewModel {
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
+        self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         setupObserverForShowOnboarding()
+        setupObserverForBlazeCampaignView()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -80,6 +86,12 @@ final class DashboardViewModel {
     ///
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
+    }
+
+    /// Reloads Blaze dashboard campaign view
+    ///
+    func reloadBlazeCampaignView() async {
+        await blazeCampaignDashboardViewModel.reload()
     }
 
     /// Syncs store stats for dashboard UI.
@@ -300,6 +312,17 @@ final class DashboardViewModel {
 
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
+    }
+
+    /// Sets up observer to decide Blaze campaign view visibility
+    ///
+    private func setupObserverForBlazeCampaignView() {
+        guard featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) else {
+            return
+        }
+
+        blazeCampaignDashboardViewModel.$shouldShowInDashboard
+            .assign(to: &$showBlazeCampaignView)
     }
 }
 

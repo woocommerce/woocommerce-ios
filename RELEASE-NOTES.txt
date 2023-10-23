@@ -1,8 +1,18 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+15.9
+-----
+- [***] User can now use their stored passkeys to log in into WordPress.com [https://github.com/woocommerce/woocommerce-ios/pull/10904]
+- [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
+
 15.8
 -----
-
+- [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
+- [*] The Set up Tap to Pay on iPhone row in the Payments menu now reflects when you've completed set up for the current device and store [https://github.com/woocommerce/woocommerce-ios/pull/10923]
+- [*] The Set up Tap to Pay on iPhone Learn More button opens more details about Tap to Pay [https://github.com/woocommerce/woocommerce-ios/pull/10934]
+- [internal] Use minimumAllowedChargeAmount, not 0.50, for the Try a Payment flow [https://github.com/woocommerce/woocommerce-ios/pull/10937]
+- [*] Changes to the Payments menu to make it clearer [https://github.com/woocommerce/woocommerce-ios/pull/10936]
+- [*] Order creation: We updated the UX by allowing direct product discounts to be added, and improved the Product Discount screen [https://github.com/woocommerce/woocommerce-ios/pull/10929]
 
 15.7
 -----

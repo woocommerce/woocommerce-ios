@@ -210,7 +210,7 @@ private extension InPersonPaymentsMenuViewController {
     func configureSections(isEligibleForTapToPayOnIPhone: Bool? = nil,
                            shouldShowTapToPayOnIPhoneFeedback: Bool? = nil,
                            depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]? = nil) {
-        var composingSections: [Section?] = [actionsSection]
+        var composingSections: [Section?] = [actionsSection, settingsSection]
 
         let depositsOverviewViewModels = depositsOverviewViewModels ?? viewModel.depositsOverviewViewModels
         if #available(iOS 16.0, *),
@@ -232,20 +232,24 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     var actionsSection: Section? {
-        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment, .toggleEnableCashOnDelivery])
+        return Section(header: Localization.paymentActionsSectionTitle, rows: [.collectPayment])
+    }
+
+    var settingsSection: Section? {
+        return Section(header: Localization.paymentSettingsSectionTitle, rows: [.toggleEnableCashOnDelivery])
     }
 
     func tapToPayOnIPhoneSection(shouldShowFeedbackRow: Bool) -> Section? {
         guard featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhone) else {
             return nil
         }
-        var rows: [Row] = [.setUpTapToPayOnIPhone]
+        var rows: [Row] = [.setUpTapToPayOnIPhone, .aboutTapToPayOnIPhone]
 
         if shouldShowFeedbackRow {
             rows.append(.tapToPayOnIPhoneFeedback)
         }
 
-        return Section(header: nil, rows: rows)
+        return Section(header: Localization.tapToPaySectionTitle, rows: rows)
     }
 
     var cardReadersSection: Section? {
@@ -317,6 +321,8 @@ private extension InPersonPaymentsMenuViewController {
             configureToggleEnableCashOnDelivery(cell: cell)
         case let cell as BadgedLeftImageTableViewCell where row == .setUpTapToPayOnIPhone:
             configureSetUpTapToPayOnIPhone(cell: cell)
+        case let cell as LeftImageTableViewCell where row == .aboutTapToPayOnIPhone:
+            configureAboutTapToPayOnIPhone(cell: cell)
         case let cell as LeftImageTableViewCell where row == .tapToPayOnIPhoneFeedback:
             configureTapToPayOnIPhoneFeedback(cell: cell)
         case let cell as LeftImageTableViewCell where row == .depositOverview:
@@ -333,6 +339,7 @@ private extension InPersonPaymentsMenuViewController {
     }
 
     func configureManageCardReader(cell: LeftImageTableViewCell) {
+        prepareForReuse(cell)
         cell.imageView?.tintColor = .text
         cell.accessoryType = enableManageCardReaderCell ? .disclosureIndicator : .none
         cell.selectionStyle = enableManageCardReaderCell ? .default : .none
@@ -383,16 +390,24 @@ private extension InPersonPaymentsMenuViewController {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "set-up-tap-to-pay"
         cell.configure(image: .tapToPayOnIPhoneIcon,
-                       text: Localization.tapToPayOnIPhone,
+                       text: viewModel.titleForTapToPayOnIPhone,
                        showBadge: viewModel.shouldBadgeTapToPayOnIPhone)
+    }
+
+    func configureAboutTapToPayOnIPhone(cell: LeftImageTableViewCell) {
+        prepareForReuse(cell)
+        cell.accessibilityIdentifier = "about-tap-to-pay"
+        cell.configure(image: .infoOutlineImage,
+                       text: Localization.aboutTapToPayOnIPhone)
     }
 
     func configureTapToPayOnIPhoneFeedback(cell: LeftImageTableViewCell) {
         prepareForReuse(cell)
         cell.accessibilityIdentifier = "tap-to-pay-feedback"
-        cell.configure(image: UIImage(color: .clear, havingSize: CGSize(width: 24, height: 24)),
+        cell.configure(image: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate),
                        text: Localization.tapToPayOnIPhoneFeedback)
-        cell.textLabel?.textColor = .primary
+        cell.imageView?.tintColor = .textLink
+        cell.textLabel?.textColor = .textLink
         cell.accessoryType = .none
     }
 
@@ -434,6 +449,14 @@ private extension InPersonPaymentsMenuViewController {
         }.store(in: &cancellables)
 
         viewModel.$shouldBadgeTapToPayOnIPhone.sink { [weak self] _ in
+            self?.configureSections()
+            // ensures that the cell will be configured with the correct value for the badge
+            DispatchQueue.main.async {
+                self?.tableView.reloadData()
+            }
+        }.store(in: &cancellables)
+
+        viewModel.$titleForTapToPayOnIPhone.sink { [weak self] _ in
             self?.configureSections()
             // ensures that the cell will be configured with the correct value for the badge
             DispatchQueue.main.async {
@@ -510,26 +533,6 @@ extension InPersonPaymentsMenuViewController {
     }
 
     func presentSetUpTapToPayOnIPhoneViewController() {
-        presentSetUpTapToPayOnIPhoneWithOnboarding()
-    }
-
-    private func presentSetUpTapToPayOnIPhoneWithoutOnboarding() {
-        guard let siteID = stores.sessionManager.defaultStoreID,
-              let _ = pluginState?.preferred else {
-            return
-        }
-
-        let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
-                                                                    configuration: viewModel.cardPresentPaymentsConfiguration,
-                                                                    onboardingUseCase: cardPresentPaymentsOnboardingUseCase)
-        let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
-        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
-        controller.navigationBar.isHidden = true
-
-        navigationController?.present(controller, animated: true)
-    }
-
-    private func presentSetUpTapToPayOnIPhoneWithOnboarding() {
         guard let siteID = stores.sessionManager.defaultStoreID else {
             return
         }
@@ -542,6 +545,17 @@ extension InPersonPaymentsMenuViewController {
         controller.navigationBar.isHidden = true
 
         navigationController?.present(controller, animated: true)
+    }
+
+    func aboutTapToPayOnIPhoneWasPressed() {
+        ServiceLocator.analytics.track(.aboutTapToPayOnIPhoneTapped)
+        let hostingController = UIHostingController(
+            rootView: AboutTapToPayView(viewModel: AboutTapToPayViewModel(
+                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                    buttonAction: setUpTapToPayOnIPhoneWasPressed))
+        )
+        show(hostingController, sender: self)
+
     }
 
     func tapToPayOnIPhoneFeedbackWasPressed() {
@@ -646,6 +660,8 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
             break
         case .setUpTapToPayOnIPhone:
             setUpTapToPayOnIPhoneWasPressed()
+        case .aboutTapToPayOnIPhone:
+            aboutTapToPayOnIPhoneWasPressed()
         case .tapToPayOnIPhoneFeedback:
             tapToPayOnIPhoneFeedbackWasPressed()
         case .depositOverview:
@@ -679,9 +695,17 @@ private extension InPersonPaymentsMenuViewController {
             "Actions",
             comment: "Title for the section related to actions inside In-Person Payments settings")
 
+        static let paymentSettingsSectionTitle = NSLocalizedString(
+            "Settings",
+            comment: "Title for the section related to changing payment settings inside the In-Person Payments menu")
+
         static let wooPaymentsDepositsSectionTitle = NSLocalizedString(
             "Woo Payments Balance",
             comment: "Title for the section related to Woo Payments Deposits/Balances.")
+
+        static let tapToPaySectionTitle = NSLocalizedString(
+            "Tap to Pay",
+            comment: "Title for the Tap to Pay section in the In-Person payments settings")
 
         static let wooPaymentsDeposits = NSLocalizedString(
             "Woo Payments Balance",
@@ -728,13 +752,13 @@ private extension InPersonPaymentsMenuViewController {
             comment: "Navigates to Collect a payment via the Simple Payment screen"
         )
 
-        static let tapToPayOnIPhone = NSLocalizedString(
-            "Set up Tap to Pay on iPhone",
-            comment: "Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. " +
-            "The destination screen also allows for a test payment, after set up.")
+        static let aboutTapToPayOnIPhone = NSLocalizedString(
+            "About Tap to Pay",
+            comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
+            "of Tap to Pay on iPhone, relevant to the store territory.")
 
         static let tapToPayOnIPhoneFeedback = NSLocalizedString(
-            "Share Tap to Pay on iPhone Feedback",
+            "Share Feedback",
             comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone.")
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
@@ -775,6 +799,7 @@ private enum Row: CaseIterable {
     case collectPayment
     case toggleEnableCashOnDelivery
     case setUpTapToPayOnIPhone
+    case aboutTapToPayOnIPhone
     case tapToPayOnIPhoneFeedback
     case depositOverview
 

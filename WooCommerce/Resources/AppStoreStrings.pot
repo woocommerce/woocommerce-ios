@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.7-whats-new"
+msgctxt "v15.8-whats-new"
 msgid ""
-"We're excited to introduce new features in our latest WooCommerce update! When creating products on WPCOM and self-hosted stores with the Jetpack AI plugin, it will now suggest new tags and categories for you. Enjoy these enhancements and keep the feedback coming! Happy selling!\n"
+"Effortlessly navigate between orders, add discounts and coupons with ease, and enjoy enhanced product creation AI in this update. Thank you for choosing WooCommerce.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

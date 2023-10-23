@@ -108,6 +108,8 @@ struct OrderForm: View {
     @State private var shouldShowNewTaxRateSelector = false
     @State private var shouldShowStoredTaxRateSheet = false
 
+    @State private var shouldShowInformationalCouponTooltip = false
+
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { scroll in
@@ -136,7 +138,9 @@ struct OrderForm: View {
                                     Spacer(minLength: Layout.sectionSpacing)
                                 }
 
-                                OrderPaymentSection(viewModel: viewModel.paymentDataViewModel)
+                                OrderPaymentSection(
+                                    viewModel: viewModel.paymentDataViewModel,
+                                    shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
 
@@ -225,6 +229,9 @@ struct OrderForm: View {
         .wooNavigationBarStyle()
         .notice($viewModel.autodismissableNotice)
         .notice($viewModel.fixedNotice, autoDismiss: false)
+        .onTapGesture {
+            shouldShowInformationalCouponTooltip = false
+        }
     }
 
     @ViewBuilder private var storedTaxRateBottomSheetContent: some View {
@@ -398,7 +405,19 @@ private struct ProductsSection: View {
                 .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow)
+                    CollapsibleProductRowCard(viewModel: productRow,
+                                              shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                              shouldDisallowDiscounts: viewModel.orderHasCoupons,
+                                              onAddDiscount: {
+                        viewModel.selectOrderItem(productRow.id)
+                    })
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
+                        ProductDiscountView(imageURL: productRow.imageURL,
+                                            name: productRow.name,
+                                            stockLabel: productRow.stockQuantityLabel,
+                                            productRowViewModel: productRow,
+                                            discountViewModel: productViewModel.discountDetailsViewModel)
+                    })
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
@@ -531,7 +550,7 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
-        static let addCustomAmount = NSLocalizedString("Add custom amount",
+        static let addCustomAmount = NSLocalizedString("Add Custom Amount",
                                                    comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")

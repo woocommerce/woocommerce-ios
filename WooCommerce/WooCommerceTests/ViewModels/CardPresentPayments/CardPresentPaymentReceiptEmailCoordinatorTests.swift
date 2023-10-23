@@ -1,5 +1,6 @@
 import XCTest
 @testable import WooCommerce
+import WooFoundation
 
 final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
     private var coordinator: CardPresentPaymentReceiptEmailCoordinator!
@@ -100,7 +101,7 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
 
 private extension CardPresentPaymentReceiptEmailCoordinatorTests {
     enum Mocks {
-        static let countryCode = "CA"
+        static let countryCode = CountryCode.CA
         static let cardReaderModel = "CHIPPER_2X"
     }
 }

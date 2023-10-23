@@ -5,7 +5,7 @@ import WooFoundation
 final class FormattableAmountTextFieldViewModel: ObservableObject {
     /// Helper to format price field input.
     ///
-    let priceFieldFormatter: PriceFieldFormatter
+    private let priceFieldFormatter: PriceFieldFormatter
 
     /// Stores the amount entered by the merchant.
     ///

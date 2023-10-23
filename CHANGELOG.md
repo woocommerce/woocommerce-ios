@@ -1,6 +1,12 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 15.8
+Effortlessly navigate between orders, add discounts and coupons with ease, and enjoy enhanced product creation AI in this update. Thank you for choosing WooCommerce.
+
+## 15.7
+Immerse yourself in the latest WooCommerce app release! We're introducing an AI-powered feature that allows you to generate new tags/categories while creating a product, making your product management smarter and more efficient. Also, we've addressed a fix in the order details section. Now, if an order item is a variable product with attributes and add-ons, the variation attributes will be displayed. Dive into these enhancements for a smoother, more intuitive experience.
+
 ## 15.6
 We're excited to introduce new features in our latest WooCommerce update! Now, you can effortlessly automate tax calculations for new orders by storing tax rates based on location. Also, we're bringing AI to your fingertips - creating products on WPCOM and self-hosted stores with Jetpack AI plugin is now easier than ever. Plus, merchants can sweeten the deal by applying gift cards directly to orders. Enjoy these enhancements and keep the feedback coming! Happy selling!
 

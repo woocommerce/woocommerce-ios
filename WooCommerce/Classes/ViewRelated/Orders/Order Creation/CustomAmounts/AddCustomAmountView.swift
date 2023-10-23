@@ -50,7 +50,6 @@ struct AddCustomAmountView: View {
                 .frame(width: geometry.size.width)
             }
         }
-
         .wooNavigationBarStyle()
     }
 }

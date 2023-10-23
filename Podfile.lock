@@ -22,20 +22,20 @@ PODS:
   - SentryPrivate (8.10.0)
   - Sodium (0.9.1)
   - Sourcery (1.0.3)
-  - StripeTerminal (2.19.1)
+  - StripeTerminal (2.23.2)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (2.3.0)
   - WordPress-Aztec-iOS (1.19.9)
   - WordPress-Editor-iOS (1.19.9):
     - WordPress-Aztec-iOS (= 1.19.9)
-  - WordPressAuthenticator (7.0.0):
+  - WordPressAuthenticator (7.2.0):
     - Gridicons (~> 1.0)
     - "NSURL+IDN (= 0.4)"
     - SVProgressHUD (~> 2.2.5)
-    - WordPressKit (~> 8.0-beta)
+    - WordPressKit (~> 8.7-beta)
     - WordPressShared (~> 2.1-beta)
     - WordPressUI (~> 1.7-beta)
-  - WordPressKit (8.5.1):
+  - WordPressKit (8.7.0):
     - Alamofire (~> 4.8.0)
     - NSObject-SafeExpectations (~> 0.0.4)
     - UIDeviceIdentifier (~> 2.0)
@@ -69,9 +69,9 @@ DEPENDENCIES:
   - KeychainAccess (~> 4.2.2)
   - Kingfisher (~> 7.6.2)
   - Sourcery (~> 1.0.3)
-  - StripeTerminal (~> 2.19.1)
+  - StripeTerminal (~> 2.23.2)
   - WordPress-Editor-iOS (~> 1.19.9)
-  - WordPressAuthenticator (~> 7.0)
+  - WordPressAuthenticator (~> 7.2.0)
   - WordPressShared (~> 2.1)
   - WordPressUI (~> 1.13)
   - Wormholy (~> 1.6.6)
@@ -126,13 +126,13 @@ SPEC CHECKSUMS:
   SentryPrivate: 9334613897c85a9e30f2c9d7a331af8aaa4fe71f
   Sodium: 23d11554ecd556196d313cf6130d406dfe7ac6da
   Sourcery: 70a6048014bd4f37ea80e6bd4354d47bf3b760e1
-  StripeTerminal: 93e18a93c6f92e51ceedc5b78ab3075327075a80
+  StripeTerminal: 77c47dcc178113ed85ad47540df92d61646877e3
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 442b65b4ff1832d4ca9c2a157815cb29ad981b17
   WordPress-Aztec-iOS: fbebd569c61baa252b3f5058c0a2a9a6ada686bb
   WordPress-Editor-iOS: bda9f7f942212589b890329a0cb22547311749ef
-  WordPressAuthenticator: 132ccf00a41443e0ebd792d9a36ff5697a8f5414
-  WordPressKit: f4c39ae3a5949846d2d7c51843690d078711ab36
+  WordPressAuthenticator: ed6f3e3b1a3f720761df62ca361d0152b366abac
+  WordPressKit: e611fdb9acb52e767ef661f294605f4071804c01
   WordPressShared: 0aa459e5257a77184db87805a998f447443c9706
   WordPressUI: 7304a3a604b8dc582981e723e6d7caa9dd5a9f0e
   Wormholy: 09da0b876f9276031fd47383627cb75e194fc068
@@ -146,6 +146,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: f507cf8b9766555bc21c274d1f6d37b4488692fb
+PODFILE CHECKSUM: 57317a51e8933565c61fca95c304956af9af559a
 
 COCOAPODS: 1.13.0

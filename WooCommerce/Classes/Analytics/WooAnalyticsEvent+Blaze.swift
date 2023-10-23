@@ -93,6 +93,8 @@ extension BlazeSource {
             return "product_list_banner"
         case .myStoreBanner:
             return "my_store_banner"
+        case .campaignList:
+            return "campaign_list"
         }
     }
 }

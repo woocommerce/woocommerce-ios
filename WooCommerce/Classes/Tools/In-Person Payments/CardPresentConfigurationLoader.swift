@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class CardPresentConfigurationLoader {
     init(stores: StoresManager = ServiceLocator.stores) {
@@ -9,8 +10,13 @@ final class CardPresentConfigurationLoader {
     }
 
     var configuration: CardPresentPaymentsConfiguration {
-        .init(
-            country: SiteAddress().countryCode
+        // The `.unknown` country avoids us unwrapping an optional everywhere.
+        // The configuration it results in will not support any card payments.
+        let countryCode = SiteAddress().countryCode
+
+        return .init(
+            country: countryCode,
+            shouldAllowTapToPayInUK: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneInUK)
         )
     }
 }

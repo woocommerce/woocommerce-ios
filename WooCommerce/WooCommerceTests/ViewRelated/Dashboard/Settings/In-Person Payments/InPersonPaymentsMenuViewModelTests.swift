@@ -25,7 +25,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        configuration = CardPresentPaymentsConfiguration(country: "US")
+        configuration = CardPresentPaymentsConfiguration(country: .US)
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -81,14 +81,17 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
-                                                             paymentMethods: [.cardPresent],
-                                                             currencies: [.INR],
-                                                             paymentGateways: [WCPayAccount.gatewayID],
-                                                             supportedReaders: [.wisepad3],
-                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+        let configuration = CardPresentPaymentsConfiguration(
+            countryCode: .IN,
+            paymentMethods: [.cardPresent],
+            currencies: [.INR],
+            paymentGateways: [WCPayAccount.gatewayID],
+            supportedReaders: [.wisepad3],
+            supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+            minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            contactlessLimitAmount: nil,
+            minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -101,19 +104,22 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertFalse(eligiblity)
     }
 
-    func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_is_in_configuration() {
+    func test_isEligibleForTapToPayOnIPhone_true_when_built_in_reader_is_in_configuration() {
         // Given
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
-        let configuration = CardPresentPaymentsConfiguration(countryCode: "IN",
-                                                             paymentMethods: [.cardPresent],
-                                                             currencies: [.INR],
-                                                             paymentGateways: [WCPayAccount.gatewayID],
-                                                             supportedReaders: [.appleBuiltIn],
-                                                             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-                                                             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-                                                             stripeSmallestCurrencyUnitMultiplier: 100)
+        let configuration = CardPresentPaymentsConfiguration(
+            countryCode: .IN,
+            paymentMethods: [.cardPresent],
+            currencies: [.INR],
+            paymentGateways: [WCPayAccount.gatewayID],
+            supportedReaders: [.appleBuiltIn],
+            supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+            minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            contactlessLimitAmount: nil,
+            minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
         sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
@@ -121,7 +127,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         waitFor { promise in
             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
                 switch action {
-                case .checkDeviceSupport(_, _, _, let completion):
+                case .checkDeviceSupport(_, _, _, _, let completion):
                     completion(true)
                     promise(())
                 default:

@@ -67,7 +67,6 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _ in })
         viewModel.formattableAmountTextFieldViewModel.amount = "2"
         viewModel.name = "test"
-        viewModel.shouldDisableDoneButton = false
 
         // When
         viewModel.reset()

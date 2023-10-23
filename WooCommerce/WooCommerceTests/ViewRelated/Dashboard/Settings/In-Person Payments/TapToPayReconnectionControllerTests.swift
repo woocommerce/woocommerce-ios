@@ -12,7 +12,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private var onboardingCache: CardPresentPaymentOnboardingStateCache!
     private var sut: TapToPayReconnectionController!
     private let sampleSiteID: Int64 = 12891
-    private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: "US")
+    private let sampleConfiguration: CardPresentPaymentsConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
     override func setUp() {
         let sessionManager = SessionManager.makeForTesting()
@@ -87,7 +87,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         // Then
         assertEqual(sampleSiteID, connectionControllerFactory.spyCreateConnectionControllerSiteID)
         assertEqual(false, connectionControllerFactory.spyCreateConnectionControllerAllowTermsOfServiceAcceptance)
-        assertEqual(sampleConfiguration, connectionControllerFactory.spyCreateConnectionControllerConfiguration)
+        XCTAssertEqual(sampleConfiguration, connectionControllerFactory.spyCreateConnectionControllerConfiguration)
         assertEqual(CardReaderConnectionAnalyticsTracker.ConnectionType.automaticReconnection,
                     connectionControllerFactory.spyCreateConnectionControllerAnalyticsTracker?.connectionType)
     }

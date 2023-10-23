@@ -203,6 +203,10 @@ final class EditableOrderViewModel: ObservableObject {
         })
     }()
 
+    var orderHasCoupons: Bool {
+        orderSynchronizer.order.coupons.isNotEmpty
+    }
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false
@@ -1281,6 +1285,24 @@ private extension EditableOrderViewModel {
                 let isAddGiftCardActionEnabled = currencyFormatter.convertToDecimal(order.total)?.compare(NSDecimalNumber.zero) == .orderedDescending
                 let isDiscountBiggerThanZero = orderTotals.discountTotal.compare(NSDecimalNumber.zero) == .orderedDescending
 
+                // The Order's `discountTotal` property accounts for both coupons and product discounts, but we need to know
+                // where the discount comes from in order to allow/disallow coupons or discounts since these are mutually exclusive
+                var disableCoupons: Bool {
+                    // If coupons have already been applied to an order, allow more coupons to be applied
+                    if order.coupons.isNotEmpty {
+                        return false
+                    }
+                    // If an order is empty, disable coupons
+                    if order.items.isEmpty {
+                        return true
+                    }
+                    // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
+                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                        return true
+                    }
+                    return false
+                }
+
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
@@ -1294,7 +1316,7 @@ private extension EditableOrderViewModel {
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
-                                            shouldDisableAddingCoupons: order.items.isEmpty,
+                                            shouldDisableAddingCoupons: disableCoupons,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             isGiftCardEnabled: isGiftCardEnabled,
                                             isAddGiftCardActionEnabled: isAddGiftCardActionEnabled,

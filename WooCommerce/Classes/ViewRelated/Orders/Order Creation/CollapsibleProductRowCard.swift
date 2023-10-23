@@ -85,8 +85,19 @@ struct CollapsibleProductRowCard: View {
             }
             .padding(.top)
             .renderedIf(viewModel.hasDiscount)
+
             Divider()
                 .padding()
+
+            Button(Localization.configureBundleProduct) {
+                viewModel.configure?()
+            }
+            .buttonStyle(IconButtonStyle(icon: .cogImage))
+            .renderedIf(viewModel.isConfigurable)
+
+            Divider()
+                .padding()
+
             Button(Localization.removeProductLabel) {
                 viewModel.removeProductIntent()
             }
@@ -275,6 +286,9 @@ private extension CollapsibleProductRowCard {
         static let discountTooltipDescription = NSLocalizedString(
             "To add a Product Discount, please remove all Coupons from your order",
             comment: "Description text for the product discount row informational tooltip")
+        static let configureBundleProduct = NSLocalizedString(
+            "Configure",
+            comment: "Text in the product row card to configure a bundle product")
     }
 }
 

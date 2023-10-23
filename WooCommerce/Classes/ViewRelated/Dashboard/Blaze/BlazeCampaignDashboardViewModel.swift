@@ -21,7 +21,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published private(set) var shouldShowInDashboard: Bool = false
 
-    @Published var shouldShowIntroView: Bool = false
+    @Published var shouldShowIntroView: Bool = false {
+        didSet {
+            if shouldShowIntroView {
+                analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+            }
+        }
+    }
 
     private(set) var shouldRedactView: Bool = true
 
@@ -64,6 +70,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         productResultsController.fetchedObjects.first
     }
 
+    private var visibilitySubscription: AnyCancellable?
+
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -76,6 +84,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
 
+        observeSectionVisibility()
         configureResultsController()
     }
 
@@ -107,6 +116,18 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         if blazeCampaignResultsController.numberOfObjects == 0 {
             shouldShowIntroView = true
         }
+    }
+
+    func didSelectCampaignList() {
+        analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .myStoreSection))
+    }
+
+    func didSelectCampaignDetails() {
+        analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .myStoreSection))
+    }
+
+    func didSelectCreateCampaign(source: BlazeSource) {
+        analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
     }
 }
 
@@ -201,5 +222,14 @@ private extension BlazeCampaignDashboardViewModel {
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+    }
+
+    func observeSectionVisibility() {
+        visibilitySubscription = $shouldShowInDashboard
+            .removeDuplicates()
+            .filter { $0 == true }
+            .sink { [weak self] _ in
+                self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
+            }
     }
 }

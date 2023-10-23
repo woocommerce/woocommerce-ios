@@ -50,6 +50,7 @@ private extension BlazeCampaignDashboardViewHostingController {
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
         parentNavigationController?.show(webViewController, sender: self)
+        viewModel.didSelectCreateCampaign(source: source)
     }
 
     /// Reloads data and shows campaign list.
@@ -121,10 +122,11 @@ struct BlazeCampaignDashboardView: View {
                         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                             return
                         }
+                        viewModel.didSelectCampaignDetails()
                         let path = String(format: Constants.campaignDetailsURLFormat,
                                           campaign.campaignID,
                                           site.url.trimHTTPScheme(),
-                                          BlazeCampaignSource.myStoreSection.rawValue)
+                                          BlazeCampaignDetailSource.myStoreSection.rawValue)
                         selectedCampaignURL = URL(string: path)
                     }
             }
@@ -172,6 +174,7 @@ private extension BlazeCampaignDashboardView {
 
     var showAllCampaignsButton: some View {
         Button {
+            viewModel.didSelectCampaignList()
             showAllCampaignsTapped?()
         } label: {
             HStack {

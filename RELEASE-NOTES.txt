@@ -2,6 +2,7 @@
 
 16.0
 -----
+- [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
 
 
 15.9

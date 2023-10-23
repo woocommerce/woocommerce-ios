@@ -1,9 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.0
+-----
+
+
 15.9
 -----
 - [***] User can now use their stored passkeys to log in into WordPress.com [https://github.com/woocommerce/woocommerce-ios/pull/10904]
 - [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
+- [*] App login links are now handled when the onboarding screen is shown. [https://github.com/woocommerce/woocommerce-ios/pull/10974]
 
 15.8
 -----

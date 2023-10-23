@@ -52,6 +52,23 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeBannerDismissed,
                               properties: [Key.source: entryPoint.blazeSource.analyticsValue])
         }
+
+        /// Tracked when the Blaze campaign list entry point is selected.
+        static func blazeCampaignListEntryPointSelected(source: BlazeCampaignListSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignListEntryPointSelected,
+                              properties: [Key.source: source.rawValue])
+        }
+
+        /// Tracked when a Blaze campaign detail is selected.
+        static func blazeCampaignDetailSelected(source: BlazeCampaignDetailSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeCampaignDetailSelected,
+                              properties: [Key.source: source.rawValue])
+        }
+
+        /// Tracked when then intro screen for Blaze is displayed.
+        static func blazeIntroDisplayed() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeIntroDisplayed, properties: [:])
+        }
     }
 }
 
@@ -95,6 +112,10 @@ extension BlazeSource {
             return "my_store_banner"
         case .campaignList:
             return "campaign_list"
+        case .myStoreSectionCreateCampaignButton:
+            return "my_store_section_create_campaign_button"
+        case .introView:
+            return "intro_view"
         }
     }
 }

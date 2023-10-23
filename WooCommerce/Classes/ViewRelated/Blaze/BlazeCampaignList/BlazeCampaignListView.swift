@@ -1,12 +1,19 @@
 import SwiftUI
 import struct Yosemite.Site
 
-/// Blaze campaign entry points.
-enum BlazeCampaignSource: String {
+/// Blaze campaign detail entry points.
+enum BlazeCampaignDetailSource: String {
     /// From the Blaze section on My Store tab.
     case myStoreSection = "my_store_section"
     /// From the Blaze campaign list
     case campaignList = "campaign_list"
+}
+
+enum BlazeCampaignListSource: String {
+    /// From the Menu tab
+    case menu
+    /// From the Blaze section on My Store tab
+    case myStoreSection = "my_store_section"
 }
 
 /// Hosting controller for `BlazeCampaignListView`
@@ -82,9 +89,10 @@ struct BlazeCampaignListView: View {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
+                                viewModel.didSelectCampaignDetails()
                                 let path = String(format: Constants.campaignDetailsURLFormat,
                                                   item.campaignID, siteURL,
-                                                  BlazeCampaignSource.campaignList.rawValue)
+                                                  BlazeCampaignDetailSource.campaignList.rawValue)
                                 selectedCampaignURL = URL(string: path)
                             }
                     }
@@ -105,11 +113,13 @@ struct BlazeCampaignListView: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.create) {
                     onCreateCampaign()
+                    viewModel.didSelectCreateCampaign(source: .campaignList)
                 }
             }
         }
         .onAppear {
             viewModel.loadCampaigns()
+            viewModel.onViewAppear()
         }
         .sheet(item: $selectedCampaignURL) { url in
             detailView(url: url)
@@ -121,6 +131,7 @@ struct BlazeCampaignListView: View {
             BlazeCampaignIntroView(onStartCampaign: {
                 viewModel.shouldShowIntroView = false
                 onCreateCampaign()
+                viewModel.didSelectCreateCampaign(source: .introView)
             }, onDismiss: {
                 viewModel.shouldShowIntroView = false
             })

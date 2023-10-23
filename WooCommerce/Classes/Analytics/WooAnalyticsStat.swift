@@ -181,6 +181,9 @@ public enum WooAnalyticsStat: String {
     case blazeFlowCompleted = "blaze_flow_completed"
     case blazeFlowError = "blaze_flow_error"
     case blazeBannerDismissed = "blaze_banner_dismissed"
+    case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
+    case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
+    case blazeIntroDisplayed = "blaze_intro_displayed"
 
     // MARK: Products Onboarding Events
     //
@@ -215,6 +218,7 @@ public enum WooAnalyticsStat: String {
     case siteCreated = "login_woocommerce_site_created"
     case siteCreationFailed = "site_creation_failed"
     case siteCreationDismissed = "site_creation_dismissed"
+    case siteCreationFlowStarted = "site_creation_flow_started"
     case siteCreationStep = "site_creation_step"
     case siteCreationSitePreviewed = "site_creation_site_previewed"
     case siteCreationManageStoreTapped = "site_creation_store_management_opened"

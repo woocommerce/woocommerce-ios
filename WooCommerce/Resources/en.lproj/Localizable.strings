@@ -807,6 +807,9 @@ which should be translated separately and considered part of this sentence. */
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "All reviews marked as read";
 
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "All set!";
+
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "All the features you need, already built in";
 
@@ -1237,6 +1240,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the alert presented when dismissing the banner announcing Blaze feature. */
 "Blaze Ads" = "Blaze Ads";
 
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Blaze Campaigns";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Block Quote";
 
@@ -1386,6 +1392,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "Cameroon";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "Campaign Details";
+
 /* The singular total limit where the same coupon can be applied for everyone, reads like: Can be used 1 time */
 "Can be used %1$d time" = "Can be used %1$d time";
 
@@ -1419,6 +1428,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the AI product creation flow.
@@ -1711,6 +1721,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Choose Paper Size";
 
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments." = "Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments.";
+
 /* Subtitle of the store creation profiler question about the challenges. */
 "Choose your concerns or difficulties below. You can select more than one option." = "Choose your concerns or difficulties below. You can select more than one option.";
 
@@ -1922,7 +1935,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "Congratulations! You're one step closer to getting the new store ready.";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -2043,6 +2056,7 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2205,7 +2219,8 @@ which should be translated separately and considered part of this sentence. */
 "Crash Immediately" = "Crash Immediately";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "Create";
 
 /* Description for fixed product discount type on the action sheet presented from Add or Edit coupon screen */
@@ -2237,6 +2252,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action button linking to create WooCommerce store flow.Presented when logging in with an email address that is not a WordPress.com account */
 "Create An Account" = "Create An Account";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "Create campaign";
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Create Coupon";
@@ -2668,6 +2686,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2690,7 +2709,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -2781,6 +2799,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Drag and drop to re-order photos";
+
+/* Subtitle of the empty state of the Blaze campaign list view
+   Title for the Blaze campaign intro view */
+"Drive more sales to your store with Blaze" = "Drive more sales to your store with Blaze";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Duplicate";
@@ -3695,6 +3717,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Got it";
 
@@ -4052,6 +4075,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Increase sales with upsells and cross-sells";
+
+/* Subtitle of the Blaze campaign view. */
+"Increase visibility and get your products sold quickly." = "Increase visibility and get your products sold quickly.";
 
 /* Country option for a site address. */
 "India" = "India";
@@ -5099,6 +5125,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder for empty address in order customer data */
 "No address specified." = "No address specified.";
 
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "No campaigns yet";
+
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "No card reader is connected - connect a reader and try again";
 
@@ -5416,6 +5445,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Divider on initial auth view separating auth options. */
 "Or" = "Or";
+
+/* Instruction text for other forms of two-factor auth methods. */
+"Or choose another form of authentication." = "Or choose another form of authentication.";
 
 /* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
 "Or Continue using Magic Link" = "Or Continue using Magic Link";
@@ -5831,7 +5863,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
 
 /* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS.";
+"Please enter the verification code from your authenticator app." = "Please enter the verification code from your authenticator app.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";
@@ -6245,6 +6277,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "Promote with Blaze";
 
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "Promote your product in just minutes.";
+
 /* One of the possible options in Product Visibility */
 "Public" = "Public";
 
@@ -6338,6 +6373,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "rated once";
+
+/* Third item in the description for Blaze campaign intro view */
+"Reach millions on WordPress and Tumblr sites." = "Reach millions on WordPress and Tumblr sites.";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
@@ -6632,6 +6670,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Return to My Store";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "Return to Payments";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Return to sender if package is unable to be delivered";
@@ -7223,6 +7264,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";
 
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "Show All Campaigns";
+
 /* Accessibility label to show bottom action sheet options for a downloadable file */
 "Show bottom action sheet options for a downloadable file" = "Show bottom action sheet options for a downloadable file";
 
@@ -7311,8 +7355,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Skip";
@@ -7520,6 +7563,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* VoiceOver accessibility hint, informing the user the button can be used to create coupons. */
 "Start a Coupon creation by selecting a discount type in a bottom sheet" = "Start a Coupon creation by selecting a discount type in a bottom sheet";
+
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "Start Blaze Campaign";
 
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
@@ -7822,6 +7868,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Take a photo";
 
+/* Second item in the description for Blaze campaign intro view */
+"Take control with just a few dollars a day. It’s budget-friendly." = "Take control with just a few dollars a day. It’s budget-friendly.";
+
 /* Title for the simple payments screen */
 "Take Payment" = "Take Payment";
 
@@ -8020,9 +8069,11 @@ which should be translated separately and considered part of this sentence. */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "Text me a code instead";
+
+/* The button's title text to send a 2FA code via SMS text message. */
+"Text me a code via SMS" = "Text me a code via SMS";
 
 /* Country option for a site address. */
 "Thailand" = "Thailand";
@@ -8062,6 +8113,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message when a Card Present Payments extension is installed but the version is not supported */
 "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version." = "The %1$@ extension is installed on your store, but needs to be updated for In-Person Payments. Please update it to the most recent version.";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method.";
@@ -8500,6 +8554,9 @@ which should be translated separately and considered part of this sentence. */
    Top Performers section title - this year */
 "This Year" = "This Year";
 
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"Time's up, but don't worry, your security is our priority. Please try again!" = "Time's up, but don't worry, your security is our priority. Please try again!";
+
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -8623,6 +8680,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for total sales (gross revenue) in the Analytics Hub */
 "Total Sales" = "Total Sales";
 
+/* Fourth item in the description for Blaze campaign intro view */
+"Track performance, start and stop your Blaze campaign anytime." = "Track performance, start and stop your Blaze campaign anytime.";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "Track sales and high performing products";
 
@@ -8666,8 +8726,8 @@ which should be translated separately and considered part of this sentence. */
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "Try a payment";
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done.";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Try a Payment";
@@ -8748,9 +8808,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Try Payment Again";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Try with another email";
@@ -9226,6 +9283,9 @@ which should be translated separately and considered part of this sentence. */
 /* Usage tracker title in the privacy screen. */
 "Usage Tracking" = "Usage Tracking";
 
+/* The button's title text to use a security key. */
+"Use a security key" = "Use a security key";
+
 /* Description for the option to create a template product */
 "Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Use a template to create physical, virtual, and variable products. You can edit it as you go.";
 
@@ -9423,6 +9483,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Waiting for Google to complete…";
+
+/* Text while the webauthn signature is being verified
+   Text while waiting for a security key challenge */
+"Waiting for security key" = "Waiting for security key";
 
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "Waiting for your first order";
@@ -9678,6 +9742,12 @@ which should be translated separately and considered part of this sentence. */
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Whoops, something went wrong and we couldn't log you in. Please try again!";
 
+/* Generic error on the 2FA screen */
+"Whoops, something went wrong. Please try again!" = "Whoops, something went wrong. Please try again!";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"Whoops, that security key does not seem valid. Please try again with another one" = "Whoops, that security key does not seem valid. Please try again with another one";
+
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!";
 
@@ -9770,6 +9840,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Work with us";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Would you like to try a payment" = "Would you like to try a payment";
+
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";
 
@@ -9849,9 +9922,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "You can edit subscription settings in the web dashboard";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "You can find the domain settings in menu > settings";
@@ -10082,6 +10152,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡Help Us Understand Your Subscription Decision";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Blaze campaign";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Still Exploring WooCommerce?";

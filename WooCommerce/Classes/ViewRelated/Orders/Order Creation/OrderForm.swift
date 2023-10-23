@@ -407,7 +407,7 @@ private struct ProductsSection: View {
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
                                               shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
-                                              shouldDisallowDiscounts: viewModel.orderHasCoupons,
+                                              shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                               onAddDiscount: {
                         viewModel.selectOrderItem(productRow.id)
                     })

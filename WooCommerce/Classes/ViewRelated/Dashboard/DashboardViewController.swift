@@ -811,7 +811,10 @@ extension DashboardViewController {
         if blazeCampaignHostingController != nil {
             removeBlazeCampaignView()
         }
-        let hostingController = BlazeCampaignDashboardViewHostingController(viewModel: viewModel.blazeCampaignDashboardViewModel)
+        let hostingController = BlazeCampaignDashboardViewHostingController(
+            viewModel: viewModel.blazeCampaignDashboardViewModel,
+            parentNavigationController: navigationController
+        )
         guard let campaignView = hostingController.view else {
             return
         }

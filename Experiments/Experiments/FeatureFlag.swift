@@ -222,7 +222,7 @@ public enum FeatureFlag: Int {
     ///
     case optimizedBlazeExperience
 
-    /// Enables bundle products support in order creation/editing.
+    /// Enables bundle product configuration support in order creation/editing.
     ///
-    case bundleProductsInOrderForm
+    case productBundlesInOrderForm
 }

@@ -1,10 +1,11 @@
+import Experiments
 import XCTest
 import Yosemite
 import Fakes
 import WooFoundation
 @testable import WooCommerce
 
-class ProductRowViewModelTests: XCTestCase {
+final class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
@@ -304,7 +305,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
         let expectedStockText = ProductStockStatus.inStock.description
@@ -317,7 +320,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let expectedStockText = ProductStockStatus.insufficientStock.description
@@ -330,7 +335,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "onbackorder", bundleStockStatus: .inStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let expectedStockText = ProductStockStatus.onBackOrder.description
@@ -343,7 +350,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSDecimalNumber, number: .decimal)
@@ -358,7 +367,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", manageStock: false, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSDecimalNumber, number: .decimal)
@@ -366,5 +377,11 @@ class ProductRowViewModelTests: XCTestCase {
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+}
+
+private extension ProductRowViewModelTests {
+    func createFeatureFlagService(productBundles: Bool = true, productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
+        MockFeatureFlagService(productBundles: productBundles, productBundlesInOrderForm: productBundlesInOrderForm)
     }
 }

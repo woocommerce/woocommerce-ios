@@ -28,7 +28,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
 
     /// Unused in variations but needed to satisfy protocol
     var isEligibleForBlazeUpdate: AnyPublisher<Void, Never> {
-        isEligibleForBlazeSubject.eraseToAnyPublisher()
+        Just(Void()).eraseToAnyPublisher()
     }
 
 

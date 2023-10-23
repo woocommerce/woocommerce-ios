@@ -731,7 +731,8 @@ private extension ProductFormViewController {
     }
 
     /// Updates table rows when Blaze eligibility is computed.
-    /// Needed to show/hide the `.`
+    /// Needed to show/hide the "Promote with Blaze" button accordingly.
+    /// 
     func observeUpdateBlazeEligibility() {
         blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
             self?.updateFormTableContent()

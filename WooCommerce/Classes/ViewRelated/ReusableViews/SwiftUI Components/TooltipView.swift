@@ -39,6 +39,7 @@ struct TooltipView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .padding()
         }
+        .shadow(color: Color.secondary, radius: Layout.toolTipShadowCornerRadius)
         .offset(offset ?? CGSize(width: 0, height: 0))
         .padding(insets: safeAreaInsets)
     }
@@ -56,6 +57,7 @@ struct TooltipView: View {
 
     private enum Layout {
         static let frameCornerRadius: CGFloat = 4
+        static let toolTipShadowCornerRadius: CGFloat = 26
         static let tooltipPointerSize: CGFloat = 20
         static let tooltipPointerOffset: CGFloat = -10
     }

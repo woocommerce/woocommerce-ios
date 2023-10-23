@@ -42,10 +42,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation web view
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-        let webViewModel = BlazeWebViewModel(source: source, site: site, productID: productID) { [weak self] in
+        let webViewModel = BlazeWebViewModel(source: source, siteURL: viewModel.siteURL, productID: productID) { [weak self] in
             self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)

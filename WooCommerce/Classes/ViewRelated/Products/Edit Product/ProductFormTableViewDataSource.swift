@@ -281,7 +281,7 @@ private extension ProductFormTableViewDataSource {
 
     func configurePromoteWithBlaze(cell: UITableViewCell) {
         guard let cell = cell as? LeftImageTableViewCell else {
-            fatalError()
+            fatalError("Unexpected table view cell for the promote with Blaze cell")
         }
         let title = NSLocalizedString(
             "Promote with Blaze",

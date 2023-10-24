@@ -412,7 +412,7 @@ private struct ProductsSection: View {
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
-                    HStack(spacing: 20) {
+                    HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
                         scanProductButton
                         .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
 
@@ -611,6 +611,7 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetRowCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
+        static let productsHeaderButtonsSpacing: CGFloat = 20
     }
 
     enum Localization {

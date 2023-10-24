@@ -357,6 +357,10 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProduct: Bool = false
 
+    /// Defines whether the new custom amount modal is presented.
+    ///
+    @State private var showAddCustomAmount: Bool = false
+
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -495,9 +499,14 @@ private struct ProductsSection: View {
                 }
 
                 HStack {
-                    Button(OrderForm.Localization.addCustomAmount) {}
+                    Button(OrderForm.Localization.addCustomAmount) {
+                        showAddCustomAmount.toggle()
+                    }
                     .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
                     .buttonStyle(PlusButtonStyle())
+                    .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+                        AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+                    })
                 }
                 .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
             }

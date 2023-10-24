@@ -104,6 +104,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
             return true
+        case .productBundlesInOrderForm:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

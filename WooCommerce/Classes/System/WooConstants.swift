@@ -76,7 +76,7 @@ enum WooConstants {
 
     /// App login deep link prefix
     ///
-    static let appLoginURLPrefix = "://app-login"
+    static let appLoginURLPrefix = "woocommerce://app-login"
 }
 
 // MARK: URLs

@@ -22,6 +22,8 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let betterCustomerSelectionInOrder: Bool
     private let manualTaxesInOrderM2: Bool
     private let productCreationAI: Bool
+    private let productBundles: Bool
+    private let productBundlesInOrderForm: Bool
 
     init(isInboxOn: Bool = false,
          isSplitViewInOrdersTabOn: Bool = false,
@@ -42,7 +44,9 @@ struct MockFeatureFlagService: FeatureFlagService {
          isJustInTimeMessagesOnDashboardEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          manualTaxesInOrderM2: Bool = false,
-         productCreationAI: Bool = false) {
+         productCreationAI: Bool = false,
+         productBundles: Bool = false,
+         productBundlesInOrderForm: Bool = false) {
         self.isInboxOn = isInboxOn
         self.isSplitViewInOrdersTabOn = isSplitViewInOrdersTabOn
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
@@ -63,6 +67,8 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.manualTaxesInOrderM2 = manualTaxesInOrderM2
         self.productCreationAI = productCreationAI
+        self.productBundles = productBundles
+        self.productBundlesInOrderForm = productBundlesInOrderForm
     }
 
     func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
@@ -105,6 +111,10 @@ struct MockFeatureFlagService: FeatureFlagService {
             return manualTaxesInOrderM2
         case .productCreationAI:
             return productCreationAI
+        case .productBundles:
+            return productBundles
+        case .productBundlesInOrderForm:
+            return productBundlesInOrderForm
         default:
             return false
         }

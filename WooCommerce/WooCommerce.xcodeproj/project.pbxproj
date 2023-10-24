@@ -1662,6 +1662,7 @@
 		B9151B3F2840EB330036180F /* WooFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9151B3E2840EB330036180F /* WooFoundation.framework */; };
 		B9151B402840EB340036180F /* WooFoundation.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B9151B3E2840EB330036180F /* WooFoundation.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B92639FF293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92639FE293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift */; };
+		B92932E12AD5A616005B3153 /* AddCustomAmountViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B92932E02AD5A616005B3153 /* AddCustomAmountViewModelTests.swift */; };
 		B92FF9AE27FC7217005C34E3 /* OrderListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */; };
 		B92FF9B027FC7821005C34E3 /* ProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */; };
 		B932847429A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift in Sources */ = {isa = PBXBuildFile; fileRef = B932847329A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift */; };
@@ -1730,6 +1731,11 @@
 		B9E4364C287587D300883CFA /* FeatureAnnouncementCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */; };
 		B9E4364E287589E200883CFA /* BadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E4364D287589E200883CFA /* BadgeView.swift */; };
 		B9EF083F2886CE3300D96C58 /* HostingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */; };
+		B9F148942AD43E1B008FC795 /* AddCustomAmountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */; };
+		B9F148962AD55326008FC795 /* FormattableAmountTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F148952AD55326008FC795 /* FormattableAmountTextField.swift */; };
+		B9F148982AD5541C008FC795 /* AddCustomAmountViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F148972AD5541C008FC795 /* AddCustomAmountViewModel.swift */; };
+		B9F1489A2AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F148992AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift */; };
+		B9F1489D2AD59F42008FC795 /* FormattableAmountTextFieldViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F1489C2AD59F42008FC795 /* FormattableAmountTextFieldViewModelTests.swift */; };
 		B9F3DAAD29BB71B100DDD545 /* CollectPaymentAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */; };
 		B9F3DAAF29BB73CD00DDD545 /* CreateOrderAppIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */; };
 		B9F3DAB129BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */; };
@@ -4189,6 +4195,7 @@
 		B910685F27F1F28F00AD0575 /* GhostableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GhostableViewController.swift; sourceTree = "<group>"; };
 		B9151B3E2840EB330036180F /* WooFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = WooFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B92639FE293E2D4C00A257E0 /* JustInTimeMessagesProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JustInTimeMessagesProvider.swift; sourceTree = "<group>"; };
+		B92932E02AD5A616005B3153 /* AddCustomAmountViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountViewModelTests.swift; sourceTree = "<group>"; };
 		B92FF9AD27FC7217005C34E3 /* OrderListViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderListViewController.xib; sourceTree = "<group>"; };
 		B92FF9AF27FC7821005C34E3 /* ProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ProductsViewController.xib; sourceTree = "<group>"; };
 		B932847329A8D6E600B01251 /* CardPresentPaymentsOnboardingIPPUsersRefresher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPaymentsOnboardingIPPUsersRefresher.swift; sourceTree = "<group>"; };
@@ -4257,6 +4264,11 @@
 		B9E4364B287587D300883CFA /* FeatureAnnouncementCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureAnnouncementCardView.swift; sourceTree = "<group>"; };
 		B9E4364D287589E200883CFA /* BadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeView.swift; sourceTree = "<group>"; };
 		B9EF083E2886CE3300D96C58 /* HostingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HostingTableViewCell.swift; sourceTree = "<group>"; };
+		B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountView.swift; sourceTree = "<group>"; };
+		B9F148952AD55326008FC795 /* FormattableAmountTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattableAmountTextField.swift; sourceTree = "<group>"; };
+		B9F148972AD5541C008FC795 /* AddCustomAmountViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountViewModel.swift; sourceTree = "<group>"; };
+		B9F148992AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattableAmountTextFieldViewModel.swift; sourceTree = "<group>"; };
+		B9F1489C2AD59F42008FC795 /* FormattableAmountTextFieldViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormattableAmountTextFieldViewModelTests.swift; sourceTree = "<group>"; };
 		B9F3DAAC29BB71B100DDD545 /* CollectPaymentAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectPaymentAppIntent.swift; sourceTree = "<group>"; };
 		B9F3DAAE29BB73CD00DDD545 /* CreateOrderAppIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAppIntent.swift; sourceTree = "<group>"; };
 		B9F3DAB029BB83E600DDD545 /* WooAnalyticsEvent+AppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+AppIntents.swift"; sourceTree = "<group>"; };
@@ -7647,6 +7659,7 @@
 				02D7E7C82A4CBEEC0003049A /* LocalAnnouncementModal.swift */,
 				DE86E9262A4BEA2500A89A5B /* FeedbackView.swift */,
 				024A8F1E2A588FA500ABF3EB /* EditableImageView.swift */,
+				B9F148952AD55326008FC795 /* FormattableAmountTextField.swift */,
 				68ED2BD52ADD2C8C00ECA88D /* LineDetailView.swift */,
 				860B85F02ADE3A0E00E85884 /* BulletPointView.swift */,
 				68B6F22A2ADE7ED500D171FC /* TooltipView.swift */,
@@ -9190,6 +9203,25 @@
 			path = PermanentNotice;
 			sourceTree = "<group>";
 		};
+		B9F148922AD43E05008FC795 /* CustomAmounts */ = {
+			isa = PBXGroup;
+			children = (
+				B9F148932AD43E1B008FC795 /* AddCustomAmountView.swift */,
+				B9F148972AD5541C008FC795 /* AddCustomAmountViewModel.swift */,
+				B9F148992AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift */,
+			);
+			path = CustomAmounts;
+			sourceTree = "<group>";
+		};
+		B9F1489B2AD59F31008FC795 /* CustomAmounts */ = {
+			isa = PBXGroup;
+			children = (
+				B9F1489C2AD59F42008FC795 /* FormattableAmountTextFieldViewModelTests.swift */,
+				B92932E02AD5A616005B3153 /* AddCustomAmountViewModelTests.swift */,
+			);
+			path = CustomAmounts;
+			sourceTree = "<group>";
+		};
 		B9F3DAAB29BB714900DDD545 /* App Intents */ = {
 			isa = PBXGroup;
 			children = (
@@ -9356,6 +9388,7 @@
 		CCB366AD274518CD007D437A /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B9F1489B2AD59F31008FC795 /* CustomAmounts */,
 				B935D35D2A9F4EC30067B927 /* Taxes */,
 				B98968542A98F1DF007A2FBE /* PaymentSection */,
 				B95A45EA2A77D78F0073A91F /* CustomerSection */,
@@ -9668,6 +9701,7 @@
 		CCFC50532743BBBF001E505F /* Order Creation */ = {
 			isa = PBXGroup;
 			children = (
+				B9F148922AD43E05008FC795 /* CustomAmounts */,
 				B935D35A2A9F44A10067B927 /* Taxes */,
 				B958B4D82983E3E00010286B /* DurationRecorder */,
 				B651474327D644DE00C9C4E6 /* CustomerNoteSection */,
@@ -12540,6 +12574,7 @@
 				74B5713621CD7604008F9B8E /* SharingHelper.swift in Sources */,
 				261F1A7929C2AB2E001D9861 /* FreeTrialBannerViewModel.swift in Sources */,
 				0313651328ABCB2D00EEE571 /* InPersonPaymentsOnboardingErrorMainContentView.swift in Sources */,
+				B9F148962AD55326008FC795 /* FormattableAmountTextField.swift in Sources */,
 				260C315E2523CC4000157BC2 /* RefundProductsTotalViewModel.swift in Sources */,
 				0286B27D23C7051F003D784B /* ProductImagesViewController.swift in Sources */,
 				68D1BEDB28FFEDC20074A29E /* OrderCustomerListView.swift in Sources */,
@@ -12926,6 +12961,7 @@
 				202D2A5A2AC5933100E4ABC0 /* TopTabView.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				45DB70602614C7E80064A6CF /* ShippingLabelPackageDetailsResultsControllers.swift in Sources */,
+				B9F148982AD5541C008FC795 /* AddCustomAmountViewModel.swift in Sources */,
 				027D67D1245ADDF40036B8DB /* FilterTypeViewModel+Helpers.swift in Sources */,
 				581D5052274AA2480089B6AD /* View+AutofocusTextModifier.swift in Sources */,
 				E15FC74126BC1CED00CF83E6 /* AttributedText.swift in Sources */,
@@ -13634,6 +13670,7 @@
 				EE5B5BC42AB83749009BCBD6 /* AddProductWithAIContainerView.swift in Sources */,
 				02C8876D24501FAC00E4470F /* FilterListViewController.swift in Sources */,
 				02B2828E27C35061004A332A /* RefreshableInfiniteScrollList.swift in Sources */,
+				B9F148942AD43E1B008FC795 /* AddCustomAmountView.swift in Sources */,
 				021FB44C24A5E3B00090E144 /* ProductListMultiSelectorSearchUICommand.swift in Sources */,
 				024D4E942A2E1E240090E0E6 /* BlazeWebViewModel.swift in Sources */,
 				456C7EEB25EE71F10016CBC6 /* ShippingLabelSuggestedAddressViewController.swift in Sources */,
@@ -13659,6 +13696,7 @@
 				ABC35528D2D6BE6F516E5CEF /* InPersonPaymentsOnboardingError.swift in Sources */,
 				3F1FA84C28B60126009E246C /* StoreWidgets.intentdefinition in Sources */,
 				ABC3521A374A2355001E3CD6 /* CardReaderSettingsSearchingViewController.swift in Sources */,
+				B9F1489A2AD586E5008FC795 /* FormattableAmountTextFieldViewModel.swift in Sources */,
 				EE5B5BC22AB42F21009BCBD6 /* AddProductNameWithAIView.swift in Sources */,
 				532842FC64B572D4545BD98E /* OrderFormCustomerNoteViewModel.swift in Sources */,
 				532846FAFFFCA93169B5E0BC /* WaitingTimeTracker.swift in Sources */,
@@ -13698,6 +13736,7 @@
 				5761298B24589B84007BB2D9 /* NumberFormatter+LocalizedOrNinetyNinePlusTests.swift in Sources */,
 				2667BFD7252E5DBF008099D4 /* RefundItemViewModelTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,
+				B9F1489D2AD59F42008FC795 /* FormattableAmountTextFieldViewModelTests.swift in Sources */,
 				BAA34C202787494300846F3C /* ReviewsViewControllerTests.swift in Sources */,
 				02CE43092769953D0006EAEF /* MockCaptureDevicePermissionChecker.swift in Sources */,
 				7E6A01A32726C5D3001668D5 /* MockProductCategoryStoresManager.swift in Sources */,
@@ -13795,6 +13834,7 @@
 				26C6E8E426E2D87C00C7BB0F /* CountrySelectorViewModelTests.swift in Sources */,
 				0269A5E72913FD22003B20EB /* StoreCreationCoordinatorTests.swift in Sources */,
 				02CE4307276994920006EAEF /* ProductSKUBarcodeScannerCoordinatorTests.swift in Sources */,
+				B92932E12AD5A616005B3153 /* AddCustomAmountViewModelTests.swift in Sources */,
 				0999877427D2819F00F82C65 /* BulkUpdateViewControllerTests.swift in Sources */,
 				B6D2468C2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift in Sources */,
 				3190D61D26D6E97B00EF364D /* CardPresentModalRetryableErrorTests.swift in Sources */,

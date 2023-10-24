@@ -98,3 +98,9 @@ public enum OrderFactory {
     ///
     public static let emptyNewOrder = Order.empty
 }
+
+public extension OrderFeeLine {
+    var isDeleted: Bool {
+        self == OrderFactory.deletedFeeLine(self)
+    }
+}

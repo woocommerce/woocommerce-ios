@@ -1205,10 +1205,13 @@ private extension EditableOrderViewModel {
             .removeDuplicates()
             .map { [weak self] fees -> [CustomAmountRowViewModel] in
                 guard let self = self else { return [] }
-                return fees.compactMap {
-                    CustomAmountRowViewModel(id: $0.feeID,
-                                             name: $0.name ?? Localization.customAmountDefaultName,
-                                             total: self.currencyFormatter.formatAmount($0.total) ?? "")
+                return fees.compactMap { fee in
+                    guard !fee.isDeleted else { return nil }
+
+                    return CustomAmountRowViewModel(id: fee.feeID,
+                                             name: fee.name ?? Localization.customAmountDefaultName,
+                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                             onRemoveCustomAmount: { self.removeFee(fee) })
                 }
             }
             .assign(to: &$customAmountRows)

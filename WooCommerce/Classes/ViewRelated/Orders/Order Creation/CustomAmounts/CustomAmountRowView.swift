@@ -41,6 +41,7 @@ struct CustomAmountRowView: View {
             Spacer()
 
             Button {
+                viewModel.onRemoveCustomAmount()
             } label: {
                 Image(systemName: "xmark")
             }

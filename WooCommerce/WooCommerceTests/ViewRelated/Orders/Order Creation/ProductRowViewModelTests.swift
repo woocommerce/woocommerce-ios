@@ -386,4 +386,29 @@ class ProductRowViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.hasDiscount)
     }
+
+    func test_product_row_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
+        // Given
+        let price = "10.71"
+        let quantity: Decimal = 8
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+
+        // Then
+        assertEqual("8 x $10.71", viewModel.priceQuantityLine)
+    }
+
+    func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {
+        // Given
+        let quantity: Decimal = 8
+        let product = Product.fake().copy()
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+
+        // Then
+        assertEqual("8 x -", viewModel.priceQuantityLine)
+    }
 }

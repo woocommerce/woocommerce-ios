@@ -980,7 +980,7 @@ extension EditableOrderViewModel {
 
         /// Indicates whether the Coupons informational tooltip button should be shown
         /// The tooltip is rendered when an order has no coupons, but has product discounts.
-        /// Sincer both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
+        /// Since both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
         /// on `shouldShowCoupon` or `shouldShowDiscountTotal` alone for its visibility:
         ///
         var shouldRenderCouponsInfoTooltip: Bool {

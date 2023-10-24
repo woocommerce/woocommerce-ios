@@ -14,6 +14,10 @@ enum BlazeSource {
     case myStoreBanner
     /// From the Blaze campaign list
     case campaignList
+    /// From the Blaze intro view
+    case introView
+    /// From the Create campaign button on the Blaze section of the My Store screen
+    case myStoreSectionCreateCampaignButton
 }
 
 /// View model for Blaze webview.

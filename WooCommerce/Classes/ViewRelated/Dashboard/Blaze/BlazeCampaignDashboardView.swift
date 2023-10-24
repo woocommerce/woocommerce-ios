@@ -7,9 +7,12 @@ import Kingfisher
 ///
 final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingController<BlazeCampaignDashboardView> {
     private let viewModel: BlazeCampaignDashboardViewModel
+    private let parentNavigationController: UINavigationController?
 
-    init(viewModel: BlazeCampaignDashboardViewModel) {
+    init(viewModel: BlazeCampaignDashboardViewModel, parentNavigationController: UINavigationController?) {
         self.viewModel = viewModel
+        self.parentNavigationController = parentNavigationController
+
         super.init(rootView: BlazeCampaignDashboardView(viewModel: viewModel))
         if #unavailable(iOS 16.0) {
             viewModel.onStateChange = { [weak self] in
@@ -17,7 +20,17 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
             }
         }
 
-        // TODO: Assign callback handlers and handle navigation
+        rootView.createCampaignTapped = { [weak self] in
+            self?.navigateToCampaignCreation(source: .myStoreSectionCreateCampaignButton)
+        }
+
+        rootView.startCampaignFromIntroTapped = { [weak self] productID in
+            self?.navigateToCampaignCreation(source: .introView, productID: productID)
+        }
+
+        rootView.showAllCampaignsTapped = { [weak self] in
+            self?.showCampaignList(isPostCreation: false)
+        }
     }
 
     @available(*, unavailable)
@@ -26,13 +39,43 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
     }
 }
 
+private extension BlazeCampaignDashboardViewHostingController {
+    /// Handles navigation to the campaign creation web view
+    func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let webViewModel = BlazeWebViewModel(source: source, site: site, productID: productID) { [weak self] in
+            self?.handlePostCreation()
+        }
+        let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
+        parentNavigationController?.show(webViewController, sender: self)
+        viewModel.didSelectCreateCampaign(source: source)
+    }
+
+    /// Reloads data and shows campaign list.
+    func handlePostCreation() {
+        parentNavigationController?.popViewController(animated: true)
+        Task {
+            await viewModel.reload()
+        }
+        showCampaignList(isPostCreation: true)
+    }
+
+    /// Navigates to the campaign list.
+    /// Parameter isPostCreation: Whether the list is opened after creating a campaign successfully.
+    ///
+    func showCampaignList(isPostCreation: Bool) {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            return
+        }
+        let controller = BlazeCampaignListHostingController(site: site, viewModel: .init(siteID: site.siteID), isPostCreation: isPostCreation)
+        parentNavigationController?.show(controller, sender: self)
+    }
+}
+
 /// Blaze campaigns in dashboard screen.
 struct BlazeCampaignDashboardView: View {
-    /// Set externally in the hosting controller.
-    var campaignTapped: (() -> Void)?
-
-    /// Set externally in the hosting controller.
-    var productTapped: (() -> Void)?
 
     /// Set externally in the hosting controller.
     var showAllCampaignsTapped: (() -> Void)?
@@ -40,7 +83,12 @@ struct BlazeCampaignDashboardView: View {
     /// Set externally in the hosting controller.
     var createCampaignTapped: (() -> Void)?
 
+    /// Set externally in the hosting controller.
+    var startCampaignFromIntroTapped: ((_ productID: Int64?) -> Void)?
+
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
+    @State private var selectedCampaignURL: URL?
+    @State private var selectedProductID: Int64?
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -65,12 +113,21 @@ struct BlazeCampaignDashboardView: View {
             if case .showProduct(let product) = viewModel.state {
                 ProductInfoView(product: product)
                     .onTapGesture {
-                        productTapped?()
+                        selectedProductID = product.productID
+                        viewModel.shouldShowIntroView = true
                     }
             } else if case .showCampaign(let campaign) = viewModel.state {
                 BlazeCampaignItemView(campaign: campaign, showBudget: false)
                     .onTapGesture {
-                        campaignTapped?()
+                        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
+                            return
+                        }
+                        viewModel.didSelectCampaignDetails()
+                        let path = String(format: Constants.campaignDetailsURLFormat,
+                                          campaign.campaignID,
+                                          site.url.trimHTTPScheme(),
+                                          BlazeCampaignDetailSource.myStoreSection.rawValue)
+                        selectedCampaignURL = URL(string: path)
                     }
             }
 
@@ -86,13 +143,27 @@ struct BlazeCampaignDashboardView: View {
         }
         .padding(insets: Layout.insets)
         .background(Color(uiColor: .listForeground(modal: false)))
+        .sheet(item: $selectedCampaignURL) { url in
+            campaignDetailView(url: url)
+        }
+        .sheet(isPresented: $viewModel.shouldShowIntroView) {
+            BlazeCampaignIntroView(onStartCampaign: {
+                viewModel.shouldShowIntroView = false
+                startCampaignFromIntroTapped?(selectedProductID)
+            }, onDismiss: {
+                viewModel.shouldShowIntroView = false
+            })
+        }
     }
 }
 
 private extension BlazeCampaignDashboardView {
     var createCampaignButton: some View {
         Button {
-            createCampaignTapped?()
+            viewModel.checkIfIntroViewIsNeeded()
+            if !viewModel.shouldShowIntroView {
+                createCampaignTapped?()
+            }
         } label: {
             Text(Localization.createCampaign)
                 .fontWeight(.semibold)
@@ -103,6 +174,7 @@ private extension BlazeCampaignDashboardView {
 
     var showAllCampaignsButton: some View {
         Button {
+            viewModel.didSelectCampaignList()
             showAllCampaignsTapped?()
         } label: {
             HStack {
@@ -123,6 +195,24 @@ private extension BlazeCampaignDashboardView {
             .cornerRadius(Layout.cornerRadius)
         }
     }
+
+    func campaignDetailView(url: URL) -> some View {
+        NavigationView {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 url: url)
+            .navigationTitle(Localization.detailTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(action: {
+                        selectedCampaignURL = nil
+                    }, label: {
+                        Text(Localization.done)
+                    })
+                }
+            }
+        }
+    }
 }
 
 private extension BlazeCampaignDashboardView {
@@ -133,6 +223,10 @@ private extension BlazeCampaignDashboardView {
         }
         static let insets: EdgeInsets = .init(top: 16, leading: 16, bottom: 16, trailing: 16)
         static let cornerRadius: CGFloat = 8
+    }
+
+    enum Constants {
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
 
     enum Localization {
@@ -155,6 +249,10 @@ private extension BlazeCampaignDashboardView {
             "Create campaign",
             comment: "Button when tapped will launch create Blaze campaign flow."
         )
+
+        static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
+
+        static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
     }
 }
 

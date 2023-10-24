@@ -146,6 +146,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         discount != nil
     }
 
+    /// Whether product discounts are disallowed,
+    /// defaults to `false`
+    ///
+    var shouldDisallowDiscounts: Bool = false
+
     /// Variations label for a variable product.
     ///
     private var variationsLabel: String? {

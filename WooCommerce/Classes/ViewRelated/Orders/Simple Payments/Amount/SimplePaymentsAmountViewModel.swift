@@ -7,25 +7,7 @@ import WooFoundation
 /// View Model for the `SimplePaymentsAmount` view.
 ///
 final class SimplePaymentsAmountViewModel: ObservableObject {
-
-    /// Helper to format price field input.
-    ///
-    private let priceFieldFormatter: PriceFieldFormatter
-
-    /// Stores the amount(unformatted) entered by the merchant.
-    ///
-    @Published var amount: String = "" {
-        didSet {
-            guard amount != oldValue else { return }
-            amount = priceFieldFormatter.formatAmount(amount)
-        }
-    }
-
-    /// Formatted amount to display. When empty displays a placeholder value.
-    ///
-    var formattedAmount: String {
-        priceFieldFormatter.formattedAmount
-    }
+    let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
 
     /// True while performing the create order operation. False otherwise.
     ///
@@ -42,21 +24,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         }
     }
 
-    /// Defines the amount text color.
-    ///
-    var amountTextColor: UIColor {
-        amount.isEmpty ? .textSubtle : .text
-    }
-
-    /// Returns true when the amount is not a positive number.
-    ///
-    var shouldDisableDoneButton: Bool {
-        guard let amountDecimal = priceFieldFormatter.amountDecimal else {
-            return true
-        }
-
-        return amountDecimal <= .zero
-    }
+    @Published var shouldDisableDoneButton: Bool = true
 
     /// Defines if the view actions should be disabled.
     /// Currently true while a network operation is happening.
@@ -68,8 +36,7 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     /// Defines if the swipe-to-dismiss gesture on the Simple Payment flow should be enabled
     ///
     var shouldEnableSwipeToDismiss: Bool {
-        (priceFieldFormatter.amountDecimal == nil ||
-        priceFieldFormatter.amountDecimal == .zero) &&
+        (!formattableAmountTextFieldViewModel.amountIsValid) &&
         !loading
     }
 
@@ -110,29 +77,31 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.stores = stores
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.presentNoticeSubject = presentNoticeSubject
         self.analytics = analytics
 
         updateInitialOrderStatus()
+        listenToAmountChanges()
     }
 
     /// Called when the view taps the done button.
     /// Creates a simple payments order.
     ///
     func createSimplePaymentsOrder() {
-
         loading = true
 
         // Order created as taxable to delegate taxes calculation to the API.
-        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID, status: initialOrderStatus, amount: amount, taxable: true) { [weak self] result in
+        let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
+                                                           status: initialOrderStatus,
+                                                           amount: formattableAmountTextFieldViewModel.amount, taxable: true) { [weak self] result in
             guard let self = self else { return }
             self.loading = false
 
             switch result {
             case .success(let order):
                 self.summaryViewModel = SimplePaymentsSummaryViewModel(order: order,
-                                                                       providedAmount: self.amount,
+                                                                       providedAmount: formattableAmountTextFieldViewModel.amount,
                                                                        presentNoticeSubject: self.presentNoticeSubject)
 
             case .failure(let error):
@@ -150,12 +119,22 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.PaymentsFlow.paymentsFlowCanceled(flow: .simplePayment))
     }
 
+
+}
+
+private extension SimplePaymentsAmountViewModel {
     /// Updates the initial order status.
     ///
-    private func updateInitialOrderStatus() {
+    func updateInitialOrderStatus() {
         NewOrderInitialStatusResolver(siteID: siteID, stores: stores).resolve { [weak self] baseStatus in
             self?.initialOrderStatus = baseStatus
         }
+    }
+
+    func listenToAmountChanges() {
+        formattableAmountTextFieldViewModel.$amount.map { _ in
+            !self.formattableAmountTextFieldViewModel.amountIsValid
+        }.assign(to: &$shouldDisableDoneButton)
     }
 }
 

@@ -16,7 +16,12 @@ struct BlazeCampaignIntroView: View {
     }
 
     var body: some View {
-        NavigationView {
+        VStack(alignment: .leading, spacing: 0) {
+            Button(Localization.cancel) {
+                onDismiss()
+            }
+            .padding(Layout.buttonPadding)
+
             ScrollView {
                 VStack(alignment: .leading, spacing: Layout.elementVerticalSpacing) {
                     ZStack {
@@ -53,13 +58,6 @@ struct BlazeCampaignIntroView: View {
                     .padding(Layout.buttonPadding)
                 }
                 .background(Color(UIColor.systemBackground))
-            }
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.cancel) {
-                        onDismiss()
-                    }
-                }
             }
         }
     }

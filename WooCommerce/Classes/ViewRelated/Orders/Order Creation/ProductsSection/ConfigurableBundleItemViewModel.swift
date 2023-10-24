@@ -44,11 +44,10 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     stockStatusKey: "",
                                     stockQuantity: nil,
                                     manageStock: false,
-                                    // TODO-jc: update to the latest quantity
+                                    // TODO: 10428 - set to the latest quantity if the bundle item exists in the bundle product item
                                     quantity: bundleItem.defaultQuantity,
                                     canChangeQuantity: true,
                                     imageURL: nil,
-                                    isChildProduct: false,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity

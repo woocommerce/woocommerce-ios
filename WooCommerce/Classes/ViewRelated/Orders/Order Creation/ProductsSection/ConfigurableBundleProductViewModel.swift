@@ -44,7 +44,6 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         self.product = product
         self.stores = stores
         self.onConfigure = onConfigure
-        // todo-jc: fetch bundle product's bundled items
         loadProducts()
     }
 
@@ -87,8 +86,8 @@ private extension ConfigurableBundleProductViewModel {
                         }
                     }
             } catch {
-                // TODO-jc: error handling
-                print("\(error)")
+                // TODO: 10428 - handle error loading products for bundle items
+                DDLogError("⛔️ Error loading products for bundle product items in order form:  \(error)")
             }
         }
     }

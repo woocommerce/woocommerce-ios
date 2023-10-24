@@ -564,9 +564,6 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(productInput)
     }
 
-    func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-    }
-
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
@@ -1673,6 +1670,10 @@ private extension EditableOrderViewModel {
 
             return productRowViewModel
         }
+    }
+
+    func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
+        // TODO: 10428 - add bundle configuration to order item
     }
 }
 

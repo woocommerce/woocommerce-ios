@@ -22,14 +22,9 @@ struct BundledProductConfiguration {
 
 /// View model for `ConfigurableBundleProductView`.
 final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
-
-    /// Products of the bundled items.
-    var productRowViewModels: [ProductRowViewModel] {
-        bundleItemViewModels.map { $0.productRowViewModel }
-    }
-
     @Published private(set) var bundleItemViewModels: [ConfigurableBundleItemViewModel] = []
 
+    // TODO: 10428 - only enable configure CTA when all bundle items are configured
     @Published private(set) var isConfigureEnabled: Bool = true
 
     /// Closure invoked when the configure CTA is tapped to submit the configuration.
@@ -52,13 +47,6 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
             $0.toConfiguration
         }
         onConfigure(configurations)
-    }
-}
-
-private extension ConfigurableBundleProductViewModel {
-    func observeBundleItemsForConfigurableState() {
-        $bundleItemViewModels.map { $0.contains(where: { $0.toConfiguration == nil }) == false }
-            .assign(to: &$isConfigureEnabled)
     }
 }
 

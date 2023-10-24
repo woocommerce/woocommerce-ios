@@ -290,8 +290,7 @@ private extension ProductFormTableViewDataSource {
         )
 
         cell.configure(
-            image: .blaze,
-            imageSize: CGSize(width: 20, height: 20),
+            image: .blaze.resize(to: Constants.blazeButtonIconSize)!,
             text: title,
             textColor: .accent
         )
@@ -418,6 +417,7 @@ private extension ProductFormTableViewDataSource {
         static let learnMoreTextHeight: CGFloat = 16
         static let learnMoreTextInsets: UIEdgeInsets = .init(top: 4, left: 0, bottom: 4, right: 0)
         static let settingsHeaderHeight = CGFloat(16)
+        static let blazeButtonIconSize = CGSize(width: 20, height: 20)
     }
     enum Localization {
         static let legalText = NSLocalizedString(

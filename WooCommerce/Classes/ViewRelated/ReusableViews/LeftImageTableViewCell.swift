@@ -53,14 +53,9 @@ extension LeftImageTableViewCell {
         textLabel?.text = text
     }
 
-    // Custom configure, including image size and text color
-    func configure(image: UIImage, imageSize: CGSize, text: String, textColor: UIColor) {
-        UIGraphicsBeginImageContext(imageSize)
-        image.draw(in: CGRect(x: 0, y: 0, width: imageSize.width, height: imageSize.height))
-        let resizedImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-
-        imageView?.image = resizedImage
+    // Custom configure, including text color
+    func configure(image: UIImage, text: String, textColor: UIColor) {
+        imageView?.image = image
         textLabel?.text = text
         textLabel?.textColor = textColor
     }

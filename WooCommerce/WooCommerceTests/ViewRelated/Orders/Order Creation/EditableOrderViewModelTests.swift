@@ -2578,6 +2578,31 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         XCTAssertTrue(viewModel.shouldDisallowDiscounts)
     }
+
+    func test_PaymentDataViewModel_when_initialized_then_shouldRenderCouponsInfoTooltip_returns_false() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel()
+
+        // Then
+        XCTAssertFalse(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
+    }
+
+
+    func test_PaymentDataViewModel_when_order_should_show_coupons_then_shouldRenderCouponsInfoTooltip_returns_false() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(shouldShowCoupon: true)
+
+        // Then
+        XCTAssertFalse(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
+    }
+
+    func test_PaymentDataViewModel_when_order_should_show_discounts_then_shouldRenderCouponsInfoTooltip_returns_true() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(shouldShowDiscountTotal: true)
+
+        // Then
+        XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
+    }
 }
 
 private extension MockStorageManager {

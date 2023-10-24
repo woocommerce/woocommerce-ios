@@ -131,14 +131,17 @@ struct OrderForm: View {
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
-                                Divider()
-                                Spacer(minLength: Layout.sectionSpacing)
-                                Divider()
-                            }
-                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+                                Group {
+                                    Divider()
+                                    Spacer(minLength: Layout.sectionSpacing)
+                                    Divider()
+                                }
+                                .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                            CustomAmountsSection(viewModel: viewModel)
-                                .disabled(viewModel.shouldShowNonEditableIndicators)
+                                CustomAmountsSection(viewModel: viewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                            }
+                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
 
                             Divider()
 

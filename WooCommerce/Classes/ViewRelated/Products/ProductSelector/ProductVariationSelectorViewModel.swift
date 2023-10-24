@@ -353,7 +353,8 @@ extension ProductVariationSelectorViewModel {
                             stockQuantity: 1,
                             manageStock: false,
                             canChangeQuantity: false,
-                            imageURL: nil)
+                            imageURL: nil,
+                            isConfigurable: false)
     }
 
     /// Add Product Variation to Order notices

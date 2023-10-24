@@ -195,8 +195,13 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    /// Whether an Order has coupons applied
-    ///
+    lazy private(set) var addCustomAmountViewModel = {
+        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+            // TODO: Send amount and name to view model
+            debugPrint("Adding custom amount of \(amount) with name \(name)")
+        })
+    }()
+
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -743,6 +748,10 @@ final class EditableOrderViewModel: ObservableObject {
     func onClearAddressFromBottomSheetTapped() {
         analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
         forgetTaxRate()
+    }
+
+    func onDismissAddCustomAmountView() {
+        addCustomAmountViewModel.reset()
     }
 }
 

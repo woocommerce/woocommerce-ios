@@ -130,6 +130,22 @@ struct OrderForm: View {
                             ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
+                            Divider()
+                            .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isNotEmpty)
+
+                            Spacer(minLength: Layout.sectionSpacing)
+                                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts && viewModel.productRows.isNotEmpty)
+
+                            Group {
+                                Divider()
+                                    .renderedIf(viewModel.productRows.isNotEmpty)
+                                CustomAmountsSection(viewModel: viewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                            }
+                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+
+                            Divider()
+
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
@@ -357,10 +373,6 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProduct: Bool = false
 
-    /// Defines whether the new custom amount modal is presented.
-    ///
-    @State private var showAddCustomAmount: Bool = false
-
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -390,7 +402,6 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
-
                 HStack {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
@@ -401,8 +412,23 @@ private struct ProductsSection: View {
                     Image(uiImage: .lockImage)
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
+
+                    HStack(spacing: 20) {
+                        scanProductButton
+                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+
+                        Button(action: {
+                            showAddProduct.toggle()
+                        }) {
+                            Image(uiImage: .plusImage)
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                    }
+                    .scaledToFit()
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators && viewModel.shouldShowCustomAmountsWithProducts)
                 }
-                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
+                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isNotEmpty)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
@@ -441,78 +467,27 @@ private struct ProductsSection: View {
                     .id(addProductButton)
                     .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddProduct, onDismiss: {
-                        scroll.scrollTo(addProductButton)
-                    }, content: {
-                        ProductSelectorNavigationView(
-                            configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                            source: .orderForm,
-                            isPresented: $showAddProduct,
-                            viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
-                        .onDisappear {
-                            navigationButtonID = UUID()
-                        }
-                    })
 
-                    Button(action: {
-                        viewModel.trackBarcodeScanningButtonTapped()
-                        let capturePermissionStatus = viewModel.capturePermissionStatus
-                        switch capturePermissionStatus {
-                        case .notPermitted:
-                            viewModel.trackBarcodeScanningNotPermitted()
-                            logPermissionStatus(status: .notPermitted)
-                            self.showPermissionsSheet = true
-                        case .notDetermined:
-                            logPermissionStatus(status: .notDetermined)
-                            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                                if isPermissionGranted {
-                                    showAddProductViaSKUScanner = true
-                                    logPermissionStatus(status: .permitted)
-                                }
-                            })
-                        case .permitted:
-                            showAddProductViaSKUScanner = true
-                            logPermissionStatus(status: .permitted)
-                        }
-                    }, label: {
-                        if showAddProductViaSKUScannerLoading {
-                            ProgressView()
-                        } else {
-                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                            .foregroundColor(Color(.brand))
-                        }
-                    })
-                    .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
-                        scroll.scrollTo(addProductViaSKUScannerButton)
-                    }, content: {
-                        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                            showAddProductViaSKUScanner = false
-                            showAddProductViaSKUScannerLoading = true
-                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                                showAddProductViaSKUScannerLoading = false
-                            }, onRetryRequested: {
-                                showAddProductViaSKUScanner = true
-                            })
-                        })
-                    })
+                    scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
-
-                HStack {
-                    Button(OrderForm.Localization.addCustomAmount) {
-                        showAddCustomAmount.toggle()
-                    }
-                    .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
-                    .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-                        AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
-                    })
-                }
-                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isEmpty)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .sheet(isPresented: $showAddProduct, onDismiss: {
+                scroll.scrollTo(addProductButton)
+            }, content: {
+                ProductSelectorNavigationView(
+                    configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                    source: .orderForm,
+                    isPresented: $showAddProduct,
+                    viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
+                .onDisappear {
+                    navigationButtonID = UUID()
+                }
+            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -525,9 +500,78 @@ private struct ProductsSection: View {
                      ]
                  )
             })
-
-            Divider()
         }
+    }
+
+    var scanProductButton: some View {
+        Button(action: {
+            viewModel.trackBarcodeScanningButtonTapped()
+            let capturePermissionStatus = viewModel.capturePermissionStatus
+            switch capturePermissionStatus {
+            case .notPermitted:
+                viewModel.trackBarcodeScanningNotPermitted()
+                logPermissionStatus(status: .notPermitted)
+                self.showPermissionsSheet = true
+            case .notDetermined:
+                logPermissionStatus(status: .notDetermined)
+                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                    if isPermissionGranted {
+                        showAddProductViaSKUScanner = true
+                        logPermissionStatus(status: .permitted)
+                    }
+                })
+            case .permitted:
+                showAddProductViaSKUScanner = true
+                logPermissionStatus(status: .permitted)
+            }
+        }, label: {
+            if showAddProductViaSKUScannerLoading {
+                ProgressView()
+            } else {
+                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                .foregroundColor(Color(.brand))
+            }
+        })
+        .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+            scroll.scrollTo(addProductViaSKUScannerButton)
+        }, content: {
+            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                showAddProductViaSKUScanner = false
+                showAddProductViaSKUScannerLoading = true
+                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                    showAddProductViaSKUScannerLoading = false
+                }, onRetryRequested: {
+                    showAddProductViaSKUScanner = true
+                })
+            })
+        })
+    }
+}
+
+private struct CustomAmountsSection: View {
+    /// View model to drive the view content
+    @ObservedObject var viewModel: EditableOrderViewModel
+
+    /// Defines whether the new custom amount modal is presented.
+    ///
+    @State private var showAddCustomAmount: Bool = false
+
+    var body: some View {
+        VStack {
+            HStack {
+                Button(OrderForm.Localization.addCustomAmount) {
+                    showAddCustomAmount.toggle()
+                }
+                .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
+                .buttonStyle(PlusButtonStyle())
+                .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+                    AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+                })
+            }
+        }
+        .padding()
+        .background(Color(.listForeground(modal: true)))
+        .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
     }
 }
 

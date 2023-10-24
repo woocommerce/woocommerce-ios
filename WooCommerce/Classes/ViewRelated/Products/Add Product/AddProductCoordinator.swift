@@ -394,21 +394,35 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+        BottomSheetPresenter(configure: { [weak self] bottomSheet in
+            guard let self else { return }
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
             // Sets custom height if possible.
             // Default detents are used otherwise. Large detent is necessary for large font sizes.
+            var detents: [UISheetPresentationController.Detent] = []
             if #available(iOS 16.0, *), let height {
                 let customHeight = UISheetPresentationController.Detent.custom { _ in
                     height
                 }
-                sheet.detents = [.large(), .medium(), customHeight]
+                detents = [.medium(), customHeight]
             } else {
-                sheet.detents = [.large(), .medium()]
+                detents = [.medium()]
             }
+
+            // if preferred content size is accessibility or vertical size class is compact,
+            // add large detent for accessibility.
+            // skip if the device is iPad.
+            let traitCollection = self.navigationController.traitCollection
+            let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+            let compactVertical = traitCollection.verticalSizeClass == .compact
+            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if !isIPad && (isAccessibilityCategory || compactVertical) {
+                detents.append(.large())
+            }
+            sheet.detents = detents
         })
     }
 }

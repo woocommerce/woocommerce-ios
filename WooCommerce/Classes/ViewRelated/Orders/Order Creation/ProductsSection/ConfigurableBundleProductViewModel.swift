@@ -55,6 +55,7 @@ private extension ConfigurableBundleProductViewModel {
         let bundleItems = product.bundledItems
         Task { @MainActor in
             do {
+                // When there is a long list of bundle items, products are loaded in a paginated way.
                 let products = try await loadProducts(from: bundleItems)
                 bundleItemViewModels = bundleItems
                     .compactMap { bundleItem -> ConfigurableBundleItemViewModel? in
@@ -83,10 +84,10 @@ private extension ConfigurableBundleProductViewModel {
     @MainActor
     func loadProducts(from bundleItems: [ProductBundleItem]) async throws -> [Product] {
         let bundledProductIDs = bundleItems.map { $0.productID }
-        return try await loadProducts(siteID: product.siteID, productIDs: bundledProductIDs)
+        return try await loadProductsRecursively(siteID: product.siteID, productIDs: bundledProductIDs)
     }
 
-    func loadProducts(siteID: Int64, productIDs: [Int64]) async throws -> [Product] {
+    func loadProductsRecursively(siteID: Int64, productIDs: [Int64]) async throws -> [Product] {
         let pageNumber = Store.Default.firstPageNumber
         return try await loadProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, products: [])
     }

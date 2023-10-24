@@ -280,7 +280,7 @@ private extension AddProductCoordinator {
             }
         })
 
-        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
         analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
@@ -393,7 +393,7 @@ private extension AddProductCoordinator {
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
-    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
         BottomSheetPresenter(configure: { [weak self] bottomSheet in
             guard let self else { return }
             var sheet = bottomSheet
@@ -402,15 +402,7 @@ private extension AddProductCoordinator {
             sheet.prefersGrabberVisible = true
             // Sets custom height if possible.
             // Default detents are used otherwise. Large detent is necessary for large font sizes.
-            var detents: [UISheetPresentationController.Detent] = []
-            if #available(iOS 16.0, *), let height {
-                let customHeight = UISheetPresentationController.Detent.custom { _ in
-                    height
-                }
-                detents = [.medium(), customHeight]
-            } else {
-                detents = [.medium()]
-            }
+            var detents: [UISheetPresentationController.Detent] = [.medium()]
 
             // if preferred content size is accessibility or vertical size class is compact,
             // add large detent for accessibility.

@@ -40,7 +40,6 @@ final class DashboardViewModel {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
 
     var siteURLToShare: URL? {
@@ -57,14 +56,12 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
-        self.blazeEligibilityChecker = blazeEligibilityChecker
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)

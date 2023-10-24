@@ -400,13 +400,12 @@ private extension AddProductCoordinator {
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
-            // Sets custom height if possible.
-            // Default detents are used otherwise. Large detent is necessary for large font sizes.
+
             var detents: [UISheetPresentationController.Detent] = [.medium()]
 
-            // if preferred content size is accessibility or vertical size class is compact,
+            // If preferred content size is accessibility or vertical size class is compact,
             // add large detent for accessibility.
-            // skip if the device is iPad.
+            // Skip if the device is iPad.
             let traitCollection = self.navigationController.traitCollection
             let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
             let compactVertical = traitCollection.verticalSizeClass == .compact

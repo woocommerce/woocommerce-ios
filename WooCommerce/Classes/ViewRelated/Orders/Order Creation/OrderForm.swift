@@ -560,9 +560,6 @@ private struct CustomAmountsSection: View {
                 }
                 .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
                 .buttonStyle(PlusButtonStyle())
-                .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-                    AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
-                })
             }
             .renderedIf(viewModel.customAmountRows.isEmpty)
 
@@ -595,6 +592,9 @@ private struct CustomAmountsSection: View {
         }
         .padding()
         .background(Color(.listForeground(modal: true)))
+        .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+        })
     }
 }
 

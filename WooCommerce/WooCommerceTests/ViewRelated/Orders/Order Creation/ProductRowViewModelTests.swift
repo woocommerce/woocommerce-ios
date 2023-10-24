@@ -397,7 +397,7 @@ class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 x $10.71", viewModel.priceQuantityLine)
+        assertEqual("8 × $10.71", viewModel.priceQuantityLine)
     }
 
     func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {
@@ -409,6 +409,6 @@ class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 x -", viewModel.priceQuantityLine)
+        assertEqual("8 × -", viewModel.priceQuantityLine)
     }
 }

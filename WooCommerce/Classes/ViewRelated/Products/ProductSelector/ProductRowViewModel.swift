@@ -438,8 +438,9 @@ private extension ProductRowViewModel {
     enum Localization {
         static let priceQuantityLine = NSLocalizedString(
             "productRowViewModel.priceQuantityLine",
-            value: "%@ x %@",
-            comment: "Formatted price label based on a product's price and quantity.Reads as '8 x $10.00'")
+            value: "%@ × %@",
+            comment: "Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. " +
+            "Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let singleVariation = NSLocalizedString("%ld variation",

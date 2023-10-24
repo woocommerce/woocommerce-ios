@@ -212,6 +212,10 @@ final class EditableOrderViewModel: ObservableObject {
         orderHasCoupons
     }
 
+    var shouldSplitProductsAndCustomAmountsSections: Bool {
+        productRows.isNotEmpty || customAmountRows.isNotEmpty
+    }
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false
@@ -271,6 +275,11 @@ final class EditableOrderViewModel: ObservableObject {
     /// View models for each product row in the order.
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
+
+    /// View models for each custom amount in the order.
+    ///
+    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = [CustomAmountRowViewModel(id: 1, name: "Custom Amount 1", total: "$20.00"),
+                                                                                CustomAmountRowViewModel(id: 2, name: "Custom Amount 2", total: "$10.00")]
 
     /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.

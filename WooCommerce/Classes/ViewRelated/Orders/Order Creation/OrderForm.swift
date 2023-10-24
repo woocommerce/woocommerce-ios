@@ -130,19 +130,15 @@ struct OrderForm: View {
                             ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
-                            Divider()
-                            .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isNotEmpty)
-
-                            Spacer(minLength: Layout.sectionSpacing)
-                                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts && viewModel.productRows.isNotEmpty)
-
                             Group {
                                 Divider()
-                                    .renderedIf(viewModel.productRows.isNotEmpty)
-                                CustomAmountsSection(viewModel: viewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Spacer(minLength: Layout.sectionSpacing)
+                                Divider()
                             }
-                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                            CustomAmountsSection(viewModel: viewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
 
@@ -568,10 +564,14 @@ private struct CustomAmountsSection: View {
                     AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
                 })
             }
+            .renderedIf(viewModel.customAmountRows.isEmpty)
+
+            ForEach(viewModel.customAmountRows) { customAmountRow in
+                CustomAmountRowView(viewModel: customAmountRow)
+            }
         }
         .padding()
         .background(Color(.listForeground(modal: true)))
-        .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
     }
 }
 

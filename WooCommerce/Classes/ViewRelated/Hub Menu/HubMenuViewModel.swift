@@ -146,7 +146,6 @@ final class HubMenuViewModel: ObservableObject {
             } else {
                 generalElements.append(Blaze())
             }
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .menu))
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
@@ -188,8 +187,6 @@ final class HubMenuViewModel: ObservableObject {
         guard let site = stores.sessionManager.defaultSite else {
             return
         }
-
-        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
 
         // shows campaign list for the new Blaze experience.
         let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))

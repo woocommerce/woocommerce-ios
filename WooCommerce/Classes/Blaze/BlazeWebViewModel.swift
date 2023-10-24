@@ -8,10 +8,6 @@ enum BlazeSource {
     case menu
     /// From the product more menu.
     case productMoreMenu
-    /// From the banner on product list.
-    case productListBanner
-    /// From the banner on My Store tab.
-    case myStoreBanner
     /// From the Blaze campaign list
     case campaignList
     /// From the Blaze intro view

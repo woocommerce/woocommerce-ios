@@ -17,7 +17,6 @@ DEFAULT_BRANCH = 'trunk'
 PROJECT_ROOT_FOLDER = File.dirname(File.expand_path(__dir__))
 RESOURCES_FOLDER = File.join(PROJECT_ROOT_FOLDER, 'WooCommerce', 'Resources')
 PUBLIC_CONFIG_FILE = File.join(PROJECT_ROOT_FOLDER, 'config', 'Version.Public.xcconfig')
-ENV['PUBLIC_CONFIG_FILE'] = PUBLIC_CONFIG_FILE
 RELEASE_NOTES_PATH = File.join(RESOURCES_FOLDER, 'release_notes.txt')
 RELEASE_NOTES_SOURCE_PATH = File.join(PROJECT_ROOT_FOLDER, 'RELEASE-NOTES.txt')
 FASTLANE_DIR = File.join(PROJECT_ROOT_FOLDER, 'fastlane')

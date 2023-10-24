@@ -1,3 +1,4 @@
+import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
@@ -29,6 +30,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Product name
     ///
     let name: String
+
+    /// Whether a product in an order item is configurable
+    ///
+    let isConfigurable: Bool
 
     /// Product SKU
     ///
@@ -212,6 +217,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     var removeProductIntent: () -> Void
 
+    /// Closure to configure a product if it is configurable.
+    var configure: (() -> Void)?
+
     /// Number of variations in a variable product
     ///
     let numberOfVariations: Int
@@ -235,9 +243,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
+         isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-         removeProductIntent: @escaping (() -> Void) = {}) {
+         removeProductIntent: @escaping (() -> Void) = {},
+         configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
         self.productOrVariationID = productOrVariationID
@@ -251,11 +261,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.quantity = quantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
+        self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.quantityUpdatedCallback = quantityUpdatedCallback
         self.removeProductIntent = removeProductIntent
+        self.configure = configure
     }
 
     /// Initialize `ProductRowViewModel` with a `Product`
@@ -269,7 +281,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
-                     productBundlesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles)) {
+                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+                     configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
         if product.productType == .variable {
@@ -277,6 +290,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         } else {
             price = product.price
         }
+
+        let productBundlesEnabled = featureFlagService.isFeatureFlagEnabled(.productBundles)
 
         // If product is a product bundle with insufficient bundle stock, use that as the product stock status.
         let stockStatusKey: String = {
@@ -308,6 +323,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
+        let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
+        && product.productType == .bundle
+        && product.bundledItems.isNotEmpty
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
@@ -322,9 +341,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
+                  isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   quantityUpdatedCallback: quantityUpdatedCallback,
-                  removeProductIntent: removeProductIntent)
+                  removeProductIntent: removeProductIntent,
+                  configure: configure)
     }
 
     /// Initialize `ProductRowViewModel` with a `ProductVariation`
@@ -361,6 +382,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
+                  isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)

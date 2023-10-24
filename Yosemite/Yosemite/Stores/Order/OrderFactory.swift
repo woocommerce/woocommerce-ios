@@ -62,9 +62,9 @@ public enum OrderFactory {
 
     /// Creates a fee line suitable to be used within a new order.
     ///
-    public static func newOrderFee(total: String) -> OrderFeeLine {
+    public static func newOrderFee(total: String, name: String? = nil) -> OrderFeeLine {
         OrderFeeLine(feeID: 0,
-                     name: "Fee",
+                     name: name ?? "Fee",
                      taxClass: "",
                      taxStatus: .taxable,
                      total: total,

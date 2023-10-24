@@ -106,6 +106,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .optimizedBlazeExperience:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .productBundlesInOrderForm:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

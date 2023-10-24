@@ -177,7 +177,7 @@ private extension OrderPaymentSection {
                     .resizable()
                     .frame(width: Constants.sectionPadding, height: Constants.sectionPadding)
             }
-            .renderedIf(viewModel.shouldDisableAddingCoupons)
+            .renderedIf(viewModel.shouldRenderCouponsInfoTooltip)
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")

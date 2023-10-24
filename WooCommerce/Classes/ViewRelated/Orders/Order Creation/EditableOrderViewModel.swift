@@ -278,8 +278,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// View models for each custom amount in the order.
     ///
-    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = [CustomAmountRowViewModel(id: 1, name: "Custom Amount 1", total: "$20.00"),
-                                                                                CustomAmountRowViewModel(id: 2, name: "Custom Amount 2", total: "$10.00")]
+    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = []
 
     /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
@@ -435,6 +434,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomAmountRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
@@ -1197,6 +1197,21 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$productRows)
         configureOrderWithinitialItemIfNeeded()
+    }
+
+    func configureCustomAmountRowViewModels() {
+        orderSynchronizer.orderPublisher
+            .map { $0.fees }
+            .removeDuplicates()
+            .map { [weak self] fees -> [CustomAmountRowViewModel] in
+                guard let self = self else { return [] }
+                return fees.compactMap {
+                    CustomAmountRowViewModel(id: $0.feeID,
+                                             name: $0.name ?? Localization.customAmountDefaultName,
+                                             total: self.currencyFormatter.formatAmount($0.total) ?? "")
+                }
+            }
+            .assign(to: &$customAmountRows)
     }
 
     /// If given an initial product ID on initialization, updates the Order with the item
@@ -2007,6 +2022,9 @@ private extension EditableOrderViewModel {
         static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
         static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
                                                                                     comment: "Message when the user disables adding tax rates automatically")
+        static let customAmountDefaultName = NSLocalizedString("EditableOrderViewModel.customAmountDefaultName",
+                                                               value: "Custom Amount",
+                                                               comment: "Default name when the custom amount does not have a name in order creation.")
 
 
         enum CouponSummary {

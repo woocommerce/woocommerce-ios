@@ -278,6 +278,11 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
 
+    /// Configurable bundle product view model to render.
+    /// Used to open the bundle product configuration screen.
+    ///
+    @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
+
     /// Whether it should show the tax rate selector
     ///
     @Published private(set) var shouldShowNewTaxRateSection: Bool = false
@@ -559,6 +564,9 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.setProduct.send(productInput)
     }
 
+    func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
+    }
+
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
     func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
@@ -598,7 +606,19 @@ final class EditableOrderViewModel: ObservableObject {
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
+                self?.removeItemFromOrder(item)},
+                                       configure: { [weak self] in
+                guard let self else { return }
+                switch product.productType {
+                    case .bundle:
+                        self.configurableProductViewModel = .init(product: product, onConfigure: { [weak self] configuration in
+                            guard let self else { return }
+                            self.addBundleConfigurationToOrderItem(item: item, bundleConfiguration: configuration)
+                        })
+                    default:
+                        break
+                }
+            })
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")
             return nil

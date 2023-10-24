@@ -59,6 +59,8 @@ private extension ConfigurableBundleItemView {
     }
 }
 
+#if canImport(SwiftUI) && DEBUG
+
 struct ConfigurableBundleItemView_Previews: PreviewProvider {
     static var previews: some View {
         ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample(),
@@ -66,3 +68,5 @@ struct ConfigurableBundleItemView_Previews: PreviewProvider {
                                                     variableProductSettings: nil))
     }
 }
+
+#endif

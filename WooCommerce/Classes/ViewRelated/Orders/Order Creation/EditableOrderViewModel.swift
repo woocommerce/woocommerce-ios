@@ -977,6 +977,20 @@ extension EditableOrderViewModel {
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
         }
+
+        /// Indicates whether the Coupons informational tooltip button should be shown
+        /// The tooltip is rendered when an order has no coupons, but has product discounts.
+        /// Sincer both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
+        /// on `shouldShowCoupon` or `showDiscountsTotal` alone for its visibility:
+        ///
+        var shouldRenderCouponsInfoTooltip: Bool {
+            if shouldShowCoupon {
+                return false
+            } else if shouldShowDiscountTotal {
+                return true
+            }
+            return false
+        }
     }
 
     /// Representation of order notes data display properties

@@ -212,6 +212,8 @@ final class EditableOrderViewModel: ObservableObject {
         orderHasCoupons
     }
 
+    /// If both products and custom amounts lists are empty we don't split their sections
+    /// 
     var shouldSplitProductsAndCustomAmountsSections: Bool {
         productRows.isNotEmpty || customAmountRows.isNotEmpty
     }

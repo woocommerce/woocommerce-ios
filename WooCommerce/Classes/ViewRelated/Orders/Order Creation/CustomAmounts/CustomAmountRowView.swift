@@ -7,6 +7,7 @@ struct CustomAmountRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     let viewModel: CustomAmountRowViewModel
+    let editable: Bool
 
     var body: some View {
         HStack(alignment: .center) {
@@ -31,6 +32,7 @@ struct CustomAmountRowView: View {
                             .padding(.top, Layout.editIconTopPadding)
                             .frame(width: Layout.editIconImageSize * scale,
                                    height: Layout.editIconImageSize * scale)
+                            .renderedIf(editable)
                     }
                 }
 
@@ -49,6 +51,7 @@ struct CustomAmountRowView: View {
             .tertiaryTitleStyle()
             .frame(width: Layout.closeButtonImageSize * scale,
                    height: Layout.closeButtonImageSize * scale, alignment: .trailing)
+            .renderedIf(editable)
 
         }
         .frame(maxWidth: .infinity, alignment: .leading)

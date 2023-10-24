@@ -588,7 +588,7 @@ private struct CustomAmountsSection: View {
                 }
 
                 ForEach(viewModel.customAmountRows) { customAmountRow in
-                    CustomAmountRowView(viewModel: customAmountRow)
+                    CustomAmountRowView(viewModel: customAmountRow, editable: !viewModel.shouldShowNonEditableIndicators)
                 }
             }
             .renderedIf(viewModel.customAmountRows.isNotEmpty)

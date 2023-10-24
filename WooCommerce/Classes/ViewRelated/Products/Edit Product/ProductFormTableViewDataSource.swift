@@ -284,7 +284,8 @@ private extension ProductFormTableViewDataSource {
             fatalError("Unexpected table view cell for the promote with Blaze cell")
         }
         let title = NSLocalizedString(
-            "Promote with Blaze",
+            "productFormTableViewDataSource.promoteWithBlazeButton",
+            value: "Promote with Blaze",
             comment: "Label for button on product form to open Blaze flow"
         )
 

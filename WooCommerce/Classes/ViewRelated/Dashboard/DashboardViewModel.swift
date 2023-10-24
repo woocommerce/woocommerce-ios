@@ -326,7 +326,7 @@ private extension DashboardViewModel {
                 case .success(let hasProducts):
                     continuation.resume(returning: hasProducts)
                 case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    DDLogError("⛔️ Dashboard — Error fetching products to check if store has products: \(error)")
                     continuation.resume(throwing: error)
                 }
             }))

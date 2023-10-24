@@ -5,11 +5,9 @@ import WordPressShared
 
 
 public class TracksProvider: NSObject, AnalyticsProvider {
+    private static let contextManager: TracksContextManager = TracksContextManager()
 
-    lazy private var contextManager: TracksContextManager = {
-        return TracksContextManager()
-    }()
-    lazy private var tracksService: TracksService = {
+    private static let tracksService: TracksService = {
         let tracksService = TracksService(contextManager: contextManager)!
         tracksService.eventNamePrefix = Constants.eventNamePrefix
         return tracksService
@@ -31,18 +29,18 @@ public extension TracksProvider {
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         if let properties {
-            guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
+            guard Self.tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                 return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
             }
             DDLogInfo("🔵 Tracked \(eventName), properties: \(properties)")
         } else {
-            tracksService.trackEventName(eventName)
+            Self.tracksService.trackEventName(eventName)
             DDLogInfo("🔵 Tracked \(eventName)")
         }
     }
 
     func clearEvents() {
-        tracksService.clearQueuedEvents()
+        Self.tracksService.clearQueuedEvents()
     }
 
     /// When a user opts-out, wipe data
@@ -52,7 +50,7 @@ public extension TracksProvider {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
+            Self.tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
             return
         }
 
@@ -73,27 +71,27 @@ private extension TracksProvider {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
-                tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                        userID: String(account.userID),
-                                                        wpComToken: authToken,
-                                                        skipAliasEventCreation: false)
+                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                             userID: String(account.userID),
+                                                             wpComToken: authToken,
+                                                             skipAliasEventCreation: false)
             } else if currentAnalyticsUsername == account.username {
                 // Username did not change - just make sure Tracks client has it
-                tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                        userID: String(account.userID),
-                                                        wpComToken: authToken,
-                                                        skipAliasEventCreation: true)
+                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                             userID: String(account.userID),
+                                                             wpComToken: authToken,
+                                                             skipAliasEventCreation: true)
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
-                tracksService.switchToAuthenticatedUser(withUsername: account.username,
-                                                        userID: String(account.userID),
-                                                        wpComToken: authToken,
-                                                        skipAliasEventCreation: false)
+                Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+                Self.tracksService.switchToAuthenticatedUser(withUsername: account.username,
+                                                             userID: String(account.userID),
+                                                             wpComToken: authToken,
+                                                             skipAliasEventCreation: false)
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
+            Self.tracksService.switchToAnonymousUser(withAnonymousID: anonymousID)
         }
     }
 
@@ -103,8 +101,8 @@ private extension TracksProvider {
         userProperties[UserProperties.platformKey] = "iOS"
         userProperties[UserProperties.voiceOverKey] = UIAccessibility.isVoiceOverRunning
         userProperties[UserProperties.rtlKey] = (UIApplication.shared.userInterfaceLayoutDirection == .rightToLeft)
-        tracksService.userProperties.removeAllObjects()
-        tracksService.userProperties.addEntries(from: userProperties)
+        Self.tracksService.userProperties.removeAllObjects()
+        Self.tracksService.userProperties.addEntries(from: userProperties)
     }
 }
 

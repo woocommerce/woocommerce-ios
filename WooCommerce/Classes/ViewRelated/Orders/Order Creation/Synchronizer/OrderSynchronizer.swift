@@ -89,8 +89,17 @@ protocol OrderSynchronizer {
     var setShipping: PassthroughSubject<ShippingLine?, Never> { get }
 
     /// Sets or removes an order fee.
+    /// Use it when there's only one fee per order, setting a fee using this subject will remove previous fees.
     ///
     var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
+
+    /// Adds a fee to the order.
+    ///
+    var addFee: PassthroughSubject<OrderFeeLine, Never> { get }
+
+    /// Removes the fee from the order.
+    /// 
+    var removeFee: PassthroughSubject<OrderFeeLine, Never> { get }
 
     /// Adds an order coupon.
     ///

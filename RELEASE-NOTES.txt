@@ -2,7 +2,7 @@
 
 16.0
 -----
-
+- [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
 
 15.9
 -----

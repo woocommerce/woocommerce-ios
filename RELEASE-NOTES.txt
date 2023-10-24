@@ -2,7 +2,7 @@
 
 16.0
 -----
-
+- [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
 
 15.9
 -----

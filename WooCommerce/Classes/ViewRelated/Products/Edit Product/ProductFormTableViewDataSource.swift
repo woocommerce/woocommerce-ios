@@ -290,7 +290,7 @@ private extension ProductFormTableViewDataSource {
         )
 
         cell.configure(
-            image: .blaze.resize(to: Constants.blazeButtonIconSize)!,
+            image: .blaze.resize(to: Constants.blazeButtonIconSize),
             text: title,
             textColor: .accent
         )

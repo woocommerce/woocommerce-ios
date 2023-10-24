@@ -51,9 +51,20 @@ private extension ConfigurableBundleProductView {
     }
 
     enum Localization {
-        static let title = NSLocalizedString("Configure", comment: "Title for the Product screen during order creation")
-        static let close = NSLocalizedString("Close", comment: "Text for the close button in the Product screen")
-        static let done = NSLocalizedString("Done", comment: "Text for the done button in the Product screen")
+        static let title = NSLocalizedString(
+            "configureBundleProduct.title",
+            value: "Configure", comment: "Title for the bundle product configuration screen in the order form."
+        )
+        static let close = NSLocalizedString(
+            "configureBundleProduct.close",
+            value: "Close",
+            comment: "Text for the close button in the bundle product configuration screen in the order form."
+        )
+        static let done = NSLocalizedString(
+            "configureBundleProduct.done",
+            value: "Done",
+            comment: "Text for the done button in the bundle product configuration screen in the order form."
+        )
     }
 }
 

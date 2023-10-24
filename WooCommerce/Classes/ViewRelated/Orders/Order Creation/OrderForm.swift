@@ -566,9 +566,32 @@ private struct CustomAmountsSection: View {
             }
             .renderedIf(viewModel.customAmountRows.isEmpty)
 
-            ForEach(viewModel.customAmountRows) { customAmountRow in
-                CustomAmountRowView(viewModel: customAmountRow)
+            Group {
+                HStack {
+                    Text(OrderForm.Localization.customAmounts)
+                        .accessibilityAddTraits(.isHeader)
+                        .headlineStyle()
+
+                    Spacer()
+
+                    Image(uiImage: .lockImage)
+                        .foregroundColor(Color(.brand))
+                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
+
+                    Button(action: {
+                        showAddCustomAmount.toggle()
+                    }) {
+                        Image(uiImage: .plusImage)
+                    }
+                    .scaledToFit()
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators)
+                }
+
+                ForEach(viewModel.customAmountRows) { customAmountRow in
+                    CustomAmountRowView(viewModel: customAmountRow)
+                }
             }
+            .renderedIf(viewModel.customAmountRows.isNotEmpty)
         }
         .padding()
         .background(Color(.listForeground(modal: true)))
@@ -592,6 +615,9 @@ private extension OrderForm {
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
+        static let customAmounts = NSLocalizedString("OrderForm.customAmounts",
+                                                     value: "Custom Amounts",
+                                                     comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
         static let addCustomAmount = NSLocalizedString("Add Custom Amount",

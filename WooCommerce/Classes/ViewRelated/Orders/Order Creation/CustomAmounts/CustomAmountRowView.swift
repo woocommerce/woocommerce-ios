@@ -51,6 +51,7 @@ struct CustomAmountRowView: View {
 
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, Layout.topPadding)
     }
 }
 
@@ -62,6 +63,6 @@ extension CustomAmountRowView {
         static let editIconImageSize: CGFloat = 16
         static let editIconTopPadding: CGFloat = 3
         static let closeButtonImageSize: CGFloat = 25
-
+        static let topPadding: CGFloat = 16
     }
 }

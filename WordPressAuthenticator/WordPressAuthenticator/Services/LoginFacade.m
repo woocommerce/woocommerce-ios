@@ -105,9 +105,7 @@
     } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo) {
         if (nonceInfo == nil && [self.delegate respondsToSelector:@selector(needsMultifactorCode)]) {
             [self.delegate needsMultifactorCode];
-        }
-
-        if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
+        } else if (nonceInfo != nil && [self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
         }
     } failure:^(NSError *error) {

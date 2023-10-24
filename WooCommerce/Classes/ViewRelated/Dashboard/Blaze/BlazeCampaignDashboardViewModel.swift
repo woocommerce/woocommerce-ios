@@ -103,18 +103,13 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
         // Load Blaze campaigns
         await synchronizeBlazeCampaigns()
-        guard blazeCampaignResultsController.fetchedObjects.isEmpty else {
-            return
+
+        if blazeCampaignResultsController.fetchedObjects.isEmpty {
+            // Load published product as Blaze campaigns not available
+            await synchronizeFirstPublishedProduct()
         }
 
-        // Load published product as Blaze campaigns not available
-        await synchronizeFirstPublishedProduct()
-        guard latestPublishedProduct == nil else {
-            return
-        }
-
-        // No Blaze campaign or published product available
-        update(state: .empty)
+        updateResults()
     }
 
     func checkIfIntroViewIsNeeded() {

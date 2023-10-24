@@ -104,6 +104,6 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     public func verifyIPPDocumentationLoadedInWebView() throws {
-        XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 10), "IPP Documentation not displayed on WebView!")
+        XCTAssertTrue(IPPDocumentationHeaderText.waitForExistence(timeout: 30), "IPP Documentation not displayed on WebView!")
     }
 }

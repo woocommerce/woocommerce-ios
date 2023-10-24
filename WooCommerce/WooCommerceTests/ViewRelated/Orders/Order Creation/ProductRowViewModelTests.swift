@@ -1,10 +1,11 @@
+import Experiments
 import XCTest
 import Yosemite
 import Fakes
 import WooFoundation
 @testable import WooCommerce
 
-class ProductRowViewModelTests: XCTestCase {
+final class ProductRowViewModelTests: XCTestCase {
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
@@ -304,7 +305,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
         let expectedStockText = ProductStockStatus.inStock.description
@@ -317,7 +320,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "instock", bundleStockStatus: .insufficientStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let expectedStockText = ProductStockStatus.insufficientStock.description
@@ -330,7 +335,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", stockStatusKey: "onbackorder", bundleStockStatus: .inStock)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let expectedStockText = ProductStockStatus.onBackOrder.description
@@ -343,7 +350,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", manageStock: true, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: false)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundles: false))
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 5 as NSDecimalNumber, number: .decimal)
@@ -358,7 +367,9 @@ class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", manageStock: false, stockQuantity: 5, stockStatusKey: "instock", bundleStockQuantity: 1)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, productBundlesEnabled: true)
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService())
 
         // Then
         let localizedStockQuantity = NumberFormatter.localizedString(from: 1 as NSDecimalNumber, number: .decimal)
@@ -366,5 +377,88 @@ class ProductRowViewModelTests: XCTestCase {
         let expectedStockLabel = String.localizedStringWithFormat(format, localizedStockQuantity)
         XCTAssertTrue(viewModel.productDetailsLabel.contains(expectedStockLabel),
                       "Expected label to contain \"\(expectedStockLabel)\" but actual label was \"\(viewModel.productDetailsLabel)\"")
+    }
+
+    func test_when_product_row_discount_is_nil_then_viewModel_hasDiscount_is_false() {
+        let price = "2.50"
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product, discount: nil, quantity: 1, canChangeQuantity: true)
+
+        XCTAssertFalse(viewModel.hasDiscount)
+    }
+
+    func test_when_product_row_discount_is_not_nil_then_viewModel_hasDiscount() {
+        let price = "2.50"
+        let discount: Decimal = 0.50
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
+
+        XCTAssertTrue(viewModel.hasDiscount)
+    }
+
+    // MARK: - `isConfigurable`
+
+    func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_bundle_product_with_empty_bundle_items() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_true_for_bundle_product_with_bundle_items() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+        // Then
+        XCTAssertTrue(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_non_bundle_product() {
+        let nonBundleProductTypes: [ProductType] = [.simple, .grouped, .affiliate, .variable, .subscription, .variableSubscription, .composite]
+
+        nonBundleProductTypes.forEach { nonBundleProductType in
+            // Given
+            let product = Product.fake().copy(productTypeKey: nonBundleProductType.rawValue)
+
+            // When
+            let viewModel = ProductRowViewModel(product: product,
+                                                canChangeQuantity: false,
+                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+            // Then
+            XCTAssertFalse(viewModel.isConfigurable)
+        }
+    }
+}
+
+private extension ProductRowViewModelTests {
+    func createFeatureFlagService(productBundles: Bool = true, productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
+        MockFeatureFlagService(productBundles: productBundles, productBundlesInOrderForm: productBundlesInOrderForm)
     }
 }

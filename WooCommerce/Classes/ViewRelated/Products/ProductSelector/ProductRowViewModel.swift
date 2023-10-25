@@ -192,7 +192,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Minimum value of the product quantity
     ///
-    private let minimumQuantity: Decimal = 1
+    private let minimumQuantity: Decimal
+
+    /// Optional maximum value of the product quantity
+    ///
+    private let maximumQuantity: Decimal?
 
     /// Whether the quantity can be decremented.
     ///
@@ -229,6 +233,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
+         minimumQuantity: Decimal = 1,
+         maximumQuantity: Decimal? = nil,
          canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
@@ -250,6 +256,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
+        self.minimumQuantity = minimumQuantity
+        self.maximumQuantity = maximumQuantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.isConfigurable = isConfigurable
@@ -430,6 +438,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Increment the product quantity.
     ///
     func incrementQuantity() {
+        if let maximumQuantity, quantity >= maximumQuantity {
+            return
+        }
+
         quantity += 1
 
         quantityUpdatedCallback(quantity)

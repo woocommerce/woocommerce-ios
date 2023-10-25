@@ -287,6 +287,54 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertTrue(productRemoved)
     }
 
+    func test_cannot_decrement_quantity_below_minimumQuantity() {
+        // Given
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
+                                            name: "",
+                                            sku: nil,
+                                            price: nil,
+                                            stockStatusKey: "",
+                                            stockQuantity: nil,
+                                            manageStock: false,
+                                            quantity: 3,
+                                            minimumQuantity: 3,
+                                            maximumQuantity: nil,
+                                            canChangeQuantity: true,
+                                            imageURL: nil,
+                                            isConfigurable: false)
+        XCTAssertEqual(viewModel.quantity, 3)
+
+        // When
+        viewModel.decrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 3)
+    }
+
+    func test_cannot_increment_quantity_beyond_maximumQuantity() {
+        // Given
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
+                                            name: "",
+                                            sku: nil,
+                                            price: nil,
+                                            stockStatusKey: "",
+                                            stockQuantity: nil,
+                                            manageStock: false,
+                                            quantity: 6,
+                                            minimumQuantity: 4,
+                                            maximumQuantity: 6,
+                                            canChangeQuantity: true,
+                                            imageURL: nil,
+                                            isConfigurable: false)
+        XCTAssertEqual(viewModel.quantity, 6)
+
+        // When
+        viewModel.incrementQuantity()
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 6)
+    }
+
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
         // Given
         let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])

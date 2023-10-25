@@ -549,13 +549,13 @@ extension InPersonPaymentsMenuViewController {
 
     func aboutTapToPayOnIPhoneWasPressed() {
         ServiceLocator.analytics.track(.aboutTapToPayOnIPhoneTapped)
+        let buttonAction = viewModel.shouldShowSetUpTapToPayOnAboutScreen ? setUpTapToPayOnIPhoneWasPressed : nil
         let hostingController = UIHostingController(
             rootView: AboutTapToPayView(viewModel: AboutTapToPayViewModel(
                     configuration: viewModel.cardPresentPaymentsConfiguration,
-                    buttonAction: setUpTapToPayOnIPhoneWasPressed))
+                    buttonAction: buttonAction))
         )
         show(hostingController, sender: self)
-
     }
 
     func tapToPayOnIPhoneFeedbackWasPressed() {

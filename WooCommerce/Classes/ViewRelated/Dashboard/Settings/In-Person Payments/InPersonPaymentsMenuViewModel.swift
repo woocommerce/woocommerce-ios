@@ -46,6 +46,9 @@ final class InPersonPaymentsMenuViewModel {
     @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
     @Published private(set) var titleForTapToPayOnIPhone: String = Localization.setUpTapToPayOnIPhoneRowTitle
 
+    // This doesn't need to be @Published right now, because it's only checked on tap.
+    private(set) var shouldShowSetUpTapToPayOnAboutScreen: Bool = true
+
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(dependencies: Dependencies = Dependencies(),
@@ -62,7 +65,7 @@ final class InPersonPaymentsMenuViewModel {
         synchronizePaymentGateways(siteID: siteID)
         checkTapToPaySupport(siteID: siteID)
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-        refreshTitleForTapToPay(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
         registerForNotifications()
         updateDepositsOverview()
     }
@@ -112,14 +115,16 @@ final class InPersonPaymentsMenuViewModel {
         return date
     }
 
-    private func refreshTitleForTapToPay(siteID: Int64) {
+    private func refreshPropertiesDependentOnTapToPaySetUpState(siteID: Int64) {
         Task { @MainActor in
             let firstTapToPayTransactionDate = await firstTapToPayTransactionDate(siteID: siteID)
             switch firstTapToPayTransactionDate {
             case .none:
                 self.titleForTapToPayOnIPhone = Localization.setUpTapToPayOnIPhoneRowTitle
+                self.shouldShowSetUpTapToPayOnAboutScreen = true
             case .some:
                 self.titleForTapToPayOnIPhone = Localization.tryOutTapToPayOnIPhoneRowTitle
+                self.shouldShowSetUpTapToPayOnAboutScreen = false
             }
         }
     }
@@ -136,7 +141,7 @@ final class InPersonPaymentsMenuViewModel {
             return
         }
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-        refreshTitleForTapToPay(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
     }
 
     func orderCardReaderPressed() {

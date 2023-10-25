@@ -456,7 +456,7 @@ private extension SiteAddressViewController {
 
     func checkSiteExistence(url: URL, onCompletion: @escaping () -> Void) {
         var request = URLRequest(url: url)
-        request.httpMethod = "HEAD"
+        request.httpMethod = "GET"
         request.timeoutInterval = 10.0 // waits for 10 seconds
         let task = URLSession.shared.dataTask(with: request) { [weak self] _, _, error in
             DispatchQueue.main.async { [weak self] in

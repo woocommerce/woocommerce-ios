@@ -49,6 +49,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     stockQuantity: nil,
                                     manageStock: false,
                                     quantity: quantity,
+                                    minimumQuantity: bundleItem.minQuantity,
+                                    maximumQuantity: bundleItem.maxQuantity,
                                     canChangeQuantity: true,
                                     imageURL: nil,
                                     isConfigurable: false)

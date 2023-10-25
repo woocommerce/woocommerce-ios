@@ -9,7 +9,7 @@ protocol FeeOrDiscountLineTypeViewModel {
     var fixedAmountFieldAccessibilityIdentifier: String { get }
 
     func removeEvent() -> WooAnalyticsEvent?
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent?
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent?
 }
 
 private struct StringsProviderFactory {
@@ -46,7 +46,7 @@ private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
         WooAnalyticsEvent.Orders.productDiscountRemove()
     }
 
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent? {
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
         WooAnalyticsEvent.Orders.productDiscountAdd(type: type)
     }
 
@@ -80,7 +80,7 @@ private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
         nil
     }
 
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType) -> WooAnalyticsEvent? {
+    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
         nil
     }
 
@@ -129,12 +129,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     /// Decimal value of currently entered fee or discount. For percentage type it is calculated final amount.
     ///
     private var finalAmountDecimal: Decimal {
-        let inputString = feeOrDiscountType == .fixed ? amount : percentage
+        let inputString = discountType == .fixed ? amount : percentage
         guard let decimalInput = currencyFormatter.convertToDecimal(inputString) else {
             return .zero
         }
 
-        switch feeOrDiscountType {
+        switch discountType {
         case .fixed:
             return decimalInput as Decimal
         case .percentage:
@@ -220,12 +220,12 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         case discount
     }
 
-    enum FeeOrDiscountType: String {
+    enum DiscountType: String {
         case fixed
         case percentage
     }
 
-    @Published var feeOrDiscountType: FeeOrDiscountType = .fixed
+    @Published var discountType: DiscountType = .fixed
 
     init(isExistingLine: Bool,
          baseAmountForPercentage: Decimal,
@@ -274,7 +274,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
             return
         }
 
-        if let event = lineTypeViewModel.addValueEvent(with: feeOrDiscountType) {
+        if let event = lineTypeViewModel.addValueEvent(with: discountType) {
             analytics.track(event: event)
         }
 

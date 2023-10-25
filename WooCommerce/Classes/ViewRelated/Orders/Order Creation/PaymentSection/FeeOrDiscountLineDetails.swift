@@ -30,11 +30,11 @@ struct FeeOrDiscountLineDetailsView: View {
                 VStack(spacing: .zero) {
                     Section {
                         if viewModel.isPercentageOptionAvailable {
-                            Picker("", selection: $viewModel.feeOrDiscountType) {
-                                Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage)
-                                Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed)
+                            Picker("", selection: $viewModel.discountType) {
+                                Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.DiscountType.percentage)
+                                Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.DiscountType.fixed)
                             }
-                            .onChange(of: viewModel.feeOrDiscountType, perform: { type in
+                            .onChange(of: viewModel.discountType, perform: { type in
                                 switch type {
                                 case .fixed:
                                     focusFixedAmountInput = true
@@ -47,7 +47,7 @@ struct FeeOrDiscountLineDetailsView: View {
                         }
 
                         Group {
-                            switch viewModel.feeOrDiscountType {
+                            switch viewModel.discountType {
                             case .fixed:
                                 inputFixedField
                             case .percentage:

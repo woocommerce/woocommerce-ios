@@ -86,7 +86,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         viewModel.percentage = "hi:11.3005.02-"
 
         // Then
@@ -106,7 +106,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                                 didSelectSave: { _ in })
 
         // When
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         viewModel.percentage = "-hi:11.3005.02-"
 
         // Then
@@ -127,7 +127,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
-        XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
+        XCTAssertEqual(viewModel.discountType, .fixed)
         XCTAssertEqual(viewModel.amount, "10.00")
         XCTAssertEqual(viewModel.percentage, "5")
     }
@@ -145,7 +145,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // Then
         XCTAssertFalse(viewModel.isPercentageOptionAvailable)
         XCTAssertTrue(viewModel.isExistingLine)
-        XCTAssertEqual(viewModel.feeOrDiscountType, .fixed)
+        XCTAssertEqual(viewModel.discountType, .fixed)
         XCTAssertEqual(viewModel.amount, "-10.00")
         XCTAssertEqual(viewModel.percentage, "-5")
     }
@@ -164,25 +164,25 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // When & Then
         // $11.30
         viewModel.amount = "11.30"
-        viewModel.feeOrDiscountType = .fixed
+        viewModel.discountType = .fixed
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // 0%
         viewModel.percentage = ""
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // 10%
         viewModel.percentage = "10"
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         XCTAssertFalse(viewModel.shouldDisableDoneButton)
 
         // When & Then
         // $0
         viewModel.amount = ""
-        viewModel.feeOrDiscountType = .fixed
+        viewModel.discountType = .fixed
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
@@ -206,7 +206,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
 
         // When & Then
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
@@ -230,7 +230,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         // When & Then
         // Change fee to 5%
         viewModel.amount = "5"
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
@@ -269,7 +269,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         })
 
         // When
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         viewModel.percentage = "10"
 
         // Then
@@ -341,12 +341,12 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.amount = "$11.30"
-        viewModel.feeOrDiscountType = .fixed
+        viewModel.discountType = .fixed
         viewModel.saveData()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
-        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.fixed.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.DiscountType.fixed.rawValue)
     }
 
     func test_saveData_when_type_line_discount_with_percentage_then_tracks_event() {
@@ -363,12 +363,12 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // When
         viewModel.percentage = "10"
-        viewModel.feeOrDiscountType = .percentage
+        viewModel.discountType = .percentage
         viewModel.saveData()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
-        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.FeeOrDiscountType.percentage.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.DiscountType.percentage.rawValue)
     }
 
     func test_removeValue_when_type_line_discount_then_tracks_event() {

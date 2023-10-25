@@ -52,7 +52,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     minimumQuantity: bundleItem.minQuantity,
                                     maximumQuantity: bundleItem.maxQuantity,
                                     canChangeQuantity: true,
-                                    imageURL: nil,
+                                    imageURL: product.imageURL,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity

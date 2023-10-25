@@ -30,7 +30,7 @@ struct FeesInputTransformer {
 
         return order.copy(fees: updatedLines)
     }
-   
+
     /// Adds a fee into an existing order.
     ///
     static func append(input: OrderFeeLine, on order: Order) -> Order {
@@ -45,9 +45,12 @@ struct FeesInputTransformer {
     /// If the order does not have that fee added it does nothing
     ///
     static func remove(input: OrderFeeLine, from order: Order) -> Order {
-        var updatedFeeLines = order.fees
-        updatedFeeLines.removeAll(where: { $0.feeID == input.feeID })
-
-        return order.copy(fees: updatedFeeLines)
+        let updatedLines = order.fees.map { line -> OrderFeeLine in
+            if line.feeID == input.feeID {
+                return OrderFactory.deletedFeeLine(line)
+            }
+            return line
+        }
+        return order.copy(fees: updatedLines)
     }
 }

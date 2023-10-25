@@ -101,7 +101,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
             return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .orderCustomAmountsM1:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:

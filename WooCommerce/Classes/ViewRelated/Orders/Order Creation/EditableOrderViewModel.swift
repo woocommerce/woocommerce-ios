@@ -212,6 +212,20 @@ final class EditableOrderViewModel: ObservableObject {
         orderHasCoupons
     }
 
+    /// If both products and custom amounts lists are empty we don't split their sections
+    /// 
+    var shouldSplitProductsAndCustomAmountsSections: Bool {
+        productRows.isNotEmpty || customAmountRows.isNotEmpty
+    }
+
+    var shouldShowProductsSectionHeader: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isNotEmpty
+    }
+
+    var shouldShowAddProductsButton: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isEmpty
+    }
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false
@@ -271,6 +285,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// View models for each product row in the order.
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
+
+    /// View models for each custom amount in the order.
+    ///
+    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = []
 
     /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
@@ -426,6 +444,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomAmountRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
@@ -1197,6 +1216,24 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$productRows)
         configureOrderWithinitialItemIfNeeded()
+    }
+
+    func configureCustomAmountRowViewModels() {
+        orderSynchronizer.orderPublisher
+            .map { $0.fees }
+            .removeDuplicates()
+            .map { [weak self] fees -> [CustomAmountRowViewModel] in
+                guard let self = self else { return [] }
+                return fees.compactMap { fee in
+                    guard !fee.isDeleted else { return nil }
+
+                    return CustomAmountRowViewModel(id: fee.feeID,
+                                             name: fee.name ?? Localization.customAmountDefaultName,
+                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                             onRemoveCustomAmount: { self.removeFee(fee) })
+                }
+            }
+            .assign(to: &$customAmountRows)
     }
 
     /// If given an initial product ID on initialization, updates the Order with the item
@@ -2007,6 +2044,9 @@ private extension EditableOrderViewModel {
         static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
         static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
                                                                                     comment: "Message when the user disables adding tax rates automatically")
+        static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
+                                                               value: "Custom Amount",
+                                                               comment: "Default name when the custom amount does not have a name in order creation.")
 
 
         enum CouponSummary {

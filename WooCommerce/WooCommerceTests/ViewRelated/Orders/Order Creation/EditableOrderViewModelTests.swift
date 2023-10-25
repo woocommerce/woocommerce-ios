@@ -431,6 +431,32 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
     }
 
+    func test_view_model_is_updated_when_custom_amount_is_added_to_order() {
+        // Given
+        let customAmountName = "Test"
+
+        // When
+        viewModel.addCustomAmountViewModel.name = customAmountName
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
+    }
+
+    func test_view_model_is_updated_when_custom_amount_is_removed_from_order() {
+        // When
+        viewModel.addCustomAmountViewModel.name = "Test"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Check previous condition
+        XCTAssertEqual(viewModel.customAmountRows.count, 1)
+
+        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountRows.isEmpty)
+    }
+
     func test_view_model_is_updated_when_address_updated() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

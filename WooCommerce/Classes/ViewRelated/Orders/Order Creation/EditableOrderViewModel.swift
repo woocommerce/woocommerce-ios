@@ -1621,7 +1621,11 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount ?? currentDiscount(on: item))
+        return OrderSyncProductInput(id: item.itemID,
+                                     product: product,
+                                     quantity: quantity,
+                                     discount: discount ?? currentDiscount(on: item),
+                                     baseSubtotal: baseSubtotal(on: item))
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1675,6 +1679,16 @@ private extension EditableOrderViewModel {
         }
 
         return subtotal.subtracting(total) as Decimal
+    }
+
+    /// Calculates the subtotal of a single quantity of an item
+    ///
+    func baseSubtotal(on item: OrderItem) -> Decimal? {
+        guard let itemSubtotal = Decimal(string: item.subtotal) else {
+            return nil
+        }
+
+        return itemSubtotal / item.quantity
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.

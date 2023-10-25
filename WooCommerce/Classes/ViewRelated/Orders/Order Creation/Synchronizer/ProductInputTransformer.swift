@@ -12,8 +12,11 @@ struct ProductInputTransformer {
         let discount: Decimal
         let productID: Int64
         let variationID: Int64?
+        let baseSubtotal: Decimal?
+
         private var subTotalDecimal: Decimal {
-            price * quantity
+            // Base subtotal has priority. Base subtotal and price can be different e.g. if the price includes tax (subtotal does not).
+            (baseSubtotal ?? price) * quantity
         }
 
         var subtotal: String {
@@ -131,14 +134,15 @@ private extension ProductInputTransformer {
             switch input.product {
             case .product(let product):
                 let price: Decimal = Decimal(string: product.price) ?? .zero
-                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: product.productID, variationID: nil)
+                return OrderItemParameters(quantity: input.quantity, price: price, discount: input.discount, productID: product.productID, variationID: nil, baseSubtotal: input.baseSubtotal)
             case .variation(let variation):
                 let price: Decimal = Decimal(string: variation.price) ?? .zero
                 return OrderItemParameters(quantity: input.quantity,
                                            price: price,
                                            discount: input.discount,
                                            productID: variation.productID,
-                                           variationID: variation.productVariationID)
+                                           variationID: variation.productVariationID,
+                                           baseSubtotal: input.baseSubtotal)
             }
         }()
 

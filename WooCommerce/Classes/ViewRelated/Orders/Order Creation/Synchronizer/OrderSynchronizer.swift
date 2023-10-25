@@ -23,9 +23,13 @@ struct OrderSyncProductInput {
     let product: ProductType
     let quantity: Decimal
     var discount: Decimal = .zero
+    
+    /// The subtotal of one element. This might be different than the product price, if the price includes tax (subtotal does not).
+    ///
+    var baseSubtotal: Decimal? = nil
 
     func updating(id: Int64) -> OrderSyncProductInput {
-        .init(id: id, product: self.product, quantity: self.quantity, discount: discount)
+        .init(id: id, product: self.product, quantity: self.quantity, discount: discount, baseSubtotal: self.baseSubtotal)
     }
 }
 

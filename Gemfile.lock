@@ -416,7 +416,7 @@ PLATFORMS
   x86_64-darwin-21
 
 DEPENDENCIES
-  activesupport (= 7.0.8)
+  activesupport (< 7.1.0)
   cocoapods (~> 1.13, >= 1.13.0)
   cocoapods-catalyst-support (~> 0.1)
   danger-dangermattic!

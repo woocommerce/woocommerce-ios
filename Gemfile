@@ -6,8 +6,8 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 4.1'
 end
 
-# fix activesupport to 7.0.8 due to a bug with >=7.1.0 in cocoapods (https://github.com/CocoaPods/CocoaPods/issues/12081)
-gem 'activesupport', '7.0.8'
+# fix activesupport to < 7.1.0 due to a bug with Cocoapods (https://github.com/CocoaPods/CocoaPods/issues/12081)
+gem 'activesupport', '< 7.1.0'
 # 1.13.x and higher, but less than 2.x, starting from 1.13.0
 gem 'cocoapods', '~> 1.13', '>= 1.13.0'
 gem 'cocoapods-catalyst-support', '~> 0.1'

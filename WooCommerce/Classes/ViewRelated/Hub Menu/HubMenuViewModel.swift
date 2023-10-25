@@ -193,11 +193,11 @@ final class HubMenuViewModel: ObservableObject {
 
         if featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
             // shows campaign list for the new Blaze experience.
-            let controller = BlazeCampaignListHostingController(site: site, viewModel: .init(siteID: site.siteID))
+            let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
             navigationController?.show(controller, sender: self)
             ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
         } else {
-            let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
+            let viewModel = BlazeWebViewModel(source: .menu, siteURL: site.url, productID: nil)
             let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
             navigationController?.show(webViewController, sender: self)
         }

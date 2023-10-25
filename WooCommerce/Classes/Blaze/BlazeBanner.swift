@@ -39,7 +39,7 @@ final class BlazeBannerHostingController: UIHostingController<BlazeBanner> {
     }
 
     private func showBlaze(source: BlazeSource, onCampaignCreated: @escaping () -> Void) {
-        let viewModel = BlazeWebViewModel(source: source, site: site, productID: nil, onCampaignCreated: onCampaignCreated)
+        let viewModel = BlazeWebViewModel(source: source, siteURL: site.url, productID: nil, onCampaignCreated: onCampaignCreated)
         let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
         containerViewController.navigationController?.show(webViewController, sender: self)
     }

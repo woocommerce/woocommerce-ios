@@ -23,7 +23,7 @@ struct OrderSyncProductInput {
     let product: ProductType
     let quantity: Decimal
     var discount: Decimal = .zero
-    
+
     /// The subtotal of one element. This might be different than the product price, if the price includes tax (subtotal does not).
     ///
     var baseSubtotal: Decimal? = nil

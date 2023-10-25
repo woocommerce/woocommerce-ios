@@ -460,7 +460,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     func test_view_model_is_updated_when_custom_amount_is_edited() {
         // Given
         let newFeeName = "Test 2"
-        
+
         // When
         viewModel.addCustomAmountViewModel.name = "Test"
         viewModel.addCustomAmountViewModel.doneButtonPressed()

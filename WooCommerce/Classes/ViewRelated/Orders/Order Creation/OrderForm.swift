@@ -138,7 +138,7 @@ struct OrderForm: View {
                                 }
                                 .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                                CustomAmountsSection(viewModel: viewModel)
+                                OrderCustomAmountsSection(viewModel: viewModel)
                                     .disabled(viewModel.shouldShowNonEditableIndicators)
                             }
                             .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
@@ -501,7 +501,9 @@ private struct ProductsSection: View {
             })
         }
     }
+}
 
+private extension ProductsSection {
     var scanProductButton: some View {
         Button(action: {
             viewModel.trackBarcodeScanningButtonTapped()
@@ -547,60 +549,6 @@ private struct ProductsSection: View {
     }
 }
 
-private struct CustomAmountsSection: View {
-    /// View model to drive the view content
-    @ObservedObject var viewModel: EditableOrderViewModel
-
-    /// Defines whether the new custom amount modal is presented.
-    ///
-    @State private var showAddCustomAmount: Bool = false
-
-    var body: some View {
-        VStack {
-            HStack {
-                Button(OrderForm.Localization.addCustomAmount) {
-                    showAddCustomAmount.toggle()
-                }
-                .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
-                .buttonStyle(PlusButtonStyle())
-            }
-            .renderedIf(viewModel.customAmountRows.isEmpty)
-
-            Group {
-                HStack {
-                    Text(OrderForm.Localization.customAmounts)
-                        .accessibilityAddTraits(.isHeader)
-                        .headlineStyle()
-
-                    Spacer()
-
-                    Image(uiImage: .lockImage)
-                        .foregroundColor(Color(.brand))
-                        .renderedIf(viewModel.shouldShowNonEditableIndicators)
-
-                    Button(action: {
-                        showAddCustomAmount.toggle()
-                    }) {
-                        Image(uiImage: .plusImage)
-                    }
-                    .scaledToFit()
-                    .renderedIf(!viewModel.shouldShowNonEditableIndicators)
-                }
-
-                ForEach(viewModel.customAmountRows) { customAmountRow in
-                    CustomAmountRowView(viewModel: customAmountRow, editable: !viewModel.shouldShowNonEditableIndicators)
-                }
-            }
-            .renderedIf(viewModel.customAmountRows.isNotEmpty)
-        }
-        .padding()
-        .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
-        })
-    }
-}
-
 // MARK: Constants
 private extension OrderForm {
     enum Layout {
@@ -619,13 +567,8 @@ private extension OrderForm {
         static let doneButton = NSLocalizedString("Done", comment: "Button to dismiss the Order Editing screen")
         static let cancelButton = NSLocalizedString("Cancel", comment: "Button to cancel the creation of an order on the New Order screen")
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
-        static let customAmounts = NSLocalizedString("OrderForm.customAmounts",
-                                                     value: "Custom Amounts",
-                                                     comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
-        static let addCustomAmount = NSLocalizedString("Add Custom Amount",
-                                                   comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
@@ -648,7 +591,6 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
-        static let addCustomAmountIdentifier = "new-order-add-custom-amount-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
     }
 }

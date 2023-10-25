@@ -70,7 +70,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isCompositeProductsEnabled: Bool
     private let isSubscriptionProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
-    private let isOptimizedBlazeExperienceEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -82,7 +81,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
-         isOptimizedBlazeExperienceEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
@@ -95,7 +93,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
-        self.isOptimizedBlazeExperienceEnabled = isOptimizedBlazeExperienceEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -109,7 +106,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty
 
-        let shouldShowPromoteWithBlaze = isOptimizedBlazeExperienceEnabled && isEligibleForBlaze
+        let shouldShowPromoteWithBlaze = isEligibleForBlaze
 
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,

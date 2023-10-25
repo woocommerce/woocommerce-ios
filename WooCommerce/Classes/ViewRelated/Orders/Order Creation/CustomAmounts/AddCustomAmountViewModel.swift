@@ -36,7 +36,6 @@ final class AddCustomAmountViewModel: ObservableObject {
     func doneButtonPressed() {
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
         onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
-        reset()
     }
 
     func reset() {

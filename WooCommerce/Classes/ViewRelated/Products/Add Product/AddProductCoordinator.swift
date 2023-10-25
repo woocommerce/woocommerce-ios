@@ -401,19 +401,15 @@ private extension AddProductCoordinator {
             sheet.largestUndimmedDetentIdentifier = .none
             sheet.prefersGrabberVisible = true
 
-            var detents: [UISheetPresentationController.Detent] = [.medium()]
-
-            // If preferred content size is accessibility or vertical size class is compact,
-            // add large detent for accessibility.
-            // Skip if the device is iPad.
-            let traitCollection = self.navigationController.traitCollection
-            let isAccessibilityCategory = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
-            let compactVertical = traitCollection.verticalSizeClass == .compact
+            // Sets detents for the sheet.
+            // Skips large detent if the device is iPad.
+            let traitCollection = UIScreen.main.traitCollection
             let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
-            if !isIPad && (isAccessibilityCategory || compactVertical) {
-                detents.append(.large())
+            if isIPad {
+                sheet.detents = [.medium()]
+            } else {
+                sheet.detents = [.large(), .medium()]
             }
-            sheet.detents = detents
         })
     }
 }

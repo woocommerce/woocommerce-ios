@@ -218,6 +218,14 @@ final class EditableOrderViewModel: ObservableObject {
         productRows.isNotEmpty || customAmountRows.isNotEmpty
     }
 
+    var shouldShowProductsSectionHeader: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isNotEmpty
+    }
+
+    var shouldShowAddProductsButton: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isEmpty
+    }
+
     /// Whether gift card is supported in order form.
     ///
     @Published private var isGiftCardSupported: Bool = false

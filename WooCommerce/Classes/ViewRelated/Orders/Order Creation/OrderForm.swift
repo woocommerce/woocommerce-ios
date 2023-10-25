@@ -427,7 +427,7 @@ private struct ProductsSection: View {
                     .scaledToFit()
                     .renderedIf(!viewModel.shouldShowNonEditableIndicators && viewModel.shouldShowCustomAmountsWithProducts)
                 }
-                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isNotEmpty)
+                .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
@@ -470,7 +470,7 @@ private struct ProductsSection: View {
                     scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
-                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts || viewModel.productRows.isEmpty)
+                .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()

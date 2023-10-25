@@ -7,7 +7,7 @@ typealias CustomAmountEntered = (_ amount: String, _ name: String) -> Void
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
-    let onCustomAmountEntered: CustomAmountEntered
+    private let onCustomAmountEntered: CustomAmountEntered
 
     init(locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,

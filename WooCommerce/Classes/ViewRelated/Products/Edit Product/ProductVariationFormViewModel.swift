@@ -26,6 +26,12 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         isUpdateEnabledSubject.eraseToAnyPublisher()
     }
 
+    /// Unused in variations but needed to satisfy protocol
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        Just(Void()).eraseToAnyPublisher()
+    }
+
+
     /// The product variation ID
     var productionVariationID: Int64? {
         productVariation.productVariation.productVariationID

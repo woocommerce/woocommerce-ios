@@ -196,9 +196,8 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
-            // TODO: Send amount and name to view model
-            debugPrint("Adding custom amount of \(amount) with name \(name)")
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
+            self?.addFee(with: amount, name: name)
         })
     }()
 
@@ -346,7 +345,7 @@ final class EditableOrderViewModel: ObservableObject {
             return removeFee()
         }
 
-        addFee(formattedFeeLine)
+        setFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -976,6 +975,15 @@ extension EditableOrderViewModel {
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
+        }
+
+        /// Indicates whether the Coupons informational tooltip button should be shown
+        /// The tooltip is rendered when an order has no coupons, but has product discounts.
+        /// Since both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
+        /// on `shouldShowCoupon` or `shouldShowDiscountTotal` alone for its visibility:
+        ///
+        var shouldRenderCouponsInfoTooltip: Bool {
+            !shouldShowCoupon && shouldShowDiscountTotal
         }
     }
 
@@ -1738,10 +1746,19 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(_ formattedFeeLine: String) {
-        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
-        orderSynchronizer.setFee.send(feeLine)
+    func addFee(with total: String, name: String? = nil) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+        orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func setFee(_ formattedFeeLine: String) {
+        orderSynchronizer.setFee.send(OrderFactory.newOrderFee(total: formattedFeeLine))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func removeFee(_ fee: OrderFeeLine) {
+        orderSynchronizer.removeFee.send(fee)
     }
 
     func removeFee() {

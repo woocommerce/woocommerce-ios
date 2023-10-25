@@ -68,8 +68,8 @@ final class ProductInOrderViewModel: Identifiable, ObservableObject {
         self.analytics = analytics
     }
 
-    lazy var discountDetailsViewModel: FeeOrDiscountLineDetailsViewModel = {
-        FeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount != 0,
+    lazy var discountDetailsViewModel: LegacyFeeOrDiscountLineDetailsViewModel = {
+        LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: addedDiscount != 0,
                                           baseAmountForPercentage: baseAmountForDiscountPercentage,
                                           initialTotal: formattedDiscount ?? "0",
                                           lineType: .discount,

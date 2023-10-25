@@ -9,11 +9,11 @@ protocol FeeOrDiscountLineTypeProtocol {
     var fixedAmountFieldAccessibilityIdentifier: String { get }
 
     func removeEvent() -> WooAnalyticsEvent?
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent?
+    func addValueEvent(with type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent?
 }
 
 private struct StringsProviderFactory {
-    static func typeViewModel(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeProtocol {
+    static func typeViewModel(from type: LegacyFeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeProtocol {
         switch type {
         case .discount:
             return DiscountLineTypeViewModel(isExistingLine: isExistingLine)
@@ -46,7 +46,7 @@ private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
         WooAnalyticsEvent.Orders.productDiscountRemove()
     }
 
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
+    func addValueEvent(with type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
         WooAnalyticsEvent.Orders.productDiscountAdd(type: type)
     }
 
@@ -80,7 +80,7 @@ private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
         nil
     }
 
-    func addValueEvent(with type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
+    func addValueEvent(with type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
         nil
     }
 
@@ -92,7 +92,7 @@ private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
     }
 }
 
-final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
+final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.
     ///
@@ -282,7 +282,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
     }
 }
 
-private extension FeeOrDiscountLineDetailsViewModel {
+private extension LegacyFeeOrDiscountLineDetailsViewModel {
 
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
@@ -312,3 +312,6 @@ private extension FeeOrDiscountLineDetailsViewModel {
         }
     }
 }
+
+final class DiscountLineDetailsViewModel: ObservableObject {}
+final class FeeLineDetailsViewModel: ObservableObject {}

@@ -12,7 +12,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_amount_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -31,7 +31,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_negative_amount_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -57,7 +57,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
                                               decimalSeparator: ".",
                                               numberOfDecimals: 3)
 
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -77,7 +77,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_percentage_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 100,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -97,7 +97,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_formats_negative_percentage_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 100,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -116,7 +116,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_input_data_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
                                                 initialTotal: "10",
                                                 lineType: .fee,
@@ -134,7 +134,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_prefills_negative_input_data_correctly() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
                                                 initialTotal: "-10",
                                                 lineType: .fee,
@@ -152,7 +152,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_empty_state_and_enables_with_input() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 200,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -188,7 +188,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_disables_done_button_for_prefilled_data_and_enables_with_changes() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 100,
                                                 initialTotal: "11.30",
                                                 lineType: .fee,
@@ -213,7 +213,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_disables_done_button_for_matched_percentage_value() {
         // Given
         // Initial fee is $10/5%
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                 baseAmountForPercentage: 200,
                                                 initialTotal: "10",
                                                 lineType: .fee,
@@ -237,7 +237,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_fee_line_with_fixed_amount() {
         // Given
         var savedFeeLine: String?
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -258,7 +258,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_fee_line_with_percentage_amount() {
         // Given
         var savedFeeLine: String?
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 200,
                                                 initialTotal: "0",
                                                 lineType: .fee,
@@ -280,7 +280,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_view_model_creates_negative_fee_line() {
         // Given
         var savedFeeLine: String?
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -300,7 +300,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_amount_placeholder_has_expected_value() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -314,7 +314,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
     func test_view_model_initializes_correctly_with_no_existing_fee_line() {
         // Given
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .fee,
@@ -330,7 +330,7 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
     func test_saveData_when_type_line_discount_with_fixed_amount_then_tracks_event() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .discount,
@@ -346,13 +346,13 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
-        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.DiscountType.fixed.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, LegacyFeeOrDiscountLineDetailsViewModel.DiscountType.fixed.rawValue)
     }
 
     func test_saveData_when_type_line_discount_with_percentage_then_tracks_event() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .discount,
@@ -368,13 +368,13 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
-        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, FeeOrDiscountLineDetailsViewModel.DiscountType.percentage.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["type"] as? String, LegacyFeeOrDiscountLineDetailsViewModel.DiscountType.percentage.rawValue)
     }
 
     func test_removeValue_when_type_line_discount_then_tracks_event() {
         // Given
         let analytics = MockAnalyticsProvider()
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: false,
                                                 baseAmountForPercentage: 0,
                                                 initialTotal: "",
                                                 lineType: .discount,

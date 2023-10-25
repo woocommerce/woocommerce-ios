@@ -885,7 +885,7 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
+        let feeLineViewModel: LegacyFeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -964,7 +964,7 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
+            self.feeLineViewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
                                                                       baseAmountForPercentage: feesBaseAmountForPercentage,
                                                                       initialTotal: feeLineTotal,
                                                                       lineType: .fee,

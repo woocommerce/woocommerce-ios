@@ -6,7 +6,7 @@ struct FeeOrDiscountLineDetailsView: View {
 
     /// View model to drive the view content
     ///
-    @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
+    @ObservedObject private var viewModel: LegacyFeeOrDiscountLineDetailsViewModel
 
     /// Defines if the fixed amount input text field should be focused. Defaults to `true`
     ///
@@ -20,7 +20,7 @@ struct FeeOrDiscountLineDetailsView: View {
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
 
-    init(viewModel: FeeOrDiscountLineDetailsViewModel) {
+    init(viewModel: LegacyFeeOrDiscountLineDetailsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -31,8 +31,8 @@ struct FeeOrDiscountLineDetailsView: View {
                     Section {
                         if viewModel.isPercentageOptionAvailable {
                             Picker("", selection: $viewModel.discountType) {
-                                Text(viewModel.percentSymbol).tag(FeeOrDiscountLineDetailsViewModel.DiscountType.percentage)
-                                Text(viewModel.currencySymbol).tag(FeeOrDiscountLineDetailsViewModel.DiscountType.fixed)
+                                Text(viewModel.percentSymbol).tag(LegacyFeeOrDiscountLineDetailsViewModel.DiscountType.percentage)
+                                Text(viewModel.currencySymbol).tag(LegacyFeeOrDiscountLineDetailsViewModel.DiscountType.fixed)
                             }
                             .onChange(of: viewModel.discountType, perform: { type in
                                 switch type {
@@ -176,7 +176,7 @@ private extension FeeOrDiscountLineDetailsView {
 
 struct FeeOrDiscountLineDetails_Previews: PreviewProvider {
     static var previews: some View {
-        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let viewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                           baseAmountForPercentage: 200,
                                                           initialTotal: "10",
                                                           lineType: .fee,

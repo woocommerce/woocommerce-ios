@@ -11,13 +11,13 @@ struct ProductDiscountView: View {
 
     @Environment(\.presentationMode) var presentation
 
-    @ObservedObject private var discountViewModel: FeeOrDiscountLineDetailsViewModel
+    @ObservedObject private var discountViewModel: LegacyFeeOrDiscountLineDetailsViewModel
 
     init(imageURL: URL?,
          name: String,
          stockLabel: String,
          productRowViewModel: ProductRowViewModel,
-         discountViewModel: FeeOrDiscountLineDetailsViewModel) {
+         discountViewModel: LegacyFeeOrDiscountLineDetailsViewModel) {
         self.imageURL = imageURL
         self.name = name
         self.stockLabel = stockLabel

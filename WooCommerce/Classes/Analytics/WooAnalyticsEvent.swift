@@ -661,7 +661,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .taxEducationalDialogEditInAdminButtonTapped, properties: [:])
         }
 
-        static func productDiscountAdd(type: FeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent {
+        static func productDiscountAdd(type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
         }
 

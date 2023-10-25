@@ -1,9 +1,9 @@
 import SwiftUI
 
 struct DiscountLineDetailsView: View {
-    @ObservedObject private var viewModel: FeeOrDiscountLineDetailsViewModel
+    @ObservedObject private var viewModel: LegacyFeeOrDiscountLineDetailsViewModel
 
-    init(viewModel: FeeOrDiscountLineDetailsViewModel) {
+    init(viewModel: LegacyFeeOrDiscountLineDetailsViewModel) {
         self.viewModel = viewModel
     }
 
@@ -120,7 +120,7 @@ private extension DiscountLineDetailsView {
 
 struct DiscountLineDetailsView_Previews: PreviewProvider {
     static var previews: some View {
-        let feeOrDiscountViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: true,
+        let feeOrDiscountViewModel = LegacyFeeOrDiscountLineDetailsViewModel(isExistingLine: true,
                                                                        baseAmountForPercentage: 10.0,
                                                                        initialTotal: "100.00",
                                                                        lineType: .discount,

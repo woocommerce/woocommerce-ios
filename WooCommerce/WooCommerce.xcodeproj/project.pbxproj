@@ -1464,7 +1464,7 @@
 		AE6DBE3B2732CAAD00957E7A /* AdaptiveStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */; };
 		AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */; };
 		AE7C957B27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957A27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift */; };
-		AE7C957D27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957C27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift */; };
+		AE7C957D27C3F187007E8E12 /* LegacyFeeOrDiscountLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957C27C3F187007E8E12 /* LegacyFeeOrDiscountLineDetailsViewModel.swift */; };
 		AE7C957F27C417FA007E8E12 /* FeeOrDiscountLineDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7C957E27C417FA007E8E12 /* FeeOrDiscountLineDetailsViewModelTests.swift */; };
 		AE8AEA8628084EC90054BDA2 /* MaxWidthPreference.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE8AEA8528084EC90054BDA2 /* MaxWidthPreference.swift */; };
 		AE90475C27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */; };
@@ -3979,7 +3979,7 @@
 		AE6DBE3A2732CAAD00957E7A /* AdaptiveStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdaptiveStack.swift; sourceTree = "<group>"; };
 		AE77EA4F27A47C99006A21BD /* View+AddingDividers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+AddingDividers.swift"; sourceTree = "<group>"; };
 		AE7C957A27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeOrDiscountLineDetails.swift; sourceTree = "<group>"; };
-		AE7C957C27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeOrDiscountLineDetailsViewModel.swift; sourceTree = "<group>"; };
+		AE7C957C27C3F187007E8E12 /* LegacyFeeOrDiscountLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegacyFeeOrDiscountLineDetailsViewModel.swift; sourceTree = "<group>"; };
 		AE7C957E27C417FA007E8E12 /* FeeOrDiscountLineDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeOrDiscountLineDetailsViewModelTests.swift; sourceTree = "<group>"; };
 		AE8AEA8528084EC90054BDA2 /* MaxWidthPreference.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MaxWidthPreference.swift; sourceTree = "<group>"; };
 		AE90475B27A99D6000073E1D /* CreateOrderAddressFormViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateOrderAddressFormViewModelTests.swift; sourceTree = "<group>"; };
@@ -9336,7 +9336,7 @@
 				AEA3F90C27BE76B300B9F555 /* ShippingLineDetails.swift */,
 				AEA3F90E27BE8EB400B9F555 /* ShippingLineDetailsViewModel.swift */,
 				AE7C957A27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift */,
-				AE7C957C27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift */,
+				AE7C957C27C3F187007E8E12 /* LegacyFeeOrDiscountLineDetailsViewModel.swift */,
 				EEB4E2D929B5F8FC00371C3C /* CouponLineDetailsViewModel.swift */,
 				EEB4E2DB29B600B800371C3C /* CouponLineDetails.swift */,
 				B991D3942A4EC0F800D886ED /* CouponLineViewModel.swift */,
@@ -13548,7 +13548,7 @@
 				024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				0217399C2772F9DD0084CD89 /* StoreStatsV4PeriodViewController.swift in Sources */,
-				AE7C957D27C3F187007E8E12 /* FeeOrDiscountLineDetailsViewModel.swift in Sources */,
+				AE7C957D27C3F187007E8E12 /* LegacyFeeOrDiscountLineDetailsViewModel.swift in Sources */,
 				4520A15C2721B2A9001FA573 /* FilterOrderListViewModel.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,

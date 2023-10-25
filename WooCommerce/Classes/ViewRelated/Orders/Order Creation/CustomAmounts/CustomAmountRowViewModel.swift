@@ -5,4 +5,5 @@ struct CustomAmountRowViewModel: Identifiable {
     let name: String
     let total: String
     let onRemoveCustomAmount: () -> Void
+    let onEditCustomAmount: () -> Void
 }

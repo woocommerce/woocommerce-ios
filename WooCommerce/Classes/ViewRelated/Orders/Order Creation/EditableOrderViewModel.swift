@@ -174,6 +174,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Display the custom amount screen to edit it
+    ///
+    @Published var showEditCustomAmount: Bool = false
+
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
     var shouldStoreTaxRateInSelectorByDefault: Bool {
@@ -1230,7 +1234,10 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                              name: fee.name ?? Localization.customAmountDefaultName,
                                              total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                             onRemoveCustomAmount: { self.removeFee(fee) })
+                                             onRemoveCustomAmount: { self.removeFee(fee) },
+                                             onEditCustomAmount: {
+                        self.showEditCustomAmount = true
+                    })
                 }
             }
             .assign(to: &$customAmountRows)

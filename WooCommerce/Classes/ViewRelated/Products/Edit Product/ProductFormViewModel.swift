@@ -64,6 +64,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private var isEligibleForBlaze: Bool = false
 
+    private let blazeCampaignResultsController: ResultsController<StorageBlazeCampaign>?
+
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
     ///
@@ -222,6 +224,17 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.productImagesUploader = productImagesUploader
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
+
+        /// Initialize Blaze Campaign Results Controller
+        ///
+        if let siteID = stores.sessionManager.defaultSite?.siteID {
+            let predicate = NSPredicate(format: "siteID == %lld", siteID)
+            blazeCampaignResultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                                     matching: predicate,
+                                                                                     sortedBy: [])
+        } else {
+            blazeCampaignResultsController = nil
+        }
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }
@@ -706,7 +719,9 @@ private extension ProductFormViewModel {
 //
 extension ProductFormViewModel {
     func checkIfBlazeIntroViewIsNeeded() {
-        // todo
+        if let controller = blazeCampaignResultsController, controller.numberOfObjects == 0 {
+            shouldShowBlazeIntroView = true
+        }
     }
 }
 

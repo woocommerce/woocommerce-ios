@@ -2,7 +2,7 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-protocol FeeOrDiscountLineTypeViewModel {
+protocol FeeOrDiscountLineTypeProtocol {
     var navigationTitle: String { get }
     var removeButtonTitle: String { get }
     var doneButtonAccessibilityIdentifier: String { get }
@@ -13,7 +13,7 @@ protocol FeeOrDiscountLineTypeViewModel {
 }
 
 private struct StringsProviderFactory {
-    static func typeViewModel(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeViewModel {
+    static func typeViewModel(from type: FeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeProtocol {
         switch type {
         case .discount:
             return DiscountLineTypeViewModel(isExistingLine: isExistingLine)
@@ -23,7 +23,7 @@ private struct StringsProviderFactory {
     }
 }
 
-private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
+private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
     let isExistingLine: Bool
 
     var navigationTitle: String {
@@ -57,7 +57,7 @@ private struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
     }
 }
 
-private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeViewModel {
+private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
     let isExistingLine: Bool
 
     var navigationTitle: String {
@@ -187,7 +187,7 @@ final class FeeOrDiscountLineDetailsViewModel: ObservableObject {
         return finalAmountDecimal == initialAmount
     }
 
-    let lineTypeViewModel: FeeOrDiscountLineTypeViewModel
+    let lineTypeViewModel: FeeOrDiscountLineTypeProtocol
 
     /// Localized percent symbol.
     ///

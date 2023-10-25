@@ -54,7 +54,7 @@ class FeesInputTransformerTests: XCTestCase {
         let order = Order.fake().copy(fees: [fee, fee2])
 
         // When
-        let updatedOrder = FeesInputTransformer.update(input: nil, on: order)
+        let updatedOrder = FeesInputTransformer.setFee(input: nil, on: order)
 
         // Then
         let feeLine = try XCTUnwrap(updatedOrder.fees.first)

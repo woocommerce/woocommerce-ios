@@ -4,7 +4,7 @@ import XCTest
 final class AddCustomAmountViewModelTests: XCTestCase {
     func test_shouldDisableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
         // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _ in })
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
 
         // When
         viewModel.formattableAmountTextFieldViewModel.amount = "$0"
@@ -15,7 +15,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
     func test_shouldDisableDoneButton_when_there_is_no_amount_then_disables_done_button() {
         // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _ in })
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
 
         // When
         viewModel.formattableAmountTextFieldViewModel.amount = ""
@@ -27,7 +27,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
     func test_doneButtonPressed_when_there_is_no_name_then_passes_placeholder() {
         // Given
         var passedName: String?
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, _ in
             passedName = name
         })
 
@@ -46,7 +46,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         var passedName: String?
         var passedAmount: String?
 
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, _ in
             passedAmount = amount
             passedName = name
         })
@@ -64,7 +64,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
     func test_reset_then_reset_values() {
         // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _ in })
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
         viewModel.formattableAmountTextFieldViewModel.amount = "2"
         viewModel.name = "test"
 

@@ -1549,6 +1549,35 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(removedChildBundleOrderItem["quantity"] as? Int64, 0)
         XCTAssertNil(removedChildBundleOrderItem["bundle_configuration"])
     }
+
+    func test_updateOrder_with_new_item_with_bundle_configuration_does_not_update_line_items() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+        let order = Order.fake().copy(items: [
+            .fake().copy(itemID: 0, quantity: 2, bundleConfiguration: [.fake()]),
+            // Another order item.
+            .fake().copy(itemID: 7, quantity: 3)
+        ])
+
+        // When
+        store.onAction(OrderAction.updateOrder(siteID: siteID,
+                                               order: order,
+                                               giftCard: nil,
+                                               fields: [.items],
+                                               onCompletion: { _ in }))
+
+        // Then
+        let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
+        XCTAssertEqual(lineItems.count, 2)
+
+        let bundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
+        XCTAssertEqual(bundleOrderItem["quantity"] as? Int64, 2)
+        XCTAssertNotNil(bundleOrderItem["bundle_configuration"])
+
+        let anotherOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
+        XCTAssertEqual(anotherOrderItem["quantity"] as? Int64, 3)
+    }
 }
 
 

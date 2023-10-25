@@ -134,7 +134,7 @@ private extension ProductInputTransformer {
             switch input.product {
             case .product(let product):
                 let price: Decimal = Decimal(string: product.price) ?? .zero
-                return OrderItemParameters(quantity: input.quantity, 
+                return OrderItemParameters(quantity: input.quantity,
                                            price: price,
                                            discount: input.discount,
                                            productID: product.productID,

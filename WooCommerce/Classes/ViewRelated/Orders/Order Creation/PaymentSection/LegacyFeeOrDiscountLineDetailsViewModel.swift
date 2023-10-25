@@ -22,43 +22,6 @@ private struct StringsProviderFactory {
     }
 }
 
-
-
-private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
-    let isExistingLine: Bool
-
-    var navigationTitle: String {
-        isExistingLine ? Localization.fee : Localization.addFee
-    }
-
-    var removeButtonTitle: String {
-        Localization.remove
-    }
-
-    var doneButtonAccessibilityIdentifier: String {
-        "add-fee-done-button"
-    }
-
-    var fixedAmountFieldAccessibilityIdentifier: String {
-        "add-fee-fixed-amount-field"
-    }
-
-    func removeEvent() -> WooAnalyticsEvent? {
-        nil
-    }
-
-    func addValueEvent(with type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
-        nil
-    }
-
-    private enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
-        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
-        static let remove = NSLocalizedString("Remove Fee from Order",
-                                              comment: "Text for the button to remove a fee from the order during order creation")
-    }
-}
-
 final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
 
     /// Closure to be invoked when the line is updated.

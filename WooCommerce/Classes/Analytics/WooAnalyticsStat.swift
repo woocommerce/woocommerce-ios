@@ -180,7 +180,6 @@ public enum WooAnalyticsStat: String {
     case blazeFlowCanceled = "blaze_flow_canceled"
     case blazeFlowCompleted = "blaze_flow_completed"
     case blazeFlowError = "blaze_flow_error"
-    case blazeBannerDismissed = "blaze_banner_dismissed"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeIntroDisplayed = "blaze_intro_displayed"

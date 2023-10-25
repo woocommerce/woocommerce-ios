@@ -320,8 +320,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() &&
-            !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
+        if viewModel.canPromoteWithBlaze() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))

@@ -723,6 +723,10 @@ extension ProductFormViewModel {
             shouldShowBlazeIntroView = true
         }
     }
+
+    func updateShouldShowBlazeIntroView(to newValue: Bool) {
+        shouldShowBlazeIntroView = newValue
+    }
 }
 
 private extension ProductFormViewModel {

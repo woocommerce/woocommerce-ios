@@ -325,6 +325,10 @@ extension ProductVariationFormViewModel {
     func checkIfBlazeIntroViewIsNeeded() {
         //no-op
     }
+
+    func updateShouldShowBlazeIntroView(to newValue: Bool) {
+        //no-op
+    }
 }
 
 // MARK: Remote actions

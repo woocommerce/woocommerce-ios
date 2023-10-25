@@ -142,6 +142,8 @@ protocol ProductFormViewModelProtocol {
 
     func checkIfBlazeIntroViewIsNeeded()
 
+    func updateShouldShowBlazeIntroView(to newValue: Bool)
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

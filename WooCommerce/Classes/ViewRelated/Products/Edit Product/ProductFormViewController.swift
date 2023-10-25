@@ -1,5 +1,6 @@
 import Combine
 import Photos
+import SwiftUI
 import UIKit
 import WordPressUI
 import Yosemite
@@ -1103,8 +1104,30 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .productMoreMenu, siteURL: site.url, productID: product.productID)
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+        viewModel.checkIfBlazeIntroViewIsNeeded()
+
+        if viewModel.shouldShowBlazeIntroView {
+            let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: {
+                self.dismiss(animated: true)
+                self.viewModel.updateShouldShowBlazeIntroView(to: false)
+                self.navigateToBlazeCampaignCreation(siteUrl: site.url)
+            }, onDismiss: {
+                self.dismiss(animated: true)
+                self.viewModel.updateShouldShowBlazeIntroView(to: false)
+            })
+
+            let hostingController = UIHostingController(rootView: blazeCampaignIntroView)
+            hostingController.modalPresentationStyle = .fullScreen
+
+            present(hostingController, animated: true)
+        } else {
+            self.navigateToBlazeCampaignCreation(siteUrl: site.url)
+        }
+    }
+
+    private func navigateToBlazeCampaignCreation(siteUrl: String) {
+        let blazeViewModel = BlazeWebViewModel(source: .productDetailPromoButton, siteURL: siteUrl, productID: product.productID)
+        let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
     }
 

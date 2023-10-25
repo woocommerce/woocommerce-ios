@@ -2,6 +2,7 @@ import Combine
 import WooFoundation
 import UIKit
 import SwiftUI
+import Yosemite
 
 typealias CustomAmountEntered = (_ amount: String, _ name: String) -> Void
 
@@ -37,6 +38,11 @@ final class AddCustomAmountViewModel: ObservableObject {
         shouldDisableDoneButton = true
 
         formattableAmountTextFieldViewModel.reset()
+    }
+
+    func preset(with fee: OrderFeeLine) {
+        name = fee.name ?? Localization.customAmountPlaceholder
+        formattableAmountTextFieldViewModel.amount = fee.total
     }
 }
 

@@ -1236,6 +1236,7 @@ private extension EditableOrderViewModel {
                                              total: self.currencyFormatter.formatAmount(fee.total) ?? "",
                                              onRemoveCustomAmount: { self.removeFee(fee) },
                                              onEditCustomAmount: {
+                        self.addCustomAmountViewModel.preset(with: fee)
                         self.showEditCustomAmount = true
                     })
                 }

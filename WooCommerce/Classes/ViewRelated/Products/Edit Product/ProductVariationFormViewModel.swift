@@ -31,6 +31,8 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         Just(Void()).eraseToAnyPublisher()
     }
 
+    /// Also unused in variations but needed to satisfy protocol
+    var shouldShowBlazeIntroView = false
 
     /// The product variation ID
     var productionVariationID: Int64? {
@@ -317,6 +319,10 @@ extension ProductVariationFormViewModel {
     }
 
     func updateProductVariations(from product: Product) {
+        //no-op
+    }
+
+    func checkIfBlazeIntroViewIsNeeded() {
         //no-op
     }
 }

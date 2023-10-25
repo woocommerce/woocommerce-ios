@@ -387,6 +387,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
+            case .promoteWithBlaze:
+                displayBlaze() /* todo differentiate between going to intro or to campaign creation directly */
             default:
                 break
             }

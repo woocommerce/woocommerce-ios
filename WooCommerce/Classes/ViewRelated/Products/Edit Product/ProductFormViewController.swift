@@ -20,6 +20,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     private let viewModel: ViewModel
     private let eventLogger: ProductFormEventLoggerProtocol
+
     private var product: ProductModel {
         viewModel.productModel
     }
@@ -69,6 +70,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     private var updateEnabledSubscription: AnyCancellable?
     private var newVariationsPriceSubscription: AnyCancellable?
     private var productImageStatusesSubscription: AnyCancellable?
+    private var blazeEligibilitySubscription: AnyCancellable?
 
     private let aiEligibilityChecker: ProductFormAIEligibilityChecker
     private var descriptionAICoordinator: ProductDescriptionAICoordinator?
@@ -112,6 +114,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: tableViewModel,
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
+
         super.init(nibName: "ProductFormViewController", bundle: nil)
         updateDataSourceActions()
     }
@@ -125,6 +128,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         productNameSubscription?.cancel()
         updateEnabledSubscription?.cancel()
         newVariationsPriceSubscription?.cancel()
+        blazeEligibilitySubscription?.cancel()
     }
 
     override func viewDidLoad() {
@@ -143,6 +147,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         observeProductName()
         observeUpdateCTAVisibility()
         observeVariationsPriceChanges()
+        observeUpdateBlazeEligibility()
 
         productImageStatusesSubscription = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
@@ -315,7 +320,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() {
+        if viewModel.canPromoteWithBlaze() &&
+            !ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
                 self?.displayBlaze()
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
@@ -720,8 +726,18 @@ private extension ProductFormViewController {
     ///
     func observeVariationsPriceChanges() {
         newVariationsPriceSubscription = viewModel.newVariationsPrice.sink { [weak self] in
-            self?.onVariationsPriceChanged()
+            self?.updateFormTableContent()
         }
+    }
+
+    /// Updates table rows when Blaze eligibility is computed.
+    /// Needed to show/hide the "Promote with Blaze" button accordingly.
+    /// 
+    func observeUpdateBlazeEligibility() {
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
+            self?.updateFormTableContent()
+        }
+
     }
 
     /// Updates table viewmodel and datasource and attempts to animate cell deletion/insertion.
@@ -801,13 +817,15 @@ private extension ProductFormViewController {
 
     /// Recreates the `tableViewModel` and reloads the `table` & `datasource`.
     ///
-    func onVariationsPriceChanged() {
+    func updateFormTableContent() {
         tableViewModel = DefaultProductFormTableViewModel(product: product,
                                                           actionsFactory: viewModel.actionsFactory,
                                                           currency: currency,
                                                           isDescriptionAIEnabled: aiEligibilityChecker.isFeatureEnabled(.description))
         reconfigureDataSource(tableViewModel: tableViewModel, statuses: productImageActionHandler.productImageStatuses)
     }
+
+
 
     /// Recreates `tableViewDataSource` and reloads the `tableView` data.
     /// - Parameters:

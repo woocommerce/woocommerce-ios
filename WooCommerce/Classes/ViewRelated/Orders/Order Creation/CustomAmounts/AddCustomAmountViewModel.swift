@@ -4,7 +4,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-typealias CustomAmountEntered = (_ amount: String, _ name: String) -> Void
+typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int64?) -> Void
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
@@ -22,6 +22,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     ///
     @Published var name = ""
     @Published private(set) var shouldDisableDoneButton: Bool = true
+    var feeID: Int64? = nil
 
     var customAmountPlaceholder: String {
         Localization.customAmountPlaceholder
@@ -29,12 +30,13 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func doneButtonPressed() {
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
-        onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName)
+        onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
         reset()
     }
 
     func reset() {
         name = ""
+        feeID = nil
         shouldDisableDoneButton = true
 
         formattableAmountTextFieldViewModel.reset()
@@ -43,6 +45,8 @@ final class AddCustomAmountViewModel: ObservableObject {
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
         formattableAmountTextFieldViewModel.amount = fee.total
+        formattableAmountTextFieldViewModel.resetAmountWithNewValue = true
+        feeID = fee.feeID
     }
 }
 

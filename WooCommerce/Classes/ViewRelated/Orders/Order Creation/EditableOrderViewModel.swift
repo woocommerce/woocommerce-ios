@@ -200,8 +200,12 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
-            self?.addFee(with: amount, name: name)
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name, feeID in
+            if let feeID = feeID {
+                self?.updateFee(with: feeID, total: amount, name: name)
+            } else {
+                self?.addFee(with: amount, name: name)
+            }
         })
     }()
 
@@ -1795,6 +1799,15 @@ private extension EditableOrderViewModel {
         let feeLine = OrderFactory.newOrderFee(total: total, name: name)
         orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func updateFee(with id: Int64, total: String, name: String? = nil) {
+        guard let updatingFee = orderSynchronizer.order.fees.first(where: { $0.feeID == id }) else {
+            return
+        }
+
+        let updatedFee = updatingFee.copy(name: name, total: total)
+        orderSynchronizer.updateFee.send(updatedFee)
     }
 
     func setFee(_ formattedFeeLine: String) {

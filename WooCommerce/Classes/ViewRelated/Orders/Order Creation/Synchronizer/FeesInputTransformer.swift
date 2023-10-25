@@ -6,7 +6,7 @@ import Yosemite
 struct FeesInputTransformer {
     /// Adds, deletes, or updates a fee line input into an existing order.
     ///
-    static func update(input: OrderFeeLine?, on order: Order) -> Order {
+    static func setFee(input: OrderFeeLine?, on order: Order) -> Order {
         // If input is `nil`, then we remove the first existing fee line.
         guard let input = input else {
             let updatedLines = order.fees.enumerated().map { index, line -> OrderFeeLine in
@@ -39,6 +39,19 @@ struct FeesInputTransformer {
         }
 
         return order.copy(fees: order.fees + [input])
+    }
+
+    /// Updates a fee into an existing order. If the fee is not there, it returns the order as it is.
+    ///
+    static func update(input: OrderFeeLine, on order: Order) -> Order {
+        guard let index = order.fees.firstIndex(where: { $0.feeID == input.feeID }) else {
+            return order
+        }
+
+        var updatedLines = order.fees
+        updatedLines[index] = input
+
+        return order.copy(fees: updatedLines)
     }
 
     /// Removes a fee line input from an existing order.

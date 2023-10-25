@@ -399,7 +399,6 @@ private extension AddProductCoordinator {
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
 
             // Sets detents for the sheet.
             // Skips large detent if the device is iPad.
@@ -410,6 +409,7 @@ private extension AddProductCoordinator {
             } else {
                 sheet.detents = [.large(), .medium()]
             }
+            sheet.prefersGrabberVisible = !isIPad
         })
     }
 }

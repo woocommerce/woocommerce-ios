@@ -65,7 +65,8 @@ struct ConfigurableBundleItemView_Previews: PreviewProvider {
     static var previews: some View {
         ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample(),
                                                     product: .swiftUIPreviewSample(),
-                                                    variableProductSettings: nil))
+                                                    variableProductSettings: nil,
+                                                    existingOrderItem: nil))
     }
 }
 

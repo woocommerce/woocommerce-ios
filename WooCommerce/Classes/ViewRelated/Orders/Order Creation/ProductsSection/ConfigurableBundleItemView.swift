@@ -10,13 +10,20 @@ struct ConfigurableBundleItemView: View {
     }
 
     var body: some View {
-        VStack {
-            ProductRow(viewModel: viewModel.productRowViewModel)
+        VStack(alignment: .leading) {
+            HStack {
+                Button {
+                    viewModel.isOptionalAndSelected.toggle()
+                } label: {
+                    Image(uiImage: viewModel.isOptionalAndSelected ?
+                        .checkCircleImage.withRenderingMode(.alwaysTemplate):
+                            .checkEmptyCircleImage)
+                        .foregroundColor(.init(.brand))
+                }
+                    .renderedIf(viewModel.isOptional)
 
-            Toggle(isOn: $viewModel.isOptionalAndSelected, label: {
-                Text(Localization.add)
-            })
-            .renderedIf(viewModel.isOptional)
+                ProductRow(viewModel: viewModel.productRowViewModel)
+            }
 
             Button {
                 viewModel.createVariationSelectorViewModel()

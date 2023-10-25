@@ -30,7 +30,7 @@ struct AddCustomAmountView: View {
 
                         Spacer()
 
-                        Button(Localization.doneButtonTitle) {
+                        Button(viewModel.doneButtonTitle) {
                             viewModel.doneButtonPressed()
                             dismiss()
                         }
@@ -64,8 +64,6 @@ private extension AddCustomAmountView {
     enum Localization {
         static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
         static let nameTitle = NSLocalizedString("Name", comment: "Title above the name field on the add custom amount view in orders.")
-        static let doneButtonTitle = NSLocalizedString("Add Custom Amount",
-                                                       comment: "Button title to confirm the custom amount on the add custom amount view in orders.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")

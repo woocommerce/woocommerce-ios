@@ -28,6 +28,11 @@ final class AddCustomAmountViewModel: ObservableObject {
         Localization.customAmountPlaceholder
     }
 
+    var doneButtonTitle: String {
+        let isInEditMode = feeID != nil
+        return isInEditMode ? Localization.editButtonTitle : Localization.addButtonTitle
+    }
+
     func doneButtonPressed() {
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
         onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
@@ -60,6 +65,12 @@ private extension AddCustomAmountViewModel {
 
 private extension AddCustomAmountViewModel {
     enum Localization {
+        static let addButtonTitle = NSLocalizedString("addCustomAmount.doneButton",
+                                                       value: "Add Custom Amount",
+                                                       comment: "Button title to confirm the custom amount on the add custom amount view in orders.")
+        static let editButtonTitle = NSLocalizedString("addCustomAmount.editButton",
+                                                       value: "Edit Custom Amount",
+                                                       comment: "Button title to confirm the custom amount on the edit custom amount view in orders.")
         static let customAmountPlaceholder = NSLocalizedString("Custom amount",
                                                                comment: "Placeholder for the name field on the add custom amount view in orders.")
     }

@@ -1279,6 +1279,8 @@
 		6856DF20E1BDCC391635F707 /* AgeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6856D1A5F72A36AB3704D19D /* AgeTests.swift */; };
 		68709D3D2A2ED94900A7FA6C /* UpgradesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709D3C2A2ED94900A7FA6C /* UpgradesView.swift */; };
 		68709D402A2EE2DC00A7FA6C /* UpgradesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */; };
+		6871D7292AE9043900DFFB2D /* DiscountLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6871D7282AE9043900DFFB2D /* DiscountLineDetailsViewModel.swift */; };
+		6871D72B2AE9053F00DFFB2D /* FeeLineDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6871D72A2AE9053F00DFFB2D /* FeeLineDetailsViewModel.swift */; };
 		6879B8DB287AFFA100A0F9A8 /* CardReaderManualsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6879B8DA287AFFA100A0F9A8 /* CardReaderManualsViewModelTests.swift */; };
 		6881CCC42A5EE6BF00AEDE36 /* WooPlanCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */; };
 		6888A2C82A668D650026F5C0 /* FullFeatureListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */; };
@@ -3786,6 +3788,8 @@
 		6856DCE1638958DA296D690F /* KeyboardStateProviderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeyboardStateProviderTests.swift; sourceTree = "<group>"; };
 		68709D3C2A2ED94900A7FA6C /* UpgradesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesView.swift; sourceTree = "<group>"; };
 		68709D3F2A2EE2DC00A7FA6C /* UpgradesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradesViewModel.swift; sourceTree = "<group>"; };
+		6871D7282AE9043900DFFB2D /* DiscountLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiscountLineDetailsViewModel.swift; sourceTree = "<group>"; };
+		6871D72A2AE9053F00DFFB2D /* FeeLineDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeLineDetailsViewModel.swift; sourceTree = "<group>"; };
 		6879B8DA287AFFA100A0F9A8 /* CardReaderManualsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardReaderManualsViewModelTests.swift; sourceTree = "<group>"; };
 		6881CCC32A5EE6BF00AEDE36 /* WooPlanCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPlanCardView.swift; sourceTree = "<group>"; };
 		6888A2C72A668D650026F5C0 /* FullFeatureListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullFeatureListView.swift; sourceTree = "<group>"; };
@@ -9344,6 +9348,8 @@
 				02A723272AB2E1C2003AEC7E /* GiftCardInputViewModel.swift */,
 				02667A1B2AC159A000C77B56 /* GiftCardCodeScannerNavigationView.swift */,
 				0250BE8B2AC425F9006D067A /* OrderFormGiftCardRow.swift */,
+				6871D7282AE9043900DFFB2D /* DiscountLineDetailsViewModel.swift */,
+				6871D72A2AE9053F00DFFB2D /* FeeLineDetailsViewModel.swift */,
 			);
 			path = PaymentSection;
 			sourceTree = "<group>";
@@ -12453,6 +12459,7 @@
 				03E471CC293E0FB8001A58AD /* CardPresentModalProgressDisplaying.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
+				6871D72B2AE9053F00DFFB2D /* FeeLineDetailsViewModel.swift in Sources */,
 				6832C7CA26DA5C4500BA4088 /* LabeledTextViewTableViewCell.swift in Sources */,
 				26838354296F460B00CCF60A /* GenerateVariationsOptionPresenter.swift in Sources */,
 				EE7707C52ABB3F55009FD564 /* AIToneVoiceView.swift in Sources */,
@@ -12729,6 +12736,7 @@
 				CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */,
 				EE7707C82ABBF4BB009FD564 /* AIToneVoiceViewModel.swift in Sources */,
 				03EF250228C615A5006A033E /* InPersonPaymentsMenuViewModel.swift in Sources */,
+				6871D7292AE9043900DFFB2D /* DiscountLineDetailsViewModel.swift in Sources */,
 				AEFF77A629783CA600667F7A /* PriceInputViewModel.swift in Sources */,
 				0212275C244972660042161F /* BottomSheetListSelectorSectionHeaderView.swift in Sources */,
 				DEC6C51A2747758D006832D3 /* JCPJetpackInstallView.swift in Sources */,

@@ -664,6 +664,10 @@ extension WooAnalyticsEvent {
         static func productDiscountAdd(type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
         }
+        
+        static func productDiscountAdd(type: DiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductDiscountAdd, properties: [Keys.type: type.rawValue])
+        }
 
         static func productDiscountRemove() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductDiscountRemove, properties: [:])

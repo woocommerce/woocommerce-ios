@@ -2,65 +2,7 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 
-protocol FeeOrDiscountLineTypeProtocol {
-    var navigationTitle: String { get }
-    var removeButtonTitle: String { get }
-    var doneButtonAccessibilityIdentifier: String { get }
-    var fixedAmountFieldAccessibilityIdentifier: String { get }
-
-    func removeEvent() -> WooAnalyticsEvent?
-}
-
-private struct StringsProviderFactory {
-    static func typeViewModel(from type: LegacyFeeOrDiscountLineDetailsViewModel.LineType, isExistingLine: Bool) -> FeeOrDiscountLineTypeProtocol {
-        switch type {
-        case .discount:
-            return DiscountLineTypeViewModel(isExistingLine: isExistingLine)
-        case .fee:
-            return FeeLineTypeViewModel(isExistingLine: isExistingLine)
-        }
-    }
-}
-
-
-
-private struct FeeLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
-    let isExistingLine: Bool
-
-    var navigationTitle: String {
-        isExistingLine ? Localization.fee : Localization.addFee
-    }
-
-    var removeButtonTitle: String {
-        Localization.remove
-    }
-
-    var doneButtonAccessibilityIdentifier: String {
-        "add-fee-done-button"
-    }
-
-    var fixedAmountFieldAccessibilityIdentifier: String {
-        "add-fee-fixed-amount-field"
-    }
-
-    func removeEvent() -> WooAnalyticsEvent? {
-        nil
-    }
-
-    func addValueEvent(with type: LegacyFeeOrDiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
-        nil
-    }
-
-    private enum Localization {
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title for the Fee screen during order creation")
-        static let fee = NSLocalizedString("Fee", comment: "Title for the Fee Details screen during order creation")
-        static let remove = NSLocalizedString("Remove Fee from Order",
-                                              comment: "Text for the button to remove a fee from the order during order creation")
-    }
-}
-
-final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
-
+final class DiscountLineDetailsViewModel: ObservableObject {
     /// Closure to be invoked when the line is updated.
     ///
     private let didSelectSave: ((String?) -> Void)
@@ -154,7 +96,7 @@ final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
         return finalAmountDecimal == initialAmount
     }
 
-    let lineTypeViewModel: FeeOrDiscountLineTypeProtocol
+    private let discountLineTypeViewModel: DiscountLineTypeViewModel
 
     /// Localized percent symbol.
     ///
@@ -225,11 +167,11 @@ final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
         }
 
         self.didSelectSave = didSelectSave
-        self.lineTypeViewModel = StringsProviderFactory.typeViewModel(from: lineType, isExistingLine: isExistingLine)
+        self.discountLineTypeViewModel = DiscountLineTypeViewModel(isExistingLine: isExistingLine)
     }
 
     func removeValue() {
-        if let event = lineTypeViewModel.removeEvent() {
+        if let event = discountLineTypeViewModel.removeEvent() {
             analytics.track(event: event)
         }
 
@@ -241,15 +183,16 @@ final class LegacyFeeOrDiscountLineDetailsViewModel: ObservableObject {
             return
         }
 
+        if let event = discountLineTypeViewModel.addValueEvent(with: discountType) {
+            analytics.track(event: event)
+        }
+
         didSelectSave(priceFieldFormatter.formatAmount(finalAmountString))
     }
-}
-
-private extension LegacyFeeOrDiscountLineDetailsViewModel {
 
     /// Formats a received value by sanitizing the input and trimming content to two decimal places.
     ///
-    func sanitizePercentageAmount(_ amount: String) -> String {
+    private func sanitizePercentageAmount(_ amount: String) -> String {
         let deviceDecimalSeparator = Locale.autoupdatingCurrent.decimalSeparator ?? "."
         let numberOfDecimals = 2
 
@@ -273,5 +216,39 @@ private extension LegacyFeeOrDiscountLineDetailsViewModel {
         default:
             fatalError("Should not happen, components can't be 0 or negative")
         }
+    }
+}
+
+struct DiscountLineTypeViewModel: FeeOrDiscountLineTypeProtocol {
+    let isExistingLine: Bool
+
+    var navigationTitle: String {
+        isExistingLine ? Localization.discount : Localization.addDiscount
+    }
+
+    var removeButtonTitle: String {
+        Localization.remove
+    }
+
+    var doneButtonAccessibilityIdentifier: String {
+        "add-discount-done-button"
+    }
+
+    var fixedAmountFieldAccessibilityIdentifier: String {
+        "add-discount-fixed-amount-field"
+    }
+
+    func removeEvent() -> WooAnalyticsEvent? {
+        WooAnalyticsEvent.Orders.productDiscountRemove()
+    }
+
+    func addValueEvent(with type: DiscountLineDetailsViewModel.DiscountType) -> WooAnalyticsEvent? {
+        WooAnalyticsEvent.Orders.productDiscountAdd(type: type)
+    }
+
+    private enum Localization {
+        static let addDiscount = NSLocalizedString("Add Discount", comment: "Title for the Discount screen during order creation")
+        static let discount = NSLocalizedString("Discount", comment: "Title for the Discount Details screen during order creation")
+        static let remove = NSLocalizedString("Remove Discount", comment: "Title for the Remove button in Details screen during order creation")
     }
 }

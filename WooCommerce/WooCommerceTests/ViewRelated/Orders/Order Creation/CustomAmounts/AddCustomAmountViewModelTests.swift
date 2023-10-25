@@ -1,5 +1,7 @@
 @testable import WooCommerce
+@testable import Yosemite
 import XCTest
+import Fakes
 
 final class AddCustomAmountViewModelTests: XCTestCase {
     func test_shouldDisableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
@@ -62,11 +64,39 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(passedAmount, amount)
     }
 
+    func test_doneButtonPressed_when_a_fee_is_preset_then_passes_its_data() {
+        // Given
+        let amount = "23"
+        let name = "Custom amount name"
+        let feeID: Int64 = 12345
+
+        var passedName: String?
+        var passedAmount: String?
+        var passedFeeID: Int64?
+
+        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, feeID in
+            passedAmount = amount
+            passedName = name
+            passedFeeID = feeID
+        })
+
+        viewModel.preset(with: OrderFeeLine.fake().copy(feeID: feeID, name: name, total: amount))
+
+        // When
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(passedName, name)
+        XCTAssertEqual(passedAmount, amount)
+        XCTAssertEqual(passedFeeID, feeID)
+    }
+
     func test_reset_then_reset_values() {
         // Given
         let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
         viewModel.formattableAmountTextFieldViewModel.amount = "2"
         viewModel.name = "test"
+        viewModel.feeID = 12345
 
         // When
         viewModel.reset()
@@ -75,5 +105,6 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.formattableAmountTextFieldViewModel.amount.isEmpty)
         XCTAssertTrue(viewModel.name.isEmpty)
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
+        XCTAssertNil(viewModel.feeID)
     }
 }

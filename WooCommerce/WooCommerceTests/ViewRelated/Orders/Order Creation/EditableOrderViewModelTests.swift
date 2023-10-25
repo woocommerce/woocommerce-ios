@@ -457,6 +457,25 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customAmountRows.isEmpty)
     }
 
+    func test_view_model_is_updated_when_custom_amount_is_edited() {
+        // Given
+        let newFeeName = "Test 2"
+        
+        // When
+        viewModel.addCustomAmountViewModel.name = "Test"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Check previous condition
+        XCTAssertEqual(viewModel.customAmountRows.count, 1)
+
+        viewModel.addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
+        viewModel.addCustomAmountViewModel.name = newFeeName
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(viewModel.customAmountRows.first?.name, newFeeName)
+    }
+
     func test_view_model_is_updated_when_address_updated() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

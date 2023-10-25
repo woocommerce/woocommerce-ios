@@ -4,6 +4,7 @@
 -----
 - [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
 - [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
+- [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
 
 15.9
 -----

@@ -33,6 +33,9 @@ struct ConfigurableBundleProductView: View {
 
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {
+                        guard viewModel.validate() else {
+                            return
+                        }
                         viewModel.configure()
                         presentation.wrappedValue.dismiss()
                     }

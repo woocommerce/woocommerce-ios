@@ -3,9 +3,7 @@ import Yosemite
 import WooFoundation
 
 struct AboutTapToPayView: View {
-    @ObservedObject var viewModel: AboutTapToPayViewModel = AboutTapToPayViewModel(
-        configuration: CardPresentConfigurationLoader().configuration,
-        buttonAction: nil)
+    @ObservedObject var viewModel: AboutTapToPayViewModel
     @State private var showingWebView: Bool = false
 
     var body: some View {
@@ -73,7 +71,9 @@ struct AboutTapToPayView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             AboutTapToPayView(viewModel: AboutTapToPayViewModel(
+                siteID: 123,
                 configuration: .init(country: .GB),
+                cardReaderSupportDeterminer: nil,
                 buttonAction: { }))
         }
     }
@@ -195,10 +195,11 @@ private extension AboutTapToPayContactlessLimitView {
 
 struct AboutTapToPayViewInNavigationView: View {
     @Environment(\.dismiss) var dismiss
+    let viewModel: AboutTapToPayViewModel = AboutTapToPayViewModel()
 
     var body: some View {
         NavigationView {
-            AboutTapToPayView()
+            AboutTapToPayView(viewModel: viewModel)
             .toolbar() {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.doneButton) {

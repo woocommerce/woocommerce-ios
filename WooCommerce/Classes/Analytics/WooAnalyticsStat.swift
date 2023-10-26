@@ -452,6 +452,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
     case orderDetailsGiftCardShown = "order_details_gift_card_shown"
 
+    // MARK: Custom amounts
+    case addCustomAmountDoneButtonTapped = "add_custom_amount_done_tapped"
+    case addCustomAmountNameAdded = "add_custom_amount_name_added"
+
     // MARK: Order Tax Educational Dialog
     //
     case taxEducationalDialogEditInAdminButtonTapped = "tax_educational_dialog_edit_in_admin_button_tapped"

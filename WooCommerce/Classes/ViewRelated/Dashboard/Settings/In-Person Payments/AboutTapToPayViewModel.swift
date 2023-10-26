@@ -22,10 +22,13 @@ class AboutTapToPayViewModel: ObservableObject {
 
     let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
+    let shouldAlwaysHideSetUpTapToPayButton: Bool
+
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase? = nil) {
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase? = nil,
+         shouldAlwaysHideSetUpTapToPayButton: Bool = false) {
         self.siteID = siteID
         self.configuration = configuration
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
@@ -38,6 +41,7 @@ class AboutTapToPayViewModel: ObservableObject {
             self.cardPresentPaymentsOnboardingUseCase.refresh()
         }
 
+        self.shouldAlwaysHideSetUpTapToPayButton = shouldAlwaysHideSetUpTapToPayButton
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
         self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
         refreshButtonVisibility()
@@ -48,6 +52,10 @@ class AboutTapToPayViewModel: ObservableObject {
     }
 
     private func refreshButtonVisibility() {
+        guard !shouldAlwaysHideSetUpTapToPayButton else {
+            return shouldShowButton = false
+        }
+
         Task { @MainActor in
             let hasTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
             shouldShowButton = !hasTapToPayUsage

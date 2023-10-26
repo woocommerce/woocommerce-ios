@@ -645,6 +645,7 @@ private extension ProductStore {
             "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
             "and the detected language as the locale identifier in `language` field.",
             "The output should be in valid JSON format.",
+            "The output should be in language \(language).",
             "Detect the language in the array and use the same language to write the name and description.",
             "Make the description 50-60 words or less.",
             "Use a 9th grade reading level.",

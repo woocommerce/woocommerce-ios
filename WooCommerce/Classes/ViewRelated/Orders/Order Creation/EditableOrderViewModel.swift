@@ -196,9 +196,8 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { amount, name in
-            // TODO: Send amount and name to view model
-            debugPrint("Adding custom amount of \(amount) with name \(name)")
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
+            self?.addFee(with: amount, name: name)
         })
     }()
 
@@ -211,6 +210,20 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var shouldDisallowDiscounts: Bool {
         orderHasCoupons
+    }
+
+    /// If both products and custom amounts lists are empty we don't split their sections
+    /// 
+    var shouldSplitProductsAndCustomAmountsSections: Bool {
+        productRows.isNotEmpty || customAmountRows.isNotEmpty
+    }
+
+    var shouldShowProductsSectionHeader: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isNotEmpty
+    }
+
+    var shouldShowAddProductsButton: Bool {
+        !shouldShowCustomAmountsWithProducts || productRows.isEmpty
     }
 
     /// Whether gift card is supported in order form.
@@ -272,6 +285,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// View models for each product row in the order.
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
+
+    /// View models for each custom amount in the order.
+    ///
+    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = []
 
     /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
@@ -351,7 +368,7 @@ final class EditableOrderViewModel: ObservableObject {
             return removeFee()
         }
 
-        addFee(formattedFeeLine)
+        setFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -432,6 +449,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomAmountRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
@@ -994,6 +1012,15 @@ extension EditableOrderViewModel {
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
         }
+
+        /// Indicates whether the Coupons informational tooltip button should be shown
+        /// The tooltip is rendered when an order has no coupons, but has product discounts.
+        /// Since both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
+        /// on `shouldShowCoupon` or `shouldShowDiscountTotal` alone for its visibility:
+        ///
+        var shouldRenderCouponsInfoTooltip: Bool {
+            !shouldShowCoupon && shouldShowDiscountTotal
+        }
     }
 
     /// Representation of order notes data display properties
@@ -1206,6 +1233,24 @@ private extension EditableOrderViewModel {
             }
             .assign(to: &$productRows)
         configureOrderWithinitialItemIfNeeded()
+    }
+
+    func configureCustomAmountRowViewModels() {
+        orderSynchronizer.orderPublisher
+            .map { $0.fees }
+            .removeDuplicates()
+            .map { [weak self] fees -> [CustomAmountRowViewModel] in
+                guard let self = self else { return [] }
+                return fees.compactMap { fee in
+                    guard !fee.isDeleted else { return nil }
+
+                    return CustomAmountRowViewModel(id: fee.feeID,
+                                             name: fee.name ?? Localization.customAmountDefaultName,
+                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                             onRemoveCustomAmount: { self.removeFee(fee) })
+                }
+            }
+            .assign(to: &$customAmountRows)
     }
 
     /// If given an initial product ID on initialization, updates the Order with the item
@@ -1759,10 +1804,19 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(_ formattedFeeLine: String) {
-        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
-        orderSynchronizer.setFee.send(feeLine)
+    func addFee(with total: String, name: String? = nil) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+        orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func setFee(_ formattedFeeLine: String) {
+        orderSynchronizer.setFee.send(OrderFactory.newOrderFee(total: formattedFeeLine))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func removeFee(_ fee: OrderFeeLine) {
+        orderSynchronizer.removeFee.send(fee)
     }
 
     func removeFee() {
@@ -2011,6 +2065,9 @@ private extension EditableOrderViewModel {
         static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
         static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
                                                                                     comment: "Message when the user disables adding tax rates automatically")
+        static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
+                                                               value: "Custom Amount",
+                                                               comment: "Default name when the custom amount does not have a name in order creation.")
 
 
         enum CouponSummary {

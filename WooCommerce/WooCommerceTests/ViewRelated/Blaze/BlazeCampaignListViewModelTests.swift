@@ -365,6 +365,24 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowIntroView)
     }
 
+    // MARK: `selectedCampaignURL`
+
+    func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
+        // Given
+        let testURL = "https://example.com"
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, siteURL: testURL)
+
+        // Confidence check
+        XCTAssertNil(viewModel.selectedCampaignURL)
+
+        // When
+        viewModel.didSelectCampaignDetails(campaign)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCampaignURL?.absoluteString, "https://wordpress.com/advertising/campaigns/123/example.com?source=campaign_list")
+    }
+
     // MARK: - Analytics
 
     func test_blazeEntryPointDisplayed_is_tracked_upon_view_appear() throws {
@@ -406,7 +424,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, analytics: analytics)
 
         // When
-        viewModel.didSelectCampaignDetails()
+        viewModel.didSelectCampaignDetails(.fake())
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))

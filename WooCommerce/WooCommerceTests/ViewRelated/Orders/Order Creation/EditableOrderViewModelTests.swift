@@ -431,6 +431,32 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(productRow?.canChangeQuantity, expectedProductRow.canChangeQuantity)
     }
 
+    func test_view_model_is_updated_when_custom_amount_is_added_to_order() {
+        // Given
+        let customAmountName = "Test"
+
+        // When
+        viewModel.addCustomAmountViewModel.name = customAmountName
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
+    }
+
+    func test_view_model_is_updated_when_custom_amount_is_removed_from_order() {
+        // When
+        viewModel.addCustomAmountViewModel.name = "Test"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Check previous condition
+        XCTAssertEqual(viewModel.customAmountRows.count, 1)
+
+        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+
+        // Then
+        XCTAssertTrue(viewModel.customAmountRows.isEmpty)
+    }
+
     func test_view_model_is_updated_when_address_updated() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
@@ -697,6 +723,30 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
+    }
+
+    func test_payment_when_custom_amount_is_added_then_section_is_updated() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings)
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.completeMultipleSelection()
+        viewModel.addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
+        XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
+        XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
@@ -2553,6 +2603,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.saveCouponLine(result: .added(newCode: "Some coupon"))
 
         XCTAssertTrue(viewModel.shouldDisallowDiscounts)
+    }
+
+    func test_PaymentDataViewModel_when_initialized_then_shouldRenderCouponsInfoTooltip_returns_false() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel()
+
+        // Then
+        XCTAssertFalse(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
+    }
+
+
+    func test_PaymentDataViewModel_when_order_should_show_coupons_then_shouldRenderCouponsInfoTooltip_returns_false() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(shouldShowCoupon: true)
+
+        // Then
+        XCTAssertFalse(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
+    }
+
+    func test_PaymentDataViewModel_when_order_should_show_discounts_then_shouldRenderCouponsInfoTooltip_returns_true() {
+        // Given, When
+        let paymentDataViewModel = EditableOrderViewModel.PaymentDataViewModel(shouldShowDiscountTotal: true)
+
+        // Then
+        XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
     }
 }
 

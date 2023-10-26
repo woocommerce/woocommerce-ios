@@ -47,12 +47,6 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
-        /// Tracked when the Blaze banner is dismissed.
-        static func blazeBannerDismissed(entryPoint: BlazeBanner.EntryPoint) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .blazeBannerDismissed,
-                              properties: [Key.source: entryPoint.blazeSource.analyticsValue])
-        }
-
         /// Tracked when the Blaze campaign list entry point is selected.
         static func blazeCampaignListEntryPointSelected(source: BlazeCampaignListSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeCampaignListEntryPointSelected,
@@ -102,14 +96,8 @@ private extension WooAnalyticsEvent.Blaze.Step {
 extension BlazeSource {
     var analyticsValue: String {
         switch self {
-        case .menu:
-            return "menu"
         case .productMoreMenu:
             return "product_more_menu"
-        case .productListBanner:
-            return "product_list_banner"
-        case .myStoreBanner:
-            return "my_store_banner"
         case .campaignList:
             return "campaign_list"
         case .myStoreSectionCreateCampaignButton:

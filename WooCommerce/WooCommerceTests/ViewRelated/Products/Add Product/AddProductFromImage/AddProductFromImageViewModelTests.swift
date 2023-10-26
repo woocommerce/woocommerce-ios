@@ -621,6 +621,75 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.regenerateButtonEnabled)
     }
+
+    // MARK: - Language identification request
+
+    func test_identify_language_request_is_sent_only_when_image_changes() {
+        // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = firstImage
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        var identifyLanguageRequestCounter = 0
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductDetails(_, _, _, _, completion):
+                completion(.success(.init(name: "Name", description: "Desc")))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     onAddImage: { _ in
+            imageToReturn
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(firstImage)
+        }
+
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        imageTextScanner.result = .success(["test"])
+        imageToReturn = secondImage
+
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
+
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 2)
+    }
 }
 
 private extension AddProductFromImageViewModelTests {

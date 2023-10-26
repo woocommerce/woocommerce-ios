@@ -192,28 +192,38 @@ private extension AddProductFromImageViewModel {
         guard scannedTexts.isNotEmpty else {
             return
         }
-        switch await generateProductDetails(from: scannedTexts) {
-            case .success(let details):
-                nameViewModel.onSuggestion(details.name)
-                descriptionViewModel.onSuggestion(details.description)
-                analytics.track(event: .AddProductFromImage.detailsGenerated(
-                    source: addProductSource,
-                    language: details.language,
-                    selectedTextCount: selectedScannedTexts.count
-                ))
-            case .failure(let error):
-                textGenerationErrorMessage = Localization.defaultError
+
+        do {
+            let language = try await identifyLanguage(from: scannedTexts)
+            let details = try await generateProductDetails(from: scannedTexts,
+                                                           language: language)
+            nameViewModel.onSuggestion(details.name)
+            descriptionViewModel.onSuggestion(details.description)
+            analytics.track(event: .AddProductFromImage.detailsGenerated(
+                source: addProductSource,
+                language: language,
+                selectedTextCount: selectedScannedTexts.count
+            ))
+        } catch {
+            if case let IdentifyLanguageError.failedToIdentifyLanguage(underlyingError: underlyingError) = error {
+                DDLogError("⛔️ Error identifying language: \(error)")
+                textGenerationErrorMessage = underlyingError.localizedDescription
+            } else {
                 DDLogError("⛔️ Error generating product details from scanned text: \(error)")
+                textGenerationErrorMessage = Localization.defaultError
                 analytics.track(event: .AddProductFromImage.detailGenerationFailed(source: addProductSource, error: error))
+            }
         }
     }
 
-    func generateProductDetails(from scannedTexts: [String]) async -> Result<ProductDetailsFromScannedTexts, Error> {
-        await withCheckedContinuation { continuation in
+    func generateProductDetails(from scannedTexts: [String],
+                                language: String) async throws -> ProductDetailsFromScannedTexts {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.generateProductDetails(siteID: siteID,
                                                                  productName: productName,
-                                                                 scannedTexts: scannedTexts) { result in
-                continuation.resume(returning: result)
+                                                                 scannedTexts: scannedTexts,
+                                                                 language: language) { result in
+                continuation.resume(with: result)
             })
         }
     }

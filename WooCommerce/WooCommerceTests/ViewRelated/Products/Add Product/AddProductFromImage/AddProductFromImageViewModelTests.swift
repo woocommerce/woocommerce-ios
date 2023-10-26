@@ -92,7 +92,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
-        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
                                                      productName: nil,
@@ -143,7 +143,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.textGenerationErrorMessage)
 
         // When regenerating product details with success
-        mockGenerateProductDetails(result: .success(.init(name: "", description: "", language: "")))
+        mockGenerateProductDetails(result: .success(.init(name: "", description: "")))
         viewModel.generateProductDetails()
 
         // Then `textGenerationErrorMessage` is reset
@@ -182,11 +182,15 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         })
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, _, scannedTexts, _) = action else {
+            switch action {
+            case let .generateProductDetails(_, _, scannedTexts, _, _):
+                // Then
+                XCTAssertEqual(scannedTexts, ["Product"])
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
                 return XCTFail("Unexpected action: \(action)")
             }
-            // Then
-            XCTAssertEqual(scannedTexts, ["Product"])
         }
 
         // When
@@ -207,8 +211,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         var imageToReturn: MediaPickerImage? = firstImage
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         mockGenerateProductDetails(result: .success(.init(name: "Name",
-                                                          description: "Desc",
-                                                          language: "en")))
+                                                          description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      productName: nil,
@@ -424,7 +427,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
-        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
                                                      productName: nil,

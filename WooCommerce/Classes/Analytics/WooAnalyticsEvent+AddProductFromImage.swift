@@ -43,6 +43,29 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductFromImageScanFailed, properties: [Key.source: source.analyticsValue], error: error)
         }
 
+        /// Tracked when AI identifies a language from scanned text of an image..
+        /// - Parameters:
+        ///   - source: Entry point to product creation.
+        ///   - language: Language detected in the text by AI.
+        ///
+        static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageSuccess,
+                              properties: [
+                                Key.source: Constants.productDetailsFromScannedTextsSource,
+                                Key.language: identifiedLanguage
+                              ])
+        }
+
+        /// Tracked when AI fails to identify a language from scanned text of an image..
+        /// - Parameters:
+        ///   - error: Detail of the failure.
+        ///
+        static func identifyLanguageFailed(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .identifyLanguageFailed,
+                              properties: [Key.source: Constants.productDetailsFromScannedTextsSource],
+                              error: error)
+        }
+
         /// Tracked when product details are generated from the scanned text of an image.
         /// - Parameters:
         ///   - source: Entry point to product creation.
@@ -87,5 +110,11 @@ extension WooAnalyticsEvent {
                 Key.hasGeneratedDetails: hasGeneratedDetails
             ])
         }
+    }
+}
+
+private extension WooAnalyticsEvent.AddProductFromImage {
+    enum Constants {
+        static let productDetailsFromScannedTextsSource = "product_details_from_scanned_texts"
     }
 }

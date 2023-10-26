@@ -78,7 +78,7 @@ final class AddProductFromImageViewModel: ObservableObject {
     private let imageTextScanner: ImageTextScannerProtocol
     private let analytics: Analytics
 
-    /// Language used in product identified by AI
+    /// Language used in the scanned texts
     ///
     private var languageIdentifiedUsingAI: String?
 

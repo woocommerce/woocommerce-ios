@@ -20,14 +20,24 @@ class AboutTapToPayViewModel: ObservableObject {
 
     let formattedMinimumOperatingSystemVersionForTapToPay: String
 
-    var cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
-         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil) {
+         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase? = nil) {
         self.siteID = siteID
         self.configuration = configuration
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
+
+        if let cardPresentPaymentsOnboardingUseCase {
+            self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
+        } else {
+            let onboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+            self.cardPresentPaymentsOnboardingUseCase = onboardingUseCase
+            self.cardPresentPaymentsOnboardingUseCase.refresh()
+        }
+
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
         self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
         refreshButtonVisibility()

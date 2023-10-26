@@ -207,7 +207,7 @@ private extension AboutTapToPayContactlessLimitView {
 
 struct AboutTapToPayViewInNavigationView: View {
     @Environment(\.dismiss) var dismiss
-    let viewModel: AboutTapToPayViewModel = AboutTapToPayViewModel()
+    let viewModel: AboutTapToPayViewModel
 
     var body: some View {
         NavigationView {

@@ -1107,7 +1107,8 @@ private extension ProductFormViewController {
         viewModel.checkIfBlazeIntroViewIsNeeded()
 
         if viewModel.shouldShowBlazeIntroView {
-            let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: {
+            let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: { [weak self] in
+                guard let self else { return }
                 self.dismiss(animated: true)
                 self.viewModel.updateShouldShowBlazeIntroView(to: false)
                 self.navigateToBlazeCampaignCreation(siteUrl: site.url)

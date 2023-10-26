@@ -227,14 +227,12 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         /// Initialize Blaze Campaign Results Controller
         ///
-        if let siteID = stores.sessionManager.defaultSite?.siteID {
-            let predicate = NSPredicate(format: "siteID == %lld", siteID)
-            blazeCampaignResultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
-                                                                                     matching: predicate,
-                                                                                     sortedBy: [])
-        } else {
-            blazeCampaignResultsController = nil
-        }
+        let siteID = product.siteID
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        blazeCampaignResultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                                 matching: predicate,
+                                                                                 sortedBy: [])
+
 
         self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
             guard let self = self else { return }

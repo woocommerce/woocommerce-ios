@@ -381,7 +381,9 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
             case .promoteWithBlaze:
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+                if !viewModel.shouldShowBlazeIntroView {
+                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+                }
                 displayBlaze()
             default:
                 break

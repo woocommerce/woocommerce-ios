@@ -174,6 +174,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Display the custom amount screen to edit it
+    ///
+    @Published var showEditCustomAmount: Bool = false
+
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
     var shouldStoreTaxRateInSelectorByDefault: Bool {
@@ -196,8 +200,12 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name in
-            self?.addFee(with: amount, name: name)
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name, feeID in
+            if let feeID = feeID {
+                self?.updateFee(with: feeID, total: amount, name: name)
+            } else {
+                self?.addFee(with: amount, name: name)
+            }
         })
     }()
 
@@ -1247,7 +1255,11 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                              name: fee.name ?? Localization.customAmountDefaultName,
                                              total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                             onRemoveCustomAmount: { self.removeFee(fee) })
+                                             onRemoveCustomAmount: { self.removeFee(fee) },
+                                             onEditCustomAmount: {
+                        self.addCustomAmountViewModel.preset(with: fee)
+                        self.showEditCustomAmount = true
+                    })
                 }
             }
             .assign(to: &$customAmountRows)
@@ -1808,6 +1820,15 @@ private extension EditableOrderViewModel {
         let feeLine = OrderFactory.newOrderFee(total: total, name: name)
         orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+    }
+
+    func updateFee(with id: Int64, total: String, name: String? = nil) {
+        guard let updatingFee = orderSynchronizer.order.fees.first(where: { $0.feeID == id }) else {
+            return
+        }
+
+        let updatedFee = updatingFee.copy(name: name, total: total)
+        orderSynchronizer.updateFee.send(updatedFee)
     }
 
     func setFee(_ formattedFeeLine: String) {

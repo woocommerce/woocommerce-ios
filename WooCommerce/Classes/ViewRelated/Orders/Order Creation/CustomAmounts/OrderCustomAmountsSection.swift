@@ -51,6 +51,9 @@ struct OrderCustomAmountsSection: View {
         .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
         })
+        .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+        })
     }
 }
 

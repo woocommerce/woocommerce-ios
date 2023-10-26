@@ -101,6 +101,10 @@ protocol OrderSynchronizer {
     /// 
     var removeFee: PassthroughSubject<OrderFeeLine, Never> { get }
 
+    /// Updates the fee with the given fee Id.
+    ///
+    var updateFee: PassthroughSubject<OrderFeeLine, Never> { get }
+
     /// Adds an order coupon.
     ///
     var addCoupon: PassthroughSubject<String, Never> { get }

@@ -26,7 +26,9 @@ struct CustomAmountRowView: View {
                     Text(viewModel.name)
                         .foregroundColor(Color(.wooCommercePurple(.shade60)))
                         .bodyStyle()
-                    Button {} label: {
+                    Button {
+                        viewModel.onEditCustomAmount()
+                    } label: {
                         Image(systemName: "pencil")
                             .resizable()
                             .padding(.top, Layout.editIconTopPadding)

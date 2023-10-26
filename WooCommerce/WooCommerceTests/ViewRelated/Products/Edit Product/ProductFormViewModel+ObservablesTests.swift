@@ -46,21 +46,19 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
         let mockProductImageUploader = MockProductImageUploader()
-        let viewModel = ProductFormViewModel(product: model,
-                                             formType: .edit,
-                                             productImageActionHandler: productImageActionHandler)
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
         var isBlazeEligibilityUpdated: Bool? = nil
         let expectationForBlazeEligibility = self.expectation(description: "blazeEligibilityUpdateSubject is called")
         expectationForBlazeEligibility.expectedFulfillmentCount = 1
 
-        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { _ in
+        // Action
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler)
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink {
             isBlazeEligibilityUpdated = true
             expectationForBlazeEligibility.fulfill()
         }
-
-        // Action
-        // Nothing, as this relates to `updateBlazeEligibility()` that is called during viewmodel init.
 
         // Assert
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

@@ -338,7 +338,9 @@ private extension OrderPaymentSection {
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addGiftCard = NSLocalizedString("Add Gift Card", comment: "Title text of the button that adds shipping line when creating a new order")
-        static let customAmountsTotal = NSLocalizedString("orderPaymentSection", value:"Custom Amounts", comment: "Label for the row showing the cost of fees in the order")
+        static let customAmountsTotal = NSLocalizedString("orderPaymentSection",
+                                                          value:"Custom amounts",
+                                                          comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title for the Coupon screen during order creation")

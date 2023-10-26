@@ -1108,6 +1108,7 @@ private extension ProductFormViewController {
                 guard let self else { return }
                 self.dismiss(animated: true)
                 self.navigateToBlazeCampaignCreation(siteUrl: site.url)
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
             }, onDismiss: { [weak self] in
                 guard let self = self else { return }
                 self.dismiss(animated: true)

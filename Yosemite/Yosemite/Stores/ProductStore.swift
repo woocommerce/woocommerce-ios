@@ -642,8 +642,7 @@ private extension ProductStore {
         }()
         let prompt = [
             "Write a name and description of a product for an online store given the keywords at the end.",
-            "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
-            "and the detected language as the locale identifier in `language` field.",
+            "Return only a JSON dictionary with the name in `name` field, description in `description` field.",
             "The output should be in valid JSON format.",
             "The output should be in language \(language).",
             "Detect the language in the array and use the same language to write the name and description.",
@@ -660,7 +659,7 @@ private extension ProductStore {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
-                completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+                completion(.success(.init(name: details.name, description: details.description)))
             } catch {
                 completion(.failure(error))
             }
@@ -1243,13 +1242,10 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
     public let name: String
     /// Product description.
     public let description: String
-    /// The language code detected for the product.
-    public let language: String
 
-    public init(name: String, description: String, language: String) {
+    public init(name: String, description: String) {
         self.name = name
         self.description = description
-        self.language = language
     }
 }
 

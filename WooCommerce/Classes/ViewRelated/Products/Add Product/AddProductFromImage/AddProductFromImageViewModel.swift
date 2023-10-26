@@ -159,6 +159,7 @@ private extension AddProductFromImageViewModel {
         // Reset scanned texts and generated content from previous image
         scannedTexts = []
         [nameViewModel, descriptionViewModel].forEach { $0.reset() }
+        languageIdentifiedUsingAI = nil
         textDetectionErrorMessage = nil
 
         Task { @MainActor in

@@ -1107,7 +1107,7 @@ private extension ProductFormViewController {
             let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: { [weak self] in
                 guard let self else { return }
                 self.dismiss(animated: true)
-                self.navigateToBlazeCampaignCreation(siteUrl: site.url)
+                navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
             }, onDismiss: { [weak self] in
                 guard let self = self else { return }
@@ -1119,12 +1119,12 @@ private extension ProductFormViewController {
             ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
 
         } else {
-            self.navigateToBlazeCampaignCreation(siteUrl: site.url)
+            navigateToBlazeCampaignCreation(siteUrl: site.url, source: .productDetailPromoteButton)
         }
     }
 
-    private func navigateToBlazeCampaignCreation(siteUrl: String) {
-        let blazeViewModel = BlazeWebViewModel(source: .productDetailPromoteButton, siteURL: siteUrl, productID: product.productID)
+    private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
+        let blazeViewModel = BlazeWebViewModel(source: source, siteURL: siteUrl, productID: product.productID)
         let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
     }

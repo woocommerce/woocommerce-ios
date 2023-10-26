@@ -1123,7 +1123,7 @@ private extension ProductFormViewController {
     }
 
     private func navigateToBlazeCampaignCreation(siteUrl: String) {
-        let blazeViewModel = BlazeWebViewModel(source: .productDetailPromoButton, siteURL: siteUrl, productID: product.productID)
+        let blazeViewModel = BlazeWebViewModel(source: .productDetailPromoteButton, siteURL: siteUrl, productID: product.productID)
         let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
     }

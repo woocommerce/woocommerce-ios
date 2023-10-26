@@ -200,7 +200,7 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var customAmountsRow: some View {
-        TitleAndValueRow(title: Localization.customAmountsTotal, value: .content(viewModel.feesTotal))
+        TitleAndValueRow(title: Localization.customAmountsTotal, value: .content(viewModel.customAmountsTotal))
             .renderedIf(viewModel.shouldShowTotalCustomAmounts)
     }
 

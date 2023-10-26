@@ -540,11 +540,18 @@ extension InPersonPaymentsMenuViewController {
         let viewModelsAndViews = SetUpTapToPayViewModelsOrderedList(siteID: siteID,
                                                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                                                     onboardingUseCase: cardPresentPaymentsOnboardingUseCase)
-        let setUpTapToPayViewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
-        let controller = WooNavigationController(rootViewController: setUpTapToPayViewController)
-        controller.navigationBar.isHidden = true
 
-        navigationController?.present(controller, animated: true)
+        /// OK, so it's strange to host a UIViewControllerRepresentable in a UIHostingController from a UIKit context.
+        /// Why not simply present the UIViewController directly?
+        /// It's so we can use NavigationView from this context and from the AboutTapToPayView, which also presents it.
+        /// With a mix of navigation controllers, there's loads of complexity getting the toolbar hiding to work properly.
+        /// We should probably make a SwiftUI version of the flow view at some point.
+        let hostingController = UIHostingController(
+            rootView: NavigationView {
+                PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModelsAndViews)
+                    .navigationBarHidden(true)
+            })
+        navigationController?.present(hostingController, animated: true)
     }
 
     func aboutTapToPayOnIPhoneWasPressed() {

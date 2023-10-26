@@ -22,7 +22,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     ///
     @Published var name = ""
     @Published private(set) var shouldDisableDoneButton: Bool = true
-    var feeID: Int64? = nil
+    private var feeID: Int64? = nil
 
     var customAmountPlaceholder: String {
         Localization.customAmountPlaceholder

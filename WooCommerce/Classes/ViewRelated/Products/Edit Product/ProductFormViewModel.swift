@@ -241,6 +241,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        configureResultsController()
         updateBlazeEligibility()
     }
 
@@ -724,6 +725,15 @@ private extension ProductFormViewModel {
             isEligibleForBlaze = isEligible
             updateActionsFactory()
             blazeEligiblityUpdateSubject.send()
+        }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        do {
+            try blazeCampaignResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 }

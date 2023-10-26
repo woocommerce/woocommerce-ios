@@ -722,7 +722,6 @@ private extension ProductFormViewModel {
         Task { @MainActor in
             let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
-            updateActionsFactory()
             blazeEligiblityUpdateSubject.send()
         }
     }

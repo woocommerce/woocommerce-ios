@@ -11,10 +11,6 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
 
-    /// Indicates if the fee line details screen should be shown or not.
-    ///
-    @State private var shouldShowFeeLineDetails: Bool = false
-
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
@@ -77,9 +73,6 @@ struct OrderPaymentSection: View {
                     ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
                 }
             customAmountsRow
-                .sheet(isPresented: $shouldShowFeeLineDetails) {
-                    FeeOrDiscountLineDetailsView(viewModel: viewModel.feeLineViewModel)
-                }
 
             VStack {
                 ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in

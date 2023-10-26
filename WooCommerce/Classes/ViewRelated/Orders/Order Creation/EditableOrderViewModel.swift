@@ -763,6 +763,10 @@ final class EditableOrderViewModel: ObservableObject {
     func onDismissAddCustomAmountView() {
         addCustomAmountViewModel.reset()
     }
+
+    func onAddCustomAmountButtonTapped() {
+        analytics.track(.orderCreationAddCustomAmountTapped)
+    }
 }
 
 // MARK: - Types
@@ -1210,12 +1214,16 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                              name: fee.name ?? Localization.customAmountDefaultName,
                                              total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                             onRemoveCustomAmount: { self.removeFee(fee) },
+                                             onRemoveCustomAmount: {
+                                                self.analytics.track(.orderCreationRemoveCustomAmountTapped)
+                                                self.removeFee(fee)
+                                             },
                                              onEditCustomAmount: {
-                        self.addCustomAmountViewModel.preset(with: fee)
-                        self.showEditCustomAmount = true
-                    })
-                }
+                                                self.analytics.track(.orderCreationEditCustomAmountTapped)
+                                                self.addCustomAmountViewModel.preset(with: fee)
+                                                self.showEditCustomAmount = true
+                                             })
+                    }
             }
             .assign(to: &$customAmountRows)
     }

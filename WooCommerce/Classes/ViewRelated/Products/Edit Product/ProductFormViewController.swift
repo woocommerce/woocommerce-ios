@@ -1112,7 +1112,8 @@ private extension ProductFormViewController {
                 self.dismiss(animated: true)
                 self.viewModel.updateShouldShowBlazeIntroView(to: false)
                 self.navigateToBlazeCampaignCreation(siteUrl: site.url)
-            }, onDismiss: {
+            }, onDismiss: { [weak self] in
+                guard let self = self else { return }
                 self.dismiss(animated: true)
                 self.viewModel.updateShouldShowBlazeIntroView(to: false)
             })

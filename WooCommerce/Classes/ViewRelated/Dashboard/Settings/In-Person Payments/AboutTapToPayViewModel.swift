@@ -5,7 +5,6 @@ import WooFoundation
 class AboutTapToPayViewModel: ObservableObject {
     let configuration: CardPresentPaymentsConfiguration
     private let cardReaderSupportDeterminer: CardReaderSupportDetermining
-    private let buttonAction: (() -> Void)?
 
     @Published var shouldShowContactlessLimit: Bool = false
     @Published var shouldShowButton: Bool = false
@@ -25,19 +24,13 @@ class AboutTapToPayViewModel: ObservableObject {
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
-         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         buttonAction: (() -> Void)? = nil) {
+         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil) {
         self.siteID = siteID
         self.configuration = configuration
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
-        self.buttonAction = buttonAction
-        shouldShowButton = buttonAction != nil
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
         self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
-    }
-
-    func callToActionTapped() {
-        buttonAction?()
+        refreshButtonVisibility()
     }
 
     func setUpFlowDismissed() {
@@ -47,7 +40,7 @@ class AboutTapToPayViewModel: ObservableObject {
     private func refreshButtonVisibility() {
         Task { @MainActor in
             let hasTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
-            shouldShowButton = !hasTapToPayUsage && buttonAction != nil
+            shouldShowButton = !hasTapToPayUsage
         }
     }
 }

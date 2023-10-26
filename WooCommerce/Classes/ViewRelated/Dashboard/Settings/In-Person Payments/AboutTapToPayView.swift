@@ -86,8 +86,7 @@ struct AboutTapToPayView_Previews: PreviewProvider {
             AboutTapToPayView(viewModel: AboutTapToPayViewModel(
                 siteID: 123,
                 configuration: .init(country: .GB),
-                cardReaderSupportDeterminer: nil,
-                buttonAction: { }))
+                cardReaderSupportDeterminer: nil))
         }
     }
 }

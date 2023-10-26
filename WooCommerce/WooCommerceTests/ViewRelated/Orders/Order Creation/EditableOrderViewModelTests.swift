@@ -728,7 +728,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.saveFeeLine("10")
 
         // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
@@ -738,7 +738,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.saveFeeLine(nil)
 
         // Then
-        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
@@ -762,7 +762,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addCustomAmountViewModel.doneButtonPressed()
 
         // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£10.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
@@ -853,7 +853,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         productSelectorViewModel.completeMultipleSelection()
 
         // Then
-        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "-£5.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
@@ -863,7 +863,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.saveFeeLine(nil)
 
         // Then
-        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowFees)
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.feesTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")

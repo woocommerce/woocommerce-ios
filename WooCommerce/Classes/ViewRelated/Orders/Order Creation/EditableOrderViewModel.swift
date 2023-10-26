@@ -871,7 +871,7 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
-        let shouldShowFees: Bool
+        let shouldShowTotalCustomAmounts: Bool
         let feesBaseAmountForPercentage: Decimal
         let feesTotal: String
 
@@ -922,7 +922,7 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
-             shouldShowFees: Bool = false,
+             shouldShowTotalCustomAmounts: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
              feesTotal: String = "0",
              feeLineTotal: String = "0",
@@ -960,7 +960,7 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.shouldShowFees = shouldShowFees
+            self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? "0.00"
             self.feeLineTotal = currencyFormatter.formatAmount(feeLineTotal) ?? "0.00"
@@ -987,7 +987,7 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
+            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowTotalCustomAmounts,
                                                                       baseAmountForPercentage: feesBaseAmountForPercentage,
                                                                       initialTotal: feeLineTotal,
                                                                       lineType: .fee,
@@ -1368,7 +1368,7 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
-                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
+                                            shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             feesTotal: orderTotals.feesTotal.stringValue,
                                             feeLineTotal: order.fees.first?.total ?? "0",

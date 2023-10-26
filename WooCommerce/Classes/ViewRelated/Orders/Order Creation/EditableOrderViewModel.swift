@@ -85,10 +85,6 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM6)
     }
 
-    var shouldShowCustomAmountsWithProducts: Bool {
-        featureFlagService.isFeatureFlagEnabled(.orderCustomAmountsM1)
-    }
-
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
@@ -227,11 +223,11 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var shouldShowProductsSectionHeader: Bool {
-        !shouldShowCustomAmountsWithProducts || productRows.isNotEmpty
+        productRows.isNotEmpty
     }
 
     var shouldShowAddProductsButton: Bool {
-        !shouldShowCustomAmountsWithProducts || productRows.isEmpty
+        productRows.isEmpty
     }
 
     /// Whether gift card is supported in order form.

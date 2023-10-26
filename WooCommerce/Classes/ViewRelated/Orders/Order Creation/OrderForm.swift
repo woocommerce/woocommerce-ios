@@ -131,17 +131,14 @@ struct OrderForm: View {
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
-                                Group {
-                                    Divider()
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                    Divider()
-                                }
-                                .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
-
-                                OrderCustomAmountsSection(viewModel: viewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Divider()
+                                Spacer(minLength: Layout.sectionSpacing)
+                                Divider()
                             }
-                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                            OrderCustomAmountsSection(viewModel: viewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
 
@@ -425,7 +422,7 @@ private struct ProductsSection: View {
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
                     .scaledToFit()
-                    .renderedIf(!viewModel.shouldShowNonEditableIndicators && viewModel.shouldShowCustomAmountsWithProducts)
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators)
                 }
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
 

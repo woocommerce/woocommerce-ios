@@ -5,6 +5,7 @@ import WooFoundation
 struct AboutTapToPayView: View {
     @ObservedObject var viewModel: AboutTapToPayViewModel
     @State private var showingWebView: Bool = false
+    @State private var showingSetUpFlow: Bool = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,7 +46,7 @@ struct AboutTapToPayView: View {
 
             VStack(alignment: .leading, spacing: Layout.spacing) {
                 Button(Localization.setUpTapToPayOnIPhoneButtonTitle) {
-                    viewModel.callToActionTapped()
+                    showingSetUpFlow = true
                 }
                 .buttonStyle(PrimaryButtonStyle())
 
@@ -57,6 +58,18 @@ struct AboutTapToPayView: View {
             .padding()
             .renderedIf(viewModel.shouldShowButton)
         }
+        .sheet(isPresented: $showingSetUpFlow,
+               onDismiss: viewModel.setUpFlowDismissed,
+               content: {
+            NavigationView {
+                PaymentSettingsFlowPresentingView(
+                    viewModelsAndViews: SetUpTapToPayViewModelsOrderedList(
+                        siteID: viewModel.siteID,
+                        configuration: viewModel.configuration,
+                        onboardingUseCase: viewModel.cardPresentPaymentsOnboardingUseCase))
+                .navigationBarHidden(true)
+            }
+        })
         .sheet(isPresented: $showingWebView) {
             WebViewSheet(viewModel: viewModel.webViewModel) {
                 showingWebView = false

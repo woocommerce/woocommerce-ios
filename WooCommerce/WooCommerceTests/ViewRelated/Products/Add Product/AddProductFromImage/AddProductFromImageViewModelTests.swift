@@ -548,12 +548,17 @@ final class AddProductFromImageViewModelTests: XCTestCase {
 }
 
 private extension AddProductFromImageViewModelTests {
-    func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>) {
+    func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>,
+                                    identifyLanguageResult: Result<String, Error> = .success("en")) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, _, _, completion) = action else {
+            switch action {
+            case let .generateProductDetails(_, _, _, _, completion):
+                completion(result)
+            case let .identifyLanguage(_, _, _, completion):
+                completion(identifyLanguageResult)
+            default:
                 return XCTFail("Unexpected action: \(action)")
             }
-            completion(result)
         }
     }
 }

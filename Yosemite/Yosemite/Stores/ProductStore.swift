@@ -130,8 +130,8 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductName(siteID, keywords, language, completion):
             generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
-        case let .generateProductDetails(siteID, productName, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
         case let .generateAIProduct(siteID,
@@ -632,6 +632,7 @@ private extension ProductStore {
     func generateProductDetails(siteID: Int64,
                                 productName: String?,
                                 scannedTexts: [String],
+                                language: String,
                                 completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {

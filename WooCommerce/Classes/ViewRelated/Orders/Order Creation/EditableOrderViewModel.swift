@@ -1090,14 +1090,14 @@ private extension EditableOrderViewModel {
 
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
-            if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
+            if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil }) {
                 productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
             }
         }
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
-            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
+            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID && $0.parent == nil }) {
                 productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
             }
         }
@@ -1726,11 +1726,11 @@ private extension EditableOrderViewModel {
 
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
-                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID && item.parent == nil }) {
                     selectedProductVariations.append(variation)
                 }
             } else {
-                if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                if let product = allProducts.first(where: { $0.productID == item.productID && item.parent == nil }) {
                     selectedProducts.append(product)
                 }
             }

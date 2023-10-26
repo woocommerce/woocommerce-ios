@@ -1,6 +1,5 @@
 import Combine
 import Photos
-import SwiftUI
 import UIKit
 import WordPressUI
 import Yosemite
@@ -1105,7 +1104,7 @@ private extension ProductFormViewController {
         }
 
         if viewModel.shouldShowBlazeIntroView {
-            let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: { [weak self] in
+            let blazeHostingController = BlazeCampaignIntroController(onStartCampaign: { [weak self] in
                 guard let self else { return }
                 self.dismiss(animated: true)
                 navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
@@ -1115,10 +1114,8 @@ private extension ProductFormViewController {
                 self.dismiss(animated: true)
             })
 
-            let hostingController = UIHostingController(rootView: blazeCampaignIntroView)
-            present(hostingController, animated: true)
+            present(blazeHostingController, animated: true)
             ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
-
         } else {
             navigateToBlazeCampaignCreation(siteUrl: site.url, source: .productDetailPromoteButton)
         }

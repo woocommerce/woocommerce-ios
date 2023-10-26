@@ -1116,8 +1116,6 @@ private extension ProductFormViewController {
             })
 
             let hostingController = UIHostingController(rootView: blazeCampaignIntroView)
-            hostingController.modalPresentationStyle = .pageSheet
-
             present(hostingController, animated: true)
         } else {
             self.navigateToBlazeCampaignCreation(siteUrl: site.url)

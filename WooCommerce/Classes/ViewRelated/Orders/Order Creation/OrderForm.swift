@@ -440,6 +440,9 @@ private struct ProductsSection: View {
                                             productRowViewModel: productRow,
                                             discountViewModel: productViewModel.discountDetailsViewModel)
                     })
+                    .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
+                        ConfigurableBundleProductView(viewModel: configurableProductViewModel)
+                    }
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)

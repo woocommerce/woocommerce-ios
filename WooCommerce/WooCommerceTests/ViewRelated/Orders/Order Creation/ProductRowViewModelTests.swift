@@ -421,25 +421,55 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         assertEqual("8 × -", viewModel.priceQuantityLine)
+    }
 
-        // MARK: - `isConfigurable`
+    // MARK: - `isConfigurable`
 
-        func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {
+    func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_bundle_product_with_empty_bundle_items() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle")
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_true_for_bundle_product_with_bundle_items() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+
+        // Then
+        XCTAssertTrue(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_non_bundle_product() {
+        let nonBundleProductTypes: [ProductType] = [.simple, .grouped, .affiliate, .variable, .subscription, .variableSubscription, .composite]
+
+        nonBundleProductTypes.forEach { nonBundleProductType in
             // Given
-            let product = Product.fake().copy(productTypeKey: "bundle")
-
-            // When
-            let viewModel = ProductRowViewModel(product: product,
-                                                canChangeQuantity: false,
-                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
-
-            // Then
-            XCTAssertFalse(viewModel.isConfigurable)
-        }
-
-        func test_isConfigurable_is_false_for_bundle_product_with_empty_bundle_items() {
-            // Given
-            let product = Product.fake().copy(productTypeKey: "bundle")
+            let product = Product.fake().copy(productTypeKey: nonBundleProductType.rawValue)
 
             // When
             let viewModel = ProductRowViewModel(product: product,
@@ -448,36 +478,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
             // Then
             XCTAssertFalse(viewModel.isConfigurable)
-        }
-
-        func test_isConfigurable_is_true_for_bundle_product_with_bundle_items() {
-            // Given
-            let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
-
-            // When
-            let viewModel = ProductRowViewModel(product: product,
-                                                canChangeQuantity: false,
-                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
-
-            // Then
-            XCTAssertTrue(viewModel.isConfigurable)
-        }
-
-        func test_isConfigurable_is_false_for_non_bundle_product() {
-            let nonBundleProductTypes: [ProductType] = [.simple, .grouped, .affiliate, .variable, .subscription, .variableSubscription, .composite]
-
-            nonBundleProductTypes.forEach { nonBundleProductType in
-                // Given
-                let product = Product.fake().copy(productTypeKey: nonBundleProductType.rawValue)
-
-                // When
-                let viewModel = ProductRowViewModel(product: product,
-                                                    canChangeQuantity: false,
-                                                    featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
-
-                // Then
-                XCTAssertFalse(viewModel.isConfigurable)
-            }
         }
     }
 }

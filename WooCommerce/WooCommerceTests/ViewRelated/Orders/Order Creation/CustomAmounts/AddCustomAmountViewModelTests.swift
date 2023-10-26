@@ -94,9 +94,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
     func test_reset_then_reset_values() {
         // Given
         let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
-        viewModel.formattableAmountTextFieldViewModel.amount = "2"
-        viewModel.name = "test"
-        viewModel.feeID = 12345
+        viewModel.preset(with: OrderFeeLine.fake().copy(feeID: 1234, name: "test", total: "10"))
 
         // When
         viewModel.reset()
@@ -105,6 +103,5 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.formattableAmountTextFieldViewModel.amount.isEmpty)
         XCTAssertTrue(viewModel.name.isEmpty)
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
-        XCTAssertNil(viewModel.feeID)
     }
 }

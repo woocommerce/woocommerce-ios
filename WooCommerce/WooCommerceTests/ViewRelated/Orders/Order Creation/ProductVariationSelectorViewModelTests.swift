@@ -68,7 +68,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled at start")
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariationsSubset(_, _, _, _, _, onCompletion):
                 XCTAssertTrue(viewModel.shouldShowScrollIndicator, "Scroll indicator is not enabled during sync")
                 onCompletion(.success(false))
             default:
@@ -89,7 +89,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariationsSubset(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 onCompletion(.success(false))
             default:
@@ -110,7 +110,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariationsSubset(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .firstPageSync)
                 self.insert(self.sampleProductVariation)
                 onCompletion(.success(false))
@@ -134,7 +134,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: product, storageManager: storageManager, stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariationsSubset(_, _, _, _, _, onCompletion):
                 XCTAssertEqual(viewModel.syncStatus, .results)
                 onCompletion(.success(false))
             default:
@@ -155,7 +155,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         var timesSynced = 0
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case .synchronizeProductVariations:
+            case .synchronizeProductVariationsSubset:
                 timesSynced += 1
             default:
                 XCTFail("Unsupported Action")
@@ -191,7 +191,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {
-            case let .synchronizeProductVariations(_, _, _, _, onCompletion):
+            case let .synchronizeProductVariationsSubset(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -270,6 +270,72 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         // Then
         let updatedRow = viewModel.productVariationRows.first(where: { $0.productOrVariationID == productVariation.productVariationID })
         XCTAssertEqual(updatedRow?.selectedState, .notSelected)
+    }
+
+    // MARK: allowed variation list support
+
+    func test_only_variations_in_allowedProductVariationIDs_are_included_in_productVariationRows() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let allVariationIDs: [Int64] = [2, 6, 12]
+        allVariationIDs.forEach { variationID in
+            insert(sampleProductVariation.copy(productVariationID: variationID))
+        }
+
+        // When
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          allowedProductVariationIDs: [2, 12],
+                                                          storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(Set(viewModel.productVariationRows.map { $0.productOrVariationID }), [2, 12])
+    }
+
+    func test_only_variations_in_allowedProductVariationIDs_are_synced() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let allowedVariationIDs: [Int64] = [2, 6, 12]
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          allowedProductVariationIDs: allowedVariationIDs,
+                                                          storageManager: storageManager)
+
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+                case let .synchronizeProductVariationsSubset(_, _, variationIDs, _, _, onCompletion):
+                    // Then:
+                    XCTAssertEqual(variationIDs, allowedVariationIDs)
+                    onCompletion(.success(false))
+                default:
+                    XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
+    }
+
+    func test_empty_variationIDs_are_synced_when_allowedProductVariationIDs_is_not_specified() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID,
+                                                          product: product,
+                                                          storageManager: storageManager)
+
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+                case let .synchronizeProductVariationsSubset(_, _, variationIDs, _, _, onCompletion):
+                    // Then:
+                    XCTAssertEqual(variationIDs, [])
+                    onCompletion(.success(false))
+                default:
+                    XCTFail("Unsupported Action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
     }
 }
 

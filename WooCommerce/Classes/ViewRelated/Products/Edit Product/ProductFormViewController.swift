@@ -321,14 +321,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
-                self?.displayBlaze()
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
-            }
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productMoreMenu))
-        }
-
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)

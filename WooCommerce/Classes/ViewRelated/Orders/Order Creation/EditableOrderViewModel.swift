@@ -1778,10 +1778,6 @@ private extension EditableOrderViewModel {
 
     func removeFee(_ fee: OrderFeeLine) {
         orderSynchronizer.removeFee.send(fee)
-    }
-
-    func removeFee() {
-        orderSynchronizer.setFee.send(nil)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 

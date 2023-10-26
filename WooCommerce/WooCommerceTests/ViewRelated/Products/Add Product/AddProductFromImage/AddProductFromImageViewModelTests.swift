@@ -494,6 +494,79 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         assertEqual("500", eventProperties["error_code"] as? String)
     }
 
+    func test_identify_language_success_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let sampleLanguage = "ta"
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")),
+                                   identifyLanguageResult: .success(sampleLanguage))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "ai_identify_language_success"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("product_details_from_scanned_texts", eventProperties["source"] as? String)
+        assertEqual(sampleLanguage, eventProperties["language"] as? String)
+    }
+
+    func test_identify_language_failure_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        let error = NSError(domain: "Server", code: 500)
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")),
+                                   identifyLanguageResult: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "ai_identify_language_failed"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("product_details_from_scanned_texts", eventProperties["source"] as? String)
+        assertEqual("Server", eventProperties["error_domain"] as? String)
+        assertEqual("500", eventProperties["error_code"] as? String)
+    }
+
     func test_trackContinueButtonTapped_tracks_correct_event_and_properties() throws {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6,

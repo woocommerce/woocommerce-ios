@@ -46,9 +46,6 @@ final class InPersonPaymentsMenuViewModel {
     @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
     @Published private(set) var titleForTapToPayOnIPhone: String = Localization.setUpTapToPayOnIPhoneRowTitle
 
-    // This doesn't need to be @Published right now, because it's only checked on tap.
-    private(set) var shouldShowSetUpTapToPayOnAboutScreen: Bool = true
-
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     init(dependencies: Dependencies = Dependencies(),
@@ -121,10 +118,8 @@ final class InPersonPaymentsMenuViewModel {
             switch firstTapToPayTransactionDate {
             case .none:
                 self.titleForTapToPayOnIPhone = Localization.setUpTapToPayOnIPhoneRowTitle
-                self.shouldShowSetUpTapToPayOnAboutScreen = true
             case .some:
                 self.titleForTapToPayOnIPhone = Localization.tryOutTapToPayOnIPhoneRowTitle
-                self.shouldShowSetUpTapToPayOnAboutScreen = false
             }
         }
     }

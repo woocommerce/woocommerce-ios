@@ -133,7 +133,7 @@ struct SetUpTapToPayInformationView: View {
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
-            AboutTapToPayViewInNavigationView()
+            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
         }
     }
 }

@@ -14,18 +14,57 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     private var productNameSubscription: AnyCancellable?
     private var updateEnabledSubscription: AnyCancellable?
     private var variationPriceSubscription: AnyCancellable?
+    private var blazeEligibilitySubscription: AnyCancellable?
 
 
     override func tearDown() {
-        [productSubscription, productNameSubscription, updateEnabledSubscription, variationPriceSubscription].forEach { cancellable in
+        let subscriptions = [
+            productSubscription,
+            productNameSubscription,
+            updateEnabledSubscription,
+            variationPriceSubscription,
+            blazeEligibilitySubscription
+        ]
+
+        subscriptions.forEach { cancellable in
             cancellable?.cancel()
         }
+
         productSubscription = nil
         productNameSubscription = nil
         updateEnabledSubscription = nil
         variationPriceSubscription = nil
+        blazeEligibilitySubscription = nil
 
         super.tearDown()
+    }
+
+
+    func test_when_viewmodel_is_created_then_blazeEligibilityObservable_is_updated() {
+        // Arrange
+        let product = Product.fake()
+        let model = EditableProductModel(product: product)
+        let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
+        let mockProductImageUploader = MockProductImageUploader()
+        let viewModel = ProductFormViewModel(product: model,
+                                             formType: .edit,
+                                             productImageActionHandler: productImageActionHandler)
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
+        var isBlazeEligibilityUpdated: Bool? = nil
+        let expectationForBlazeEligibility = self.expectation(description: "blazeEligibilityUpdateSubject is called")
+        expectationForBlazeEligibility.expectedFulfillmentCount = 1
+
+        blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { _ in
+            isBlazeEligibilityUpdated = true
+            expectationForBlazeEligibility.fulfill()
+        }
+
+        // Action
+        // Nothing, as this relates to `updateBlazeEligibility()` that is called during viewmodel init.
+
+        // Assert
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+        XCTAssertEqual(isBlazeEligibilityUpdated, true)
     }
 
     func testObservablesFromEditActionsOfTheSameData() {

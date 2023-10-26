@@ -205,12 +205,21 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: true,
-                       viewModel: rowViewModel)
+            HStack {
+                ProductRow(multipleSelectionsEnabled: true,
+                           viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
                 .onTapGesture {
-                    viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                    if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
+                        configure()
+                    } else {
+                        viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
+                    }
                 }
+
+                DisclosureIndicator()
+                    .renderedIf(rowViewModel.isConfigurable)
+            }
         }
     }
 }

@@ -191,6 +191,8 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onCloseButtonTapped: (() -> Void)?
 
+    private let onConfigureProductRow: ((_ product: Product) -> Void)?
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
@@ -204,7 +206,8 @@ final class ProductSelectorViewModel: ObservableObject {
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
-         onCloseButtonTapped: (() -> Void)? = nil) {
+         onCloseButtonTapped: (() -> Void)? = nil,
+         onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
@@ -218,6 +221,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
+        self.onConfigureProductRow = onConfigureProductRow
         tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
 
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
@@ -681,7 +685,11 @@ private extension ProductSelectorViewModel {
                     selectedState = .partiallySelected
                 }
             }
-            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+
+            let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
+                self?.onConfigureProductRow?(product)
+            }
+            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState, configure: configure)
         }
     }
 }

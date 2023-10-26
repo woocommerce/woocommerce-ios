@@ -43,10 +43,9 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .addProductFromImageScanFailed, properties: [Key.source: source.analyticsValue], error: error)
         }
 
-        /// Tracked when AI identifies a language from scanned text of an image..
+        /// Tracked when AI identifies a language from scanned text of an image.
         /// - Parameters:
-        ///   - source: Entry point to product creation.
-        ///   - language: Language detected in the text by AI.
+        ///   - identifiedLanguage: Language detected in the text by AI.
         ///
         static func identifiedLanguage(_ identifiedLanguage: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .identifyLanguageSuccess,
@@ -56,7 +55,7 @@ extension WooAnalyticsEvent {
                               ])
         }
 
-        /// Tracked when AI fails to identify a language from scanned text of an image..
+        /// Tracked when AI fails to identify a language from scanned text of an image.
         /// - Parameters:
         ///   - error: Detail of the failure.
         ///

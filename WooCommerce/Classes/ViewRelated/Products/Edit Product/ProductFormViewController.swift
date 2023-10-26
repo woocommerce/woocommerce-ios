@@ -732,8 +732,9 @@ private extension ProductFormViewController {
     /// 
     func observeUpdateBlazeEligibility() {
         blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
-            self?.updateFormTableContent()
-            if self?.viewModel.canPromoteWithBlaze() == true {
+            guard let self else { return }
+            self.updateFormTableContent()
+            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
                 ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
             }
         }

@@ -1774,6 +1774,7 @@ private extension EditableOrderViewModel {
 
         let updatedFee = updatingFee.copy(name: name, total: total)
         orderSynchronizer.updateFee.send(updatedFee)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow))
     }
 
     func removeFee(_ fee: OrderFeeLine) {

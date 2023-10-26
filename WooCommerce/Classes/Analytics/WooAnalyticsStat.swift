@@ -427,6 +427,7 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
+    case orderFeeUpdate = "order_fee_update"
     case orderFeeRemove = "order_fee_remove"
     case orderCouponAdd = "order_coupon_add"
     case orderCouponRemove = "order_coupon_remove"

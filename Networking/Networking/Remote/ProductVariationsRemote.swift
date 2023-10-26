@@ -7,6 +7,7 @@ import Foundation
 public protocol ProductVariationsRemoteProtocol {
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
+                                  variationIDs: [Int64],
                                   context: String?,
                                   pageNumber: Int,
                                   pageSize: Int,
@@ -42,6 +43,7 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote product variations.
     ///     - productID: Product for which we'll fetch remote product variations.
+    ///     - variationIDs: A list of variation IDs to fetch from the product. If the value is empty, all variations are returned.
     ///     - context: view or edit. Scope under which the request is made;
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
@@ -50,15 +52,20 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///
     public func loadAllProductVariations(for siteID: Int64,
                                          productID: Int64,
+                                         variationIDs: [Int64],
                                          context: String? = nil,
                                          pageNumber: Int = Default.pageNumber,
                                          pageSize: Int = Default.pageSize,
                                          completion: @escaping ([ProductVariation]?, Error?) -> Void) {
+        let stringOfVariationIDs = variationIDs.map { String($0) }
+            .joined(separator: ",")
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.contextKey: context ?? Default.context
+            ParameterKey.contextKey: context ?? Default.context,
+            ParameterKey.include: variationIDs.isEmpty ? nil: stringOfVariationIDs
         ]
+            .compactMapValues { $0 }
 
         let path = "\(Path.products)/\(productID)/variations"
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -278,5 +285,6 @@ public extension ProductVariationsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let image: String = "image"
+        static let include: String    = "include"
     }
 }

@@ -42,6 +42,13 @@ public final class ProductVariationStore: Store {
             synchronizeAllProductVariations(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .synchronizeProductVariations(let siteID, let productID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductVariationsSubset(let siteID, let productID, let variationIDs, let pageNumber, let pageSize, let onCompletion):
+            synchronizeProductVariations(siteID: siteID,
+                                         productID: productID,
+                                         variationIDs: variationIDs,
+                                         pageNumber: pageNumber,
+                                         pageSize: pageSize,
+                                         onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
         case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
@@ -87,12 +94,18 @@ private extension ProductVariationStore {
         }
     }
 
-    /// Synchronizes the product reviews associated with a given Site ID (if any!).
+    /// Synchronizes the product variations associated with a given Site ID, product ID, and an optional list of variation IDs.
     /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
     ///
-    func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProductVariations(siteID: Int64,
+                                      productID: Int64,
+                                      variationIDs: [Int64] = [],
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         remote.loadAllProductVariations(for: siteID,
                                         productID: productID,
+                                        variationIDs: variationIDs,
                                         context: nil,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize) { [weak self] (productVariations, error) in
@@ -351,7 +364,7 @@ private extension ProductVariationStore {
                                               pageNumber: Int,
                                               pageSize: Int,
                                               onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
+        synchronizeProductVariations(siteID: siteID, productID: productID, variationIDs: [], pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
             switch result {
             case .success(let hasMoreVariationsToFetch):
                 guard hasMoreVariationsToFetch else {

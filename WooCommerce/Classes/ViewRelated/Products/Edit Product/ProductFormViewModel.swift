@@ -46,7 +46,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     }
 
     /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
-    var shouldShowBlazeIntroView: Bool = false
+    var shouldShowBlazeIntroView: Bool {
+        blazeCampaignResultsController.isEmpty
+    }
 
     /// The form type could change from .add to .edit after creation.
     private(set) var formType: ProductFormType
@@ -708,20 +710,6 @@ private extension ProductFormViewModel {
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
-    }
-}
-
-// MARK: Blaze-related
-//
-extension ProductFormViewModel {
-    func checkIfBlazeIntroViewIsNeeded() {
-        if blazeCampaignResultsController.numberOfObjects == 0 {
-            shouldShowBlazeIntroView = true
-        }
-    }
-
-    func updateShouldShowBlazeIntroView(to newValue: Bool) {
-        shouldShowBlazeIntroView = newValue
     }
 }
 

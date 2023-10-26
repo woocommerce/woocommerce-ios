@@ -1104,18 +1104,15 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        viewModel.checkIfBlazeIntroViewIsNeeded()
 
         if viewModel.shouldShowBlazeIntroView {
             let blazeCampaignIntroView = BlazeCampaignIntroView(onStartCampaign: { [weak self] in
                 guard let self else { return }
                 self.dismiss(animated: true)
-                self.viewModel.updateShouldShowBlazeIntroView(to: false)
                 self.navigateToBlazeCampaignCreation(siteUrl: site.url)
             }, onDismiss: { [weak self] in
                 guard let self = self else { return }
                 self.dismiss(animated: true)
-                self.viewModel.updateShouldShowBlazeIntroView(to: false)
             })
 
             let hostingController = UIHostingController(rootView: blazeCampaignIntroView)

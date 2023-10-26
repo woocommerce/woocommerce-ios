@@ -47,7 +47,7 @@ final class SetUpTapToPayTryPaymentPromptViewController: UIHostingController<Set
 struct SetUpTapToPayPaymentPromptView: View {
     @ObservedObject var viewModel: SetUpTapToPayTryPaymentPromptViewModel
     @State var paymentFlowFinished: Bool = false
-    
+
     weak var rootViewController: UIViewController?
 
     @Environment(\.verticalSizeClass) var verticalSizeClass

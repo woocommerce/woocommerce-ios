@@ -1116,6 +1116,8 @@ private extension ProductFormViewController {
 
             let hostingController = UIHostingController(rootView: blazeCampaignIntroView)
             present(hostingController, animated: true)
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+
         } else {
             self.navigateToBlazeCampaignCreation(siteUrl: site.url)
         }

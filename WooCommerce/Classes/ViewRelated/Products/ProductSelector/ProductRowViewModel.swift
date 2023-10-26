@@ -125,7 +125,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// Formatted price label based on a product's price. Accounting for discounts, if any.
     /// e.g: If price is $5 and discount is $1, outputs "$4.00"
     ///
     var priceAfterDiscountLabel: String? {
@@ -138,6 +138,24 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+    }
+
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
+    ///
+    var totalPriceAfterDiscountLabel: String? {
+        guard let price = price else {
+            return nil
+        }
+        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
+            return nil
+        }
+        let quantityDecimal = NSDecimalNumber(decimal: quantity)
+        let subtotalDecimal = priceDecimal.multiplying(by: quantityDecimal)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount) ?? ""
+
     }
 
     /// Formatted price label based on a product's price and quantity.

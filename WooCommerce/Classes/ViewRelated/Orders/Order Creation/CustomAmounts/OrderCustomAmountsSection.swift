@@ -64,7 +64,7 @@ private extension OrderCustomAmountsSection {
         static let addCustomAmount = NSLocalizedString("Add Custom Amount",
                                                    comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let customAmounts = NSLocalizedString("orderForm.customAmounts",
-                                                     value: "Custom amounts",
+                                                     value: "Custom Amounts",
                                                      comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")
     }
 

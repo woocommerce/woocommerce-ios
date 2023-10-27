@@ -810,6 +810,7 @@
 		DE63114C2AEB643600587641 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63114B2AEB643600587641 /* MockURLProtocol.swift */; };
 		DE63114F2AEBA97600587641 /* SiteDiscoveryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63114E2AEBA97600587641 /* SiteDiscoveryUseCase.swift */; };
 		DE6311522AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6311512AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift */; };
+		DE6311542AEBAB0D00587641 /* MockSiteDiscoveryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6311532AEBAB0D00587641 /* MockSiteDiscoveryUseCase.swift */; };
 		DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */; };
 		DE66C5552976662700DAA978 /* just-in-time-message-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5542976662700DAA978 /* just-in-time-message-list-without-data.json */; };
 		DE66C5572976913C00DAA978 /* wcpay-charge-card-present-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */; };
@@ -1816,6 +1817,7 @@
 		DE63114B2AEB643600587641 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
 		DE63114E2AEBA97600587641 /* SiteDiscoveryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDiscoveryUseCase.swift; sourceTree = "<group>"; };
 		DE6311512AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDiscoveryUseCaseTests.swift; sourceTree = "<group>"; };
+		DE6311532AEBAB0D00587641 /* MockSiteDiscoveryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSiteDiscoveryUseCase.swift; sourceTree = "<group>"; };
 		DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieNonceAuthenticator.swift; sourceTree = "<group>"; };
 		DE66C5542976662700DAA978 /* just-in-time-message-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "just-in-time-message-list-without-data.json"; sourceTree = "<group>"; };
 		DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-charge-card-present-without-data.json"; sourceTree = "<group>"; };
@@ -3274,6 +3276,7 @@
 			isa = PBXGroup;
 			children = (
 				DE63114B2AEB643600587641 /* MockURLProtocol.swift */,
+				DE6311532AEBAB0D00587641 /* MockSiteDiscoveryUseCase.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -4435,6 +4438,7 @@
 				CC0786C9267BB32800BA9AC1 /* ShippingLabelStatusMapperTests.swift in Sources */,
 				B505F6D320BEE3A500BB1B69 /* AccountMapperTests.swift in Sources */,
 				CC9A254A26442D26005DE56E /* ShippingLabelCreationEligibilityMapperTests.swift in Sources */,
+				DE6311542AEBAB0D00587641 /* MockSiteDiscoveryUseCase.swift in Sources */,
 				5726F7342460A8F00031CAAC /* CopiableTests.swift in Sources */,
 				0313651D28AE625300EEE571 /* PaymentGatewayMapperTests.swift in Sources */,
 				26615479242DA54D00A31661 /* ProductCategoyListMapperTests.swift in Sources */,

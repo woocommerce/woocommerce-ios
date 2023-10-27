@@ -1,8 +1,13 @@
 import Foundation
 
+/// Interface for `SiteDiscoveryUseCase` for testability.
+public protocol SiteDiscoveryUseCaseProtocol {
+    func findRootAPIEndpoint(for siteURL: String) async throws -> String
+}
+
 /// Use case to support find root endpoint for a given WP site.
 ///
-public final class SiteDiscoveryUseCase {
+public final class SiteDiscoveryUseCase: SiteDiscoveryUseCaseProtocol {
     private let session: URLSession
 
     public init(session: URLSession = .shared) {

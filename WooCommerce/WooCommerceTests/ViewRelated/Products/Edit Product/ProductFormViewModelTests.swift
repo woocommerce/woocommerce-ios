@@ -741,4 +741,12 @@ private extension ProductFormViewModelTests {
                                     analytics: analytics,
                                     blazeEligibilityChecker: blazeEligibilityChecker)
     }
+
+    func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaign]) {
+        readOnlyCampaigns.forEach { campaign in
+            let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaign.self)
+            newCampaign.update(with: campaign)
+        }
+        storage.saveIfNeeded()
+    }
 }

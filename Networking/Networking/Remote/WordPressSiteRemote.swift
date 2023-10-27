@@ -1,8 +1,14 @@
 import Foundation
 
+/// Interface for `WordPressSiteRemote` for testability.
+///
+public protocol WordPressSiteRemoteProtocol {
+    func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite
+}
+
 /// Endpoints for WordPress site information.
 ///
-public final class WordPressSiteRemote: Remote {
+public final class WordPressSiteRemote: Remote, WordPressSiteRemoteProtocol {
 
     private let siteDiscoveryUseCase: SiteDiscoveryUseCaseProtocol
 

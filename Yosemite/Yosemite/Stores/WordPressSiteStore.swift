@@ -5,9 +5,9 @@ import Networking
 ///
 public final class WordPressSiteStore: DeauthenticatedStore {
     // Keeps a strong reference to remote to keep requests alive.
-    private let remote: WordPressSiteRemote
+    private let remote: WordPressSiteRemoteProtocol
 
-    public init(remote: WordPressSiteRemote, dispatcher: Dispatcher) {
+    public init(remote: WordPressSiteRemoteProtocol, dispatcher: Dispatcher) {
         self.remote = remote
         super.init(dispatcher: dispatcher)
     }

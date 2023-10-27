@@ -96,7 +96,7 @@ private extension LedgerTableViewCellTests {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
-        static let customAmountsLabel = NSLocalizedString("Custom amounts",
+        static let customAmountsLabel = NSLocalizedString("Custom Amounts",
                                                      comment: "Custom amounts label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")

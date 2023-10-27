@@ -14,8 +14,8 @@ public final class WordPressSiteRemote: Remote {
     /// Fetches information for a given site URL by hitting its root API endpoint.
     ///
     public func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite {
-        let path = Path.root
-        guard let url = URL(string: siteURL + path) else {
+        let rootEndpoint = try await findRootAPIEndpoint(for: siteURL)
+        guard let url = URL(string: rootEndpoint) else {
             throw NetworkError.invalidURL
         }
         let request = try URLRequest(url: url, method: .get)
@@ -32,16 +32,24 @@ public final class WordPressSiteRemote: Remote {
         }
         let discoveryRequest = try URLRequest(url: url, method: .head)
         let (_, response) = try await session.data(for: discoveryRequest)
+
+        // gets headers from the response
         let headers = (response as? HTTPURLResponse)?.allHeaderFields
         let rootLinkHeader = headers?.first(where: { header in
             (header.key as? String) == LinkHeader.title &&
             (header.value as? String)?.contains(LinkHeader.rel) == true
         })
+
+        // gets the root link from the header
         let rootLink = (rootLinkHeader?.value as? String)?
             .components(separatedBy: LinkHeader.separator)
             .first?
             .trimmingCharacters(in: .init(charactersIn: "<>"))
-        return rootLink ?? String([siteURL, Path.root].joined(separator: "/"))
+
+        let defaultURL = [siteURL.trimSlashes(), Path.root]
+            .joined(separator: "/")
+
+        return rootLink ?? defaultURL
     }
 }
 

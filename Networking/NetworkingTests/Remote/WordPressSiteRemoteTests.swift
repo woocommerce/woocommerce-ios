@@ -18,7 +18,9 @@ final class WordPressSiteRemoteTests: XCTestCase {
     /// Verifies that fetchSiteInfo properly parses the sample response.
     ///
     func test_fetchSiteInfo_properly_returns_site() async throws {
-        let remote = WordPressSiteRemote(network: network)
+        // Given
+        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
+        let remote = WordPressSiteRemote(network: network, session: session)
         network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
 
         // When
@@ -31,7 +33,9 @@ final class WordPressSiteRemoteTests: XCTestCase {
     /// Verifies that fetchSiteInfo properly relays Networking Layer errors.
     ///
     func test_fetchSiteInfo_properly_relays_networking_errors() async {
-        let remote = WordPressSiteRemote(network: network)
+        // Given
+        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
+        let remote = WordPressSiteRemote(network: network, session: session)
         network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
 
         // When

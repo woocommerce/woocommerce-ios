@@ -30,11 +30,15 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Nil if the product is not a variable product.
     private let variableProductSettings: VariableProductSettings?
 
-    init(bundleItem: ProductBundleItem, product: Product, variableProductSettings: VariableProductSettings?) {
+    init(bundleItem: ProductBundleItem, product: Product, variableProductSettings: VariableProductSettings?, existingOrderItem: OrderItem?) {
         bundledItemID = bundleItem.bundledItemID
         self.product = product
         isOptional = bundleItem.isOptional
-        quantity = bundleItem.defaultQuantity
+        if isOptional {
+            isOptionalAndSelected = existingOrderItem != nil
+        }
+        let quantity = existingOrderItem?.quantity ?? bundleItem.defaultQuantity
+        self.quantity = quantity
         self.variableProductSettings = variableProductSettings
         isVariable = product.productType == .variable
         productRowViewModel = .init(productOrVariationID: bundleItem.productID,
@@ -44,10 +48,11 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     stockStatusKey: "",
                                     stockQuantity: nil,
                                     manageStock: false,
-                                    // TODO: 10428 - set to the latest quantity if the bundle item exists in the bundle product item
-                                    quantity: bundleItem.defaultQuantity,
+                                    quantity: quantity,
+                                    minimumQuantity: bundleItem.minQuantity,
+                                    maximumQuantity: bundleItem.maxQuantity,
                                     canChangeQuantity: true,
-                                    imageURL: nil,
+                                    imageURL: product.imageURL,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity

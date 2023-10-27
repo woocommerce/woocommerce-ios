@@ -78,7 +78,7 @@ struct ConfigurableBundleProductView_Previews: PreviewProvider {
             .copy(bundledItems: [
                 .swiftUIPreviewSample()
             ])
-        return ConfigurableBundleProductView(viewModel: .init(product: product, onConfigure: { _ in }))
+        return ConfigurableBundleProductView(viewModel: .init(product: product, childItems: [], onConfigure: { _ in }))
     }
 }
 

@@ -576,7 +576,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem, childItems: [OrderItem] = [], canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
             return nil
@@ -618,7 +618,9 @@ final class EditableOrderViewModel: ObservableObject {
                 guard let self else { return }
                 switch product.productType {
                     case .bundle:
-                        self.configurableProductViewModel = .init(product: product, onConfigure: { [weak self] configuration in
+                        self.configurableProductViewModel = .init(product: product,
+                                                                  childItems: childItems,
+                                                                  onConfigure: { [weak self] configuration in
                             guard let self else { return }
                             self.addBundleConfigurationToOrderItem(item: item, bundleConfiguration: configuration)
                         })
@@ -1640,7 +1642,7 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
+              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: [], canChangeQuantity: false) else {
             return nil
         }
 
@@ -1691,7 +1693,8 @@ private extension EditableOrderViewModel {
     ///
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, canChangeQuantity: true) else {
+            let childItems = items.filter { $0.parent == item.itemID }
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
                 return nil
             }
 

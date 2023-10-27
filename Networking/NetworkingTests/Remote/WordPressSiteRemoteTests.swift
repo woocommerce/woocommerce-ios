@@ -9,18 +9,22 @@ final class WordPressSiteRemoteTests: XCTestCase {
 
     let sampleSiteURL = "https://example.com"
 
+    let siteDiscoveryUseCase = MockSiteDiscoveryUseCase()
+
     /// Repeat always!
     ///
     override func setUp() {
         network.removeAllSimulatedResponses()
+        let rootEndpoint = sampleSiteURL + "/" + "wp-json/"
+        siteDiscoveryUseCase.mockRootAPIEndpoint(with: rootEndpoint)
     }
 
     /// Verifies that fetchSiteInfo properly parses the sample response.
     ///
     func test_fetchSiteInfo_properly_returns_site() async throws {
         // Given
-        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
-        let remote = WordPressSiteRemote(network: network, session: session)
+        let remote = WordPressSiteRemote(network: network,
+                                         siteDiscoveryUseCase: siteDiscoveryUseCase)
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
 
         // When
@@ -34,8 +38,8 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSiteInfo_properly_relays_networking_errors() async {
         // Given
-        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
-        let remote = WordPressSiteRemote(network: network, session: session)
+        let remote = WordPressSiteRemote(network: network,
+                                         siteDiscoveryUseCase: siteDiscoveryUseCase)
         network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound)
 
         // When
@@ -49,54 +53,5 @@ final class WordPressSiteRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(fetchError)
         XCTAssertTrue(fetchError is NetworkError)
-    }
-
-    func test_findRootAPIEndpoint_returns_correct_link_for_root_endpoint() async throws {
-        // Given
-        let headers = ["Link": "<https://example.com/?rest_route=/>; rel=\"https://api.w.org/\""]
-        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: headers)
-        let remote = WordPressSiteRemote(network: network, session: session)
-
-        // When
-        let rootEndpoint = try await remote.findRootAPIEndpoint(for: sampleSiteURL)
-
-        // Then
-        XCTAssertEqual(rootEndpoint, "https://example.com/?rest_route=/")
-    }
-
-    func test_findRootAPIEndpoint_returns_default_value_if_no_headers_found() async throws {
-        // Given
-        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
-        let remote = WordPressSiteRemote(network: network, session: session)
-
-        // When
-        let rootEndpoint = try await remote.findRootAPIEndpoint(for: sampleSiteURL)
-
-        // Then
-        XCTAssertEqual(rootEndpoint, "https://example.com/wp-json/")
-    }
-}
-
-private extension WordPressSiteRemoteTests {
-    func mockRootAPIEndpoint(siteAddress: String,
-                             headerFields: [String: String]) -> URLSession {
-        let configuration = URLSessionConfiguration.default
-        configuration.protocolClasses = [MockURLProtocol.self]
-        let urlSession = URLSession.init(configuration: configuration)
-        MockURLProtocol.requestHandler = { request in
-            guard let url = request.url, url.absoluteString == siteAddress else {
-                throw NetworkError.notFound
-            }
-
-            guard let url = URL(string: siteAddress) else {
-                throw NetworkError.invalidURL
-            }
-
-            guard let response = HTTPURLResponse(url: url, statusCode: 200, httpVersion: nil, headerFields: headerFields) else {
-                throw NetworkError.unacceptableStatusCode(statusCode: 500)
-            }
-            return (response, nil)
-        }
-        return urlSession
     }
 }

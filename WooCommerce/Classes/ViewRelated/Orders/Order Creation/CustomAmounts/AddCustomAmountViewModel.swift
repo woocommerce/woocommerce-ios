@@ -9,11 +9,14 @@ typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int6
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
     private let onCustomAmountEntered: CustomAmountEntered
+    private let analytics: Analytics
 
     init(locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        self.analytics = analytics
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
     }
@@ -34,6 +37,12 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     func doneButtonPressed() {
+        if name.isNotEmpty {
+            analytics.track(.addCustomAmountNameAdded)
+        }
+
+        analytics.track(.addCustomAmountDoneButtonTapped)
+
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
         onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
     }

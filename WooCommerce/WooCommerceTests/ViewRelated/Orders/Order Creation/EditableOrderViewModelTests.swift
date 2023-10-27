@@ -443,6 +443,30 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
     }
 
+    func test_onAddCustomAmountButtonTapped_then_it_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.onAddCustomAmountButtonTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderCreationAddCustomAmountTapped.rawValue)
+    }
+
+    func test_addCustomAmountViewModel_doneButtonPressed_then_it_tracks_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderFeeAdd.rawValue)
+    }
+
     func test_view_model_is_updated_when_custom_amount_is_removed_from_order() {
         // When
         viewModel.addCustomAmountViewModel.name = "Test"
@@ -455,6 +479,21 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.customAmountRows.isEmpty)
+    }
+
+    func test_customAmountRows_onRemoveCustomAmount_then_it_tracks_events() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // When
+        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+
+        // Then
+        XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderFeeRemove.rawValue }))
+        XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderCreationRemoveCustomAmountTapped.rawValue }))
     }
 
     func test_view_model_is_updated_when_custom_amount_is_edited() {
@@ -474,6 +513,28 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.customAmountRows.first?.name, newFeeName)
+    }
+
+    func test_customAmountRows_onEditCustomAmount_then_it_tracks_events() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.addCustomAmountViewModel.name = "Test"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Check previous condition
+        XCTAssertEqual(viewModel.customAmountRows.count, 1)
+
+        viewModel.addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
+        viewModel.customAmountRows.first?.onEditCustomAmount()
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderFeeUpdate.rawValue }))
+        XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderCreationEditCustomAmountTapped.rawValue }))
     }
 
     func test_view_model_is_updated_when_address_updated() {

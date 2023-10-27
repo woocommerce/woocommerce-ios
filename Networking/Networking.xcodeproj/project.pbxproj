@@ -2308,7 +2308,6 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				DE63114A2AEB642100587641 /* Mocks */,
 				DE66C5512976507100DAA978 /* CookieNonce */,
 				EE54C899294777D000A9BF61 /* ApplicationPassword */,
 				B5A0369F214C0F4C00774E2C /* Internal */,
@@ -2330,6 +2329,7 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
+				DE63114A2AEB642100587641 /* Mocks */,
 				EE8DE430294B17BA005054E7 /* ApplicationPassword */,
 				DE97C3902861B8CD0042E973 /* Encoder */,
 				5726F7322460A8E30031CAAC /* Copiable */,

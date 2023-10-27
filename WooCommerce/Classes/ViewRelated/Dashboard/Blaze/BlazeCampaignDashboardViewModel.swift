@@ -235,7 +235,7 @@ private extension BlazeCampaignDashboardViewModel {
             .removeDuplicates()
             .filter { $0 == true }
             .sink { [weak self] _ in
-                self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSectionCreateCampaignButton))
+                self?.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .myStoreSection))
             }
     }
 }

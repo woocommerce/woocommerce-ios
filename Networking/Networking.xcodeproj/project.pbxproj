@@ -808,6 +808,8 @@
 		DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */; };
 		DE5CA111288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */; };
 		DE63114C2AEB643600587641 /* MockURLProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63114B2AEB643600587641 /* MockURLProtocol.swift */; };
+		DE63114F2AEBA97600587641 /* SiteDiscoveryUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63114E2AEBA97600587641 /* SiteDiscoveryUseCase.swift */; };
+		DE6311522AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6311512AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift */; };
 		DE66C5532976508300DAA978 /* CookieNonceAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */; };
 		DE66C5552976662700DAA978 /* just-in-time-message-list-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5542976662700DAA978 /* just-in-time-message-list-without-data.json */; };
 		DE66C5572976913C00DAA978 /* wcpay-charge-card-present-without-data.json in Resources */ = {isa = PBXBuildFile; fileRef = DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */; };
@@ -1812,6 +1814,8 @@
 		DE50296428C60A8000551736 /* JetpackUserMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackUserMapperTests.swift; sourceTree = "<group>"; };
 		DE5CA110288A3E080077BEF9 /* product-malformed-variations-and-image-alt.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-malformed-variations-and-image-alt.json"; sourceTree = "<group>"; };
 		DE63114B2AEB643600587641 /* MockURLProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockURLProtocol.swift; sourceTree = "<group>"; };
+		DE63114E2AEBA97600587641 /* SiteDiscoveryUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDiscoveryUseCase.swift; sourceTree = "<group>"; };
+		DE6311512AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteDiscoveryUseCaseTests.swift; sourceTree = "<group>"; };
 		DE66C5522976508300DAA978 /* CookieNonceAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieNonceAuthenticator.swift; sourceTree = "<group>"; };
 		DE66C5542976662700DAA978 /* just-in-time-message-list-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "just-in-time-message-list-without-data.json"; sourceTree = "<group>"; };
 		DE66C5562976913C00DAA978 /* wcpay-charge-card-present-without-data.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "wcpay-charge-card-present-without-data.json"; sourceTree = "<group>"; };
@@ -2308,6 +2312,7 @@
 		B557D9E5209753AA005962F4 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
+				DE63114D2AEBA96300587641 /* Helpers */,
 				DE66C5512976507100DAA978 /* CookieNonce */,
 				EE54C899294777D000A9BF61 /* ApplicationPassword */,
 				B5A0369F214C0F4C00774E2C /* Internal */,
@@ -2329,6 +2334,7 @@
 		B557D9F0209753AA005962F4 /* NetworkingTests */ = {
 			isa = PBXGroup;
 			children = (
+				DE6311502AEBAA4700587641 /* Helpers */,
 				DE63114A2AEB642100587641 /* Mocks */,
 				EE8DE430294B17BA005054E7 /* ApplicationPassword */,
 				DE97C3902861B8CD0042E973 /* Encoder */,
@@ -3270,6 +3276,22 @@
 				DE63114B2AEB643600587641 /* MockURLProtocol.swift */,
 			);
 			path = Mocks;
+			sourceTree = "<group>";
+		};
+		DE63114D2AEBA96300587641 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DE63114E2AEBA97600587641 /* SiteDiscoveryUseCase.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		DE6311502AEBAA4700587641 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				DE6311512AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		DE66C5512976507100DAA978 /* CookieNonce */ = {
@@ -4334,6 +4356,7 @@
 				45150A9E26836A57006922EA /* CountryListMapper.swift in Sources */,
 				DE34051928BDEE6A00CF0D97 /* JetpackConnectionURLMapper.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
+				DE63114F2AEBA97600587641 /* SiteDiscoveryUseCase.swift in Sources */,
 				077F39D426A58DE700ABEADC /* SystemStatusMapper.swift in Sources */,
 				45152811257A81730076B03C /* ProductAttributeMapper.swift in Sources */,
 				CE865A9D2A41E1480049B03C /* EntityDateModifiedMapper.swift in Sources */,
@@ -4435,6 +4458,7 @@
 				03DCB7442624AD9B00C8953D /* CouponListMapperTests.swift in Sources */,
 				AE2D6623272A8F6E004A2C3A /* TelemetryRemoteTests.swift in Sources */,
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
+				DE6311522AEBAA7700587641 /* SiteDiscoveryUseCaseTests.swift in Sources */,
 				EE57C146297FCCD200BC31E7 /* ProductShippingClassListMapperTests.swift in Sources */,
 				026CF622237D7E61009563D4 /* ProductVariationsRemoteTests.swift in Sources */,
 				DEC51A99274DDDC9009F3DF4 /* SitePluginMapperTests.swift in Sources */,

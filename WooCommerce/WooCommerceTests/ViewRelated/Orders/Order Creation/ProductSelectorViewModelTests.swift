@@ -1,3 +1,4 @@
+import TestKit
 import XCTest
 import Yosemite
 @testable import WooCommerce
@@ -1312,13 +1313,52 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
         XCTAssertEqual(viewModel.productRows.first?.productOrVariationID, simpleProduct.productID)
     }
+
+    func test_bundle_product_row_is_not_configurable_when_onConfigureProductRow_is_nil() async throws {
+        // Given
+        let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, onConfigureProductRow: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        let productRow = try XCTUnwrap(viewModel.productRows.first)
+        XCTAssertFalse(productRow.isConfigurable)
+    }
+
+    func test_bundle_product_row_is_configurable_and_invokes_onConfigureProductRow_on_row_configure() async throws {
+        // Given
+        let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
+
+        // When
+        let productToConfigure: Yosemite.Product = try waitFor { promise in
+            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
+                                                     storageManager: self.storageManager,
+                                                     stores: self.stores,
+                                                     onConfigureProductRow: { product in
+                promise(product)
+            })
+
+            // Then bundle product row is configurable
+            XCTAssertEqual(viewModel.productRows.count, 1)
+            let productRow = try XCTUnwrap(viewModel.productRows.first)
+            XCTAssertTrue(productRow.isConfigurable)
+            productRow.configure?()
+        }
+
+        // Then
+        assertEqual(bundleProduct, productToConfigure)
+    }
 }
 
 // MARK: - Utils
 private extension ProductSelectorViewModelTests {
-    func insert(_ readOnlyProduct: Yosemite.Product) {
+    @discardableResult
+    func insert(_ readOnlyProduct: Yosemite.Product) -> StorageProduct {
         let product = storage.insertNewObject(ofType: StorageProduct.self)
         product.update(with: readOnlyProduct)
+        return product
     }
 
     func insert(_ readOnlyProducts: [Yosemite.Product]) {
@@ -1338,6 +1378,27 @@ private extension ProductSelectorViewModelTests {
         if let storedProduct = storage.loadProduct(siteID: readOnlyProduct.siteID, productID: readOnlyProduct.productID) {
             searchResult.addToProducts(storedProduct)
         }
+    }
+
+    func insert(_ readOnlyProductBundleItem: Yosemite.ProductBundleItem, for product: StorageProduct) {
+        let bundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+        bundleItem.update(with: readOnlyProductBundleItem)
+        bundleItem.product = product
+    }
+
+    func createAndInsertBundleProduct(bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
+        let bundleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: 1,
+                                                productTypeKey: ProductType.bundle.rawValue,
+                                                purchasable: true,
+                                                bundledItems: bundleItems)
+        let storageProduct = insert(bundleProduct)
+
+        bundleItems.forEach { bundleItem in
+            insert(bundleItem, for: storageProduct)
+        }
+
+        return bundleProduct
     }
 }
 

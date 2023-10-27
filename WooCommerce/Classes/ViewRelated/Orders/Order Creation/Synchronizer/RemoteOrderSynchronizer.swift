@@ -39,8 +39,6 @@ final class RemoteOrderSynchronizer: OrderSynchronizer {
 
     var setShipping =  PassthroughSubject<ShippingLine?, Never>()
 
-    var setFee = PassthroughSubject<OrderFeeLine?, Never>()
-
     var addFee = PassthroughSubject<OrderFeeLine, Never>()
 
     var removeFee = PassthroughSubject<OrderFeeLine, Never>()
@@ -240,19 +238,6 @@ private extension RemoteOrderSynchronizer {
             .map { [weak self] feeLineInput, order -> Order in
                 guard let self = self else { return order }
                 let updatedOrder = FeesInputTransformer.remove(input: feeLineInput, from: order)
-                // Calculate order total locally while order is being synced
-                return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
-            }
-            .sink { [weak self] order in
-                self?.order = order
-                self?.orderSyncTrigger.send(order)
-            }
-            .store(in: &subscriptions)
-
-        setFee.withLatestFrom(orderPublisher)
-            .map { [weak self] feeLineInput, order -> Order in
-                guard let self = self else { return order }
-                let updatedOrder = FeesInputTransformer.setFee(input: feeLineInput, on: order)
                 // Calculate order total locally while order is being synced
                 return OrderTotalsCalculator(for: updatedOrder, using: self.currencyFormatter).updateOrderTotal()
             }

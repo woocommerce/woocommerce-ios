@@ -81,7 +81,7 @@ struct CollapsibleProductRowCard: View {
             HStack {
                 Text(Localization.priceAfterDiscountLabel)
                 Spacer()
-                Text(viewModel.priceAfterDiscountLabel ?? "")
+                Text(viewModel.totalPriceAfterDiscountLabel ?? "")
             }
             .padding(.top)
             .renderedIf(viewModel.hasDiscount)

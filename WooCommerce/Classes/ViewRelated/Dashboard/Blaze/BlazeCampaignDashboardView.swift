@@ -21,7 +21,7 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
         }
 
         rootView.createCampaignTapped = { [weak self] in
-            self?.navigateToCampaignCreation(source: .myStoreSectionCreateCampaignButton)
+            self?.navigateToCampaignCreation(source: .myStoreSection)
         }
 
         rootView.startCampaignFromIntroTapped = { [weak self] productID in

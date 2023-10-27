@@ -83,6 +83,7 @@ final class MockProductVariationsRemote {
 extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
     func loadAllProductVariations(for siteID: Int64,
                                   productID: Int64,
+                                  variationIDs: [Int64],
                                   context: String?,
                                   pageNumber: Int,
                                   pageSize: Int,

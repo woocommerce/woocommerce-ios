@@ -4,7 +4,7 @@ import WooFoundation
 
 class AboutTapToPayViewModel: ObservableObject {
     let configuration: CardPresentPaymentsConfiguration
-    private let buttonAction: (() -> Void)?
+    private let cardReaderSupportDeterminer: CardReaderSupportDetermining
 
     @Published var shouldShowContactlessLimit: Bool = false
     @Published var shouldShowButton: Bool = false
@@ -16,19 +16,50 @@ class AboutTapToPayViewModel: ObservableObject {
             authenticated: false)
     }()
 
+    let siteID: Int64
+
     let formattedMinimumOperatingSystemVersionForTapToPay: String
 
-    init(configuration: CardPresentPaymentsConfiguration,
-         buttonAction: (() -> Void)?) {
+    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
+
+    let shouldAlwaysHideSetUpTapToPayButton: Bool
+
+    init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase? = nil,
+         shouldAlwaysHideSetUpTapToPayButton: Bool = false) {
+        self.siteID = siteID
         self.configuration = configuration
-        self.buttonAction = buttonAction
-        shouldShowButton = buttonAction != nil
+        self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
+
+        if let cardPresentPaymentsOnboardingUseCase {
+            self.cardPresentPaymentsOnboardingUseCase = cardPresentPaymentsOnboardingUseCase
+        } else {
+            let onboardingUseCase = CardPresentPaymentsOnboardingUseCase()
+            self.cardPresentPaymentsOnboardingUseCase = onboardingUseCase
+            self.cardPresentPaymentsOnboardingUseCase.refresh()
+        }
+
+        self.shouldAlwaysHideSetUpTapToPayButton = shouldAlwaysHideSetUpTapToPayButton
         shouldShowContactlessLimit = configuration.contactlessLimitAmount != nil
         self.formattedMinimumOperatingSystemVersionForTapToPay = configuration.minimumOperatingSystemVersionForTapToPay.localizedFormattedString
+        refreshButtonVisibility()
     }
 
-    func callToActionTapped() {
-        buttonAction?()
+    func setUpFlowDismissed() {
+        refreshButtonVisibility()
+    }
+
+    private func refreshButtonVisibility() {
+        guard !shouldAlwaysHideSetUpTapToPayButton else {
+            return shouldShowButton = false
+        }
+
+        Task { @MainActor in
+            let hasTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+            shouldShowButton = !hasTapToPayUsage
+        }
     }
 }
 

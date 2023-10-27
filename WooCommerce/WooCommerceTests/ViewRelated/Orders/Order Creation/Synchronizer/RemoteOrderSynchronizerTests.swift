@@ -529,7 +529,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.removeFee.send(feeLine)
 
         // Then
-        XCTAssertNil(synchronizer.order.fees.first)
+        XCTAssertTrue(synchronizer.order.fees.first?.isDeleted ?? true)
     }
 
     func test_sending_coupon_input_triggers_order_creation() {

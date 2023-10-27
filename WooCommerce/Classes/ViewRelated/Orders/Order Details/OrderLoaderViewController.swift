@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import Yosemite
 
@@ -298,4 +299,19 @@ private enum State {
     case loading
     case success(order: Order)
     case failure
+}
+
+// MARK: - SwiftUI Compatibility
+//
+struct OrderLoaderView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = OrderLoaderViewController
+    let orderID: Int64
+    let siteID: Int64
+
+    func makeUIViewController(context: Context) -> OrderLoaderViewController {
+        OrderLoaderViewController(orderID: orderID,
+                                  siteID: siteID)
+    }
+
+    func updateUIViewController(_ uiViewController: OrderLoaderViewController, context: Context) {}
 }

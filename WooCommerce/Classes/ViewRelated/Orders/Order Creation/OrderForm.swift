@@ -130,6 +130,21 @@ struct OrderForm: View {
                             ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
+                            Group {
+                                Group {
+                                    Divider()
+                                    Spacer(minLength: Layout.sectionSpacing)
+                                    Divider()
+                                }
+                                .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                                OrderCustomAmountsSection(viewModel: viewModel)
+                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                            }
+                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+
+                            Divider()
+
                             Spacer(minLength: Layout.sectionSpacing)
 
                             Group {
@@ -357,10 +372,6 @@ private struct ProductsSection: View {
     ///
     @State private var showAddProduct: Bool = false
 
-    /// Defines whether the new custom amount modal is presented.
-    ///
-    @State private var showAddCustomAmount: Bool = false
-
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -390,7 +401,6 @@ private struct ProductsSection: View {
             Divider()
 
             VStack(alignment: .leading, spacing: OrderForm.Layout.verticalSpacing) {
-
                 HStack {
                     Text(OrderForm.Localization.products)
                         .accessibilityAddTraits(.isHeader)
@@ -401,8 +411,23 @@ private struct ProductsSection: View {
                     Image(uiImage: .lockImage)
                         .foregroundColor(Color(.brand))
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
+
+                    HStack(spacing: OrderForm.Layout.productsHeaderButtonsSpacing) {
+                        scanProductButton
+                        .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
+
+                        Button(action: {
+                            showAddProduct.toggle()
+                        }) {
+                            Image(uiImage: .plusImage)
+                        }
+                        .id(addProductButton)
+                        .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
+                    }
+                    .scaledToFit()
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators && viewModel.shouldShowCustomAmountsWithProducts)
                 }
-                .renderedIf(!viewModel.shouldShowCustomAmountsWithProducts)
+                .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
@@ -418,6 +443,9 @@ private struct ProductsSection: View {
                                             productRowViewModel: productRow,
                                             discountViewModel: productViewModel.discountDetailsViewModel)
                     })
+                    .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
+                        ConfigurableBundleProductView(viewModel: configurableProductViewModel)
+                    }
                     .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
                     ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
@@ -441,78 +469,27 @@ private struct ProductsSection: View {
                     .id(addProductButton)
                     .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddProduct, onDismiss: {
-                        scroll.scrollTo(addProductButton)
-                    }, content: {
-                        ProductSelectorNavigationView(
-                            configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                            source: .orderForm,
-                            isPresented: $showAddProduct,
-                            viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
-                        .onDisappear {
-                            navigationButtonID = UUID()
-                        }
-                    })
 
-                    Button(action: {
-                        viewModel.trackBarcodeScanningButtonTapped()
-                        let capturePermissionStatus = viewModel.capturePermissionStatus
-                        switch capturePermissionStatus {
-                        case .notPermitted:
-                            viewModel.trackBarcodeScanningNotPermitted()
-                            logPermissionStatus(status: .notPermitted)
-                            self.showPermissionsSheet = true
-                        case .notDetermined:
-                            logPermissionStatus(status: .notDetermined)
-                            viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
-                                if isPermissionGranted {
-                                    showAddProductViaSKUScanner = true
-                                    logPermissionStatus(status: .permitted)
-                                }
-                            })
-                        case .permitted:
-                            showAddProductViaSKUScanner = true
-                            logPermissionStatus(status: .permitted)
-                        }
-                    }, label: {
-                        if showAddProductViaSKUScannerLoading {
-                            ProgressView()
-                        } else {
-                            Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
-                            .foregroundColor(Color(.brand))
-                        }
-                    })
-                    .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
-                        scroll.scrollTo(addProductViaSKUScannerButton)
-                    }, content: {
-                        ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
-                            showAddProductViaSKUScanner = false
-                            showAddProductViaSKUScannerLoading = true
-                            viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
-                                showAddProductViaSKUScannerLoading = false
-                            }, onRetryRequested: {
-                                showAddProductViaSKUScanner = true
-                            })
-                        })
-                    })
+                    scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
                 }
-
-                HStack {
-                    Button(OrderForm.Localization.addCustomAmount) {
-                        showAddCustomAmount.toggle()
-                    }
-                    .accessibilityIdentifier(OrderForm.Accessibility.addCustomAmountIdentifier)
-                    .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-                        AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
-                    })
-                }
-                .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+                .renderedIf(viewModel.shouldShowAddProductsButton)
             }
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
+            .sheet(isPresented: $showAddProduct, onDismiss: {
+                scroll.scrollTo(addProductButton)
+            }, content: {
+                ProductSelectorNavigationView(
+                    configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                    source: .orderForm,
+                    isPresented: $showAddProduct,
+                    viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
+                .onDisappear {
+                    navigationButtonID = UUID()
+                }
+            })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(
                     title: Text(OrderForm.Localization.permissionsTitle),
@@ -525,9 +502,53 @@ private struct ProductsSection: View {
                      ]
                  )
             })
-
-            Divider()
         }
+    }
+}
+
+private extension ProductsSection {
+    var scanProductButton: some View {
+        Button(action: {
+            viewModel.trackBarcodeScanningButtonTapped()
+            let capturePermissionStatus = viewModel.capturePermissionStatus
+            switch capturePermissionStatus {
+            case .notPermitted:
+                viewModel.trackBarcodeScanningNotPermitted()
+                logPermissionStatus(status: .notPermitted)
+                self.showPermissionsSheet = true
+            case .notDetermined:
+                logPermissionStatus(status: .notDetermined)
+                viewModel.requestCameraAccess(onCompletion: { isPermissionGranted in
+                    if isPermissionGranted {
+                        showAddProductViaSKUScanner = true
+                        logPermissionStatus(status: .permitted)
+                    }
+                })
+            case .permitted:
+                showAddProductViaSKUScanner = true
+                logPermissionStatus(status: .permitted)
+            }
+        }, label: {
+            if showAddProductViaSKUScannerLoading {
+                ProgressView()
+            } else {
+                Image(uiImage: .scanImage.withRenderingMode(.alwaysTemplate))
+                .foregroundColor(Color(.brand))
+            }
+        })
+        .sheet(isPresented: $showAddProductViaSKUScanner, onDismiss: {
+            scroll.scrollTo(addProductViaSKUScannerButton)
+        }, content: {
+            ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
+                showAddProductViaSKUScanner = false
+                showAddProductViaSKUScannerLoading = true
+                viewModel.addScannedProductToOrder(barcode: detectedBarcode, onCompletion: { _ in
+                    showAddProductViaSKUScannerLoading = false
+                }, onRetryRequested: {
+                    showAddProductViaSKUScanner = true
+                })
+            })
+        })
     }
 }
 
@@ -541,6 +562,7 @@ private extension OrderForm {
         static let storedTaxRateBottomSheetRowCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetStoredTaxRateCornerRadius: CGFloat = 8.0
         static let storedTaxRateBottomSheetButtonIconSize: CGFloat = 24.0
+        static let productsHeaderButtonsSpacing: CGFloat = 20
     }
 
     enum Localization {
@@ -550,8 +572,6 @@ private extension OrderForm {
         static let products = NSLocalizedString("Products", comment: "Title text of the section that shows the Products when creating or editing an order")
         static let addProducts = NSLocalizedString("Add Products",
                                                    comment: "Title text of the button that allows to add multiple products when creating or editing an order")
-        static let addCustomAmount = NSLocalizedString("Add Custom Amount",
-                                                   comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let productRowAccessibilityHint = NSLocalizedString("Opens product detail.",
                                                                    comment: "Accessibility hint for selecting a product in an order form")
         static let permissionsTitle =
@@ -574,7 +594,6 @@ private extension OrderForm {
         static let cancelButtonIdentifier = "new-order-cancel-button"
         static let doneButtonIdentifier = "edit-order-done-button"
         static let addProductButtonIdentifier = "new-order-add-product-button"
-        static let addCustomAmountIdentifier = "new-order-add-custom-amount-button"
         static let addProductViaSKUScannerButtonIdentifier = "new-order-add-product-via-sku-scanner-button"
     }
 }

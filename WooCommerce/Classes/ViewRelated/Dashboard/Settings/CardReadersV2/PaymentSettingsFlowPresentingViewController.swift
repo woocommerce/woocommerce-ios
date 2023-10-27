@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 
 final class PaymentSettingsFlowPresentingViewController: UIViewController {
@@ -78,6 +79,17 @@ private extension PaymentSettingsFlowPresentingViewController {
 
 // MARK: - SwiftUI compatibility
 //
+struct PaymentSettingsFlowPresentingView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = PaymentSettingsFlowPresentingViewController
+    let viewModelsAndViews: PaymentSettingsFlowPrioritizedViewModelsProvider
+
+    func makeUIViewController(context: Context) -> PaymentSettingsFlowPresentingViewController {
+        let viewController = PaymentSettingsFlowPresentingViewController(viewModelsAndViews: viewModelsAndViews)
+        return viewController
+    }
+
+    func updateUIViewController(_ uiViewController: PaymentSettingsFlowPresentingViewController, context: Context) {}
+}
 
 // MARK: - Localization
 //

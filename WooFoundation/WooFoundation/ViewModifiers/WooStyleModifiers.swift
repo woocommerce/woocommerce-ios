@@ -47,6 +47,14 @@ public struct SecondaryTitleStyle: ViewModifier {
     }
 }
 
+public struct TertiaryTitleStyle: ViewModifier {
+    public func body(content: Content) -> some View {
+        content
+            .font(.title3.weight(.bold))
+            .foregroundColor(Color(.text))
+    }
+}
+
 public struct SecondaryBodyStyle: ViewModifier {
 
     public init() {}
@@ -195,6 +203,10 @@ public extension View {
 
     func secondaryTitleStyle() -> some View {
         self.modifier(SecondaryTitleStyle())
+    }
+
+    func tertiaryTitleStyle() -> some View {
+        self.modifier(TertiaryTitleStyle())
     }
 
     /// - Parameters:

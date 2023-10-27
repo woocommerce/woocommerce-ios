@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01720C132AEB5013006713DF /* SiteAddressViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01720C122AEB5013006713DF /* SiteAddressViewModelTests.swift */; };
+		01720C152AEB5101006713DF /* SiteAddressViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01720C142AEB5101006713DF /* SiteAddressViewModel.swift */; };
 		0193F7752A615521004D7C16 /* MemoryManagementTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0193F7742A615521004D7C16 /* MemoryManagementTests.swift */; };
 		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
 		020DEF6428AA091100C85D51 /* MagicLinkRequester.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */; };
@@ -264,6 +266,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		01720C122AEB5013006713DF /* SiteAddressViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewModelTests.swift; sourceTree = "<group>"; };
+		01720C142AEB5101006713DF /* SiteAddressViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteAddressViewModel.swift; sourceTree = "<group>"; };
 		0193F7742A615521004D7C16 /* MemoryManagementTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemoryManagementTests.swift; sourceTree = "<group>"; };
 		020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayImages.swift; sourceTree = "<group>"; };
 		020DEF6328AA091100C85D51 /* MagicLinkRequester.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MagicLinkRequester.swift; sourceTree = "<group>"; };
@@ -567,6 +571,7 @@
 		3F86A83F29D280DC005D20C0 /* SingIn */ = {
 			isa = PBXGroup;
 			children = (
+				01720C122AEB5013006713DF /* SiteAddressViewModelTests.swift */,
 				3F86A83D29D280D7005D20C0 /* AppleAuthenticatorTests.swift */,
 				3F86A84929D2A982005D20C0 /* LoginViewControllerTests.swift */,
 			);
@@ -1082,6 +1087,7 @@
 				CEC77C6524854F2E00FB9050 /* SiteAddressViewController.swift */,
 				CEC77C6724854F3E00FB9050 /* SiteAddress.storyboard */,
 				CE73475524B77A3800A22660 /* SiteCredentialsViewController.swift */,
+				01720C142AEB5101006713DF /* SiteAddressViewModel.swift */,
 			);
 			path = "Site Address";
 			sourceTree = "<group>";
@@ -1536,6 +1542,7 @@
 				3F86A84229D28473005D20C0 /* SocialUserCreating.swift in Sources */,
 				3F9439BE27D6F9B60067183A /* LoginPrologueViewController.swift in Sources */,
 				B560913B208A563800399AE4 /* LoginSelfHostedViewController.swift in Sources */,
+				01720C152AEB5101006713DF /* SiteAddressViewModel.swift in Sources */,
 				B5609136208A563800399AE4 /* Login2FAViewController.swift in Sources */,
 				B56090E1208A4F9D00399AE4 /* WPWalkthroughTextField.m in Sources */,
 				B56090EF208A527000399AE4 /* WPStyleGuide+Login.swift in Sources */,
@@ -1564,6 +1571,7 @@
 				BA53D64824DFDF97001F1ABF /* WordPressSourceTagTests.swift in Sources */,
 				3F30A6BA299F12E30004452F /* Character+URLSafeTests.swift in Sources */,
 				4A1DEF4B29341B1F00322608 /* LoggingTests.swift in Sources */,
+				01720C132AEB5013006713DF /* SiteAddressViewModelTests.swift in Sources */,
 				3F86A83E29D280D7005D20C0 /* AppleAuthenticatorTests.swift in Sources */,
 				3F3694022991E244006E923E /* JSONWebToken+Fixtures.swift in Sources */,
 				3F879FDF293A501D005C2B48 /* URLRequest+GoogleSignInTests.swift in Sources */,

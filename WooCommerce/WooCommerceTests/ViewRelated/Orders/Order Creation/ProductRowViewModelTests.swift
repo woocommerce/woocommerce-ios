@@ -6,6 +6,12 @@ import WooFoundation
 @testable import WooCommerce
 
 final class ProductRowViewModelTests: XCTestCase {
+    var analytics: MockAnalyticsProvider!
+
+    override func setUp() {
+        super.setUp()
+        analytics = MockAnalyticsProvider()
+    }
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
@@ -285,6 +291,34 @@ final class ProductRowViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(productRemoved)
+    }
+
+    func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: true,
+                                            analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackAddDiscountTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAddButtonTapped.rawValue)
+    }
+
+    func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: true,
+                                            analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackEditDiscountTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
     }
 
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {

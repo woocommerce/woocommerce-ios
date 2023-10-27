@@ -131,11 +131,11 @@ struct CollapsibleProductRowCard: View {
 
 private extension CollapsibleProductRowCard {
     func trackAddDiscountTapped() {
-        viewModel.analytics.track(event: .Orders.productDiscountAddButtonTapped())
+        viewModel.trackAddDiscountTapped()
     }
 
     func trackEditDiscountTapped() {
-        viewModel.analytics.track(event: .Orders.productDiscountEditButtonTapped())
+        viewModel.trackEditDiscountTapped()
     }
 }
 

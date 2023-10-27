@@ -479,6 +479,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         quantityUpdatedCallback(quantity)
     }
+
+    func trackAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func trackEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
 }
 
 private extension ProductRowViewModel {

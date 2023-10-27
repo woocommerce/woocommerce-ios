@@ -104,6 +104,8 @@ extension BlazeSource {
             return "my_store_section"
         case .introView:
             return "intro_view"
+        case .productDetailPromoteButton:
+            return "product_detail_promote_button"
         }
     }
 }

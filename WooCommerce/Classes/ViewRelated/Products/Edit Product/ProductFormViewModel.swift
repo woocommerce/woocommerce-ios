@@ -45,6 +45,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         originalProduct
     }
 
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool {
+        blazeCampaignResultsController.isEmpty
+    }
+
     /// The form type could change from .add to .edit after creation.
     private(set) var formType: ProductFormType
 
@@ -60,6 +65,15 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private lazy var variationsResultsController = createVariationsResultsController()
 
     private var isEligibleForBlaze: Bool = false
+
+    /// Blaze campaign ResultsController.
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+        let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
+        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        sortedBy: [])
+        return resultsController
+    }()
 
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
@@ -227,6 +241,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        configureResultsController()
         updateBlazeEligibility()
     }
 
@@ -710,6 +725,15 @@ private extension ProductFormViewModel {
             isEligibleForBlaze = isEligible
             updateActionsFactory()
             blazeEligiblityUpdateSubject.send()
+        }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        do {
+            try blazeCampaignResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 }

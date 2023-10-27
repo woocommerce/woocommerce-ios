@@ -1,5 +1,19 @@
 import SwiftUI
 
+/// Hosting controller for `BlazeCampaignIntroView`.
+///
+final class BlazeCampaignIntroController: UIHostingController<BlazeCampaignIntroView> {
+    init(onStartCampaign: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
+        super.init(rootView: BlazeCampaignIntroView(onStartCampaign: onStartCampaign, onDismiss: onDismiss))
+    }
+
+    @available(*, unavailable)
+    required dynamic init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 /// View to display the introduction to the Blaze campaign
 ///
 struct BlazeCampaignIntroView: View {

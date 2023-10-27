@@ -455,6 +455,9 @@ private struct ProductsSection: View {
                         .onDisappear {
                             navigationButtonID = UUID()
                         }
+                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                            ConfigurableBundleProductView(viewModel: viewModel)
+                        }
                     })
 
                     Button(action: {

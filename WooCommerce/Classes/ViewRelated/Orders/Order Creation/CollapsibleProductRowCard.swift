@@ -125,12 +125,25 @@ struct CollapsibleProductRowCard: View {
         }
         .cornerRadius(Layout.frameCornerRadius)
     }
+
+
+}
+
+private extension CollapsibleProductRowCard {
+    func trackAddDiscountTapped() {
+        viewModel.trackAddDiscountTapped()
+    }
+
+    func trackEditDiscountTapped() {
+        viewModel.trackEditDiscountTapped()
+    }
 }
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
         if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
+                trackAddDiscountTapped()
                 onAddDiscount()
             }
             .buttonStyle(PlusButtonStyle())
@@ -138,6 +151,7 @@ private extension CollapsibleProductRowCard {
         } else {
             HStack {
                 Button(action: {
+                    trackEditDiscountTapped()
                     onAddDiscount()
                 }, label: {
                     HStack {

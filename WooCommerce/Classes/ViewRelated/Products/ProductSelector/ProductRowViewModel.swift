@@ -243,6 +243,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let selectedState: ProductRow.SelectedState
 
+    /// Analytics
+    ///
+    let analytics: Analytics
+
     init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
@@ -260,6 +264,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {},
          configure: (() -> Void)? = nil) {
@@ -278,6 +283,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.imageURL = imageURL
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.quantityUpdatedCallback = quantityUpdatedCallback
@@ -294,6 +300,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -358,6 +365,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
@@ -374,6 +382,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
@@ -399,6 +408,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
@@ -468,6 +478,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity -= 1
 
         quantityUpdatedCallback(quantity)
+    }
+
+    func trackAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func trackEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
     }
 }
 

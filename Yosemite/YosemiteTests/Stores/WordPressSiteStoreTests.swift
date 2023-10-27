@@ -3,9 +3,8 @@ import XCTest
 @testable import Networking
 
 final class WordPressSiteStoreTests: XCTestCase {
-    /// Mock Network: Allows us to inject predefined responses!
-    ///
-    private var network: MockNetwork!
+
+    private var remote: MockWordPressSiteRemote!
 
     /// Mock Dispatcher
     ///
@@ -16,13 +15,13 @@ final class WordPressSiteStoreTests: XCTestCase {
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
-        network = MockNetwork()
+        remote = MockWordPressSiteRemote()
     }
 
     func test_fetchSiteInfo_returns_correct_site() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+//        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        let store = WordPressSiteStore(remote: remote, dispatcher: dispatcher)
 
         // When
         let result: Result<Site, Error> = waitFor { promise in
@@ -50,8 +49,8 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchSiteInfo_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+//        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        let store = WordPressSiteStore(remote: remote, dispatcher: dispatcher)
 
         // When
         let result: Result<Site, Error> = waitFor { promise in
@@ -68,8 +67,8 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+//        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        let store = WordPressSiteStore(remote: remote, dispatcher: dispatcher)
 
         // When
         let result: Result<URL?, Error> = waitFor { promise in
@@ -87,8 +86,8 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info-with-auth-url")
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+//        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info-with-auth-url")
+        let store = WordPressSiteStore(remote: remote, dispatcher: dispatcher)
 
         // When
         let result: Result<URL?, Error> = waitFor { promise in
@@ -106,8 +105,8 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
-        let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
+//        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        let store = WordPressSiteStore(remote: remote, dispatcher: dispatcher)
 
         // When
         let result: Result<URL?, Error> = waitFor { promise in

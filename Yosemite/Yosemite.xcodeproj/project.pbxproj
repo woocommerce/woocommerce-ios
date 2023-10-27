@@ -410,7 +410,7 @@
 		D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */; };
 		DE2E8EA52953F77A002E4B14 /* WordPressSiteAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */; };
 		DE2E8EA72953F85C002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */; };
-		DE2E8EAF29541C32002E4B14 /* WordPressSiteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStore.swift */; };
+		DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */; };
 		DE3404FC28BC5E7800CF0D97 /* JetpackConnectionAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404FB28BC5E7800CF0D97 /* JetpackConnectionAction.swift */; };
 		DE3404FE28BC5F4200CF0D97 /* JetpackConnectionStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3404FD28BC5F4200CF0D97 /* JetpackConnectionStore.swift */; };
 		DE34050828BC706B00CF0D97 /* DeauthenticatedStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE34050728BC706B00CF0D97 /* DeauthenticatedStore.swift */; };
@@ -418,6 +418,7 @@
 		DE3C5B21286BF2270049E6AA /* MockSystemStatusActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B20286BF2270049E6AA /* MockSystemStatusActionHandler.swift */; };
 		DE3C5B23286C03F90049E6AA /* MockCardPresentPaymentActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE3C5B22286C03F80049E6AA /* MockCardPresentPaymentActionHandler.swift */; };
 		DE50296728C7114800551736 /* JetpackConnectionStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */; };
+		DE6311562AEBADA600587641 /* MockWordPressSiteRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6311552AEBADA600587641 /* MockWordPressSiteRemote.swift */; };
 		DE6831DD26445B2B00E88B9E /* SitePluginStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */; };
 		DED91DEE2AD673CF00CDCC53 /* BlazeAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */; };
 		DED91DF02AD6756600CDCC53 /* BlazeStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */; };
@@ -880,7 +881,7 @@
 		D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4Tests.swift; sourceTree = "<group>"; };
 		DE2E8EA42953F77A002E4B14 /* WordPressSiteAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteAction.swift; sourceTree = "<group>"; };
 		DE2E8EA62953F85C002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
-		DE2E8EAE29541C32002E4B14 /* WordPressSiteStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStore.swift; sourceTree = "<group>"; };
+		DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressSiteStoreTests.swift; sourceTree = "<group>"; };
 		DE3404FB28BC5E7800CF0D97 /* JetpackConnectionAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionAction.swift; sourceTree = "<group>"; };
 		DE3404FD28BC5F4200CF0D97 /* JetpackConnectionStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStore.swift; sourceTree = "<group>"; };
 		DE34050728BC706B00CF0D97 /* DeauthenticatedStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedStore.swift; sourceTree = "<group>"; };
@@ -888,6 +889,7 @@
 		DE3C5B20286BF2270049E6AA /* MockSystemStatusActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockSystemStatusActionHandler.swift; sourceTree = "<group>"; };
 		DE3C5B22286C03F80049E6AA /* MockCardPresentPaymentActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCardPresentPaymentActionHandler.swift; sourceTree = "<group>"; };
 		DE50296628C7114800551736 /* JetpackConnectionStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JetpackConnectionStoreTests.swift; sourceTree = "<group>"; };
+		DE6311552AEBADA600587641 /* MockWordPressSiteRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWordPressSiteRemote.swift; sourceTree = "<group>"; };
 		DE6831DC26445B2B00E88B9E /* SitePluginStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePluginStoreTests.swift; sourceTree = "<group>"; };
 		DED91DED2AD673CF00CDCC53 /* BlazeAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeAction.swift; sourceTree = "<group>"; };
 		DED91DEF2AD6756600CDCC53 /* BlazeStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeStore.swift; sourceTree = "<group>"; };
@@ -1591,7 +1593,7 @@
 				02DAE7F7291A9F11009342B7 /* DomainStoreTests.swift */,
 				02616F912921E1530095BC00 /* SiteStoreTests.swift */,
 				02F2722C292F18BF00C36419 /* PaymentStoreTests.swift */,
-				DE2E8EAE29541C32002E4B14 /* WordPressSiteStore.swift */,
+				DE2E8EAE29541C32002E4B14 /* WordPressSiteStoreTests.swift */,
 				EEB4E2CE29B04D7900371C3C /* StoreOnboardingTasksStoreTests.swift */,
 				0391C13C29CC5E14008A3E86 /* OrderCardPresentPaymentEligibilityStoreTests.swift */,
 				0286A1BB2A0CC4120099EF94 /* FeatureFlagStoreTests.swift */,
@@ -1731,6 +1733,7 @@
 				0248B36A2459127200A271A4 /* MockNetwork+Path.swift */,
 				022F9318257F24730011CD94 /* MockShippingLabel.swift */,
 				022F931C257F27B40011CD94 /* MockShippingLabelAddress.swift */,
+				DE6311552AEBADA600587641 /* MockWordPressSiteRemote.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -2385,6 +2388,7 @@
 				578CE7882475D70F00492EBF /* RetrieveProductReviewFromNoteUseCaseTests.swift in Sources */,
 				027CC11129F7AAEA00614B6E /* MockGenerativeContentRemote.swift in Sources */,
 				02DF98092A136BFB0009E2EA /* MockSitePluginsRemote.swift in Sources */,
+				DE6311562AEBADA600587641 /* MockWordPressSiteRemote.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockAcountStore.swift in Sources */,
 				312DB64D268BD22B00AA0EE9 /* AppSettingsStoreTests+CardReaderSettings.swift in Sources */,
@@ -2429,7 +2433,7 @@
 				D8652E44263079B000350F37 /* ReceiptStoreTests.swift in Sources */,
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				261CF2C7255C445A0090D8D3 /* PaymentGatewayStoreTests.swift in Sources */,
-				DE2E8EAF29541C32002E4B14 /* WordPressSiteStore.swift in Sources */,
+				DE2E8EAF29541C32002E4B14 /* WordPressSiteStoreTests.swift in Sources */,
 				0286A1BC2A0CC4120099EF94 /* FeatureFlagStoreTests.swift in Sources */,
 				2685C121263E064200D9EE97 /* AddOnGroupStoreTests.swift in Sources */,
 				B9AECD482851F28E00E78584 /* Order+CardPresentPaymentTests.swift in Sources */,

@@ -3,28 +3,38 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 import TestKit
+import protocol Storage.StorageType
 
 final class ProductFormViewModelTests: XCTestCase {
-
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
     private var sessionManager: SessionManager!
     private var stores: StoresManager!
 
+    /// Mock Storage: InMemory
+    private var storageManager: MockStorageManager!
+
+    /// View storage for tests
+    private var storage: StorageType {
+        storageManager.viewStorage
+    }
+
     override func setUp() {
         super.setUp()
-        analyticsProvider = MockAnalyticsProvider()
-        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         sessionManager = SessionManager.testingInstance
         stores = MockStoresManager(sessionManager: sessionManager)
+        storageManager = MockStorageManager()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
         super.tearDown()
-        analytics = nil
-        analyticsProvider = nil
-        sessionManager = nil
+        storageManager = nil
         stores = nil
+        analyticsProvider = nil
+        analytics = nil
+        sessionManager = nil
     }
 
     // MARK: `canViewProductInStore`
@@ -727,6 +737,7 @@ private extension ProductFormViewModelTests {
                                     formType: formType,
                                     productImageActionHandler: productImageActionHandler,
                                     stores: stores,
+                                    storageManager: storageManager,
                                     analytics: analytics,
                                     blazeEligibilityChecker: blazeEligibilityChecker)
     }

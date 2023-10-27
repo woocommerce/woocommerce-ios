@@ -41,13 +41,13 @@ public final class WordPressSiteRemote: Remote {
             .components(separatedBy: LinkHeader.separator)
             .first?
             .trimmingCharacters(in: .init(charactersIn: "<>"))
-        return rootLink ?? Path.root
+        return rootLink ?? String([siteURL, Path.root].joined(separator: "/"))
     }
 }
 
 private extension WordPressSiteRemote {
     enum Path {
-        static let root = "/wp-json"
+        static let root = "wp-json"
     }
     enum LinkHeader {
         static let title = "Link"

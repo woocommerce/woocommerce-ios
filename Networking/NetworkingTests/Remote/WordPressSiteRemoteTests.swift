@@ -59,6 +59,18 @@ final class WordPressSiteRemoteTests: XCTestCase {
         // Then
         XCTAssertEqual(rootEndpoint, "https://example.com/?rest_route=/")
     }
+
+    func test_findRootAPIEndpoint_returns_default_value_if_no_headers_found() async throws {
+        // Given
+        let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
+        let remote = WordPressSiteRemote(network: network, session: session)
+
+        // When
+        let rootEndpoint = try await remote.findRootAPIEndpoint(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(rootEndpoint, "https://example.com/wp-json")
+    }
 }
 
 private extension WordPressSiteRemoteTests {

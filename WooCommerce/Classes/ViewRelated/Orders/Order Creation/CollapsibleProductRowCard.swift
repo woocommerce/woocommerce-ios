@@ -125,12 +125,17 @@ struct CollapsibleProductRowCard: View {
         }
         .cornerRadius(Layout.frameCornerRadius)
     }
+
+    private func trackEvent(_ event: WooAnalyticsEvent) {
+        ServiceLocator.analytics.track(event: event)
+    }
 }
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
         if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
+                trackEvent(.Orders.productDiscountAddButtonTapped())
                 onAddDiscount()
             }
             .buttonStyle(PlusButtonStyle())
@@ -138,6 +143,7 @@ private extension CollapsibleProductRowCard {
         } else {
             HStack {
                 Button(action: {
+                    trackEvent(.Orders.productDiscountEditButtonTapped())
                     onAddDiscount()
                 }, label: {
                     HStack {

@@ -37,6 +37,7 @@ final class SiteAddressViewController: LoginViewController {
             isSiteDiscovery: isSiteDiscovery,
             xmlrpcFacade: WordPressXMLRPCAPIFacade(),
             authenticationDelegate: authenticationDelegate,
+            blogService: WordPressComBlogService(),
             loginFields: loginFields
         )
     }()
@@ -490,26 +491,29 @@ private extension SiteAddressViewController {
     }
 
     func guessXMLRPCURL(for siteAddress: String) {
-        viewModel.guessXMLRPCURL(for: siteAddress) { [weak self] result -> Void in
-            guard let self else { return }
-            switch result {
-            case .success:
-                // Let's try to grab site info in preparation for the next screen.
-                self.fetchSiteInfo()
-            case .error(let error, let errorMessage):
-                if let message = errorMessage {
-                    self.displayError(message: message, moveVoiceOverFocus: true)
-                } else {
-                    self.displayError(error as NSError, sourceTag: self.sourceTag)
+        viewModel.guessXMLRPCURL(
+            for: siteAddress,
+            loading: { [weak self] isLoading in
+                self?.configureViewLoading(isLoading)
+            },
+            completion: { [weak self] result -> Void in
+                guard let self else { return }
+                switch result {
+                case .success:
+                    // Let's try to grab site info in preparation for the next screen.
+                    self.fetchSiteInfo()
+                case .error(let error, let errorMessage):
+                    if let message = errorMessage {
+                        self.displayError(message: message, moveVoiceOverFocus: true)
+                    } else {
+                        self.displayError(error as NSError, sourceTag: self.sourceTag)
+                    }
+                case .troubleshootSite:
+                    WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
+                case .customUI(let viewController):
+                    self.pushCustomUI(viewController)
                 }
-            case .loading(let loading):
-                self.configureViewLoading(loading)
-            case .troubleshootSite:
-                WordPressAuthenticator.shared.delegate?.troubleshootSite(nil, in: self.navigationController)
-            case .customUI(let viewController):
-                self.pushCustomUI(viewController)
-            }
-        }
+            })
     }
 
     func fetchSiteInfo() {

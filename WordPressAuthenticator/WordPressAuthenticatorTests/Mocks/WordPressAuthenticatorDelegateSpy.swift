@@ -55,7 +55,9 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func handleError(_ error: Error, onCompletion: @escaping (UIViewController) -> Void) {
-        // no-op
+        if shouldHandleError {
+            onCompletion(UIViewController())
+        }
     }
 
     func shouldPresentSignupEpilogue() -> Bool {

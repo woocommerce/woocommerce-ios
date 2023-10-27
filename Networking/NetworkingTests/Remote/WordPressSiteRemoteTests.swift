@@ -21,7 +21,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
         // Given
         let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
         let remote = WordPressSiteRemote(network: network, session: session)
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
 
         // When
         let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
@@ -36,7 +36,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
         // Given
         let session = mockRootAPIEndpoint(siteAddress: sampleSiteURL, headerFields: [:])
         let remote = WordPressSiteRemote(network: network, session: session)
-        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound)
 
         // When
         var fetchError: Error?
@@ -73,7 +73,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
         let rootEndpoint = try await remote.findRootAPIEndpoint(for: sampleSiteURL)
 
         // Then
-        XCTAssertEqual(rootEndpoint, "https://example.com/wp-json")
+        XCTAssertEqual(rootEndpoint, "https://example.com/wp-json/")
     }
 }
 

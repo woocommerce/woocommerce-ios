@@ -723,6 +723,34 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.productModel.downloadable)
     }
+
+    // MARK: - `shouldShowBlazeIntroView`
+
+    func test_shouldShowBlazeIntroView_is_true_when_no_campaigns_available() {
+        // Given
+        let product = Product.fake()
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
+        let viewModel = createViewModel(product: product, formType: .edit, blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowBlazeIntroView)
+    }
+
+    func test_shouldShowBlazeIntroView_is_false_when_campaigns_available() {
+        // Given
+        let sampleSiteID: Int64 = 122
+        let product = Product.fake().copy(siteID: sampleSiteID)
+        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
+
+        let viewModel = createViewModel(product: product, formType: .edit, blazeEligibilityChecker: blazeEligibilityChecker)
+
+        // When
+        insertCampaigns([fakeBlazeCampaign])
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowBlazeIntroView)
+    }
 }
 
 private extension ProductFormViewModelTests {

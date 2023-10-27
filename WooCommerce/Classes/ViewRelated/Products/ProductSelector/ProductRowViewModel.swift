@@ -144,17 +144,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
     ///
     var totalPriceAfterDiscountLabel: String? {
-        guard let price = price else {
+        guard let price = price,
+              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
             return nil
         }
-        guard let priceDecimal = currencyFormatter.convertToDecimal(price) else {
-            return nil
-        }
-        let quantityDecimal = NSDecimalNumber(decimal: quantity)
-        let subtotalDecimal = priceDecimal.multiplying(by: quantityDecimal)
+        let subtotalDecimal = priceDecimal.multiplying(by: quantity as NSDecimalNumber)
         let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
-        return currencyFormatter.formatAmount(totalPriceAfterDiscount) ?? ""
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
 
     }
 

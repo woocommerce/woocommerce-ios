@@ -320,14 +320,6 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
             }
         }
 
-        if viewModel.canPromoteWithBlaze() {
-            actionSheet.addDefaultActionWithTitle(ActionSheetStrings.promoteWithBlaze) { [weak self] _ in
-                self?.displayBlaze()
-                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productMoreMenu))
-            }
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productMoreMenu))
-        }
-
         if viewModel.canEditProductSettings() {
             actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
                 ServiceLocator.analytics.track(.productDetailViewSettingsButtonTapped)
@@ -387,6 +379,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logDescriptionTapped()
                 editProductDescription()
+            case .promoteWithBlaze:
+                if !viewModel.shouldShowBlazeIntroView {
+                    ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .productDetailPromoteButton))
+                }
+                displayBlaze()
             default:
                 break
             }
@@ -734,7 +731,11 @@ private extension ProductFormViewController {
     /// 
     func observeUpdateBlazeEligibility() {
         blazeEligibilitySubscription = viewModel.blazeEligibilityUpdate.sink { [weak self] in
-            self?.updateFormTableContent()
+            guard let self else { return }
+            self.updateFormTableContent()
+            if self.viewModel.canPromoteWithBlaze() && !self.viewModel.shouldShowBlazeIntroView {
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .productDetailPromoteButton))
+            }
         }
 
     }
@@ -1101,8 +1102,28 @@ private extension ProductFormViewController {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return
         }
-        let viewModel = BlazeWebViewModel(source: .productMoreMenu, siteURL: site.url, productID: product.productID)
-        let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
+
+        if viewModel.shouldShowBlazeIntroView {
+            let blazeHostingController = BlazeCampaignIntroController(onStartCampaign: { [weak self] in
+                guard let self else { return }
+                self.dismiss(animated: true)
+                navigateToBlazeCampaignCreation(siteUrl: site.url, source: .introView)
+                ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .introView))
+            }, onDismiss: { [weak self] in
+                guard let self = self else { return }
+                self.dismiss(animated: true)
+            })
+
+            present(blazeHostingController, animated: true)
+            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .introView))
+        } else {
+            navigateToBlazeCampaignCreation(siteUrl: site.url, source: .productDetailPromoteButton)
+        }
+    }
+
+    private func navigateToBlazeCampaignCreation(siteUrl: String, source: BlazeSource) {
+        let blazeViewModel = BlazeWebViewModel(source: source, siteURL: siteUrl, productID: product.productID)
+        let webViewController = AuthenticatedWebViewController(viewModel: blazeViewModel)
         navigationController?.show(webViewController, sender: self)
     }
 

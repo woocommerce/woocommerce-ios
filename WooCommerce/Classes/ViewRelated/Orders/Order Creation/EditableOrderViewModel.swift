@@ -1604,7 +1604,10 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal? = nil) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem,
+                                          quantity: Decimal,
+                                          discount: Decimal? = nil,
+                                          bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1624,7 +1627,11 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount ?? currentDiscount(on: item))
+        return OrderSyncProductInput(id: item.itemID,
+                                     product: product,
+                                     quantity: quantity,
+                                     discount: discount ?? currentDiscount(on: item),
+                                     bundleConfiguration: bundleConfiguration)
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1704,7 +1711,10 @@ private extension EditableOrderViewModel {
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
-        // TODO: 10428 - add bundle configuration to order item
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, bundleConfiguration: bundleConfiguration) else {
+            return
+        }
+        orderSynchronizer.setProduct.send(productInput)
     }
 }
 

@@ -100,10 +100,12 @@ extension BlazeSource {
             return "product_more_menu"
         case .campaignList:
             return "campaign_list"
-        case .myStoreSectionCreateCampaignButton:
-            return "my_store_section_create_campaign_button"
+        case .myStoreSection:
+            return "my_store_section"
         case .introView:
             return "intro_view"
+        case .productDetailPromoteButton:
+            return "product_detail_promote_button"
         }
     }
 }

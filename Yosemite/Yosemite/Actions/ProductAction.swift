@@ -154,6 +154,7 @@ public enum ProductAction: Action {
     case generateProductDetails(siteID: Int64,
                                 productName: String?,
                                 scannedTexts: [String],
+                                language: String,
                                 completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.

@@ -331,8 +331,7 @@ final class StatsStoreV4Tests: XCTestCase {
         }
 
         // Then
-        let expectedParam = "force_cache_refresh=0"
-        XCTAssertEqual(network.queryParameters?.contains(expectedParam), true)
+        XCTAssertEqual(network.queryParametersDictionary?["force_cache_refresh"] as? Bool, false)
     }
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.

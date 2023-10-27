@@ -8,7 +8,7 @@ final class MockSiteDiscoveryUseCase: SiteDiscoveryUseCaseProtocol {
     func mockRootAPIEndpoint(with result: String) {
         mockedEndpoint = result
     }
-    
+
     func findRootAPIEndpoint(for siteURL: String) async throws -> String {
         guard let mockedEndpoint else {
             throw NetworkError.notFound

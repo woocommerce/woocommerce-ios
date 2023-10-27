@@ -11,10 +11,6 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowShippingLineDetails: Bool = false
 
-    /// Indicates if the fee line details screen should be shown or not.
-    ///
-    @State private var shouldShowFeeLineDetails: Bool = false
-
     /// Indicates if the coupon line details screen should be shown or not.
     ///
     @State private var shouldShowAddCouponLineDetails: Bool = false
@@ -76,10 +72,7 @@ struct OrderPaymentSection: View {
                 .sheet(isPresented: $shouldShowShippingLineDetails) {
                     ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
                 }
-            feesRow
-                .sheet(isPresented: $shouldShowFeeLineDetails) {
-                    FeeOrDiscountLineDetailsView(viewModel: viewModel.feeLineViewModel)
-                }
+            customAmountsRow
 
             VStack {
                 ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
@@ -177,7 +170,7 @@ private extension OrderPaymentSection {
                     .resizable()
                     .frame(width: Constants.sectionPadding, height: Constants.sectionPadding)
             }
-            .renderedIf(viewModel.shouldDisableAddingCoupons)
+            .renderedIf(viewModel.shouldRenderCouponsInfoTooltip)
         }
         .padding()
         .accessibilityIdentifier("add-coupon-button")
@@ -206,19 +199,9 @@ private extension OrderPaymentSection {
         }
     }
 
-    @ViewBuilder var feesRow: some View {
-        if viewModel.shouldShowFees {
-            TitleAndValueRow(title: Localization.feesTotal, value: .content(viewModel.feesTotal), selectionStyle: .highlight) {
-                shouldShowFeeLineDetails = true
-            }
-        } else {
-            Button(Localization.addFee) {
-                shouldShowFeeLineDetails = true
-            }
-            .buttonStyle(PlusButtonStyle())
-            .padding()
-            .accessibilityIdentifier("add-fee-button")
-        }
+    @ViewBuilder var customAmountsRow: some View {
+        TitleAndValueRow(title: Localization.customAmountsTotal, value: .content(viewModel.customAmountsTotal))
+            .renderedIf(viewModel.shouldShowTotalCustomAmounts)
     }
 
     @ViewBuilder var addGiftCardRow: some View {
@@ -355,8 +338,9 @@ private extension OrderPaymentSection {
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addGiftCard = NSLocalizedString("Add Gift Card", comment: "Title text of the button that adds shipping line when creating a new order")
-        static let addFee = NSLocalizedString("Add Fee", comment: "Title text of the button that adds a fee when creating a new order")
-        static let feesTotal = NSLocalizedString("Fees", comment: "Label for the row showing the cost of fees in the order")
+        static let customAmountsTotal = NSLocalizedString("orderPaymentSection",
+                                                          value: "Custom amounts",
+                                                          comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
         static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title for the Coupon screen during order creation")

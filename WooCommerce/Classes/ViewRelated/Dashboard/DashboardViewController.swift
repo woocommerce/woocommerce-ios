@@ -100,10 +100,6 @@ final class DashboardViewController: UIViewController {
     private var onboardingHostingController: StoreOnboardingViewHostingController?
     private var onboardingView: UIView?
 
-    /// Hosting controller for the banner to highlight the Blaze feature.
-    ///
-    private var blazeBannerHostingController: BlazeBannerHostingController?
-
     /// Hosting controller for the Blaze Campaign View.
     ///
     private var blazeCampaignHostingController: BlazeCampaignDashboardViewHostingController?
@@ -170,7 +166,6 @@ final class DashboardViewController: UIViewController {
         observeAddProductTrigger()
         observeOnboardingVisibility()
         observeBlazeCampaignViewVisibility()
-        observeBlazeBannerVisibility()
         configureStorePlanBannerPresenter()
         presentPrivacyBannerIfNeeded()
 
@@ -835,62 +830,6 @@ extension DashboardViewController {
     }
 }
 
-// MARK: - Blaze banner
-extension DashboardViewController {
-    func observeBlazeBannerVisibility() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) == false else {
-            return
-        }
-        viewModel.$showBlazeBanner.removeDuplicates()
-            .sink { [weak self] showsBlazeBanner in
-                guard let self else { return }
-                if showsBlazeBanner {
-                    self.showBlazeBanner()
-                } else {
-                    self.removeBlazeBanner()
-                }
-            }
-            .store(in: &subscriptions)
-
-        Task { @MainActor in
-            await viewModel.updateBlazeBannerVisibility()
-        }
-    }
-
-    func showBlazeBanner() {
-        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-            return
-        }
-        if blazeBannerHostingController != nil {
-            removeBlazeBanner()
-        }
-        let hostingController = BlazeBannerHostingController(
-            site: site,
-            entryPoint: .myStore,
-            containerViewController: self,
-            dismissHandler: { [weak self] in
-            self?.viewModel.hideBlazeBanner()
-        })
-        guard let bannerView = hostingController.view else {
-            return
-        }
-        bannerView.translatesAutoresizingMaskIntoConstraints = false
-        addViewBelowOnboardingCard(bannerView)
-        addChild(hostingController)
-        hostingController.didMove(toParent: self)
-        blazeBannerHostingController = hostingController
-    }
-
-    func removeBlazeBanner() {
-        guard let blazeBannerHostingController,
-              blazeBannerHostingController.parent == self else { return }
-        blazeBannerHostingController.willMove(toParent: nil)
-        blazeBannerHostingController.view.removeFromSuperview()
-        blazeBannerHostingController.removeFromParent()
-        self.blazeBannerHostingController = nil
-    }
-}
-
 extension DashboardViewController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
         if presentationController.presentedViewController is UIHostingController<WebViewSheet> {
@@ -993,9 +932,6 @@ private extension DashboardViewController {
                 await self?.viewModel.reloadStoreOnboardingTasks()
             }
             group.addTask { [weak self] in
-                await self?.viewModel.updateBlazeBannerVisibility()
-            }
-            group.addTask { [weak self] in
                 await self?.viewModel.reloadBlazeCampaignView()
             }
         }
@@ -1015,9 +951,6 @@ private extension DashboardViewController {
             }
             self.updateUI(site: site)
             self.trackDeviceTimezoneDifferenceWithStore(siteGMTOffset: site.gmtOffset)
-            Task { @MainActor [weak self] in
-                await self?.viewModel.updateBlazeBannerVisibility()
-            }
             Task { @MainActor [weak self] in
                 await self?.viewModel.reloadBlazeCampaignView()
             }

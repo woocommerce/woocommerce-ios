@@ -52,4 +52,11 @@ extension LeftImageTableViewCell {
         imageView?.image = image
         textLabel?.text = text
     }
+
+    // Custom configure, with optional image and changeable text color
+    func configure(image: UIImage?, text: String, textColor: UIColor) {
+        imageView?.image = image
+        textLabel?.text = text
+        textLabel?.textColor = textColor
+    }
 }

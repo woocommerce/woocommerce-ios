@@ -26,15 +26,14 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
     /// Whether the list is displayed right after a campaign is created.
     private let isPostCreation: Bool
 
-    init(site: Site,
-         viewModel: BlazeCampaignListViewModel,
+    init(viewModel: BlazeCampaignListViewModel,
          isPostCreation: Bool = false) {
         self.viewModel = viewModel
         self.isPostCreation = isPostCreation
-        super.init(rootView: BlazeCampaignListView(viewModel: viewModel, siteURL: site.url.trimHTTPScheme()))
+        super.init(rootView: BlazeCampaignListView(viewModel: viewModel))
 
         rootView.onCreateCampaign = { [weak self] in
-            let webViewModel = BlazeWebViewModel(source: .campaignList, site: site, productID: nil) {
+            let webViewModel = BlazeWebViewModel(source: .campaignList, siteURL: viewModel.siteURL, productID: nil) {
                 self?.handlePostCreation()
             }
             let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -65,15 +64,12 @@ final class BlazeCampaignListHostingController: UIHostingController<BlazeCampaig
 ///
 struct BlazeCampaignListView: View {
     @ObservedObject private var viewModel: BlazeCampaignListViewModel
-    @State private var selectedCampaignURL: URL?
 
     var onCreateCampaign: () -> Void = {}
 
-    private let siteURL: String
 
-    init(viewModel: BlazeCampaignListViewModel, siteURL: String) {
+    init(viewModel: BlazeCampaignListViewModel) {
         self.viewModel = viewModel
-        self.siteURL = siteURL
     }
 
     var body: some View {
@@ -89,11 +85,7 @@ struct BlazeCampaignListView: View {
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
-                                viewModel.didSelectCampaignDetails()
-                                let path = String(format: Constants.campaignDetailsURLFormat,
-                                                  item.campaignID, siteURL,
-                                                  BlazeCampaignDetailSource.campaignList.rawValue)
-                                selectedCampaignURL = URL(string: path)
+                                viewModel.didSelectCampaignDetails(item)
                             }
                     }
                 }
@@ -121,7 +113,7 @@ struct BlazeCampaignListView: View {
             viewModel.loadCampaigns()
             viewModel.onViewAppear()
         }
-        .sheet(item: $selectedCampaignURL) { url in
+        .sheet(item: $viewModel.selectedCampaignURL) { url in
             detailView(url: url)
         }
         .sheet(isPresented: $viewModel.shouldDisplayPostCampaignCreationTip) {
@@ -169,7 +161,7 @@ private extension BlazeCampaignListView {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(action: {
-                        selectedCampaignURL = nil
+                        viewModel.selectedCampaignURL = nil
                     }, label: {
                         Text(Localization.done)
                     })
@@ -182,9 +174,6 @@ private extension BlazeCampaignListView {
 private extension BlazeCampaignListView {
     enum Layout {
         static let contentSpacing: CGFloat = 16
-    }
-    enum Constants {
-        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
     enum Localization {
         static let title = NSLocalizedString("Blaze Campaigns", comment: "Title of the Blaze campaign list view")
@@ -213,6 +202,6 @@ private extension BlazeCampaignListView {
 
 struct BlazeCampaignListView_Previews: PreviewProvider {
     static var previews: some View {
-        BlazeCampaignListView(viewModel: .init(siteID: 123), siteURL: "https://example.com")
+        BlazeCampaignListView(viewModel: .init(siteID: 123, siteURL: "https://example.com"))
     }
 }

@@ -1,1 +1,8 @@
-Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.
+- [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
+- [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
+- [*] Orders: Fixed UI issue showing incorrect discounted total product value in certain cases [https://github.com/woocommerce/woocommerce-ios/pull/11016]
+- [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
+- [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
+- [**] Orders: Users can now add custom amounts to orders. [https://github.com/woocommerce/woocommerce-ios/pull/11022]
+- [*] Payments: hide the `Set up Tap to Pay` button in About Tap to Pay when set up is complete [https://github.com/woocommerce/woocommerce-ios/pull/11025]
+

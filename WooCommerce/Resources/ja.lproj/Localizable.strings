@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-17 12:54:05+0000 */
+/* Translation-Revision-Date: 2023-10-23 08:10:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -802,6 +802,9 @@ which should be translated separately and considered part of this sentence. */
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
 
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "設定が完了しました。";
+
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "必要なすべての機能がすでに組み込まれています";
 
@@ -1414,6 +1417,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the AI product creation flow.
@@ -1888,7 +1892,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "おめでとうございます ! 新しいストアの準備完了にまた一歩近づいています。";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "おめでとうございます ! セットアップが完了し、支払いシステムを開始する準備が整いました。";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -2009,6 +2013,7 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2168,7 +2173,8 @@ which should be translated separately and considered part of this sentence. */
 "Crash Immediately" = "今すぐクラッシュさせる";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "作成";
 
 /* The button title text for creating a new account. */
@@ -2619,6 +2625,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2641,7 +2648,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -3627,6 +3633,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "理解しました";
 
@@ -5723,9 +5730,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID でログインするには、WordPress.com のアカウントのパスワードを入力してください。";
 
-/* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "認証アプリから認証コードを入力するか、次のリンクをタップして SMS でコードを取得してください。";
-
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "ログイン情報を入力してください。";
 
@@ -7206,8 +7210,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "サイトプランの有効期限が切れました";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "スキップ";
@@ -7838,8 +7841,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out viewing Order Add-Ons as we get ready to launch" = "起動の準備ができたら、注文アドオンの表示をテストします";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
 
 /* Country option for a site address. */
@@ -8534,9 +8536,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "テスト注文を試す";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "支払いを試す";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "ご自身のカードで支払いをお試しください (完了したら返金してください)。";
 
@@ -8566,9 +8565,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "今すぐお試しください";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Tap to Pay on iPhone の仕組みを理解するために、%1$@の支払いを受け取ってみましょう。 デビットカードまたはクレジットカードを使用します。完了後に、受け取った支払いを返金できます。";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
@@ -9634,9 +9630,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "ウェブダッシュボードでサブスクリプションの設定を編集できます";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Tap to Pay on iPhone は「メニュー → 支払い → 支払いを受け取る」または注文詳細からアクセスできます。 支払い方法として Tap to Pay on iPhone を選択します。";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "「メニュー」>「設定」にドメイン設定があります。";

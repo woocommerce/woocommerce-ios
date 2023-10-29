@@ -1,8 +1,5 @@
-- [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
-- [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
-- [*] Orders: Fixed UI issue showing incorrect discounted total product value in certain cases [https://github.com/woocommerce/woocommerce-ios/pull/11016]
-- [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
-- [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
-- [**] Orders: Users can now add custom amounts to orders. [https://github.com/woocommerce/woocommerce-ios/pull/11022]
-- [*] Payments: hide the `Set up Tap to Pay` button in About Tap to Pay when set up is complete [https://github.com/woocommerce/woocommerce-ios/pull/11025]
+We're thrilled to roll out the latest updates!
 
+In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
+
+We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!

@@ -251,6 +251,10 @@ extension UIImage {
         UIImage(systemName: "wave.3.right.circle")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
 
+    static var bankIcon: UIImage {
+        UIImage(systemName: "building.columns")?.withRenderingMode(.alwaysTemplate) ?? .emptyBoxImage
+    }
+
     static var scanToPayIcon: UIImage {
         UIImage(systemName: "qrcode.viewfinder")?.withRenderingMode(.alwaysTemplate) ?? .creditCardImage
     }
@@ -1402,6 +1406,10 @@ extension UIImage {
 
     static var unlimitedProductsIcon: UIImage {
         UIImage(imageLiteralResourceName: "unlimited-products-icon")
+    }
+
+    static var feedbackOutlineIcon: UIImage {
+        UIImage(named: "icon-feedback-outline")!
     }
 }
 

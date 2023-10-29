@@ -32,6 +32,7 @@ final class AddProductCoordinator: Coordinator {
     private let productImageUploader: ProductImageUploaderProtocol
     private let storage: StorageManagerType
     private let isFirstProduct: Bool
+    private let analytics: Analytics
 
     /// ResultController to to track the current product count.
     ///
@@ -61,6 +62,7 @@ final class AddProductCoordinator: Coordinator {
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -70,6 +72,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
@@ -80,6 +83,7 @@ final class AddProductCoordinator: Coordinator {
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
+         analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool) {
         self.siteID = siteID
         self.source = source
@@ -89,18 +93,19 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
 
     func start() {
         switch source {
         case .productsTab, .productOnboarding:
-            ServiceLocator.analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(templateEligible: isTemplateOptionsEligible))
         default:
             break
         }
 
-        ServiceLocator.analytics.track(event: .ProductCreation.addProductStarted(source: source,
+        analytics.track(event: .ProductCreation.addProductStarted(source: source,
                                                                                  storeHasProducts: storeHasProducts))
 
         if shouldSkipBottomSheet {
@@ -176,8 +181,9 @@ private extension AddProductCoordinator {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(title: title, subtitle: subtitle)
-        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { selectedBottomSheetProductType in
-            ServiceLocator.analytics.track(event: .ProductCreation
+        let command = ProductTypeBottomSheetListSelectorCommand(selected: nil) { [weak self] selectedBottomSheetProductType in
+            guard let self else { return }
+            self.analytics.track(event: .ProductCreation
                 .addProductTypeSelected(bottomSheetProductType: selectedBottomSheetProductType,
                                         creationType: creationType))
             self.navigationController.dismiss(animated: true) {
@@ -263,6 +269,7 @@ private extension AddProductCoordinator {
     func presentActionSheetWithAI() {
         let controller = AddProductWithAIActionSheetHostingController(onAIOption: { [weak self] in
             self?.addProductWithAIBottomSheetPresenter?.dismiss {
+                self?.analytics.track(event: .ProductCreationAI.entryPointTapped())
                 self?.addProductWithAIBottomSheetPresenter = nil
                 self?.startProductCreationWithAI()
             }
@@ -273,8 +280,9 @@ private extension AddProductCoordinator {
             }
         })
 
-        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
+        analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
 
     func startProductCreationWithAI() {
@@ -286,7 +294,7 @@ private extension AddProductCoordinator {
                                                                                          onCompletion: { [weak self] product in
             self?.onProductCreated(product)
             self?.navigationController.dismiss(animated: true) {
-                self?.presentProduct(product, formType: .edit)
+                self?.presentProduct(product, formType: .edit, isAIContent: true)
             }
         }))
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
@@ -294,7 +302,7 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
-    func presentProduct(_ product: Product, formType: ProductFormType = .add) {
+    func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let currency = ServiceLocator.currencySettings.symbol(from: currencyCode)
@@ -317,6 +325,7 @@ private extension AddProductCoordinator {
             }
         }
         let viewController = ProductFormViewController(viewModel: viewModel,
+                                                       isAIContent: isAIContent,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
@@ -367,7 +376,7 @@ private extension AddProductCoordinator {
                 return .manual
             }
         }()
-        ServiceLocator.analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
+        analytics.track(event: .ProductsOnboarding.productCreationTypeSelected(type: analyticsType))
     }
 
     /// Presents the celebratory view for the first created product.
@@ -384,22 +393,23 @@ private extension AddProductCoordinator {
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
-    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { [weak self] bottomSheet in
+            guard let self else { return }
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            // Sets custom height if possible.
-            // Default detents are used otherwise. Large detent is necessary for large font sizes.
-            if #available(iOS 16.0, *), let height {
-                let customHeight = UISheetPresentationController.Detent.custom { _ in
-                    height
-                }
-                sheet.detents = [.large(), .medium(), customHeight]
+
+            // Sets detents for the sheet.
+            // Skips large detent if the device is iPad.
+            let traitCollection = UIScreen.main.traitCollection
+            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if isIPad {
+                sheet.detents = [.medium()]
             } else {
                 sheet.detents = [.large(), .medium()]
             }
+            sheet.prefersGrabberVisible = !isIPad
         })
     }
 }

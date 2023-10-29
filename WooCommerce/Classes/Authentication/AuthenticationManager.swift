@@ -17,6 +17,7 @@ import struct Experiments.CachedABTestVariationProvider
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
     ///
@@ -81,7 +82,7 @@ class AuthenticationManager: Authentication {
 
     /// Initializes the WordPress Authenticator.
     ///
-    func initialize(loggedOutAppSettings: LoggedOutAppSettingsProtocol) {
+    func initialize() {
         WordPressAuthenticator.initializeWithCustomConfigs()
         WordPressAuthenticator.shared.delegate = self
     }
@@ -116,7 +117,70 @@ class AuthenticationManager: Authentication {
                                                                         rootViewController: rootViewController)
         }
 
+        if isAppLoginUrl(url) {
+            guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+                DDLogWarn("App login link error: cannot display authenticator UI.")
+                return false
+            }
+
+            guard let queryDictionary = url.query?.dictionaryFromQueryString(),
+                  let siteURL = queryDictionary.string(forKey: "siteUrl"),
+                  siteURL.isNotEmpty else {
+                DDLogWarn("App login link error: we couldn't retrieve the query dictionary from the sign-in URL.")
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
+                showLoginURLFailure(rootViewController: rootViewController)
+                return false
+            }
+            if let wpcomEmail = queryDictionary.string(forKey: "wpcomEmail"),
+               wpcomEmail.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .wpCom))
+                showWPCOMLogin(siteURL: siteURL, email: wpcomEmail, rootViewController: navigationController)
+                return true
+            }
+
+            if let wporgUsername = queryDictionary.string(forKey: "username"),
+               wporgUsername.isNotEmpty {
+                analytics.track(event: .AppLoginDeepLink.appLoginLinkSuccess(flow: .noWpCom))
+                showWPOrgLogin(siteURL: siteURL, username: wporgUsername, rootViewController: navigationController)
+                return true
+            }
+        }
+
+        showLoginURLFailure(rootViewController: rootViewController)
+        analytics.track(event: .AppLoginDeepLink.appLoginLinkMalformed(url: url.absoluteString))
         return false
+    }
+
+    private func showWPCOMLogin(siteURL: String, email: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = true
+        loginFields.username = email
+        rootViewController.dismiss(animated: false)
+        NavigateToEnterWPCOMPassword(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showWPOrgLogin(siteURL: String, username: String, rootViewController: UIViewController) {
+        let loginFields = LoginFields()
+        loginFields.siteAddress = siteURL
+        loginFields.restrictToWPCom = false
+        loginFields.username = username
+        rootViewController.dismiss(animated: false)
+        NavigateToEnterSiteCredentials(loginFields: loginFields).execute(from: rootViewController)
+    }
+
+    private func showLoginURLFailure(rootViewController: UIViewController) {
+        let contextNoticePresenter: NoticePresenter = {
+            let noticePresenter = DefaultNoticePresenter()
+            noticePresenter.presentingViewController = rootViewController
+            return noticePresenter
+        }()
+        contextNoticePresenter.enqueue(notice: .init(title: AuthenticationConstants.appLinkLoginFailureMessage))
+    }
+
+    private func isAppLoginUrl(_ url: URL) -> Bool {
+        let expectedPrefix = WooConstants.appLoginURLPrefix
+        return url.absoluteString.hasPrefix(expectedPrefix)
     }
 
     /// Injects `loggedOutAppSettings`

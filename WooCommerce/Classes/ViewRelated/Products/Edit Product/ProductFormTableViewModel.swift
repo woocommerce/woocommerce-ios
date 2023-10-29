@@ -22,6 +22,7 @@ enum ProductFormSection: Equatable {
         case description(description: String?, isEditable: Bool, isDescriptionAIEnabled: Bool)
         case descriptionAI
         case learnMoreAboutAI
+        case promoteWithBlaze
         case separator
     }
 

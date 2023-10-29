@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 /// Hosting controller that wraps the `StoreCreationSummaryView`.
 final class StoreCreationSummaryHostingController: UIHostingController<StoreCreationSummaryView> {
@@ -42,7 +43,7 @@ struct StoreCreationSummaryViewModel {
     /// Optional category name from the previous profiler question.
     let categoryName: String?
     /// Country code for the store location.
-    let countryCode: SiteAddress.CountryCode
+    let countryCode: CountryCode
 }
 
 /// Displays a summary of the store creation flow with the store information (e.g. store name, store slug).

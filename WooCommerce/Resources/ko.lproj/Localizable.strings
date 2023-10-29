@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-23 08:10:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -137,6 +137,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d영업일";
+
+/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposit" = "예치금 %1$d건";
+
+/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposits" = "예치금 %1$d건";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d개 아이템";
@@ -290,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. 우커머스 결제에서 표준으로 사용 가능(제한 사항 적용) – 다른 결제 제공업체의 경우에는 추가 확장 기능이 필요할 수 있습니다.";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. 주문을 생성하거나 결제를 받습니다.";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. 미국에서만 이용 가능 – 다른 국가의 경우에는 추가 확장 기능이 필요합니다.";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. \"결제 받기\"를 탭하고 \"Tap to Pay on iPhone\"을 선택합니다.";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "연중무휴 우선 지원";
@@ -304,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3개";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. iPhone을 고객에게 내밉니다.";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4~6분";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. 고객이 iPhone 상단의 비접촉 기호 위로 카드를 수평으로 들게 합니다.";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. \"완료\" 체크 표시가 보이면 스토어에서 결제가 처리되고 거래가 완료될 것입니다.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50GB";
@@ -377,12 +398,22 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "내 비즈니스 성장에 따라 확장하는 기능";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "Tap to Pay 개요";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "Tap to Pay on iPhone 개요";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "앱 정보";
 
 /* Top header text of the store creation profiler question about the challenges.
    Top header text of the store creation profiler question about the features. */
 "About you" = "자기소개";
+
+/* Title on the add product features screen. */
+"About your product" = "상품 소개";
 
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
@@ -430,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "활성";
 
@@ -447,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "추가";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -456,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "카테고리 추가";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "쿠폰 추가";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "사용자 정의 금액 추가";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "고객 추가";
@@ -469,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "설명 추가(선택 사항)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "할인 추가";
 
 /* Downloadable file screen navigation title */
@@ -484,6 +524,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "파일 추가하기";
+
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "상품권 추가";
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "새 속성 추가하기";
@@ -590,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "속성 추가";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "쿠폰 추가";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "신용카드 추가";
 
@@ -605,11 +646,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "수동으로 상세 정보 추가";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "할인 추가";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "각 옵션 추가 및 Return 키 누르기";
+
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "온라인에서 상품이 쉽게 검색되도록 주요 기능, 이점 또는 상세 정보를 추가하세요.";
 
 /* Title for the option to create product manually
    Title of the option to add new product manually */
@@ -666,6 +711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "첫 번째 스토어 추가";
+
+/* Title on the add product name screen. */
+"Add your product name" = "상품 이름 추가";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "할인 추가는 현재 이용할 수 없습니다. 먼저 쿠폰을 제거하세요.";
@@ -753,6 +801,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "모든 리뷰가 읽음으로 표시됨";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "모두 설정되었습니다!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "필요한 모든 기능이 이미 구축되어 있음";
@@ -926,8 +977,10 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "애플리케이션 이름";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "적용";
@@ -945,6 +998,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "승인하기";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "승인";
 
@@ -1040,11 +1094,23 @@ which should be translated separately and considered part of this sentence. */
 /* Site backup title feature on the Free Trial Summary Screen */
 "Automated site backups" = "자동 사이트 백업";
 
+/* Title for the bottom sheet when there is a tax rate stored */
+"Automatically adding tax rate" = "자동으로 세율 추가하기";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "자동 판매 시작 및 종료";
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic 가족";
+
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"Available funds" = "사용 가능한 자금";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are deposited automatically, %1$@." = "사용 가능한 자금이 자동으로 예치됩니다(%1$@).";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are deposited manually, on request." = "사용 가능한 자금이 요청 시 수동으로 예치됩니다.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "평균 주문 값";
@@ -1214,6 +1280,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "브루나이";
 
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "예산";
+
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "판매하려는 품목을 추가하여 카탈로그를 제작하세요.";
 
@@ -1330,6 +1399,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1343,11 +1413,14 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1393,6 +1466,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1415,6 +1489,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "업그레이드 취소";
 
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "취소됨";
+
 /* Display label for cancelled order status.
    Display label for the subscription status type */
 "Cancelled" = "취소됨";
@@ -1436,6 +1513,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "패키지를 추가할 수 없음";
+
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "주문에 상품권 적용 불가";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "주문에 상품권 적용 불가 오류: %1$@";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "상품을 복제할 수 없음";
@@ -1482,6 +1566,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "카드 리더 사용설명서";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "카드 리더";
+
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "카드 리더 사용설명서";
 
@@ -1510,6 +1597,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "카테고리";
@@ -1667,6 +1755,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear selection on the product categories list */
 "Clear Selection" = "선택 지우기";
 
+/* Title for the button to clear the stored tax rate */
+"Clear address and stop using this rate" = "주소 정리 및 이 요율 사용 중지";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "모두 지우기";
 
@@ -1674,10 +1765,14 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "선택 지우기";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "클릭";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
+   Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
@@ -1741,7 +1836,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "우커머스 앱에서 결제를 완료하고 주문에 관한 푸시 알림을 기다립니다.";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "완료";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1796,7 +1892,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "축하합니다! 새 스토어 준비 완료까지 한 걸음 가까워지셨습니다.";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "축하합니다! 설정을 성공적으로 완료했으며 결제 시스템을 사용할 준비가 되었습니다.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -1916,6 +2012,8 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1960,10 +2058,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "쿠키 정책";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "복사되었습니다!";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "복사";
@@ -2066,11 +2166,15 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "쿠폰(%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "쿠폰 이용 불가";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "즉시 충돌";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "만들기";
 
 /* The button title text for creating a new account. */
@@ -2081,6 +2185,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "쿠폰 생성";
+
+/* Continue button on the add product features screen */
+"Create Product Details" = "상품 상세 정보 생성";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2143,6 +2250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "제품을 생성하고 편집하고 게시하세요.";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "생성됨";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "속성의 모든 조합에 대한 변형을 생성합니다.";
@@ -2338,6 +2448,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "덴마크";
 
+/* Section header for the deposits list in the WooPayments Deposits overview */
+"Deposits" = "예치금";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "제품 설명";
 
@@ -2350,6 +2463,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "설명";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "세부사항";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "%1$@을(를) 사용하여 상품의 우송 가능성을 결정합니다.";
@@ -2382,6 +2498,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "리더 연결 해제";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "할인";
@@ -2404,6 +2522,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "할인된 배송²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "할인 이용 불가";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "고급 기능과 개인화된 스토어 추천 사항을 찾아보세요! 가장 알맞은 요금제를 눌러서 선택하세요.";
@@ -2504,6 +2625,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2513,6 +2635,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2525,7 +2648,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -2534,6 +2656,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "완료";
@@ -2664,6 +2787,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "설명 편집";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "할인 편집";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "상품 카테고리 편집(%1$d개)";
@@ -2843,6 +2969,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "쿠폰 입력";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "금액 입력";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "운송업체 이름 입력";
 
@@ -2862,6 +2991,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "비밀번호 입력";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "백분율 입력";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
@@ -3003,6 +3135,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "주문 #%1$d 업데이트 중 오류 발생";
 
+/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+"Est. %1$@" = "%1$@(으)로 예상";
+
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "예상 설정 시간";
 
@@ -3092,6 +3227,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "%1$@ 만료";
+
+/* Button title to explore an extension that isn't installed */
+"Explore" = "둘러보기";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "스토어 판매를 늘리는 방법을 살펴보세요.";
@@ -3253,6 +3391,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "정률 상품 할인";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "고정 가격 할인";
+
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "유연하고 안전한 결제 옵션";
 
@@ -3264,6 +3405,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Food and drink" = "음식 및 음료";
+
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "예: 부드러운 원단, 튼튼한 바느질, 독특한 디자인";
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "비밀번호를 잊으셨나요?";
@@ -3316,6 +3462,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "전체 기능 목록";
 
+/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+"Funds become available after pending for %1$d days." = "%1$d일 대기 후 자금을 이용할 수 있게 됩니다.";
+
 /* Country option for a site address. */
 "Gabon" = "가봉";
 
@@ -3346,7 +3495,8 @@ which should be translated separately and considered part of this sentence. */
 /* Loading state for the suggested text in the add product from image form. */
 "Generating suggestion from photo..." = "사진을 통한 추천 생성 중...";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "생성 중...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3419,9 +3569,22 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "선물";
 
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "상품권";
+
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "상품권";
+
+/* Header of the gift card code text field in the order form. */
+"Gift card code" = "상품권 코드";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "상품권이 유효하지 않음";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "상품권이 적용되지 않음";
 
 /* No comment provided by engineer. */
 "Gift cards" = "상품권";
@@ -3470,6 +3633,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "알겠습니다";
 
@@ -3648,6 +3812,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "스토어 설정 목록 숨기기";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "어떤 부분이 상품을 독특하게 만드는지 강조하고 AI가 만들어 내는 놀라운 결과물을 확인하세요.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "맞춤형 설명에 대한 키워드로 상품의 고유한 기능과 잠재 고객을 강조 표시하세요.";
 
@@ -3665,6 +3832,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "어떻게 시작하시겠어요?";
+
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "작동 방식";
 
 /* Country option for a site address. */
 "Hungary" = "헝가리";
@@ -3738,13 +3908,29 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "워드프레스닷컴 계정이 없는 경우 Apple 또는 Google을 계속 사용하면 계정이 만들어지고 _서비스 약관_에 동의하는 것으로 간주합니다.";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "중요 정보";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "노출 수";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "%1$@의 경우 카드로 비접촉 한도까지의 거래에만 Tap to Pay를 사용 가능할 수 있습니다.";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "검토 중";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "진행 중";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "재고 있음";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "영국의 경우 카드로 최대 %1$@까지의 거래에만 Tap to Pay를 사용 가능할 수 있습니다.";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "현재 어떤 플랫폼에서 판매 중이신가요?";
@@ -3932,6 +4118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "유효하지 않은 엔드포인트";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "유효하지 않은 상품권 오류: %1$@";
+
 /* No comment provided by engineer. */
 "Invalid username" = "유효하지 않은 사용자명";
 
@@ -3942,6 +4131,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "유효하지 않은 무게";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "재고";
@@ -3960,6 +4150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "생성한 메시지가 유용한가요?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "결과가 유용한가요?";
 
 /* Country option for a site address. */
 "Isle of Man" = "맨섬";
@@ -4047,9 +4240,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "어디서나 참여";
-
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "모바일 결제 가입";
 
 /* Country option for a site address. */
 "Jordan" = "요르단";
@@ -4163,6 +4353,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Jetpack에 대해 자세히 알아보기";
 
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "카드 리더에 대해 더 알아보기";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "모바일 장치로 레이블 만들기에 대해 자세히 알아보기";
 
@@ -4172,6 +4365,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "이 데이터 공유를 제어하려고 당사에서 수집하는 회원님의 스토어와 옵션에 대한 데이터에 대해 자세히 알아보세요.";
+
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"Learn more about when you'll receive your funds" = "언제 자금을 받게 되는지 더 알아보기";
 
 /* Country option for a site address. */
 "Lebanon" = "레바논";
@@ -4188,6 +4384,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Lesotho" = "레소토";
+
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "AI에게 매력적인 제목 생성을 맡겨 보세요.";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "어떻게 도와드릴 수 있을지 알려주세요.";
@@ -4690,6 +4889,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Myanmar" = "미얀마";
 
+/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+"N\/A" = "해당 없음";
+
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
@@ -4784,6 +4986,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5144,6 +5347,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "또는 기존 속성을 눌러서 선택";
 
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "선택의 폭을 넓히려면 눌러서 더 많은 이름 제안을 볼 수 있습니다.";
+
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "주문 #%1$@";
@@ -5153,6 +5359,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Order Card Reader" = "카드 리더 주문";
+
+/* Text in the product row card that indicates the product quantity in an order */
+"Order Count" = "주문 수";
 
 /* Order notes section title */
 "Order Notes" = "주문 메모";
@@ -5258,7 +5467,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "패키지 규격은 0보다 커야 합니다. 계속하려면 상품 페이지의 배송 섹션에서 아이템의 규격을 업데이트하세요.";
 
-/* The title for the customer payment cell */
+/* Row title for the last paid deposit in the WooPayments Deposits overview
+   The title for the customer payment cell */
 "Paid" = "유료";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -5375,6 +5585,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "검토중";
 
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"Pending funds" = "대기 중인 자금";
+
 /* Display label for the product's pending status */
 "Pending review" = "검토 대기 중";
 
@@ -5383,6 +5596,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "비율(%) 할인";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "비율(%) 할인";
 
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "비율은 100%보다 클 수 없습니다.";
@@ -5440,7 +5656,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "리더를 충전하세요.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "iOS 16.0 이상이 실행되는 iPhone XS 이상 기종이라는 요구 사항을 스마트폰에서 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "스마트폰이 iOS 16.4 이상을 실행하는 iPhone XS 이상이라는 요구 사항을 충족하는지 확인하세요. 지원되는 기기에서 이 오류가 표시되면 지원팀에 문의하세요.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "상품권의 잔액을 확인하세요.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Apple ID가 유효한지 확인한 다음에 다시 시도하세요. Apple의 서비스 약관에 동의하려면 유효한 Apple ID가 필요합니다.";
@@ -5510,9 +5729,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID로 로그인하려면 워드프레스닷컴 계정의 비밀번호를 입력하세요.";
-
-/* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "인증 앱의 확인 코드를 입력하거나 SMS로 코드를 받으려면 아래 링크를 탭하세요.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "자격을 입력하세요";
@@ -5694,7 +5910,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "환불할 카드 제시";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "미리보기";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5702,10 +5919,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Price Settings navigation title
    Section header title for product price
+   Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "가격";
+
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "할인 후 가격";
 
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "가격 업데이트됨";
@@ -5839,11 +6061,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "상품 복사됨";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "상품 설명";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "상품 임시글 저장됨";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "제품 링크";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "상품 이름";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "상품 공개됨";
@@ -5854,7 +6084,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "상품 저장됨";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "상품 요약 설명";
+
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "제품 유형";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -6086,6 +6320,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "결제 환불하기";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "재생성";
@@ -6108,6 +6343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "정상 가격: %@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "거부됨";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "나중에 다시 알림";
@@ -6127,7 +6365,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "주문에서 쿠폰 제거";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "할인 제거";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6135,6 +6374,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "주문에서 수수료 제거";
+
+/* Button to remove the gift card code from the order form. */
+"Remove Gift Card" = "상품권 제거";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "이미지 삭제";
@@ -6153,6 +6395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "제품 제거";
+
+/* Text in the product row card button to remove a product from the current order */
+"Remove product from order" = "주문에서 상품 제거";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "변형 제거";
@@ -6202,6 +6447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "필수 항목";
 
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "iOS %1$@ 이상이 탑재된 iPhone XS 이상의 기기가 필요합니다. 비접촉 기호는 EMVCo, LLC가 소유한 상표이며 해당 회사의 허가 하에 사용됩니다.";
+
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "활동 로그 재설정";
 
@@ -6237,6 +6485,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
@@ -6412,7 +6661,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "임시글로 저장";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "임시글로 저장";
 
 /* Button title to save a shipping label to print later */
@@ -6444,6 +6694,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Scan barcode to update SKU" = "SKU를 업데이트할 바코드 스캔";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan code like XXXX-XXXX-XXXX-XXXX" = "코드(예: XXXX-XXXX-XXXX-XXXX) 스캔";
+
+/* Navigation bar title of the gift card code scanner. */
+"Scan gift card" = "상품권 스캔";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan product barcode" = "제품 바코드 선택";
 
 /* Scan Products */
@@ -6460,6 +6716,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "판매 일정";
+
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "예약됨";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "검색";
@@ -6660,6 +6919,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "세율 설정";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "iPhone의 Tap to Pay 설정";
+
+/* Title for the button to add a new tax ratewhen there is a tax rate stored */
+"Set a new tax rate for this order" = "이 주문에 대한 새 세율 설정";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "이메일 설정";
 
@@ -6669,14 +6935,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "제공하려는 할인 비율을 설정하세요.";
 
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "브랜드에 어울리는 상품 프레젠테이션을 위해 어조와 목소리를 설정하세요.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "어조 및 목소리 설정";
+
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "%1$@ 설정";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "젯팩 설정";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "iPhone의 Tap to Pay 설정";
 
@@ -6689,6 +6960,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "설정";
 
@@ -6717,14 +6989,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "쿠폰 공유";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "피드백 공유";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "결제 링크 공유";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "상품 공유";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "iPhone 피드백에서 Tap to Pay 공유";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "공유 URL";
@@ -6774,6 +7046,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
 
@@ -6798,9 +7071,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "배송비 환불";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "배송 구역";
 
 /* Challenge option in the store creation challenges question. */
 "Shipping and logistics" = "배송 및 물류";
@@ -6940,8 +7210,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "사이트 요금제 만료됨";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "생략하기";
@@ -7185,6 +7454,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "재고 상태";
 
+/* Message when the user disables adding tax rates automatically */
+"Stopped automatically adding tax rate" = "중지된 자동으로 세율 추가하기";
+
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "저장 공간";
 
@@ -7276,6 +7548,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "수단";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "이름 제안";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "사진을 통한 추천";
 
@@ -7357,6 +7632,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "태그";
 
@@ -7378,6 +7654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "사진 촬영";
+
+/* Description of the hub menu payments button */
+"Take payments on the go" = "이동 중 결제 처리";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "결제 수령으로 다시 이동하기";
@@ -7403,6 +7682,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "아래 버튼을 누르면 웹 브라우저를 통해 온라인 스토어로 리디렉팅됩니다.";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "Tap to Pay";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "iPhone에서 눌러서 결제";
@@ -7412,6 +7694,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "iPhone의 Tap to Pay가 준비되었습니다.";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Tap to Pay on iPhone을 통해 카드 리더 기기를 구매하지 않고도 실물 직불 및 신용 카드부터 Apple Pay, 기타 디지털 지갑까지 모든 비접촉 결제 유형을 수락할 수 있습니다.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "가로 눈금자를 삽입하려면 누르세요.";
@@ -7540,6 +7825,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "스토어에 대해 자세히 알려주세요.";
 
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "상품이 무엇이고 어떤 점이 독특한지 말씀해 주세요!";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
@@ -7553,8 +7841,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out viewing Order Add-Ons as we get ready to launch" = "출시 준비가 끝나면 주문 애드온 테스트해 보기";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "코드를 문자로 대신 받기";
 
 /* Country option for a site address. */
@@ -7677,6 +7964,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "코드가 XXXX-XXXX-XXXX-XXXX 형식으로 되어 있어야 함";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "쿠폰 금액의 할인 비율은 100보다 클 수 없습니다.";
 
@@ -7704,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "iPhone의 Tap to Pay를 처음 사용할 때 Apple의 서비스 약관에 동의하라는 메시지가 표시될 수 있습니다.";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "상품권이 적용되지 않습니다.";
+
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "새 사용자 정의 패키지 이름이 고유하지 않습니다.";
 
@@ -7718,6 +8011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "결제 처리업체에서 결제를 처리할 수 없습니다.";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "결제 카드가 너무 일찍 제거됐습니다. 다시 시도하세요.";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "결제 수단에서 자동 환불을 지원하지 않습니다. 고객에게 금액을 수동으로 송금하여 환불을 완료하세요.";
@@ -7880,11 +8176,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "프라이버시 설정 가져오기 중 오류가 발생했습니다.";
 
+/* Error message when generating product details fails on the add product with AI Preview screen. */
+"There was an error generating product details. Please try again." = "상품 상세 정보 생성 중 오류가 발생했습니다. 다시 시도하세요.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "환불 발행 중 오류 발생";
 
 /* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
 "There was an error retrying this payment. Please go back and start again." = "이 결제를 재시도하는 동안 오류가 발생했습니다. 뒤로 이동하여 다시 시작하세요.";
+
+/* Error message when saving product as draft on the add product with AI Preview screen. */
+"There was an error saving product details. Please try again." = "상품 상세 정보 저장 중 오류가 발생했습니다. 다시 시도하세요.";
 
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "개인정보 선택 사항을 저장하는 중 오류가 발생했습니다.";
@@ -8041,6 +8343,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "대상";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "이 한도를 초과하는 결제를 받으려면 카드 리더 구매를 고려하세요.";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "쿠폰을 추가하려면 제품 할인을 제거하세요.";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "제품 할인을 추가하려면 주문에서 쿠폰을 모두 제거하세요.";
+
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "변형을 추가하려면 속성(즉, \"색상\", \"사이즈\")을 먼저 설정해야 합니다.";
 
@@ -8107,6 +8418,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "토켈라우";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "어조 및 목소리";
 
 /* Country option for a site address. */
 "Tonga" = "통가";
@@ -8210,6 +8524,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "다시 설치 시도";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "Tap to Pay on iPhone 사용해 보기";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "다시 결제 시도";
 
@@ -8218,9 +8535,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "테스트 주문 체험";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "결제 체험";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "본인의 카드로 결제를 시도해 보세요(완료한 후에 환불받으세요).";
@@ -8251,9 +8565,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "지금 사용해 보기";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "$0.50를 결제하여 iPhone에서 Tap to Pay가 작동하는 방식을 확인해 보세요. 체크카드 또는 신용카드를 사용할 수 있으며, 완료하면 환불받을 수 있습니다.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "다른 이메일로 시도";
@@ -8556,7 +8867,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "미국령 버진아일랜드";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "알 수 없음";
@@ -8566,6 +8878,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "알 수 없는 소프트웨어 버전";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "알 수 없는 국가";
 
 /* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
@@ -8745,6 +9060,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "AI 기반 도구를 사용하여 상품 설명을 빠르게 생성하세요. 키워드만 입력하시면 나머지는 자동으로 진행됩니다!";
+
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "패키지 사진 사용(선택 사항)";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "로그인 비밀번호 사용";
@@ -8957,6 +9275,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "사이트를 로드할 수 없음";
 
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "앱 로그인 요청을 처리하지 못했습니다.";
+
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "어떠한 세율도 찾을 수 없음";
 
@@ -9120,6 +9441,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Jetpack이란 무엇인가요?";
 
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "Tap to Pay on iPhone이 무엇인가요?";
+
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "WooCommerce 서비스 할인이란?";
 
@@ -9168,6 +9492,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
+
+/* Title for the row related to Woo Payments Deposits/Balances.
+   Title for the section related to Woo Payments Deposits/Balances. */
+"Woo Payments Balance" = "Woo Payments 잔액";
 
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "좋아요! 바로 시작하실 수 있습니다!";
@@ -9239,6 +9567,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Write a description" = "설명 작성";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -9246,6 +9575,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "계정이 잘못되었나요?";
+
+/* Placeholder of the gift card code text field in the order form. */
+"XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "야후 메일";
@@ -9275,6 +9607,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "%1$@ 요금제를 구독하셨습니다! %2$@까지 모든 기능에 접근하실 수 있습니다.";
 
+/* Subtitle on the add product with AI Preview screen. */
+"You can always change the below details later." = "아래의 상세 정보는 나중에 언제든지 변경하실 수 있습니다.";
+
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "여러 개를 선택할 수 있습니다.";
 
@@ -9295,9 +9630,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "웹 알림판에서 구독 설정을 편집할 수 있습니다.";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "메뉴 > 결제 > 결제받기나 주문 상세 정보에서 iPhone의 Tap to Pay를 찾을 수 있습니다. iPhone의 Tap to Pay를 결제 수단으로 선택하세요.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "메뉴 > 설정에서 도메인 설정을 찾을 수 있습니다.";
@@ -9548,6 +9880,18 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송 시 모든 아이템을 명확하게 설명해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
 
+/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+"every %1$@" = "%1$@마다";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+"every day" = "매일";
+
+/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+"every month" = "매월";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+"every month on the %1$@" = "매월 %1$@에";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "example.com";
@@ -9576,6 +9920,9 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "수동 환불";
 
+/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+"manually, on request" = "요청 시 수동으로";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "월";
 
@@ -9584,6 +9931,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
+
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
 
 /* No comment provided by engineer. */
 "password" = "비밀번호";
@@ -9661,6 +10017,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "오늘의 통계를 가져올 수 없음";
 
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "Tap to Pay on iPhone을 통한 결제 수락에 대해 %1$@";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "알 수 없음";
 
@@ -9709,6 +10070,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 비즈니스를 계속 운영하세요!";
+
+/* Message when a tax rate is set */
+"🎉 New tax rate set" = "🎉 설정된 새 세율";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 주문 완료됨";

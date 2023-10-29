@@ -65,7 +65,8 @@ extension StripeCardReaderService: CardReaderService {
 
     public func checkSupport(for cardReaderType: CardReaderType,
                              configProvider: CardReaderConfigProvider,
-                             discoveryMethod: CardReaderDiscoveryMethod) -> Bool {
+                             discoveryMethod: CardReaderDiscoveryMethod,
+                             minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         guard let deviceType = cardReaderType.toStripe() else {
             return false
         }
@@ -77,7 +78,13 @@ extension StripeCardReaderService: CardReaderService {
                                                      simulated: shouldUseSimulatedCardReader)
         switch result {
         case .success:
-            return true
+            /// Note that while this will now never be nil, we can still remove this check if Stripe update `supportsReaders` to be country-aware
+            if let minimumOperatingSystemVersionOverride {
+                return ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
+            } else {
+                return true
+            }
+
         case .failure:
             return false
         }
@@ -345,6 +352,15 @@ extension StripeCardReaderService: CardReaderService {
         case .succeeded:
             return Fail(error: CardReaderServiceError.retryNotPossibleActivePaymentSucceeded)
                 .eraseToAnyPublisher()
+        case .requiresAction:
+            /// This case shouldn't happen, but Stripe advise checking the nextAction in the JSON if it does.
+            /// We're not doing that yet, because it's challenging to test. In future we
+            /// can assess whether it's needed from analytics of this specific error.
+            /// It will be tracked as `woocommerceios_card_present_collect_payment_failed`
+            // swiftlint:disable:next line_length
+            // https://stripe.dev/stripe-terminal-ios/docs/Enums/SCPPaymentIntentStatus.html#/c:@E@SCPPaymentIntentStatus@SCPPaymentIntentStatusRequiresAction
+            return Fail(error: CardReaderServiceError.retryNotPossibleRequiresAction)
+                    .eraseToAnyPublisher()
         @unknown default:
             return Fail(error: CardReaderServiceError.retryNotPossibleUnknownCause)
                 .eraseToAnyPublisher()

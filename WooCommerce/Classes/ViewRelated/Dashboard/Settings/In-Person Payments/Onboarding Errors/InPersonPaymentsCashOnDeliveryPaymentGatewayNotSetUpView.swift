@@ -40,7 +40,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
 struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
     static var previews: some View {
         let viewModel = InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel(
-            configuration: CardPresentPaymentsConfiguration(country: "US"),
+            configuration: CardPresentPaymentsConfiguration(country: .US),
             plugin: .wcPay,
             analyticReason: "",
             completion: {})

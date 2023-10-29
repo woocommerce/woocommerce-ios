@@ -4,16 +4,13 @@ import Experiments
 import Combine
 
 final class TapToPayBadgePromotionChecker {
-    private let featureFlagService: FeatureFlagService
     private let stores: StoresManager
 
     @Published private(set) var shouldShowTapToPayBadges: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []
 
-    init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         stores: StoresManager = ServiceLocator.stores) {
-        self.featureFlagService = featureFlagService
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
 
         listenToTapToPayBadgeReloadRequired()
@@ -51,7 +48,7 @@ final class TapToPayBadgePromotionChecker {
                 }
                 self?.stores.dispatch(action)
             })
-            shouldShowTapToPayBadges = visible && featureFlagService.isFeatureFlagEnabled(.tapToPayBadge)
+            shouldShowTapToPayBadges = visible
         } catch {
             DDLogError("Could not fetch feature announcement visibility \(error)")
         }

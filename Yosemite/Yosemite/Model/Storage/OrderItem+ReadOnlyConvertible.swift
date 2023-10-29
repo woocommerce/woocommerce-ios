@@ -55,6 +55,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          totalTax: totalTax ?? "",
                          attributes: attributes,
                          addOns: addOns,
-                         parent: parent?.int64Value)
+                         parent: parent?.int64Value,
+                         bundleConfiguration: [])
     }
 }

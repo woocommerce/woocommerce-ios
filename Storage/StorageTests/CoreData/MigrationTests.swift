@@ -2237,6 +2237,89 @@ final class MigrationTests: XCTestCase {
         let isSampleItem = try XCTUnwrap(migratedProductEntity.value(forKey: "isSampleItem") as? Bool)
         XCTAssertFalse(isSampleItem, "Confirm expected property exists, and is false by default.")
     }
+
+    func test_migrating_from_98_to_99_adds_new_attributes_to_ProductBundleItem() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 98")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 98)
+
+        // Inserts a new ProductBundleItem and add it to Product.
+        let bundledItem = insertProductBundleItem(to: sourceContext)
+        product.setValue(NSOrderedSet(array: [bundledItem]), forKey: "bundledItems")
+        try sourceContext.save()
+
+        XCTAssertNil(bundledItem.entity.attributesByName["minQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["maxQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["defaultQuantity"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["isOptional"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["overridesDefaultVariationAttributes"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.attributesByName["allowedVariations"], "Precondition. Property does not exist.")
+        XCTAssertNil(bundledItem.entity.relationshipsByName["defaultVariationAttributes"], "Precondition. Relationship does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 99")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+        let migratedBundledItem = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+
+        XCTAssertEqual(try targetContext.count(entityName: "Product"), 1)
+        XCTAssertEqual(try targetContext.count(entityName: "ProductBundleItem"), 1)
+
+        // ProductBundleItem has the expected default values for the new attributes.
+        XCTAssertEqual(migratedBundledItem.value(forKey: "minQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "maxQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultQuantity") as? Int64, 0)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "isOptional") as? Bool, true)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesVariations") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "overridesDefaultVariationAttributes") as? Bool, false)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "allowedVariations") as? [Int64], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "defaultVariationAttributes") as? [GenericAttribute], nil)
+        XCTAssertEqual(migratedBundledItem.value(forKey: "product") as? NSManagedObject, migratedProduct)
+
+        // Product's relationship to ProductBundleItem exists.
+        XCTAssertEqual(migratedProduct.value(forKey: "bundledItems") as? NSOrderedSet, NSOrderedSet(array: [migratedBundledItem]))
+    }
+
+    func test_migrating_from_99_to_100_adds_BlazeCampaign_entity() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 99")
+        let sourceContext = sourceContainer.viewContext
+
+        try sourceContext.save()
+
+        // Confidence Check. `BlazeCampaign` should not exist in Model 73
+        XCTAssertNil(NSEntityDescription.entity(forEntityName: "BlazeCampaign", in: sourceContext))
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 100")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+
+        // `BlazeCampaign` should exist in Model 100
+        XCTAssertNotNil(NSEntityDescription.entity(forEntityName: "BlazeCampaign", in: targetContext))
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaign"), 0)
+
+        // Insert a new BlazeCampaign
+        let campaign = insertBlazeCampaign(to: targetContext, forModel: 100)
+        XCTAssertEqual(try targetContext.count(entityName: "BlazeCampaign"), 1)
+
+        // Check all attributes
+        XCTAssertEqual(campaign.value(forKey: "campaignID") as? Int64, 1)
+        XCTAssertEqual(campaign.value(forKey: "siteID") as? Int64, 1)
+        XCTAssertEqual(campaign.value(forKey: "contentClickURL") as? String, "https://example.com/products/1")
+        XCTAssertEqual(campaign.value(forKey: "contentImageURL") as? String, "https://example.com/products/1/thumbnail.png")
+        XCTAssertEqual(campaign.value(forKey: "name") as? String, "Product")
+        XCTAssertEqual(campaign.value(forKey: "rawStatus") as? String, "approved")
+        XCTAssertEqual(campaign.value(forKey: "totalBudget") as? Double, 150)
+        XCTAssertEqual(campaign.value(forKey: "totalClicks") as? Int64, 11)
+        XCTAssertEqual(campaign.value(forKey: "totalImpressions") as? Int64, 33)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2931,5 +3014,27 @@ private extension MigrationTests {
         }
 
         return taxRate
+    }
+
+    /// Inserts a `BlazeCampaign` entity, providing default values for the required properties.
+    @discardableResult
+    func insertBlazeCampaign(to context: NSManagedObjectContext, forModel modelVersion: Int) -> NSManagedObject {
+        let campaign = context.insert(entityName: "BlazeCampaign", properties: [
+            "campaignID": 1,
+            "contentClickURL": "https://example.com/products/1",
+            "contentImageURL": "https://example.com/products/1/thumbnail.png",
+            "name": "Product",
+            "rawStatus": "approved",
+            "totalBudget": 150,
+            "totalClicks": 11,
+            "totalImpressions": 33
+        ])
+
+        // Required since model 100
+        if modelVersion >= 100 {
+            campaign.setValue(1, forKey: "siteID")
+        }
+
+        return campaign
     }
 }

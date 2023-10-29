@@ -13,6 +13,18 @@ enum OrderSyncState {
 /// Product input for an `OrderSynchronizer` type.
 ///
 struct OrderSyncProductInput {
+    init(id: Int64 = .zero,
+         product: OrderSyncProductInput.ProductType,
+         quantity: Decimal,
+         discount: Decimal = .zero,
+         bundleConfiguration: [BundledProductConfiguration] = []) {
+        self.id = id
+        self.product = product
+        self.quantity = quantity
+        self.discount = discount
+        self.bundleConfiguration = bundleConfiguration
+    }
+
     /// Types of products the synchronizer supports
     ///
     enum ProductType {
@@ -23,9 +35,10 @@ struct OrderSyncProductInput {
     let product: ProductType
     let quantity: Decimal
     var discount: Decimal = .zero
+    let bundleConfiguration: [BundledProductConfiguration]
 
     func updating(id: Int64) -> OrderSyncProductInput {
-        .init(id: id, product: self.product, quantity: self.quantity, discount: discount)
+        .init(id: id, product: self.product, quantity: self.quantity, discount: discount, bundleConfiguration: bundleConfiguration)
     }
 }
 
@@ -88,9 +101,17 @@ protocol OrderSynchronizer {
     ///
     var setShipping: PassthroughSubject<ShippingLine?, Never> { get }
 
-    /// Sets or removes an order fee.
+    /// Adds a fee to the order.
     ///
-    var setFee: PassthroughSubject<OrderFeeLine?, Never> { get }
+    var addFee: PassthroughSubject<OrderFeeLine, Never> { get }
+
+    /// Removes the fee from the order.
+    /// 
+    var removeFee: PassthroughSubject<OrderFeeLine, Never> { get }
+
+    /// Updates the fee with the given fee Id.
+    ///
+    var updateFee: PassthroughSubject<OrderFeeLine, Never> { get }
 
     /// Adds an order coupon.
     ///

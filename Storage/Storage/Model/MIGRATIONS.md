@@ -2,6 +2,14 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 100 (Release 15.8.0.0)
+- @itsmeichigo 2023-10-11
+    - Added new entity `BlazeCampaign`
+
+## Model 99 (Release 15.7.0.0)
+- @jaclync 2023-09-27
+    - Added `minQuantity`, `maxQuantity`, `defaultQuantity`, `isOptional`, `allowedVariations`, `overridesDefaultVariationAttributes`, `overridesVariations` attributes and `defaultVariationAttributes` relationship to `ProductBundleItem` entity.
+
 ## Model 98 (Release 15.4.0.0)
 - @hihuongdo 2023-09-15
     - Added `isSampleItem` attribute to `Product` entity.

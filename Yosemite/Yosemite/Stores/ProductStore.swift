@@ -130,32 +130,32 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductName(siteID, keywords, language, completion):
             generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
-        case let .generateProductDetails(siteID, productName, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
-        case let .generateProduct(siteID,
-                                  productName,
-                                  keywords,
-                                  language,
-                                  tone,
-                                  currencySymbol,
-                                  dimensionUnit,
-                                  weightUnit,
-                                  categories,
-                                  tags,
-                                  completion):
-            generateProduct(siteID: siteID,
-                            productName: productName,
-                            keywords: keywords,
-                            language: language,
-                            tone: tone,
-                            currencySymbol: currencySymbol,
-                            dimensionUnit: dimensionUnit,
-                            weightUnit: weightUnit,
-                            categories: categories,
-                            tags: tags,
-                            completion: completion)
+        case let .generateAIProduct(siteID,
+                                    productName,
+                                    keywords,
+                                    language,
+                                    tone,
+                                    currencySymbol,
+                                    dimensionUnit,
+                                    weightUnit,
+                                    categories,
+                                    tags,
+                                    completion):
+            generateAIProduct(siteID: siteID,
+                              productName: productName,
+                              keywords: keywords,
+                              language: language,
+                              tone: tone,
+                              currencySymbol: currencySymbol,
+                              dimensionUnit: dimensionUnit,
+                              weightUnit: weightUnit,
+                              categories: categories,
+                              tags: tags,
+                              completion: completion)
         }
     }
 }
@@ -412,17 +412,6 @@ private extension ProductStore {
         })
     }
 
-    func retrieveProducts(from productIDs: [Int64]) -> [Product] {
-        productIDs
-            .compactMap {
-                let predicate = NSPredicate(format: "productID == %lld", $0)
-                let product = sharedDerivedStorage.allObjects(ofType: StorageProduct.self,
-                                                          matching: predicate,
-                                                          sortedBy: nil).first
-                return product
-            }.map { $0.toReadOnly() }
-    }
-
     /// Adds a product.
     ///
     func addProduct(product: Product, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
@@ -643,6 +632,7 @@ private extension ProductStore {
     func generateProductDetails(siteID: Int64,
                                 productName: String?,
                                 scannedTexts: [String],
+                                language: String,
                                 completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {
@@ -652,10 +642,9 @@ private extension ProductStore {
         }()
         let prompt = [
             "Write a name and description of a product for an online store given the keywords at the end.",
-            "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
-            "and the detected language as the locale identifier in `language` field.",
+            "Return only a JSON dictionary with the name in `name` field, description in `description` field.",
             "The output should be in valid JSON format.",
-            "Detect the language in the array and use the same language to write the name and description.",
+            "The output should be in language \(language).",
             "Make the description 50-60 words or less.",
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
@@ -669,7 +658,7 @@ private extension ProductStore {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
-                completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+                completion(.success(.init(name: details.name, description: details.description)))
             } catch {
                 completion(.failure(error))
             }
@@ -708,29 +697,29 @@ private extension ProductStore {
         }
     }
 
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag],
-                         completion: @escaping (Result<Product, Error>) -> Void) {
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           completion: @escaping (Result<AIProduct, Error>) -> Void) {
         Task { @MainActor in
             let result = await Result {
-                let product = try await generativeContentRemote.generateProduct(siteID: siteID,
-                                                                                    productName: productName,
-                                                                                    keywords: keywords,
-                                                                                    language: language,
-                                                                                    tone: tone,
-                                                                                    currencySymbol: currencySymbol,
-                                                                                    dimensionUnit: dimensionUnit,
-                                                                                    weightUnit: weightUnit,
-                                                                                    categories: categories,
-                                                                                    tags: tags)
+                let product = try await generativeContentRemote.generateAIProduct(siteID: siteID,
+                                                                                  productName: productName,
+                                                                                  keywords: keywords,
+                                                                                  language: language,
+                                                                                  tone: tone,
+                                                                                  currencySymbol: currencySymbol,
+                                                                                  dimensionUnit: dimensionUnit,
+                                                                                  weightUnit: weightUnit,
+                                                                                  categories: categories,
+                                                                                  tags: tags)
                 return product
             }
             completion(result)
@@ -1004,6 +993,19 @@ extension ProductStore {
         let storageBundledItems = readOnlyProduct.bundledItems.map { readOnlyBundleItem -> StorageProductBundleItem in
             let storageBundledItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
             storageBundledItem.update(with: readOnlyBundleItem)
+
+            // Removes all default variation attributes and adds new ones from the readonly version.
+            if let defaultVariationAttributes = storageBundledItem.defaultVariationAttributes {
+                storageBundledItem.removeFromDefaultVariationAttributes(defaultVariationAttributes)
+            }
+
+            let storageDefaultVariationAttributes = readOnlyBundleItem.defaultVariationAttributes.map {
+                let storageVariationAttribute = storage.insertNewObject(ofType: Storage.GenericAttribute.self)
+                storageVariationAttribute.update(with: $0)
+                return storageVariationAttribute
+            }
+            storageBundledItem.addToDefaultVariationAttributes(NSOrderedSet(array: storageDefaultVariationAttributes))
+
             return storageBundledItem
         }
         storageProduct.addToBundledItems(NSOrderedSet(array: storageBundledItems))
@@ -1239,13 +1241,10 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
     public let name: String
     /// Product description.
     public let description: String
-    /// The language code detected for the product.
-    public let language: String
 
-    public init(name: String, description: String, language: String) {
+    public init(name: String, description: String) {
         self.name = name
         self.description = description
-        self.language = language
     }
 }
 

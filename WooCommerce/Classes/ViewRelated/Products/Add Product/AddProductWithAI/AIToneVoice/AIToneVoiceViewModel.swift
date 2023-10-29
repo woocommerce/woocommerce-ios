@@ -30,6 +30,7 @@ final class AIToneVoiceViewModel: ObservableObject {
     func onSelectTone(_ aiPromptTone: AIToneVoice) {
         self.selectedTone = aiPromptTone
         userDefaults.setAITone(aiPromptTone, for: siteID)
+        analytics.track(event: .ProductCreationAI.aiToneSelected(aiPromptTone))
     }
 }
 

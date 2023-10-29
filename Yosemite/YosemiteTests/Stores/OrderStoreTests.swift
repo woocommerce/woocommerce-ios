@@ -1512,6 +1512,72 @@ final class OrderStoreTests: XCTestCase {
         // Then
         XCTAssertEqual(ordersSequence.count, 0)
     }
+
+    // MARK: - Product bundles extension
+
+    func test_updateOrder_with_remote_item_with_bundle_configuration_updates_line_items() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+        let order = Order.fake().copy(items: [
+            // Parent order item that is a bundle product with item ID 6.
+            .fake().copy(itemID: 6, quantity: 2, bundleConfiguration: [.fake()]),
+            // Child order item of the bundle product order item (parent item ID 6).
+            .fake().copy(itemID: 7, quantity: 3, parent: 6)
+        ])
+
+        // When
+        store.onAction(OrderAction.updateOrder(siteID: siteID,
+                                               order: order,
+                                               giftCard: nil,
+                                               fields: [.items],
+                                               onCompletion: { _ in }))
+
+        // Then
+        let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
+        XCTAssertEqual(lineItems.count, 3)
+
+        let removedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 6 })
+        XCTAssertEqual(removedBundleOrderItem["quantity"] as? Int64, 0)
+        XCTAssertNil(removedBundleOrderItem["bundle_configuration"])
+
+        let updatedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
+        XCTAssertEqual(updatedBundleOrderItem["quantity"] as? Int64, 2)
+        XCTAssertNotNil(updatedBundleOrderItem["bundle_configuration"])
+
+        let removedChildBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
+        XCTAssertEqual(removedChildBundleOrderItem["quantity"] as? Int64, 0)
+        XCTAssertNil(removedChildBundleOrderItem["bundle_configuration"])
+    }
+
+    func test_updateOrder_with_new_item_with_bundle_configuration_does_not_update_line_items() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let siteID: Int64 = 6688
+        let order = Order.fake().copy(items: [
+            .fake().copy(itemID: 0, quantity: 2, bundleConfiguration: [.fake()]),
+            // Another order item.
+            .fake().copy(itemID: 7, quantity: 3)
+        ])
+
+        // When
+        store.onAction(OrderAction.updateOrder(siteID: siteID,
+                                               order: order,
+                                               giftCard: nil,
+                                               fields: [.items],
+                                               onCompletion: { _ in }))
+
+        // Then
+        let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
+        XCTAssertEqual(lineItems.count, 2)
+
+        let bundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
+        XCTAssertEqual(bundleOrderItem["quantity"] as? Int64, 2)
+        XCTAssertNotNil(bundleOrderItem["bundle_configuration"])
+
+        let anotherOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
+        XCTAssertEqual(anotherOrderItem["quantity"] as? Int64, 3)
+    }
 }
 
 
@@ -1654,7 +1720,8 @@ private extension OrderStoreTests {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -1671,7 +1738,8 @@ private extension OrderStoreTests {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2]
     }
@@ -1692,7 +1760,8 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
@@ -1709,7 +1778,8 @@ private extension OrderStoreTests {
                               totalTax: "0.40",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
@@ -1726,7 +1796,8 @@ private extension OrderStoreTests {
                               totalTax: "10.40",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2, item3]
     }
@@ -1747,7 +1818,8 @@ private extension OrderStoreTests {
                               totalTax: "4.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1]
     }

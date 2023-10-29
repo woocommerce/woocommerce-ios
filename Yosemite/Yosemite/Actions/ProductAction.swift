@@ -41,16 +41,16 @@ public enum ProductAction: Action {
     /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products to sync.
     ///
     case synchronizeProducts(siteID: Int64,
-        pageNumber: Int,
-        pageSize: Int,
-        stockStatus: ProductStockStatus?,
-        productStatus: ProductStatus?,
-        productType: ProductType?,
-        productCategory: ProductCategory?,
-        sortOrder: ProductsSortOrder,
-        excludedProductIDs: [Int64] = [],
-        shouldDeleteStoredProductsOnFirstPage: Bool = true,
-        onCompletion: (Result<Bool, Error>) -> Void)
+                             pageNumber: Int,
+                             pageSize: Int,
+                             stockStatus: ProductStockStatus?,
+                             productStatus: ProductStatus?,
+                             productType: ProductType?,
+                             productCategory: ProductCategory?,
+                             sortOrder: ProductsSortOrder,
+                             excludedProductIDs: [Int64] = [],
+                             shouldDeleteStoredProductsOnFirstPage: Bool = true,
+                             onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Retrieves the specified Product.
     ///
@@ -62,10 +62,10 @@ public enum ProductAction: Action {
     ///                           indicates whether there might be more products to fetch.
     ///
     case retrieveProducts(siteID: Int64,
-        productIDs: [Int64],
-        pageNumber: Int = ProductsRemote.Default.pageNumber,
-        pageSize: Int = ProductsRemote.Default.pageSize,
-        onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+                          productIDs: [Int64],
+                          pageNumber: Int = ProductsRemote.Default.pageNumber,
+                          pageSize: Int = ProductsRemote.Default.pageSize,
+                          onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieves the first Product with exact-match SKU
     ///
@@ -154,6 +154,7 @@ public enum ProductAction: Action {
     case generateProductDetails(siteID: Int64,
                                 productName: String?,
                                 scannedTexts: [String],
+                                language: String,
                                 completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.
@@ -161,7 +162,7 @@ public enum ProductAction: Action {
     case fetchNumberOfProducts(siteID: Int64, completion: (Result<Int64, Error>) -> Void)
 
 
-    /// Generates a product using AI
+    /// Generates a AIProduct using AI
     ///
     /// - Parameter siteID: Site ID for which the product is generated for
     /// - Parameter productName: Product name to input for AI
@@ -175,15 +176,15 @@ public enum ProductAction: Action {
     /// - Parameter tags: Existing tags
     /// - Parameter completion: Completion closure
     ///
-    case generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag],
-                         completion: (Result<Product, Error>) -> Void)
+    case generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           completion: (Result<AIProduct, Error>) -> Void)
 }

@@ -22,7 +22,8 @@ public protocol CardReaderService {
     ///
     func checkSupport(for cardReaderType: CardReaderType,
                       configProvider: CardReaderConfigProvider,
-                      discoveryMethod: CardReaderDiscoveryMethod) -> Bool
+                      discoveryMethod: CardReaderDiscoveryMethod,
+                      minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool
 
     /// Starts the service.
     /// That could imply, for example, that the reader discovery process starts

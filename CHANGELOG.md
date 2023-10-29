@@ -1,6 +1,25 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.0
+We're thrilled to roll out the latest updates! 
+
+In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
+
+We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+
+## 15.9
+Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.
+
+## 15.8
+Effortlessly navigate between orders, add discounts and coupons with ease, and enjoy enhanced product creation AI in this update. Thank you for choosing WooCommerce.
+
+## 15.7
+Immerse yourself in the latest WooCommerce app release! We're introducing an AI-powered feature that allows you to generate new tags/categories while creating a product, making your product management smarter and more efficient. Also, we've addressed a fix in the order details section. Now, if an order item is a variable product with attributes and add-ons, the variation attributes will be displayed. Dive into these enhancements for a smoother, more intuitive experience.
+
+## 15.6
+We're excited to introduce new features in our latest WooCommerce update! Now, you can effortlessly automate tax calculations for new orders by storing tax rates based on location. Also, we're bringing AI to your fingertips - creating products on WPCOM and self-hosted stores with Jetpack AI plugin is now easier than ever. Plus, merchants can sweeten the deal by applying gift cards directly to orders. Enjoy these enhancements and keep the feedback coming! Happy selling!
+
 ## 15.5
 We're excited to announce the latest updates to WooCommerce for iOS! Now, you can start creating your store immediately after signing up for a new WPCOM account. We've also improved visibility for gift card information across multiple orders. Additionally, we've enabled AI features for product description and sharing for self-hosted sites with the Jetpack AI plugin. Lastly, applied gift cards will now appear below the coupon section on the order form, making tracking discounts easier. Enjoy these enhancements!
 

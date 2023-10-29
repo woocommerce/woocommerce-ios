@@ -7,30 +7,18 @@ final class AddProductNameWithAIViewModel: ObservableObject {
 
     let siteID: Int64
     private let analytics: Analytics
-    private let onUsePackagePhoto: (String?) -> Void
-    private let onContinueWithProductName: (String) -> Void
 
-    private var productName: String? {
+    var productName: String? {
         guard productNameContent.isNotEmpty else {
             return nil
         }
         return productNameContent
     }
 
-    init(siteID: Int64,
-         initialName: String = "",
-         analytics: Analytics = ServiceLocator.analytics,
-         onUsePackagePhoto: @escaping (String?) -> Void,
-         onContinueWithProductName: @escaping (String) -> Void) {
+    init(siteID: Int64, analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
-        self.onUsePackagePhoto = onUsePackagePhoto
-        self.onContinueWithProductName = onContinueWithProductName
-        self.productNameContent = initialName
+        self.productNameContent = ""
         self.analytics = analytics
-    }
-
-    func didTapUsePackagePhoto() {
-        onUsePackagePhoto(productName)
     }
 
     func didTapSuggestName() {
@@ -38,6 +26,6 @@ final class AddProductNameWithAIViewModel: ObservableObject {
     }
 
     func didTapContinue() {
-        onContinueWithProductName(productNameContent)
+        analytics.track(event: .ProductCreationAI.productNameContinueTapped())
     }
 }

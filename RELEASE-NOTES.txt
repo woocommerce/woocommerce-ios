@@ -1,8 +1,40 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.0
+-----
+- [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
+- [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
+- [*] Orders: Fixed UI issue showing incorrect discounted total product value in certain cases [https://github.com/woocommerce/woocommerce-ios/pull/11016]
+- [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
+- [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
+- [**] Orders: Users can now add custom amounts to orders. [https://github.com/woocommerce/woocommerce-ios/pull/11022]
+- [*] Payments: hide the `Set up Tap to Pay` button in About Tap to Pay when set up is complete [https://github.com/woocommerce/woocommerce-ios/pull/11025]
+
+15.9
+-----
+- [***] User can now use their stored passkeys to log in into WordPress.com [https://github.com/woocommerce/woocommerce-ios/pull/10904]
+- [***] Payments: UK-based merchants can take payments using Tap to Pay on iPhone [https://github.com/woocommerce/woocommerce-ios/pull/10957]
+- [*] App login links are now handled when the onboarding screen is shown. [https://github.com/woocommerce/woocommerce-ios/pull/10974]
+
+15.8
+-----
+- [*] Users can now navigate to other orders without leaving the Order Detail screen. [https://github.com/woocommerce/woocommerce-ios/pull/10849]
+- [*] The Set up Tap to Pay on iPhone row in the Payments menu now reflects when you've completed set up for the current device and store [https://github.com/woocommerce/woocommerce-ios/pull/10923]
+- [*] The Set up Tap to Pay on iPhone Learn More button opens more details about Tap to Pay [https://github.com/woocommerce/woocommerce-ios/pull/10934]
+- [internal] Use minimumAllowedChargeAmount, not 0.50, for the Try a Payment flow [https://github.com/woocommerce/woocommerce-ios/pull/10937]
+- [*] Changes to the Payments menu to make it clearer [https://github.com/woocommerce/woocommerce-ios/pull/10936]
+- [*] Order creation: We updated the UX by allowing direct product discounts to be added, and improved the Product Discount screen [https://github.com/woocommerce/woocommerce-ios/pull/10929]
+
+15.7
+-----
+- [*] Generate new tags/categories while creating product using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10864]
+- [*] Fix: in order details where an order item is a variable product with attributes and has add-ons, the variation attributes are shown now. [https://github.com/woocommerce/woocommerce-ios/pull/10877]
+
 15.6
 -----
 - [**] Taxes in orders: Users can now store the tax rate's location to add it automatically to a new order customer's address. [https://github.com/woocommerce/woocommerce-ios/pull/10802]
+- [**] WPCOM stores and self-hosted stores with Jetpack AI plugin can now create products using AI. [https://github.com/woocommerce/woocommerce-ios/pull/10812]
+- [*] Order form: the merchant can apply a gift card to an order. [https://github.com/woocommerce/woocommerce-ios/pull/10759]
 
 15.5
 -----

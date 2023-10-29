@@ -5,6 +5,21 @@ import XCTest
 
 final class AIToneVoiceViewModelTests: XCTestCase {
     private let siteID: Int64 = 123
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
 
     func test_casual_is_the_default_tone() throws {
         // Given
@@ -77,5 +92,22 @@ final class AIToneVoiceViewModelTests: XCTestCase {
         // Then
         let dictionary = try XCTUnwrap(defaults[.aiPromptTone] as? [String: String])
         XCTAssertEqual(dictionary["\(siteID)"], AIToneVoice.convincing.rawValue)
+    }
+
+    // MARK: Analytics
+
+    func test_onSelectTone_tracks_tone_selected_event() throws {
+        //  Given
+        let viewModel = AIToneVoiceViewModel(siteID: siteID, analytics: analytics)
+
+        // When
+        viewModel.onSelectTone(.flowery)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_tone_selected"))
+
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "product_creation_ai_tone_selected"}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+        XCTAssertEqual(eventProperties["value"] as? String, "flowery")
     }
 }

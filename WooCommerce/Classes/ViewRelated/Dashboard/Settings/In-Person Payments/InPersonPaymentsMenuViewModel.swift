@@ -43,6 +43,8 @@ final class InPersonPaymentsMenuViewModel {
     @Published private(set) var isEligibleForTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldShowTapToPayOnIPhoneFeedbackRow: Bool = false
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
+    @Published private(set) var depositsOverviewViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
+    @Published private(set) var titleForTapToPayOnIPhone: String = Localization.setUpTapToPayOnIPhoneRowTitle
 
     let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
@@ -60,7 +62,9 @@ final class InPersonPaymentsMenuViewModel {
         synchronizePaymentGateways(siteID: siteID)
         checkTapToPaySupport(siteID: siteID)
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
         registerForNotifications()
+        updateDepositsOverview()
     }
 
     private func synchronizePaymentGateways(siteID: Int64) {
@@ -69,10 +73,12 @@ final class InPersonPaymentsMenuViewModel {
     }
 
     private func checkTapToPaySupport(siteID: Int64) {
+        let configuration = cardPresentPaymentsConfiguration
         let action = CardPresentPaymentAction.checkDeviceSupport(
             siteID: siteID,
             cardReaderType: .appleBuiltIn,
-            discoveryMethod: .localMobile) { [weak self] deviceSupportsTapToPay in
+            discoveryMethod: .localMobile,
+            minimumOperatingSystemVersionOverride: configuration.minimumOperatingSystemVersionForTapToPay) { [weak self] deviceSupportsTapToPay in
                 guard let self = self else { return }
                 self.isEligibleForTapToPayOnIPhone = (
                     self.isEligibleForCardPresentPayments &&
@@ -83,32 +89,54 @@ final class InPersonPaymentsMenuViewModel {
     }
 
     private func checkShouldShowTapToPayFeedbackRow(siteID: Int64) {
-        let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
-            siteID: siteID,
-            cardReaderType: .appleBuiltIn) { [weak self] firstTapToPayTransactionDate in
-                guard let self = self else { return }
-                guard let firstTapToPayTransactionDate = firstTapToPayTransactionDate,
-                      let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
-                    return self.shouldShowTapToPayOnIPhoneFeedbackRow = false
-                }
+        Task { @MainActor in
+            guard let firstTapToPayTransactionDate = await firstTapToPayTransactionDate(siteID: siteID),
+                  let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
+                return self.shouldShowTapToPayOnIPhoneFeedbackRow = false
+            }
 
-                self.shouldShowTapToPayOnIPhoneFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
+            self.shouldShowTapToPayOnIPhoneFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
         }
-        stores.dispatch(action)
+    }
+
+    @MainActor
+    private func firstTapToPayTransactionDate(siteID: Int64) async -> Date? {
+        let date = await withCheckedContinuation { continuation in
+            let action = AppSettingsAction.loadFirstInPersonPaymentsTransactionDate(
+                siteID: siteID,
+                cardReaderType: .appleBuiltIn) { firstTapToPayTransactionDate in
+                    continuation.resume(with: .success(firstTapToPayTransactionDate))
+            }
+            stores.dispatch(action)
+        }
+        return date
+    }
+
+    private func refreshPropertiesDependentOnTapToPaySetUpState(siteID: Int64) {
+        Task { @MainActor in
+            let firstTapToPayTransactionDate = await firstTapToPayTransactionDate(siteID: siteID)
+            switch firstTapToPayTransactionDate {
+            case .none:
+                self.titleForTapToPayOnIPhone = Localization.setUpTapToPayOnIPhoneRowTitle
+            case .some:
+                self.titleForTapToPayOnIPhone = Localization.tryOutTapToPayOnIPhoneRowTitle
+            }
+        }
     }
 
     private func registerForNotifications() {
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(refreshTapToPayFeedbackVisibility),
+                                               selector: #selector(refreshTapToPayRows),
                                                name: .firstInPersonPaymentsTransactionsWereUpdated,
                                                object: nil)
     }
 
-    @objc func refreshTapToPayFeedbackVisibility() {
+    @objc func refreshTapToPayRows() {
         guard let siteID = siteID else {
             return
         }
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
     }
 
     func orderCardReaderPressed() {
@@ -124,6 +152,26 @@ final class InPersonPaymentsMenuViewModel {
         })
     }
 
+    private func updateDepositsOverview() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+            let siteID,
+            let credentials = stores.sessionManager.defaultCredentials else {
+            return
+        }
+        let depositService = WooPaymentsDepositService(siteID: siteID,
+                                                       credentials: credentials)
+        Task {
+            let overview = await depositService.fetchDepositsOverview()
+            depositsOverviewViewModels = overview.map {
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            }
+        }
+    }
+
+    func depositOverviewViewModel(depositIndex: Int) -> WooPaymentsDepositsCurrencyOverviewViewModel? {
+        return depositsOverviewViewModels[depositIndex]
+    }
+
     deinit {
         NotificationCenter.default.removeObserver(self,
                                                   name: .firstInPersonPaymentsTransactionsWereUpdated,
@@ -134,4 +182,18 @@ final class InPersonPaymentsMenuViewModel {
 private enum Constants {
     static let utmCampaign = "payments_menu_item"
     static let utmSource = "payments_menu"
+}
+
+private extension InPersonPaymentsMenuViewModel {
+    enum Localization {
+        static let setUpTapToPayOnIPhoneRowTitle = NSLocalizedString(
+            "Set Up Tap to Pay on iPhone",
+            comment: "Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. " +
+            "The destination screen also allows for a test payment, after set up.")
+
+        static let tryOutTapToPayOnIPhoneRowTitle = NSLocalizedString(
+            "Try Out Tap to Pay on iPhone",
+            comment: "Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it " +
+            "primarily allows for a test payment. The full name is expected by Apple.")
+    }
 }

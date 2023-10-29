@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-21 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-27 13:04:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -137,6 +137,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d arbetsdagar";
+
+/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposit" = "%1$d insättning";
+
+/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposits" = "%1$d insättningar";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d vara";
@@ -290,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Tillgänglig som standard i WooCommerce Payments (begränsningar gäller). Ytterligare utökningar kan vara obligatoriska för andra betalningsleverantörer.";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. Skapa en beställning eller ta emot en betalning";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Endast tillgängligt i USA – en ytterligare utökning kommer vara obligatoriskt för andra länder.";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Tryck på \"Ta emot betalning\" och välj \"Tryck för att betala på iPhone\".";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "Prioriterad support dygnet runt";
@@ -304,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. Håll fram din iPhone till kunden.";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minuter";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Din kund håller sitt kort horisontellt högst upp på din iPhone över symbolen för kontaktlös betalning.";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. När du ser \"Klar\"-markeringen kommer din butik att behandla betalningen och transaktionen är slutförd.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GB";
@@ -377,12 +398,22 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Möjlighet att skala allteftersom verksamheten växer";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "Om Tryck för att betala";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "Om Tryck för att betala på iPhone";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "Om appen";
 
 /* Top header text of the store creation profiler question about the challenges.
    Top header text of the store creation profiler question about the features. */
 "About you" = "Om dig";
+
+/* Title on the add product features screen. */
+"About your product" = "Om din produkt";
 
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
@@ -430,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "Aktiv";
 
@@ -447,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "Lägg till";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -456,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Lägg till kategori";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "Lägg till rabattkod";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "Lägg till anpassat belopp";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "Lägg till kund";
@@ -469,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "Lägg till beskrivning (valfritt)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "Lägg till rabatt";
 
 /* Downloadable file screen navigation title */
@@ -484,6 +524,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Lägg till fil";
+
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "Lägg till presentkort";
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Lägg till nytt attribut";
@@ -590,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Lägg till attribut";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "Lägg till rabattkod";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Lägg till kreditkort";
 
@@ -605,11 +646,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "Lägg till detaljer manuellt";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "Lägg till rabatt";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Lägg till respektive alternativ och tryck på returtangenten";
+
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "Lägg till viktiga funktioner, fördelar eller information som hjälper kunder att hitta din produkt online.";
 
 /* Title for the option to create product manually
    Title of the option to add new product manually */
@@ -666,6 +711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Lägg till din första butik";
+
+/* Title on the add product name screen. */
+"Add your product name" = "Lägg till ditt produktnamn";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "Det är för närvarande inte möjligt att lägga till en rabattkod. Ta bort rabattkoder först.";
@@ -753,6 +801,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "Allt klart!";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Alla funktioner du behöver, redan inbyggda";
@@ -926,8 +977,10 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Applikationsnamn";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Tillämpa";
@@ -945,6 +998,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Godkänn";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Godkänd";
 
@@ -1040,11 +1094,23 @@ which should be translated separately and considered part of this sentence. */
 /* Site backup title feature on the Free Trial Summary Screen */
 "Automated site backups" = "Automatiska webbplatssäkerhetskopieringar";
 
+/* Title for the bottom sheet when there is a tax rate stored */
+"Automatically adding tax rate" = "Automatiskt tillägg av momssats";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Starta och avsluta en rea automatiskt";
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Automattic-familjen";
+
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"Available funds" = "Tillgängliga medel";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are deposited automatically, %1$@." = "Tillgängliga medel sätts in automatiskt %1$@.";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are deposited manually, on request." = "Tillgängliga medel sätts in manuellt på begäran.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Genomsnittligt beställningsvärde";
@@ -1160,6 +1226,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the alert presented when dismissing the banner announcing Blaze feature. */
 "Blaze Ads" = "Blaze-annonser";
 
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Blaze-kampanjer";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Citatblock";
 
@@ -1213,6 +1282,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Brunei" = "Brunei";
+
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "Budget";
 
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Bygg din katalog genom att lägga till det du vill sälja.";
@@ -1315,6 +1387,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "Kamerun";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "Kampanjdetaljer";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kan inte begära länk";
 
@@ -1330,6 +1405,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1343,11 +1419,14 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1393,6 +1472,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1415,6 +1495,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Avbryt uppgradering";
 
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "Avbruten";
+
 /* Display label for cancelled order status.
    Display label for the subscription status type */
 "Cancelled" = "Avbruten";
@@ -1436,6 +1519,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Kan inte lägga till paket";
+
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "Kan inte tillämpa presentkort på beställning";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "Kan inte tillämpa presentkort på felaktig beställning: %1$@";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Kan inte duplicera produkt";
@@ -1482,6 +1572,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Manualer för kortläsare";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "Kortläsare";
+
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Kortläsarmanualer";
 
@@ -1510,6 +1603,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Kategorier";
@@ -1667,6 +1761,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear selection on the product categories list */
 "Clear Selection" = "Rensa val";
 
+/* Title for the button to clear the stored tax rate */
+"Clear address and stop using this rate" = "Rensa adressen och sluta använda den här momssatsen";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Rensa allt";
 
@@ -1674,10 +1771,14 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Rensa val";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "Klick";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
+   Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
@@ -1741,7 +1842,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Slutför betalningen och vänta på en push-avisering om beställningen i din WooCommerce-app.";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "Färdig";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1796,7 +1898,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "Grattis! Du är ett steg närmare att få den nya butiken redo.";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "Grattis. Du har gått igenom konfigurationen och ditt betalningssystem är redo att användas.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -1916,6 +2018,8 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1960,10 +2064,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Cookie-policy";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "Kopierad.";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiera";
@@ -2066,11 +2172,15 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Rabattkoder (%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "Rabattkoder ej tillgängliga";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Krascha omedelbart";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "Skapa";
 
 /* The button title text for creating a new account. */
@@ -2081,6 +2191,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Skapa rabattkod";
+
+/* Continue button on the add product features screen */
+"Create Product Details" = "Skapa produktdetaljer";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2114,6 +2227,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation web view. */
 "Create a store" = "Skapa en butik";
 
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "Skapa kampanj";
+
 /* Title of the Create coupon screen */
 "Create coupon" = "Skapa rabattkod";
 
@@ -2143,6 +2259,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Skapa, redigera och publicera produkter.";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "Skapad";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Skapar variationer för alla kombinationer av dina attribut.";
@@ -2338,6 +2457,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Danmark";
 
+/* Section header for the deposits list in the WooPayments Deposits overview */
+"Deposits" = "Insättningar";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Beskriv din produkt";
 
@@ -2350,6 +2472,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Beskrivning";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "Detaljer";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "Bestäm din produkts sändbarhet med hjälp av %1$@.";
@@ -2382,6 +2507,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Koppla från läsare";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Rabatt";
@@ -2404,6 +2531,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "Rabatterad frakt²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "Rabatter ej tillgängliga";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Upptäck avancerade funktioner och personliga rekommendationer för din butik. Tryck för att välja ett paket som passar dig.";
@@ -2504,6 +2634,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2513,6 +2644,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2525,7 +2657,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -2534,6 +2665,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Klar";
@@ -2664,6 +2796,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "Redigera beskrivning";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "Redigera rabatt";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "Redigera produktkategorier (%1$d)";
@@ -2843,6 +2978,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "Ange en rabattkod";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "Ange belopp";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Ange transportföretagsnamn";
 
@@ -2862,6 +3000,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Ange lösenord";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "Ange procent";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "Ange adressen till WooCommerce-butiken du vill ansluta.";
@@ -3003,6 +3144,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Det gick inte att uppdatera beställning #%1$d";
 
+/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+"Est. %1$@" = "Beräknat %1$@";
+
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Beräknad tid:";
 
@@ -3092,6 +3236,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Löper ut den %1$@";
+
+/* Button title to explore an extension that isn't installed */
+"Explore" = "Utforska";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Utforska hur du kan öka din butiksförsäljning";
@@ -3253,6 +3400,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Fast produktrabatt";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "Fast prisrabatt";
+
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "Flexibla och säkra betalningsalternativ";
 
@@ -3264,6 +3414,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Food and drink" = "Mat och dryck";
+
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "Exempelvis mjukt tyg, slitstarka sömmar, unik design";
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Glömt lösenordet?";
@@ -3316,6 +3471,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "Fullständig funktionslista";
 
+/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+"Funds become available after pending for %1$d days." = "Medlen blir tillgängliga efter att ha inväntat granskning i %1$d dagar.";
+
 /* Country option for a site address. */
 "Gabon" = "Gabon";
 
@@ -3346,7 +3504,8 @@ which should be translated separately and considered part of this sentence. */
 /* Loading state for the suggested text in the add product from image form. */
 "Generating suggestion from photo..." = "Genererar förslag från foto …";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Genererar …";
 
 /* Error title for when there are too many variations to generate. */
@@ -3419,9 +3578,22 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Gåva";
 
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "Presentkort";
+
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "Presentkort";
+
+/* Header of the gift card code text field in the order form. */
+"Gift card code" = "Presentkortskod";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "Presentkortet är ogiltigt";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "Presentkortet har inte tillämpats";
 
 /* No comment provided by engineer. */
 "Gift cards" = "Presentkort";
@@ -3470,6 +3642,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Jag förstår";
 
@@ -3648,6 +3821,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Dölj lista för butikskonfiguration";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "Framhäv vad som gör din produkt unik och låt AI utöva sin magi.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Framhäv din produkts unika funktioner och målgrupp med nyckelord för en skräddarsydd beskrivning.";
 
@@ -3665,6 +3841,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "Hur vill du börja?";
+
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "Hur det fungerar";
 
 /* Country option for a site address. */
 "Hungary" = "Ungern";
@@ -3738,13 +3917,29 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Om du fortsätter med Apple eller Google och inte redan har ett WordPress.com-konto, skapar du ett konto och samtycker till våra _användarvillkor_.";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "Viktig information";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "Visningar";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "I %1$@ får kort endast användas med Tryck för att betala för transaktioner upp till gränsen för kontaktlös betalning.";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "Under granskning";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "Pågår";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "I lager";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "I Storbritannien får kort endast användas med Tryck för att betala för transaktioner upp till %1$@.";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "Vilken plattform säljer du på för närvarande?";
@@ -3932,6 +4127,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Ogiltig slutpunkt";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "Fel – ogiltigt presentkort: %1$@";
+
 /* No comment provided by engineer. */
 "Invalid username" = "Ogiltigt användarnamn";
 
@@ -3942,6 +4140,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Ogiltig vikt";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Lagersaldo";
@@ -3960,6 +4159,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Är det genererade meddelandet användbart?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "Är resultatet användbart?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Isle of Man";
@@ -4047,9 +4249,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Gå med var du än är";
-
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "Skaffa mobilbetalningar";
 
 /* Country option for a site address. */
 "Jordan" = "Jordanien";
@@ -4163,6 +4362,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "Läs mer om Jetpack";
 
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "Lär dig mer om kortläsare";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "Läs mer om att skapa etiketter med din mobila enhet";
 
@@ -4172,6 +4374,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Läs mer om vilka data vi samlar in om din butik och dina möjligheter att styra vilka data som delas.";
+
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"Learn more about when you'll receive your funds" = "Läs mer om när du får dina medel";
 
 /* Country option for a site address. */
 "Lebanon" = "Libanon";
@@ -4188,6 +4393,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
+
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "Låt AI generera fängslande rubriker åt dig.";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Berätta hur vi kan hjälpa till";
@@ -4690,6 +4898,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Myanmar" = "Myanmar";
 
+/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+"N\/A" = "N\/A";
+
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
@@ -4784,6 +4995,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -4822,6 +5034,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Order details > customer info > shipping details. This is where the address would normally display.
    Placeholder for empty address in order customer data */
 "No address specified." = "Ingen adress angiven.";
+
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "Inga kampanjer ännu";
 
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "Ingen kortläsare är ansluten – anslut en läsare och försök igen";
@@ -5135,6 +5350,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
 "Or Continue using Magic Link" = "Eller Fortsätt med magisk länk";
 
+/* Instruction text for other forms of two-factor auth methods. */
+"Or choose another form of authentication." = "Eller välj en annan form av autentisering.";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Eller logga in genom att _ange din webbplatsadress_.";
 
@@ -5143,6 +5361,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Eller tryck för att välja befintligt attribut";
+
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "Alternativt kan du utöka dina alternativ genom att trycka för fler namnförslag.";
 
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
@@ -5153,6 +5374,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Order Card Reader" = "Beställ kortläsare";
+
+/* Text in the product row card that indicates the product quantity in an order */
+"Order Count" = "Antal beställningar";
 
 /* Order notes section title */
 "Order Notes" = "Ordernoteringar";
@@ -5258,7 +5482,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Paketets mått måste vara större än noll. Uppdatera måtten för din vara i sektionen Frakt på din produktsida för att fortsätta.";
 
-/* The title for the customer payment cell */
+/* Row title for the last paid deposit in the WooPayments Deposits overview
+   The title for the customer payment cell */
 "Paid" = "Betald";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -5375,6 +5600,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Väntande recension";
 
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"Pending funds" = "Medel som inväntar granskning";
+
 /* Display label for the product's pending status */
 "Pending review" = "Inväntar granskning";
 
@@ -5383,6 +5611,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Procentuell rabatt";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "Procentuell rabatt";
 
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "Procenttal kan inte vara större än 100 %";
@@ -5440,7 +5671,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Ladda läsare";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Kontrollera att din telefon uppfyller dessa krav: iPhone XS eller senare som kör iOS 16.0 eller senare. Kontakta supporten om det här felet visas på en enhet som stöds.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Kontrollera att din telefon uppfyller dessa krav: iPhone XS eller senare som kör iOS 16.4 eller senare. Kontakta supporten om det här felet visas på en enhet som stöds.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "Kontrollera den återstående balansen på presentkortet.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Kontrollera att ditt Apple-ID är giltigt och försök sedan igen. Ett giltigt Apple-ID krävs för att godkänna Apples användarvillkor";
@@ -5510,9 +5744,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Ange lösenordet för ditt WordPress.com-konto eller logga in med ditt Apple-ID.";
-
-/* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "Ange verifieringskoden från din Authenticator-app eller tryck på länken nedan för att få en kod via SMS.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Fyll i dina användaruppgifter";
@@ -5694,7 +5925,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "Ange kort för att återbetala";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "Visa";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5702,10 +5934,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Price Settings navigation title
    Section header title for product price
+   Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "Pris";
+
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "Pris efter rabatt";
 
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "Pris uppdaterat";
@@ -5839,11 +6076,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produkt kopierad";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "Produktbeskrivning";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Produktutkast sparat";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Produktlänk";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "Produktnamn";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produkt publicerad";
@@ -5854,7 +6099,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produkt sparad";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "Kort produktbeskrivning";
+
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "Produkttyp";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -5898,6 +6147,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "Marknadsför med Blaze";
+
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "Marknadsför din produkt på bara några minuter.";
 
 /* One of the possible options in Product Visibility */
 "Public" = "Offentlig";
@@ -6086,6 +6338,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "Återbetalar betalning";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "Återskapa";
@@ -6108,6 +6361,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Ordinarie pris: %@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "Avvisad";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Påminn mig senare";
@@ -6127,7 +6383,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "Ta bort rabattkod från beställning";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "Ta bort rabatt";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6135,6 +6392,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "Ta bort avgift från beställning";
+
+/* Button to remove the gift card code from the order form. */
+"Remove Gift Card" = "Ta bort presentkort";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Ta bort bild";
@@ -6153,6 +6413,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "Ta bort produkt";
+
+/* Text in the product row card button to remove a product from the current order */
+"Remove product from order" = "Ta bort produkt från beställning";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Ta bort variation";
@@ -6202,6 +6465,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoriskt";
 
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Kräver iPhone XS eller senare med iOS %1$@ eller senare. Contactless Symbol är ett varumärke som ägs av och används med tillåtelse av EMVCo, LLC.";
+
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Återställ aktivitetslogg";
 
@@ -6237,6 +6503,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
@@ -6268,6 +6535,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Tillbaka till min butik";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "Tillbaka till betalningar";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
@@ -6412,7 +6682,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Spara som utkast";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "Spara som utkast";
 
 /* Button title to save a shipping label to print later */
@@ -6444,6 +6715,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Scan barcode to update SKU" = "Skanna streckkoden för att uppdatera SKU";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan code like XXXX-XXXX-XXXX-XXXX" = "Skanna kod som XXXX-XXXX-XXXX-XXXX";
+
+/* Navigation bar title of the gift card code scanner. */
+"Scan gift card" = "Skanna presentkort";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan product barcode" = "Skanna produktens streckkod";
 
 /* Scan Products */
@@ -6460,6 +6737,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schemalägg rea";
+
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "Tidsinställd";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Sök";
@@ -6660,6 +6940,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Ange momssats";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
+
+/* Title for the button to add a new tax ratewhen there is a tax rate stored */
+"Set a new tax rate for this order" = "Ange en ny momssats för den här beställningen";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Ställ in e-post";
 
@@ -6669,14 +6956,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Ställ in den procentuella rabatt som du vill erbjuda.";
 
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Ställ in ton och röst för att forma presentationen av din produkt så att den passar ditt varumärke.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "Ställ in ton och röst";
+
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "Konfigurera %1$@";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Konfigurera Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Konfigurera Tryck för att betala på iPhone";
 
@@ -6689,6 +6981,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Inställningar";
 
@@ -6717,14 +7010,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Dela rabattkod";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "Dela feedback";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Dela betalningslänk";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "Dela produkt";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "Dela feedback om Tryck för att betala på iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "Dela URL";
@@ -6774,6 +7067,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
 
@@ -6798,9 +7092,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Fraktåterbetalning";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "Fraktzoner";
 
 /* Challenge option in the store creation challenges question. */
 "Shipping and logistics" = "Frakt och logistik";
@@ -6848,6 +7139,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the product form bottom sheet action for editing short description.
    Title of the Short Description row on Product main screen */
 "Short description" = "Kort beskrivning";
+
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "Visa alla kampanjer";
 
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "Visa beställningar";
@@ -6940,8 +7234,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Webbplatspaket löpt ut";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Hoppa över";
@@ -7126,6 +7419,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardmoms";
 
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "Starta Blaze-kampanj";
+
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
 "Start Date" = "Startdatum";
@@ -7184,6 +7480,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "Lagerstatus";
+
+/* Message when the user disables adding tax rates automatically */
+"Stopped automatically adding tax rate" = "Automatiskt tillägg av momssats stoppades";
 
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "Lagring";
@@ -7276,6 +7575,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "Sudan";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "Föreslå ett namn";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "Förslag från foto";
 
@@ -7357,6 +7659,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Etiketter";
 
@@ -7378,6 +7681,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Ta ett foto";
+
+/* Description of the hub menu payments button */
+"Take payments on the go" = "Ta emot betalningar i farten";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Omdirigerar dig till betalningsmottagning";
@@ -7403,6 +7709,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Tryck på knappen nedan för att omdirigeras till din onlinebutik via en webbläsare.";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "Tryck för att betala";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Tryck för att betala på iPhone";
@@ -7412,6 +7721,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Tryck för att betala på iPhone är redo";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Med Tryck för att betala på iPhone kan du ta emot alla typer av kontaktlösa betalningar, från fysiska betal- och kreditkort till Apple Pay och andra digitala plånböcker, utan att behöva köpa en fysisk kortläsare.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Tryck för att infoga en vågrät linjal";
@@ -7540,6 +7852,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Berätta mer om din butik";
 
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "Berätta om din produkt och vad som gör den unik.";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
@@ -7553,9 +7868,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out viewing Order Add-Ons as we get ready to launch" = "Testa att visa Beställningstillägg när vi gör oss redo att lansera";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "Skicka mig en kod via SMS i stället";
+
+/* The button's title text to send a 2FA code via SMS text message. */
+"Text me a code via SMS" = "Skicka mig en kod via SMS";
 
 /* Country option for a site address. */
 "Thailand" = "Thailand";
@@ -7677,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "Koden bör vara i formatet XXXX-XXXX-XXXX-XXXX";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "Värdet för rabattkoden kan inte vara mer än 100 för procentrabatter";
 
@@ -7704,6 +8024,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Första gången du använder Tryck för att betala på iPhone kan du bli ombedd att godkänna Apples användarvillkor.";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "Presentkortet har inte tillämpats.";
+
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Det nya anpassade paketnamnet är inte unikt.";
 
@@ -7718,6 +8041,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "Betalningen kan inte behandlas av betalningsbehandlaren.";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "Betalkortet togs bort för tidigt, försök igen.";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Betalningsmetoden stöder inte automatiska återbetalningar. Slutför återbetalningen genom att överföra pengarna till kunden manuellt.";
@@ -7880,11 +8206,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "Det uppstod ett fel vid hämtningen av dina integritetsinställningar";
 
+/* Error message when generating product details fails on the add product with AI Preview screen. */
+"There was an error generating product details. Please try again." = "Det gick inte att generera produktinformationen. Försök igen.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Det gick inte att utfärda återbetalningen";
 
 /* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
 "There was an error retrying this payment. Please go back and start again." = "Det uppstod ett fel när vi gjorde ett nytt betalningsförsök med den här betalningen. Gå tillbaka och börja om igen.";
+
+/* Error message when saving product as draft on the add product with AI Preview screen. */
+"There was an error saving product details. Please try again." = "Det gick inte att spara produktinformationen. Försök igen.";
 
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Det uppstod ett fel när dina integritetsval skulle sparas.";
@@ -8018,6 +8350,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Detta kommer inte att påverka onlinebeställningar";
 
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"Time's up, but don't worry, your security is our priority. Please try again!" = "Tiden är ute, men oroa dig inte, din säkerhet är vår prioritet. Försök igen!";
+
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -8040,6 +8375,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Till";
+
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Om du vill ta emot betalningar över denna gräns kan du överväga att köpa en kortläsare.";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "Ta bort dina produktrabatter för att lägga till rabattkoder";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "Ta bort alla rabattkoder från din beställning för att lägga till en produktrabatt";
 
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "För att lägga till en variation måste du först ange dess attribut (dvs. \"färg\", \"storlek\").";
@@ -8107,6 +8451,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "Tokelau";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "Ton och röst";
 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
@@ -8210,6 +8557,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Prova installera igen";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "Prova Tryck för att betala på iPhone";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Försök att genomföra betalningen igen";
 
@@ -8218,9 +8568,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "Prova en testbeställning";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "Prova en betalning";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Prova att genomföra en betalning med ditt eget kort (och återbetala den när du är klar).";
@@ -8251,9 +8598,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova det nu";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Prova att ta emot en betalning på 0,50 USD för att se hur Tryck för att betala på iPhone fungerar. Använd ditt kredit- eller betalkort: du kan återbetala beloppet när du är klar.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
@@ -8556,7 +8900,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "Amerikanska Jungfruöarna";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Okänd";
@@ -8566,6 +8911,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Okänd programvaruversion";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "Okänt land";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Okänt fel";
@@ -8731,6 +9079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Använd föreslagen adress";
 
+/* The button's title text to use a security key. */
+"Use a security key" = "Använd en säkerhetsnyckel";
+
 /* Description for the option to create a template product */
 "Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Använd en mall för att skapa fysiska, virtuella och variabla produkter. Du kan redigera allteftersom.";
 
@@ -8745,6 +9096,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Använd vårt AI-drivna verktyg för att snabbt generera produktbeskrivningar. Det är bara att ange nyckelord så gör vi resten.";
+
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "Använd förpackningsfoto (valfritt)";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Använd lösenord för att logga in";
@@ -8917,6 +9271,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Väntar på att Google ska bli klara...";
 
+/* Text while the webauthn signature is being verified
+   Text while waiting for a security key challenge */
+"Waiting for security key" = "Väntar på säkerhetsnyckel";
+
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "Väntar på din första order";
 
@@ -8956,6 +9314,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Vi kunde inte ladda din webbplats";
+
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "Vi kunde inte behandla din begäran om inloggning i appen";
 
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "Vi kunde inte hitta några momssatser";
@@ -9120,6 +9481,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Vad är Jetpack?";
 
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "Vad är Tryck för att betala på iPhone?";
+
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Vad innebär rabatt på WooCommerce-tjänster?";
 
@@ -9156,6 +9520,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Ojdå. Något blev fel. Vi lyckades inte logga in dig. Försök igen!";
 
+/* Generic error on the 2FA screen */
+"Whoops, something went wrong. Please try again!" = "Hoppsan, något gick fel. Försök igen!";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"Whoops, that security key does not seem valid. Please try again with another one" = "Hoppsan, den säkerhetsnyckeln verkar inte vara giltig. Försök igen med en annan";
+
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ojdå. Den där var ingen giltig bekräftelsekod för tvåfaktorautentisering. Dubbelkolla koden och försök en gång till!";
 
@@ -9168,6 +9538,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
+
+/* Title for the row related to Woo Payments Deposits/Balances.
+   Title for the section related to Woo Payments Deposits/Balances. */
+"Woo Payments Balance" = "Woo Betalningsbalans";
 
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Woo. Du har kommit igång bra.";
@@ -9239,6 +9613,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Write a description" = "Skriv en beskrivning";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -9246,6 +9621,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Fel konto?";
+
+/* Placeholder of the gift card code text field in the order form. */
+"XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
@@ -9275,6 +9653,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "Du prenumererar på %1$@-paketet. Du har åtkomst till alla våra funktioner fram till %2$@.";
 
+/* Subtitle on the add product with AI Preview screen. */
+"You can always change the below details later." = "Du kan alltid ändra detaljerna nedan senare.";
+
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Du kan välja flera stycken.";
 
@@ -9295,9 +9676,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "Du kan redigera prenumerationsinställningarna i webbadminpanelen";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Du hittar Tryck för att betala på iPhone via Meny > Betalningar > Ta emot betalning, eller via Beställningsinformation. Välj Tryck för att betala på iPhone som betalningsmetod.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Du kan hitta domäninställningarna i menyn > Inställningar";
@@ -9548,6 +9926,18 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "Leverans till länder som följer EU:s tullregler kräver nu att du tydligt beskriver varje vara. Om du till exempel skickar kläder måste du ange vilken typ av kläder det är (t.ex. herrskjortor, flickvästar, pojkjackor) för att beskrivningen ska vara godtagbar. Annars kan leveranser försenas eller avbrytas i tullen.";
 
+/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+"every %1$@" = "varje %1$@";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+"every day" = "varje dag";
+
+/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+"every month" = "varje månad";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+"every month on the %1$@" = "varje månad den %1$@";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exempel.com";
@@ -9576,6 +9966,9 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "manuell återbetalning";
 
+/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+"manually, on request" = "manuellt, på begäran";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Månad";
 
@@ -9584,6 +9977,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "Ingen föregående period";
+
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
 
 /* No comment provided by engineer. */
 "password" = "lösenord";
@@ -9661,6 +10063,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Kan inte hämta dagens statistik";
 
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "%1$@ om att ta emot betalningar med Tryck för att betala på iPhone.";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "okänt";
 
@@ -9710,6 +10117,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Håll igång din verksamhet.";
 
+/* Message when a tax rate is set */
+"🎉 New tax rate set" = "🎉 Ny momssats inställd";
+
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Beställning färdigbehandlad";
 
@@ -9727,6 +10137,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡Hjälp oss förstå ditt prenumerationsbeslut";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Blaze-kampanj";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Utforskar du fortfarande WooCommerce?";

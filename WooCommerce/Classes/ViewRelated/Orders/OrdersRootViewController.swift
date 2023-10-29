@@ -18,7 +18,7 @@ final class OrdersRootViewController: UIViewController {
         siteID: siteID,
         title: Localization.defaultOrderListTitle,
         viewModel: orderListViewModel,
-        switchDetailsHandler: handleSwitchingDetails(viewModel:)
+        switchDetailsHandler: handleSwitchingDetails
     )
 
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
@@ -290,8 +290,8 @@ final class OrdersRootViewController: UIViewController {
 
     /// This is to update the order detail in split view
     ///
-    private func handleSwitchingDetails(viewModel: OrderDetailsViewModel?) {
-        guard let viewModel = viewModel else {
+    private func handleSwitchingDetails(viewModels: [OrderDetailsViewModel], currentIndex: Int) {
+        guard viewModels.isNotEmpty else {
             let emptyStateViewController = EmptyStateViewController(style: .basic)
             let config = EmptyStateViewController.Config.simple(
                 message: .init(string: Localization.emptyOrderDetails),
@@ -302,7 +302,7 @@ final class OrdersRootViewController: UIViewController {
             return
         }
 
-        let orderDetailsViewController = OrderDetailsViewController(viewModel: viewModel)
+        let orderDetailsViewController = OrderDetailsViewController(viewModels: viewModels, currentIndex: currentIndex)
         let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
 
         splitViewController?.showDetailViewController(orderDetailsNavigationController, sender: nil)
@@ -505,7 +505,7 @@ private extension OrdersRootViewController {
     private func navigateToOrderDetail(_ order: Order) {
         let viewModel = OrderDetailsViewModel(order: order)
         guard !featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) else {
-            return handleSwitchingDetails(viewModel: viewModel)
+            return handleSwitchingDetails(viewModels: [viewModel], currentIndex: 0)
         }
 
         let orderViewController = OrderDetailsViewController(viewModel: viewModel)

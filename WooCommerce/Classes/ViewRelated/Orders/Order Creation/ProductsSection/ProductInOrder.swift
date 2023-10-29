@@ -104,6 +104,7 @@ struct ProductInOrder: View {
             }
         }
         .wooNavigationBarStyle()
+        .navigationViewStyle(.stack)
         .onReceive(viewModel.viewDismissPublisher) {
             presentationMode.wrappedValue.dismiss()
         }
@@ -143,7 +144,8 @@ struct ProductInOrder_Previews: PreviewProvider {
                                             stockQuantity: 7,
                                             manageStock: true,
                                             canChangeQuantity: false,
-                                            imageURL: nil)
+                                               imageURL: nil,
+                                               isConfigurable: true)
         let viewModel = ProductInOrderViewModel(productRowViewModel: productRowVM,
                                                 productDiscountConfiguration: nil, showCouponsAndDiscountsAlert: false,
                                                 onRemoveProduct: {})

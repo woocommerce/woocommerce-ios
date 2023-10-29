@@ -15,6 +15,17 @@ public enum ProductVariationAction: Action {
     ///
     case synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Synchronizes a subset of product's `ProductVariation`s matching the specified criteria.
+    /// When `variationIDs` is empty, all variations are returned in a paginated way and it behaves the same as `synchronizeProductVariations`.
+    /// If successful, the result boolean value, will indicate weather there are more variations to fetch or not.
+    ///
+    case synchronizeProductVariationsSubset(siteID: Int64,
+                                            productID: Int64,
+                                            variationIDs: [Int64],
+                                            pageNumber: Int,
+                                            pageSize: Int,
+                                            onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Retrieves the specified ProductVariation.
     ///
     case retrieveProductVariation(siteID: Int64, productID: Int64, variationID: Int64, onCompletion: (Result<ProductVariation, Error>) -> Void)

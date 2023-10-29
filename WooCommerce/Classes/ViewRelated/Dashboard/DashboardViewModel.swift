@@ -21,11 +21,13 @@ final class DashboardViewModel {
 
     let storeOnboardingViewModel: StoreOnboardingViewModel
 
+    let blazeCampaignDashboardViewModel: BlazeCampaignDashboardViewModel
+
     @Published private(set) var showWebViewSheet: WebViewSheetViewModel? = nil
 
     @Published private(set) var showOnboarding: Bool = false
 
-    @Published private(set) var showBlazeBanner: Bool = false
+    @Published private(set) var showBlazeCampaignView: Bool = false
 
     /// Trigger to start the Add Product flow
     ///
@@ -38,7 +40,6 @@ final class DashboardViewModel {
     private let justInTimeMessagesManager: JustInTimeMessagesProvider
     private let localAnnouncementsProvider: LocalAnnouncementsProvider
     private let userDefaults: UserDefaults
-    private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol
 
     var siteURLToShare: URL? {
@@ -55,19 +56,19 @@ final class DashboardViewModel {
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          userDefaults: UserDefaults = .standard,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          storeCreationProfilerUploadAnswersUseCase: StoreCreationProfilerUploadAnswersUseCaseProtocol? = nil) {
         self.siteID = siteID
         self.stores = stores
         self.featureFlagService = featureFlags
         self.analytics = analytics
         self.userDefaults = userDefaults
-        self.blazeEligibilityChecker = blazeEligibilityChecker
         self.justInTimeMessagesManager = JustInTimeMessagesProvider(stores: stores, analytics: analytics)
         self.localAnnouncementsProvider = .init(stores: stores, analytics: analytics, featureFlagService: featureFlags)
         self.storeOnboardingViewModel = .init(siteID: siteID, isExpanded: false, stores: stores, defaults: userDefaults)
+        self.blazeCampaignDashboardViewModel = .init(siteID: siteID)
         self.storeCreationProfilerUploadAnswersUseCase = storeCreationProfilerUploadAnswersUseCase ?? StoreCreationProfilerUploadAnswersUseCase(siteID: siteID)
         setupObserverForShowOnboarding()
+        setupObserverForBlazeCampaignView()
     }
 
     /// Uploads the answers from the store creation profiler flow
@@ -80,6 +81,12 @@ final class DashboardViewModel {
     ///
     func reloadStoreOnboardingTasks() async {
         await storeOnboardingViewModel.reloadTasks()
+    }
+
+    /// Reloads Blaze dashboard campaign view
+    ///
+    func reloadBlazeCampaignView() async {
+        await blazeCampaignDashboardViewModel.reload()
     }
 
     /// Syncs store stats for dashboard UI.
@@ -301,62 +308,29 @@ final class DashboardViewModel {
         storeOnboardingViewModel.$shouldShowInDashboard
             .assign(to: &$showOnboarding)
     }
+
+    /// Sets up observer to decide Blaze campaign view visibility
+    ///
+    private func setupObserverForBlazeCampaignView() {
+        blazeCampaignDashboardViewModel.$shouldShowInDashboard
+            .assign(to: &$showBlazeCampaignView)
+    }
 }
 
-// MARK: - Blaze banner
-extension DashboardViewModel {
-    /// Checks for Blaze eligibility and user defaults to show the banner if necessary.
-    ///
+private extension DashboardViewModel {
     @MainActor
-    func updateBlazeBannerVisibility() async {
-        showBlazeBanner = await isBlazeBannerVisible()
-    }
-
-    private func isBlazeBannerVisible() async -> Bool {
-        async let isSiteEligible = blazeEligibilityChecker.isSiteEligible()
-        async let storeHasPublishedProducts = (try? checkIfStoreHasProducts(siteID: siteID, status: .published)) ?? false
-        async let storeHasAnyOrders = (try? checkIfStoreHasOrders(siteID: siteID)) ?? false
-        guard await(isSiteEligible, storeHasPublishedProducts, storeHasAnyOrders) == (true, true, false) else {
-            return false
-        }
-        return !userDefaults.hasDismissedBlazeBanner(for: siteID)
-    }
-
-    @MainActor
-    private func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
+    func checkIfStoreHasProducts(siteID: Int64, status: ProductStatus? = nil) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductAction.checkIfStoreHasProducts(siteID: siteID, status: status, onCompletion: { result in
                 switch result {
                 case .success(let hasProducts):
                     continuation.resume(returning: hasProducts)
                 case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching products to show the Blaze banner: \(error)")
+                    DDLogError("⛔️ Dashboard — Error fetching products to check if store has products: \(error)")
                     continuation.resume(throwing: error)
                 }
             }))
         }
-    }
-
-    @MainActor
-    private func checkIfStoreHasOrders(siteID: Int64) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(OrderAction.checkIfStoreHasOrders(siteID: siteID, onCompletion: { result in
-                switch result {
-                case .success(let hasOrders):
-                    continuation.resume(returning: hasOrders)
-                case .failure(let error):
-                    DDLogError("⛔️ Dashboard — Error fetching order to show the Blaze banner: \(error)")
-                    continuation.resume(throwing: error)
-                }
-            }))
-        }
-    }
-
-    /// Hides the banner and updates the user defaults to not show the banner again.
-    ///
-    func hideBlazeBanner() {
-        showBlazeBanner = false
-        userDefaults.setBlazeBannerDismissed(for: siteID)
     }
 }
 

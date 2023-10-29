@@ -116,6 +116,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
     private let onPackageSwitch: PackageSwitchHandler
     private let onPackagesSync: PackagesSyncHandler
     private let onItemMoveRequest: () -> Void
+    private let analytics: Analytics
     let isHazmatShippingEnabled: Bool
 
     /// The packages  response fetched from API
@@ -158,6 +159,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
          onPackagesSync: @escaping PackagesSyncHandler,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          weightUnit: String? = ServiceLocator.shippingSettingsService.weightUnit,
+         analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.id = id
         self.order = order
@@ -172,6 +174,7 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         self.onPackagesSync = onPackagesSync
         self.onItemMoveRequest = onItemMoveRequest
         self.packagesResponse = packagesResponse
+        self.analytics = analytics
         self.isHazmatShippingEnabled = featureFlagService.isFeatureFlagEnabled(.hazmatShipping)
         self.packageListViewModel.delegate = self
 
@@ -193,6 +196,10 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
         itemsRows.forEach {
             $0.showingMoveItemDialog = false
         }
+    }
+
+    func hazmatCategorySelectorOpened() {
+        analytics.track(event: .ShippingLabelHazmatDeclaration.hazmatCategorySelectorOpened())
     }
 
     private func configureItemRows() {
@@ -246,7 +253,18 @@ final class ShippingLabelSinglePackageViewModel: ObservableObject, Identifiable 
             .sink { [weak self] containsHazmat in
                 if !containsHazmat {
                     self?.selectedHazmatCategory = .none
+                } else {
+                    self?.analytics.track(event: .ShippingLabelHazmatDeclaration.containsHazmatChecked())
                 }
+            }.store(in: &subscriptions)
+
+        $selectedHazmatCategory
+            .removeDuplicates()
+            .filter { $0 != .none }
+            .sink { [weak self] selectedCategory in
+                guard let self else { return }
+                self.analytics.track(event: .ShippingLabelHazmatDeclaration.hazmatCategorySelected(orderID: self.order.orderID,
+                                                                                                    selectedCategory: selectedCategory))
             }.store(in: &subscriptions)
 
         $containsHazmatMaterials.combineLatest($selectedHazmatCategory)

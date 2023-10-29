@@ -37,14 +37,14 @@ extension UserDefaults {
         case hasDismissedWriteWithAITooltip
         case numberOfTimesWriteWithAITooltipIsShown
 
-        // Blaze highlight banner
-        case hasDismissedBlazeBanner
-
         // Store profiler answers
         case storeProfilerAnswers
 
         // AI prompt tone
         case aiPromptTone
+
+        // Celebration view after Blaze campaign creation
+        case hasDisplayedTipAfterBlazeCampaignCreation
     }
 }
 
@@ -102,33 +102,6 @@ extension UserDefaults {
         }
         set {
             set(newValue, forKey: key.rawValue)
-        }
-    }
-}
-
-// MARK: - Check for Blaze banner visibility
-extension UserDefaults {
-    /// Checks of the Blaze banner has been dismissed for a site.
-    /// - Parameters:
-    ///     - siteID: ID of the site to be checked for the Blaze banner visibility.
-    ///
-    func hasDismissedBlazeBanner(for siteID: Int64) -> Bool {
-        let hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool]
-        let idAsString = "\(siteID)"
-        return hasDismissed?[idAsString] == true
-    }
-
-    /// Set the Blaze banner to be dismissed for a site.
-    /// - Parameters:
-    ///     - siteID: ID of the site whose Blaze banner to be dismissed.
-    ///
-    func setBlazeBannerDismissed(for siteID: Int64) {
-        let idAsString = "\(siteID)"
-        if var hasDismissed = self[.hasDismissedBlazeBanner] as? [String: Bool] {
-            hasDismissed[idAsString] = true
-            self[.hasDismissedBlazeBanner] = hasDismissed
-        } else {
-            self[.hasDismissedBlazeBanner] = [idAsString: true]
         }
     }
 }

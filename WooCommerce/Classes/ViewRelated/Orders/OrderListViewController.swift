@@ -101,7 +101,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     /// Callback closure when an order is selected
     ///
-    private var switchDetailsHandler: (OrderDetailsViewModel?) -> Void
+    private var switchDetailsHandler: (_ allViewModels: [OrderDetailsViewModel], _ index: Int) -> Void
 
     /// Currently selected index path in the table view
     ///
@@ -137,7 +137,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
-         switchDetailsHandler: @escaping (OrderDetailsViewModel?) -> Void) {
+         switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
         self.switchDetailsHandler = switchDetailsHandler
@@ -522,11 +522,11 @@ private extension OrderListViewController {
                 state != .empty else {
             selectedOrderID = nil
             selectedIndexPath = nil
-            return switchDetailsHandler(nil)
+            return switchDetailsHandler([], 0)
         }
         selectedOrderID = orderDetailsViewModel.order.orderID
         selectedIndexPath = firstIndexPath
-        switchDetailsHandler(orderDetailsViewModel)
+        switchDetailsHandler([orderDetailsViewModel], 0)
         highlightSelectedRowIfNeeded()
     }
 }
@@ -692,11 +692,20 @@ extension OrderListViewController: UITableViewDelegate {
         let order = orderDetailsViewModel.order
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
+        let allViewModels = allViewModels()
+        let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
+
+        guard let currentIndex = currentIndex else { return }
 
         if isSplitViewInOrdersTabEnabled {
-            switchDetailsHandler(orderDetailsViewModel)
+            let allowOrderNavigation = splitViewController?.isCollapsed ?? true
+            // There is no point of having order navigation in the order details view when we have a split screen,
+            // because orders can be easily selected in the left view (orders list).
+            // Passing just one order (the selected one) disables navigation
+            allowOrderNavigation ? switchDetailsHandler(allViewModels, currentIndex) :
+            switchDetailsHandler([orderDetailsViewModel], 0)
         } else {
-            let viewController = OrderDetailsViewController(viewModel: orderDetailsViewModel)
+            let viewController = OrderDetailsViewController(viewModels: allViewModels, currentIndex: currentIndex)
             navigationController?.pushViewController(viewController, animated: true)
         }
     }
@@ -909,6 +918,23 @@ private extension OrderListViewController {
         actionSheet.addAction(dontShowAgainAction)
 
         self.present(actionSheet, animated: true)
+    }
+
+    func allViewModels() -> [OrderDetailsViewModel] {
+        let ids = (0...tableView.numberOfSections - 1)
+            .map { section in
+                (0...tableView.numberOfRows(inSection: section) - 1)
+                    .compactMap { row in
+                        dataSource.itemIdentifier(for: IndexPath(row: row, section: section))
+                    }
+            }
+
+        return ids
+            .flatMap { rows in
+                rows.compactMap { id in
+                    viewModel.detailsViewModel(withID: id)
+                }
+            }
     }
 }
 

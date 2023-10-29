@@ -1,8 +1,33 @@
 import Foundation
 
+public protocol ProductCategoriesRemoteProtocol {
+    func loadAllProductCategories(for siteID: Int64,
+                                  pageNumber: Int,
+                                  pageSize: Int,
+                                  completion: @escaping ([ProductCategory]?, Error?) -> Void)
+
+    func loadProductCategory(with categoryID: Int64,
+                             siteID: Int64,
+                             completion: @escaping (Result<ProductCategory, Error>) -> Void) -> Void
+
+    func createProductCategory(for siteID: Int64,
+                               name: String,
+                               parentID: Int64?,
+                               completion: @escaping (Result<ProductCategory, Error>) -> Void)
+
+    func createProductCategories(for siteID: Int64,
+                                 names: [String],
+                                 parentID: Int64?,
+                                 completion: @escaping (Result<[ProductCategory], Error>) -> Void)
+
+    func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory
+
+    func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws
+}
+
 /// Product Categories: Remote Endpoints
 ///
-public final class ProductCategoriesRemote: Remote {
+public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProtocol {
 
     // MARK: - Product Categories
 
@@ -31,7 +56,7 @@ public final class ProductCategoriesRemote: Remote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = ProductCategoryListMapper(siteID: siteID)
+        let mapper = ProductCategoryListMapper(siteID: siteID, responseType: .load)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -89,6 +114,42 @@ public final class ProductCategoriesRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+
+    /// Create new multiple `ProductCategory` entities.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll add new product categories.
+    ///     - names: Array of category names.
+    ///     - parentID: The ID for the parent of the categories.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createProductCategories(for siteID: Int64,
+                                        names: [String],
+                                        parentID: Int64?,
+                                        completion: @escaping (Result<[ProductCategory], Error>) -> Void) {
+
+        let parameters = [
+            ParameterKey.create: names.map { name in
+                var json = [ParameterKey.name: name]
+                if let parentID {
+                    json[ParameterKey.parent] = String(parentID)
+                }
+                return json
+            }
+        ]
+
+        let path = Path.categoriesBatch
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: parameters,
+                                     availableAsRESTRequest: true)
+        let mapper = ProductCategoryListMapper(siteID: siteID, responseType: .create)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Updates an existing `ProductCategory`.
     ///
     /// - Parameter category: Details to be updated for a category.
@@ -140,6 +201,7 @@ public extension ProductCategoriesRemote {
 
     private enum Path {
         static let categories = "products/categories"
+        static let categoriesBatch = "products/categories/batch"
     }
 
     private enum ParameterKey {
@@ -147,5 +209,6 @@ public extension ProductCategoriesRemote {
         static let perPage: String = "per_page"
         static let name: String = "name"
         static let parent: String = "parent"
+        static let create: String = "create"
     }
 }

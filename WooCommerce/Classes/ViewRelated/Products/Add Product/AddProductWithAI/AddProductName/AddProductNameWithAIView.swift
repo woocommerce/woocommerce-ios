@@ -9,8 +9,15 @@ struct AddProductNameWithAIView: View {
 
     @State private var showingNameGeneratingView: Bool = false
 
-    init(viewModel: AddProductNameWithAIViewModel) {
+    private let onUsePackagePhoto: (String?) -> Void
+    private let onContinueWithProductName: (String) -> Void
+
+    init(viewModel: AddProductNameWithAIViewModel,
+         onUsePackagePhoto: @escaping (String?) -> Void,
+         onContinueWithProductName: @escaping (String) -> Void) {
         self.viewModel = viewModel
+        self.onUsePackagePhoto = onUsePackagePhoto
+        self.onContinueWithProductName = onContinueWithProductName
     }
 
     var body: some View {
@@ -122,7 +129,7 @@ private extension AddProductNameWithAIView {
         HStack {
             // Use package photo
             Button {
-                viewModel.didTapUsePackagePhoto()
+                onUsePackagePhoto(viewModel.productName)
             } label: {
                 HStack(alignment: .top, spacing: Layout.UsePackagePhoto.spacing) {
                     Image(systemName: Layout.UsePackagePhoto.cameraSFSymbol)
@@ -142,6 +149,7 @@ private extension AddProductNameWithAIView {
             // continue
             editorIsFocused = false
             viewModel.didTapContinue()
+            onContinueWithProductName(viewModel.productNameContent)
         } label: {
             Text(Localization.continueText)
         }
@@ -213,6 +221,6 @@ private extension AddProductNameWithAIView {
 
 struct AddProductNameWithAIView_Previews: PreviewProvider {
     static var previews: some View {
-        AddProductNameWithAIView(viewModel: .init(siteID: 123, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in }))
+        AddProductNameWithAIView(viewModel: .init(siteID: 123), onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
     }
 }

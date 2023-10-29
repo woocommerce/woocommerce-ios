@@ -78,6 +78,13 @@ final class EditableOrderViewModel: ObservableObject {
     var shouldShowCancelButton: Bool {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
+
+    /// Indicates whether product rows are collapsible
+    ///
+    var shouldShowCollapsibleProductRows: Bool {
+        featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM6)
+    }
+
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
@@ -163,6 +170,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private var storedTaxRate: TaxRate? = nil
 
+    /// Display the custom amount screen to edit it
+    ///
+    @Published var showEditCustomAmount: Bool = false
+
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
     var shouldStoreTaxRateInSelectorByDefault: Bool {
@@ -182,6 +193,41 @@ final class EditableOrderViewModel: ObservableObject {
         guard let storedTaxRate = storedTaxRate else { return nil }
 
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
+    }
+
+    lazy private(set) var addCustomAmountViewModel = {
+        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name, feeID in
+            if let feeID = feeID {
+                self?.updateFee(with: feeID, total: amount, name: name)
+            } else {
+                self?.addFee(with: amount, name: name)
+            }
+        })
+    }()
+
+    private var orderHasCoupons: Bool {
+        orderSynchronizer.order.coupons.isNotEmpty
+    }
+
+    /// Whether product-discounts are disallowed for a given order
+    /// Since coupons and discounts are mutually exclusive, if an order already has coupons then discounts should be disallowed.
+    ///
+    var shouldDisallowDiscounts: Bool {
+        orderHasCoupons
+    }
+
+    /// If both products and custom amounts lists are empty we don't split their sections
+    /// 
+    var shouldSplitProductsAndCustomAmountsSections: Bool {
+        productRows.isNotEmpty || customAmountRows.isNotEmpty
+    }
+
+    var shouldShowProductsSectionHeader: Bool {
+        productRows.isNotEmpty
+    }
+
+    var shouldShowAddProductsButton: Bool {
+        productRows.isEmpty
     }
 
     /// Whether gift card is supported in order form.
@@ -244,10 +290,19 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published private(set) var productRows: [ProductRowViewModel] = []
 
+    /// View models for each custom amount in the order.
+    ///
+    @Published private(set) var customAmountRows: [CustomAmountRowViewModel] = []
+
     /// Selected product view model to render.
     /// Used to open the product details in `ProductInOrder`.
     ///
     @Published var selectedProductViewModel: ProductInOrderViewModel? = nil
+
+    /// Configurable bundle product view model to render.
+    /// Used to open the bundle product configuration screen.
+    ///
+    @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
 
     /// Whether it should show the tax rate selector
     ///
@@ -306,18 +361,6 @@ final class EditableOrderViewModel: ObservableObject {
         } else {
             analytics.track(event: WooAnalyticsEvent.Orders.orderShippingMethodRemove(flow: flow.analyticsFlow))
         }
-    }
-
-    /// Saves a fee.
-    ///
-    /// - Parameter formattedFeeLine: Optional fee line object to save. `nil` will remove existing fee line.
-    /// 
-    func saveFeeLine(_ formattedFeeLine: String?) {
-        guard let formattedFeeLine = formattedFeeLine else {
-            return removeFee()
-        }
-
-        addFee(formattedFeeLine)
     }
 
     /// Saves a coupon line after an edition on it.
@@ -398,6 +441,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureSyncErrors()
         configureStatusBadgeViewModel()
         configureProductRowViewModels()
+        configureCustomAmountRowViewModels()
         configureCustomerDataViewModel()
         configurePaymentDataViewModel()
         configureCustomerNoteDataViewModel()
@@ -497,6 +541,7 @@ final class EditableOrderViewModel: ObservableObject {
     /// Removes an item from the order.
     ///
     /// - Parameter item: Item to remove from the order
+    ///
     func removeItemFromOrder(_ item: OrderItem) {
         guard let input = createUpdateProductInput(item: item, quantity: 0) else { return }
         orderSynchronizer.setProduct.send(input)
@@ -510,6 +555,17 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(event: WooAnalyticsEvent.Orders.orderProductRemove(flow: flow.analyticsFlow))
     }
 
+    /// Removes an item from the order.
+    ///
+    /// - Parameter productRowID: Item to remove from the order. Uses the unique ID of the product row.
+    ///
+    func removeItemFromOrder(_ productRowID: Int64) {
+        guard let existingItemInOrder = currentOrderItems.first(where: { $0.itemID == productRowID }) else {
+            return
+        }
+        removeItemFromOrder(existingItemInOrder)
+    }
+
     func addDiscountToOrderItem(item: OrderItem, discount: Decimal) {
         guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, discount: discount) else {
             return
@@ -520,7 +576,7 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: OrderItem, canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem, childItems: [OrderItem] = [], canChangeQuantity: Bool) -> ProductRowViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
             return nil
@@ -557,7 +613,21 @@ final class EditableOrderViewModel: ObservableObject {
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
             },
                                        removeProductIntent: { [weak self] in
-                self?.removeItemFromOrder(item)})
+                self?.removeItemFromOrder(item)},
+                                       configure: { [weak self] in
+                guard let self else { return }
+                switch product.productType {
+                    case .bundle:
+                        self.configurableProductViewModel = .init(product: product,
+                                                                  childItems: childItems,
+                                                                  onConfigure: { [weak self] configuration in
+                            guard let self else { return }
+                            self.addBundleConfigurationToOrderItem(item: item, bundleConfiguration: configuration)
+                        })
+                    default:
+                        break
+                }
+            })
         } else {
             DDLogInfo("No product or variation found. Couldn't create the product row")
             return nil
@@ -708,6 +778,14 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(.orderCreationClearAddressFromBottomSheetTapped)
         forgetTaxRate()
     }
+
+    func onDismissAddCustomAmountView() {
+        addCustomAmountViewModel.reset()
+    }
+
+    func onAddCustomAmountButtonTapped() {
+        analytics.track(.orderCreationAddCustomAmountTapped)
+    }
 }
 
 // MARK: - Types
@@ -804,12 +882,9 @@ extension EditableOrderViewModel {
         let shippingMethodTitle: String
         let shippingMethodTotal: String
 
-        let shouldShowFees: Bool
+        let shouldShowTotalCustomAmounts: Bool
         let feesBaseAmountForPercentage: Decimal
-        let feesTotal: String
-
-        // We only support one (the first) fee line
-        let feeLineTotal: String
+        let customAmountsTotal: String
 
         let taxesTotal: String
 
@@ -841,7 +916,6 @@ extension EditableOrderViewModel {
         let showNonEditableIndicators: Bool
 
         let shippingLineViewModel: ShippingLineDetailsViewModel
-        let feeLineViewModel: FeeOrDiscountLineDetailsViewModel
         let addNewCouponLineClosure: (Coupon) -> Void
         let onGoToCouponsClosure: () -> Void
         let onTaxHelpButtonTappedClosure: () -> Void
@@ -855,10 +929,9 @@ extension EditableOrderViewModel {
              shippingTotal: String = "0",
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
-             shouldShowFees: Bool = false,
+             shouldShowTotalCustomAmounts: Bool = false,
              feesBaseAmountForPercentage: Decimal = 0,
-             feesTotal: String = "0",
-             feeLineTotal: String = "0",
+             customAmountsTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
              shouldShowCoupon: Bool = false,
@@ -879,7 +952,6 @@ extension EditableOrderViewModel {
              isLoading: Bool = false,
              showNonEditableIndicators: Bool = false,
              saveShippingLineClosure: @escaping (ShippingLine?) -> Void = { _ in },
-             saveFeeLineClosure: @escaping (String?) -> Void = { _ in },
              addNewCouponLineClosure: @escaping (Coupon) -> Void = { _ in },
              onGoToCouponsClosure: @escaping () -> Void = {},
              onTaxHelpButtonTappedClosure: @escaping () -> Void = {},
@@ -893,10 +965,9 @@ extension EditableOrderViewModel {
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
-            self.shouldShowFees = shouldShowFees
+            self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
             self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
-            self.feesTotal = currencyFormatter.formatAmount(feesTotal) ?? "0.00"
-            self.feeLineTotal = currencyFormatter.formatAmount(feeLineTotal) ?? "0.00"
+            self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
             self.isLoading = isLoading
@@ -920,17 +991,21 @@ extension EditableOrderViewModel {
                                                                       initialMethodTitle: shippingMethodTitle,
                                                                       shippingTotal: shippingMethodTotal,
                                                                       didSelectSave: saveShippingLineClosure)
-            self.feeLineViewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: shouldShowFees,
-                                                                      baseAmountForPercentage: feesBaseAmountForPercentage,
-                                                                      initialTotal: feeLineTotal,
-                                                                      lineType: .fee,
-                                                            didSelectSave: saveFeeLineClosure)
             self.addNewCouponLineClosure = addNewCouponLineClosure
             self.onGoToCouponsClosure = onGoToCouponsClosure
             self.onTaxHelpButtonTappedClosure = onTaxHelpButtonTappedClosure
             self.onDismissWpAdminWebViewClosure = onDismissWpAdminWebViewClosure
             self.addGiftCardClosure = addGiftCardClosure
             self.setGiftCardClosure = setGiftCardClosure
+        }
+
+        /// Indicates whether the Coupons informational tooltip button should be shown
+        /// The tooltip is rendered when an order has no coupons, but has product discounts.
+        /// Since both are mutually exclusive but they are included in the Order's discounts total as one unique value, we cannot rely
+        /// on `shouldShowCoupon` or `shouldShowDiscountTotal` alone for its visibility:
+        ///
+        var shouldRenderCouponsInfoTooltip: Bool {
+            !shouldShowCoupon && shouldShowDiscountTotal
         }
     }
 
@@ -1146,6 +1221,32 @@ private extension EditableOrderViewModel {
         configureOrderWithinitialItemIfNeeded()
     }
 
+    func configureCustomAmountRowViewModels() {
+        orderSynchronizer.orderPublisher
+            .map { $0.fees }
+            .removeDuplicates()
+            .map { [weak self] fees -> [CustomAmountRowViewModel] in
+                guard let self = self else { return [] }
+                return fees.compactMap { fee in
+                    guard !fee.isDeleted else { return nil }
+
+                    return CustomAmountRowViewModel(id: fee.feeID,
+                                             name: fee.name ?? Localization.customAmountDefaultName,
+                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                             onRemoveCustomAmount: {
+                                                self.analytics.track(.orderCreationRemoveCustomAmountTapped)
+                                                self.removeFee(fee)
+                                             },
+                                             onEditCustomAmount: {
+                                                self.analytics.track(.orderCreationEditCustomAmountTapped)
+                                                self.addCustomAmountViewModel.preset(with: fee)
+                                                self.showEditCustomAmount = true
+                                             })
+                    }
+            }
+            .assign(to: &$customAmountRows)
+    }
+
     /// If given an initial product ID on initialization, updates the Order with the item
     ///
     func configureOrderWithinitialItemIfNeeded() {
@@ -1244,6 +1345,25 @@ private extension EditableOrderViewModel {
                 }()
 
                 let isAddGiftCardActionEnabled = currencyFormatter.convertToDecimal(order.total)?.compare(NSDecimalNumber.zero) == .orderedDescending
+                let isDiscountBiggerThanZero = orderTotals.discountTotal.compare(NSDecimalNumber.zero) == .orderedDescending
+
+                // The Order's `discountTotal` property accounts for both coupons and product discounts, but we need to know
+                // where the discount comes from in order to allow/disallow coupons or discounts since these are mutually exclusive
+                var disableCoupons: Bool {
+                    // If coupons have already been applied to an order, allow more coupons to be applied
+                    if order.coupons.isNotEmpty {
+                        return false
+                    }
+                    // If an order is empty, disable coupons
+                    if order.items.isEmpty {
+                        return true
+                    }
+                    // If no coupons have been applied, but there are order discounts (discounts added directly to products of an order), disable coupons
+                    if order.coupons.isEmpty && order.discountTotal != "0.00" {
+                        return true
+                    }
+                    return false
+                }
 
                 return PaymentDataViewModel(siteID: self.siteID,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
@@ -1251,14 +1371,13 @@ private extension EditableOrderViewModel {
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
-                                            shouldShowFees: order.fees.filter { $0.name != nil }.isNotEmpty,
+                                            shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
                                             feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
-                                            feesTotal: orderTotals.feesTotal.stringValue,
-                                            feeLineTotal: order.fees.first?.total ?? "0",
+                                            customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
                                             shouldShowCoupon: order.coupons.isNotEmpty,
-                                            shouldDisableAddingCoupons: order.items.isEmpty,
+                                            shouldDisableAddingCoupons: disableCoupons,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),
                                             isGiftCardEnabled: isGiftCardEnabled,
                                             isAddGiftCardActionEnabled: isAddGiftCardActionEnabled,
@@ -1272,11 +1391,10 @@ private extension EditableOrderViewModel {
                                                                                                          taxBasedOnSetting: taxBasedOnSetting),
                                             couponCode: order.coupons.first?.code ?? "",
                                             discountTotal: orderTotals.discountTotal.stringValue,
-                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty,
+                                            shouldShowDiscountTotal: order.discountTotal.isNotEmpty && isDiscountBiggerThanZero,
                                             isLoading: isDataSyncing && !showNonEditableIndicators,
                                             showNonEditableIndicators: showNonEditableIndicators,
                                             saveShippingLineClosure: self.saveShippingLine,
-                                            saveFeeLineClosure: self.saveFeeLine,
                                             addNewCouponLineClosure: { [weak self] coupon in
                                                 self?.saveCouponLine(result: .added(newCode: coupon.code))
                                             },
@@ -1325,16 +1443,12 @@ private extension EditableOrderViewModel {
     func configureMultipleLinesMessage() {
         Publishers.CombineLatest(orderSynchronizer.orderPublisher, Just(flow))
             .map { order, flow -> String? in
-                switch (flow, order.shippingLines.count, order.fees.count) {
-                case (.creation, _, _):
+                switch (flow, order.shippingLines.count) {
+                case (.creation, _):
                     return nil
-                case (.editing, 2...Int.max, 0...1): // Multiple shipping lines
+                case (.editing, 2...Int.max): // Multiple shipping lines
                     return Localization.multipleShippingLines
-                case (.editing, 0...1, 2...Int.max): // Multiple fee lines
-                    return Localization.multipleFeeLines
-                case (.editing, 2...Int.max, 2...Int.max): // Multiple shipping & fee lines
-                    return Localization.multipleFeesAndShippingLines
-                case (.editing, _, _): // Single/nil shipping & fee lines
+                case (.editing, _): // Single/nil shipping & fee lines
                     return nil
                 }
             }
@@ -1492,7 +1606,10 @@ private extension EditableOrderViewModel {
     /// Creates a new `OrderSyncProductInput` type meant to update an existing input from `OrderSynchronizer`
     /// If the referenced product can't be found, `nil` is returned.
     ///
-    private func createUpdateProductInput(item: OrderItem, quantity: Decimal, discount: Decimal? = nil) -> OrderSyncProductInput? {
+    private func createUpdateProductInput(item: OrderItem,
+                                          quantity: Decimal,
+                                          discount: Decimal? = nil,
+                                          bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
         // Finds the product or productVariation associated with the order item.
         let product: OrderSyncProductInput.ProductType? = {
             if item.variationID != 0, let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
@@ -1512,7 +1629,11 @@ private extension EditableOrderViewModel {
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
-        return OrderSyncProductInput(id: item.itemID, product: product, quantity: quantity, discount: discount ?? currentDiscount(on: item))
+        return OrderSyncProductInput(id: item.itemID,
+                                     product: product,
+                                     quantity: quantity,
+                                     discount: discount ?? currentDiscount(on: item),
+                                     bundleConfiguration: bundleConfiguration)
     }
 
     /// Creates a `ProductInOrderViewModel` based on the provided order item id.
@@ -1521,7 +1642,7 @@ private extension EditableOrderViewModel {
         // Find order item based on the provided id.
         // Creates the product row view model needed for `ProductInOrderViewModel`.
         guard let orderItem = orderSynchronizer.order.items.first(where: { $0.itemID == itemID }),
-              let rowViewModel = createProductRowViewModel(for: orderItem, canChangeQuantity: false) else {
+              let rowViewModel = createProductRowViewModel(for: orderItem, childItems: [], canChangeQuantity: false) else {
             return nil
         }
 
@@ -1572,7 +1693,8 @@ private extension EditableOrderViewModel {
     ///
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, canChangeQuantity: true) else {
+            let childItems = items.filter { $0.parent == item.itemID }
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
                 return nil
             }
 
@@ -1589,6 +1711,13 @@ private extension EditableOrderViewModel {
 
             return productRowViewModel
         }
+    }
+
+    func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
+        guard let productInput = createUpdateProductInput(item: item, quantity: item.quantity, bundleConfiguration: bundleConfiguration) else {
+            return
+        }
+        orderSynchronizer.setProduct.send(productInput)
     }
 }
 
@@ -1674,14 +1803,24 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(_ formattedFeeLine: String) {
-        let feeLine = OrderFactory.newOrderFee(total: formattedFeeLine)
-        orderSynchronizer.setFee.send(feeLine)
+    func addFee(with total: String, name: String? = nil) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+        orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
     }
 
-    func removeFee() {
-        orderSynchronizer.setFee.send(nil)
+    func updateFee(with id: Int64, total: String, name: String? = nil) {
+        guard let updatingFee = orderSynchronizer.order.fees.first(where: { $0.feeID == id }) else {
+            return
+        }
+
+        let updatedFee = updatingFee.copy(name: name, total: total)
+        orderSynchronizer.updateFee.send(updatedFee)
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow))
+    }
+
+    func removeFee(_ fee: OrderFeeLine) {
+        orderSynchronizer.removeFee.send(fee)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeRemove(flow: flow.analyticsFlow))
     }
 
@@ -1909,9 +2048,6 @@ private extension EditableOrderViewModel {
         static let multipleShippingLines = NSLocalizedString("Shipping details are incomplete.\n" +
                                                              "To edit all shipping details, view the order in your WooCommerce store admin.",
                                                              comment: "Info message shown when the order contains multiple shipping lines")
-        static let multipleFeeLines = NSLocalizedString("Fees are incomplete.\n" +
-                                                        "To edit all fees, view the order in your WooCommerce store admin.",
-                                                        comment: "Info message shown when the order contains multiple fee lines")
         static let multipleFeesAndShippingLines = NSLocalizedString("Fees & Shipping details are incomplete.\n" +
                                                                     "To edit all the details, view the order in your WooCommerce store admin.",
                                                                     comment: "Info message shown when the order contains multiple fees and shipping lines")
@@ -1926,6 +2062,9 @@ private extension EditableOrderViewModel {
         static let newTaxRateSetSuccessMessage = NSLocalizedString("🎉 New tax rate set", comment: "Message when a tax rate is set")
         static let stopAddingTaxRateAutomaticallySuccessMessage = NSLocalizedString("Stopped automatically adding tax rate",
                                                                                     comment: "Message when the user disables adding tax rates automatically")
+        static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
+                                                               value: "Custom Amount",
+                                                               comment: "Default name when the custom amount does not have a name in order creation.")
 
 
         enum CouponSummary {

@@ -44,16 +44,14 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
         /// priority, so viewmodels related to starting set up should come before viewmodels
         /// that expect set up to be completed, etc.
         ///
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.tapToPayOnIPhoneMilestone2) {
-            viewModelsAndViews.append(PaymentSettingsFlowViewModelAndView(
+        viewModelsAndViews.append(contentsOf: [
+            PaymentSettingsFlowViewModelAndView(
                 viewModel: InPersonPaymentsViewModel(useCase: onboardingUseCase,
                                                      didChangeShouldShow: { [weak self] state in
                                                          self?.onDidChangeShouldShow(state)
                                                      }),
-                viewPresenter: SetUpTapToPayOnboardingViewController.self))
-        }
+                viewPresenter: SetUpTapToPayOnboardingViewController.self),
 
-        viewModelsAndViews.append(contentsOf: [
             PaymentSettingsFlowViewModelAndView(
                 viewModel: SetUpTapToPayInformationViewModel(
                     siteID: siteID,

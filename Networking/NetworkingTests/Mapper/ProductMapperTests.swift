@@ -328,6 +328,17 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(bundledItem.menuOrder, 0)
         XCTAssertEqual(bundledItem.title, "Beanie with Logo")
         XCTAssertEqual(bundledItem.stockStatus, .inStock)
+        XCTAssertEqual(bundledItem.minQuantity, 1)
+        XCTAssertEqual(bundledItem.maxQuantity, nil)
+        XCTAssertEqual(bundledItem.defaultQuantity, 1)
+        XCTAssertEqual(bundledItem.isOptional, true)
+        XCTAssertEqual(bundledItem.overridesVariations, false)
+        XCTAssertEqual(bundledItem.allowedVariations, [39, 32, 33])
+        XCTAssertEqual(bundledItem.overridesDefaultVariationAttributes, false)
+        XCTAssertEqual(bundledItem.defaultVariationAttributes, [
+            .init(id: 1, name: "Color", option: "blue"),
+            .init(id: 0, name: "Logo", option: "Yes")
+        ])
     }
 
     /// Test that products with the `composite` product type are properly parsed.

@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.5-whats-new"
+msgctxt "v15.9-whats-new"
 msgid ""
-"We're excited to announce the latest updates to WooCommerce for iOS! Now, you can start creating your store immediately after signing up for a new WPCOM account. We've also improved visibility for gift card information across multiple orders. Additionally, we've enabled AI features for product description and sharing for self-hosted sites with the Jetpack AI plugin. Lastly, applied gift cards will now appear below the coupon section on the order form, making tracking discounts easier. Enjoy these enhancements!\n"
+"Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

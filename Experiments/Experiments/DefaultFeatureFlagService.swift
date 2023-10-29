@@ -16,7 +16,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            // We have a crash with this feature flag enabled. See https://github.com/woocommerce/woocommerce-ios/issues/10815
+            return false
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
@@ -43,10 +44,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .tapToPayOnIPhoneMilestone2:
-            return true
-        case .tapToPayBadge:
-            return true
         case .domainSettings:
             return true
         case .jetpackSetupWithApplicationPassword:
@@ -83,6 +80,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ordersWithCouponsM4:
             return true
+        case .ordersWithCouponsM6:
+            return true
         case .betterCustomerSelectionInOrder:
             return true
         case .manualTaxesInOrderM2:
@@ -96,9 +95,15 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .manualTaxesInOrderM3:
             return true
         case .productCreationAI:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .giftCardInOrderForm:
             return true
+        case .wooPaymentsDepositsOverviewInPaymentsMenu:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .tapToPayOnIPhoneInUK:
+            return true
+        case .productBundlesInOrderForm:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

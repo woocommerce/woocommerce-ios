@@ -24,7 +24,7 @@ final class ProductInOrderViewModelTests: XCTestCase {
         viewModel.onAddDiscountTapped()
 
         // Then
-        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAddButtonTapped.rawValue)
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAdd.rawValue)
     }
 
     func test_onEditDiscountTapped_then_tracks_event() {

@@ -5,6 +5,34 @@ import Yosemite
 import Networking
 import Hardware
 
+extension Networking.AIProduct {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.AIProduct {
+        .init(
+            name: .fake(),
+            description: .fake(),
+            shortDescription: .fake(),
+            virtual: .fake(),
+            shipping: .fake(),
+            tags: .fake(),
+            price: .fake(),
+            categories: .fake()
+        )
+    }
+}
+extension Networking.AIProduct.Shipping {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.AIProduct.Shipping {
+        .init(
+            length: .fake(),
+            weight: .fake(),
+            width: .fake(),
+            height: .fake()
+        )
+    }
+}
 extension Networking.APNSDevice {
     /// Returns a "ready to use" type filled with fake values.
     ///
@@ -124,6 +152,23 @@ extension Networking.Announcement {
             isLocalized: .fake(),
             responseLocale: .fake(),
             features: .fake()
+        )
+    }
+}
+extension Networking.BlazeCampaign {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeCampaign {
+        .init(
+            siteID: .fake(),
+            campaignID: .fake(),
+            name: .fake(),
+            uiStatus: .fake(),
+            contentImageURL: .fake(),
+            contentClickURL: .fake(),
+            totalImpressions: .fake(),
+            totalClicks: .fake(),
+            totalBudget: .fake()
         )
     }
 }
@@ -570,7 +615,8 @@ extension Networking.OrderItem {
             totalTax: .fake(),
             attributes: .fake(),
             addOns: .fake(),
-            parent: .fake()
+            parent: .fake(),
+            bundleConfiguration: .fake()
         )
     }
 }
@@ -582,6 +628,20 @@ extension Networking.OrderItemAttribute {
             metaID: .fake(),
             name: .fake(),
             value: .fake()
+        )
+    }
+}
+extension Networking.OrderItemBundleItem {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.OrderItemBundleItem {
+        .init(
+            bundledItemID: .fake(),
+            productID: .fake(),
+            quantity: .fake(),
+            isOptionalAndSelected: .fake(),
+            variationID: .fake(),
+            variationAttributes: .fake()
         )
     }
 }
@@ -954,7 +1014,15 @@ extension Networking.ProductBundleItem {
             productID: .fake(),
             menuOrder: .fake(),
             title: .fake(),
-            stockStatus: .fake()
+            stockStatus: .fake(),
+            minQuantity: .fake(),
+            maxQuantity: .fake(),
+            defaultQuantity: .fake(),
+            isOptional: .fake(),
+            overridesVariations: .fake(),
+            allowedVariations: .fake(),
+            overridesDefaultVariationAttributes: .fake(),
+            defaultVariationAttributes: .fake()
         )
     }
 }

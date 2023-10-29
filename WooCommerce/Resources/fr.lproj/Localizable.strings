@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-09-21 15:54:22+0000 */
+/* Translation-Revision-Date: 2023-10-23 08:10:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -137,6 +137,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Plural format of number of business days in Shipping Labels > Carrier and Rates */
 "%1$d business days" = "%1$d jours ouvrables";
+
+/* Singular summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposit" = "%1$d dépôt";
+
+/* Plural summary string for the number of pending deposits shown in the WooPayments Deposits View. %1$d will be replaced by the number of deposits. */
+"%1$d deposits" = "%1$d dépôts";
 
 /* For example: `1 item` in Shipping Label package row */
 "%1$d item" = "%1$d article";
@@ -290,12 +296,18 @@ which should be translated separately and considered part of this sentence. */
 /* Disclaimer regarding some of the features related to payments. */
 "1. Available as standard in WooCommerce Payments (restrictions apply).Additional extensions may be required for other payment providers." = "1. Disponible par défaut dans WooCommerce Payments (des restrictions sont d’application). Des extensions supplémentaires peuvent être requises pour d’autres Fournisseurs de paiement.";
 
+/* Step 1 of the 'How it works' list, instructing the merchant to prepare an order for payment */
+"1. Create an order or collect a payment" = "1. Créez une commande ou encaissez un paiement.";
+
 /* Settings > Manage Card Reader > Connect > Help hint number 2
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 2 */
 "2" = "2";
 
 /* Disclaimer regarding some of the features related to shipping. */
 "2. Only available in the U.S. – an additional extension will be required for other countries." = "2. Uniquement disponible aux États-Unis : une extension supplémentaire est requise pour les autres pays.";
+
+/* Step 2 of the 'How it works' list, instructing the merchant to how to select Tap to Pay payments */
+"2. Tap “Collect Payment” and choose “Tap to Pay on iPhone”." = "2. Appuyez sur « Percevoir le paiement » et choisissez « Appuyez pour payer sur iPhone ».";
 
 /* 24/7 support title feature on the Free Trial Summary Screen */
 "24\/7 priority support" = "Assistance prioritaire 24 h\/24 et 7 j\/7";
@@ -304,8 +316,17 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Help hint number 3 */
 "3" = "3";
 
+/* Step 3 of the 'How it works' list, instructing the merchant to present the phone to the shopper */
+"3. Present your iPhone to the customer." = "3. Présentez votre iPhone au client.";
+
 /* Estimated setup time text shown on the Woo payments setup instructions screen. */
 "4-6 minutes" = "4-6 minutes";
+
+/* Step 4 of the 'How it works' list, informing the merchant of how a shopper should present their card */
+"4. Your customer holds their card horizontally at the top of your iPhone, over the contactless symbol." = "4. Votre client présente sa carte horizontalement par-dessus votre iPhone, au niveau du symbole sans contact.";
+
+/* Step 5 of the 'How it works' list, instructing the merchant to wait until processing is complete. */
+"5. After you see the “Done” checkmark, your store will process the payment, and the transaction will be complete." = "5. Quand vous verrez la coche « Effectué », votre boutique traitera le paiement et la transaction sera achevée.";
 
 /* Content of one of the features of the Paid plans, pointing to gigabytes of site storage. */
 "50 GB" = "50 GO";
@@ -377,12 +398,22 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Capacité à évoluer à mesure que mon entreprise se développe";
 
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
+   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+"About Tap to Pay" = "À propos d’Appuyer pour payer";
+
+/* Navigation title for the About Tap to Pay on iPhone Screen. */
+"About Tap to Pay on iPhone" = "À propos d’Appuyer pour payer sur iPhone";
+
 /* My Store > Settings > About the App (Application) section title */
 "About the App" = "À propos de l’application";
 
 /* Top header text of the store creation profiler question about the challenges.
    Top header text of the store creation profiler question about the features. */
 "About you" = "À propos de vous";
+
+/* Title on the add product features screen. */
+"About your product" = "À propos de votre produit";
 
 /* Header of the store creation profiler question about the store category.
    Header of the store creation profiler question about the store country.
@@ -430,6 +461,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Application's Active State
    Display label for the subscription status type
+   Status name of an active Blaze campaign
    Status of coupons that are active */
 "Active" = "Actif";
 
@@ -447,7 +479,8 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action for adding a Products' downloadable files' info remotely
    Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+   Add tracking screen - button title to add a tracking
+   Text for the add button in the discounts details screen */
 "Add" = "Ajouter";
 
 /* Title on empty state button when the product has no attributes and variations */
@@ -456,6 +489,12 @@ which should be translated separately and considered part of this sentence. */
 /* Action to add category on the Product Categories screen
    Product Add Category navigation title */
 "Add Category" = "Ajouter une catégorie";
+
+/* Title for the Coupon screen during order creation */
+"Add Coupon" = "Ajouter un code promo";
+
+/* Title text of the button that allows to add a custom amount when creating or editing an order */
+"Add Custom Amount" = "Ajouter un montant personnalisé";
 
 /* The action title on the placeholder overlay when there are no customers on the customers list screen. */
 "Add Customer" = "Ajouter un client";
@@ -469,7 +508,8 @@ which should be translated separately and considered part of this sentence. */
 /* Button for adding a description to a coupon in the view for adding or editing a coupon. */
 "Add Description (Optional)" = "Ajouter une description (facultatif)";
 
-/* Title for the Discount screen during order creation */
+/* Text for the button to add a discount to a product in the order screen
+   Title for the Discount screen during order creation */
 "Add Discount" = "Ajouter une remise";
 
 /* Downloadable file screen navigation title */
@@ -484,6 +524,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
 "Add File" = "Ajouter un fichier";
+
+/* Title of the add gift card screen in the order form.
+   Title text of the button that adds shipping line when creating a new order */
+"Add Gift Card" = "Ajouter une carte-cadeau";
 
 /* Action to add new attribute on the Product Attributes screen */
 "Add New Attribute" = "Ajouter un nouvel attribut";
@@ -590,9 +634,6 @@ which should be translated separately and considered part of this sentence. */
 /* Add Product Attribute screen navigation title */
 "Add attribute" = "Ajouter un attribut";
 
-/* Title for the Coupon screen during order creation */
-"Add coupon" = "Ajouter un code promo";
-
 /* Button title in the Shipping Label Payment Method screen */
 "Add credit card" = "Ajouter une carte de crédit";
 
@@ -605,11 +646,15 @@ which should be translated separately and considered part of this sentence. */
 /* Button title for adding customer details manually on the customer search screen */
 "Add details manually" = "Ajouter des détails manuellement";
 
-/* Text for the button to add a discount to a product during order creation */
+/* Text for the button to add a discount to a product during order creation
+   Text in the product row card to add a discount to a given product */
 "Add discount" = "Ajouter une remise";
 
 /* Footer of text field section in Add Attribute Options screen */
 "Add each option and press return" = "Ajouter chaque option et appuyer sur Retour";
+
+/* Description for the text field on the add product features screen */
+"Add key features, benefits, or details to help your product get found online." = "Ajoutez les fonctionnalités, les avantages ou les détails clés pour faciliter la recherche de votre produit en ligne.";
 
 /* Title for the option to create product manually
    Title of the option to add new product manually */
@@ -666,6 +711,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Add your first store" = "Ajouter votre première boutique";
+
+/* Title on the add product name screen. */
+"Add your product name" = "Ajouter le nom de votre produit";
 
 /* Alert on the Product Details screen during order creation whenwe cannot add a discount because we have coupons */
 "Adding discount is currently not available. Remove coupons first." = "L’ajout d’une remise n’est actuellement pas disponible. Retirez d’abord les codes promo.";
@@ -753,6 +801,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tous les avis marqués comme lus";
+
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "Tout est bon !";
 
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Toutes les fonctionnalités dont vous avez besoin sont déjà intégrées";
@@ -926,8 +977,10 @@ which should be translated separately and considered part of this sentence. */
 /* Reads as 'Application name'. Part of the mandatory data in receipts */
 "Application Name" = "Nom de l’application";
 
-/* Apply navigation button in custom range date picker
+/* Action button to apply the generated name for the new product
+   Apply navigation button in custom range date picker
    Button title to insert AI-generated product description.
+   Button to apply the gift card code to the order form.
    Change order status screen - button title to apply selection
    Title for the button to apply bulk editing changes to selected products. */
 "Apply" = "Appliquer";
@@ -945,6 +998,7 @@ which should be translated separately and considered part of this sentence. */
 "Approve" = "Approuver";
 
 /* Display label for the review's approved status
+   Status name of an approved Blaze campaign
    Unapprove a comment */
 "Approved" = "Approuvé";
 
@@ -1040,11 +1094,23 @@ which should be translated separately and considered part of this sentence. */
 /* Site backup title feature on the Free Trial Summary Screen */
 "Automated site backups" = "Sauvegardes automatiques du site";
 
+/* Title for the bottom sheet when there is a tax rate stored */
+"Automatically adding tax rate" = "Ajout automatique du taux de taxe";
+
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
 "Automatically start and end a sale" = "Commencer et terminer automatiquement une vente";
 
 /* Title of a button linking to the Automattic website */
 "Automattic family" = "Famille Automattic";
+
+/* Title for available funds overview in WooPayments Deposits view. This shows the balance which can be paid out. */
+"Available funds" = "Fonds disponibles";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account. e.g. Available funds are deposited automatically, every Wednesday. %1$@ will be replaced with a translated frequency description, e.g. 'every day' or 'monthly on the 28th' */
+"Available funds are deposited automatically, %1$@." = "Les fonds disponibles sont versés automatiquement, %1$@.";
+
+/* Hint showing the deposit schedule for a merchant's WooPayments account with a manual schedule. */
+"Available funds are deposited manually, on request." = "Les fonds disponibles sont versés manuellement, sur demande.";
 
 /* Label for average value of orders in the Analytics Hub */
 "Average Order Value" = "Valeur moyenne des commandes";
@@ -1214,6 +1280,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Brunei" = "Brunei";
 
+/* Title label for the total budget of a Blaze campaign */
+"Budget" = "Budget";
+
 /* Message for the Products onboarding banner */
 "Build your catalog by adding what you want to sell." = "Construisez votre catalogue en ajoutant ce que vous voulez vendre.";
 
@@ -1330,6 +1399,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to cancel selecting products to add to a grouped product from search results
    Add Product Category. Cancel button title in navbar.
    Alert button title - dismisses alert, which cancels marking all as read attempt.
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button text to confirm that we don't want to generate all variations
    Button title Cancel in Discard Changes Action Sheet
    Button title Cancel in Downloadable File More Options Action Sheet
@@ -1343,11 +1413,14 @@ which should be translated separately and considered part of this sentence. */
    Button to allow the user to close the modal without connecting.
    Button to cancel (not try again). Presented to users after a failure occurs
    Button to cancel a payment
+   Button to cancel entering the gift card code from the order form.
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
+   Button to dismiss the AI product creation flow.
    Button to dismiss the alert on the store creation profiler flow
    Button to dismiss the alert presented when connecting to a specific reader fails due to a critically low battery. This also cancels searching.
    Button to dismiss the alert presented when connecting to a specific reader fails due to address problems. This also cancels searching.
@@ -1393,6 +1466,7 @@ which should be translated separately and considered part of this sentence. */
    Settings > Set up Tap to Pay on iPhone > Information > Cancel button
    Settings > Set up Tap to Pay on iPhone > Onboarding > Cancel button
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Cancel button
+   Text for the cancel button in the discounts details screen
    Text for the cancel button in the edit customer provided note screen
    Text for the cancel button in the Exclude Products screen
    Text for the cancel button in the product review reply screen
@@ -1415,6 +1489,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the secondary button displayed when purchasing a plan fails, so the merchant can exit the flow. */
 "Cancel Upgrade" = "Annuler la mise à niveau";
 
+/* Status name of a canceled Blaze campaign */
+"Canceled" = "Annulé";
+
 /* Display label for cancelled order status.
    Display label for the subscription status type */
 "Cancelled" = "Annulé";
@@ -1436,6 +1513,13 @@ which should be translated separately and considered part of this sentence. */
 
 /* The title of the alert when there is a generic error adding the package */
 "Cannot add package" = "Impossible d’ajouter le colis";
+
+/* Order gift card error notice message when the gift card cannot be applied.
+   Order gift card error notice title when the gift card cannot be applied. */
+"Cannot apply gift card to order" = "Impossible d’appliquer la carte-cadeau à la commande";
+
+/* Order gift card error thrown when the gift card cannot be applied. %1$@ is the detailed reason. */
+"Cannot apply gift card to order error: %1$@" = "Une erreur rend impossible l’application de la carte-cadeau à la commande : %1$@";
 
 /* The title of the alert when there is an error duplicating the product */
 "Cannot duplicate product" = "Impossible de dupliquer le produit";
@@ -1482,6 +1566,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigates to Card Reader Manuals screen */
 "Card Reader Manuals" = "Manuels de lecteur de carte";
 
+/* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
+"Card Readers" = "Lecteurs de carte";
+
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Manuels de lecteur de carte";
 
@@ -1510,6 +1597,7 @@ which should be translated separately and considered part of this sentence. */
 /* Display label for the composite product's component option type
    Edit product categories screen - Screen title
    Filter product categories screen - Screen title
+   Title of the categories field on the add product with AI Preview screen.
    Title of the Categories row on Product main screen
    Title of the product form bottom sheet action for editing categories. */
 "Categories" = "Catégories";
@@ -1667,6 +1755,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to clear selection on the product categories list */
 "Clear Selection" = "Effacer la sélection";
 
+/* Title for the button to clear the stored tax rate */
+"Clear address and stop using this rate" = "Effacer l’adresse et arrêter d’utiliser ce taux";
+
 /* Button title for clearing all filters for the list. */
 "Clear all" = "Tout effacer";
 
@@ -1674,10 +1765,14 @@ which should be translated separately and considered part of this sentence. */
    Button to clear selection on the Select Products screen */
 "Clear selection" = "Effacer la sélection";
 
+/* Title label for the total clicks of a Blaze ads campaign */
+"Clicks" = "Clics";
+
 /* Accessibility label for the close button
    Button to dismiss modal overlay. Presented to users after refunding a payment fails
    Button to dismiss the alert presented when starting Tap to Pay on iPhone fails. This also cancels searching.
    Button to dismiss the Coupon Creation Success screen
+   Navigation bar action to close the gift card code scanner.
    Text for the close button in the Add Product screen
    Text for the close button in the Coupon Details screen
    Text for the close button in the Edit Address Form
@@ -1741,7 +1836,8 @@ which should be translated separately and considered part of this sentence. */
 /* Third instruction on the test order screen */
 "Complete the payment and await a push notification about the order on your WooCommerce app." = "Finalisez le paiement. Vous recevrez une notification push concernant la commande dans votre application WooCommerce.";
 
-/* Display label for completed order status. */
+/* Display label for completed order status.
+   Status name of a completed Blaze campaign */
 "Completed" = "Terminé";
 
 /* Title for the list of component options in the Component Settings view */
@@ -1796,7 +1892,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "Bravo ! Vous êtes sur le point d’avoir terminé votre nouvelle boutique.";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "Bravo ! Vous avez finalisé la configuration, et votre système de paiement est désormais opérationnel.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -1916,6 +2012,8 @@ which should be translated separately and considered part of this sentence. */
    Button to submit password on the WPCom password login screen of the Jetpack setup flow.
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
+   Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -1960,10 +2058,12 @@ which should be translated separately and considered part of this sentence. */
 /* Cookie Policy text on the privacy screen */
 "Cookie Policy" = "Politique relative aux cookies";
 
-/* Text in the notice after copying the generated text in the product description AI generator view. */
+/* Text in the notice after copying the generated text in the product description AI generator view.
+   Text in the notice after copying the generated text on the product name generation screen. */
 "Copied!" = "Copié !";
 
-/* Button title to copy generated text in the add product from image form.
+/* Action button to copy the generated name for the new product
+   Button title to copy generated text in the add product from image form.
    Button title to copy generated text in the product description AI generator view.
    Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copier";
@@ -2066,11 +2166,15 @@ which should be translated separately and considered part of this sentence. */
 /* The plural coupon summary. Reads like: Coupon (code1, code2) */
 "Coupons (%1$@)" = "Codes promo (%1$@)";
 
+/* Title text for the coupons row informational tooltip */
+"Coupons unavailable" = "Codes promo indisponibles";
+
 /* The title for a button that causes the app to deliberately crash for debugging purposes */
 "Crash Immediately" = "Bloquer immédiatement";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "Créer";
 
 /* The button title text for creating a new account. */
@@ -2081,6 +2185,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the create coupon button on the coupon list screen when it's empty */
 "Create Coupon" = "Créer un code promo";
+
+/* Continue button on the add product features screen */
+"Create Product Details" = "Créer les détails du produit";
 
 /* Create Shipping Label form navigation title
    Option to create new shipping label from the action sheet on Products section of Order Details screen
@@ -2143,6 +2250,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Créez, modifiez et publiez des produits.";
+
+/* Status name of a newly created Blaze campaign */
+"Created" = "Créé";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Crée des variantes pour toutes les combinaisons de vos attributs.";
@@ -2338,6 +2448,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Denmark" = "Danemark";
 
+/* Section header for the deposits list in the WooPayments Deposits overview */
+"Deposits" = "Dépôts";
+
 /* Placeholder in the Product description row on Product form screen. */
 "Describe your product" = "Décrire votre produit";
 
@@ -2350,6 +2463,9 @@ which should be translated separately and considered part of this sentence. */
    Title in the Product description row on Product form screen when the description is non-empty.
    Title of Description row of item details in Customs screen of Shipping Label flow */
 "Description" = "Description";
+
+/* Title of the details field on the add product with AI Preview screen. */
+"Details" = "Détails";
 
 /* Instructions for hazardous package shipping. The %1$@ is a tappable link that will direct the user to a website */
 "Determine your product's mailability using the %1$@." = "Déterminez l’aptitude de votre produit à être expédié par courrier via %1$@.";
@@ -2382,6 +2498,8 @@ which should be translated separately and considered part of this sentence. */
 "Disconnect Reader" = "Déconnecter le lecteur";
 
 /* Discount label for payment view
+   Text in the product row card when a discount has already been added to a product
+   Text in the product row card when a discount has been added to a product
    Title for the Discount Details screen during order creation
    Title for the Discount section on the Product Details screen during order creation */
 "Discount" = "Réduction";
@@ -2404,6 +2522,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* No comment provided by engineer. */
 "Discounted shipping²" = "Réductions sur les frais d’expédition²";
+
+/* Title text for the product discount row informational tooltip */
+"Discounts unavailable" = "Remises indisponibles";
 
 /* Message on the local notification to remind the user to purchase a plan. */
 "Discover advanced features and personalized recommendations for your store! Tap to pick a plan that suits you best." = "Découvrez des fonctionnalités avancées et des recommandations personnalisées pour votre boutique ! Touchez pour choisir le plan qui vous convient le mieux.";
@@ -2504,6 +2625,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2513,6 +2635,7 @@ which should be translated separately and considered part of this sentence. */
    Done button on the Allowed Emails screen
    Done button on the Jetpack Install Progress screen.
    Done button on the screen that is shown after a successful plan upgrade.
+   Done navigation button in About Tap to Pay on iPhone screen, when presented from the set up flow
    Done navigation button in Inbox Notes webview
    Done navigation button in selection list screens
    Done navigation button in Shipping Label add payment webview
@@ -2525,7 +2648,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -2534,6 +2656,7 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
+   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Terminé";
@@ -2664,6 +2787,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button for editing the description of a coupon in the view for adding or editing a coupon. */
 "Edit Description" = "Modifier la description";
+
+/* Text for the button to edit an existing discount to a product in the order screen */
+"Edit Discount" = "Modifier la remise";
 
 /* Button for specify the product categories where a coupon can be applied in the view for adding or editing a coupon. Reads like: Edit Categories */
 "Edit Product Categories (%1$d)" = "Modifier des catégories de produits (%1$d)";
@@ -2843,6 +2969,9 @@ which should be translated separately and considered part of this sentence. */
 /* Text field coupon code placeholder in the view for adding or editing a coupon. */
 "Enter a coupon" = "Saisir un code promo";
 
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter amount" = "Saisir le montant";
+
 /* Add custom shipping carrier. Placeholder of cell presenting carrier name */
 "Enter carrier name" = "Saisissez le nom du transporteur";
 
@@ -2862,6 +2991,9 @@ which should be translated separately and considered part of this sentence. */
    Placeholder for the password field on the site credential login screen
    Placeholder text for the password field on the WPCom password login screen of the Jetpack setup flow. */
 "Enter password" = "Entrer un mot de passe";
+
+/* Text for the input textfield placeholder when no value has been added yet */
+"Enter percentage" = "Saisir le pourcentage";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of the WooCommerce store you'd like to connect." = "Entrez l'adresse de la boutique WooCommerce que vous aimeriez connecter.";
@@ -3003,6 +3135,9 @@ which should be translated separately and considered part of this sentence. */
 /* Notice title when marking an order as completed via a swipe action fails. Parameter: Order Number */
 "Error updating Order #%1$d" = "Erreur lors de la mise à jour de la commande n°%1$d";
 
+/* String indicating that a deposit date is an estimate. Shown on whe WooPayments Deposits View. %1$@ will be replaced with a locale-appropriate date string. */
+"Est. %1$@" = "Date estimée le %1$@";
+
 /* Estimated setup time title text shown on the Woo payments setup instructions screen. */
 "Estimated setup time" = "Temps estimé pour la configuration";
 
@@ -3092,6 +3227,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Formatted content for coupon expiry date, reads like: Expires August 4, 2022 */
 "Expires %1$@" = "Expire le %1$@";
+
+/* Button title to explore an extension that isn't installed */
+"Explore" = "Explorer";
 
 /* The detailed message shown in the Orders → All Orders tab if the list is empty. */
 "Explore how you can increase your store sales" = "Découvrez comment augmenter vos ventes";
@@ -3253,6 +3391,9 @@ which should be translated separately and considered part of this sentence. */
 /* Name of fixed product discount type */
 "Fixed Product Discount" = "Remise produit fixe";
 
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Fixed price discount" = "Remise fixe";
+
 /* Feature option in the store creation features question. */
 "Flexible and secure payment options" = "Options de paiements flexibles et sécurisés";
 
@@ -3264,6 +3405,11 @@ which should be translated separately and considered part of this sentence. */
 
 /* Industry option in the store creation category question. */
 "Food and drink" = "Alimentation et boissons";
+
+/* Placeholder text on the product features field
+   Placeholder text on the product name field
+   Placeholder text on the product name generation screen */
+"For example, Soft fabric, durable stitching, unique design" = "Par exemple : tissu doux, coutures solides, design unique";
 
 /* Button to see instructions for resetting password of a WPCom account. */
 "Forgot password?" = "Mot de passe oublié ?";
@@ -3316,6 +3462,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the view which shows the full feature list for paid plans. */
 "Full Feature List" = "Liste intégrale des fonctionnalités";
 
+/* Hint regarding available/pending balances shown in the WooPayments Deposits View%1$d will be replaced by the number of days balances pend, and will be one of 2/4/5/7. */
+"Funds become available after pending for %1$d days." = "Les fonds sont disponibles après avoir passé %1$d jours en attente.";
+
 /* Country option for a site address. */
 "Gabon" = "Gabon";
 
@@ -3346,7 +3495,8 @@ which should be translated separately and considered part of this sentence. */
 /* Loading state for the suggested text in the add product from image form. */
 "Generating suggestion from photo..." = "Génération d’une suggestion de photo…";
 
-/* Text to show the loading state on the product sharing message generation screen */
+/* Text to show the loading state on the product name generation screen
+   Text to show the loading state on the product sharing message generation screen */
 "Generating..." = "Génération...";
 
 /* Error title for when there are too many variations to generate. */
@@ -3419,9 +3569,22 @@ which should be translated separately and considered part of this sentence. */
 /* Type Gift of content to be declared for the customs form in Shipping Label flow */
 "Gift" = "Cadeau";
 
+/* Label for the the row showing the gift card to apply to the order */
+"Gift Card" = "Carte-cadeau";
+
 /* Gift Cards label for payment view
    Gift Cards section title */
 "Gift Cards" = "Cartes-cadeaux";
+
+/* Header of the gift card code text field in the order form. */
+"Gift card code" = "Code de carte-cadeau";
+
+/* Order gift card error notice message when the gift card is invalid.
+   Order gift card error notice title when the gift card is invalid. */
+"Gift card is invalid" = "Carte-cadeau non valide";
+
+/* Order gift card error notice title when the gift card is invalid. */
+"Gift card is not applied" = "Carte-cadeau non appliquée";
 
 /* No comment provided by engineer. */
 "Gift cards" = "Cartes-cadeaux";
@@ -3470,6 +3633,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "J’ai compris";
 
@@ -3648,6 +3812,9 @@ which should be translated separately and considered part of this sentence. */
    Title of the Hide store setup list button in the action sheet. */
 "Hide store setup list" = "Masquer la liste de configuration de la boutique";
 
+/* Subtitle on the add product features screen. */
+"Highlight what makes your product unique, and let AI do the magic." = "Mettez en avant ce qui rend votre produit unique et laissez l’IA s’occuper du reste.";
+
 /* Product features placeholder in the product description AI generator view. */
 "Highlight your product's unique features and audience with keywords for a tailored description." = "Mettez en avant les fonctionnalités uniques de votre produit ainsi que votre public à l’aide de mots-clés, pour une description sur mesure.";
 
@@ -3665,6 +3832,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message subtitle of bottom sheet for selecting a template or manual product */
 "How do you want to start?" = "Par où voulez-vous commencer ?";
+
+/* Headline for the 'How it works' section on the About Tap to Pay on iPhone screen, which describes the steps required to take a payment. */
+"How it works" = "Comment ça marche ?";
 
 /* Country option for a site address. */
 "Hungary" = "Hongrie";
@@ -3738,13 +3908,29 @@ which should be translated separately and considered part of this sentence. */
 /* Legal disclaimer for signing up. The underscores _..._ denote underline. */
 "If you continue with Apple or Google and don't already have a WordPress.com account, you are creating an account and you agree to our _Terms of Service_." = "Si vous continuez avec Apple ou Google sans disposer au préalable d’un compte WordPress.com, vous créez un compte et acceptez nos _Conditions d'utilisation_.";
 
+/* Heading for the details pane showing the contactless limit on About Tap to Pay */
+"Important information" = "Informations importantes";
+
+/* Title label for the total impressions of a Blaze ads campaign */
+"Impressions" = "Impressions";
+
+/* A fallback describing the contactless limit, shown on the About Tap to Pay screen. %1$@ will be replaced with the country name of the store, which is a trade off as it can't be contextually translated, however this string is only used when there's a problem decoding the limit, so it's acceptable. */
+"In %1$@, cards may only be used with Tap to Pay for transactions up to the contactless limit." = "Chez %1$@, les cartes ne peuvent être utilisées avec Appuyer pour payer que pour les transactions n’excédant pas la limite de paiement sans contact.";
+
+/* Status name of a Blaze campaign under moderation */
+"In Moderation" = "En modération";
+
 /* Accessibility label for an indeterminate loading indicator */
 "In progress" = "En cours";
 
 /* Display label for the bundle item's inventory stock status
    Display label for the product's inventory stock status
-   Label about product's inventory stock status shown on Products tab */
+   Label about product's inventory stock status shown on Products tab
+   Value of the inventory field on the add product with AI Preview screen. */
 "In stock" = "En stock";
+
+/* A description of the contactless limit, shown on the About Tap to Pay screen. This string is for the UK specifically. %1$@ will be replaced with the limit amount in £ formatted correctly for the locale. */
+"In the United Kingdom, cards may only be used with Tap to Pay for transactions up to %1$@." = "Au Royaume-Uni, les cartes ne peuvent être utilisées avec Appuyer pour payer que pour les transactions n’excédant pas %1$@.";
 
 /* Title of the store creation profiler question about the store selling platforms. */
 "In which platform are you currently selling?" = "Quelle plateforme utilisez-vous actuellement pour vendre vos produits ou services ?";
@@ -3932,6 +4118,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message generated when announcement service is unable to return a valid endpoint. */
 "Invalid endpoint" = "Point de terminaison non valide";
 
+/* Order gift card error thrown when the gift card is invalid. %1$@ is the detailed reason. */
+"Invalid gift card error: %1$@" = "Erreur de carte-cadeau non valide : %1$@";
+
 /* No comment provided by engineer. */
 "Invalid username" = "Identifiant non valide";
 
@@ -3942,6 +4131,7 @@ which should be translated separately and considered part of this sentence. */
 "Invalid weight" = "Poids non valide";
 
 /* Product Inventory Settings navigation title
+   Title of the inventory field on the add product with AI Preview screen.
    Title of the Inventory Settings row on Product main screen
    Title of the product form bottom sheet action for editing inventory settings. */
 "Inventory" = "Stock";
@@ -3960,6 +4150,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Question to ask for feedback for the AI-generated content on the product sharing message generation screen */
 "Is the generated message helpful?" = "Le message généré est-il utile ?";
+
+/* Question to ask for feedback for the AI-generated content on the add product with AI Preview screen. */
+"Is the result helpful?" = "Ce résultat est-il utile ?";
 
 /* Country option for a site address. */
 "Isle of Man" = "Île de Man";
@@ -4047,9 +4240,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Rejoignez-nous, où que vous soyez";
-
-/* Description of the hub menu payments button */
-"Join the mobile payments" = "Adhérer aux paiements sur mobile";
 
 /* Country option for a site address. */
 "Jordan" = "Jordanie";
@@ -4163,6 +4353,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button to learn more presented when users attempt to log in without Jetpack installed or connected */
 "Learn more about Jetpack" = "En savoir plus sur Jetpack";
 
+/* A button to view more about hardware card readers to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"Learn more about card readers" = "En savoir plus sur les lecteurs de carte";
+
 /* Title of button in order details > info link for creating a shipping label on the mobile device. */
 "Learn more about creating labels with your mobile device" = "En savoir plus sur la création d’étiquettes avec votre appareil mobile";
 
@@ -4172,6 +4365,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Usage Tracker description section in the privacy screen. */
 "Learn more about the data we collect about your store and your options to control this data sharing." = "Apprenez-en davantage sur les données que nous recueillons à propos de votre boutique et sur les options dont vous disposez pour contrôler le partage de ces informations.";
+
+/* Button text to view more about payment schedules on the WooPayments Deposits View. */
+"Learn more about when you'll receive your funds" = "En savoir plus sur le moment où vous recevrez vos fonds";
 
 /* Country option for a site address. */
 "Lebanon" = "Liban";
@@ -4188,6 +4384,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Lesotho" = "Lesotho";
+
+/* Subtitle on the product name generation screen */
+"Let AI generate captivating titles for you." = "Laissez l’IA générer des titres captivants pour vous.";
 
 /* Title of the In-Person Payments feedback banner in the Orders tab */
 "Let us know how we can help" = "Dites-nous comment nous pouvons vous aider";
@@ -4690,6 +4889,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Myanmar" = "Birmanie";
 
+/* String used when there's no date available for a deposit type on the WooPayments Deposits View. */
+"N\/A" = "N\/A";
+
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
@@ -4784,6 +4986,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action navigate to the variation creation screen
    Next nav bar button title in Add Product Attribute Options screen
    Next nav bar button title in Add Product Attribute screen
+   Row title for the next deposit in the WooPayments Deposits overview
    The button title on the login onboarding screen to continue to the next step.
    Title for the button to confirm the amount in the simple payments screen
    Title of a button.
@@ -5144,6 +5347,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Header of attributes section in Add Attribute screen */
 "Or tap to select existing attribute" = "Ou appuyez pour sélectionner l’attribut existant";
 
+/* Subtitle on the add product name screen. */
+"Or, expand your choices by tapping for more name suggestions." = "Vous pouvez aussi obtenir d’autres suggestions de noms en un clic.";
+
 /* Add a note screen - title. Example: Order #15. Parameters: %1$@ - order number
    Order number title. Parameters: %1$@ - order number */
 "Order #%1$@" = "Commande n° %1$@";
@@ -5153,6 +5359,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Order Card Reader" = "Commander un lecteur de carte";
+
+/* Text in the product row card that indicates the product quantity in an order */
+"Order Count" = "Nombre de commandes";
 
 /* Order notes section title */
 "Order Notes" = "Notes de commande";
@@ -5258,7 +5467,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Validation error for original package without dimensions on Package Details screen in Shipping Labels flow. */
 "Package dimensions must be greater than zero. Please update your item’s dimensions in the Shipping section of your product page to continue." = "Les dimensions du colis doivent être supérieures à zéro. Veuillez mettre à jour les dimensions de votre article dans la section Expédition de la page de votre produit pour continuer.";
 
-/* The title for the customer payment cell */
+/* Row title for the last paid deposit in the WooPayments Deposits overview
+   The title for the customer payment cell */
 "Paid" = "Payé";
 
 /* Rich order notification text, will read as: Paid with Visa credit card */
@@ -5375,6 +5585,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "En attente de relecture";
 
+/* Title for pending funds overview in WooPayments Deposits view. This shows the balance which will be made available for pay out later. */
+"Pending funds" = "Fonds en attente";
+
 /* Display label for the product's pending status */
 "Pending review" = "En attente de relecture";
 
@@ -5383,6 +5596,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Name of percentage discount type */
 "Percentage Discount" = "Remise en pourcentage";
+
+/* Label that shows the type of discount selected by a merchant in the discount view */
+"Percentage discount" = "Remise en pourcentage";
 
 /* Subtitle of the Amount field when a percentage higher than 100 is set in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Percentages cannot be greater than 100%" = "Les pourcentages ne peuvent pas être supérieurs à 100 %.";
@@ -5440,7 +5656,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please charge reader" = "Veuillez charger le lecteur";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the device does not meet minimum requirements. */
-"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.0 or above. Contact support if this error shows on a supported device." = "Assurez-vous que votre téléphone dispose de la configuration requise suivante : iPhone XS ou plus récent exécutant iOS 16.0 ou une version ultérieure. Contactez l’assistance si cette erreur s’affiche sur un appareil pris en charge.";
+"Please check that your phone meets these requirements: iPhone XS or newer running iOS 16.4 or above. Contact support if this error shows on a supported device." = "Assurez-vous que votre téléphone dispose de la configuration requise suivante : iPhone XS ou plus récent exécutant iOS 16.4 ou une version ultérieure. Contactez l’assistance si cette erreur s’affiche sur un appareil pris en charge.";
+
+/* Order gift card error notice message when the gift card is invalid. */
+"Please check the remaining balance of the gift card." = "Veuillez vérifier le solde de la carte-cadeau.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the Terms of Service acceptance flow failed, possibly due to issues with the Apple ID */
 "Please check your Apple ID is valid, and then try again. A valid Apple ID is required to accept Apple's Terms of Service" = "Assurez-vous que votre ID Apple est valide, puis réessayez. Un ID Apple valide est obligatoire pour pouvoir accepter les conditions d’utilisation d’Apple.";
@@ -5510,9 +5729,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Veuillez saisir le mot de passe de votre compte WordPress.com pour vous connecter avec votre identifiant Apple.";
-
-/* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "Veuillez saisir le code de vérification de votre application d’authentification ou appuyer sur le lien ci-dessous pour recevoir un code par SMS.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Veuillez saisir vos identifiants";
@@ -5694,7 +5910,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Present card to refund" = "Présenter la carte pour procéder au remboursement";
 
 /* Action for previewing draft Product changes in the webview
-   Title of the store onboarding > launch store screen. */
+   Title of the store onboarding > launch store screen.
+   Title on the add product with AI Preview screen. */
 "Preview" = "Prévisualisation ";
 
 /* A label representing the amount that was previously refunded for the order. */
@@ -5702,10 +5919,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Price Settings navigation title
    Section header title for product price
+   Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price */
+   Title of the cell in Product Price Settings > Price
+   Title of the price field on the add product with AI Preview screen. */
 "Price" = "Prix";
+
+/* The label that points to the updated price of a product after a discount has been applied */
+"Price after discount" = "Prix après remise";
 
 /* Title of the notice when a user updated price for selected products */
 "Price updated" = "Prix mis à jour";
@@ -5839,11 +6061,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user has copied a product */
 "Product copied" = "Produit copié";
 
+/* Title of the description field on the add product with AI Preview screen. */
+"Product description" = "Description du produit";
+
 /* Title of the alert when a user is saving a product draft */
 "Product draft saved" = "Brouillon de produit sauvegardé";
 
 /* Title of the external URL row on Product main screen for an external/affiliate product */
 "Product link" = "Lien vers le produit";
+
+/* Product name text field's label on the add product name screen.
+   Title of the name field on the add product with AI Preview screen.
+   Title on the product name generation screen */
+"Product name" = "Nom du produit";
 
 /* Title of the alert when a user is publishing a product */
 "Product published" = "Produit publié";
@@ -5854,7 +6084,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the alert when a user is saving a product */
 "Product saved" = "Produit sauvegardé";
 
-/* Title of the Product Type row on Product main screen */
+/* Title of the short description field on the add product with AI Preview screen. */
+"Product short description" = "Description courte du produit";
+
+/* Title of the product type field on the add product with AI Preview screen.
+   Title of the Product Type row on Product main screen */
 "Product type" = "Type de produit";
 
 /* Error message when the scanner found a product but isn't purchasable.%@ is the SKU code. */
@@ -6086,6 +6320,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Refunding payment" = "Remboursement du paiement";
 
 /* Action button to regenerate message on the product sharing message generation screen
+   Action button to regenerate title for a new product with AI.
    Button title to regenerate product description with Jetpack AI.
    Regenerate button on the add product from image form to regenerate product details. */
 "Regenerate" = "Régénérer";
@@ -6108,6 +6343,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Tarif standard : %@";
 
+/* Status name of a rejected Blaze campaign */
+"Rejected" = "Refusé";
+
 /* Alert button text on a feature announcement which gives the user the chance to be reminded of the new feature after a short time
    Title of the button shown when the In-Person Payments feedback banner is dismissed. */
 "Remind me later" = "Me le rappeler ultérieurement";
@@ -6127,7 +6365,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Text for the button to remove a Coupon from the order during order creation */
 "Remove Coupon from Order" = "Supprimer le code promo de la commande";
 
-/* Title for the Remove button in Details screen during order creation */
+/* Text for button to remove a discount in the discounts details screen
+   Title for the Remove button in Details screen during order creation */
 "Remove Discount" = "Supprimer une remise";
 
 /* Button to remove the Coupon expiry date in the Add or Edit Coupon screen */
@@ -6135,6 +6374,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Text for the button to remove a fee from the order during order creation */
 "Remove Fee from Order" = "Supprimer les frais de la commande";
+
+/* Button to remove the gift card code from the order form. */
+"Remove Gift Card" = "Supprimer la carte-cadeau";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Supprimer l'image";
@@ -6153,6 +6395,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the alert when a user is moving a product to the trash */
 "Remove product" = "Retirer le produit";
+
+/* Text in the product row card button to remove a product from the current order */
+"Remove product from order" = "Supprimer le produit de la commande";
 
 /* Title of the alert when a user is deleting a variation */
 "Remove variation" = "Supprimer la variante";
@@ -6202,6 +6447,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text field placeholder in Shipping Label Address Validation when phone number is required */
 "Required" = "Obligatoire";
 
+/* Requirements for Tap to Pay on iPhone, and other small print shown on the About Tap to Pay on iPhone screen. %1$@ will be replaced with the relevant iOS version number. */
+"Requires iPhone XS or later with iOS %1$@ or later. The Contactless Symbol is a trademark owned by and used with permission of EMVCo, LLC." = "Nécessite un iPhone XS ou plus récent exécutant iOS %1$@ ou une version ultérieure. Le symbole du sans contact est une marque déposée et utilisée avec l’autorisation de EMVCo, LLC.";
+
 /* Deletes all activity logs except for the marked 'Current'. */
 "Reset Activity Log" = "Réinitialiser le journal d'activité";
 
@@ -6237,6 +6485,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button that will recheck whether user has sufficient permissions to manage the store.Presented when the user tries to switch to a store with incorrect permissions.
    Action button that will retry fetching the charge details on the Issue Refund screen
    Action button to retry syncing the draft order
+   Button on the error alert displayed on the add product with AI Preview screen.
    Button title to retry checking for store details after store creation.
    Button to reload user role on the error modal when a user without admin role tries to install Jetpack
    Button to retry fetching application password authorization URL during login
@@ -6412,7 +6661,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to save a product as draft in Discard Changes Action Sheet */
 "Save as Draft" = "Enregistrer comme brouillon";
 
-/* Button title to save a product as draft in Product More Options Action Sheet */
+/* Button title to save a product as draft in Product More Options Action Sheet
+   Button to save product details on the add product with AI Preview screen. */
 "Save as draft" = "Enregistrer comme brouillon";
 
 /* Button title to save a shipping label to print later */
@@ -6444,6 +6694,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Scan barcode to update SKU" = "Scanner le code-barres pour mettre à jour l’UGS";
 
 /* The instruction text below the scan area in the barcode scanner for product SKU. */
+"Scan code like XXXX-XXXX-XXXX-XXXX" = "Scanner le code sous la forme XXXX-XXXX-XXXX-XXXX";
+
+/* Navigation bar title of the gift card code scanner. */
+"Scan gift card" = "Scanner la carte-cadeau";
+
+/* The instruction text below the scan area in the barcode scanner for product SKU. */
 "Scan product barcode" = "Scanner le code-barres du produit";
 
 /* Scan Products */
@@ -6460,6 +6716,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Planifier une vente";
+
+/* Status name of a scheduled Blaze campaign */
+"Scheduled" = "Prévu";
 
 /* Placeholder in the country search field in store creation profiler. */
 "Search" = "Recherche";
@@ -6660,6 +6919,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Navigation title for the tax rate selector */
 "Set Tax Rate" = "Définir un taux de taxe";
 
+/* Button title for the main CTA on the About Tap to Pay on iPhone screen. The button opens the Set Up Tap to Pay on iPhone flow.
+   Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up. */
+"Set Up Tap to Pay on iPhone" = "Configurer la fonctionnalité Appuyer pour payer sur iPhone";
+
+/* Title for the button to add a new tax ratewhen there is a tax rate stored */
+"Set a new tax rate for this order" = "Définir un nouveau taux de taxe pour cette commande";
+
 /* Tells user to set an email that support can use for replies */
 "Set email" = "Configurer l’adresse e-mail";
 
@@ -6669,14 +6935,19 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Subtitle of the Amount field in the Coupon Edit or Creation screen for a percentage discount coupon. */
 "Set the percentage of the discount you want to offer." = "Définissez le pourcentage de la remise que vous souhaitez offrir.";
 
+/* Subtitle of the AI tone and voice selection sheet. */
+"Set the tone and voice to shape your product's presentation that aligns with your brand." = "Définissez le ton et la voix pour que la présentation de votre corresponde à votre marque.";
+
+/* Button to select tone and voice for generating product details with AI */
+"Set tone and voice" = "Définir le ton et la voix";
+
 /* Header text format on the store onboarding WCPay/payments setup screen. %1$@ can be 'WooCommerce Payments' when WCPay is available or 'Payment Methods.' */
 "Set up %1$@" = "Configurer %1$@";
 
 /* Action button for setting up Jetpack.Presented when logging in with a site address that does not have a valid Jetpack installation */
 "Set up Jetpack" = "Réglage de Jetpack";
 
-/* Navigates to the Tap to Pay on iPhone set up flow. The full name is expected by Apple. The destination screen also allows for a test payment, after set up.
-   Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
+/* Settings > Set up Tap to Pay on iPhone > Information > A button to begin set up for Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Prompt user to set up Tap to Pay on iPhone */
 "Set up Tap to Pay on iPhone" = "Configurer la fonctionnalité Appuyer pour payer sur iPhone";
 
@@ -6689,6 +6960,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
+   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Paramètres";
 
@@ -6717,14 +6989,14 @@ This part is the link to the website, and forms part of a longer sentence which 
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Partager des codes promo";
 
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"Share Feedback" = "Partager des commentaires";
+
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Partage de lien de paiement";
 
 /* Title of the action button to share the first created product */
 "Share Product" = "Partager le produit";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Tap to Pay on iPhone Feedback" = "Donnez votre avis sur la fonctionnalité Appuyer pour payer sur iPhone";
 
 /* Title of the primary button on the store onboarding launched store screen. */
 "Share URL" = "URL de partage";
@@ -6774,6 +7046,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Shipping label for payment view
    Title for the Shipping Line Details screen during order creation
    Title of the product form bottom sheet action for editing shipping settings.
+   Title of the shipping field on the add product with AI Preview screen.
    Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Expédition";
 
@@ -6798,9 +7071,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title on the refund screen that lists the shipping total cost */
 "Shipping Refund" = "Remboursement des frais d’expédition";
-
-/* Access the store shipping zones. */
-"Shipping Zones" = "Zones de livraison";
 
 /* Challenge option in the store creation challenges question. */
 "Shipping and logistics" = "Expédition et logistique";
@@ -6940,8 +7210,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Plan du site expiré";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Sauter";
@@ -7185,6 +7454,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the cell in Product Inventory Settings > Stock status */
 "Stock status" = "État du stock";
 
+/* Message when the user disables adding tax rates automatically */
+"Stopped automatically adding tax rate" = "Arrêt de l’ajout automatique du taux de taxe";
+
 /* Title of one of the features of the Paid plans, regarding site storage. */
 "Storage" = "Stockage";
 
@@ -7276,6 +7548,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Sudan" = "Soudan";
 
+/* Suggest name button on the product name field */
+"Suggest a name" = "Proposer un nom";
+
 /* Header of the suggested text in the add product from image form. */
 "Suggestion from photo" = "Suggestion de photo";
 
@@ -7357,6 +7632,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Product Tags navigation title
    Title of the product form bottom sheet action for editing tags.
+   Title of the tags field on the add product with AI Preview screen.
    Title of the Tags row on Product main screen */
 "Tags" = "Étiquettes";
 
@@ -7378,6 +7654,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Prendre une photo";
+
+/* Description of the hub menu payments button */
+"Take payments on the go" = "Accepter les paiements en mode nomade";
 
 /* Message when a payments account is successfully connected for Card Present Payments */
 "Taking you back to collect a payment" = "Retour vers la perception d’un paiement";
@@ -7403,6 +7682,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Appuyez sur le bouton ci-dessous pour être redirigé vers votre boutique en ligne via un navigateur Web.";
 
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"Tap to Pay" = "Appuyer pour payer";
+
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Appuyer pour payer sur iPhone";
@@ -7412,6 +7694,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Indicates the status of Tap to Pay on iPhone collection readiness. Presented to users when payment collection starts */
 "Tap to Pay on iPhone is ready" = "Appuyer pour payer sur iPhone est prêt";
+
+/* Description of Tap to Pay on iPhone shown on the About Tap to Pay on iPhone screen, as an intro. */
+"Tap to Pay on iPhone lets you accept all types of contactless payments – from physical debit and credit cards, to Apple Pay and other digital wallets – without the need to purchase a physical card reader." = "Appuyer pour payer sur iPhone vous permet d’accepter tout type de paiement sans contact – des cartes de débit et de crédit traditionnelles à Apple Pay et autres portefeuilles numériques – sans avoir à acheter un lecteur de carte.";
 
 /* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
 "Tap to insert a Horizontal Ruler" = "Appuyer pour insérer une règle horizontale";
@@ -7540,6 +7825,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the Store details task to add details about the store. */
 "Tell us more about your store" = "Donnez-nous plus d’informations sur votre boutique";
 
+/* Description text on the product name generation screen */
+"Tell us what your product is and what makes it unique!" = "Présentez-nous votre produit et dites-nous ce qui le rend unique !";
+
 /* Terms of service link on the account creation form.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The terms to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen.
@@ -7553,8 +7841,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out viewing Order Add-Ons as we get ready to launch" = "Tester l’affichage des modules de commande peu avant le lancement";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "Envoyez-moi un code à la place.";
 
 /* Country option for a site address. */
@@ -7677,6 +7964,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Le certificat de ce serveur n’est pas valide. Le serveur auquel vous vous connectez prétend être « %@ », ce qui peut constituer un risque de sécurité pour vos données confidentielles.\n\nSouhaitez-vous faire confiance au certificat malgré tout ?";
 
+/* Message in the gift card input form when the code is not valid. */
+"The code should be in XXXX-XXXX-XXXX-XXXX format" = "Le code doit respecter le format XXXX-XXXX-XXXX-XXXX.";
+
 /* Error message in the Add Edit Coupon screen when the coupon amount is higher than 100% for a percentage discount */
 "The coupon amount cannot be greater than 100 for percentage discounts" = "Le montant du code promo ne peut pas être supérieur à 100 pour les remises sous forme de pourcentage.";
 
@@ -7704,6 +7994,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label within the modal dialog that appears when starting Tap to Pay on iPhone */
 "The first time you use Tap to Pay on iPhone, you may be prompted to accept Apple's Terms of Service." = "Lors de la première utilisation de la fonctionnalité Appuyer pour payer sur iPhone, vous devrez peut-être accepter les conditions d’utilisation d’Apple.";
 
+/* Order gift card error thrown when the gift card is not applied. */
+"The gift card is not applied." = "La carte-cadeau n’est pas appliquée.";
+
 /* The message of the alert when another custom package has the same name */
 "The new custom package name is not unique." = "Le nouveau nom de colis personnalisé n’est pas unique.";
 
@@ -7718,6 +8011,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message when the payment can not be processed (i.e. order amount is below the minimum amount allowed.) */
 "The payment can not be processed by the payment processor." = "Le paiement n’a pas pu être traité par la plateforme de paiement.";
+
+/* Message from the in-person payment card reader prompting user to retry a payment using the same card because it was removed too early. */
+"The payment card was removed too early, please try again." = "La carte de paiement a été retirée trop tôt, veuillez réessayer.";
 
 /* In Refund Confirmation, The message shown to the user to inform them that they have to issue the refund manually. */
 "The payment method does not support automatic refunds. Complete the refund by transferring the money to the customer manually." = "Le moyen de paiement ne prend pas en charge les remboursements automatiques. Effectuez le remboursement en transférant l’argent au client manuellement.";
@@ -7880,11 +8176,17 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error notice when failing to fetch account settings on the privacy screen. */
 "There was an error fetching your privacy settings" = "Une erreur est survenue lors de l’extraction de vos réglages de confidentialité.";
 
+/* Error message when generating product details fails on the add product with AI Preview screen. */
+"There was an error generating product details. Please try again." = "Une erreur s’est produite lors de la génération des détails du produit. Veuillez réessayer.";
+
 /* Text of the notice that is displayed while the refund creation fails. */
 "There was an error issuing the refund" = "Une erreur est survenue lors de l’émission du remboursement";
 
 /* Error shown when there's an unrecoverable issue while retrying a payment, and it needs to berestarted from the beginning. */
 "There was an error retrying this payment. Please go back and start again." = "Une erreur est survenue lors de la nouvelle tentative de paiement. Veuillez revenir en arrière et recommencer.";
+
+/* Error message when saving product as draft on the add product with AI Preview screen. */
+"There was an error saving product details. Please try again." = "Une erreur s’est produite lors de l’enregistrement des détails du produit. Veuillez réessayer.";
 
 /* Notice title when there is an error saving the privacy banner choice */
 "There was an error saving your privacy choices." = "Une erreur est survenue lors de l’enregistrement de vos choix en matière de confidentialité.";
@@ -8041,6 +8343,15 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the cell in Product Price Settings > Schedule sale to a certain date */
 "To" = "Date";
 
+/* A suggestion to buy a hardware card reader to handle transactions above the contactless limit, shown on the About Tap to Pay screen */
+"To accept payments above this limit, consider purchasing a card reader." = "Pour accepter les paiements excédant cette limite, envisagez l’achat d’un lecteur de carte.";
+
+/* Description text for the coupons row informational tooltip */
+"To add Coupons, please remove your Product Discounts" = "Pour ajouter des codes promo, veuillez supprimer vos remises sur le produit";
+
+/* Description text for the product discount row informational tooltip */
+"To add a Product Discount, please remove all Coupons from your order" = "Pour ajouter une remise sur le produit, veuillez supprimer tous les codes promo sur votre commande";
+
 /* Subtitle on the variations list screen when there are no variations and attributes */
 "To add a variation, you'll need to set its attributes (ie \"Color\", \"Size\") first" = "Pour ajouter une variante, vous devrez d’abord configurer ses attributs (couleur, dimensions, etc.)";
 
@@ -8107,6 +8418,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Country option for a site address. */
 "Tokelau" = "Tokélaou";
+
+/* Title of the AI tone and voice selection sheet. */
+"Tone and voice" = "Ton et voix";
 
 /* Country option for a site address. */
 "Tonga" = "Tonga";
@@ -8210,6 +8524,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack installation. */
 "Try Installing Again" = "Réessayer d’installer";
 
+/* Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it primarily allows for a test payment. The full name is expected by Apple. */
+"Try Out Tap to Pay on iPhone" = "Essayer Appuyer pour payer sur iPhone";
+
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Réessayer d’effectuer le paiement";
 
@@ -8218,9 +8535,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "Essayer une commande de test";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "Essayer d’effectuer un paiement";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Essayez d’effectuer un paiement avec votre propre carte (et remboursez-le-vous lorsque vous avez terminé.)";
@@ -8251,9 +8565,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Essayer maintenant";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description */
-"Try taking a payment of $0.50 to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Essayez d’effectuer un paiement de 0,50 $ pour découvrir le fonctionnement d’Appuyer pour payer sur iPhone. Utilisez votre carte de débit ou de crédit : vous pourrez vous rembourser une fois l’essai terminé.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Essayer avec une autre adresse de messagerie";
@@ -8556,7 +8867,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "United States Virgin Islands" = "Îles Vierges américaines";
 
-/* Unknown Application State
+/* Status name of a Blaze campaign without specified state
+   Unknown Application State
    Unknown product name, displayed in a review
    Unknown Tag Name */
 "Unknown" = "Inconnu";
@@ -8566,6 +8878,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Displayed in the unlikely event a card reader has an indeterminate software version */
 "Unknown Software Version" = "Version logicielle inconnue";
+
+/* Fallback country option for a site address. */
+"Unknown country" = "Pays inconnu";
 
 /* No comment provided by engineer. */
 "Unknown error" = "Erreur inconnue";
@@ -8745,6 +9060,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The message for the Write with AI tooltip */
 "Use our AI-powered tool to quickly generate product descriptions. Just input keywords and we'll do the rest!" = "Utilisez notre outil d’intelligence artificielle pour générer rapidement des descriptions de produits. Il vous suffit de saisir des mots-clés, et nous nous chargeons du reste !";
+
+/* Use package photo button on the add product name screen. */
+"Use package photo (Optional)" = "Utiliser la photo de l’emballage (facultatif)";
 
 /* The button title text for logging in with WP.com password instead of magic link. */
 "Use password to sign in" = "Utilisez le mot de passe pour la connexion";
@@ -8957,6 +9275,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the default store picker error screen */
 "We couldn't load your site" = "Nous n’avons pas pu charger votre site.";
 
+/* A message displayed through a bottom notice letting the user know that the login from the app link failed */
+"We couldn't process your app login request" = "Nous n’avons pas pu traiter votre demande de connexion à l’application";
+
 /* Title for the empty state on the Tax Rates selector screen */
 "We couldn’t find any tax rates" = "Nous n’avons trouvé aucun taux de taxation";
 
@@ -9120,6 +9441,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of alert informing users of what Jetpack is. Presented when users attempt to log in without Jetpack installed or connected */
 "What is Jetpack?" = "Qu'est-ce que Jetpack ?";
 
+/* Main heading for the About Tap to Pay on iPhone screen */
+"What is Tap to Pay on iPhone?" = "Qu’est-ce qu’Appuyer pour payer sur iPhone ?";
+
 /* Shipping Labels: info title about WooCommerce Services discount */
 "What is WooCommerce Services discount?" = "Qu’est-ce que la remise WooCommerce Services ?";
 
@@ -9168,6 +9492,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
+
+/* Title for the row related to Woo Payments Deposits/Balances.
+   Title for the section related to Woo Payments Deposits/Balances. */
+"Woo Payments Balance" = "Solde Woo Payments";
 
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Génial ! C’est un bon début !";
@@ -9239,6 +9567,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Write a description" = "Écrire une description";
 
 /* Action button to generate message on the product sharing message generation screen
+   Action button to generate title for a new product with AI.
    Button title to generate product description with Jetpack AI.
    Product description AI row on Product form screen when the feature is available.
    The title of the Write with AI tooltip */
@@ -9246,6 +9575,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Prompt asking users if the logged in to the wrong account.Presented when logging in with a store address that does not match the account entered. */
 "Wrong account?" = "Mauvais compte ?";
+
+/* Placeholder of the gift card code text field in the order form. */
+"XXXX-XXXX-XXXX-XXXX" = "XXXX-XXXX-XXXX-XXXX";
 
 /* Option to select the Yahoo Mail app when logging in with magic links */
 "Yahoo Mail" = "Yahoo Mail";
@@ -9275,6 +9607,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Reads like: You are subscribed to the eCommerce plan! You have access to all our features until Nov 28, 2023. */
 "You are subscribed to the %1@ plan! You have access to all our features until %2@." = "Vous êtes abonné au plan %1$@ ! Vous avez accès à l’ensemble de nos fonctionnalités jusqu’au %2$@.";
 
+/* Subtitle on the add product with AI Preview screen. */
+"You can always change the below details later." = "Vous pourrez toujours modifier les détails ci-après ultérieurement.";
+
 /* Subtitle of the store creation profiler question about the store selling platforms. */
 "You can choose multiple ones." = "Vous pouvez en choisir plusieurs.";
 
@@ -9295,9 +9630,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "Vous pouvez modifier les paramètres d’abonnement dans le tableau de bord Web.";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Vous trouverez Appuyer pour payer sur iPhone dans Menu > Paiements > Percevoir le paiement, ou depuis les détails de la commande. Choisissez Appuyer pour payer sur iPhone comme moyen de paiement.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Vous trouverez les réglages du domaine dans menu > réglages";
@@ -9548,6 +9880,18 @@ which should be translated separately and considered part of this sentence. */
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "L’expédition vers des pays qui suivent la réglementation douanière de l’Union européenne (UE) nécessite désormais que vous décriviez clairement chaque article. Par exemple, si vous envoyez des vêtements, vous devez indiquer le type de vêtement (p. ex., chemise pour homme, débardeur pour fille, veste pour garçon) pour que la description soit acceptable. Dans le cas contraire, les envois peuvent être retardés ou interrompus à la douane.";
 
+/* every {dayname}, shown in a sentence like 'Available funds are deposited automatically, every Wednesday' %1$@ will be replaced with the localized day name */
+"every %1$@" = "tous les %1$@";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every day' */
+"every day" = "tous les jours";
+
+/* Shown in a sentence like 'Available funds are deposited automatically every month. */
+"every month" = "tous les mois";
+
+/* Shown in a sentence like 'Available funds are deposited automatically, every month on the 15th' */
+"every month on the %1$@" = "tous les mois le %1$@";
+
 /* Placeholder for the site url textfield.
    Site Address placeholder */
 "example.com" = "exemple.com";
@@ -9576,6 +9920,9 @@ which should be translated separately and considered part of this sentence. */
 /* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
 "manual refund" = "remboursement manuel";
 
+/* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
+"manually, on request" = "manuellement, sur demande";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Mois";
 
@@ -9584,6 +9931,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "aucune période précédente";
+
+/* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
+"os.version.format.major.minor" = "%1$@.%2$@";
+
+/* A format string for a software version with major, minor, and patch components. %1$@ will be replaced with the major, %2$@ with the minor, and %3$@ with the patch. */
+"os.version.format.major.minor.patch" = "%1$@.%2$@.%3$@";
+
+/* A format string for a software version with only a major component. %1$@ will be replaced with the major version number. */
+"os.version.format.major.only" = "%1$@";
 
 /* No comment provided by engineer. */
 "password" = "mot de passe";
@@ -9661,6 +10017,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Impossible de récupérer les statistiques du jour";
 
+/* A label prompting users to learn more about Tap to Pay on iPhone.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"tapToPay.learnMore.text" = "%1$@ sur l’acceptation de paiements avec Appuyer pour payer sur iPhone.";
+
 /* Value for the WooCommerce plugin version detail row in settings, when the version is unknown. This is in place of the current version number. */
 "unknown" = "inconnu";
 
@@ -9709,6 +10070,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to remind the user to purchase a plan. */
 "🌟 Keep your business going!" = "🌟 Faites tourner votre activité !";
+
+/* Message when a tax rate is set */
+"🎉 New tax rate set" = "🎉 Nouveau taux de taxe défini";
 
 /* Success notice when tapping Mark Order Complete on Review Order screen */
 "🎉 Order Completed" = "🎉 Commande terminée";

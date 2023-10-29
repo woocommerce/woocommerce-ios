@@ -1,6 +1,34 @@
 import SwiftUI
 import Kingfisher
 
+struct SimplifiedProductRow: View {
+
+    @ObservedObject var viewModel: ProductRowViewModel
+
+    init(viewModel: ProductRowViewModel) {
+        self.viewModel = viewModel
+    }
+
+    var body: some View {
+        HStack(alignment: .center) {
+            Text(Localization.orderCountLabel)
+            Spacer()
+            ProductStepper(viewModel: viewModel)
+                .renderedIf(viewModel.canChangeQuantity)
+        }
+        .padding(.top)
+        .padding(.bottom)
+    }
+}
+
+private extension SimplifiedProductRow {
+    enum Localization {
+        static let orderCountLabel = NSLocalizedString(
+            "Order Count",
+            comment: "Text in the product row card that indicates the product quantity in an order")
+    }
+}
+
 /// Represent a single product or variation row in the Product section of a New Order or in the ProductSelectorView
 ///
 struct ProductRow: View {
@@ -21,14 +49,6 @@ struct ProductRow: View {
     /// Avoids overwriting the product stepper accessibility hint, when the stepper is rendered.
     ///
     let accessibilityHint: String
-
-    /// Image processor to resize images in a background thread to avoid blocking the UI
-    ///
-    private var imageProcessor: ImageProcessor {
-        ResizingImageProcessor(
-            referenceSize: .init(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale),
-            mode: .aspectFill)
-    }
 
     init(multipleSelectionsEnabled: Bool = false,
          viewModel: ProductRowViewModel,
@@ -55,17 +75,11 @@ struct ProductRow: View {
                     }
 
                     // Product image
-                    KFImage.url(viewModel.imageURL)
-                        .placeholder {
-                            Image(uiImage: .productPlaceholderImage)
-                        }
-                        .setProcessor(imageProcessor)
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: Layout.productImageSize * scale, height: Layout.productImageSize * scale)
-                        .cornerRadius(Layout.cornerRadius)
-                        .foregroundColor(Color(UIColor.listSmallIcon))
-                        .accessibilityHidden(true)
+                    ProductImageThumbnail(productImageURL: viewModel.imageURL,
+                                          productImageSize: Layout.productImageSize,
+                                          scale: scale,
+                                          productImageCornerRadius: Layout.cornerRadius,
+                                          foregroundColor: Color(UIColor.listSmallIcon))
 
                     // Product details
                     VStack(alignment: .leading) {
@@ -73,8 +87,10 @@ struct ProductRow: View {
                             .bodyStyle()
                         Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
+                            .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
                         Text(viewModel.skuLabel)
                             .subheadlineStyle()
+                            .renderedIf(viewModel.skuLabel.isNotEmpty)
                     }
                     .multilineTextAlignment(.leading)
                 }
@@ -205,7 +221,8 @@ struct ProductRow_Previews: PreviewProvider {
                                             stockQuantity: 7,
                                             manageStock: true,
                                             canChangeQuantity: true,
-                                            imageURL: nil)
+                                            imageURL: nil,
+                                            isConfigurable: true)
         let viewModelWithoutStepper = ProductRowViewModel(productOrVariationID: 1,
                                                           name: "Love Ficus",
                                                           sku: "123456",
@@ -214,7 +231,8 @@ struct ProductRow_Previews: PreviewProvider {
                                                           stockQuantity: 7,
                                                           manageStock: true,
                                                           canChangeQuantity: false,
-                                                          imageURL: nil)
+                                                          imageURL: nil,
+                                                          isConfigurable: false)
 
         ProductRow(viewModel: viewModel)
             .previewDisplayName("ProductRow with stepper")

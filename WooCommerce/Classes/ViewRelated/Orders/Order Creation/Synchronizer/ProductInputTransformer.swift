@@ -157,6 +157,24 @@ private extension ProductInputTransformer {
                          totalTax: "",
                          attributes: [],
                          addOns: [],
-                         parent: nil)
+                         parent: nil,
+                         bundleConfiguration: input.bundleConfiguration.map {
+            switch $0.productOrVariation {
+                case let .product(productID):
+                    return .init(bundledItemID: $0.bundledItemID,
+                                 productID: productID,
+                                 quantity: $0.quantity,
+                                 isOptionalAndSelected: $0.isOptionalAndSelected,
+                                 variationID: nil,
+                                 variationAttributes: nil)
+                case let .variation(productID, variationID, attributes):
+                    return .init(bundledItemID: $0.bundledItemID,
+                                 productID: productID,
+                                 quantity: $0.quantity,
+                                 isOptionalAndSelected: $0.isOptionalAndSelected,
+                                 variationID: variationID,
+                                 variationAttributes: attributes)
+            }
+        })
     }
 }

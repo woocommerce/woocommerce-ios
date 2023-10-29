@@ -326,6 +326,30 @@ final class OrderMapperTests: XCTestCase {
         XCTAssertEqual(fee.attributes, [])
     }
 
+    func test_Order_fees_are_correctly_parsed_when_special_characters() {
+        guard let order = mapLoadOrderWithSpecialCharactersResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNotNil(order.fees)
+        XCTAssertEqual(order.fees.count, 1)
+
+        guard let fee = order.fees.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(fee.feeID, 60)
+        XCTAssertEqual(fee.name, "125.50 fee")
+        XCTAssertEqual(fee.taxClass, "")
+        XCTAssertEqual(fee.taxStatus, .taxable)
+        XCTAssertEqual(fee.total, "125.50")
+        XCTAssertEqual(fee.totalTax, "0.00")
+        XCTAssertEqual(fee.taxes, [])
+        XCTAssertEqual(fee.attributes, [])
+    }
+
     func test_order_line_item_attributes_handle_unexpected_formatted_attributes() throws {
         // Given
         let order = try XCTUnwrap(mapLoadOrderWithFaultyAttributesResponse())
@@ -492,6 +516,10 @@ private extension OrderMapperTests {
     ///
     func mapLoadOrderResponse() -> Order? {
         return mapOrder(from: "order")
+    }
+
+    func mapLoadOrderWithSpecialCharactersResponse() -> Order? {
+        return mapOrder(from: "order-with-special-character-currency")
     }
 
     /// Returns the Order output upon receiving `order-without-data`

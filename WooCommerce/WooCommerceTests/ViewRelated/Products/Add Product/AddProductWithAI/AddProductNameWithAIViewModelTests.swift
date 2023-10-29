@@ -20,50 +20,9 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_productNameContent_is_updated_correctly_with_initialName() {
-        // Given
-        let expectedName = "iPhone 15"
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, initialName: expectedName, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
-
-        // Then
-        XCTAssertEqual(viewModel.productNameContent, expectedName)
-    }
-
-    func test_onUsePackagePhoto_is_triggered_when_tapping_package_photo() {
-        // Given
-        var triggeredName: String?
-        let expectedName = "iPhone 15"
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123,
-                                                      initialName: expectedName,
-                                                      onUsePackagePhoto: { triggeredName = $0 },
-                                                      onContinueWithProductName: { _ in })
-
-        // When
-        viewModel.didTapUsePackagePhoto()
-
-        // Then
-        XCTAssertEqual(triggeredName, expectedName)
-    }
-
-    func test_onContinueWithProductName_is_triggered_when_tapping_continue() {
-        // Given
-        var triggeredName: String?
-        let expectedName = "iPhone 15"
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123,
-                                                      initialName: expectedName,
-                                                      onUsePackagePhoto: { _ in },
-                                                      onContinueWithProductName: { triggeredName = $0 })
-
-        // When
-        viewModel.didTapContinue()
-
-        // Then
-        XCTAssertEqual(triggeredName, expectedName)
-    }
-
     func test_didTapSuggestName_tracks_entry_point_event_for_product_name_ai_with_correct_empty_input() throws {
         //  Given
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.didTapSuggestName()
@@ -79,7 +38,7 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
 
     func test_didTapSuggestName_tracks_entry_point_event_for_product_name_ai_with_correct_non_empty_input() throws {
         //  Given
-        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics, onUsePackagePhoto: { _ in }, onContinueWithProductName: { _ in })
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
 
         // When
         viewModel.productNameContent = "iPhone 15"
@@ -92,5 +51,16 @@ final class AddProductNameWithAIViewModelTests: XCTestCase {
         let eventProperties = analyticsProvider.receivedProperties[eventIndex]
         XCTAssertEqual(eventProperties["has_input_name"] as? Bool, true)
         XCTAssertEqual(eventProperties["source"] as? String, "product_creation_ai")
+    }
+
+    func test_didTapContinue_tracks_continue_tapped_event() throws {
+        //  Given
+        let viewModel = AddProductNameWithAIViewModel(siteID: 123, analytics: analytics)
+
+        // When
+        viewModel.didTapContinue()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_product_name_continue_button_tapped"))
     }
 }

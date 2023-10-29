@@ -347,7 +347,8 @@ private extension OrdersUpsertUseCaseTests {
                   totalTax: "",
                   attributes: [],
                   addOns: [],
-                  parent: nil)
+                  parent: nil,
+                  bundleConfiguration: [])
     }
 
     func makeOrder() -> Networking.Order {
@@ -370,6 +371,7 @@ private extension OrdersUpsertUseCaseTests {
               totalTax: "0.00",
               attributes: attributes,
               addOns: [],
-              parent: nil)
+              parent: nil,
+              bundleConfiguration: [])
     }
 }

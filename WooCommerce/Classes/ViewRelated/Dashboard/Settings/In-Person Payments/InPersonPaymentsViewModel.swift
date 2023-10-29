@@ -1,6 +1,7 @@
 import Combine
 import Yosemite
 import Experiments
+import WooFoundation
 
 final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel {
     @Published var state: CardPresentPaymentOnboardingState
@@ -143,7 +144,7 @@ final class InPersonPaymentsViewModel: ObservableObject, PaymentSettingsFlowPres
 }
 
 private extension InPersonPaymentsViewModel {
-    var countryCode: String {
+    var countryCode: CountryCode {
         CardPresentConfigurationLoader().configuration.countryCode
     }
 

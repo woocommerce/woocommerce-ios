@@ -538,7 +538,8 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "1.20",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
@@ -555,7 +556,8 @@ extension ShippingLabelPackagesFormViewModel {
                               totalTax: "0.00",
                               attributes: [],
                               addOns: [],
-                              parent: nil)
+                              parent: nil,
+                              bundleConfiguration: [])
 
         return [item1, item2]
     }

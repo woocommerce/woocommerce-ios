@@ -458,8 +458,10 @@ extension UnderlyingError: LocalizedError {
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "there is an issue with the merchant account or device")
         case .unsupportedMobileDeviceConfiguration:
+            /// Strictly, 16.0 is required in the US, 16.4 in the UK... but it's overly complicated to make this country specific.
+            /// Any device running 16.0 can run 16.4, so this seems clear enough.
             return NSLocalizedString("Please check that your phone meets these requirements: " +
-                                     "iPhone XS or newer running iOS 16.0 or above. Contact support if this error " +
+                                     "iPhone XS or newer running iOS 16.4 or above. Contact support if this error " +
                                      "shows on a supported device.",
                                      comment: "Error message shown when Tap to Pay on iPhone cannot be used because " +
                                      "the device does not meet minimum requirements.")

@@ -52,14 +52,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// Enables Tap to Pay on iPhone Milestone 2 (Tap to Pay deeplinks, JITM deeplink handling, JITM customisation) on eligible devices.
-    ///
-    case tapToPayOnIPhoneMilestone2
-
-    /// Enables badging the route to Set up Tap to Pay on iPhone on eligible devices
-    ///
-    case tapToPayBadge
-
     /// Just In Time Messages on Dashboard
     ///
     case justInTimeMessagesOnDashboard
@@ -178,6 +170,10 @@ public enum FeatureFlag: Int {
     /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
     case ordersWithCouponsM4
 
+    /// Enables the Milestone 6 of the Orders with Coupons project: UX improvements
+    ///
+    case ordersWithCouponsM6
+
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder
@@ -209,4 +205,16 @@ public enum FeatureFlag: Int {
     /// Enables gift card support in order creation/editing
     ///
     case giftCardInOrderForm
+
+    /// Enables the Woo Payments Deposits item in the Payments menu
+    ///
+    case wooPaymentsDepositsOverviewInPaymentsMenu
+
+    /// Enables Tap to Pay for UK Woo Payments stores
+    /// 
+    case tapToPayOnIPhoneInUK
+
+    /// Enables bundle product configuration support in order creation/editing.
+    ///
+    case productBundlesInOrderForm
 }

@@ -9,6 +9,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
     private let isCollapsible: Bool
 
     @Binding private var isCollapsed: Bool
+    private var shouldShowDividers: Bool
 
     private let horizontalPadding: CGFloat = 16
     private let verticalPadding: CGFloat = 8
@@ -16,11 +17,13 @@ struct CollapsibleView<Label: View, Content: View>: View {
     init(isCollapsible: Bool = true,
          isCollapsed: Binding<Bool> = .constant(false),
          safeAreaInsets: EdgeInsets = .zero,
+         shouldShowDividers: Bool = true,
          @ViewBuilder label: () -> Label,
          @ViewBuilder content: () -> Content) {
         self.label = label()
         self.content = content()
         self.safeAreaInsets = safeAreaInsets
+        self.shouldShowDividers = shouldShowDividers
         self.isCollapsible = isCollapsible
         self._isCollapsed = isCollapsed
     }
@@ -28,6 +31,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Divider()
+                .renderedIf(shouldShowDividers)
             Button(action: {
                 guard isCollapsible else { return }
                 withAnimation {
@@ -49,6 +53,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
             .background(Color(.listForeground(modal: false)))
 
             Divider()
+                .renderedIf(shouldShowDividers)
 
             if !isCollapsed {
                 content

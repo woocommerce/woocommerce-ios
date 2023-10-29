@@ -6,8 +6,7 @@ group :screenshots, optional: true do
   gem 'rmagick', '~> 4.1'
 end
 
-# 1.13.x and higher, but less than 2.x, starting from 1.13.0
-gem 'cocoapods', '~> 1.13', '>= 1.13.0'
+gem 'cocoapods', '~> 1.14'
 gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'dotenv'
 gem 'fastlane', '~> 2'
@@ -26,3 +25,5 @@ gem 'rubocop', '~> 1.56'
 gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'
 gem 'xcpretty-travis-formatter'
+
+gem 'danger-dangermattic', git: 'https://github.com/Automattic/dangermattic'

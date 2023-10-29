@@ -1095,6 +1095,7 @@ private extension ProductVariationStoreTests {
               totalTax: "1.20",
               attributes: [],
               addOns: [],
-              parent: nil)
+              parent: nil,
+              bundleConfiguration: [])
     }
 }

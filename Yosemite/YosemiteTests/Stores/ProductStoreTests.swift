@@ -1040,6 +1040,49 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(searchResultsWithAnotherKeyword)
     }
 
+    /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.
+    ///
+    func test_searchProducts_effectively_persists_product_bundle_items() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let mockBundleItem = ProductBundleItem(bundledItemID: 6,
+                                               productID: 16,
+                                               menuOrder: 1,
+                                               title: "Scarf",
+                                               stockStatus: .inStock,
+                                               minQuantity: 2,
+                                               maxQuantity: nil,
+                                               defaultQuantity: 6,
+                                               isOptional: true,
+                                               overridesVariations: true,
+                                               allowedVariations: [12, 18],
+                                               overridesDefaultVariationAttributes: true,
+                                               defaultVariationAttributes: [.init(id: 2, name: "Material", option: "Silk")])
+        let mockProduct = Product.fake().copy(bundledItems: [mockBundleItem])
+        remote.whenSearchingProducts(query: "Accessory", thenReturn: .success([mockProduct]))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                               keyword: "Accessory",
+                                                               pageNumber: self.defaultPageNumber,
+                                                               pageSize: self.defaultPageSize,
+                                                               excludedProductIDs: [],
+                                                               onCompletion: { _ in
+                promise(())
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductBundleItem.self), 1)
+        let storageBundleItem = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.ProductBundleItem.self))
+        assertEqual(mockBundleItem, storageBundleItem.toReadOnly())
+    }
+
     func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
         // Given
         let keyword = "test"
@@ -2285,7 +2328,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
@@ -2293,8 +2337,7 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let productDetails = try XCTUnwrap(result.get())
         XCTAssertEqual(productDetails, .init(name: "Cheese and Garlic Croutons",
-                                             description: "Enhance your salads.",
-                                             language: "en"))
+                                             description: "Enhance your salads."))
     }
 
     func test_generateProductDetails_returns_error_on_failure() throws {
@@ -2311,7 +2354,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
@@ -2325,6 +2369,7 @@ final class ProductStoreTests: XCTestCase {
         // Given
         let scannedTexts = ["onion", "chives"]
         let productName = "food"
+        let language = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -2337,7 +2382,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: productName,
-                                                                       scannedTexts: scannedTexts) { _ in
+                                                                       scannedTexts: scannedTexts,
+                                                                       language: language) { _ in
                 promise(())
             })
         }
@@ -2346,6 +2392,7 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         let combinedKeywords = scannedTexts + [productName]
         XCTAssertTrue(base.contains("\(combinedKeywords)"))
+        XCTAssertTrue(base.contains("\(language)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {
@@ -2362,7 +2409,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { _ in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { _ in
                 promise(())
             })
         }
@@ -2503,13 +2551,13 @@ final class ProductStoreTests: XCTestCase {
     }
 
 
-    // MARK: - `generateProduct`
+    // MARK: - `generateAIProduct`
 
-    func test_generateProduct_returns_product_on_success() throws {
+    func test_generateAIProduct_returns_AIProduct_on_success() throws {
         // Given
-        let product = Product.fake()
+        let product: AIProduct = .fake()
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingProduct(thenReturn: .success(product))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .success(product))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2518,16 +2566,16 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProduct(siteID: 123,
-                                                                productName: "Watch",
-                                                                keywords: "Leather strip, silver",
-                                                                language: "en",
-                                                                tone: "Casual",
-                                                                currencySymbol: "INR",
-                                                                dimensionUnit: "cm",
-                                                                weightUnit: "kg",
-                                                                categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+            productStore.onAction(ProductAction.generateAIProduct(siteID: 123,
+                                                                  productName: "Watch",
+                                                                  keywords: "Leather strip, silver",
+                                                                  language: "en",
+                                                                  tone: "Casual",
+                                                                  currencySymbol: "INR",
+                                                                  dimensionUnit: "cm",
+                                                                  weightUnit: "kg",
+                                                                  categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
                 promise(result)
             })
         }
@@ -2537,10 +2585,10 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedProduct, product)
     }
 
-    func test_generateProduct_returns_error_on_failure() throws {
+    func test_generateAIProduct_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingProduct(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2549,16 +2597,16 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            productStore.onAction(ProductAction.generateProduct(siteID: 123,
-                                                                productName: "Watch",
-                                                                keywords: "Leather strip, silver",
-                                                                language: "en",
-                                                                tone: "Casual",
-                                                                currencySymbol: "INR",
-                                                                dimensionUnit: "cm",
-                                                                weightUnit: "kg",
-                                                                categories: [ProductCategory.fake(), ProductCategory.fake()],
-                                                                tags: [ProductTag.fake(), ProductTag.fake()]) { result in
+            productStore.onAction(ProductAction.generateAIProduct(siteID: 123,
+                                                                  productName: "Watch",
+                                                                  keywords: "Leather strip, silver",
+                                                                  language: "en",
+                                                                  tone: "Casual",
+                                                                  currencySymbol: "INR",
+                                                                  dimensionUnit: "cm",
+                                                                  weightUnit: "kg",
+                                                                  categories: [ProductCategory.fake(), ProductCategory.fake()],
+                                                                  tags: [ProductTag.fake(), ProductTag.fake()]) { result in
                 promise(result)
             })
         }

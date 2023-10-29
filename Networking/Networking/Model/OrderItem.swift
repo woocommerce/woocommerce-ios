@@ -34,6 +34,10 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
     ///
     public let parent: Int64?
 
+    /// Networking layer only, used when Product Bundles extension/plugin is active.
+    /// The property is non-empty when the order item is a bundle product with configuration for each bundled item.
+    public let bundleConfiguration: [OrderItemBundleItem]
+
     /// OrderItem struct initializer.
     ///
     public init(itemID: Int64,
@@ -51,7 +55,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                 totalTax: String,
                 attributes: [OrderItemAttribute],
                 addOns: [OrderItemProductAddOn],
-                parent: Int64?) {
+                parent: Int64?,
+                bundleConfiguration: [OrderItemBundleItem]) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -68,6 +73,7 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
         self.attributes = attributes
         self.addOns = addOns
         self.parent = parent
+        self.bundleConfiguration = bundleConfiguration
     }
 
     /// The public initializer for OrderItem.
@@ -139,7 +145,8 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
                   totalTax: totalTax,
                   attributes: attributes,
                   addOns: productAddOns,
-                  parent: bundledBy ?? compositeParent)
+                  parent: bundledBy ?? compositeParent,
+                  bundleConfiguration: [])
     }
 
     /// Encodes an order item.
@@ -161,6 +168,10 @@ public struct OrderItem: Codable, Equatable, Hashable, GeneratedFakeable, Genera
 
         if !total.isEmpty {
             try container.encode(total, forKey: .total)
+        }
+
+        if !bundleConfiguration.isEmpty {
+            try container.encode(bundleConfiguration, forKey: .bundleConfiguration)
         }
     }
 }
@@ -188,6 +199,7 @@ extension OrderItem {
         case totalTax       = "total_tax"
         case bundledBy      = "bundled_by"
         case compositeParent = "composite_parent"
+        case bundleConfiguration = "bundle_configuration"
     }
 }
 

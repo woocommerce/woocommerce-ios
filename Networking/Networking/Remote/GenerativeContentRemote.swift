@@ -44,17 +44,17 @@ public protocol GenerativeContentRemoteProtocol {
     ///   - weightUnit: Weight unit to generate product weight
     ///   - categories: Existing categories
     ///   - tags: Existing tags
-    /// - Returns: Generated `Product`
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag]) async throws -> Product
+    /// - Returns: Generated `AIProduct`
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag]) async throws -> AIProduct
 }
 
 /// Product: Remote Endpoints
@@ -64,18 +64,18 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
         case tokenNotFound
     }
 
-    private var token: String?
+    private var token: JWToken?
 
     public func generateText(siteID: Int64,
                              base: String,
                              feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await generateText(siteID: siteID, base: base, feature: feature, token: token)
@@ -86,76 +86,76 @@ public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProto
                                  string: String,
                                  feature: GenerativeContentRemoteFeature) async throws -> String {
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
             return try await identifyLanguage(siteID: siteID, string: string, feature: feature, token: token)
         }
     }
 
-    public func generateProduct(siteID: Int64,
-                                productName: String,
-                                keywords: String,
-                                language: String,
-                                tone: String,
-                                currencySymbol: String,
-                                dimensionUnit: String?,
-                                weightUnit: String?,
-                                categories: [ProductCategory],
-                                tags: [ProductTag]) async throws -> Product {
+    public func generateAIProduct(siteID: Int64,
+                                  productName: String,
+                                  keywords: String,
+                                  language: String,
+                                  tone: String,
+                                  currencySymbol: String,
+                                  dimensionUnit: String?,
+                                  weightUnit: String?,
+                                  categories: [ProductCategory],
+                                  tags: [ProductTag]) async throws -> AIProduct {
 
         do {
-            guard let token else {
+            guard let token, token.isTokenValid(for: siteID) else {
                 throw GenerativeContentRemoteError.tokenNotFound
             }
-            return try await generateProduct(siteID: siteID,
-                                             productName: productName,
-                                             keywords: keywords,
-                                             language: language,
-                                             tone: tone,
-                                             currencySymbol: currencySymbol,
-                                             dimensionUnit: dimensionUnit,
-                                             weightUnit: weightUnit,
-                                             categories: categories,
-                                             tags: tags,
-                                             token: token)
+            return try await generateAIProduct(siteID: siteID,
+                                               productName: productName,
+                                               keywords: keywords,
+                                               language: language,
+                                               tone: tone,
+                                               currencySymbol: currencySymbol,
+                                               dimensionUnit: dimensionUnit,
+                                               weightUnit: weightUnit,
+                                               categories: categories,
+                                               tags: tags,
+                                               token: token)
         } catch GenerativeContentRemoteError.tokenNotFound,
-                    WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
+                WordPressApiError.unknown(code: TokenExpiredError.code, message: TokenExpiredError.message) {
             let token = try await fetchToken(siteID: siteID)
             self.token = token
-            return try await generateProduct(siteID: siteID,
-                                             productName: productName,
-                                             keywords: keywords,
-                                             language: language,
-                                             tone: tone,
-                                             currencySymbol: currencySymbol,
-                                             dimensionUnit: dimensionUnit,
-                                             weightUnit: weightUnit,
-                                             categories: categories,
-                                             tags: tags,
-                                             token: token)
+            return try await generateAIProduct(siteID: siteID,
+                                               productName: productName,
+                                               keywords: keywords,
+                                               language: language,
+                                               tone: tone,
+                                               currencySymbol: currencySymbol,
+                                               dimensionUnit: dimensionUnit,
+                                               weightUnit: weightUnit,
+                                               categories: categories,
+                                               tags: tags,
+                                               token: token)
         }
     }
 }
 
 private extension GenerativeContentRemote {
-    func fetchToken(siteID: Int64) async throws -> String {
+    func fetchToken(siteID: Int64) async throws -> JWToken {
         let path = "sites/\(siteID)/\(Path.jwtToken)"
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .post, path: path)
-        let mapper = JWTTokenResponseMapper()
+        let mapper = JWTokenMapper()
         return try await enqueue(request, mapper: mapper)
     }
 
     func generateText(siteID: Int64,
                       base: String,
                       feature: GenerativeContentRemoteFeature,
-                      token: String) async throws -> String {
-        let parameters = [ParameterKey.token: token,
+                      token: JWToken) async throws -> String {
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: base,
                           ParameterKey.feature: feature.rawValue,
                           ParameterKey.fields: ParameterValue.completion]
@@ -170,13 +170,13 @@ private extension GenerativeContentRemote {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
-                          token: String) async throws -> String {
+                          token: JWToken) async throws -> String {
         let prompt = [
             "What is the ISO language code of the language used in the below text?" +
             "Do not include any explanations and only provide the ISO language code in your response.",
             "Text: ```\(string)```"
         ].joined(separator: "\n")
-        let parameters = [ParameterKey.token: token,
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: prompt,
                           ParameterKey.feature: feature.rawValue,
                           ParameterKey.fields: ParameterValue.completion]
@@ -188,39 +188,36 @@ private extension GenerativeContentRemote {
         return try await enqueue(request, mapper: mapper)
     }
 
-
-    func generateProduct(siteID: Int64,
-                         productName: String,
-                         keywords: String,
-                         language: String,
-                         tone: String,
-                         currencySymbol: String,
-                         dimensionUnit: String?,
-                         weightUnit: String?,
-                         categories: [ProductCategory],
-                         tags: [ProductTag],
-                         token: String) async throws -> Product {
+    func generateAIProduct(siteID: Int64,
+                           productName: String,
+                           keywords: String,
+                           language: String,
+                           tone: String,
+                           currencySymbol: String,
+                           dimensionUnit: String?,
+                           weightUnit: String?,
+                           categories: [ProductCategory],
+                           tags: [ProductTag],
+                           token: JWToken) async throws -> AIProduct {
 
         let tagsAsString = {
             guard !tags.isEmpty else {
-                return ""
+                return ", tags: suggest an array of the best matching tags for this product."
             }
 
             return
                 ", tags: Given the list of available tags ```\(tags.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching tags for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones."
+                "suggest an array of the best matching tags for this product. You can suggest new tags as well."
         }()
 
         let categoriesAsString = {
             guard !categories.isEmpty else {
-                return ""
+                return ", categories: suggest an array of the best matching categories for this product."
             }
 
             return
                 ", categories: Given the list of available categories ```\(categories.map { $0.name }.joined(separator: ", "))```, " +
-                "suggest an array of the best matching categories for this product, if no matches are found return an empty array, " +
-                "don’t suggest any value other than the available ones."
+                "suggest an array of the best matching categories for this product. You can suggest new categories as well."
         }()
 
         let shippingJson = {
@@ -273,7 +270,7 @@ private extension GenerativeContentRemote {
 
         let prompt = input + "\n" + expectedJsonFormat
 
-        let parameters = [ParameterKey.token: token,
+        let parameters = [ParameterKey.token: token.token,
                           ParameterKey.prompt: prompt,
                           ParameterKey.feature: GenerativeContentRemoteFeature.productCreation.rawValue,
                           ParameterKey.fields: ParameterValue.completion]
@@ -282,9 +279,7 @@ private extension GenerativeContentRemote {
                                     path: Path.textCompletion,
                                     parameters: parameters)
 
-        let mapper = AIProductMapper(siteID: siteID,
-                                     existingCategories: categories,
-                                     existingTags: tags)
+        let mapper = AIProductMapper(siteID: siteID)
         return try await enqueue(request, mapper: mapper)
     }
 }
@@ -314,19 +309,6 @@ private extension GenerativeContentRemote {
     }
 }
 
-// MARK: - Mapper to parse the JWT token
-//
-private struct JWTTokenResponseMapper: Mapper {
-    func map(response: Data) throws -> String {
-        let decoder = JSONDecoder()
-        return try decoder.decode(JWTTokenResponse.self, from: response).token
-    }
-
-    struct JWTTokenResponse: Decodable {
-        let token: String
-    }
-}
-
 // MARK: - Mapper to parse the `text-completion` endpoint response
 //
 private struct TextCompletionResponseMapper: Mapper {
@@ -337,5 +319,13 @@ private struct TextCompletionResponseMapper: Mapper {
 
     struct TextCompletionResponse: Decodable {
         let completion: String
+    }
+}
+
+// MARK: - Helper to check token validity
+//
+private extension JWToken {
+    func isTokenValid(for currentSelectedSiteID: Int64) -> Bool {
+        expiryDate > Date() && siteID == currentSelectedSiteID
     }
 }

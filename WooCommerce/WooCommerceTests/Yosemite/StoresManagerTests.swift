@@ -448,6 +448,26 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
+
+    /// Verifies that user is logged out when WPCOM token expires
+    ///
+    func test_it_deauthenticates_upon_receiving_invalid_token_error_notification() {
+        // Given
+        let manager = DefaultStoresManager.testingInstance
+        var isLoggedInValues = [Bool]()
+        cancellable = manager.isLoggedInPublisher.sink { isLoggedIn in
+            isLoggedInValues.append(isLoggedIn)
+        }
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        let error = DotcomError.invalidToken
+        MockNotificationCenter.testingInstance.post(name: .RemoteDidReceiveInvalidTokenError, object: error, userInfo: nil)
+
+        // Assert
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(isLoggedInValues, [false, true, false])
+    }
 }
 
 

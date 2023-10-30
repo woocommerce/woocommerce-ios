@@ -1316,10 +1316,15 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     func test_bundle_product_row_is_not_configurable_when_onConfigureProductRow_is_nil() async throws {
         // Given
-        let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
+        _ = createAndInsertBundleProduct(bundleItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores, onConfigureProductRow: nil)
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 featureFlagService: featureFlagService,
+                                                 onConfigureProductRow: nil)
 
         // Then
         XCTAssertEqual(viewModel.productRows.count, 1)
@@ -1330,12 +1335,14 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_bundle_product_row_is_configurable_and_invokes_onConfigureProductRow_on_row_configure() async throws {
         // Given
         let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
         let productToConfigure: Yosemite.Product = try waitFor { promise in
             let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
                                                      storageManager: self.storageManager,
                                                      stores: self.stores,
+                                                     featureFlagService: featureFlagService,
                                                      onConfigureProductRow: { product in
                 promise(product)
             })

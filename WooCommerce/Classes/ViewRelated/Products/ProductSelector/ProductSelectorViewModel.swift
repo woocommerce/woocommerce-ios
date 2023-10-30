@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import Combine
 import Foundation
@@ -54,6 +55,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Analytics service
     ///
     private let analytics: Analytics
+
+    private let featureFlagService: FeatureFlagService
 
     /// Store for publishers subscriptions
     ///
@@ -199,6 +202,7 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
@@ -212,6 +216,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -689,7 +694,11 @@ private extension ProductSelectorViewModel {
             let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
                 self?.onConfigureProductRow?(product)
             }
-            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState, configure: configure)
+            return ProductRowViewModel(product: product,
+                                       canChangeQuantity: false,
+                                       selectedState: selectedState,
+                                       featureFlagService: featureFlagService,
+                                       configure: configure)
         }
     }
 }

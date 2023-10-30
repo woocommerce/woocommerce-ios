@@ -117,6 +117,7 @@ struct CollapsibleProductRowCard: View {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
+        .background(Color(.listForeground(modal: false)))
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)

@@ -122,6 +122,7 @@ struct CollapsibleProductRowCard: View {
                 .inset(by: 0.25)
                 .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black),
                         lineWidth: Layout.borderLineWidth)
+                .renderedIf(!viewModel.hasParentProduct)
         }
         .cornerRadius(Layout.frameCornerRadius)
     }

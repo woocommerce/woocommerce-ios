@@ -596,6 +596,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes),
+                                       hasParentProduct: item.parent != nil,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -608,6 +609,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
+                                       hasParentProduct: item.parent != nil,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))

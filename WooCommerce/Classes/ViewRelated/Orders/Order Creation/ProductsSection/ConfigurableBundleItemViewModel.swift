@@ -54,6 +54,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     maximumQuantity: bundleItem.maxQuantity,
                                     canChangeQuantity: !isOptional || isOptionalAndSelected,
                                     imageURL: product.imageURL,
+                                    hasParentProduct: false,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity
@@ -122,18 +123,19 @@ private extension ConfigurableBundleItemViewModel {
         $isOptionalAndSelected.compactMap { [weak self] isOptionalAndSelected in
             guard let self else { return nil }
             let productRowViewModel = ProductRowViewModel(productOrVariationID: self.product.productID,
-                                name: self.bundleItem.title,
-                                sku: nil,
-                                price: nil,
-                                stockStatusKey: "",
-                                stockQuantity: nil,
-                                manageStock: false,
-                                quantity: self.quantity,
-                                minimumQuantity: self.bundleItem.minQuantity,
-                                maximumQuantity: self.bundleItem.maxQuantity,
-                                canChangeQuantity: isOptionalAndSelected,
-                                imageURL: self.product.imageURL,
-                                isConfigurable: false)
+                                                          name: self.bundleItem.title,
+                                                          sku: nil,
+                                                          price: nil,
+                                                          stockStatusKey: "",
+                                                          stockQuantity: nil,
+                                                          manageStock: false,
+                                                          quantity: self.quantity,
+                                                          minimumQuantity: self.bundleItem.minQuantity,
+                                                          maximumQuantity: self.bundleItem.maxQuantity,
+                                                          canChangeQuantity: isOptionalAndSelected,
+                                                          imageURL: self.product.imageURL,
+                                                          hasParentProduct: false,
+                                                          isConfigurable: false)
             productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
                 self?.quantity = quantity
             }

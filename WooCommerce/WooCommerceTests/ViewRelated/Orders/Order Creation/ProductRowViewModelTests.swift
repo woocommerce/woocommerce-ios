@@ -307,6 +307,7 @@ final class ProductRowViewModelTests: XCTestCase {
                                             maximumQuantity: nil,
                                             canChangeQuantity: true,
                                             imageURL: nil,
+                                            hasParentProduct: false,
                                             isConfigurable: false)
         XCTAssertEqual(viewModel.quantity, 3)
 
@@ -331,6 +332,7 @@ final class ProductRowViewModelTests: XCTestCase {
                                             maximumQuantity: 6,
                                             canChangeQuantity: true,
                                             imageURL: nil,
+                                            hasParentProduct: false,
                                             isConfigurable: false)
         XCTAssertEqual(viewModel.quantity, 6)
 

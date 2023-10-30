@@ -17,7 +17,7 @@ public final class AddCustomAmountScreen: ScreenObject {
     }
 
     /// Enters a custom amount by tapping a butto in the numeric keypad.
-    /// This is done instead of entering text because the text field ofr custom amount
+    /// This is done instead of entering text because the text field for custom amount
     /// is custom, and gets no keyboard focus when tapped.
     /// - Returns: Add Custom Amount screen object.
     @discardableResult

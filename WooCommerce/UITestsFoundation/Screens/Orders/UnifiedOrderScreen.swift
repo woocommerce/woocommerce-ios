@@ -209,6 +209,9 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Parameter text: Text to enter as the customer note.
     /// - Returns: Unified Order screen object.
     public func addCustomerNote(_ text: String) throws -> UnifiedOrderScreen {
+        // Add Customer note button is the lowermost element on the screen
+        // Adding a swipeup for better stability on iPad.
+        app.swipeUp()
         return try openCustomerNoteScreen()
             .enterNote(text)
             .confirmNote()

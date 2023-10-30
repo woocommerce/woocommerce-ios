@@ -16,6 +16,6 @@ public final class WordPressSiteRemote: Remote {
 
 private extension WordPressSiteRemote {
     enum Path {
-        static let root = "/?rest_route="
+        static let root = "/?rest_route=/"
     }
 }

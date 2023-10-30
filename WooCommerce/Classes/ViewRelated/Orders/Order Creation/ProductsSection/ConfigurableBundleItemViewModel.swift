@@ -8,9 +8,6 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         let defaultAttributes: [ProductVariationAttribute]
     }
 
-    /// For rendering the product row.
-    let productRowViewModel: ProductRowViewModel
-
     /// ID of the bundle item.
     let bundledItemID: Int64
 
@@ -20,7 +17,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Whether the bundle item is a variable product and has variations.
     let isVariable: Bool
 
-
+    /// For rendering the product row with the quantity setting UI.
+    @Published private(set) var productRowViewModel: ProductRowViewModel
     @Published var quantity: Decimal
     @Published var isOptionalAndSelected: Bool = false
     @Published var variationSelectorViewModel: ProductVariationSelectorViewModel?
@@ -38,9 +36,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         self.product = product
         self.bundleItem = bundleItem
         isOptional = bundleItem.isOptional
-        if isOptional {
-            isOptionalAndSelected = existingOrderItem != nil
-        }
+        let isOptionalAndSelected = existingOrderItem != nil
+        self.isOptionalAndSelected = isOptionalAndSelected
         let quantity = existingOrderItem?.quantity ?? bundleItem.defaultQuantity
         self.quantity = quantity
         self.variableProductSettings = variableProductSettings
@@ -55,12 +52,13 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     quantity: quantity,
                                     minimumQuantity: bundleItem.minQuantity,
                                     maximumQuantity: bundleItem.maxQuantity,
-                                    canChangeQuantity: true,
+                                    canChangeQuantity: !isOptional || isOptionalAndSelected,
                                     imageURL: product.imageURL,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity
         }
+        observeOptionalSelectedStateForProductRowViewModel()
     }
 
     func createVariationSelectorViewModel() {
@@ -113,6 +111,35 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         }
 
         return true
+    }
+}
+
+private extension ConfigurableBundleItemViewModel {
+    func observeOptionalSelectedStateForProductRowViewModel() {
+        guard isOptional else {
+            return
+        }
+        $isOptionalAndSelected.compactMap { [weak self] isOptionalAndSelected in
+            guard let self else { return nil }
+            let productRowViewModel = ProductRowViewModel(productOrVariationID: self.product.productID,
+                                name: self.bundleItem.title,
+                                sku: nil,
+                                price: nil,
+                                stockStatusKey: "",
+                                stockQuantity: nil,
+                                manageStock: false,
+                                quantity: self.quantity,
+                                minimumQuantity: self.bundleItem.minQuantity,
+                                maximumQuantity: self.bundleItem.maxQuantity,
+                                canChangeQuantity: isOptionalAndSelected,
+                                imageURL: self.product.imageURL,
+                                isConfigurable: false)
+            productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
+                self?.quantity = quantity
+            }
+            return productRowViewModel
+        }
+        .assign(to: &$productRowViewModel)
     }
 }
 

@@ -711,6 +711,35 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Payment Section Tests
 
+    func test_payment_section_when_products_and_custom_amounts_are_added_then_paymentDataViewModel_is_updated() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager)
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // Pre-check
+        XCTAssertTrue(viewModel.paymentDataViewModel.orderIsEmpty)
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowProductsTotal)
+
+        // When
+        viewModel.addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Pre-check
+        XCTAssertFalse(viewModel.paymentDataViewModel.orderIsEmpty)
+        XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowProductsTotal)
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.completeMultipleSelection()
+
+        // Then
+        XCTAssertFalse(viewModel.paymentDataViewModel.orderIsEmpty)
+        XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowProductsTotal)
+    }
+
     func test_payment_section_is_updated_when_products_update() {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)

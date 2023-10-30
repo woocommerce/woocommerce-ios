@@ -62,7 +62,6 @@ private struct CustomerNoteSectionContent: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-        //.addingTopAndBottomDividers()
     }
 
     private func createEditNotesButton() -> some View {

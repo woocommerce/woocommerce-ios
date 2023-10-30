@@ -10,6 +10,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
 
     @Binding private var isCollapsed: Bool
     private var shouldShowDividers: Bool
+    private let backgroundColor: UIColor
 
     private let horizontalPadding: CGFloat = 16
     private let verticalPadding: CGFloat = 8
@@ -18,12 +19,14 @@ struct CollapsibleView<Label: View, Content: View>: View {
          isCollapsed: Binding<Bool> = .constant(false),
          safeAreaInsets: EdgeInsets = .zero,
          shouldShowDividers: Bool = true,
+         backgroundColor: UIColor = .listForeground(modal: false),
          @ViewBuilder label: () -> Label,
          @ViewBuilder content: () -> Content) {
         self.label = label()
         self.content = content()
         self.safeAreaInsets = safeAreaInsets
         self.shouldShowDividers = shouldShowDividers
+        self.backgroundColor = backgroundColor
         self.isCollapsible = isCollapsible
         self._isCollapsed = isCollapsed
     }
@@ -50,7 +53,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
             .padding(.horizontal, horizontalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
             .padding(.vertical, verticalPadding)
-            .background(Color(.listForeground(modal: false)))
+            .background(Color(backgroundColor))
 
             Divider()
                 .renderedIf(shouldShowDividers)

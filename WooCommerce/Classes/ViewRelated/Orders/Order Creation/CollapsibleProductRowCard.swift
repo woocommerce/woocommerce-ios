@@ -45,6 +45,7 @@ struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: shouldShowDividers,
+                        backgroundColor: viewModel.backgroundColor,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -117,7 +118,7 @@ struct CollapsibleProductRowCard: View {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(.listForeground(modal: false)))
+        .background(Color(viewModel.backgroundColor))
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
@@ -245,15 +246,29 @@ private extension CollapsibleProductRowCard {
     }
 }
 
+private extension ProductRowViewModel {
+    var backgroundColor: UIColor {
+        hasParentProduct ?
+        .tertiarySystemGroupedBackground: .listForeground(modal: false)
+    }
+}
+
 #if DEBUG
 struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel,
-                                  shouldDisableDiscountEditing: false,
-                                  shouldDisallowDiscounts: false,
-                                  onAddDiscount: {})
+        VStack {
+            CollapsibleProductRowCard(viewModel: viewModel,
+                                      shouldDisableDiscountEditing: false,
+                                      shouldDisallowDiscounts: false,
+                                      onAddDiscount: {})
+            CollapsibleProductRowCard(viewModel: ProductRowViewModel(product: product, canChangeQuantity: true, hasParentProduct: true),
+                                      shouldDisableDiscountEditing: false,
+                                      shouldDisallowDiscounts: false,
+                                      onAddDiscount: {})
+        }
+        .padding()
     }
 }
 #endif

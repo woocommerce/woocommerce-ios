@@ -2620,14 +2620,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(newBundleOrderItem.bundleConfiguration.isNotEmpty)
     }
 
-    // Existing items: bundle A with child item —> select non-bundle B in product selector
+    // Existing items: bundle A with child item —> select non-bundle B which is A's child item in product selector
     // —> order items to update remotely: bundle A with child item, non-bundle B
-    func test_when_existing_items_contain_bundle_then_selecting_non_bundle_results_in_same_bundle_and_new_non_bundle_item() throws {
+    func test_when_existing_items_contain_bundle_then_selecting_non_bundle_child_item_results_in_same_bundle_and_new_non_bundle_item() throws {
         // Given
-        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let itemProductID: Int64 = 777
+        let bundleItem = ProductBundleItem.fake().copy(productID: itemProductID)
         let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
         // Non-bundle product is in storage but not part of the order.
-        let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 777, purchasable: true)
+        let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: itemProductID, purchasable: true)
         storageManager.insertProducts([nonBundleProduct,
                                        // Product of the bundled item.
                                        .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
@@ -2675,7 +2676,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(existingBundleOrderItem.quantity, 2)
 
         let existingChildBundleOrderItem = try XCTUnwrap(orderToUpdate.items[1])
-        XCTAssertEqual(existingChildBundleOrderItem.productID, 5)
+        XCTAssertEqual(existingChildBundleOrderItem.productID, itemProductID)
         XCTAssertEqual(existingChildBundleOrderItem.quantity, 1)
 
         let newNonBundleOrderItem = try XCTUnwrap(orderToUpdate.items[2])

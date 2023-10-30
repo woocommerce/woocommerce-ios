@@ -18,7 +18,7 @@ struct ConfigurableBundleItemView: View {
                     Image(uiImage: viewModel.isOptionalAndSelected || !viewModel.isOptional ?
                         .checkCircleImage.withRenderingMode(.alwaysTemplate):
                             .checkEmptyCircleImage)
-                    .foregroundColor(.init(viewModel.isOptional ? .brand: .placeholderImage))
+                    .foregroundColor(.init(viewModel.isOptional ? .accent: .placeholderImage))
                 }
                 .disabled(!viewModel.isOptional)
 

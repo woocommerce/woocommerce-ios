@@ -874,6 +874,7 @@ extension EditableOrderViewModel {
         let siteID: Int64
         let itemsTotal: String
         let orderTotal: String
+        let orderIsEmpty: Bool
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
@@ -934,6 +935,7 @@ extension EditableOrderViewModel {
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
+             orderIsEmpty: Bool = false,
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
@@ -970,6 +972,7 @@ extension EditableOrderViewModel {
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
+            self.orderIsEmpty = orderIsEmpty
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
@@ -1376,6 +1379,7 @@ private extension EditableOrderViewModel {
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
+                                            orderIsEmpty: order.items.isEmpty && order.fees.isEmpty,
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: disableCoupons,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),

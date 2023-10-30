@@ -50,23 +50,43 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            HStack {
-                Text(Localization.payment)
-                    .accessibilityAddTraits(.isHeader)
-                    .headlineStyle()
+//            HStack {
+//                Text(Localization.payment)
+//                    .accessibilityAddTraits(.isHeader)
+//                    .headlineStyle()
+//
+//                TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+//                    .padding(.horizontal, insets: safeAreaInsets)
+//
+//                Spacer()
+//
+//                Image(uiImage: .lockImage)
+//                    .foregroundColor(Color(.brand))
+//                    .renderedIf(viewModel.showNonEditableIndicators)
+//
+//                ProgressView()
+//                    .renderedIf(viewModel.isLoading)
+//            }
+//            .padding()
 
-                Spacer()
+            Group {
+                HStack {
+                    TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                        .padding(.vertical, 8)
 
-                Image(uiImage: .lockImage)
-                    .foregroundColor(Color(.brand))
-                    .renderedIf(viewModel.showNonEditableIndicators)
+                    Image(uiImage: .lockImage)
+                        .foregroundColor(Color(.brand))
+                        .padding(.trailing, 16)
+                        .renderedIf(viewModel.showNonEditableIndicators)
 
-                ProgressView()
-                    .renderedIf(viewModel.isLoading)
+                }
+                .padding(.horizontal, insets: safeAreaInsets)
+
+                Divider()
+                    .padding(.leading, 16)
             }
-            .padding()
+            .renderedIf(viewModel.orderIsEmpty)
 
-            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
 
             shippingRow
                 .sheet(isPresented: $shouldShowShippingLineDetails) {
@@ -137,12 +157,14 @@ struct OrderPaymentSection: View {
                                              onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
                     .background(FullScreenCoverClearBackgroundView())
                 }
+                .renderedIf(!viewModel.orderIsEmpty)
 
             VStack(alignment: .leading, spacing: .zero) {
                 TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
                     .renderedIf(viewModel.shouldShowDiscountTotal)
 
                 TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                    .renderedIf(!viewModel.orderIsEmpty)
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
@@ -196,6 +218,7 @@ private extension OrderPaymentSection {
             .buttonStyle(PlusButtonStyle())
             .padding()
             .accessibilityIdentifier("add-shipping-button")
+            .disabled(viewModel.orderIsEmpty)
         }
     }
 
@@ -256,9 +279,10 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             taxBasedOnLine
-            .renderedIf(viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting != nil)
+            .renderedIf(viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
+        .renderedIf(viewModel.taxLineViewModels.isNotEmpty)
     }
 
     @ViewBuilder var taxSectionTitle: some View {

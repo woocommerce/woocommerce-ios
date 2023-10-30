@@ -103,7 +103,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .orderCustomAmountsM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
-            return true
+            return buildConfig == .localDeveloper
         case .optimizedBlazeExperience:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

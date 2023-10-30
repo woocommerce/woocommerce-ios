@@ -1694,7 +1694,15 @@ private extension EditableOrderViewModel {
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
             let childItems = items.filter { $0.parent == item.itemID }
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
+            // If the parent product is a bundle product, quantity cannot be changed.
+            let canChangeQuantity: Bool = {
+                guard let parentItem = items.first(where: { $0.itemID == item.parent }),
+                      let parentProduct = allProducts.first(where: { $0.productID == parentItem.productID }) else {
+                    return true
+                }
+                return parentProduct.productType != .bundle
+            }()
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: canChangeQuantity) else {
                 return nil
             }
 

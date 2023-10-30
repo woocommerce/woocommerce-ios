@@ -2538,6 +2538,67 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
     }
+
+    func test_bundle_child_order_item_has_canChangeQuantity_false() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Bundle product order item.
+            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
+            // Child bundled item with `parent` equal to the bundle parent item ID.
+            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 2)
+
+        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
+        XCTAssertEqual(parentOrderItemRow.quantity, 2)
+        XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
+
+        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
+        XCTAssertEqual(childOrderItemRow.quantity, 1)
+        XCTAssertFalse(childOrderItemRow.canChangeQuantity)
+    }
+
+    func test_non_bundle_child_order_item_has_canChangeQuantity_true() throws {
+        // Given
+        storageManager.insertProducts([
+            .fake().copy(siteID: sampleSiteID, productID: 606, productTypeKey: ProductType.variable.rawValue),
+            .fake().copy(siteID: sampleSiteID, productID: 685, productTypeKey: ProductType.simple.rawValue)
+        ])
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Non-bundle product order item.
+            .fake().copy(itemID: 6, productID: 606, quantity: 2),
+            // Child item with `parent` equal to the parent item ID.
+            .fake().copy(itemID: 2, productID: 685, quantity: 1, parent: 6),
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 2)
+
+        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
+        XCTAssertEqual(parentOrderItemRow.quantity, 2)
+        XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
+
+        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
+        XCTAssertEqual(childOrderItemRow.quantity, 1)
+        XCTAssertTrue(childOrderItemRow.canChangeQuantity)
+    }
 }
 
 private extension MockStorageManager {
@@ -2554,6 +2615,34 @@ private extension MockStorageManager {
             product.update(with: readOnlyProduct)
             viewStorage.saveIfNeeded()
         }
+    }
+
+    @discardableResult
+    func insert(_ readOnlyProduct: Product) -> StorageProduct {
+        let product = viewStorage.insertNewObject(ofType: StorageProduct.self)
+        product.update(with: readOnlyProduct)
+        return product
+    }
+
+    func insert(_ readOnlyProductBundleItem: ProductBundleItem, for product: StorageProduct) {
+        let bundleItem = viewStorage.insertNewObject(ofType: StorageProductBundleItem.self)
+        bundleItem.update(with: readOnlyProductBundleItem)
+        bundleItem.product = product
+    }
+
+    func createAndInsertBundleProduct(siteID: Int64, productID: Int64, bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
+        let bundleProduct = Product.fake().copy(siteID: siteID,
+                                                productID: productID,
+                                                productTypeKey: ProductType.bundle.rawValue,
+                                                purchasable: true,
+                                                bundledItems: bundleItems)
+        let storageProduct = insert(bundleProduct)
+
+        bundleItems.forEach { bundleItem in
+            insert(bundleItem, for: storageProduct)
+        }
+
+        return bundleProduct
     }
 }
 

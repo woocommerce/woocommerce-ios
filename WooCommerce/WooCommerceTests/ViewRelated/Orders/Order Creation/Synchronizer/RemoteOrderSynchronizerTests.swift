@@ -387,7 +387,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
-    func test_sending_fee_input_triggers_order_creation() {
+    func test_adding_fee_input_triggers_order_creation() {
         // Given
         let fee = OrderFeeLine.fake().copy()
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -404,14 +404,14 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(fee)
+            synchronizer.addFee.send(fee)
         }
 
         // Then
         XCTAssertTrue(orderCreationInvoked)
     }
 
-    func test_sending_fee_input_triggers_order_sync_in_edit_flow() {
+    func test_adding_fee_input_triggers_order_sync_in_edit_flow() {
         // Given
         let fee = OrderFeeLine.fake().copy()
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -431,26 +431,39 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(fee)
+            synchronizer.addFee.send(fee)
         }
 
         // Then
         XCTAssertTrue(orderUpdateInvoked)
     }
 
-    func test_sending_nil_fee_input_updates_local_order() throws {
+    func test_adding_fee_input_updates_local_order() throws {
+        // Given
+        let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID, name: "test-fee")
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
+
+        // When
+        synchronizer.addFee.send(feeLine)
+
+        // Then
+        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
+        XCTAssertEqual(firstLine.name, feeLine.name)
+    }
+
+    func test_removing_fee_input_updates_local_order() throws {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
 
         // When
-        synchronizer.setFee.send(feeLine)
-        synchronizer.setFee.send(nil)
+        synchronizer.addFee.send(feeLine)
+        synchronizer.removeFee.send(feeLine)
 
         // Then
-        let firstLine = try XCTUnwrap(synchronizer.order.fees.first)
-        XCTAssertNil(firstLine.name)
+        XCTAssertTrue(synchronizer.order.fees.first?.isDeleted ?? true)
     }
 
     func test_sending_coupon_input_triggers_order_creation() {
@@ -932,7 +945,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                 }
             }
 
-            synchronizer.setFee.send(.fake())
+            synchronizer.addFee.send(.fake())
         }
 
         // Then

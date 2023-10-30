@@ -30,6 +30,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         newVariationsPriceSubject.eraseToAnyPublisher()
     }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        blazeEligiblityUpdateSubject.eraseToAnyPublisher()
+    }
+
     /// The latest product value.
     var productModel: EditableProductModel {
         product
@@ -38,6 +43,11 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     /// The original product value.
     var originalProductModel: EditableProductModel {
         originalProduct
+    }
+
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool {
+        blazeCampaignResultsController.isEmpty
     }
 
     /// The form type could change from .add to .edit after creation.
@@ -50,10 +60,20 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     private let productNameSubject: PassthroughSubject<String, Never> = PassthroughSubject<String, Never>()
     private let isUpdateEnabledSubject: PassthroughSubject<Bool, Never> = PassthroughSubject<Bool, Never>()
     private let newVariationsPriceSubject = PassthroughSubject<Void, Never>()
+    private let blazeEligiblityUpdateSubject = PassthroughSubject<Void, Never>()
 
     private lazy var variationsResultsController = createVariationsResultsController()
 
     private var isEligibleForBlaze: Bool = false
+
+    /// Blaze campaign ResultsController.
+    private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
+        let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
+        let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
+                                                                        matching: predicate,
+                                                                        sortedBy: [])
+        return resultsController
+    }()
 
     /// Returns `true` if the `Add-ons` beta feature switch is enabled. `False` otherwise.
     /// Assigning this value will recreate the `actionsFactory` property.
@@ -221,6 +241,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
         queryAddOnsFeatureState()
         updateVariationsPriceState()
+        configureResultsController()
         updateBlazeEligibility()
     }
 
@@ -681,11 +702,12 @@ private extension ProductFormViewModel {
         stores.dispatch(action)
     }
 
-    /// Recreates `actionsFactory` with the latest `product`, `formType`, and `isAddOnsFeatureEnabled` information.
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, `isEligibleForBlaze` and `isAddOnsFeatureEnabled` information.
     ///
     func updateActionsFactory() {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
+                                                   isEligibleForBlaze: canPromoteWithBlaze(),
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())
@@ -701,6 +723,17 @@ private extension ProductFormViewModel {
         Task { @MainActor in
             let isEligible = await blazeEligibilityChecker.isProductEligible(product: originalProduct, isPasswordProtected: password?.isNotEmpty == true)
             isEligibleForBlaze = isEligible
+            updateActionsFactory()
+            blazeEligiblityUpdateSubject.send()
+        }
+    }
+
+    /// Performs initial fetch from storage and updates results.
+    func configureResultsController() {
+        do {
+            try blazeCampaignResultsController.performFetch()
+        } catch {
+            ServiceLocator.crashLogging.logError(error)
         }
     }
 }

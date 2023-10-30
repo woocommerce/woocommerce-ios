@@ -280,7 +280,7 @@ private extension AddProductCoordinator {
             }
         })
 
-        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter(height: navigationController.view.frame.height * 0.3)
+        addProductWithAIBottomSheetPresenter = buildBottomSheetPresenter()
         addProductWithAIBottomSheetPresenter?.present(controller, from: navigationController)
         analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
@@ -393,22 +393,23 @@ private extension AddProductCoordinator {
         navigationController.present(UINavigationController(rootViewController: viewController), animated: true)
     }
 
-    func buildBottomSheetPresenter(height: CGFloat? = nil) -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+    func buildBottomSheetPresenter() -> BottomSheetPresenter {
+        BottomSheetPresenter(configure: { [weak self] bottomSheet in
+            guard let self else { return }
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none
-            sheet.prefersGrabberVisible = true
-            // Sets custom height if possible.
-            // Default detents are used otherwise. Large detent is necessary for large font sizes.
-            if #available(iOS 16.0, *), let height {
-                let customHeight = UISheetPresentationController.Detent.custom { _ in
-                    height
-                }
-                sheet.detents = [.large(), .medium(), customHeight]
+
+            // Sets detents for the sheet.
+            // Skips large detent if the device is iPad.
+            let traitCollection = UIScreen.main.traitCollection
+            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if isIPad {
+                sheet.detents = [.medium()]
             } else {
                 sheet.detents = [.large(), .medium()]
             }
+            sheet.prefersGrabberVisible = !isIPad
         })
     }
 }

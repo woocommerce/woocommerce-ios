@@ -81,7 +81,7 @@ struct CollapsibleProductRowCard: View {
             HStack {
                 Text(Localization.priceAfterDiscountLabel)
                 Spacer()
-                Text(viewModel.priceAfterDiscountLabel ?? "")
+                Text(viewModel.totalPriceAfterDiscountLabel ?? "")
             }
             .padding(.top)
             .renderedIf(viewModel.hasDiscount)
@@ -125,12 +125,25 @@ struct CollapsibleProductRowCard: View {
         }
         .cornerRadius(Layout.frameCornerRadius)
     }
+
+
+}
+
+private extension CollapsibleProductRowCard {
+    func trackAddDiscountTapped() {
+        viewModel.trackAddDiscountTapped()
+    }
+
+    func trackEditDiscountTapped() {
+        viewModel.trackEditDiscountTapped()
+    }
 }
 
 private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
         if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
+                trackAddDiscountTapped()
                 onAddDiscount()
             }
             .buttonStyle(PlusButtonStyle())
@@ -138,6 +151,7 @@ private extension CollapsibleProductRowCard {
         } else {
             HStack {
                 Button(action: {
+                    trackEditDiscountTapped()
                     onAddDiscount()
                 }, label: {
                     HStack {
@@ -180,11 +194,7 @@ struct CollapsibleProductCardPriceSummary: View {
     var body: some View {
         HStack {
             HStack {
-                Text(viewModel.quantity.formatted())
-                    .foregroundColor(.secondary)
-                Image(systemName: "multiply")
-                    .foregroundColor(.secondary)
-                Text(viewModel.priceLabel ?? "-")
+                Text(viewModel.priceQuantityLine)
                     .foregroundColor(.secondary)
                 Spacer()
             }

@@ -125,7 +125,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// Formatted price label based on a product's price. Accounting for discounts, if any.
     /// e.g: If price is $5 and discount is $1, outputs "$4.00"
     ///
     var priceAfterDiscountLabel: String? {
@@ -138,6 +138,30 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+    }
+
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
+    ///
+    var totalPriceAfterDiscountLabel: String? {
+        guard let price = price,
+              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
+            return nil
+        }
+        let subtotalDecimal = priceDecimal.multiplying(by: quantity as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
+
+    }
+
+    /// Formatted price label based on a product's price and quantity.
+    /// Reads as '8 x $10.00'
+    ///
+    var priceQuantityLine: String {
+        let quantity = quantity.formatted()
+        let price = priceLabel ?? "-"
+        return String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price)
     }
 
     private(set) var discount: Decimal?
@@ -223,6 +247,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let selectedState: ProductRow.SelectedState
 
+    /// Analytics
+    ///
+    let analytics: Analytics
+
     init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
@@ -242,6 +270,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {},
          configure: (() -> Void)? = nil) {
@@ -262,6 +291,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.imageURL = imageURL
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.quantityUpdatedCallback = quantityUpdatedCallback
@@ -278,6 +308,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -342,6 +373,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
@@ -358,6 +390,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
@@ -383,6 +416,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
@@ -457,10 +491,23 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
         quantityUpdatedCallback(quantity)
     }
+
+    func trackAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func trackEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
+    }
 }
 
 private extension ProductRowViewModel {
     enum Localization {
+        static let priceQuantityLine = NSLocalizedString(
+            "productRowViewModel.priceQuantityLine",
+            value: "%@ × %@",
+            comment: "Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. " +
+            "Please take care to use the multiplication symbol ×, not a letter x, where appropriate.")
         static let stockFormat = NSLocalizedString("%1$@ in stock", comment: "Label about product's inventory stock status shown during order creation")
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
         static let singleVariation = NSLocalizedString("%ld variation",

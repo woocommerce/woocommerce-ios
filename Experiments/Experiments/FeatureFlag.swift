@@ -214,14 +214,6 @@ public enum FeatureFlag: Int {
     /// 
     case tapToPayOnIPhoneInUK
 
-    /// Enables the functionality related to order custom amounts on M1
-    ///
-    case orderCustomAmountsM1
-
-    /// Enables a new section on the My Store screen and a new entry point to the campaign list.
-    ///
-    case optimizedBlazeExperience
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm

@@ -2,7 +2,7 @@
 common_params:
   # Common plugin settings to use with the `plugins` key.
   - &common_plugins
-    - automattic/a8c-ci-toolkit#2.18.2
+    - automattic/a8c-ci-toolkit#3.0.0
     - automattic/git-s3-cache#1.1.4:
         bucket: "a8c-repo-mirrors"
         # This is not necessarily the actual name of the repo or the GitHub organization
@@ -59,6 +59,20 @@ steps:
   #################
   - group: Linters
     steps:
+      - label: "☢️ Danger - PR Check"
+        command: .buildkite/commands/danger-pr-check.sh
+        plugins:
+          - docker#v5.8.0:
+              image: "public.ecr.aws/docker/library/ruby:3.2.2"
+              propagate-environment: true
+              environment:
+                - "DANGER_GITHUB_API_TOKEN"
+        if: "build.pull_request.id != null"
+        agents:
+          queue: "default"
+        retry:
+          manual:
+            permit_on_passed: true
       - label: "🧹 Lint Translations"
         command: "gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot"
         plugins:

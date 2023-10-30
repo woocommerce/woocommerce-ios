@@ -80,7 +80,7 @@ final class ProductInOrderViewModel: Identifiable, ObservableObject {
     }()
 
     func onAddDiscountTapped() {
-        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+        analytics.track(event: .Orders.productDiscountAdd(type: discountDetailsViewModel.feeOrDiscountType ))
     }
 
     func onEditDiscountTapped() {

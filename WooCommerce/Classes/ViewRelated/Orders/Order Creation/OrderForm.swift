@@ -203,6 +203,8 @@ struct OrderForm: View {
                                 Divider()
 
                                 Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
                             }
                             .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 

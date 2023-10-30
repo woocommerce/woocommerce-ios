@@ -47,7 +47,7 @@ final class LedgerTableViewCellTests: XCTestCase {
 
     func test_fees_label_contains_expected_text() {
         let label = cell.getFeesLabel()
-        XCTAssertEqual(label.text, Titles.feesLabel)
+        XCTAssertEqual(label.text, Titles.customAmountsLabel)
     }
 
     func test_shipping_label_contains_expected_text() {
@@ -96,8 +96,8 @@ private extension LedgerTableViewCellTests {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
-        static let feesLabel = NSLocalizedString("Fees",
-                                                     comment: "Fees label for payment view")
+        static let customAmountsLabel = NSLocalizedString("Custom Amounts",
+                                                     comment: "Custom amounts label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",

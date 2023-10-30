@@ -46,6 +46,9 @@ protocol ProductFormViewModelProtocol {
     /// Emits a void value informing when there is a new variation price state available
     var newVariationsPrice: AnyPublisher<Void, Never> { get }
 
+    /// Emits a void value informing when Blaze eligibility is computed
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> { get }
+
     /// Creates actions available on the bottom sheet.
     var actionsFactory: ProductFormActionsFactoryProtocol { get }
 
@@ -63,6 +66,9 @@ protocol ProductFormViewModelProtocol {
 
     /// The product variation ID
     var productionVariationID: Int64? { get }
+
+    /// Whether the "Promote with Blaze" button should show Blaze intro view first or not when tapped.
+    var shouldShowBlazeIntroView: Bool { get }
 
     // Unsaved changes
 

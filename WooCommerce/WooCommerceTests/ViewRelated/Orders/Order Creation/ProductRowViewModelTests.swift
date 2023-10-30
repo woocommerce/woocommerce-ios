@@ -6,6 +6,12 @@ import WooFoundation
 @testable import WooCommerce
 
 final class ProductRowViewModelTests: XCTestCase {
+    var analytics: MockAnalyticsProvider!
+
+    override func setUp() {
+        super.setUp()
+        analytics = MockAnalyticsProvider()
+    }
 
     func test_viewModel_is_created_with_correct_initial_values_from_product() {
         // Given
@@ -335,6 +341,34 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 6)
     }
 
+    func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: true,
+                                            analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackAddDiscountTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountAddButtonTapped.rawValue)
+    }
+
+    func test_productRow_when_edit_discount_button_is_tapped_then_orderProductDiscountEditButtonTapped_is_tracked() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: true,
+                                            analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackEditDiscountTapped()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderProductDiscountEditButtonTapped.rawValue)
+    }
+
     func test_productAccessibilityLabel_is_created_with_expected_details_from_product() {
         // Given
         let product = Product.fake().copy(name: "Test Product", sku: "123456", price: "10", stockStatusKey: "instock", variations: [1, 2])
@@ -444,6 +478,55 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
 
         XCTAssertTrue(viewModel.hasDiscount)
+    }
+
+    func test_product_row_priceQuantityLine_returns_properly_formatted_priceQuantityLine() {
+        // Given
+        let price = "10.71"
+        let quantity: Decimal = 8
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+
+        // Then
+        assertEqual("8 × $10.71", viewModel.priceQuantityLine)
+    }
+
+    func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+        let price = "2.50"
+        let discount: Decimal = 0.50
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product, discount: discount, quantity: 1, canChangeQuantity: true)
+
+        assertEqual("$2.00", viewModel.totalPriceAfterDiscountLabel)
+    }
+
+    func test_totalPriceAfterDiscountLabel_when_product_row_has_multiple_item_and_discount_then_returns_properly_formatted_price_after_discount() {
+        let price = "2.50"
+        let quantity: Decimal = 10
+        let discount: Decimal = 0.50
+        let product = Product.fake().copy(price: price)
+
+        let viewModel = ProductRowViewModel(product: product,
+                                            discount: discount,
+                                            quantity: quantity,
+                                            canChangeQuantity: true)
+
+        assertEqual("$24.50", viewModel.totalPriceAfterDiscountLabel)
+    }
+
+    func test_product_row_priceQuantityLine_when_product_has_no_price_then_returns_properly_formatted_priceQuantityLine() {
+        // Given
+        let quantity: Decimal = 8
+        let product = Product.fake().copy()
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
+
+        // Then
+        assertEqual("8 × -", viewModel.priceQuantityLine)
     }
 
     // MARK: - `isConfigurable`

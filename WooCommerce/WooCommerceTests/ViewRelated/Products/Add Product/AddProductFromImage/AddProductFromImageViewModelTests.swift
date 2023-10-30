@@ -92,7 +92,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
-        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
                                                      productName: nil,
@@ -143,7 +143,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.textGenerationErrorMessage)
 
         // When regenerating product details with success
-        mockGenerateProductDetails(result: .success(.init(name: "", description: "", language: "")))
+        mockGenerateProductDetails(result: .success(.init(name: "", description: "")))
         viewModel.generateProductDetails()
 
         // Then `textGenerationErrorMessage` is reset
@@ -182,11 +182,15 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         })
 
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, _, scannedTexts, _) = action else {
+            switch action {
+            case let .generateProductDetails(_, _, scannedTexts, _, _):
+                // Then
+                XCTAssertEqual(scannedTexts, ["Product"])
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+            default:
                 return XCTFail("Unexpected action: \(action)")
             }
-            // Then
-            XCTAssertEqual(scannedTexts, ["Product"])
         }
 
         // When
@@ -207,8 +211,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         var imageToReturn: MediaPickerImage? = firstImage
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
         mockGenerateProductDetails(result: .success(.init(name: "Name",
-                                                          description: "Desc",
-                                                          language: "en")))
+                                                          description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 123,
                                                      source: .productsTab,
                                                      productName: nil,
@@ -424,7 +427,7 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Given
         let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
         let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
-        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc", language: "en")))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")))
         let viewModel = AddProductFromImageViewModel(siteID: 6,
                                                      source: .productsTab,
                                                      productName: nil,
@@ -491,6 +494,79 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         assertEqual("500", eventProperties["error_code"] as? String)
     }
 
+    func test_identify_language_success_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let sampleLanguage = "ta"
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")),
+                                   identifyLanguageResult: .success(sampleLanguage))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "ai_identify_language_success"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("product_details_from_scanned_texts", eventProperties["source"] as? String)
+        assertEqual(sampleLanguage, eventProperties["language"] as? String)
+    }
+
+    func test_identify_language_failure_is_tracked() throws {
+        // Given
+        let image = MediaPickerImage(image: .init(), source: .media(media: .fake()))
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        let error = NSError(domain: "Server", code: 500)
+        mockGenerateProductDetails(result: .success(.init(name: "Name", description: "Desc")),
+                                   identifyLanguageResult: .failure(error))
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     analytics: analytics,
+                                                     onAddImage: { _ in
+            image
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(image)
+        }
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        let eventName = "ai_identify_language_failed"
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(eventName))
+        let eventIndex = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == eventName}))
+        let eventProperties = analyticsProvider.receivedProperties[eventIndex]
+
+        assertEqual("product_details_from_scanned_texts", eventProperties["source"] as? String)
+        assertEqual("Server", eventProperties["error_domain"] as? String)
+        assertEqual("500", eventProperties["error_code"] as? String)
+    }
+
     func test_trackContinueButtonTapped_tracks_correct_event_and_properties() throws {
         // Given
         let viewModel = AddProductFromImageViewModel(siteID: 6,
@@ -545,15 +621,89 @@ final class AddProductFromImageViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.regenerateButtonEnabled)
     }
+
+    // MARK: - Language identification request
+
+    func test_identify_language_request_is_sent_only_when_image_changes() {
+        // Given
+        let firstImage = MediaPickerImage(image: UIImage.emailImage,
+                                          source: .media(media: .fake()))
+        let secondImage = MediaPickerImage(image: UIImage.calendar,
+                                           source: .media(media: .fake()))
+        var imageToReturn: MediaPickerImage? = firstImage
+        let imageTextScanner = MockImageTextScanner(result: .success(["test"]))
+        var identifyLanguageRequestCounter = 0
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .generateProductDetails(_, _, _, _, completion):
+                completion(.success(.init(name: "Name", description: "Desc")))
+            case let .identifyLanguage(_, _, _, completion):
+                completion(.success("en"))
+                identifyLanguageRequestCounter += 1
+            default:
+                return XCTFail("Unexpected action: \(action)")
+            }
+        }
+
+        let viewModel = AddProductFromImageViewModel(siteID: 6,
+                                                     source: .productsTab,
+                                                     productName: nil,
+                                                     stores: stores,
+                                                     imageTextScanner: imageTextScanner,
+                                                     onAddImage: { _ in
+            imageToReturn
+        })
+
+        // When
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(firstImage)
+        }
+
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        viewModel.generateProductDetails()
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 1)
+
+        // When
+        imageTextScanner.result = .success(["test"])
+        imageToReturn = secondImage
+
+        viewModel.addImage(from: .siteMediaLibrary)
+        waitUntil {
+            viewModel.imageState == .success(secondImage)
+        }
+
+        waitUntil {
+            viewModel.isGeneratingDetails == false
+        }
+
+        // Then
+        XCTAssertEqual(identifyLanguageRequestCounter, 2)
+    }
 }
 
 private extension AddProductFromImageViewModelTests {
-    func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>) {
+    func mockGenerateProductDetails(result: Result<ProductDetailsFromScannedTexts, Error>,
+                                    identifyLanguageResult: Result<String, Error> = .success("en")) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
-            guard case let .generateProductDetails(_, _, _, completion) = action else {
+            switch action {
+            case let .generateProductDetails(_, _, _, _, completion):
+                completion(result)
+            case let .identifyLanguage(_, _, _, completion):
+                completion(identifyLanguageResult)
+            default:
                 return XCTFail("Unexpected action: \(action)")
             }
-            completion(result)
         }
     }
 }

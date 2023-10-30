@@ -180,7 +180,6 @@ public enum WooAnalyticsStat: String {
     case blazeFlowCanceled = "blaze_flow_canceled"
     case blazeFlowCompleted = "blaze_flow_completed"
     case blazeFlowError = "blaze_flow_error"
-    case blazeBannerDismissed = "blaze_banner_dismissed"
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeIntroDisplayed = "blaze_intro_displayed"
@@ -404,6 +403,9 @@ public enum WooAnalyticsStat: String {
     case orderCreationSetNewTaxRateTapped = "order_creation_set_new_tax_rate_tapped"
     case orderCreationStoredTaxRateBottomSheetAppear = "tax_rate_auto_tax_rate_bottom_sheet_displayed"
     case orderCreationSetNewTaxRateFromBottomSheetTapped = "tax_rate_auto_tax_rate_set_new_rate_for_order_tapped"
+    case orderCreationAddCustomAmountTapped = "order_creation_add_custom_amount_tapped"
+    case orderCreationEditCustomAmountTapped = "order_creation_edit_custom_amount_tapped"
+    case orderCreationRemoveCustomAmountTapped = "order_creation_remove_custom_amount_tapped"
     case orderCreationClearAddressFromBottomSheetTapped = "tax_rate_auto_tax_rate_clear_address_tapped"
     case orderContactAction = "order_contact_action"
     case orderCustomerAdd = "order_customer_add"
@@ -428,6 +430,7 @@ public enum WooAnalyticsStat: String {
     case orderTrackingDeleteSuccess = "order_tracking_delete_success"
     case orderTrackingProvidersLoaded = "order_tracking_providers_loaded"
     case orderFeeAdd = "order_fee_add"
+    case orderFeeUpdate = "order_fee_update"
     case orderFeeRemove = "order_fee_remove"
     case orderCouponAdd = "order_coupon_add"
     case orderCouponRemove = "order_coupon_remove"
@@ -448,6 +451,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
     case orderDetailsGiftCardShown = "order_details_gift_card_shown"
+
+    // MARK: Custom amounts
+    case addCustomAmountDoneButtonTapped = "add_custom_amount_done_tapped"
+    case addCustomAmountNameAdded = "add_custom_amount_name_added"
 
     // MARK: Order Tax Educational Dialog
     //

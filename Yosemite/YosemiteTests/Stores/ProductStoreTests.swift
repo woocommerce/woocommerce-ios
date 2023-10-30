@@ -2328,7 +2328,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
@@ -2336,8 +2337,7 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let productDetails = try XCTUnwrap(result.get())
         XCTAssertEqual(productDetails, .init(name: "Cheese and Garlic Croutons",
-                                             description: "Enhance your salads.",
-                                             language: "en"))
+                                             description: "Enhance your salads."))
     }
 
     func test_generateProductDetails_returns_error_on_failure() throws {
@@ -2354,7 +2354,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
@@ -2368,6 +2369,7 @@ final class ProductStoreTests: XCTestCase {
         // Given
         let scannedTexts = ["onion", "chives"]
         let productName = "food"
+        let language = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -2380,7 +2382,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: productName,
-                                                                       scannedTexts: scannedTexts) { _ in
+                                                                       scannedTexts: scannedTexts,
+                                                                       language: language) { _ in
                 promise(())
             })
         }
@@ -2389,6 +2392,7 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         let combinedKeywords = scannedTexts + [productName]
         XCTAssertTrue(base.contains("\(combinedKeywords)"))
+        XCTAssertTrue(base.contains("\(language)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {
@@ -2405,7 +2409,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { _ in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { _ in
                 promise(())
             })
         }

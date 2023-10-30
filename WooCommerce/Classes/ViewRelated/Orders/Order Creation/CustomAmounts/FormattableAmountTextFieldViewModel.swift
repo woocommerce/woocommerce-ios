@@ -13,9 +13,19 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         didSet {
             guard amount != oldValue else { return }
 
+            if resetAmountWithNewValue,
+                let newInput = amount.last {
+                amount = String(newInput)
+                resetAmountWithNewValue = false
+            }
+
             amount = priceFieldFormatter.formatAmount(amount)
         }
     }
+
+    /// When true, the amount will be reset with the new input instead of appending
+    ///
+    var resetAmountWithNewValue = false
 
     var amountIsValid: Bool {
         guard let amountDecimal = priceFieldFormatter.amountDecimal else {

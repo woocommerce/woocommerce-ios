@@ -99,13 +99,9 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
-        case .orderCustomAmountsM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
             return true
-        case .optimizedBlazeExperience:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productBundlesInOrderForm:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:

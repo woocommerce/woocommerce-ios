@@ -216,7 +216,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Minimum value of the product quantity
     ///
-    private let minimumQuantity: Decimal = 1
+    private let minimumQuantity: Decimal
+
+    /// Optional maximum value of the product quantity
+    ///
+    private let maximumQuantity: Decimal?
 
     /// Whether the quantity can be decremented.
     ///
@@ -243,6 +247,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let selectedState: ProductRow.SelectedState
 
+    /// Analytics
+    ///
+    let analytics: Analytics
+
     init(id: Int64? = nil,
          productOrVariationID: Int64,
          name: String,
@@ -253,6 +261,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
+         minimumQuantity: Decimal = 1,
+         maximumQuantity: Decimal? = nil,
          canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
@@ -260,6 +270,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          selectedState: ProductRow.SelectedState = .notSelected,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {},
          configure: (() -> Void)? = nil) {
@@ -274,10 +285,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
+        self.minimumQuantity = minimumQuantity
+        self.maximumQuantity = maximumQuantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.quantityUpdatedCallback = quantityUpdatedCallback
@@ -294,6 +308,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -358,6 +373,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
@@ -374,6 +390,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
@@ -399,6 +416,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   selectedState: selectedState,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
@@ -454,6 +472,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Increment the product quantity.
     ///
     func incrementQuantity() {
+        if let maximumQuantity, quantity >= maximumQuantity {
+            return
+        }
+
         quantity += 1
 
         quantityUpdatedCallback(quantity)
@@ -468,6 +490,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity -= 1
 
         quantityUpdatedCallback(quantity)
+    }
+
+    func trackAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func trackEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
     }
 }
 

@@ -31,15 +31,23 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     let onConfigure: (_ configurations: [BundledProductConfiguration]) -> Void
 
     private let product: Product
+    private let childItems: [OrderItem]
     private let stores: StoresManager
 
+    /// - Parameters:
+    ///   - product: Bundle product in an order item.
+    ///   - childItems: Pre-existing bundled order items.
+    ///   - stores: For dispatching actions.
+    ///   - onConfigure: Invoked when the configuration is confirmed.
     init(product: Product,
+         childItems: [OrderItem],
          stores: StoresManager = ServiceLocator.stores,
          onConfigure: @escaping (_ configurations: [BundledProductConfiguration]) -> Void) {
         self.product = product
+        self.childItems = childItems
         self.stores = stores
         self.onConfigure = onConfigure
-        loadProducts()
+        loadProductsAndCreateItemViewModels()
     }
 
     func configure() {
@@ -51,34 +59,39 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 }
 
 private extension ConfigurableBundleProductViewModel {
-    func loadProducts() {
-        let bundleItems = product.bundledItems
+    func loadProductsAndCreateItemViewModels() {
         Task { @MainActor in
             do {
                 // When there is a long list of bundle items, products are loaded in a paginated way.
-                let products = try await loadProducts(from: bundleItems)
-                bundleItemViewModels = bundleItems
-                    .compactMap { bundleItem -> ConfigurableBundleItemViewModel? in
-                        guard let product = products.first(where: { $0.productID == bundleItem.productID }) else {
-                            return nil
-                        }
-                        switch product.productType {
-                            case .variable:
-                                let allowedVariations = bundleItem.overridesVariations ? bundleItem.allowedVariations: []
-                                let defaultAttributes = bundleItem.overridesDefaultVariationAttributes ? bundleItem.defaultVariationAttributes: []
-                                return .init(bundleItem: bundleItem,
-                                             product: product,
-                                             variableProductSettings:
-                                        .init(allowedVariations: allowedVariations, defaultAttributes: defaultAttributes))
-                            default:
-                                return .init(bundleItem: bundleItem, product: product, variableProductSettings: nil)
-                        }
-                    }
+                let products = try await loadProducts(from: product.bundledItems)
+                createItemViewModels(products: products)
             } catch {
                 // TODO: 10428 - handle error loading products for bundle items
                 DDLogError("⛔️ Error loading products for bundle product items in order form:  \(error)")
             }
         }
+    }
+
+    func createItemViewModels(products: [Product]) {
+        bundleItemViewModels = product.bundledItems
+            .compactMap { bundleItem -> ConfigurableBundleItemViewModel? in
+                guard let product = products.first(where: { $0.productID == bundleItem.productID }) else {
+                    return nil
+                }
+                let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID })
+                switch product.productType {
+                    case .variable:
+                        let allowedVariations = bundleItem.overridesVariations ? bundleItem.allowedVariations: []
+                        let defaultAttributes = bundleItem.overridesDefaultVariationAttributes ? bundleItem.defaultVariationAttributes: []
+                        return .init(bundleItem: bundleItem,
+                                     product: product,
+                                     variableProductSettings:
+                                .init(allowedVariations: allowedVariations, defaultAttributes: defaultAttributes),
+                                     existingOrderItem: existingOrderItem)
+                    default:
+                        return .init(bundleItem: bundleItem, product: product, variableProductSettings: nil, existingOrderItem: existingOrderItem)
+                }
+            }
     }
 
     @MainActor

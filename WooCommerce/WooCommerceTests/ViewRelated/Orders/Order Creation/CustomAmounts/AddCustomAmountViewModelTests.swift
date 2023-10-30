@@ -104,4 +104,31 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.name.isEmpty)
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
+
+    func test_doneButtonPressed_when_name_is_empty_then_it_tracks_only_done_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = AddCustomAmountViewModel(analytics: WooAnalytics(analyticsProvider: analytics), onCustomAmountEntered: {_, _, _ in })
+        viewModel.name = ""
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.addCustomAmountDoneButtonTapped.rawValue)
+        XCTAssertEqual(analytics.receivedEvents.count, 1)
+    }
+
+    func test_doneButtonPressed_when_name_is_not_empty_then_it_tracks_name_event() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+
+        // When
+        let viewModel = AddCustomAmountViewModel(analytics: WooAnalytics(analyticsProvider: analytics), onCustomAmountEntered: {_, _, _ in })
+        viewModel.name = "test"
+        viewModel.doneButtonPressed()
+
+        // Then
+        XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.addCustomAmountNameAdded.rawValue }))
+    }
 }

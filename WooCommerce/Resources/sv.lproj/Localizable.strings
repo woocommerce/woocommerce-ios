@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-18 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-10-27 13:04:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -802,6 +802,9 @@ which should be translated separately and considered part of this sentence. */
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
 
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "Allt klart!";
+
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "Alla funktioner du behöver, redan inbyggda";
 
@@ -1223,6 +1226,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title on the alert presented when dismissing the banner announcing Blaze feature. */
 "Blaze Ads" = "Blaze-annonser";
 
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Blaze-kampanjer";
+
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Citatblock";
 
@@ -1381,6 +1387,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "Kamerun";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "Kampanjdetaljer";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kan inte begära länk";
 
@@ -1414,6 +1423,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the AI product creation flow.
@@ -1888,7 +1898,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "Grattis! Du är ett steg närmare att få den nya butiken redo.";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "Grattis. Du har gått igenom konfigurationen och ditt betalningssystem är redo att användas.";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -2009,6 +2019,7 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2168,7 +2179,8 @@ which should be translated separately and considered part of this sentence. */
 "Crash Immediately" = "Krascha omedelbart";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "Skapa";
 
 /* The button title text for creating a new account. */
@@ -2214,6 +2226,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation web view. */
 "Create a store" = "Skapa en butik";
+
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "Skapa kampanj";
 
 /* Title of the Create coupon screen */
 "Create coupon" = "Skapa rabattkod";
@@ -2619,6 +2634,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2641,7 +2657,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -3627,6 +3642,7 @@ which should be translated separately and considered part of this sentence. */
 
 /* Button on the alert presented when dismissing the banner announcing Blaze feature.
    Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Jag förstår";
 
@@ -5019,6 +5035,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder for empty address in order customer data */
 "No address specified." = "Ingen adress angiven.";
 
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "Inga kampanjer ännu";
+
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "Ingen kortläsare är ansluten – anslut en läsare och försök igen";
 
@@ -5330,6 +5349,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
 "Or Continue using Magic Link" = "Eller Fortsätt med magisk länk";
+
+/* Instruction text for other forms of two-factor auth methods. */
+"Or choose another form of authentication." = "Eller välj en annan form av autentisering.";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "Eller logga in genom att _ange din webbplatsadress_.";
@@ -5722,9 +5744,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Ange lösenordet för ditt WordPress.com-konto eller logga in med ditt Apple-ID.";
-
-/* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "Ange verifieringskoden från din Authenticator-app eller tryck på länken nedan för att få en kod via SMS.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Fyll i dina användaruppgifter";
@@ -6129,6 +6148,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "Marknadsför med Blaze";
 
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "Marknadsför din produkt på bara några minuter.";
+
 /* One of the possible options in Product Visibility */
 "Public" = "Offentlig";
 
@@ -6513,6 +6535,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Tillbaka till min butik";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "Tillbaka till betalningar";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Returnera till avsändare om paketet inte kan levereras";
@@ -7115,6 +7140,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Short Description row on Product main screen */
 "Short description" = "Kort beskrivning";
 
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "Visa alla kampanjer";
+
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "Visa beställningar";
 
@@ -7206,8 +7234,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "Webbplatspaket löpt ut";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "Hoppa över";
@@ -7391,6 +7418,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Standardmoms";
+
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "Starta Blaze-kampanj";
 
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
@@ -7838,9 +7868,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Test out viewing Order Add-Ons as we get ready to launch" = "Testa att visa Beställningstillägg när vi gör oss redo att lansera";
 
 /* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
 "Text me a code instead" = "Skicka mig en kod via SMS i stället";
+
+/* The button's title text to send a 2FA code via SMS text message. */
+"Text me a code via SMS" = "Skicka mig en kod via SMS";
 
 /* Country option for a site address. */
 "Thailand" = "Thailand";
@@ -8318,6 +8350,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "Detta kommer inte att påverka onlinebeställningar";
 
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"Time's up, but don't worry, your security is our priority. Please try again!" = "Tiden är ute, men oroa dig inte, din säkerhet är vår prioritet. Försök igen!";
+
 /* Country option for a site address. */
 "Timor-Leste" = "Timor-Leste";
 
@@ -8534,9 +8569,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "Prova en testbeställning";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "Prova en betalning";
-
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "Prova att genomföra en betalning med ditt eget kort (och återbetala den när du är klar).";
 
@@ -8566,9 +8598,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "Prova det nu";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "Prova att ta emot en betalning på %1$@ för att se hur Tryck för att betala på iPhone fungerar. Använd ditt kredit- eller betalkort: du kan återbetala beloppet när du är klar.";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
@@ -9050,6 +9079,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "Använd föreslagen adress";
 
+/* The button's title text to use a security key. */
+"Use a security key" = "Använd en säkerhetsnyckel";
+
 /* Description for the option to create a template product */
 "Use a template to create physical, virtual, and variable products. You can edit it as you go." = "Använd en mall för att skapa fysiska, virtuella och variabla produkter. Du kan redigera allteftersom.";
 
@@ -9238,6 +9270,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Väntar på att Google ska bli klara...";
+
+/* Text while the webauthn signature is being verified
+   Text while waiting for a security key challenge */
+"Waiting for security key" = "Väntar på säkerhetsnyckel";
 
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "Väntar på din första order";
@@ -9484,6 +9520,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "Ojdå. Något blev fel. Vi lyckades inte logga in dig. Försök igen!";
 
+/* Generic error on the 2FA screen */
+"Whoops, something went wrong. Please try again!" = "Hoppsan, något gick fel. Försök igen!";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"Whoops, that security key does not seem valid. Please try again with another one" = "Hoppsan, den säkerhetsnyckeln verkar inte vara giltig. Försök igen med en annan";
+
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ojdå. Den där var ingen giltig bekräftelsekod för tvåfaktorautentisering. Dubbelkolla koden och försök en gång till!";
 
@@ -9634,9 +9676,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "Du kan redigera prenumerationsinställningarna i webbadminpanelen";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "Du hittar Tryck för att betala på iPhone via Meny > Betalningar > Ta emot betalning, eller via Beställningsinformation. Välj Tryck för att betala på iPhone som betalningsmetod.";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "Du kan hitta domäninställningarna i menyn > Inställningar";
@@ -10098,6 +10137,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡Hjälp oss förstå ditt prenumerationsbeslut";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Blaze-kampanj";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Utforskar du fortfarande WooCommerce?";

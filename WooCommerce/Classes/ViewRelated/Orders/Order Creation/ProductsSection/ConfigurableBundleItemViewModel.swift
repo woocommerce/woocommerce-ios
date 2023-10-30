@@ -59,7 +59,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity
         }
-        observeOptionalSelectedStateForProductRowViewModel()
+        observeSelectedStateForProductRowViewModelIfOptional()
     }
 
     func createVariationSelectorViewModel() {
@@ -116,7 +116,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
 }
 
 private extension ConfigurableBundleItemViewModel {
-    func observeOptionalSelectedStateForProductRowViewModel() {
+    func observeSelectedStateForProductRowViewModelIfOptional() {
         guard isOptional else {
             return
         }

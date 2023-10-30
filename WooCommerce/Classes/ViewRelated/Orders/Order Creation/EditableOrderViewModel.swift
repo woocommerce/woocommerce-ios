@@ -222,6 +222,10 @@ final class EditableOrderViewModel: ObservableObject {
         productRows.isNotEmpty || customAmountRows.isNotEmpty
     }
 
+    var shouldSplitCustomerAndNoteSections: Bool {
+        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+    }
+
     var shouldShowProductsSectionHeader: Bool {
         productRows.isNotEmpty
     }
@@ -1379,7 +1383,7 @@ private extension EditableOrderViewModel {
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
-                                            orderIsEmpty: order.items.isEmpty && order.fees.isEmpty,
+                                            orderIsEmpty: order.isEmpty,
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: disableCoupons,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),

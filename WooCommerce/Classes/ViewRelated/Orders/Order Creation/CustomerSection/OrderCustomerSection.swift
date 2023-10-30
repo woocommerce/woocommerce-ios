@@ -50,13 +50,12 @@ private struct OrderCustomerSectionContent: View {
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
             HStack(alignment: .top) {
-                Text(Localization.customer)
-                    .accessibilityAddTraits(.isHeader)
-                    .headlineStyle()
-
-                Spacer()
-
                 if viewModel.isDataAvailable {
+                    Text(Localization.customer)
+                        .accessibilityAddTraits(.isHeader)
+                        .headlineStyle()
+                    Spacer()
+
                     Button(Localization.editButton) {
                         showAddressForm.toggle()
                     }
@@ -68,6 +67,7 @@ private struct OrderCustomerSectionContent: View {
                 }
             }
             .padding([.leading, .top, .trailing])
+            .renderedIf(viewModel.isDataAvailable)
 
             if !viewModel.isDataAvailable {
                 Spacer(minLength: Layout.verticalHeadlineSpacing)
@@ -78,7 +78,6 @@ private struct OrderCustomerSectionContent: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-        .addingTopAndBottomDividers()
     }
 
     private var createCustomerView: some View {

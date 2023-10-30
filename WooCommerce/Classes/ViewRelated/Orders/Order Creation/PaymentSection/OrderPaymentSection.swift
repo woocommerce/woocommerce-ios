@@ -59,15 +59,17 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            // Title
+            // Titles (not coincident)
             orderWithItemsTitle
             emptyOrderTitle
 
             // Order components
             Group {
-                existingShippingRow
+                productsRow
 
                 customAmountsRow
+
+                existingShippingRow
 
                 appliedCouponsRows
 
@@ -232,6 +234,11 @@ private extension OrderPaymentSection {
             shouldShowShippingLineDetails = true
         }
         .renderedIf(viewModel.shouldShowShippingTotal)
+    }
+
+    @ViewBuilder var productsRow: some View {
+        TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
+            .renderedIf(viewModel.shouldShowProductsTotal)
     }
 
     @ViewBuilder var customAmountsRow: some View {

@@ -876,6 +876,7 @@ extension EditableOrderViewModel {
         }
 
         let siteID: Int64
+        let shouldShowProductsTotal: Bool
         let itemsTotal: String
         let orderTotal: String
         let orderIsEmpty: Bool
@@ -929,6 +930,7 @@ extension EditableOrderViewModel {
         let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
+             shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
@@ -966,6 +968,7 @@ extension EditableOrderViewModel {
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
+            self.shouldShowProductsTotal = shouldShowProductsTotal
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
@@ -1373,6 +1376,7 @@ private extension EditableOrderViewModel {
                 }
 
                 return PaymentDataViewModel(siteID: self.siteID,
+                                            shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",

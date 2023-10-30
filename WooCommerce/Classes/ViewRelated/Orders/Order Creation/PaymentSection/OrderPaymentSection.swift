@@ -350,6 +350,7 @@ private extension OrderPaymentSection {
                     Text(viewModel.title)
                         .font(.footnote)
                         .fontWeight(.semibold)
+                        .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
 

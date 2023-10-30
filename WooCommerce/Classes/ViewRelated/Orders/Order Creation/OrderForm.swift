@@ -466,21 +466,6 @@ private struct ProductsSection: View {
                     .id(addProductButton)
                     .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     .buttonStyle(PlusButtonStyle())
-                    .sheet(isPresented: $showAddProduct, onDismiss: {
-                        scroll.scrollTo(addProductButton)
-                    }, content: {
-                        ProductSelectorNavigationView(
-                            configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                            source: .orderForm,
-                            isPresented: $showAddProduct,
-                            viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
-                        .onDisappear {
-                            navigationButtonID = UUID()
-                        }
-                        .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                            ConfigurableBundleProductView(viewModel: viewModel)
-                        }
-                    })
 
                     scanProductButton
                     .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
@@ -500,6 +485,9 @@ private struct ProductsSection: View {
                     viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                 .onDisappear {
                     navigationButtonID = UUID()
+                }
+                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                    ConfigurableBundleProductView(viewModel: viewModel)
                 }
             })
             .actionSheet(isPresented: $showPermissionsSheet, content: {

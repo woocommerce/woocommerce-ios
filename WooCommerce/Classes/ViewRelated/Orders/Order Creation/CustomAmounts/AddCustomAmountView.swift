@@ -36,6 +36,7 @@ struct AddCustomAmountView: View {
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         .disabled(viewModel.shouldDisableDoneButton)
+                        .accessibilityIdentifier("new-order-add-custom-amount-view-add-custom-amount-button")
                     }
                     .padding()
                     .navigationTitle(Localization.navigationTitle)

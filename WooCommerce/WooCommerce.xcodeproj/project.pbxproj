@@ -1777,7 +1777,6 @@
 		CC254F3626C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3526C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift */; };
 		CC254F3826C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC254F3726C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift */; };
 		CC2A08022862400100510C4B /* orders_3337_add_shipping.json in Resources */ = {isa = PBXBuildFile; fileRef = CC2A08012862400100510C4B /* orders_3337_add_shipping.json */; };
-		CC2A08042863206000510C4B /* AddFeeScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2A08032863206000510C4B /* AddFeeScreen.swift */; };
 		CC2A08062863222500510C4B /* orders_3337_add_fee.json in Resources */ = {isa = PBXBuildFile; fileRef = CC2A08052863222500510C4B /* orders_3337_add_fee.json */; };
 		CC2A0808286337A300510C4B /* CustomerNoteScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2A0807286337A300510C4B /* CustomerNoteScreen.swift */; };
 		CC2E72F727B6BFB800A62872 /* ProductVariationFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC2E72F627B6BFB800A62872 /* ProductVariationFormatterTests.swift */; };
@@ -1997,6 +1996,7 @@
 		D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */; };
 		D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586122BB64C300289CFE /* OrderDetailsNotices.swift */; };
 		D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */; };
+		D81867A32AF01A5F001DF14B /* AddCustomAmountScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81867A22AF01A5F001DF14B /* AddCustomAmountScreen.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
 		D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */; };
@@ -4322,7 +4322,6 @@
 		CC254F3526C437AB005F3C82 /* ShippingLabelCustomPackageForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomPackageForm.swift; sourceTree = "<group>"; };
 		CC254F3726C43B52005F3C82 /* ShippingLabelCustomPackageFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLabelCustomPackageFormViewModel.swift; sourceTree = "<group>"; };
 		CC2A08012862400100510C4B /* orders_3337_add_shipping.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_3337_add_shipping.json; sourceTree = "<group>"; };
-		CC2A08032863206000510C4B /* AddFeeScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFeeScreen.swift; sourceTree = "<group>"; };
 		CC2A08052863222500510C4B /* orders_3337_add_fee.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = orders_3337_add_fee.json; sourceTree = "<group>"; };
 		CC2A0807286337A300510C4B /* CustomerNoteScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteScreen.swift; sourceTree = "<group>"; };
 		CC2E72F627B6BFB800A62872 /* ProductVariationFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductVariationFormatterTests.swift; sourceTree = "<group>"; };
@@ -4549,6 +4548,7 @@
 		D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderEmailComposer.swift; sourceTree = "<group>"; };
 		D817586122BB64C300289CFE /* OrderDetailsNotices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsNotices.swift; sourceTree = "<group>"; };
 		D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsDataSource.swift; sourceTree = "<group>"; };
+		D81867A22AF01A5F001DF14B /* AddCustomAmountScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountScreen.swift; sourceTree = "<group>"; };
 		D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewController.swift; sourceTree = "<group>"; };
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
 		D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyListMessageWithActionView.xib; sourceTree = "<group>"; };
@@ -11398,10 +11398,10 @@
 				CC1AB56727FC5821003DEF43 /* OrderStatusScreen.swift */,
 				C044961228058FE8003B3081 /* AddProductScreen.swift */,
 				CC71353A2862285300A28B42 /* AddShippingScreen.swift */,
-				CC2A08032863206000510C4B /* AddFeeScreen.swift */,
 				CC2A0807286337A300510C4B /* CustomerNoteScreen.swift */,
 				DEA426992875440500265B0C /* PaymentMethodsScreen.swift */,
 				DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */,
+				D81867A22AF01A5F001DF14B /* AddCustomAmountScreen.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -12278,13 +12278,13 @@
 				3F0CF3042704490A00EF3D71 /* PeriodStatsTable.swift in Sources */,
 				3F0CF3142704494A00EF3D71 /* TabNavComponent.swift in Sources */,
 				3F0CF3072704490A00EF3D71 /* LoginEmailScreen.swift in Sources */,
-				CC2A08042863206000510C4B /* AddFeeScreen.swift in Sources */,
 				3F0CF30D2704490A00EF3D71 /* LoginSiteAddressScreen.swift in Sources */,
 				80C3626B27704EE1005CEAD3 /* ProductDataStructs.swift in Sources */,
 				80CA638C29C06029002E6BE6 /* PaymentsScreen.swift in Sources */,
 				80C3627127745737005CEAD3 /* ReviewDataStructs.swift in Sources */,
 				CC1AB56827FC5822003DEF43 /* OrderStatusScreen.swift in Sources */,
 				02DEA23328810B7A0057FC40 /* LoginOnboardingScreen.swift in Sources */,
+				D81867A32AF01A5F001DF14B /* AddCustomAmountScreen.swift in Sources */,
 				3F0CF2FE270420DD00EF3D71 /* ScreenObject+Extension.swift in Sources */,
 				3FF314EA26FC751B0012E68E /* XCTest+Extensions.swift in Sources */,
 				80CC80E829DEA3C700CA1687 /* ExternalAppScreen.swift in Sources */,

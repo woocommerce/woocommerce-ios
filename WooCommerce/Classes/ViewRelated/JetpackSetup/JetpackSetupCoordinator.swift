@@ -30,6 +30,11 @@ final class JetpackSetupCoordinator {
         })
     }()
 
+    /// Title for login views
+    private var loginViewTitle: String {
+        requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+    }
+
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
@@ -329,7 +334,7 @@ private extension JetpackSetupCoordinator {
 
     func showPasswordUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .password))
-        let title = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
@@ -346,7 +351,7 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
-            title: title,
+            title: loginViewTitle,
             isJetpackSetup: true,
             viewModel: viewModel,
             onMagicLinkRequest: { [weak self] email in
@@ -371,7 +376,6 @@ private extension JetpackSetupCoordinator {
         analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode))
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
-            requiresConnectionOnly: requiresConnectionOnly,
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
@@ -381,7 +385,9 @@ private extension JetpackSetupCoordinator {
             onLoginSuccess: { [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
-        let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
+        let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
+                                                            isJetpackSetup: true,
+                                                            viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }

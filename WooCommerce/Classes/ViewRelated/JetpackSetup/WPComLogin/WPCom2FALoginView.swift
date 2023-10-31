@@ -4,8 +4,8 @@ import class WordPressAuthenticator.LoginFields
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
-    init(viewModel: WPCom2FALoginViewModel) {
-        super.init(rootView: WPCom2FALoginView(viewModel: viewModel))
+    init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
+        super.init(rootView: WPCom2FALoginView(title: title, isJetpackSetup: isJetpackSetup, viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -31,7 +31,12 @@ struct WPCom2FALoginView: View {
     @ObservedObject private var viewModel: WPCom2FALoginViewModel
     @FocusState private var isFieldFocused: Bool
 
-    init(viewModel: WPCom2FALoginViewModel) {
+    private let title: String
+    private let isJetpackSetup: Bool
+
+    init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
     }
 
@@ -39,10 +44,11 @@ struct WPCom2FALoginView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    Text(viewModel.titleString)
+                    Text(title)
                         .largeTitleStyle()
                     Text(Localization.subtitleString)
                         .subheadlineStyle()
@@ -78,7 +84,7 @@ struct WPCom2FALoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(viewModel.titleString) {
+                Button(title) {
                     ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
                     viewModel.handleLogin()
                 }
@@ -115,8 +121,9 @@ private extension WPCom2FALoginView {
 
 struct WPCom2FALoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPCom2FALoginView(viewModel: .init(loginFields: LoginFields(),
-                                           requiresConnectionOnly: true,
+        WPCom2FALoginView(title: "Login",
+                          isJetpackSetup: false,
+                          viewModel: .init(loginFields: LoginFields(),
                                            onLoginFailure: { _ in },
                                            onLoginSuccess: { _ in }))
     }

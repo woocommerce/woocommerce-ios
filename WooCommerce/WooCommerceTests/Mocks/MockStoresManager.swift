@@ -39,6 +39,10 @@ final class MockStoresManager: DefaultStoresManager {
         }
     }
 
+    override func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // Don't listen to WPCOM token expiry notification to avoid de-authenticating while running tests.
+    }
+
     // MARK: - Public Methods
 
     /// Restores the initial state

@@ -20,12 +20,15 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Whether the bundle item is a variable product and has variations.
     let isVariable: Bool
 
-    private let product: Product
 
     @Published var quantity: Decimal
     @Published var isOptionalAndSelected: Bool = false
     @Published var variationSelectorViewModel: ProductVariationSelectorViewModel?
     @Published var selectedVariation: ProductVariation?
+    @Published var errorMessage: String?
+
+    private let product: Product
+    private let bundleItem: ProductBundleItem
 
     /// Nil if the product is not a variable product.
     private let variableProductSettings: VariableProductSettings?
@@ -33,6 +36,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     init(bundleItem: ProductBundleItem, product: Product, variableProductSettings: VariableProductSettings?, existingOrderItem: OrderItem?) {
         bundledItemID = bundleItem.bundledItemID
         self.product = product
+        self.bundleItem = bundleItem
         isOptional = bundleItem.isOptional
         if isOptional {
             isOptionalAndSelected = existingOrderItem != nil
@@ -70,6 +74,46 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             self.variationSelectorViewModel = nil
         })
     }
+
+    /// Validates the configuration of the bundle item based on the quantity and variation requirements.
+    /// The validation error is set to the `errorMessage` Published variable so the view can display the message.
+    /// Ref: Pe5pgL-3Vd-p2#validation-of-bundle-configuration
+    /// - Returns: A boolean that indicates whether the configuration is valid.
+    func validate() -> Bool {
+        errorMessage = nil
+
+         // The bundle configuration is always considered valid if not selected.
+        guard !(isOptional && isOptionalAndSelected == false) else {
+            return true
+        }
+
+        guard quantity >= bundleItem.minQuantity else {
+            errorMessage = createInvalidQuantityErrorMessage()
+            return false
+        }
+
+        if let maxQuantity = bundleItem.maxQuantity, quantity > maxQuantity {
+            errorMessage = createInvalidQuantityErrorMessage()
+            return false
+        }
+
+        // If this is not a variable product, it's considered valid after the quantity check.
+        guard variableProductSettings != nil else {
+            return true
+        }
+
+        guard let selectedVariation else {
+            errorMessage = Localization.ErrorMessage.missingVariation
+            return false
+        }
+
+        guard selectedVariation.attributes.count == product.attributes.count else {
+            errorMessage = Localization.ErrorMessage.variationMissingAttributes
+            return false
+        }
+
+        return true
+    }
 }
 
 extension ConfigurableBundleItemViewModel {
@@ -90,6 +134,45 @@ extension ConfigurableBundleItemViewModel {
                              productOrVariation: .product(id: product.productID),
                              quantity: quantity,
                              isOptionalAndSelected: isOptionalAndSelected)
+        }
+    }
+}
+
+private extension ConfigurableBundleItemViewModel {
+    func createInvalidQuantityErrorMessage() -> String {
+        let minQuantityString = NumberFormatter.localizedString(from: bundleItem.minQuantity as NSDecimalNumber, number: .decimal)
+        if let maxQuantity = bundleItem.maxQuantity {
+            let maxQuantityString = NumberFormatter.localizedString(from: maxQuantity as NSDecimalNumber, number: .decimal)
+            return String(format: Localization.ErrorMessage.invalidQuantityWithMinAndMaxQuantityRules, minQuantityString, maxQuantityString)
+        } else {
+            return String(format: Localization.ErrorMessage.invalidQuantityWithMinQuantityRule, minQuantityString)
+        }
+    }
+}
+
+private extension ConfigurableBundleItemViewModel {
+    enum Localization {
+        enum ErrorMessage {
+            static let invalidQuantityWithMinQuantityRule = NSLocalizedString(
+                "configureBundleItemError.invalidQuantityWithMinQuantityRule",
+                value: "The quantity needs to be at least %1$@",
+                comment: "Error message when setting a bundle item's quantity with a minimum quantity rule."
+            )
+            static let invalidQuantityWithMinAndMaxQuantityRules = NSLocalizedString(
+                "configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules",
+                value: "The quantity needs to be within %1$@ and %2$@",
+                comment: "Error message when setting a bundle item's quantity with minimum and maximum quantity rules."
+            )
+            static let missingVariation = NSLocalizedString(
+                "configureBundleItemError.missingVariation",
+                value: "Please select a variation",
+                comment: "Error message when a variable bundle item is missing a variation."
+            )
+            static let variationMissingAttributes = NSLocalizedString(
+                "configureBundleItemError.variationMissingAttributes",
+                value: "Please select an option for all variation attributes",
+                comment: "Error message when a variable bundle item is missing some attributes."
+            )
         }
     }
 }

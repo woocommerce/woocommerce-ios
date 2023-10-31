@@ -4,6 +4,7 @@ import Yosemite
 import Combine
 import WooFoundation
 
+/// Configuration of a bundled order item from the configuration UI. It contains necessary information to save the configuration remotely.
 struct BundledProductConfiguration {
     enum ProductOrVariation: Equatable {
         case product(id: Int64)
@@ -50,6 +51,13 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         loadProductsAndCreateItemViewModels()
     }
 
+    /// Validates the bundle configuration of all bundled items.
+    /// - Returns: A boolean that indicates whether the configuration is valid.
+    func validate() -> Bool {
+        !bundleItemViewModels.map({ $0.validate() }).contains(false)
+    }
+
+    /// Completes the bundle configuration and triggers the configuration callback.
     func configure() {
         let configurations: [BundledProductConfiguration] = bundleItemViewModels.compactMap {
             $0.toConfiguration

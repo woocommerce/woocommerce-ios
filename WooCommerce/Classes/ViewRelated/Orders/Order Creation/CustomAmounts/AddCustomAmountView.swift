@@ -36,7 +36,7 @@ struct AddCustomAmountView: View {
                         }
                         .buttonStyle(PrimaryButtonStyle())
                         .disabled(viewModel.shouldDisableDoneButton)
-                        .accessibilityIdentifier("new-order-add-custom-amount-view-add-custom-amount-button")
+                        .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
                     }
                     .padding()
                     .navigationTitle(Localization.navigationTitle)
@@ -68,5 +68,9 @@ private extension AddCustomAmountView {
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+    }
+
+    enum AccessibilityIdentifiers {
+        static let addCustomAmountButton = "order-add-custom-amount-view-add-custom-amount-button"
     }
 }

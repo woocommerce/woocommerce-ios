@@ -32,7 +32,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
         let viewModel = AccountCreationFormViewModel(onPasswordUIRequest: { [weak self] email in
             self?.showPasswordUIForLogin(email: email)
         }, onMagicLinkUIRequest: { [weak self] email in
-            self?.show2FAForLogin(email: email)
+            self?.showMagicLinkForLogin(email: email)
         }, emailSubmissionHandler: { [weak self] email in
             self?.handleEmailSubmission(email: email)
         })
@@ -54,8 +54,11 @@ private extension LoggedOutStoreCreationCoordinator {
         // TODO
     }
 
-    func show2FAForLogin(email: String) {
-        // TODO
+    func showMagicLinkForLogin(email: String) {
+        let viewController = WPComMagicLinkHostingController(email: email,
+                                                             title: Localization.login,
+                                                             isJetpackSetup: false)
+        navigationController.show(viewController, sender: self)
     }
 
     func handleEmailSubmission(email: String) {
@@ -82,5 +85,15 @@ private extension LoggedOutStoreCreationCoordinator {
         storeCreationCoordinator = StoreCreationCoordinator(source: .loggedOut(source: source),
                                                             navigationController: navigationController)
         storeCreationCoordinator?.start()
+    }
+}
+
+private extension LoggedOutStoreCreationCoordinator {
+    enum Localization {
+        static let login = NSLocalizedString(
+            "loggedOutStoreCreationCoordinator.title",
+            value: "Log In",
+            comment: "Title for the screens in the login flow when user signs up with an email associating to an existing account."
+        )
     }
 }

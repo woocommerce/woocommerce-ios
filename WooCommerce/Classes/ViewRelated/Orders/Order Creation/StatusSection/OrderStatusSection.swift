@@ -35,10 +35,8 @@ struct OrderStatusSection: View {
 
                 Spacer()
 
-                Button {
+                PencilEditButton {
                     viewModel.shouldShowOrderStatusList = true
-                } label: {
-                    Image(systemName: "pencil")
                 }
                 .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 .accessibilityIdentifier("order-status-section-edit-button")

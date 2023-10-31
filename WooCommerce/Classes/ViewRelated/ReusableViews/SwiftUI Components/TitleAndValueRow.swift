@@ -12,6 +12,7 @@ struct TitleAndValueRow: View {
     }
 
     private let title: String
+    private let titleSuffixImage: Image?
     private let value: Value
     private let valueTextAlignment: TextAlignment
     private let bold: Bool
@@ -37,6 +38,7 @@ struct TitleAndValueRow: View {
     }
 
     init(title: String,
+         titleSuffixImage: Image? = nil,
          titleWidth: Binding<CGFloat?> = .constant(nil),
          value: Value,
          valueTextAlignment: TextAlignment = .trailing,
@@ -44,6 +46,7 @@ struct TitleAndValueRow: View {
          selectionStyle: SelectionStyle = .none,
          action: @escaping () -> Void = {}) {
         self.title = title
+        self.titleSuffixImage = titleSuffixImage
         self._titleWidth = titleWidth
         self.value = value
         self.valueTextAlignment = valueTextAlignment
@@ -63,6 +66,11 @@ struct TitleAndValueRow: View {
                         .multilineTextAlignment(.leading)
                         .modifier(MaxWidthModifier())
                         .frame(width: titleWidth, alignment: .leading)
+
+                    if let titleSuffixImage {
+                        titleSuffixImage
+                            .padding(.leading, Constants.titleSuffixImageTrailingPadding)
+                    }
 
                     Text(value.text)
                         .style(for: value, bold: bold, highlighted: false)
@@ -139,6 +147,7 @@ private extension TitleAndValueRow {
         static let horizontalPadding: CGFloat = 16
         static let verticalPadding: CGFloat = 12
         static let spacing: CGFloat = 20
+        static let titleSuffixImageTrailingPadding: CGFloat = -15
     }
 }
 

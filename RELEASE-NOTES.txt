@@ -4,6 +4,7 @@
 -----
 - [**] Orders: order creation sections are optimised for a simpler and more intuitive flow. [https://github.com/woocommerce/woocommerce-ios/pull/11042]
 - [*] Payments: Fix Tap to Pay reconnection on foreground, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11054]
+- [*] Payments: Fix Tap to Pay reconnection on fresh launch, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11056]
 
 16.0
 -----

@@ -9,47 +9,12 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         WordPressAuthenticator.initializeAuthenticator()
     }
 
-    func test_title_string_is_correct_when_requiresConnectionOnly_is_false() {
-        // Given
-        let siteURL = "https://example.com"
-        let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
-                                                    email: "test@example.com",
-                                                    requiresConnectionOnly: false,
-                                                    onMultifactorCodeRequest: { _ in },
-                                                    onLoginFailure: { _ in },
-                                                    onLoginSuccess: { _ in })
-
-        // When
-        let text = viewModel.titleString
-
-        // Then
-        assertEqual(WPComPasswordLoginViewModel.Localization.installJetpack, text)
-    }
-
-    func test_title_string_is_correct_when_requiresConnectionOnly_is_true() {
-        // Given
-        let siteURL = "https://example.com"
-        let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
-                                                    email: "test@example.com",
-                                                    requiresConnectionOnly: true,
-                                                    onMultifactorCodeRequest: { _ in },
-                                                    onLoginFailure: { _ in },
-                                                    onLoginSuccess: { _ in })
-
-        // When
-        let text = viewModel.titleString
-
-        // Then
-        assertEqual(WPComPasswordLoginViewModel.Localization.connectJetpack, text)
-    }
-
     func test_gravatar_url_is_correct() throws {
         // Given
         let siteURL = "https://example.com"
         let email = "test@example.com"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
-                                                    requiresConnectionOnly: true,
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
@@ -70,7 +35,6 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
 
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
-                                                    requiresConnectionOnly: true,
                                                     onMultifactorCodeRequest: { loginFields = $0 },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
@@ -97,7 +61,6 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "Test", code: 400)
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
-                                                    requiresConnectionOnly: true,
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { errorCaught = $0 },
                                                     onLoginSuccess: { _ in })
@@ -120,7 +83,6 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let expectedToken = "secret"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
-                                                    requiresConnectionOnly: true,
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { token = $0 })

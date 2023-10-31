@@ -123,36 +123,10 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         }
     }
 
-    func test_emailSubmissionHandler_is_triggered_when_account_creation_fails_with_emailExists() async {
-        // Given
-        var emailExists = false
-        var submittedEmail: String?
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { email, exists in
-            emailExists = exists
-            submittedEmail = email
-        })
-        mockAccountCreationFailure(error: .emailExists)
-        viewModel.email = "test@example.com"
-
-        // When
-        do {
-            try await viewModel.createAccount()
-
-            XCTFail("Function should have thrown an error")
-        } catch {
-            // Then
-            XCTAssertNil(viewModel.emailErrorMessage)
-            XCTAssertTrue(emailExists)
-            XCTAssertEqual(submittedEmail, "test@example.com")
-        }
-    }
-
     func test_emailSubmissionHandler_is_triggered_when_account_creation_fails_with_invalidPassword() async {
         // Given
-        var emailExists = false
         var submittedEmail: String?
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { email, exists in
-            emailExists = exists
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { email in
             submittedEmail = email
         })
         mockAccountCreationFailure(error: .invalidPassword(message: ""))
@@ -166,7 +140,6 @@ final class AccountCreationFormViewModelTests: XCTestCase {
         } catch {
             // Then
             XCTAssertNil(viewModel.emailErrorMessage)
-            XCTAssertFalse(emailExists)
             XCTAssertEqual(submittedEmail, "test@example.com")
         }
     }
@@ -225,7 +198,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 
     func test_createAccount_failure_with_invalid_password_is_not_tracked_if_emailSubmissionHandler_is_available() async {
         // Given
-        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { _, _ in })
+        viewModel = .init(debounceDuration: 0, stores: stores, analytics: analytics, emailSubmissionHandler: { _ in })
         mockAccountCreationFailure(error: .invalidPassword(message: nil))
         viewModel.email = "test@example.com"
 

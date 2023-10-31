@@ -95,16 +95,31 @@ private extension MediaStore {
                      filename: String?,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
         Task {
-            do {
-                let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
-                uploadMedia(siteID: siteID,
-                            productID: productID,
-                            altText: altText,
-                            uploadableMedia: uploadableMedia,
-                            onCompletion: onCompletion)
-            } catch {
-                onCompletion(.failure(error))
-            }
+            await uploadMediaAsync(siteID: siteID,
+                                   productID: productID,
+                                   mediaAsset: mediaAsset,
+                                   altText: altText,
+                                   filename: filename,
+                                   onCompletion: onCompletion)
+        }
+    }
+
+    @MainActor
+    func uploadMediaAsync(siteID: Int64,
+                          productID: Int64,
+                          mediaAsset: ExportableAsset,
+                          altText: String?,
+                          filename: String?,
+                          onCompletion: @escaping (Result<Media, Error>) -> Void) async {
+        do {
+            let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
+            uploadMedia(siteID: siteID,
+                        productID: productID,
+                        altText: altText,
+                        uploadableMedia: uploadableMedia,
+                        onCompletion: onCompletion)
+        } catch {
+            onCompletion(.failure(error))
         }
     }
 

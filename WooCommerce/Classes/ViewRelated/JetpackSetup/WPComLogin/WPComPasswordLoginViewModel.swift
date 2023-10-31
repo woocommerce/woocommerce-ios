@@ -6,9 +6,6 @@ import class Networking.UserAgent
 ///
 final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
-    /// Title of the view.
-    let titleString: String
-
     /// Entered password
     @Published var password: String = ""
     @Published private(set) var isLoggingIn = false
@@ -35,13 +32,11 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     init(siteURL: String,
          email: String,
-         requiresConnectionOnly: Bool,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
          onLoginSuccess: @escaping (String) -> Void) {
         self.siteURL = siteURL
         self.email = email
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                        dotcomSecret: ApiCredentials.dotcomSecret,
                                        userAgent: UserAgent.defaultUserAgent)
@@ -109,15 +104,5 @@ extension WPComPasswordLoginViewModel {
         static let baseGravatarURL = "https://gravatar.com/avatar"
         static let gravatarRating = "g" // safest rating
         static let gravatarDefaultOption = "mp" // a simple, cartoon-style silhouetted outline of a person
-    }
-    enum Localization {
-        static let installJetpack = NSLocalizedString(
-            "Install Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not installed yet"
-        )
-        static let connectJetpack = NSLocalizedString(
-            "Connect Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not connected yet"
-        )
     }
 }

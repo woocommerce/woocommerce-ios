@@ -4,9 +4,13 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
-    init(viewModel: WPComPasswordLoginViewModel,
+    init(title: String,
+         isJetpackSetup: Bool,
+         viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
-        super.init(rootView: WPComPasswordLoginView(viewModel: viewModel,
+        super.init(rootView: WPComPasswordLoginView(title: title,
+                                                    isJetpackSetup: isJetpackSetup,
+                                                    viewModel: viewModel,
                                                     onMagicLinkRequest: onMagicLinkRequest))
     }
 
@@ -35,10 +39,16 @@ struct WPComPasswordLoginView: View {
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
+    private let title: String
+    private let isJetpackSetup: Bool
     private let onMagicLinkRequest: (String) async -> Void
 
-    init(viewModel: WPComPasswordLoginViewModel,
+    init(title: String,
+         isJetpackSetup: Bool,
+         viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
         self.onMagicLinkRequest = onMagicLinkRequest
     }
@@ -47,9 +57,10 @@ struct WPComPasswordLoginView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // Title
-                Text(viewModel.titleString)
+                Text(title)
                     .largeTitleStyle()
 
                 // Avatar and email
@@ -155,9 +166,10 @@ private extension WPComPasswordLoginView {
 
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
+        WPComPasswordLoginView(title: "Install Jetpack",
+                               isJetpackSetup: true,
+                               viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
-                                                requiresConnectionOnly: true,
                                                 onMultifactorCodeRequest: { _ in },
                                                 onLoginFailure: { _ in },
                                                 onLoginSuccess: { _ in }),

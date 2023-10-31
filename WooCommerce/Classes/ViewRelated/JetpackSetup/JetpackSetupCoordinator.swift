@@ -329,10 +329,10 @@ private extension JetpackSetupCoordinator {
 
     func showPasswordUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .password))
+        let title = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
-            requiresConnectionOnly: requiresConnectionOnly,
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)
             },
@@ -346,6 +346,8 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
+            title: title,
+            isJetpackSetup: true,
             viewModel: viewModel,
             onMagicLinkRequest: { [weak self] email in
             guard let self else { return }
@@ -437,6 +439,16 @@ private extension JetpackSetupCoordinator {
         static let errorFetchingSites = NSLocalizedString(
             "Unable to refresh current site info",
             comment: "Error message displayed when failing to fetch the current site info."
+        )
+        static let installJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginTitle",
+            value: "Install Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not installed yet"
+        )
+        static let connectJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginSubtitle",
+            value: "Connect Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not connected yet"
         )
     }
 }

@@ -195,11 +195,22 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
+                            Divider()
+
                             OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                Divider()
+
+                                Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
                             CustomerNoteSection(viewModel: viewModel)
+
+                            Divider()
                         }
                     }
                     .disabled(viewModel.disabled)

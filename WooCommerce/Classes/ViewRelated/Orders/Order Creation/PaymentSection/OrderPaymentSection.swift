@@ -41,6 +41,15 @@ struct OrderPaymentSection: View {
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    var giftCard: String? {
+        guard let giftCard = viewModel.giftCardToApply,
+              giftCard.isNotEmpty else {
+            return nil
+        }
+
+        return giftCard
+    }
+
     init(viewModel: EditableOrderViewModel.PaymentDataViewModel, shouldShowCouponsInfoTooltip: Binding<Bool>) {
         self.viewModel = viewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
@@ -50,105 +59,49 @@ struct OrderPaymentSection: View {
         Divider()
 
         VStack(alignment: .leading, spacing: .zero) {
-            HStack {
-                Text(Localization.payment)
-                    .accessibilityAddTraits(.isHeader)
-                    .headlineStyle()
+            // Titles (not coincident)
+            orderWithItemsTitle
+            emptyOrderTitle
 
-                Spacer()
+            // Order components
+            Group {
+                productsRow
 
-                Image(uiImage: .lockImage)
-                    .foregroundColor(Color(.brand))
-                    .renderedIf(viewModel.showNonEditableIndicators)
+                customAmountsRow
 
-                ProgressView()
-                    .renderedIf(viewModel.isLoading)
-            }
-            .padding()
+                existingShippingRow
 
-            TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
+                appliedCouponsRows
 
-            shippingRow
-                .sheet(isPresented: $shouldShowShippingLineDetails) {
-                    ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
-                }
-            customAmountsRow
+                giftCardsSection
 
-            VStack {
-                ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
-                    TitleAndValueRow(title: viewModel.title, value: .content(viewModel.discount), selectionStyle: .highlight) {
-                        selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
-                    }
-                }
-            }
-            .sheet(item: $selectedCouponLineDetailsViewModel) { viewModel in
-                CouponLineDetails(viewModel: viewModel)
+                taxesSection
             }
 
-            addCouponRow
-            // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
-            // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
-                .zIndex(1)
-                .sheet(isPresented: $shouldShowAddCouponLineDetails) {
-                    NavigationView {
-                        CouponListView(siteID: viewModel.siteID,
-                                       emptyStateActionTitle: Localization.goToCoupons,
-                                       emptyStateAction: {
-                            shouldShowGoToCouponsAlert = true
-                        },
-                                       onCouponSelected: { coupon in
-                            viewModel.addNewCouponLineClosure(coupon)
-                            shouldShowAddCouponLineDetails = false
-                        })
-                        .navigationTitle(Localization.addCoupon)
-                        .navigationBarTitleDisplayMode(.inline)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                Button(Localization.cancelButton) {
-                                    shouldShowAddCouponLineDetails = false
-                                }
-                            }
-                        }
-                        .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
-                            Alert(title: Text(Localization.goToCoupons),
-                                  message: Text(Localization.goToCouponsAlertMessage),
-                                  primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
-                                viewModel.onGoToCouponsClosure()
-                                MainTabBarController.presentCoupons()
-                            }),
-                                  secondaryButton: .cancel())
-                        })
-                    }
-                }
+            // Totals
+            Group {
+                discountsTotalRow
 
-            if viewModel.isGiftCardEnabled {
-                if let giftCard = viewModel.giftCardToApply, giftCard.isNotEmpty {
-                    editGiftCardRow(giftCard: giftCard)
-                } else {
-                    addGiftCardRow
-                }
+                orderTotalRow
             }
 
-            appliedGiftCardsSection
+            // "Add order components" rows
+            Group {
+                Divider()
+                    .padding(.leading, Constants.dividerLeadingPadding)
 
-            taxesSection
-                .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
-                    TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
-                                             onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
-                    .background(FullScreenCoverClearBackgroundView())
-                }
+                addShippingRow
 
-            VStack(alignment: .leading, spacing: .zero) {
-                TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
-                    .renderedIf(viewModel.shouldShowDiscountTotal)
+                addCouponRow
 
-                TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                addGiftCardRow
             }
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-
-        Divider()
+        .sheet(isPresented: $shouldShowShippingLineDetails) {
+            ShippingLineDetails(viewModel: viewModel.shippingLineViewModel)
+        }
 
         taxRateAddedAutomaticallyRow
             .renderedIf(viewModel.shouldShowStoredTaxRateAddedAutomatically)
@@ -156,6 +109,40 @@ struct OrderPaymentSection: View {
 }
 
 private extension OrderPaymentSection {
+    @ViewBuilder var emptyOrderTitle: some View {
+        HStack {
+            TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+                .padding(.vertical, Constants.emptyOrderTitleVerticalPadding)
+
+            Image(uiImage: .lockImage)
+                .foregroundColor(Color(.brand))
+                .padding(.trailing, Constants.emptyOrderTitleLockImageTrailingPadding)
+                .renderedIf(viewModel.showNonEditableIndicators)
+
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .renderedIf(viewModel.orderIsEmpty)
+    }
+
+    @ViewBuilder var orderWithItemsTitle: some View {
+        HStack {
+            Text(Localization.paymentTotals)
+                .accessibilityAddTraits(.isHeader)
+                .headlineStyle()
+
+            Spacer()
+
+            Image(uiImage: .lockImage)
+                .foregroundColor(Color(.brand))
+                .renderedIf(viewModel.showNonEditableIndicators)
+
+            ProgressView()
+                .renderedIf(viewModel.isLoading)
+        }
+        .padding()
+        .renderedIf(!viewModel.orderIsEmpty)
+    }
+
     @ViewBuilder var addCouponRow: some View {
         HStack(spacing: 0) {
             Button(Localization.addCoupon) {
@@ -182,21 +169,76 @@ private extension OrderPaymentSection {
             .padding()
             .renderedIf(shouldShowCouponsInfoTooltip)
         }
+        // The use of zIndex is necessary in order to display the view overlay from the Coupon row correctly on top of the section,
+        // since this is build by multiple views. Otherwise we may see glitches in the UI when toggling the overlay.
+            .zIndex(1)
+            .sheet(isPresented: $shouldShowAddCouponLineDetails) {
+                NavigationView {
+                    CouponListView(siteID: viewModel.siteID,
+                                   emptyStateActionTitle: Localization.goToCoupons,
+                                   emptyStateAction: {
+                        shouldShowGoToCouponsAlert = true
+                    },
+                                   onCouponSelected: { coupon in
+                        viewModel.addNewCouponLineClosure(coupon)
+                        shouldShowAddCouponLineDetails = false
+                    })
+                    .navigationTitle(Localization.addCoupon)
+                    .navigationBarTitleDisplayMode(.inline)
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button(Localization.cancelButton) {
+                                shouldShowAddCouponLineDetails = false
+                            }
+                        }
+                    }
+                    .alert(isPresented: $shouldShowGoToCouponsAlert, content: {
+                        Alert(title: Text(Localization.goToCoupons),
+                              message: Text(Localization.goToCouponsAlertMessage),
+                              primaryButton: .default(Text(Localization.goToCouponsAlertButtonTitle), action: {
+                            viewModel.onGoToCouponsClosure()
+                            MainTabBarController.presentCoupons()
+                        }),
+                              secondaryButton: .cancel())
+                    })
+                }
+            }
     }
 
-    @ViewBuilder var shippingRow: some View {
-        if viewModel.shouldShowShippingTotal {
-            TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
-                shouldShowShippingLineDetails = true
+    @ViewBuilder var appliedCouponsRows: some View {
+        VStack {
+            ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
+                TitleAndValueRow(title: viewModel.title, value: .content(viewModel.discount), selectionStyle: .highlight) {
+                    selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
+                }
             }
-        } else {
-            Button(Localization.addShipping) {
-                shouldShowShippingLineDetails = true
-            }
-            .buttonStyle(PlusButtonStyle())
-            .padding()
-            .accessibilityIdentifier("add-shipping-button")
         }
+        .sheet(item: $selectedCouponLineDetailsViewModel) { viewModel in
+            CouponLineDetails(viewModel: viewModel)
+        }
+    }
+
+    @ViewBuilder var addShippingRow: some View {
+        Button(Localization.addShipping) {
+            shouldShowShippingLineDetails = true
+        }
+        .buttonStyle(PlusButtonStyle())
+        .padding()
+        .accessibilityIdentifier("add-shipping-button")
+        .disabled(viewModel.orderIsEmpty)
+        .renderedIf(!viewModel.shouldShowShippingTotal)
+    }
+
+    @ViewBuilder var existingShippingRow: some View {
+        TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
+            shouldShowShippingLineDetails = true
+        }
+        .renderedIf(viewModel.shouldShowShippingTotal)
+    }
+
+    @ViewBuilder var productsRow: some View {
+        TitleAndValueRow(title: Localization.productsTotal, value: .content(viewModel.itemsTotal), selectionStyle: .none) {}
+            .renderedIf(viewModel.shouldShowProductsTotal)
     }
 
     @ViewBuilder var customAmountsRow: some View {
@@ -213,6 +255,7 @@ private extension OrderPaymentSection {
         .padding()
         .accessibilityIdentifier("add-gift-card-button")
         .disabled(!viewModel.isAddGiftCardActionEnabled)
+        .renderedIf(viewModel.isGiftCardEnabled && giftCard == nil)
         .sheet(isPresented: $shouldShowGiftCardForm) {
             giftCardInput
         }
@@ -242,6 +285,17 @@ private extension OrderPaymentSection {
         }))
     }
 
+    @ViewBuilder var giftCardsSection: some View {
+        Group {
+            if let giftCard {
+                editGiftCardRow(giftCard: giftCard)
+            }
+
+            appliedGiftCardsSection
+        }
+        .renderedIf(viewModel.isGiftCardEnabled)
+    }
+
     @ViewBuilder var appliedGiftCardsSection: some View {
         VStack(alignment: .leading, spacing: Constants.giftCardsSectionVerticalSpacing) {
             ForEach(viewModel.appliedGiftCards, id: \.self) { giftCard in
@@ -256,14 +310,20 @@ private extension OrderPaymentSection {
             taxSectionTitle
             taxLines
             taxBasedOnLine
-            .renderedIf(viewModel.taxLineViewModels.isNotEmpty && viewModel.taxBasedOnSetting != nil)
+            .renderedIf(viewModel.taxBasedOnSetting != nil)
         }
         .padding(Constants.sectionPadding)
+        .renderedIf(viewModel.taxLineViewModels.isNotEmpty)
+        .fullScreenCover(isPresented: $shouldShowTaxEducationalDialog) {
+            TaxEducationalDialogView(viewModel: viewModel.taxEducationalDialogViewModel,
+                                     onDismissWpAdminWebView: viewModel.onDismissWpAdminWebViewClosure)
+            .background(FullScreenCoverClearBackgroundView())
+        }
     }
 
     @ViewBuilder var taxSectionTitle: some View {
         AdaptiveStack(horizontalAlignment: .leading, spacing: Constants.taxesAdaptativeStacksSpacing) {
-            Text(Localization.taxesTotal)
+            Text(Localization.taxes)
                 .bodyStyle()
 
             Button {
@@ -290,6 +350,7 @@ private extension OrderPaymentSection {
                     Text(viewModel.title)
                         .font(.footnote)
                         .fontWeight(.semibold)
+                        .foregroundColor(Color(uiColor: .secondaryLabel))
                         .multilineTextAlignment(.leading)
                         .frame(maxWidth: .infinity, alignment: .leading)
 
@@ -326,23 +387,38 @@ private extension OrderPaymentSection {
         }
         .background(Color(.listForeground(modal: true)))
     }
+
+    @ViewBuilder var discountsTotalRow: some View {
+        TitleAndValueRow(title: Localization.discountTotal, value: .content(viewModel.discountTotal))
+            .renderedIf(viewModel.shouldShowDiscountTotal)
+    }
+
+    @ViewBuilder var orderTotalRow: some View {
+        TitleAndValueRow(title: Localization.orderTotal, value: .content(viewModel.orderTotal), bold: true, selectionStyle: .none) {}
+            .padding(.bottom, Constants.orderTotalBottomPadding)
+            .renderedIf(!viewModel.orderIsEmpty)
+
+    }
 }
 
 // MARK: Constants
 private extension OrderPaymentSection {
     enum Localization {
-        static let payment = NSLocalizedString("Payment", comment: "Title text of the section that shows Payment details when creating a new order")
-        static let productsTotal = NSLocalizedString("Products Total", comment: "Label for the row showing the total cost of products in the order")
-        static let orderTotal = NSLocalizedString("Order Total", comment: "Label for the the row showing the total cost of the order")
-        static let discountTotal = NSLocalizedString("Discount Total", comment: "Label for the the row showing the total discount of the order")
+        static let paymentTotals = NSLocalizedString("orderPaymentSection.paymentTotals",
+                                                     value: "Payment totals",
+                                                     comment: "Title text of the section that shows Payment details when creating a new order")
+        static let productsTotal = NSLocalizedString("orderPaymentSection.products",
+                                                     value: "Products",
+                                                     comment: "Label for the row showing the total cost of products in the order")
+        static let orderTotal = NSLocalizedString("Order total", comment: "Label for the the row showing the total cost of the order")
+        static let discountTotal = NSLocalizedString("Discount total", comment: "Label for the the row showing the total discount of the order")
         static let addShipping = NSLocalizedString("Add Shipping", comment: "Title text of the button that adds shipping line when creating a new order")
         static let shippingTotal = NSLocalizedString("Shipping", comment: "Label for the row showing the cost of shipping in the order")
         static let addGiftCard = NSLocalizedString("Add Gift Card", comment: "Title text of the button that adds shipping line when creating a new order")
-        static let customAmountsTotal = NSLocalizedString("orderPaymentSection",
+        static let customAmountsTotal = NSLocalizedString("orderPaymentSection.customAmounts",
                                                           value: "Custom amounts",
                                                           comment: "Label for the row showing the cost of fees in the order")
         static let taxes = NSLocalizedString("Taxes", comment: "Label for the row showing the taxes in the order")
-        static let taxesTotal = NSLocalizedString("Taxes Total", comment: "Label for the title row showing the taxes in the order")
         static let addCoupon = NSLocalizedString("Add Coupon", comment: "Title for the Coupon screen during order creation")
         static let coupon = NSLocalizedString("Coupon", comment: "Label for the row showing the cost of coupon in the order")
         static let goToCoupons = NSLocalizedString("Go to Coupons", comment: "Button title on the Coupon screen empty state" +
@@ -362,6 +438,8 @@ private extension OrderPaymentSection {
     }
 
     enum Constants {
+        static let emptyOrderTitleVerticalPadding: CGFloat = 8
+        static let emptyOrderTitleLockImageTrailingPadding: CGFloat = 16
         static let giftCardsSectionVerticalSpacing: CGFloat = 8
         static let taxesSectionVerticalSpacing: CGFloat = 8
         static let taxRateAddedAutomaticallyRowHorizontalSpacing: CGFloat = 8
@@ -369,6 +447,8 @@ private extension OrderPaymentSection {
         static let sectionPadding: CGFloat = 16
         static let rowMinHeight: CGFloat = 44
         static let infoTooltipCornerRadius: CGFloat = 4
+        static let dividerLeadingPadding: CGFloat = 16
+        static let orderTotalBottomPadding: CGFloat = 8
     }
 }
 

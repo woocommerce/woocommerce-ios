@@ -222,6 +222,10 @@ final class EditableOrderViewModel: ObservableObject {
         productRows.isNotEmpty || customAmountRows.isNotEmpty
     }
 
+    var shouldSplitCustomerAndNoteSections: Bool {
+        customerDataViewModel.isDataAvailable || customerNoteDataViewModel.customerNote.isNotEmpty
+    }
+
     var shouldShowProductsSectionHeader: Bool {
         productRows.isNotEmpty
     }
@@ -872,8 +876,10 @@ extension EditableOrderViewModel {
         }
 
         let siteID: Int64
+        let shouldShowProductsTotal: Bool
         let itemsTotal: String
         let orderTotal: String
+        let orderIsEmpty: Bool
 
         let shouldShowShippingTotal: Bool
         let shippingTotal: String
@@ -924,6 +930,7 @@ extension EditableOrderViewModel {
         let setGiftCardClosure: (_ code: String?) -> Void
 
         init(siteID: Int64 = 0,
+             shouldShowProductsTotal: Bool = false,
              itemsTotal: String = "0",
              shouldShowShippingTotal: Bool = false,
              shippingTotal: String = "0",
@@ -934,6 +941,7 @@ extension EditableOrderViewModel {
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
+             orderIsEmpty: Bool = false,
              shouldShowCoupon: Bool = false,
              shouldDisableAddingCoupons: Bool = false,
              couponLineViewModels: [CouponLineViewModel] = [],
@@ -960,6 +968,7 @@ extension EditableOrderViewModel {
              setGiftCardClosure: @escaping (_ code: String?) -> Void = { _ in },
              currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
             self.siteID = siteID
+            self.shouldShowProductsTotal = shouldShowProductsTotal
             self.itemsTotal = currencyFormatter.formatAmount(itemsTotal) ?? "0.00"
             self.shouldShowShippingTotal = shouldShowShippingTotal
             self.shippingTotal = currencyFormatter.formatAmount(shippingTotal) ?? "0.00"
@@ -970,6 +979,7 @@ extension EditableOrderViewModel {
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
+            self.orderIsEmpty = orderIsEmpty
             self.isLoading = isLoading
             self.showNonEditableIndicators = showNonEditableIndicators
             self.shouldShowCoupon = shouldShowCoupon
@@ -1366,6 +1376,7 @@ private extension EditableOrderViewModel {
                 }
 
                 return PaymentDataViewModel(siteID: self.siteID,
+                                            shouldShowProductsTotal: order.items.isNotEmpty,
                                             itemsTotal: orderTotals.itemsTotal.stringValue,
                                             shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                             shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
@@ -1376,6 +1387,7 @@ private extension EditableOrderViewModel {
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
+                                            orderIsEmpty: order.isEmpty,
                                             shouldShowCoupon: order.coupons.isNotEmpty,
                                             shouldDisableAddingCoupons: disableCoupons,
                                             couponLineViewModels: self.couponLineViewModels(from: order.coupons),

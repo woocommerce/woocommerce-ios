@@ -112,4 +112,21 @@ final class FormattableAmountTextFieldViewModelTests: XCTestCase {
         // When & Then
         XCTAssertEqual(viewModel.formattedAmount, "€0,00")
     }
+
+    func test_preset_replaces_old_amount_on_the_next_input() {
+        // Given
+        let storeSettings = CurrencySettings(currencyCode: .EUR, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ",", numberOfDecimals: 2)
+        let viewModel = FormattableAmountTextFieldViewModel(locale: usLocale, storeCurrencySettings: storeSettings)
+
+        let oldAmount = "12.23"
+        let newInput = "1"
+
+        // When
+        viewModel.presetAmount("12.23")
+        // Simulates the input on the text field that appends the new input to the old
+        viewModel.amount = oldAmount + newInput
+
+        XCTAssertEqual(viewModel.formattedAmount, "€\(newInput)")
+
+    }
 }

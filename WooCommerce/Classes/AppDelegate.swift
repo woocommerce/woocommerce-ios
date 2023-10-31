@@ -506,10 +506,11 @@ extension AppDelegate {
     /// De-authenticates the user upon application password generation failure or WPCOM token expiry.
     ///
     private func listenToAuthenticationFailureNotifications() {
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom {
-            ServiceLocator.stores.listenToApplicationPasswordGenerationFailureNotification()
+        let stores = ServiceLocator.stores
+        if stores.isAuthenticatedWithoutWPCom {
+            stores.listenToApplicationPasswordGenerationFailureNotification()
         } else {
-            ServiceLocator.stores.listenToWPCOMInvalidWPCOMTokenNotification()
+            stores.listenToWPCOMInvalidWPCOMTokenNotification()
         }
     }
 

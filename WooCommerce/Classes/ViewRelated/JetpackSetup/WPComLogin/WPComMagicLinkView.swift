@@ -4,9 +4,11 @@ import WordPressAuthenticator
 /// Hosting controller for `WPComMagicLinkView`
 final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
 
-    init(email: String, requiresConnectionOnly: Bool) {
-        let viewModel = WPComMagicLinkViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPComMagicLinkView(viewModel: viewModel))
+    init(email: String, title: String, isJetpackSetup: Bool) {
+        let viewModel = WPComMagicLinkViewModel(email: email)
+        super.init(rootView: WPComMagicLinkView(title: title,
+                                                isJetpackSetup: isJetpackSetup,
+                                                viewModel: viewModel))
         rootView.onOpenMail = {
             let linkMailPresenter = LinkMailPresenter(emailAddress: email)
             let appSelector = AppSelector(sourceView: self.view)
@@ -36,10 +38,14 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
 // The magic link screen for the WPCom authentication flow for Jetpack setup.
 //
 struct WPComMagicLinkView: View {
+    private let title: String
+    private let isJetpackSetup: Bool
     private let viewModel: WPComMagicLinkViewModel
     var onOpenMail: () -> Void = {}
 
-    init(viewModel: WPComMagicLinkViewModel) {
+    init(title: String, isJetpackSetup: Bool, viewModel: WPComMagicLinkViewModel) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
     }
 
@@ -47,10 +53,11 @@ struct WPComMagicLinkView: View {
         ScrollView {
             VStack(spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // title
                 HStack {
-                    Text(viewModel.titleString)
+                    Text(title)
                         .largeTitleStyle()
                     Spacer()
                 }
@@ -106,6 +113,8 @@ private extension WPComMagicLinkView {
 
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
+        WPComMagicLinkView(title: "Login",
+                           isJetpackSetup: false,
+                           viewModel: .init(email: "test@example.com"))
     }
 }

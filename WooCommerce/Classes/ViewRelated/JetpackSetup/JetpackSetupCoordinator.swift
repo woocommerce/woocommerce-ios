@@ -328,7 +328,9 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
-        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        let viewController = WPComMagicLinkHostingController(email: email,
+                                                             title: loginViewTitle,
+                                                             isJetpackSetup: true)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 

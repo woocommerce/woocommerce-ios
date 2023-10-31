@@ -1572,6 +1572,7 @@ private extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.orderCreateButtonTapped(order: orderSynchronizer.order,
                                                                                 status: orderSynchronizer.order.status,
                                                                                 productCount: orderSynchronizer.order.items.count,
+                                                                                customAmountsCount: orderSynchronizer.order.fees.count,
                                                                                 hasCustomerDetails: hasCustomerDetails,
                                                                                 hasFees: orderSynchronizer.order.fees.isNotEmpty,
                                                                                 hasShippingMethod: orderSynchronizer.order.shippingLines.isNotEmpty,

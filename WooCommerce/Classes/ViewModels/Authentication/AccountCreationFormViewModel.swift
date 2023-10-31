@@ -7,6 +7,7 @@ import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
 import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
+import WordPressAuthenticator
 
 /// View model for `AccountCreationForm` view.
 final class AccountCreationFormViewModel: ObservableObject {
@@ -26,17 +27,26 @@ final class AccountCreationFormViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let analytics: Analytics
-    private let emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)?
+    private let accountService: WordPressComAccountServiceProtocol
+    private let onPasswordUIRequest: ((_ email: String) -> Void)?
+    private let onMagicLinkUIRequest: ((_ email: String) -> Void)?
+    private let emailSubmissionHandler: ((_ email: String) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
     init(email: String = "",
          debounceDuration: Double = Constants.fieldDebounceDuration,
+         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         emailSubmissionHandler: ((_ email: String, _ isExisting: Bool) -> Void)? = nil) {
+         onPasswordUIRequest: ((_ email: String) -> Void)? = nil,
+         onMagicLinkUIRequest: ((_ email: String) -> Void)? = nil,
+         emailSubmissionHandler: ((_ email: String) -> Void)? = nil) {
+        self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
         self.email = email
+        self.onPasswordUIRequest = onPasswordUIRequest
+        self.onMagicLinkUIRequest = onMagicLinkUIRequest
         self.emailSubmissionHandler = emailSubmissionHandler
 
         $email
@@ -82,7 +92,7 @@ final class AccountCreationFormViewModel: ObservableObject {
             if !shouldSkipTrackingError {
                 analytics.track(event: .StoreCreation.signupFailed(error: error))
             }
-            handleFailure(error: error)
+            await handleFailure(error: error)
 
             throw error
         }
@@ -101,20 +111,62 @@ private extension AccountCreationFormViewModel {
     }
 
     @MainActor
-    func handleFailure(error: CreateAccountError) {
+    func handleFailure(error: CreateAccountError) async {
         switch error {
         case .emailExists:
-            emailSubmissionHandler?(email, true)
+            await checkWordPressComAccount(email: email)
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
             if let handler = emailSubmissionHandler {
-                handler(email, false)
+                handler(email)
             } else {
                 passwordErrorMessage = message ?? Localization.passwordError
             }
         default:
             break
+        }
+    }
+
+    @MainActor
+    func checkWordPressComAccount(email: String) async {
+        do {
+            let passwordless = try await withCheckedThrowingContinuation { continuation in
+                accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                    continuation.resume(returning: passwordless)
+                }, failure: { error in
+                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                    continuation.resume(throwing: error)
+                })
+            }
+            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+        } catch {
+            emailErrorMessage = error.localizedDescription
+        }
+    }
+
+    @MainActor
+    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+        if isPasswordlessAccount {
+            await requestAuthenticationLink(email: email)
+        } else {
+            onPasswordUIRequest?(email)
+        }
+    }
+
+    @MainActor
+    func requestAuthenticationLink(email: String) async {
+        do {
+            try await withCheckedThrowingContinuation { continuation in
+                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                    continuation.resume()
+                }, failure: { error in
+                    continuation.resume(throwing: error)
+                })
+            }
+            onMagicLinkUIRequest?(email)
+        } catch {
+            emailErrorMessage = error.localizedDescription
         }
     }
 }

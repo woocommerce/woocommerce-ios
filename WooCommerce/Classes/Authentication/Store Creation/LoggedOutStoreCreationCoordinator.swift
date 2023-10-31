@@ -29,8 +29,12 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     }
 
     func start() {
-        let viewModel = AccountCreationFormViewModel(emailSubmissionHandler: { [weak self] email, isExisting in
-            self?.handleEmailSubmission(email: email, isExisting: isExisting)
+        let viewModel = AccountCreationFormViewModel(onPasswordUIRequest: { [weak self] email in
+            self?.showPasswordUIForLogin(email: email)
+        }, onMagicLinkUIRequest: { [weak self] email in
+            self?.show2FAForLogin(email: email)
+        }, emailSubmissionHandler: { [weak self] email in
+            self?.handleEmailSubmission(email: email)
         })
         let accountCreationController = AccountCreationFormHostingController(
             field: .email,
@@ -46,14 +50,17 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 }
 
 private extension LoggedOutStoreCreationCoordinator {
-    func handleEmailSubmission(email: String, isExisting: Bool) {
+    func showPasswordUIForLogin(email: String) {
+        // TODO
+    }
+
+    func show2FAForLogin(email: String) {
+        // TODO
+    }
+
+    func handleEmailSubmission(email: String) {
         let signInSource: SignInSource = .custom(source: source.rawValue)
-        guard !isExisting else {
-            /// Navigates to login with the existing email address.
-            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
-            command.execute(from: navigationController.topViewController ?? navigationController)
-            return
-        }
+
         /// Navigates to password field for account creation
         let passwordView = AccountCreationFormHostingController(field: .password,
                                                                 viewModel: .init(email: email),

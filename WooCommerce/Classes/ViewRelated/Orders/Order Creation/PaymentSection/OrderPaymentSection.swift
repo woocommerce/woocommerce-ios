@@ -231,7 +231,7 @@ private extension OrderPaymentSection {
 
     @ViewBuilder var existingShippingRow: some View {
         TitleAndValueRow(title: Localization.shippingTotal,
-                         titleSuffixImage: Image(systemName: "pencil"),
+                         titleSuffixImage: viewModel.showNonEditableIndicators ? nil : Image(systemName: "pencil"),
                          value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
             shouldShowShippingLineDetails = true
         }

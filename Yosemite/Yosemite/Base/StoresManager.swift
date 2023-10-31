@@ -80,4 +80,8 @@ public protocol StoresManager {
     /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
     ///
     func listenToApplicationPasswordGenerationFailureNotification()
+
+    /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
+    ///
+    func listenToWPCOMInvalidWPCOMTokenNotification()
 }

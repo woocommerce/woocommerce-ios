@@ -25,6 +25,11 @@ struct ConfigurableBundleItemView: View {
                 ProductRow(viewModel: viewModel.productRowViewModel)
             }
 
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .errorStyle()
+            }
+
             Button {
                 viewModel.createVariationSelectorViewModel()
                 showsVariationSelector = true

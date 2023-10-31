@@ -2,7 +2,6 @@ import ScreenObject
 import XCTest
 
 public final class AddCustomAmountScreen: ScreenObject {
-
     private let addCustomAmountButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["order-add-custom-amount-view-add-custom-amount-button"]
     }

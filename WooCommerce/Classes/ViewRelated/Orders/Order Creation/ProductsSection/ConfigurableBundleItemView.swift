@@ -39,11 +39,23 @@ struct ConfigurableBundleItemView: View {
             .renderedIf(viewModel.isVariable)
 
             if let selectedVariation = viewModel.selectedVariation {
-                Text(selectedVariation.attributes.map { "\($0.name): \($0.option)" }.joined(separator: ", "))
+                Spacer()
+                    .frame(height: Layout.defaultPadding)
+
+                ForEach(selectedVariation.attributes, id: \.name) { attribute in
+                    HStack {
+                        Text(attribute.name)
+                            .bold()
+                        Text(attribute.option)
+                    }
+                }
+
                 ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
                     ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
                 }
             }
+
+            // TODO: #10428 - show previously selected variation attributes
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
                 LazyNavigationLink(destination: ProductVariationSelector(
@@ -60,6 +72,10 @@ struct ConfigurableBundleItemView: View {
 }
 
 private extension ConfigurableBundleItemView {
+    enum Layout {
+        static let defaultPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let add = NSLocalizedString(
             "configureBundleItem.add",

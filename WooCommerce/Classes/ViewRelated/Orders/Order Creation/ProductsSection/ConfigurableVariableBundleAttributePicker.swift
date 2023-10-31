@@ -12,6 +12,7 @@ struct ConfigurableVariableBundleAttributePicker: View {
     var body: some View {
         HStack {
             Text(viewModel.name)
+                .bold()
 
             Picker("", selection: $viewModel.selectedOption) {
                 ForEach(viewModel.options, id: \.self) {

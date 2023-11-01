@@ -145,12 +145,12 @@ private extension WPComLoginCoordinator {
 private extension WPComLoginCoordinator {
     enum Localization {
         static let login = NSLocalizedString(
-            "loggedOutStoreCreationCoordinator.title",
+            "wpComLoginCoordinator.title",
             value: "Log In",
             comment: "Title for the screens in the login flow"
         )
         static let cancelButton = NSLocalizedString(
-            "loggedOutStoreCreationCoordinator.cancelButton",
+            "wpComLoginCoordinator.cancelButton",
             value: "Cancel",
             comment: "Button to dismiss an error alert in the WPCom login flow"
         )

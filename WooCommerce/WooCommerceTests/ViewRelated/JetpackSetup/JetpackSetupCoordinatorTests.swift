@@ -112,6 +112,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)
@@ -141,6 +142,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)
@@ -187,6 +189,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)

@@ -1,5 +1,4 @@
 import UIKit
-import protocol Yosemite.StoresManager
 import enum WordPressAuthenticator.SignInSource
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.
@@ -18,17 +17,14 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     private var storeCreationCoordinator: StoreCreationCoordinator?
     private var loginCoordinator: WPComLoginCoordinator?
 
-    private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
 
     init(source: Source,
          navigationController: UINavigationController,
-         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.navigationController = navigationController
-        self.stores = stores
         self.analytics = analytics
     }
 

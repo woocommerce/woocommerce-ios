@@ -260,7 +260,7 @@ platform :ios do
     ensure_git_branch(branch: '^release/')
 
     UI.important("Completing code freeze for: #{release_version_current}")
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     generate_strings_file_for_glotpress
 
@@ -445,7 +445,7 @@ platform :ios do
     ensure_git_status_clean
 
     UI.important("Triggering hotfix build for version: #{release_version_current}")
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
     trigger_release_build(branch_to_build: "release/#{release_version_current}")
   end
 
@@ -472,7 +472,7 @@ platform :ios do
     ensure_git_status_clean
 
     UI.important("Finalizing release: #{release_version_current}")
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     UI.message('Checking app strings translation status...')
     check_translation_progress(
@@ -587,7 +587,7 @@ platform :ios do
     ensure_sentry_installed
 
     UI.important("Building version #{release_version_current} (#{build_code_current}) and uploading to TestFlight")
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?'))
 
     appstore_code_signing
 

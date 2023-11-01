@@ -5,11 +5,9 @@ import enum Alamofire.AFError
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
-    private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
 
     override func setUp() {
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
 
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -20,7 +18,6 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     }
 
     override func tearDown() {
-        stores = nil
         navigationController = nil
         super.tearDown()
     }

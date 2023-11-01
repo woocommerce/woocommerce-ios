@@ -311,6 +311,26 @@ private extension JetpackSetupCoordinator {
         }
     }
 
+    @MainActor
+    func isJetpackInstalledAndActive() async -> Bool {
+        await withCheckedContinuation { continuation in
+            stores.dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: 0) { result in
+                switch result {
+                case let .success(plugins):
+                    if let plugin = plugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
+                       plugin.active {
+                        continuation.resume(returning: true)
+                    } else {
+                        continuation.resume(returning: false)
+                    }
+                case let .failure(error):
+                    DDLogError("⛔️ Failed to sync system plugins. Error: \(error)")
+                    continuation.resume(returning: false)
+                }
+            })
+        }
+    }
+
     func showWPComEmailLogin() {
         analytics.track(event: .JetpackSetup.loginFlow(step: .emailAddress))
         let emailLoginController = WPComEmailLoginHostingController(viewModel: emailLoginViewModel)
@@ -414,6 +434,7 @@ private extension JetpackSetupCoordinator {
 
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let jetpackPluginName = "Jetpack"
     }
 
     enum Localization {

@@ -86,8 +86,7 @@ private extension JetpackSetupCoordinator {
             return presentJCPJetpackInstallFlow()
         }
         do {
-            let result = await fetchJetpackUser()
-            try saveJetpackConnectionStateIfPossible(result)
+            try await checkJetpackConnectionState()
             analytics.track(event: .JetpackSetup.connectionCheckCompleted(
                 isAlreadyConnected: jetpackConnectedEmail != nil,
                 requiresConnectionOnly: requiresConnectionOnly
@@ -125,25 +124,21 @@ private extension JetpackSetupCoordinator {
     /// Checks the Jetpack connection status for non-Jetpack sites to save the status and connected email locally if available.
     /// Throws any error if the Jetpack user fetch failed.
     ///
-    func saveJetpackConnectionStateIfPossible(_ result: Result<JetpackUser, Error>) throws {
-        switch result {
-        case .success(let user):
-            requiresConnectionOnly = true
+    func checkJetpackConnectionState() async throws {
+        requiresConnectionOnly = await isJetpackInstalledAndActive()
+        do {
+            let user = try await fetchJetpackUser()
             jetpackConnectedEmail = user.wpcomUser?.email
-
-        case .failure(let error):
-            switch error {
-            case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
-                /// 404 error means Jetpack is not installed or activated yet.
-                requiresConnectionOnly = false
-                jetpackConnectedEmail = nil
-            case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
-                /// 403 means the site Jetpack connection is not established yet
-                /// and the user has no permission to handle this.
-                throw JetpackCheckError.missingPermission
-            default:
-                throw error
-            }
+        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) {
+            /// 404 error means Jetpack is not installed or activated yet.
+            requiresConnectionOnly = false
+            jetpackConnectedEmail = nil
+        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) {
+            /// 403 means the site Jetpack connection is not established yet
+            /// and the user has no permission to handle this.
+            throw JetpackCheckError.missingPermission
+        } catch {
+            throw error
         }
     }
 

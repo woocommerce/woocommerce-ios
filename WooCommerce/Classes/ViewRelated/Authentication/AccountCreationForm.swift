@@ -62,35 +62,33 @@ struct AccountCreationForm: View {
 
                 // Form fields.
                 VStack(spacing: Layout.verticalSpacingBetweenFields) {
-                    switch viewModel.currentField {
-                    case .email:
-                        // Email field.
-                        AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
-                                                                     placeholder: Localization.emailFieldPlaceholder,
-                                                                     keyboardType: .emailAddress,
-                                                                     text: $viewModel.email,
-                                                                     isSecure: false,
-                                                                     errorMessage: viewModel.emailErrorMessage,
-                                                                     isFocused: isFocused))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .disabled(viewModel.isPerformingTask)
-
-                    case .password:
-                        // Password field.
-                        AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
-                                                                     placeholder: Localization.passwordFieldPlaceholder,
-                                                                     keyboardType: .default,
-                                                                     text: $viewModel.password,
-                                                                     isSecure: true,
-                                                                     errorMessage: viewModel.passwordErrorMessage,
-                                                                     isFocused: isFocused))
-                        .autocorrectionDisabled()
-                        .textInputAutocapitalization(.never)
-                        .focused($isFocused)
-                        .disabled(viewModel.isPerformingTask)
-                    }
+                    // Email field.
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.emailFieldTitle,
+                                                                 placeholder: Localization.emailFieldPlaceholder,
+                                                                 keyboardType: .emailAddress,
+                                                                 text: $viewModel.email,
+                                                                 isSecure: false,
+                                                                 errorMessage: viewModel.emailErrorMessage,
+                                                                 isFocused: isFocused))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+                    .disabled(viewModel.isPerformingTask)
+                    .renderedIf(viewModel.currentField == .email)
+                    
+                    // Password field.
+                    AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
+                                                                 placeholder: Localization.passwordFieldPlaceholder,
+                                                                 keyboardType: .default,
+                                                                 text: $viewModel.password,
+                                                                 isSecure: true,
+                                                                 errorMessage: viewModel.passwordErrorMessage,
+                                                                 isFocused: isFocused))
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.never)
+                    .focused($isFocused)
+                    .disabled(viewModel.isPerformingTask)
+                    .renderedIf(viewModel.currentField == .password)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)

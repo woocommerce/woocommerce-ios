@@ -297,15 +297,15 @@ private extension JetpackSetupCoordinator {
     }
 
     @MainActor
-    func fetchJetpackUser() async -> Result<JetpackUser, Error> {
+    func fetchJetpackUser() async throws -> JetpackUser {
         /// Jetpack setup will fail anyway without admin role, so check that first.
         let roles = stores.sessionManager.defaultRoles
         guard roles.contains(.administrator) else {
-            return .failure(JetpackCheckError.missingPermission)
+            throw JetpackCheckError.missingPermission
         }
-        return await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackUser { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             stores.dispatch(action)
         }

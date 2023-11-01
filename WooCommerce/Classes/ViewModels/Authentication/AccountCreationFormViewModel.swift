@@ -10,6 +10,11 @@ import class WordPressShared.EmailFormatValidator
 
 /// View model for `AccountCreationForm` view.
 final class AccountCreationFormViewModel: ObservableObject {
+    enum Field: Equatable {
+        case email
+        case password
+    }
+
     /// Email input.
     @Published var email: String = ""
     /// An error can come from the WPCOM backend, when the email is invalid or already exists.
@@ -24,23 +29,34 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// Local validation on the password field.
     @Published private(set) var isPasswordValid: Bool = false
 
+    @Published private(set) var isPerformingTask = false
+    @Published private(set) var currentField: Field = .email
+    @Published private(set) var shouldTransitionToPasswordField = false
+    
     private let stores: StoresManager
     private let analytics: Analytics
-    private let onExistingEmail: ((_ email: String) async -> Void)?
-    private let emailSubmissionHandler: ((_ email: String) -> Void)?
+    private let onExistingEmail: ((_ email: String) async -> Void)
+    private let completionHandler: (() -> Void)
     private var subscriptions: Set<AnyCancellable> = []
 
-    init(email: String = "",
-         debounceDuration: Double = Constants.fieldDebounceDuration,
+    var isSubmitButtonDisabled: Bool {
+        switch currentField {
+        case .email:
+            return !isEmailValid || isPerformingTask
+        case .password:
+            return !isPasswordValid || isPerformingTask
+        }
+    }
+
+    init(debounceDuration: Double = Constants.fieldDebounceDuration,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onExistingEmail: ((_ email: String) async -> Void)? = nil,
-         emailSubmissionHandler: ((_ email: String) -> Void)? = nil) {
+         onExistingEmail: @escaping ((_ email: String) async -> Void),
+         completionHandler: @escaping (() -> Void)) {
         self.stores = stores
         self.analytics = analytics
-        self.email = email
         self.onExistingEmail = onExistingEmail
-        self.emailSubmissionHandler = emailSubmissionHandler
+        self.completionHandler = completionHandler
 
         $email
             .removeDuplicates()
@@ -60,8 +76,9 @@ final class AccountCreationFormViewModel: ObservableObject {
     /// Creates a WPCOM account with the email and password.
     /// - Returns: async result of account creation.
     @MainActor
-    func createAccount() async throws {
+    func createAccount() async {
         analytics.track(event: .StoreCreation.signupSubmitted())
+        isPerformingTask = true
 
         do {
             let data = try await withCheckedThrowingContinuation { continuation in
@@ -74,21 +91,29 @@ final class AccountCreationFormViewModel: ObservableObject {
             analytics.track(event: .StoreCreation.signupSuccess())
 
             await handleSuccess(data: data)
+            completionHandler()
+
         } catch let error as CreateAccountError {
             /// Skip tracking if the password field is yet to be presented.
             let shouldSkipTrackingError: Bool = {
                 guard case .invalidPassword = error else {
                     return false
                 }
-                return emailSubmissionHandler != nil
+                return currentField == .password
             }()
             if !shouldSkipTrackingError {
                 analytics.track(event: .StoreCreation.signupFailed(error: error))
             }
             await handleFailure(error: error)
-
-            throw error
+        } catch {
+            DDLogError("⛔️ Uncaught error when creating WPCom account: \(error)")
         }
+
+        isPerformingTask = false
+    }
+
+    func transitionToPasswordField() {
+        currentField = .password
     }
 }
 
@@ -107,12 +132,12 @@ private extension AccountCreationFormViewModel {
     func handleFailure(error: CreateAccountError) async {
         switch error {
         case .emailExists:
-            await onExistingEmail?(email)
+            await onExistingEmail(email)
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
-            if let handler = emailSubmissionHandler {
-                handler(email)
+            if currentField == .email {
+                shouldTransitionToPasswordField = true
             } else {
                 passwordErrorMessage = message ?? Localization.passwordError
             }

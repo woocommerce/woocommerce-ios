@@ -31,18 +31,15 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     func start() {
         let viewModel = AccountCreationFormViewModel(onExistingEmail: { [weak self] email in
             await self?.startLoginWithExistingAccount(email: email)
-        }, emailSubmissionHandler: { [weak self] email in
-            self?.handleEmailSubmission(email: email)
+        }, completionHandler: { [weak self] in
+            guard let self else { return }
+            self.startStoreCreation(in: self.navigationController)
         })
         let accountCreationController = AccountCreationFormHostingController(
-            field: .email,
             viewModel: viewModel,
             signInSource: .custom(source: source.rawValue),
             analytics: analytics
-        ) { [weak self] in
-            guard let self else { return }
-            self.startStoreCreation(in: self.navigationController)
-        }
+        )
         navigationController.show(accountCreationController, sender: self)
     }
 }
@@ -56,20 +53,6 @@ private extension LoggedOutStoreCreationCoordinator {
         }
         self.loginCoordinator = coordinator
         await coordinator.start(with: email)
-    }
-
-    func handleEmailSubmission(email: String) {
-        let signInSource: SignInSource = .custom(source: source.rawValue)
-
-        /// Navigates to password field for account creation
-        let passwordView = AccountCreationFormHostingController(field: .password,
-                                                                viewModel: .init(email: email),
-                                                                signInSource: signInSource,
-                                                                completion: { [weak self] in
-            guard let self else { return }
-            self.startStoreCreation(in: self.navigationController)
-        })
-        navigationController.show(passwordView, sender: nil)
     }
 
     func startStoreCreation(in navigationController: UINavigationController) {

@@ -181,19 +181,18 @@ private extension JetpackSetupCoordinator {
                 })
             }
 
-            let result = await fetchJetpackUser()
-            progressView.dismiss(animated: true, completion: { [weak self] in
-                guard let self else { return }
-                do {
-                    try self.saveJetpackConnectionStateIfPossible(result)
-                    self.showSetupSteps(username: username, authToken: authToken)
-                } catch JetpackCheckError.missingPermission {
-                    self.displayAdminRoleRequiredError()
-                } catch {
-                    DDLogError("⛔️ Jetpack status fetched error: \(error)")
-                    self.showAlert(message: Localization.errorCheckingJetpack)
-                }
-            })
+            do {
+                try await checkJetpackConnectionState()
+                await progressView.dismiss(animated: true)
+                showSetupSteps(username: username, authToken: authToken)
+            } catch JetpackCheckError.missingPermission {
+                await progressView.dismiss(animated: true)
+                displayAdminRoleRequiredError()
+            } catch {
+                await progressView.dismiss(animated: true)
+                DDLogError("⛔️ Jetpack status fetched error: \(error)")
+                showAlert(message: Localization.errorCheckingJetpack)
+            }
         }
     }
 

@@ -132,17 +132,10 @@ private extension WPComLoginCoordinator {
             })
     }
 
-    func showAlert(message: String,
-                   onRetry: (() -> Void)? = nil) {
+    func showAlert(message: String) {
         let alert = UIAlertController(title: message,
                                       message: nil,
                                       preferredStyle: .alert)
-        if let onRetry {
-            let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { _ in
-                onRetry()
-            }
-            alert.addAction(retryAction)
-        }
         let cancelAction = UIAlertAction(title: Localization.cancelButton, style: .cancel)
         alert.addAction(cancelAction)
         navigationController.topmostPresentedViewController.present(alert, animated: true)
@@ -156,15 +149,10 @@ private extension WPComLoginCoordinator {
             value: "Log In",
             comment: "Title for the screens in the login flow"
         )
-        static let retryButton = NSLocalizedString(
-            "loggedOutStoreCreationCoordinator.tryAgainButton",
-            value: "Try Again",
-            comment: "Button to retry a failed action in the login flow"
-        )
         static let cancelButton = NSLocalizedString(
             "loggedOutStoreCreationCoordinator.cancelButton",
             value: "Cancel",
-            comment: "Button to dismiss an error alert in the login flow"
+            comment: "Button to dismiss an error alert in the WPCom login flow"
         )
     }
 }

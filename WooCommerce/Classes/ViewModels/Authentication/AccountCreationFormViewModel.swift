@@ -7,7 +7,6 @@ import enum Yosemite.AccountCreationAction
 import enum Yosemite.CreateAccountError
 import protocol Yosemite.StoresManager
 import class WordPressShared.EmailFormatValidator
-import WordPressAuthenticator
 
 /// View model for `AccountCreationForm` view.
 final class AccountCreationFormViewModel: ObservableObject {
@@ -27,26 +26,20 @@ final class AccountCreationFormViewModel: ObservableObject {
 
     private let stores: StoresManager
     private let analytics: Analytics
-    private let accountService: WordPressComAccountServiceProtocol
-    private let onPasswordUIRequest: ((_ email: String) -> Void)?
-    private let onMagicLinkUIRequest: ((_ email: String) -> Void)?
+    private let onExistingEmail: ((_ email: String) async -> Void)?
     private let emailSubmissionHandler: ((_ email: String) -> Void)?
     private var subscriptions: Set<AnyCancellable> = []
 
     init(email: String = "",
          debounceDuration: Double = Constants.fieldDebounceDuration,
-         accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         onPasswordUIRequest: ((_ email: String) -> Void)? = nil,
-         onMagicLinkUIRequest: ((_ email: String) -> Void)? = nil,
+         onExistingEmail: ((_ email: String) async -> Void)? = nil,
          emailSubmissionHandler: ((_ email: String) -> Void)? = nil) {
-        self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
         self.email = email
-        self.onPasswordUIRequest = onPasswordUIRequest
-        self.onMagicLinkUIRequest = onMagicLinkUIRequest
+        self.onExistingEmail = onExistingEmail
         self.emailSubmissionHandler = emailSubmissionHandler
 
         $email
@@ -114,7 +107,7 @@ private extension AccountCreationFormViewModel {
     func handleFailure(error: CreateAccountError) async {
         switch error {
         case .emailExists:
-            await checkWordPressComAccount(email: email)
+            await onExistingEmail?(email)
         case .invalidEmail:
             emailErrorMessage = Localization.invalidEmailError
         case .invalidPassword(let message):
@@ -125,48 +118,6 @@ private extension AccountCreationFormViewModel {
             }
         default:
             break
-        }
-    }
-
-    @MainActor
-    func checkWordPressComAccount(email: String) async {
-        do {
-            let passwordless = try await withCheckedThrowingContinuation { continuation in
-                accountService.isPasswordlessAccount(username: email, success: { passwordless in
-                    continuation.resume(returning: passwordless)
-                }, failure: { error in
-                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                    continuation.resume(throwing: error)
-                })
-            }
-            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
-        } catch {
-            emailErrorMessage = error.localizedDescription
-        }
-    }
-
-    @MainActor
-    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
-        if isPasswordlessAccount {
-            await requestAuthenticationLink(email: email)
-        } else {
-            onPasswordUIRequest?(email)
-        }
-    }
-
-    @MainActor
-    func requestAuthenticationLink(email: String) async {
-        do {
-            try await withCheckedThrowingContinuation { continuation in
-                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
-                    continuation.resume()
-                }, failure: { error in
-                    continuation.resume(throwing: error)
-                })
-            }
-            onMagicLinkUIRequest?(email)
-        } catch {
-            emailErrorMessage = error.localizedDescription
         }
     }
 }

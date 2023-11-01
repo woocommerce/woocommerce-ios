@@ -1,6 +1,6 @@
 import UIKit
+import protocol Yosemite.StoresManager
 import enum WordPressAuthenticator.SignInSource
-import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.
 final class LoggedOutStoreCreationCoordinator: Coordinator {
@@ -16,23 +16,25 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var loginCoordinator: WPComLoginCoordinator?
 
+    private let stores: StoresManager
     private let analytics: Analytics
     private let source: Source
 
     init(source: Source,
          navigationController: UINavigationController,
+         stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         self.source = source
         self.navigationController = navigationController
+        self.stores = stores
         self.analytics = analytics
     }
 
     func start() {
-        let viewModel = AccountCreationFormViewModel(onPasswordUIRequest: { [weak self] email in
-            self?.showPasswordUIForLogin(email: email)
-        }, onMagicLinkUIRequest: { [weak self] email in
-            self?.showMagicLinkForLogin(email: email)
+        let viewModel = AccountCreationFormViewModel(onExistingEmail: { [weak self] email in
+            await self?.startLoginWithExistingAccount(email: email)
         }, emailSubmissionHandler: { [weak self] email in
             self?.handleEmailSubmission(email: email)
         })
@@ -50,15 +52,14 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 }
 
 private extension LoggedOutStoreCreationCoordinator {
-    func showPasswordUIForLogin(email: String) {
-        // TODO
-    }
-
-    func showMagicLinkForLogin(email: String) {
-        let viewController = WPComMagicLinkHostingController(email: email,
-                                                             title: Localization.login,
-                                                             isJetpackSetup: false)
-        navigationController.show(viewController, sender: self)
+    @MainActor
+    func startLoginWithExistingAccount(email: String) async {
+        let coordinator = WPComLoginCoordinator(navigationController: navigationController) { [weak self] in
+            guard let self else { return }
+            self.startStoreCreation(in: self.navigationController)
+        }
+        self.loginCoordinator = coordinator
+        await coordinator.start(with: email)
     }
 
     func handleEmailSubmission(email: String) {
@@ -85,15 +86,5 @@ private extension LoggedOutStoreCreationCoordinator {
         storeCreationCoordinator = StoreCreationCoordinator(source: .loggedOut(source: source),
                                                             navigationController: navigationController)
         storeCreationCoordinator?.start()
-    }
-}
-
-private extension LoggedOutStoreCreationCoordinator {
-    enum Localization {
-        static let login = NSLocalizedString(
-            "loggedOutStoreCreationCoordinator.title",
-            value: "Log In",
-            comment: "Title for the screens in the login flow when user signs up with an email associating to an existing account."
-        )
     }
 }

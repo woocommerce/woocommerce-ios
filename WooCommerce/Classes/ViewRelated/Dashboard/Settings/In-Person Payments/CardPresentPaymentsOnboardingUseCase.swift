@@ -397,10 +397,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
-            if shouldShowCashOnDeliveryStep {
-                return .codPaymentGatewayNotSetUp(plugin: plugin)
-            }
+        if shouldShowCashOnDeliveryStep {
+            return .codPaymentGatewayNotSetUp(plugin: plugin)
         }
         guard accountStatusAllowedForCardPresentPayments(account: account) else {
             return .genericError

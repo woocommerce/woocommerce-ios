@@ -22,8 +22,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .promptToEnableCodInIppOnboarding:
-            return true
         case .searchProductsBySKU:
             return true
         case .inAppPurchases:

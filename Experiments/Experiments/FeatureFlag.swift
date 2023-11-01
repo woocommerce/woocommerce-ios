@@ -34,10 +34,6 @@ public enum FeatureFlag: Int {
     ///
     case consolidatedCardReaderManuals
 
-    /// Whether to include the Cash on Delivery enable step in In-Person Payment onboarding
-    ///
-    case promptToEnableCodInIppOnboarding
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU

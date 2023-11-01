@@ -32,6 +32,7 @@
 		02038C582AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02038C572AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift */; };
 		02038C5C2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02038C5B2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift */; };
 		02038C5F2AF21BC300CD36D9 /* ConfigurableBundleItemViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02038C5E2AF21BC300CD36D9 /* ConfigurableBundleItemViewModelTests.swift */; };
+		02038C612AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02038C602AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift */; };
 		0203C11F2930645B00EE61BF /* WebCheckoutViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0203C11E2930645B00EE61BF /* WebCheckoutViewModelTests.swift */; };
 		0204F0CA29C047A400CFC78F /* SelfSizingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0204F0C929C047A400CFC78F /* SelfSizingHostingController.swift */; };
 		0205021E27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0205021D27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift */; };
@@ -2573,6 +2574,7 @@
 		02038C572AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableVariableBundleAttributePicker.swift; sourceTree = "<group>"; };
 		02038C5B2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableVariableBundleAttributePickerViewModel.swift; sourceTree = "<group>"; };
 		02038C5E2AF21BC300CD36D9 /* ConfigurableBundleItemViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableBundleItemViewModelTests.swift; sourceTree = "<group>"; };
+		02038C602AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigurableVariableBundleAttributePickerViewModelTests.swift; sourceTree = "<group>"; };
 		0203C11E2930645B00EE61BF /* WebCheckoutViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebCheckoutViewModelTests.swift; sourceTree = "<group>"; };
 		0204F0C929C047A400CFC78F /* SelfSizingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelfSizingHostingController.swift; sourceTree = "<group>"; };
 		0205021D27C8B6C600FB1C6B /* InboxEligibilityUseCase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InboxEligibilityUseCase.swift; sourceTree = "<group>"; };
@@ -5184,6 +5186,7 @@
 			isa = PBXGroup;
 			children = (
 				02038C5E2AF21BC300CD36D9 /* ConfigurableBundleItemViewModelTests.swift */,
+				02038C602AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift */,
 			);
 			path = ProductBundles;
 			sourceTree = "<group>";
@@ -13974,6 +13977,7 @@
 				CCD2E68925DD52C100BD975D /* ProductVariationsViewModelTests.swift in Sources */,
 				EEB221A729B9B5B300662A12 /* CouponLineDetailsViewModelTests.swift in Sources */,
 				026D684B2A0E0A9600D8C22C /* LocalNotificationSchedulerTests.swift in Sources */,
+				02038C612AF222D600CD36D9 /* ConfigurableVariableBundleAttributePickerViewModelTests.swift in Sources */,
 				2683835A296F9C1A00CCF60A /* GenerateAllVariationsUseCaseTests.swift in Sources */,
 				020ACF8A299B746700B3638B /* DomainContactInfoFormViewModelTests.swift in Sources */,
 				26FE09E424DCFE5200B9BDF5 /* InAppFeedbackCardViewControllerTests.swift in Sources */,

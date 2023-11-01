@@ -23,13 +23,15 @@ struct ConfigurableVariableBundleAttributePicker: View {
     }
 }
 
-#Preview {
-    ConfigurableVariableBundleAttributePicker(viewModel: .init(attribute: .init(siteID: 1,
-                                                                                attributeID: 1,
-                                                                                name: "Color",
-                                                                                position: 1,
-                                                                                visible: true,
-                                                                                variation: true,
-                                                                                options: ["Orange", "Indigo"]),
-                                                               selectedOption: "Indigo"))
+struct ConfigurableVariableBundleAttributePicker_Previews: PreviewProvider {
+    static var previews: some View {
+        ConfigurableVariableBundleAttributePicker(viewModel: .init(attribute: .init(siteID: 1,
+                                                                                    attributeID: 1,
+                                                                                    name: "Color",
+                                                                                    position: 1,
+                                                                                    visible: true,
+                                                                                    variation: true,
+                                                                                    options: ["Orange", "Indigo"]),
+                                                                   selectedOption: "Indigo"))
+    }
 }

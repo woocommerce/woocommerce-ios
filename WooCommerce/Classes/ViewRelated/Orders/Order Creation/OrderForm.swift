@@ -486,6 +486,9 @@ private struct ProductsSection: View {
                 .onDisappear {
                     navigationButtonID = UUID()
                 }
+                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                    ConfigurableBundleProductView(viewModel: viewModel)
+                }
             })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
                 ActionSheet(

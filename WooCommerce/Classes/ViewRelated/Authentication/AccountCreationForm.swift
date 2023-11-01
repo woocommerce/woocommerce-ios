@@ -75,7 +75,7 @@ struct AccountCreationForm: View {
                     .focused($isFocused)
                     .disabled(viewModel.isPerformingTask)
                     .renderedIf(viewModel.currentField == .email)
-                    
+
                     // Password field.
                     AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
                                                                  placeholder: Localization.passwordFieldPlaceholder,

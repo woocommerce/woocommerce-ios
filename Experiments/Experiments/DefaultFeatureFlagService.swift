@@ -80,8 +80,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
-        case .reusePaymentIntentOnRetryInPersonPayment:
-            return true
         case .refreshOrderBeforeInPersonPayment:
             return true
         case .manualTaxesInOrderM3:

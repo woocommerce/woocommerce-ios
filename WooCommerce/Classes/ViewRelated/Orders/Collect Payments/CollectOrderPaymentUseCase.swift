@@ -375,13 +375,6 @@ private extension CollectOrderPaymentUseCase {
                                              alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                                              paymentGatewayAccount: PaymentGatewayAccount,
                                              onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.reusePaymentIntentOnRetryInPersonPayment) else {
-            return legacyHandlePaymentFailureAndRetryPayment(error,
-                                                             alertProvider: paymentAlerts,
-                                                             paymentGatewayAccount: paymentGatewayAccount,
-                                                             onCompletion: onCompletion)
-        }
-
         DDLogError("Failed to collect payment: \(error.localizedDescription)")
 
         analyticsTracker.trackPaymentFailure(with: error)
@@ -557,95 +550,6 @@ private extension CollectOrderPaymentUseCase {
     func storeInPersonPaymentsTransactionDateIfFirst(using cardReaderType: CardReaderType) {
         stores.dispatch(AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: order.siteID,
                                                                                   cardReaderType: cardReaderType))
-    }
-}
-
-// MARK: Legacy retry payment handling
-// Remove when reusePaymentIntentOnRetryInPersonPayment feature flag is removed
-private extension CollectOrderPaymentUseCase {
-    func legacyHandlePaymentFailureAndRetryPayment(_ error: Error,
-                                                   alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
-                                                   paymentGatewayAccount: PaymentGatewayAccount,
-                                                   onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        DDLogError("Failed to collect payment: \(error.localizedDescription)")
-
-        analyticsTracker.trackPaymentFailure(with: error)
-
-        if canRetryPayment(with: error) {
-            presentRetryByRestartingError(error: error,
-                                          paymentAlerts: paymentAlerts,
-                                          paymentGatewayAccount: paymentGatewayAccount,
-                                          onCompletion: onCompletion)
-        } else {
-            presentNonRetryableError(error: error,
-                                     paymentAlerts: paymentAlerts,
-                                     onCompletion: onCompletion)
-        }
-    }
-
-    private func canRetryPayment(with error: Error) -> Bool {
-        switch error {
-        case let serviceError as CardReaderServiceError:
-            switch serviceError {
-            case .paymentMethodCollection(let underlyingError),
-                    .paymentCapture(let underlyingError),
-                    .paymentCancellation(let underlyingError):
-                return canRetryPayment(underlyingError: underlyingError)
-            default:
-                return true
-            }
-        case let useCaseError as CollectOrderPaymentUseCaseError:
-            switch useCaseError {
-            case .flowCanceledByUser, .orderAlreadyPaid, .alreadyRetried:
-                return false
-            case .paymentGatewayNotFound, .unknownErrorRefreshingOrder, .couldNotRefreshOrder:
-                return true
-            }
-        default:
-            return true
-        }
-    }
-
-    private func canRetryPayment(underlyingError: UnderlyingError) -> Bool {
-        switch underlyingError {
-        case .notConnectedToReader,
-                .commandNotAllowedDuringCall,
-                .featureNotAvailableWithConnectedReader:
-            return false
-        default:
-            return true
-        }
-    }
-
-    private func presentRetryableError(error: Error,
-                                           paymentAlerts: CardReaderTransactionAlertsProviding,
-                                           paymentGatewayAccount: PaymentGatewayAccount,
-                                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> ()) {
-        alertsPresenter.present(
-            viewModel: paymentAlerts.error(error: error,
-                                           tryAgain: { [weak self] in
-                                               // Cancel current payment
-                                               self?.paymentOrchestrator.cancelPayment() { [weak self] result in
-                                                   guard let self = self else { return }
-
-                                                   switch result {
-                                                   case .success:
-                                                       // Retry payment
-                                                       self.attemptPayment(alertProvider: paymentAlerts,
-                                                                           paymentGatewayAccount: paymentGatewayAccount,
-                                                                           onCompletion: onCompletion)
-                                                   case .failure(let cancelError):
-                                                       // Inform that payment can't be retried.
-                                                       self.alertsPresenter.present(
-                                                        viewModel: paymentAlerts.nonRetryableError(error: cancelError) {
-                                                            onCompletion(.failure(error))
-                                                        })
-                                                   }
-                                               }
-                                           }, dismissCompletion: {
-                                               onCompletion(.failure(error))
-                                           })
-        )
     }
 }
 

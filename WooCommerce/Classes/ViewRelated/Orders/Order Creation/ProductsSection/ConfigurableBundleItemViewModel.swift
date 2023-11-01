@@ -8,6 +8,12 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         let defaultAttributes: [ProductVariationAttribute]
     }
 
+    /// Necessary info about a variation in the bundle item configuration form.
+    struct Variation {
+        let variationID: Int64
+        let attributes: [ProductVariationAttribute]
+    }
+
     /// ID of the bundle item.
     let bundledItemID: Int64
 
@@ -24,7 +30,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
 
     // MARK: - Variable bundle item
     @Published var variationSelectorViewModel: ProductVariationSelectorViewModel?
-    @Published private(set) var selectedVariation: ProductVariation?
+    @Published private(set) var selectedVariation: Variation?
     var variationAttributes: [ProductVariationAttribute] {
         guard let selectedVariation else {
             return []
@@ -69,6 +75,17 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
             self?.quantity = quantity
         }
+        if let existingOrderItem, isVariable && existingOrderItem.variationID != .zero {
+            selectedVariation = {
+                let variationID = existingOrderItem.variationID
+                let allVariationAttributeNames = product.attributesForVariations.map { $0.name }
+                let attributes = existingOrderItem.attributes
+                    .filter { allVariationAttributeNames.contains($0.name) }
+                    .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
+                return Variation(variationID: existingOrderItem.variationID,
+                                 attributes: attributes)
+            }()
+        }
         observeSelectedStateForProductRowViewModelIfOptional()
         observeSelectedVariationForSelectableAttributes()
     }
@@ -78,9 +95,10 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         variationSelectorViewModel = .init(siteID: product.siteID,
                                            product: product,
                                            allowedProductVariationIDs: allowedProductVariationIDs,
+                                           selectedProductVariationIDs: selectedVariation.map { [$0.variationID] } ?? [],
                                            onVariationSelectionStateChanged: { [weak self] variation, _ in
             guard let self else { return }
-            self.selectedVariation = variation
+            self.selectedVariation = .init(variationID: variation.productVariationID, attributes: variation.attributes)
             self.variationSelectorViewModel = nil
         })
     }
@@ -112,7 +130,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             return true
         }
 
-        guard let selectedVariation else {
+        guard selectedVariation != nil else {
             errorMessage = Localization.ErrorMessage.missingVariation
             return false
         }
@@ -181,7 +199,7 @@ extension ConfigurableBundleItemViewModel {
                 }
                 return .init(bundledItemID: bundledItemID,
                              productOrVariation: .variation(productID: product.productID,
-                                                            variationID: variation.productVariationID,
+                                                            variationID: variation.variationID,
                                                             attributes: variationAttributes),
                              quantity: quantity,
                              isOptionalAndSelected: isOptionalAndSelected)

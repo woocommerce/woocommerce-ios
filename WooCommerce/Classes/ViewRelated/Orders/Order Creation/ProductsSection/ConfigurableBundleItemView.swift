@@ -34,7 +34,8 @@ struct ConfigurableBundleItemView: View {
                 viewModel.createVariationSelectorViewModel()
                 showsVariationSelector = true
             } label: {
-                Text(Localization.selectVariation)
+                Text(viewModel.selectedVariation == nil ?
+                     Localization.selectVariation: Localization.updateVariation)
             }
             .renderedIf(viewModel.isVariable)
 
@@ -54,8 +55,6 @@ struct ConfigurableBundleItemView: View {
                     ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
                 }
             }
-
-            // TODO: #10428 - show previously selected variation attributes
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
                 LazyNavigationLink(destination: ProductVariationSelector(
@@ -86,6 +85,11 @@ private extension ConfigurableBundleItemView {
             "configureBundleItem.selectVariation",
             value: "Select variation",
             comment: "Action to select a variation for a bundle item when it is variable."
+        )
+        static let updateVariation = NSLocalizedString(
+            "configureBundleItem.updateVariation",
+            value: "Update variation",
+            comment: "Action to update a variation for a bundle item when it is variable."
         )
     }
 }

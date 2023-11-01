@@ -44,10 +44,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// IPP in-app feedback banner
-    ///
-    case IPPInAppFeedbackBanner
-
     // MARK: - Performance Monitoring
     //
     // These flags are not transient. That is, they are not here to help us rollout a feature,

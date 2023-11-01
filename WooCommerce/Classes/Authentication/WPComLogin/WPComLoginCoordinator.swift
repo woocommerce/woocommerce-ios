@@ -7,18 +7,15 @@ import WordPressAuthenticator
 final class WPComLoginCoordinator {
     private let navigationController: UINavigationController
     private let stores: StoresManager
-    private let analytics: Analytics
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: () -> Void
 
     init(navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          completionHandler: @escaping () -> Void) {
         self.navigationController = navigationController
         self.stores = stores
-        self.analytics = analytics
         self.accountService = accountService
         self.completionHandler = completionHandler
     }

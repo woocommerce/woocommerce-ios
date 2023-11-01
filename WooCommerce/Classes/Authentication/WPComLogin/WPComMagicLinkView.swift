@@ -4,7 +4,10 @@ import WordPressAuthenticator
 /// Hosting controller for `WPComMagicLinkView`
 final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
 
+    private let isJetpackSetup: Bool
+
     init(email: String, title: String, isJetpackSetup: Bool) {
+        self.isJetpackSetup = isJetpackSetup
         let viewModel = WPComMagicLinkViewModel(email: email)
         super.init(rootView: WPComMagicLinkView(title: title,
                                                 isJetpackSetup: isJetpackSetup,
@@ -28,7 +31,7 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -81,7 +84,9 @@ struct WPComMagicLinkView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.openMail) {
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
+                    }
                     onOpenMail()
                 }
                 .buttonStyle(PrimaryButtonStyle())

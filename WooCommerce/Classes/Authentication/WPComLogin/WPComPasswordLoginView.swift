@@ -4,10 +4,13 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
+    private let isJetpackSetup: Bool
+
     init(title: String,
          isJetpackSetup: Bool,
          viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
+        self.isJetpackSetup = isJetpackSetup
         super.init(rootView: WPComPasswordLoginView(title: title,
                                                     isJetpackSetup: isJetpackSetup,
                                                     viewModel: viewModel,
@@ -26,7 +29,7 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -110,7 +113,9 @@ struct WPComPasswordLoginView: View {
                 // Primary CTA
                 Button(Localization.primaryAction) {
                     viewModel.handleLogin()
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
+                    }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(viewModel.password.isEmpty)

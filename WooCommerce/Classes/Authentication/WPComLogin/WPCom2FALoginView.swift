@@ -4,7 +4,10 @@ import class WordPressAuthenticator.LoginFields
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
+    private let isJetpackSetup: Bool
+
     init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
+        self.isJetpackSetup = isJetpackSetup
         super.init(rootView: WPCom2FALoginView(title: title, isJetpackSetup: isJetpackSetup, viewModel: viewModel))
     }
 
@@ -20,7 +23,7 @@ final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginVie
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -85,7 +88,9 @@ struct WPCom2FALoginView: View {
             VStack {
                 // Primary CTA
                 Button(title) {
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                    }
                     viewModel.handleLogin()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))

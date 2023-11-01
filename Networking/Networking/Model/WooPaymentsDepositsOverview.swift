@@ -6,7 +6,9 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
     public let balance: WooPaymentsCurrencyBalances
     public let account: WooPaymentsAccountDepositSummary
 
-    public init(deposit: WooPaymentsCurrencyDeposits, balance: WooPaymentsCurrencyBalances, account: WooPaymentsAccountDepositSummary) {
+    public init(deposit: WooPaymentsCurrencyDeposits,
+                balance: WooPaymentsCurrencyBalances,
+                account: WooPaymentsAccountDepositSummary) {
         self.deposit = deposit
         self.balance = balance
         self.account = account
@@ -18,7 +20,9 @@ public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, Generated
     public let nextScheduled: [WooPaymentsDeposit]
     public let lastManualDeposits: [WooPaymentsManualDeposit]
 
-    public init(lastPaid: [WooPaymentsDeposit], nextScheduled: [WooPaymentsDeposit], lastManualDeposits: [WooPaymentsManualDeposit]) {
+    public init(lastPaid: [WooPaymentsDeposit],
+                nextScheduled: [WooPaymentsDeposit],
+                lastManualDeposits: [WooPaymentsManualDeposit]) {
         self.lastPaid = lastPaid
         self.nextScheduled = nextScheduled
         self.lastManualDeposits = lastManualDeposits
@@ -44,7 +48,17 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     public let feePercentage: Int
     public let created: Int
 
-    public init(id: String, date: Date, type: WooPaymentsDepositType, amount: Int, status: WooPaymentsDepositStatus, bankAccount: String?, currency: String, automatic: Bool, fee: Int, feePercentage: Int, created: Int) {
+    public init(id: String,
+                date: Date,
+                type: WooPaymentsDepositType,
+                amount: Int,
+                status: WooPaymentsDepositStatus,
+                bankAccount: String?,
+                currency: String,
+                automatic: Bool,
+                fee: Int,
+                feePercentage: Int,
+                created: Int) {
         self.id = id
         self.date = date
         self.type = type
@@ -173,7 +187,10 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
     public let depositsSchedule: WooPaymentsDepositsSchedule
     public let defaultCurrency: String
 
-    public init(depositsEnabled: Bool, depositsBlocked: Bool, depositsSchedule: WooPaymentsDepositsSchedule, defaultCurrency: String) {
+    public init(depositsEnabled: Bool,
+                depositsBlocked: Bool,
+                depositsSchedule: WooPaymentsDepositsSchedule,
+                defaultCurrency: String) {
         self.depositsEnabled = depositsEnabled
         self.depositsBlocked = depositsBlocked
         self.depositsSchedule = depositsSchedule

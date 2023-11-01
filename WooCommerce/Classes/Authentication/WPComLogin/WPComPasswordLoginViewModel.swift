@@ -87,6 +87,13 @@ extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
         onMultifactorCodeRequest(loginFields)
     }
 
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        isLoggingIn = false
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
+        onMultifactorCodeRequest(loginFields)
+    }
+
     func displayRemoteError(_ error: Error) {
         isLoggingIn = false
         onLoginFailure(error)

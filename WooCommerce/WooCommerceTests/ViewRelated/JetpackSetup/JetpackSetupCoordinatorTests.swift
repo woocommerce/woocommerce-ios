@@ -199,3 +199,18 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         assertEqual(expectedAccount, stores.sessionManager.defaultAccount)
     }
 }
+
+private extension MockStoresManager {
+    func mockJetpackCheck(isJetpackInstalled: Bool = false,
+                          isJetpackActive: Bool = false) {
+        whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .synchronizeSystemPlugins(_, onCompletion):
+                onCompletion(.success([.fake().copy(name: isJetpackInstalled ? "Jetpack" : "Plugin", active: isJetpackActive)]))
+            default:
+                break
+            }
+        }
+
+    }
+}

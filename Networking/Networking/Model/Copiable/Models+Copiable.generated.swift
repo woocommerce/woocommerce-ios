@@ -164,6 +164,7 @@ extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
+        productID: CopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,
@@ -174,6 +175,7 @@ extension Networking.BlazeCampaign {
     ) -> Networking.BlazeCampaign {
         let siteID = siteID ?? self.siteID
         let campaignID = campaignID ?? self.campaignID
+        let productID = productID ?? self.productID
         let name = name ?? self.name
         let uiStatus = uiStatus ?? self.uiStatus
         let contentImageURL = contentImageURL ?? self.contentImageURL
@@ -185,6 +187,7 @@ extension Networking.BlazeCampaign {
         return Networking.BlazeCampaign(
             siteID: siteID,
             campaignID: campaignID,
+            productID: productID,
             name: name,
             uiStatus: uiStatus,
             contentImageURL: contentImageURL,

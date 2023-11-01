@@ -147,8 +147,10 @@ private extension BlazeCampaign {
     /// Product ID is currently used only for showing or hiding the Blaze button on product details, and its absence is not a
     /// dealbreaker.
     static func extractProductIdFromUrn(_ urn: String) -> Int64 {
-        let components = urn.split(separator: ":").compactMap { Int64($0) }
-        return components.last ?? 0
+        let components = urn.split(separator: ":")
+        guard let lastComponent = components.last, let productId = Int64(lastComponent) else {
+            return 0
+        }
+        return productId
     }
-
 }

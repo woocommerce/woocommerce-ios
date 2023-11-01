@@ -125,7 +125,6 @@ private extension JetpackSetupCoordinator {
     /// Throws any error if the Jetpack user fetch failed.
     ///
     func checkJetpackConnectionState() async throws {
-        requiresConnectionOnly = await isJetpackInstalledAndActive()
         do {
             let user = try await fetchJetpackUser()
             jetpackConnectedEmail = user.wpcomUser?.email
@@ -133,6 +132,9 @@ private extension JetpackSetupCoordinator {
             /// 404 error means Jetpack is not installed or activated yet.
             requiresConnectionOnly = false
             jetpackConnectedEmail = nil
+            /// Early return because we know that Jetpack is not installed
+            /// We don't have to check installation status by checking with the system plugin list.
+            return
         } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) {
             /// 403 means the site Jetpack connection is not established yet
             /// and the user has no permission to handle this.
@@ -140,6 +142,10 @@ private extension JetpackSetupCoordinator {
         } catch {
             throw error
         }
+
+        /// confirms Jetpack plugin status by checking with the system plugin list.
+        /// this is to avoid the edge case when Jetpack user is returned even though Jetpack plugin is not installed.
+        requiresConnectionOnly = try await isJetpackInstalledAndActive()
     }
 
     func startAuthentication(with email: String?) {

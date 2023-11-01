@@ -588,7 +588,7 @@ platform :ios do
     ensure_sentry_installed
 
     UI.important("Building version #{release_version_current} (#{build_code_current}) and uploading to TestFlight")
-    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?'))
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     appstore_code_signing
 

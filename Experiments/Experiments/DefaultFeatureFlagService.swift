@@ -24,8 +24,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:
             return true
-        case .justInTimeMessagesOnDashboard:
-            return true
         case .IPPInAppFeedbackBanner:
             return true
         case .performanceMonitoring,

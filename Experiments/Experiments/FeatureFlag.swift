@@ -44,10 +44,6 @@ public enum FeatureFlag: Int {
     ///
     case tapToPayOnIPhone
 
-    /// Just In Time Messages on Dashboard
-    ///
-    case justInTimeMessagesOnDashboard
-
     /// IPP in-app feedback banner
     ///
     case IPPInAppFeedbackBanner

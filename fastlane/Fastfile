@@ -192,7 +192,7 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     # Create the release branch
     UI.message('Creating release branch...')
@@ -345,7 +345,7 @@ platform :ios do
     override_default_release_branch(options[:base_version]) unless options[:base_version].nil?
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     # Download the latest translations from GlotPress
     download_localized_strings_and_metadata_from_glotpress
@@ -404,7 +404,7 @@ platform :ios do
     MESSAGE
 
     UI.important(message)
-    UI.user_error!('Aborted by user request') if !options[:skip_confirm] && !UI.confirm('Do you want to continue?')
+    UI.user_error!('Aborted by user request') unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
 
     # Check tags
     UI.user_error!("Version #{new_version} already exists! Abort!") if git_tag_exists(tag: new_version)

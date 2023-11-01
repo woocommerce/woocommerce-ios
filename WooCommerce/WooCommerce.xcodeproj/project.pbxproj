@@ -10736,6 +10736,14 @@
 		DE63115D2AF1E16500587641 /* WPComLogin */ = {
 			isa = PBXGroup;
 			children = (
+				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
+				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
+				DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */,
+				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
+				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
+				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
+				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
+				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
 				DE63115A2AF1E13200587641 /* WPComLoginCoordinator.swift */,
 			);
 			path = WPComLogin;
@@ -10912,7 +10920,6 @@
 		DEF8CF0829A71ED400800A60 /* JetpackSetup */ = {
 			isa = PBXGroup;
 			children = (
-				DEF8CF1B29AC83AC00800A60 /* WPComLogin */,
 				DEF8CF1429A8C2D000800A60 /* AdminRole */,
 				DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */,
 			);
@@ -10936,21 +10943,6 @@
 				DEF8CF1729A8C39600800A60 /* AdminRoleRequiredViewModel.swift */,
 			);
 			path = AdminRole;
-			sourceTree = "<group>";
-		};
-		DEF8CF1B29AC83AC00800A60 /* WPComLogin */ = {
-			isa = PBXGroup;
-			children = (
-				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
-				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
-				DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */,
-				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
-				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
-				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
-				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
-				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
-			);
-			path = WPComLogin;
 			sourceTree = "<group>";
 		};
 		DEF8CF2029ACDB9C00800A60 /* WPComLogin */ = {

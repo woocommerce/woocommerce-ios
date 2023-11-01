@@ -306,8 +306,8 @@ private extension JetpackSetupCoordinator {
     }
 
     @MainActor
-    func isJetpackInstalledAndActive() async -> Bool {
-        await withCheckedContinuation { continuation in
+    func isJetpackInstalledAndActive() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: 0) { result in
                 switch result {
                 case let .success(plugins):
@@ -319,7 +319,7 @@ private extension JetpackSetupCoordinator {
                     }
                 case let .failure(error):
                     DDLogError("⛔️ Failed to sync system plugins. Error: \(error)")
-                    continuation.resume(returning: false)
+                    continuation.resume(throwing: error)
                 }
             })
         }

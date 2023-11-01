@@ -205,7 +205,7 @@ platform :ios do
       version_short: release_version_next,
       version_long: build_code_code_freeze
     )
-    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    commit_version_bump
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
     new_version = release_version_current
@@ -354,7 +354,7 @@ platform :ios do
     UI.message('Bumping build code...')
     ensure_git_branch(branch: '^release/') # Match branch names that begin with `release/`
     VERSION_FILE.write(version_long: build_code_next)
-    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
 
     if prompt_for_confirmation(
@@ -425,7 +425,7 @@ platform :ios do
     )
     UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
 
-    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    commit_version_bump
   end
 
   #####################################################################################
@@ -493,7 +493,7 @@ platform :ios do
     # Bump the build code
     UI.message('Bumping build code...')
     VERSION_FILE.write(version_long: build_code_next)
-    Fastlane::Helper::Ios::GitHelper.commit_version_bump
+    commit_version_bump
     UI.success("Done! New Build Code: #{build_code_current}")
 
     # Wrap up
@@ -1355,6 +1355,19 @@ def build_code_next
   build_code_next = VERSION_CALCULATOR.next_build_number(version: build_code_current)
   # Return the formatted build code
   BUILD_CODE_FORMATTER.build_code(version: build_code_next)
+end
+
+def commit_version_bump
+  version_file = PUBLIC_CONFIG_FILE
+  git_add(
+    path: version_file,
+    shell_escape: false
+  )
+  git_commit(
+    path: version_file,
+    message: 'Bump version number',
+    allow_nothing_to_commit: false
+  )
 end
 
 def buildkite_ci?

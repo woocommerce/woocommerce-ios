@@ -32,7 +32,7 @@ final class AccountCreationFormViewModel: ObservableObject {
     @Published private(set) var isPerformingTask = false
     @Published private(set) var currentField: Field = .email
     @Published private(set) var shouldTransitionToPasswordField = false
-    
+
     private let stores: StoresManager
     private let analytics: Analytics
     private let onExistingEmail: ((_ email: String) async -> Void)
@@ -99,7 +99,7 @@ final class AccountCreationFormViewModel: ObservableObject {
                 guard case .invalidPassword = error else {
                     return false
                 }
-                return currentField == .password
+                return currentField == .email
             }()
             if !shouldSkipTrackingError {
                 analytics.track(event: .StoreCreation.signupFailed(error: error))

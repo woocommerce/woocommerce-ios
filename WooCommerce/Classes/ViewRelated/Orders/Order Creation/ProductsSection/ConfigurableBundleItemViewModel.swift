@@ -9,7 +9,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     }
 
     /// Necessary info about a variation in the bundle item configuration form.
-    struct Variation {
+    struct Variation: Equatable {
         let variationID: Int64
         let attributes: [ProductVariationAttribute]
     }
@@ -29,7 +29,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     @Published var isOptionalAndSelected: Bool = false
 
     // MARK: - Variable bundle item
-    @Published var variationSelectorViewModel: ProductVariationSelectorViewModel?
+    @Published private(set) var variationSelectorViewModel: ProductVariationSelectorViewModel?
     @Published private(set) var selectedVariation: Variation?
     var variationAttributes: [ProductVariationAttribute] {
         guard let selectedVariation else {

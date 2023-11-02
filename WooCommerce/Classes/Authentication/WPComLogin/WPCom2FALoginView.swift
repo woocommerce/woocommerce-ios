@@ -86,10 +86,20 @@ struct WPCom2FALoginView: View {
                     if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Text(Localization.textMeACode)
+                        Label(Localization.textMeACode, systemImage: "iphone")
                             .linkStyle()
                     }
                 })
+
+                // Security key button
+                Button {
+                    viewModel.loginWithSecurityKey()
+                } label: {
+                    Label(Localization.securityKey, systemImage: "key.horizontal")
+                        .linkStyle()
+                }
+                .renderedIf(viewModel.shouldEnableSecurityKeyOption)
+
                 Spacer()
             }
             .padding(Constants.contentPadding)
@@ -130,6 +140,11 @@ private extension WPCom2FALoginView {
         static let textMeACode = NSLocalizedString(
             "Text me a code instead",
             comment: "Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow."
+        )
+        static let securityKey = NSLocalizedString(
+            "wpCom2FALoginView.securityKeyButton",
+            value: "Use a security key",
+            comment: "Button to enter security key on the WPCom 2FA login screen of the Jetpack setup flow."
         )
     }
 }

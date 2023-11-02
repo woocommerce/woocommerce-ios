@@ -8,6 +8,13 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @Published private(set) var isLoggingIn = false
     @Published private(set) var isRequestingOTP = false
 
+    var shouldEnableSecurityKeyOption: Bool {
+        if #available(iOS 16, *), loginFields.nonceInfo?.nonceWebauthn != nil {
+            return true
+        }
+        return false
+    }
+
     /// In case the code is entered by pasting from the clipboard, we need to remove all white spaces.
     /// kept non-private for testing purposes.
     var strippedCode: String {
@@ -42,6 +49,10 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         self.onLoginSuccess = onLoginSuccess
         super.init()
         loginFacade.delegate = self
+    }
+
+    func loginWithSecurityKey() {
+        // TODO
     }
 
     func handleLogin() {

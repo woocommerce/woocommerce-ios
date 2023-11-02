@@ -2340,8 +2340,8 @@ final class MigrationTests: XCTestCase {
         let migratedCampaign = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaign"))
 
         // BlazeCampaign has the expected default value for the new attribute.
-        let productID = try XCTUnwrap(migratedCampaign.value(forKey: "productID") as? Int64)
-        XCTAssertEqual(productID, 0, "Confirm expected property exists, and is 0 by default.")
+        let productID = migratedCampaign.value(forKey: "productID") as? Int64
+        XCTAssertNil(productID, "Confirm expected property exists and is nil by default.")
     }
 }
 

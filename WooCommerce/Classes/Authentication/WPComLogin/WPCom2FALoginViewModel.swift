@@ -1,5 +1,6 @@
 import AuthenticationServices
 import Foundation
+import enum WordPressKit.WordPressComOAuthError
 import WordPressAuthenticator
 import class Networking.UserAgent
 
@@ -58,8 +59,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @available(iOS 16, *)
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
-            return onLoginFailure(SecurityKeyError.webAuthNonceNotFound,
-                                  Localization.unknownError)
+            return displaySecurityKeyError(error: TwoFALoginError.webAuthNonceNotFound)
         }
 
         isLoggingIn = true
@@ -78,6 +78,10 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         isLoggingIn = true
         if let nonceInfo = loginFields.nonceInfo {
             let (authType, nonce) = nonceInfo.authTypeAndNonce(for: strippedCode)
+            guard nonce.isNotEmpty else {
+                isLoggingIn = false
+                return onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+            }
             loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: strippedCode, twoStepNonce: nonce)
         } else {
             loginFields.multifactorCode = strippedCode
@@ -103,10 +107,17 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
 
     func displayRemoteError(_ error: Error) {
         isLoggingIn = false
-        onLoginFailure(error, error.localizedDescription)
+        handleFailure(error: error)
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
+        Task { @MainActor in
+            await onLoginSuccess(authToken)
+            isLoggingIn = false
+        }
+    }
+
+    func finishedLogin(withNonceAuthToken authToken: String) {
         Task { @MainActor in
             await onLoginSuccess(authToken)
             isLoggingIn = false
@@ -183,9 +194,37 @@ private extension WPCom2FALoginViewModel {
         authController.performRequests()
     }
 
-    func displaySecurityKeyError(message: String = Localization.unknownError) {
+    func handleFailure(error: Error) {
+        let nsError = error as NSError
+
+        // If the error happened because the security key challenge request started more than 1 minute ago, show a timeout error.
+        // This check is needed because the server sends a generic error.
+        if let initialChallengeRequestTime,
+            Date().timeIntervalSince(initialChallengeRequestTime) >= 60,
+            nsError.code == .zero {
+            return displaySecurityKeyError(message: Localization.timeoutError)
+        }
+
+        switch (nsError.domain, nsError.code) {
+        case (Constants.oauthErrorDomain,
+              WordPressComOAuthError.invalidOneTimePassword.rawValue):
+            onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+        case (Constants.oauthErrorDomain,
+              WordPressComOAuthError.invalidTwoStepCode.rawValue):
+            // Invalid 2FA during social login
+            if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
+                loginFields.nonceInfo?.updateNonce(with: newNonce)
+            }
+            onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+        default:
+            onLoginFailure(error, error.localizedDescription)
+        }
+    }
+
+    func displaySecurityKeyError(error: Error = TwoFALoginError.webAuthChallengeRequestFailed,
+                                 message: String = Localization.unknownError) {
         isLoggingIn = false
-        onLoginFailure(SecurityKeyError.webAuthChallengeRequestFailed, message)
+        onLoginFailure(error, message)
     }
 }
 
@@ -196,6 +235,7 @@ private extension WPCom2FALoginViewModel {
         // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/blob/c0d16065c5b5a8e54dbb54cc31c7b3cf28f584f9/WordPressAuthenticator/Signin/Login2FAViewController.swift#L218
         // swiftlint:enable line_length
         static let maximumCodeLength = 8
+        static let oauthErrorDomain = "WordPressComOAuthError"
     }
 
     enum Localization {
@@ -207,11 +247,24 @@ private extension WPCom2FALoginViewModel {
         static let invalidSecurityKey = NSLocalizedString(
             "wpCom2FALoginViewModel.invalidSecurityKey",
             value: "Whoops, that security key does not seem valid. Please try again with another one",
-            comment: "Error when the uses chooses an invalid security key on the 2FA screen.")
+            comment: "Error when the uses chooses an invalid security key on the 2FA screen."
+        )
+        static let bad2FAError = NSLocalizedString(
+            "wpCom2FALoginViewModel.bad2FA",
+            value: "Whoops, that's not a valid two-factor verification code. " +
+            "Double-check your code and try again!",
+            comment: "Error message shown when an incorrect two factor code is provided."
+        )
+        static let timeoutError = NSLocalizedString(
+            "wpCom2FALoginViewModel.timeoutError",
+            value: "Time's up, but don't worry, your security is our priority. Please try again!",
+            comment: "Error when the uses takes more than 1 minute to submit a security key."
+        )
     }
 
-    enum SecurityKeyError: Error {
+    enum TwoFALoginError: Error {
         case webAuthNonceNotFound
         case webAuthChallengeRequestFailed
+        case bad2FACode
     }
 }

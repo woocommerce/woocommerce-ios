@@ -89,10 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForUpgrades()
 
         // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
-
-        // Silently connect to Tap to Pay if previously connected, to speed up IPP
-        reconnectToTapToPayReaderIfNeeded()
+        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
 
         return true
     }
@@ -188,11 +185,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 
-        // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
-
-        // Silently connect to Tap to Pay if previously connected, to speed up IPP
-        reconnectToTapToPayReaderIfNeeded()
+        // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
+        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -444,8 +438,8 @@ private extension AppDelegate {
             }
     }
 
-    func refreshCardPresentPaymentsOnboardingIfNeeded() {
-        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
+    func refreshCardPresentPaymentsOnboardingIfNeeded(completion: @escaping (() -> Void)) {
+        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState(completion: completion)
     }
 
     func reconnectToTapToPayReaderIfNeeded() {

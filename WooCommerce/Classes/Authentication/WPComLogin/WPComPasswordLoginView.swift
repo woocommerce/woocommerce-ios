@@ -8,7 +8,7 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
     private let isJetpackSetup: Bool
 
     init(title: String,
-         isJetpackSetup: Bool,
+         isJetpackSetup: Bool = false,
          viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
         self.isJetpackSetup = isJetpackSetup

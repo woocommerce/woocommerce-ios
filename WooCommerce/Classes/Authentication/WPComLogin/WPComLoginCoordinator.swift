@@ -69,7 +69,6 @@ private extension WPComLoginCoordinator {
             })
         let viewController = WPComPasswordLoginHostingController(
             title: Localization.login,
-            isJetpackSetup: false,
             viewModel: viewModel,
             onMagicLinkRequest: { [weak self] email in
                 await self?.handleMagicLink(email: email)
@@ -90,15 +89,13 @@ private extension WPComLoginCoordinator {
                                                   authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: Localization.login,
-                                                            isJetpackSetup: true,
                                                             viewModel: viewModel)
         navigationController.show(viewController, sender: self)
     }
 
     func showMagicLinkForLogin(email: String) {
         let viewController = WPComMagicLinkHostingController(email: email,
-                                                             title: Localization.login,
-                                                             isJetpackSetup: false)
+                                                             title: Localization.login)
         navigationController.show(viewController, sender: self)
     }
 

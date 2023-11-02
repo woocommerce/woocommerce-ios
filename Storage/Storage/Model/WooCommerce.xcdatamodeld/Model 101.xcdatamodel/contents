@@ -25,7 +25,7 @@
         <attribute name="contentClickURL" optional="YES" attributeType="String"/>
         <attribute name="contentImageURL" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -59,7 +59,7 @@
         <attribute name="products" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[Int64]"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="usageCount" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="usageLimit" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <attribute name="usageLimit" optional="YES" attributeType="Integer 64" usesScalarValueType="NO"/>
         <attribute name="usageLimitPerUser" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="usedBy" optional="YES" attributeType="Transformable" valueTransformerName="NSSecureUnarchiveFromData" customClassName="[String]"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="CouponSearchResult" inverseName="coupons" inverseEntity="CouponSearchResult"/>

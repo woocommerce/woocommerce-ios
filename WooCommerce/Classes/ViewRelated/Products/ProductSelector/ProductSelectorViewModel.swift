@@ -725,6 +725,7 @@ extension ProductSelectorViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil,
+                            hasParentProduct: false,
                             isConfigurable: false)
     }
 

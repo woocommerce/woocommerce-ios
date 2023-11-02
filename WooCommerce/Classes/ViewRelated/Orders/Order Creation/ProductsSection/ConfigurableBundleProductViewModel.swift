@@ -5,7 +5,7 @@ import Combine
 import WooFoundation
 
 /// Configuration of a bundled order item from the configuration UI. It contains necessary information to save the configuration remotely.
-struct BundledProductConfiguration {
+struct BundledProductConfiguration: Equatable {
     enum ProductOrVariation: Equatable {
         case product(id: Int64)
         case variation(productID: Int64, variationID: Int64, attributes: [ProductVariationAttribute])

@@ -51,7 +51,7 @@ struct WPComPasswordLoginView: View {
     private let onMagicLinkRequest: (String) async -> Void
 
     init(title: String,
-         isJetpackSetup: Bool,
+         isJetpackSetup: Bool = false,
          viewModel: WPComPasswordLoginViewModel,
          onMagicLinkRequest: @escaping (String) async -> Void) {
         self.title = title

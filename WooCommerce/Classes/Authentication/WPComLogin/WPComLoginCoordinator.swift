@@ -22,31 +22,31 @@ final class WPComLoginCoordinator {
 
     @MainActor
     func start(with email: String) async {
-        await checkWordPressComAccount(email: email)
+        do {
+            let passwordless = try await checkWordPressComAccount(email: email)
+            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
+        } catch {
+            showAlert(message: error.localizedDescription)
+        }
     }
 }
 
 // MARK: - Private helpers
 private extension WPComLoginCoordinator {
     @MainActor
-    func checkWordPressComAccount(email: String) async {
-        do {
-            let passwordless = try await withCheckedThrowingContinuation { continuation in
-                accountService.isPasswordlessAccount(username: email, success: { passwordless in
-                    continuation.resume(returning: passwordless)
-                }, failure: { error in
-                    DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                    continuation.resume(throwing: error)
-                })
-            }
-            await startAuthentication(email: email, isPasswordlessAccount: passwordless)
-        } catch {
-            showAlert(message: error.localizedDescription)
+    func checkWordPressComAccount(email: String) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                continuation.resume(returning: passwordless)
+            }, failure: { error in
+                DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                continuation.resume(throwing: error)
+            })
         }
     }
 
     @MainActor
-    private func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
+    func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
             await requestAuthenticationLink(email: email)
         } else {

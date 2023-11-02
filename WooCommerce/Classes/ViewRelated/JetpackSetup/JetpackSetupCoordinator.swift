@@ -30,6 +30,11 @@ final class JetpackSetupCoordinator {
         })
     }()
 
+    /// Title for login views
+    private var loginViewTitle: String {
+        requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+    }
+
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
          rootViewController: UIViewController,
@@ -343,16 +348,22 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
-        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        let viewController = WPComMagicLinkHostingController(email: email,
+                                                             title: loginViewTitle,
+                                                             isJetpackSetup: true)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
     func showPasswordUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .password))
+
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
-            requiresConnectionOnly: requiresConnectionOnly,
+            onMagicLinkRequest: { [weak self] email in
+                guard let self else { return }
+                await self.emailLoginViewModel.requestAuthenticationLink(email: email)
+            },
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)
             },
@@ -366,11 +377,9 @@ private extension JetpackSetupCoordinator {
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
-            viewModel: viewModel,
-            onMagicLinkRequest: { [weak self] email in
-            guard let self else { return }
-            await self.emailLoginViewModel.requestAuthenticationLink(email: email)
-        })
+            title: loginViewTitle,
+            isJetpackSetup: true,
+            viewModel: viewModel)
 
         if let loginNavigationController {
             loginNavigationController.pushViewController(viewController, animated: true)
@@ -389,7 +398,6 @@ private extension JetpackSetupCoordinator {
         analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode))
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
-            requiresConnectionOnly: requiresConnectionOnly,
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
@@ -399,7 +407,9 @@ private extension JetpackSetupCoordinator {
             onLoginSuccess: { [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
-        let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
+        let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
+                                                            isJetpackSetup: true,
+                                                            viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -458,6 +468,16 @@ private extension JetpackSetupCoordinator {
         static let errorFetchingSites = NSLocalizedString(
             "Unable to refresh current site info",
             comment: "Error message displayed when failing to fetch the current site info."
+        )
+        static let installJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginTitle",
+            value: "Install Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not installed yet"
+        )
+        static let connectJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginSubtitle",
+            value: "Connect Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not connected yet"
         )
     }
 }

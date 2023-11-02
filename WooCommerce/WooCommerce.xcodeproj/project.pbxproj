@@ -2185,6 +2185,7 @@
 		DE61979328A20C17005E4362 /* StorePickerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61979228A20C17005E4362 /* StorePickerViewModel.swift */; };
 		DE61979528A25842005E4362 /* StorePickerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE61979428A25842005E4362 /* StorePickerViewModelTests.swift */; };
 		DE621F6A29D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE621F6929D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift */; };
+		DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE63115A2AF1E13200587641 /* WPComLoginCoordinator.swift */; };
 		DE653EAD2A70D09F00937C78 /* CreateTestOrderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE653EAC2A70D09F00937C78 /* CreateTestOrderView.swift */; };
 		DE653EAF2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */; };
 		DE66C56F2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */; };
@@ -4742,6 +4743,7 @@
 		DE61979228A20C17005E4362 /* StorePickerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewModel.swift; sourceTree = "<group>"; };
 		DE61979428A25842005E4362 /* StorePickerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorePickerViewModelTests.swift; sourceTree = "<group>"; };
 		DE621F6929D67E1B000DE3BD /* WooAnalyticsEvent+JetpackSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+JetpackSetup.swift"; sourceTree = "<group>"; };
+		DE63115A2AF1E13200587641 /* WPComLoginCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WPComLoginCoordinator.swift; sourceTree = "<group>"; };
 		DE653EAC2A70D09F00937C78 /* CreateTestOrderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateTestOrderView.swift; sourceTree = "<group>"; };
 		DE653EAE2A72577500937C78 /* WooAnalyticsEvent+TestOrder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+TestOrder.swift"; sourceTree = "<group>"; };
 		DE66C56E2978F24200DAA978 /* ApplicationPasswordDisabledViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApplicationPasswordDisabledViewModelTests.swift; sourceTree = "<group>"; };
@@ -8549,6 +8551,7 @@
 		B55D4C0420B6026700D7A50F /* Authentication */ = {
 			isa = PBXGroup;
 			children = (
+				DE63115D2AF1E16500587641 /* WPComLogin */,
 				DEC0293829C419F500FD0E2F /* Application Password */,
 				DE2FE5842925D9040018040A /* Jetpack Setup */,
 				AEB4DB95290AE72D00AE4340 /* WebAuth */,
@@ -10736,6 +10739,22 @@
 			path = ProductSelector;
 			sourceTree = "<group>";
 		};
+		DE63115D2AF1E16500587641 /* WPComLogin */ = {
+			isa = PBXGroup;
+			children = (
+				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
+				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
+				DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */,
+				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
+				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
+				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
+				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
+				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
+				DE63115A2AF1E13200587641 /* WPComLoginCoordinator.swift */,
+			);
+			path = WPComLogin;
+			sourceTree = "<group>";
+		};
 		DE68979D2A8F7C8C00154588 /* AccountSettings */ = {
 			isa = PBXGroup;
 			children = (
@@ -10907,7 +10926,6 @@
 		DEF8CF0829A71ED400800A60 /* JetpackSetup */ = {
 			isa = PBXGroup;
 			children = (
-				DEF8CF1B29AC83AC00800A60 /* WPComLogin */,
 				DEF8CF1429A8C2D000800A60 /* AdminRole */,
 				DEF8CF0929A71EE600800A60 /* JetpackSetupCoordinator.swift */,
 			);
@@ -10931,21 +10949,6 @@
 				DEF8CF1729A8C39600800A60 /* AdminRoleRequiredViewModel.swift */,
 			);
 			path = AdminRole;
-			sourceTree = "<group>";
-		};
-		DEF8CF1B29AC83AC00800A60 /* WPComLogin */ = {
-			isa = PBXGroup;
-			children = (
-				DEF8CF1C29AC84BC00800A60 /* WPComEmailLoginView.swift */,
-				DEF8CF1E29AC870A00800A60 /* WPComEmailLoginViewModel.swift */,
-				DE4D239B29B06642003A4B5D /* WPComMagicLinkView.swift */,
-				DE4D239D29B073B1003A4B5D /* WPComMagicLinkViewModel.swift */,
-				DE4D23A329B0A9FA003A4B5D /* WPComPasswordLoginView.swift */,
-				DE4D23A529B0AF88003A4B5D /* WPComPasswordLoginViewModel.swift */,
-				DE4D23A929B1B0CA003A4B5D /* WPCom2FALoginView.swift */,
-				DE4D23AD29B1B0EF003A4B5D /* WPCom2FALoginViewModel.swift */,
-			);
-			path = WPComLogin;
 			sourceTree = "<group>";
 		};
 		DEF8CF2029ACDB9C00800A60 /* WPComLogin */ = {
@@ -12486,6 +12489,7 @@
 				DE7842F726F2E9340030C792 /* UIViewController+Connectivity.swift in Sources */,
 				E1C47209267A1ECC00D06DA1 /* CrashLoggingStack.swift in Sources */,
 				CCF87BBE279047BC00461C43 /* InfiniteScrollList.swift in Sources */,
+				DE63115B2AF1E13200587641 /* WPComLoginCoordinator.swift in Sources */,
 				EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */,
 				D85A3C5226C15DE200C0E026 /* InPersonPaymentsPluginNotSupportedVersionView.swift in Sources */,
 				EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */,

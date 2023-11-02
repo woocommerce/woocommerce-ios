@@ -1,6 +1,5 @@
 import UIKit
 import enum WordPressAuthenticator.SignInSource
-import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.
 final class LoggedOutStoreCreationCoordinator: Coordinator {
@@ -16,6 +15,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var storeCreationCoordinator: StoreCreationCoordinator?
+    private var loginCoordinator: WPComLoginCoordinator?
 
     private let analytics: Analytics
     private let source: Source
@@ -29,40 +29,30 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
     }
 
     func start() {
-        let viewModel = AccountCreationFormViewModel(emailSubmissionHandler: { [weak self] email, isExisting in
-            self?.handleEmailSubmission(email: email, isExisting: isExisting)
+        let viewModel = AccountCreationFormViewModel(onExistingEmail: { [weak self] email in
+            await self?.startLoginWithExistingAccount(email: email)
+        }, completionHandler: { [weak self] in
+            guard let self else { return }
+            self.startStoreCreation(in: self.navigationController)
         })
         let accountCreationController = AccountCreationFormHostingController(
-            field: .email,
             viewModel: viewModel,
             signInSource: .custom(source: source.rawValue),
             analytics: analytics
-        ) { [weak self] in
-            guard let self else { return }
-            self.startStoreCreation(in: self.navigationController)
-        }
+        )
         navigationController.show(accountCreationController, sender: self)
     }
 }
 
 private extension LoggedOutStoreCreationCoordinator {
-    func handleEmailSubmission(email: String, isExisting: Bool) {
-        let signInSource: SignInSource = .custom(source: source.rawValue)
-        guard !isExisting else {
-            /// Navigates to login with the existing email address.
-            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
-            command.execute(from: navigationController.topViewController ?? navigationController)
-            return
-        }
-        /// Navigates to password field for account creation
-        let passwordView = AccountCreationFormHostingController(field: .password,
-                                                                viewModel: .init(email: email),
-                                                                signInSource: signInSource,
-                                                                completion: { [weak self] in
+    @MainActor
+    func startLoginWithExistingAccount(email: String) async {
+        let coordinator = WPComLoginCoordinator(navigationController: navigationController) { [weak self] in
             guard let self else { return }
             self.startStoreCreation(in: self.navigationController)
-        })
-        navigationController.show(passwordView, sender: nil)
+        }
+        self.loginCoordinator = coordinator
+        await coordinator.start(with: email)
     }
 
     func startStoreCreation(in navigationController: UINavigationController) {

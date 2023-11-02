@@ -29,7 +29,12 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     @Published private(set) var isConfigureEnabled: Bool = true
 
     /// Closure invoked when the configure CTA is tapped to submit the configuration.
+    /// If there are no changes to the configuration, the closure is not invoked.
     let onConfigure: (_ configurations: [BundledProductConfiguration]) -> Void
+
+    /// Used to check if there are any outstanding changes to the configuration when submitting the form.
+    /// This is set when the `bundleItemViewModels` are set.
+    private var initialConfigurations: [BundledProductConfiguration] = []
 
     private let product: Product
     private let childItems: [OrderItem]
@@ -61,6 +66,9 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     func configure() {
         let configurations: [BundledProductConfiguration] = bundleItemViewModels.compactMap {
             $0.toConfiguration
+        }
+        guard configurations != initialConfigurations else {
+            return
         }
         onConfigure(configurations)
     }
@@ -100,6 +108,7 @@ private extension ConfigurableBundleProductViewModel {
                         return .init(bundleItem: bundleItem, product: product, variableProductSettings: nil, existingOrderItem: existingOrderItem)
                 }
             }
+        initialConfigurations = bundleItemViewModels.compactMap { $0.toConfiguration }
     }
 
     @MainActor

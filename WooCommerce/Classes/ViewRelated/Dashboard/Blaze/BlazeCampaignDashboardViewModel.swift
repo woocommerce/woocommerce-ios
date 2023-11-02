@@ -76,7 +76,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var visibilitySubscription: AnyCancellable?
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultStoreURL ?? "",
+         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,

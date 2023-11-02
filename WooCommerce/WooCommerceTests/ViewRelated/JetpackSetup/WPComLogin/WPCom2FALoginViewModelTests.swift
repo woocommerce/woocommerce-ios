@@ -105,7 +105,9 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         viewModel.finishedLogin(withAuthToken: expectedToken, requiredMultifactorCode: false)
 
         // Then
-        XCTAssertFalse(viewModel.isLoggingIn)
+        waitUntil {
+            viewModel.isLoggingIn == false
+        }
         assertEqual(token, expectedToken)
     }
 }

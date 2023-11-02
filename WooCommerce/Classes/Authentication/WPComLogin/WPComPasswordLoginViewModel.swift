@@ -18,7 +18,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     private let onMagicLinkRequest: (String) async -> Void
     private let onMultifactorCodeRequest: (LoginFields) -> Void
     private let onLoginFailure: (Error) -> Void
-    private let onLoginSuccess: (String) -> Void
+    private let onLoginSuccess: (String) async -> Void
 
     private(set) var avatarURL: URL?
 
@@ -36,7 +36,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
          onMagicLinkRequest: @escaping (String) async -> Void,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
-         onLoginSuccess: @escaping (String) -> Void) {
+         onLoginSuccess: @escaping (String) async -> Void) {
         self.siteURL = siteURL
         self.email = email
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
@@ -108,8 +108,10 @@ extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        isLoggingIn = false
-        onLoginSuccess(authToken)
+        Task { @MainActor in
+            await onLoginSuccess(authToken)
+            isLoggingIn = false
+        }
     }
 }
 

@@ -29,11 +29,11 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     private let loginFields: LoginFields
     private let loginFacade: LoginFacade
     private let onLoginFailure: (Error) -> Void
-    private let onLoginSuccess: (String) -> Void
+    private let onLoginSuccess: (String) async -> Void
 
     init(loginFields: LoginFields,
          onLoginFailure: @escaping (Error) -> Void,
-         onLoginSuccess: @escaping (String) -> Void) {
+         onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                        dotcomSecret: ApiCredentials.dotcomSecret,
@@ -72,8 +72,10 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        isLoggingIn = false
-        onLoginSuccess(authToken)
+        Task { @MainActor in
+            await onLoginSuccess(authToken)
+            isLoggingIn = false
+        }
     }
 }
 

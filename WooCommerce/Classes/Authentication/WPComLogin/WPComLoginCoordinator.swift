@@ -76,7 +76,7 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.authenticateUserAndComplete(username: email, authToken: authToken)
+                await self?.authenticateUserAndComplete(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
             title: title,
@@ -94,8 +94,8 @@ private extension WPComLoginCoordinator {
                 self.showAlert(message: message)
             },
             onLoginSuccess: { [weak self] authToken in
-                self?.authenticateUserAndComplete(username: loginFields.username,
-                                                  authToken: authToken)
+                await self?.authenticateUserAndComplete(username: loginFields.username,
+                                                        authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: title,
                                                             isJetpackSetup: isJetpackSetup,
@@ -115,13 +115,17 @@ private extension WPComLoginCoordinator {
         navigationController.show(viewController, sender: self)
     }
 
-    func authenticateUserAndComplete(username: String, authToken: String) {
-        let credentials = Credentials(username: username, authToken: authToken)
-        stores.authenticate(credentials: credentials)
-            .synchronizeEntities(onCompletion: { [weak self] in
-                guard let self else { return }
-                self.completionHandler()
-            })
+    @MainActor
+    func authenticateUserAndComplete(username: String, authToken: String) async {
+        await withCheckedContinuation { continuation in
+            let credentials = Credentials(username: username, authToken: authToken)
+            stores.authenticate(credentials: credentials)
+                .synchronizeEntities(onCompletion: { [weak self] in
+                    guard let self else { return }
+                    self.completionHandler()
+                    continuation.resume()
+                })
+        }
     }
 }
 

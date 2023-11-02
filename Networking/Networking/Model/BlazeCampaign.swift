@@ -13,7 +13,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
     public let campaignID: Int64
 
     /// ID of the product in the campaign
-    public let productID: Int64
+    public let productID: Int64?
 
     /// Name of the campaign
     public let name: String
@@ -143,14 +143,8 @@ private extension BlazeCampaign {
     /// Extracts the product ID from the `target_urn` response.
     /// The response looks like the following: `urn:wpcom:post:1:134`
     /// The product ID is the last number following the colon in the response (`134`).
-    /// If the product ID cannot be found, zero will be returned, to ensure that the entire Campaign response is not rejected.
-    /// Product ID is currently used only for showing or hiding the Blaze button on product details, and its absence is not a
-    /// dealbreaker.
-    static func extractProductIdFromUrn(_ urn: String) -> Int64 {
-        let components = urn.split(separator: ":")
-        guard let lastComponent = components.last, let productId = Int64(lastComponent) else {
-            return 0
-        }
-        return productId
+    /// If the product ID cannot be extracted, it returns null instead.
+    static func extractProductIdFromUrn(_ urn: String) -> Int64? {
+        return Int64(String(urn.split(separator: ":").last ?? ""))
     }
 }

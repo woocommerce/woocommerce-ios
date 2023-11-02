@@ -69,7 +69,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:
-            return true
+            return !isUITesting
         case .hazmatShipping:
             return true
         case .productCreationAI:

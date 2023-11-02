@@ -307,6 +307,7 @@ final class ProductRowViewModelTests: XCTestCase {
                                             maximumQuantity: nil,
                                             canChangeQuantity: true,
                                             imageURL: nil,
+                                            hasParentProduct: false,
                                             isConfigurable: false)
         XCTAssertEqual(viewModel.quantity, 3)
 
@@ -331,6 +332,7 @@ final class ProductRowViewModelTests: XCTestCase {
                                             maximumQuantity: 6,
                                             canChangeQuantity: true,
                                             imageURL: nil,
+                                            hasParentProduct: false,
                                             isConfigurable: false)
         XCTAssertEqual(viewModel.quantity, 6)
 
@@ -557,17 +559,32 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isConfigurable)
     }
 
-    func test_isConfigurable_is_true_for_bundle_product_with_bundle_items() {
+    func test_isConfigurable_is_true_for_bundle_product_with_bundle_items_and_configure_closure() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
 
         // When
         let viewModel = ProductRowViewModel(product: product,
                                             canChangeQuantity: false,
-                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
+                                            configure: {})
 
         // Then
         XCTAssertTrue(viewModel.isConfigurable)
+    }
+
+    func test_isConfigurable_is_false_for_bundle_product_with_bundle_items_when_configure_closure_is_nil() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product,
+                                            canChangeQuantity: false,
+                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
+                                            configure: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigurable)
     }
 
     func test_isConfigurable_is_false_for_non_bundle_product() {
@@ -580,7 +597,8 @@ final class ProductRowViewModelTests: XCTestCase {
             // When
             let viewModel = ProductRowViewModel(product: product,
                                                 canChangeQuantity: false,
-                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
+                                                configure: {})
 
             // Then
             XCTAssertFalse(viewModel.isConfigurable)

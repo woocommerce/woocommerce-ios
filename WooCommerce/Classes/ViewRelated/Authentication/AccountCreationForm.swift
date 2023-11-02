@@ -7,18 +7,11 @@ import enum Yosemite.CreateAccountError
 final class AccountCreationFormHostingController: UIHostingController<AccountCreationForm> {
     private let analytics: Analytics
 
-    init(field: AccountCreationForm.Field = .email,
-         viewModel: AccountCreationFormViewModel,
+    init(viewModel: AccountCreationFormViewModel,
          signInSource: SignInSource,
-         analytics: Analytics = ServiceLocator.analytics,
-         completion: @escaping () -> Void) {
+         analytics: Analytics = ServiceLocator.analytics) {
         self.analytics = analytics
-        super.init(rootView: AccountCreationForm(field: field, viewModel: viewModel))
-
-        // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController.
-        rootView.completion = {
-            completion()
-        }
+        super.init(rootView: AccountCreationForm(viewModel: viewModel))
 
         rootView.loginButtonTapped = { [weak self] in
             guard let self else { return }
@@ -37,38 +30,18 @@ final class AccountCreationFormHostingController: UIHostingController<AccountCre
 
 /// A form that allows the user to create a WPCOM account with an email and password.
 struct AccountCreationForm: View {
-    enum Field: Equatable {
-        case email
-        case password
-    }
-
-    /// Triggered when the account is created and the app is authenticated.
-    var completion: (() -> Void) = {}
 
     /// Triggered when the user taps on the login CTA.
     var loginButtonTapped: (() -> Void) = {}
 
     @ObservedObject private var viewModel: AccountCreationFormViewModel
 
-    @State private var isPerformingTask = false
     @State private var tosURL: URL?
 
     @FocusState private var isFocused: Bool
 
-    private let field: Field
-
-    private var isSubmitButtonDisabled: Bool {
-        switch field {
-        case .email:
-            return !viewModel.isEmailValid || isPerformingTask
-        case .password:
-            return !viewModel.isPasswordValid || isPerformingTask
-        }
-    }
-
-    init(field: Field, viewModel: AccountCreationFormViewModel) {
+    init(viewModel: AccountCreationFormViewModel) {
         self.viewModel = viewModel
-        self.field = field
     }
 
     var body: some View {
@@ -77,7 +50,7 @@ struct AccountCreationForm: View {
                 // Header.
                 VStack(alignment: .leading, spacing: Layout.horizontalSpacing) {
                     // Title label.
-                    Text(field == .email ? Localization.title : Localization.titleForPassword)
+                    Text(viewModel.currentField == .email ? Localization.title : Localization.titleForPassword)
                         .largeTitleStyle()
                     VStack(alignment: .leading, spacing: 0) {
                         // Subtitle label.
@@ -100,8 +73,8 @@ struct AccountCreationForm: View {
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .focused($isFocused)
-                    .disabled(isPerformingTask)
-                    .renderedIf(field == .email)
+                    .disabled(viewModel.isPerformingTask)
+                    .renderedIf(viewModel.currentField == .email)
 
                     // Password field.
                     AuthenticationFormFieldView(viewModel: .init(header: Localization.passwordFieldTitle,
@@ -114,8 +87,8 @@ struct AccountCreationForm: View {
                     .autocorrectionDisabled()
                     .textInputAutocapitalization(.never)
                     .focused($isFocused)
-                    .disabled(isPerformingTask)
-                    .renderedIf(field == .password)
+                    .disabled(viewModel.isPerformingTask)
+                    .renderedIf(viewModel.currentField == .password)
 
                     // Terms of Service link.
                     AttributedText(tosAttributedText, enablesLinkUnderline: true)
@@ -132,29 +105,29 @@ struct AccountCreationForm: View {
             ToolbarItem(placement: .confirmationAction) {
                 Button(Localization.loginButtonTitle, action: loginButtonTapped)
                     .buttonStyle(TextButtonStyle())
-                    .disabled(isPerformingTask)
+                    .disabled(viewModel.isPerformingTask)
             }
         }
         .safeAreaInset(edge: .bottom) {
             // CTA to submit the form.
             VStack {
                 Button(Localization.submitButtonTitle.localizedCapitalized) {
-                    Task { @MainActor in
-                        isPerformingTask = true
-                        do {
-                            try await viewModel.createAccount()
-                            completion()
-                        } catch {
-                            // No-op - errors are handled by the view model.
-                        }
-                        isPerformingTask = false
+                    Task {
+                        await viewModel.createAccount()
                     }
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isPerformingTask))
-                .disabled(isSubmitButtonDisabled)
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isPerformingTask))
+                .disabled(viewModel.isSubmitButtonDisabled)
                 .padding()
             }
             .background(Color(uiColor: .systemBackground))
+        }
+        .onChange(of: viewModel.shouldTransitionToPasswordField) { shouldTransition in
+            if shouldTransition {
+                withAnimation {
+                    viewModel.transitionToPasswordField()
+                }
+            }
         }
     }
 }
@@ -208,10 +181,12 @@ private extension AccountCreationForm {
 
 struct AccountCreationForm_Previews: PreviewProvider {
     static var previews: some View {
-        AccountCreationForm(field: .email, viewModel: .init())
+        AccountCreationForm(viewModel: .init(onExistingEmail: { _ in },
+                                             completionHandler: {}))
             .preferredColorScheme(.light)
 
-        AccountCreationForm(field: .password, viewModel: .init())
+        AccountCreationForm(viewModel: .init(onExistingEmail: { _ in },
+                                             completionHandler: {}))
             .preferredColorScheme(.dark)
             .dynamicTypeSize(.xxxLarge)
     }

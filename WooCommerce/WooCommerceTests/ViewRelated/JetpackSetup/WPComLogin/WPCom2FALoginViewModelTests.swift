@@ -11,8 +11,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_strippedCode_removes_all_white_spaces_from_verification_code() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -24,8 +26,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_contains_non_digits() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -37,8 +41,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_is_empty() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -50,8 +56,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_false_when_verification_code_is_too_long() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -63,8 +71,10 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isValidCode_returns_true_when_verification_has_acceptable_length() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -76,10 +86,12 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         var errorCaught: Error? = nil
         let expectedError = NSError(domain: "Test", code: 400)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { errorCaught = $0 },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { error, _ in errorCaught = error },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -94,10 +106,12 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginSuccess_is_triggered_when_login_succeeds() {
         // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
         var token: String? = nil
         let expectedToken = "secret"
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
-                                               onLoginFailure: { _ in },
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
                                                onLoginSuccess: { token = $0 })
         // When
         viewModel.handleLogin()

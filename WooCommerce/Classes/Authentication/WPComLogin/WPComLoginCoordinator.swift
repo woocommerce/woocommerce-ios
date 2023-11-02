@@ -86,12 +86,14 @@ private extension WPComLoginCoordinator {
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
+        let window = navigationController.view.window!
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
-            onLoginFailure: { [weak self] error in
+            onAuthWindowRequest: { window },
+            onLoginFailure: { [weak self] error, errorMessage in
                 guard let self else { return }
-                let message = error.localizedDescription
-                self.showAlert(message: message)
+                // TODO: Analytics
+                self.showAlert(message: errorMessage)
             },
             onLoginSuccess: { [weak self] authToken in
                 await self?.authenticateUserAndComplete(username: loginFields.username,

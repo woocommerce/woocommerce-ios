@@ -155,7 +155,8 @@ struct WPCom2FALoginView_Previews: PreviewProvider {
         WPCom2FALoginView(title: "Login",
                           isJetpackSetup: false,
                           viewModel: .init(loginFields: LoginFields(),
-                                           onLoginFailure: { _ in },
+                                           onAuthWindowRequest: { UIViewController().view.window! },
+                                           onLoginFailure: { _, _ in },
                                            onLoginSuccess: { _ in }))
     }
 }

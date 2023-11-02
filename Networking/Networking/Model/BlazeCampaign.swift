@@ -38,7 +38,7 @@ public struct BlazeCampaign: Decodable, Equatable, GeneratedFakeable, GeneratedC
 
     public init(siteID: Int64,
                 campaignID: Int64,
-                productID: Int64,
+                productID: Int64?,
                 name: String,
                 uiStatus: String,
                 contentImageURL: String?,

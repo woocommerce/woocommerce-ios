@@ -5,15 +5,24 @@ import WordPressAuthenticator
 
 /// Coordinates navigation for the login flow with WPCom accounts.
 final class WPComLoginCoordinator {
+    /// Title to display on top of the login views
+    private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
     private let navigationController: UINavigationController
     private let stores: StoresManager
     private let accountService: WordPressComAccountServiceProtocol
     private let completionHandler: () -> Void
 
-    init(navigationController: UINavigationController,
+    init(title: String = Localization.login,
+         isJetpackSetup: Bool = false,
+         navigationController: UINavigationController,
          stores: StoresManager = ServiceLocator.stores,
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          completionHandler: @escaping () -> Void) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.navigationController = navigationController
         self.stores = stores
         self.accountService = accountService
@@ -68,7 +77,8 @@ private extension WPComLoginCoordinator {
                 self?.authenticateUserAndComplete(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
-            title: Localization.login,
+            title: title,
+            isJetpackSetup: isJetpackSetup,
             viewModel: viewModel,
             onMagicLinkRequest: { [weak self] email in
                 await self?.handleMagicLink(email: email)
@@ -88,14 +98,16 @@ private extension WPComLoginCoordinator {
                 self?.authenticateUserAndComplete(username: loginFields.username,
                                                   authToken: authToken)
             })
-        let viewController = WPCom2FALoginHostingController(title: Localization.login,
+        let viewController = WPCom2FALoginHostingController(title: title,
+                                                            isJetpackSetup: isJetpackSetup,
                                                             viewModel: viewModel)
         navigationController.show(viewController, sender: self)
     }
 
     func showMagicLinkForLogin(email: String) {
         let viewController = WPComMagicLinkHostingController(email: email,
-                                                             title: Localization.login)
+                                                             title: title,
+                                                             isJetpackSetup: isJetpackSetup)
         navigationController.show(viewController, sender: self)
     }
 

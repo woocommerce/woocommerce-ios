@@ -13,7 +13,7 @@ final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginVie
     ///   - isJetpackSetup: Whether the view is part of the login step of the Jetpack setup flow.
     ///   - viewModel: The model for the view.
     ///
-    init(title: String, isJetpackSetup: Bool = false, viewModel: WPCom2FALoginViewModel) {
+    init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
         self.isJetpackSetup = isJetpackSetup
         super.init(rootView: WPCom2FALoginView(title: title, isJetpackSetup: isJetpackSetup, viewModel: viewModel))
     }

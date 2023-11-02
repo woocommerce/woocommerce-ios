@@ -8,7 +8,7 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
     ///
     private let isJetpackSetup: Bool
 
-    init(email: String, title: String, isJetpackSetup: Bool = false) {
+    init(email: String, title: String, isJetpackSetup: Bool) {
         self.isJetpackSetup = isJetpackSetup
         let viewModel = WPComMagicLinkViewModel(email: email)
         super.init(rootView: WPComMagicLinkView(title: title,

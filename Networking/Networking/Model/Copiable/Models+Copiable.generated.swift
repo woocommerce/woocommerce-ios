@@ -164,7 +164,7 @@ extension Networking.BlazeCampaign {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,
         campaignID: CopiableProp<Int64> = .copy,
-        productID: CopiableProp<Int64> = .copy,
+        productID: NullableCopiableProp<Int64> = .copy,
         name: CopiableProp<String> = .copy,
         uiStatus: CopiableProp<String> = .copy,
         contentImageURL: NullableCopiableProp<String> = .copy,

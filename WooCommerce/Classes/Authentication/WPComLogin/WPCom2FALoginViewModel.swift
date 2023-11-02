@@ -8,9 +8,6 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @Published private(set) var isLoggingIn = false
     @Published private(set) var isRequestingOTP = false
 
-    /// Title for the view
-    let titleString: String
-
     /// In case the code is entered by pasting from the clipboard, we need to remove all white spaces.
     /// kept non-private for testing purposes.
     var strippedCode: String {
@@ -32,14 +29,12 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     private let loginFields: LoginFields
     private let loginFacade: LoginFacade
     private let onLoginFailure: (Error) -> Void
-    private let onLoginSuccess: (String) -> Void
+    private let onLoginSuccess: (String) async -> Void
 
     init(loginFields: LoginFields,
-         requiresConnectionOnly: Bool,
          onLoginFailure: @escaping (Error) -> Void,
-         onLoginSuccess: @escaping (String) -> Void) {
+         onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                        dotcomSecret: ApiCredentials.dotcomSecret,
                                        userAgent: UserAgent.defaultUserAgent)
@@ -77,8 +72,10 @@ extension WPCom2FALoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        isLoggingIn = false
-        onLoginSuccess(authToken)
+        Task { @MainActor in
+            await onLoginSuccess(authToken)
+            isLoggingIn = false
+        }
     }
 }
 
@@ -89,15 +86,5 @@ extension WPCom2FALoginViewModel {
         // https://github.com/wordpress-mobile/WordPressAuthenticator-iOS/blob/c0d16065c5b5a8e54dbb54cc31c7b3cf28f584f9/WordPressAuthenticator/Signin/Login2FAViewController.swift#L218
         // swiftlint:enable line_length
         static let maximumCodeLength = 8
-    }
-    enum Localization {
-        static let installJetpack = NSLocalizedString(
-            "Install Jetpack",
-            comment: "Title for the WPCom 2FA login screen when Jetpack is not installed yet"
-        )
-        static let connectJetpack = NSLocalizedString(
-            "Connect Jetpack",
-            comment: "Title for the WPCom 2FA login screen when Jetpack is not connected yet"
-        )
     }
 }

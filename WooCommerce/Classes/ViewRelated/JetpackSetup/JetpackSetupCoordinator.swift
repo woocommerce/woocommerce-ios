@@ -340,6 +340,10 @@ private extension JetpackSetupCoordinator {
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
+            onMagicLinkRequest: { [weak self] email in
+                guard let self else { return }
+                await self.emailLoginViewModel.requestAuthenticationLink(email: email)
+            },
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)
             },
@@ -355,11 +359,7 @@ private extension JetpackSetupCoordinator {
         let viewController = WPComPasswordLoginHostingController(
             title: loginViewTitle,
             isJetpackSetup: true,
-            viewModel: viewModel,
-            onMagicLinkRequest: { [weak self] email in
-            guard let self else { return }
-            await self.emailLoginViewModel.requestAuthenticationLink(email: email)
-        })
+            viewModel: viewModel)
 
         if let loginNavigationController {
             loginNavigationController.pushViewController(viewController, animated: true)

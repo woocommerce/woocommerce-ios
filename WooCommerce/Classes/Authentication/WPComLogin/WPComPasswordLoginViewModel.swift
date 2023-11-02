@@ -15,6 +15,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     private let siteURL: String
     private let loginFacade: LoginFacade
+    private let onMagicLinkRequest: (String) async -> Void
     private let onMultifactorCodeRequest: (LoginFields) -> Void
     private let onLoginFailure: (Error) -> Void
     private let onLoginSuccess: (String) -> Void
@@ -32,6 +33,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     init(siteURL: String = "",
          email: String,
+         onMagicLinkRequest: @escaping (String) async -> Void,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
          onLoginSuccess: @escaping (String) -> Void) {
@@ -40,6 +42,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                        dotcomSecret: ApiCredentials.dotcomSecret,
                                        userAgent: UserAgent.defaultUserAgent)
+        self.onMagicLinkRequest = onMagicLinkRequest
         self.onMultifactorCodeRequest = onMultifactorCodeRequest
         self.onLoginFailure = onLoginFailure
         self.onLoginSuccess = onLoginSuccess
@@ -55,6 +58,11 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     func handleLogin() {
         isLoggingIn = true
         loginFacade.signIn(with: loginFields)
+    }
+
+    @MainActor
+    func requestMagicLink() async {
+        await onMagicLinkRequest(email)
     }
 }
 

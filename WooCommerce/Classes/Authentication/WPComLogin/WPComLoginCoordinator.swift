@@ -64,6 +64,9 @@ private extension WPComLoginCoordinator {
     func showPasswordUIForLogin(email: String) {
         let viewModel = WPComPasswordLoginViewModel(
             email: email,
+            onMagicLinkRequest: { [weak self] email in
+                await self?.handleMagicLink(email: email)
+            },
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)
             },
@@ -78,10 +81,7 @@ private extension WPComLoginCoordinator {
         let viewController = WPComPasswordLoginHostingController(
             title: title,
             isJetpackSetup: isJetpackSetup,
-            viewModel: viewModel,
-            onMagicLinkRequest: { [weak self] email in
-                await self?.handleMagicLink(email: email)
-            })
+            viewModel: viewModel)
         navigationController.show(viewController, sender: self)
     }
 
@@ -103,6 +103,11 @@ private extension WPComLoginCoordinator {
         navigationController.show(viewController, sender: self)
     }
 
+    /// Shows the UI saying magic link has been sent to the email address,
+    /// asking the user to check their inbox to log in.
+    /// We will be waiting for authentication request from the magic link in `AppDelegate` method for opening URL for deeplink.
+    /// We're letting WPAuthenticator handle the deeplink for now.
+    ///
     func showMagicLinkForLogin(email: String) {
         let viewController = WPComMagicLinkHostingController(email: email,
                                                              title: title,

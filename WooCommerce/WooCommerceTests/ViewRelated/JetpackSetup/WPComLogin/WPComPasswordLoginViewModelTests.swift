@@ -15,6 +15,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let email = "test@example.com"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
+                                                    onMagicLinkRequest: { _ in },
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
@@ -35,6 +36,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
 
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
+                                                    onMagicLinkRequest: { _ in },
                                                     onMultifactorCodeRequest: { loginFields = $0 },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { _ in })
@@ -61,6 +63,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "Test", code: 400)
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
+                                                    onMagicLinkRequest: { _ in },
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { errorCaught = $0 },
                                                     onLoginSuccess: { _ in })
@@ -83,6 +86,7 @@ final class WPComPasswordLoginViewModelTests: XCTestCase {
         let expectedToken = "secret"
         let viewModel = WPComPasswordLoginViewModel(siteURL: siteURL,
                                                     email: email,
+                                                    onMagicLinkRequest: { _ in },
                                                     onMultifactorCodeRequest: { _ in },
                                                     onLoginFailure: { _ in },
                                                     onLoginSuccess: { token = $0 })

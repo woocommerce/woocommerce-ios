@@ -9,13 +9,11 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
 
     init(title: String,
          isJetpackSetup: Bool,
-         viewModel: WPComPasswordLoginViewModel,
-         onMagicLinkRequest: @escaping (String) async -> Void) {
+         viewModel: WPComPasswordLoginViewModel) {
         self.isJetpackSetup = isJetpackSetup
         super.init(rootView: WPComPasswordLoginView(title: title,
                                                     isJetpackSetup: isJetpackSetup,
-                                                    viewModel: viewModel,
-                                                    onMagicLinkRequest: onMagicLinkRequest))
+                                                    viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -48,16 +46,13 @@ struct WPComPasswordLoginView: View {
 
     /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
-    private let onMagicLinkRequest: (String) async -> Void
 
     init(title: String,
          isJetpackSetup: Bool = false,
-         viewModel: WPComPasswordLoginViewModel,
-         onMagicLinkRequest: @escaping (String) async -> Void) {
+         viewModel: WPComPasswordLoginViewModel) {
         self.title = title
         self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
-        self.onMagicLinkRequest = onMagicLinkRequest
     }
 
     var body: some View {
@@ -128,7 +123,7 @@ struct WPComPasswordLoginView: View {
                 Button(Localization.secondaryAction) {
                     Task { @MainActor in
                         isSecondaryButtonLoading = true
-                        await onMagicLinkRequest(viewModel.email)
+                        await viewModel.requestMagicLink()
                         isSecondaryButtonLoading = false
                     }
                 }
@@ -179,9 +174,9 @@ struct WPComPasswordLoginView_Previews: PreviewProvider {
                                isJetpackSetup: true,
                                viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
+                                                onMagicLinkRequest: { _ in },
                                                 onMultifactorCodeRequest: { _ in },
                                                 onLoginFailure: { _ in },
-                                                onLoginSuccess: { _ in }),
-                               onMagicLinkRequest: { _ in })
+                                                onLoginSuccess: { _ in }))
     }
 }

@@ -21,18 +21,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     @Published private(set) var productRowViewModel: ProductRowViewModel
     @Published var quantity: Decimal
     @Published var isOptionalAndSelected: Bool = false
-
-    // MARK: - Variable bundle item
     @Published var variationSelectorViewModel: ProductVariationSelectorViewModel?
-    @Published private(set) var selectedVariation: ProductVariation?
-    var variationAttributes: [ProductVariationAttribute] {
-        guard let selectedVariation else {
-            return []
-        }
-        return selectedVariation.attributes + selectableVariationAttributeViewModels.compactMap { $0.selectedAttribute }
-    }
-    @Published private(set) var selectableVariationAttributeViewModels: [ConfigurableVariableBundleAttributePickerViewModel] = []
-
+    @Published var selectedVariation: ProductVariation?
     @Published var errorMessage: String?
 
     private let product: Product
@@ -70,7 +60,6 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             self?.quantity = quantity
         }
         observeSelectedStateForProductRowViewModelIfOptional()
-        observeSelectedVariationForSelectableAttributes()
     }
 
     func createVariationSelectorViewModel() {
@@ -117,7 +106,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             return false
         }
 
-        guard variationAttributes.count == product.attributesForVariations.count else {
+        guard selectedVariation.attributes.count == product.attributes.count else {
             errorMessage = Localization.ErrorMessage.variationMissingAttributes
             return false
         }
@@ -154,22 +143,6 @@ private extension ConfigurableBundleItemViewModel {
         }
         .assign(to: &$productRowViewModel)
     }
-
-    func observeSelectedVariationForSelectableAttributes() {
-        $selectedVariation.compactMap { [weak self] selectedVariation in
-            guard let self, let selectedVariation else { return nil }
-
-            let fixedAttributeNames = selectedVariation.attributes.map { $0.name }
-            let allAttributes = self.product.attributesForVariations
-            let selectableAttributeViewModels = allAttributes.filter { !fixedAttributeNames.contains($0.name) }
-                .map { attribute in
-                    let defaultOption = self.variableProductSettings?.defaultAttributes.first(where: { $0.name == attribute.name })?.option
-                    return ConfigurableVariableBundleAttributePickerViewModel(attribute: attribute, selectedOption: defaultOption)
-                }
-            return selectableAttributeViewModels
-        }
-        .assign(to: &$selectableVariationAttributeViewModels)
-    }
 }
 
 extension ConfigurableBundleItemViewModel {
@@ -182,7 +155,7 @@ extension ConfigurableBundleItemViewModel {
                 return .init(bundledItemID: bundledItemID,
                              productOrVariation: .variation(productID: product.productID,
                                                             variationID: variation.productVariationID,
-                                                            attributes: variationAttributes),
+                                                            attributes: variation.attributes),
                              quantity: quantity,
                              isOptionalAndSelected: isOptionalAndSelected)
             default:

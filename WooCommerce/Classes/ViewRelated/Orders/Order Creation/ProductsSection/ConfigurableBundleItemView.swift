@@ -40,9 +40,6 @@ struct ConfigurableBundleItemView: View {
 
             if let selectedVariation = viewModel.selectedVariation {
                 Text(selectedVariation.attributes.map { "\($0.name): \($0.option)" }.joined(separator: ", "))
-                ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
-                    ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
-                }
             }
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {

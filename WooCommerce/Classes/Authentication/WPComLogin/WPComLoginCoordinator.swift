@@ -31,39 +31,21 @@ final class WPComLoginCoordinator {
     }
 }
 
-// MARK: - Private helpers
+// MARK: - Login steps
 private extension WPComLoginCoordinator {
-    @MainActor
-    func checkWordPressComAccount(email: String) async throws -> Bool {
-        try await withCheckedThrowingContinuation { continuation in
-            accountService.isPasswordlessAccount(username: email, success: { passwordless in
-                continuation.resume(returning: passwordless)
-            }, failure: { error in
-                DDLogError("⛔️ Error checking for passwordless account: \(error)")
-                continuation.resume(throwing: error)
-            })
-        }
-    }
-
     @MainActor
     func startAuthentication(email: String, isPasswordlessAccount: Bool) async {
         if isPasswordlessAccount {
-            await requestAuthenticationLink(email: email)
+            await handleMagicLink(email: email)
         } else {
             showPasswordUIForLogin(email: email)
         }
     }
 
     @MainActor
-    func requestAuthenticationLink(email: String) async {
+    func handleMagicLink(email: String) async {
         do {
-            try await withCheckedThrowingContinuation { continuation in
-                accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
-                    continuation.resume()
-                }, failure: { error in
-                    continuation.resume(throwing: error)
-                })
-            }
+            try await requestAuthenticationLink(email: email)
             showMagicLinkForLogin(email: email)
         } catch {
             showAlert(message: error.localizedDescription)
@@ -90,7 +72,7 @@ private extension WPComLoginCoordinator {
             isJetpackSetup: false,
             viewModel: viewModel,
             onMagicLinkRequest: { [weak self] email in
-                await self?.requestAuthenticationLink(email: email)
+                await self?.handleMagicLink(email: email)
             })
         navigationController.show(viewController, sender: self)
     }
@@ -127,6 +109,32 @@ private extension WPComLoginCoordinator {
                 guard let self else { return }
                 self.completionHandler()
             })
+    }
+}
+
+// MARK: - Private helpers
+private extension WPComLoginCoordinator {
+    @MainActor
+    func checkWordPressComAccount(email: String) async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            accountService.isPasswordlessAccount(username: email, success: { passwordless in
+                continuation.resume(returning: passwordless)
+            }, failure: { error in
+                DDLogError("⛔️ Error checking for passwordless account: \(error)")
+                continuation.resume(throwing: error)
+            })
+        }
+    }
+
+    @MainActor
+    func requestAuthenticationLink(email: String) async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            accountService.requestAuthenticationLink(for: email, jetpackLogin: false, success: {
+                continuation.resume()
+            }, failure: { error in
+                continuation.resume(throwing: error)
+            })
+        }
     }
 
     func showAlert(message: String) {

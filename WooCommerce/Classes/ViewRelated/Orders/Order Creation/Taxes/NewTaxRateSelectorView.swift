@@ -71,7 +71,7 @@ struct NewTaxRateSelectorView: View {
                     }
 
                     storeTaxRateBottomView
-                    
+
                     case .empty:
                     EmptyState(title: Localization.emptyStateTitle,
                                    description: Localization.emptyStateDescription,

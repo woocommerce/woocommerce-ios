@@ -124,4 +124,36 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         }
         assertEqual(token, expectedToken)
     }
+
+    func test_shouldEnableSecurityKeyOption_returns_false_if_nonce_info_is_not_present() {
+        // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let loginFields = LoginFields()
+        loginFields.nonceInfo = nil
+
+        // When
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
+                                               onLoginSuccess: { _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldEnableSecurityKeyOption)
+    }
+
+    func test_shouldEnableSecurityKeyOption_returns_true_if_nonce_info_is_present() {
+        // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let loginFields = LoginFields()
+        loginFields.nonceInfo = .init()
+
+        // When
+        let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
+                                               onAuthWindowRequest: { window },
+                                               onLoginFailure: { _, _ in },
+                                               onLoginSuccess: { _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.shouldEnableSecurityKeyOption)
+    }
 }

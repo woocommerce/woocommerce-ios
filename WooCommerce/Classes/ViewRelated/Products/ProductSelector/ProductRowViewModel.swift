@@ -240,7 +240,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     var removeProductIntent: () -> Void
 
     /// Closure to configure a product if it is configurable.
-    var configure: (() -> Void)?
+    let configure: (() -> Void)?
 
     /// Number of variations in a variable product
     ///
@@ -362,6 +362,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
         && product.productType == .bundle
         && product.bundledItems.isNotEmpty
+        && configure != nil
 
         self.init(id: id,
                   productOrVariationID: product.productID,

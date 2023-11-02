@@ -124,7 +124,11 @@ final class JetpackSetupViewModel: ObservableObject {
     }
 
     func startSetup() {
-        retrieveJetpackPluginDetails()
+        if connectionOnly {
+            fetchJetpackConnectionURL()
+        } else {
+            retrieveJetpackPluginDetails()
+        }
     }
 
     func didAuthorizeJetpackConnection() {

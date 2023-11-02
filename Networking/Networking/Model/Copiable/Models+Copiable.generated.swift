@@ -2839,6 +2839,186 @@ extension Networking.WCPayCharge {
     }
 }
 
+extension Networking.WooPaymentsAccountDepositSummary {
+    public func copy(
+        depositsEnabled: CopiableProp<Bool> = .copy,
+        depositsBlocked: CopiableProp<Bool> = .copy,
+        depositsSchedule: CopiableProp<WooPaymentsDepositsSchedule> = .copy,
+        defaultCurrency: CopiableProp<String> = .copy
+    ) -> Networking.WooPaymentsAccountDepositSummary {
+        let depositsEnabled = depositsEnabled ?? self.depositsEnabled
+        let depositsBlocked = depositsBlocked ?? self.depositsBlocked
+        let depositsSchedule = depositsSchedule ?? self.depositsSchedule
+        let defaultCurrency = defaultCurrency ?? self.defaultCurrency
+
+        return Networking.WooPaymentsAccountDepositSummary(
+            depositsEnabled: depositsEnabled,
+            depositsBlocked: depositsBlocked,
+            depositsSchedule: depositsSchedule,
+            defaultCurrency: defaultCurrency
+        )
+    }
+}
+
+extension Networking.WooPaymentsBalance {
+    public func copy(
+        amount: CopiableProp<Int> = .copy,
+        currency: CopiableProp<String> = .copy,
+        sourceTypes: CopiableProp<WooPaymentsSourceTypes> = .copy,
+        depositsCount: NullableCopiableProp<Int> = .copy
+    ) -> Networking.WooPaymentsBalance {
+        let amount = amount ?? self.amount
+        let currency = currency ?? self.currency
+        let sourceTypes = sourceTypes ?? self.sourceTypes
+        let depositsCount = depositsCount ?? self.depositsCount
+
+        return Networking.WooPaymentsBalance(
+            amount: amount,
+            currency: currency,
+            sourceTypes: sourceTypes,
+            depositsCount: depositsCount
+        )
+    }
+}
+
+extension Networking.WooPaymentsCurrencyBalances {
+    public func copy(
+        pending: CopiableProp<[WooPaymentsBalance]> = .copy,
+        available: CopiableProp<[WooPaymentsBalance]> = .copy,
+        instant: CopiableProp<[WooPaymentsBalance]> = .copy
+    ) -> Networking.WooPaymentsCurrencyBalances {
+        let pending = pending ?? self.pending
+        let available = available ?? self.available
+        let instant = instant ?? self.instant
+
+        return Networking.WooPaymentsCurrencyBalances(
+            pending: pending,
+            available: available,
+            instant: instant
+        )
+    }
+}
+
+extension Networking.WooPaymentsCurrencyDeposits {
+    public func copy(
+        lastPaid: CopiableProp<[WooPaymentsDeposit]> = .copy,
+        nextScheduled: CopiableProp<[WooPaymentsDeposit]> = .copy,
+        lastManualDeposits: CopiableProp<[WooPaymentsManualDeposit]> = .copy
+    ) -> Networking.WooPaymentsCurrencyDeposits {
+        let lastPaid = lastPaid ?? self.lastPaid
+        let nextScheduled = nextScheduled ?? self.nextScheduled
+        let lastManualDeposits = lastManualDeposits ?? self.lastManualDeposits
+
+        return Networking.WooPaymentsCurrencyDeposits(
+            lastPaid: lastPaid,
+            nextScheduled: nextScheduled,
+            lastManualDeposits: lastManualDeposits
+        )
+    }
+}
+
+extension Networking.WooPaymentsDeposit {
+    public func copy(
+        id: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy,
+        type: CopiableProp<WooPaymentsDepositType> = .copy,
+        amount: CopiableProp<Int> = .copy,
+        status: CopiableProp<WooPaymentsDepositStatus> = .copy,
+        bankAccount: NullableCopiableProp<String> = .copy,
+        currency: CopiableProp<String> = .copy,
+        automatic: CopiableProp<Bool> = .copy,
+        fee: CopiableProp<Int> = .copy,
+        feePercentage: CopiableProp<Int> = .copy,
+        created: CopiableProp<Int> = .copy
+    ) -> Networking.WooPaymentsDeposit {
+        let id = id ?? self.id
+        let date = date ?? self.date
+        let type = type ?? self.type
+        let amount = amount ?? self.amount
+        let status = status ?? self.status
+        let bankAccount = bankAccount ?? self.bankAccount
+        let currency = currency ?? self.currency
+        let automatic = automatic ?? self.automatic
+        let fee = fee ?? self.fee
+        let feePercentage = feePercentage ?? self.feePercentage
+        let created = created ?? self.created
+
+        return Networking.WooPaymentsDeposit(
+            id: id,
+            date: date,
+            type: type,
+            amount: amount,
+            status: status,
+            bankAccount: bankAccount,
+            currency: currency,
+            automatic: automatic,
+            fee: fee,
+            feePercentage: feePercentage,
+            created: created
+        )
+    }
+}
+
+extension Networking.WooPaymentsDepositsOverview {
+    public func copy(
+        deposit: CopiableProp<WooPaymentsCurrencyDeposits> = .copy,
+        balance: CopiableProp<WooPaymentsCurrencyBalances> = .copy,
+        account: CopiableProp<WooPaymentsAccountDepositSummary> = .copy
+    ) -> Networking.WooPaymentsDepositsOverview {
+        let deposit = deposit ?? self.deposit
+        let balance = balance ?? self.balance
+        let account = account ?? self.account
+
+        return Networking.WooPaymentsDepositsOverview(
+            deposit: deposit,
+            balance: balance,
+            account: account
+        )
+    }
+}
+
+extension Networking.WooPaymentsDepositsSchedule {
+    public func copy(
+        delayDays: CopiableProp<Int> = .copy,
+        interval: CopiableProp<WooPaymentsDepositInterval> = .copy
+    ) -> Networking.WooPaymentsDepositsSchedule {
+        let delayDays = delayDays ?? self.delayDays
+        let interval = interval ?? self.interval
+
+        return Networking.WooPaymentsDepositsSchedule(
+            delayDays: delayDays,
+            interval: interval
+        )
+    }
+}
+
+extension Networking.WooPaymentsManualDeposit {
+    public func copy(
+        currency: CopiableProp<String> = .copy,
+        date: CopiableProp<Date> = .copy
+    ) -> Networking.WooPaymentsManualDeposit {
+        let currency = currency ?? self.currency
+        let date = date ?? self.date
+
+        return Networking.WooPaymentsManualDeposit(
+            currency: currency,
+            date: date
+        )
+    }
+}
+
+extension Networking.WooPaymentsSourceTypes {
+    public func copy(
+        card: CopiableProp<Int> = .copy
+    ) -> Networking.WooPaymentsSourceTypes {
+        let card = card ?? self.card
+
+        return Networking.WooPaymentsSourceTypes(
+            card: card
+        )
+    }
+}
+
 extension Networking.WordPressMedia {
     public func copy(
         mediaID: CopiableProp<Int64> = .copy,

@@ -2153,6 +2153,132 @@ extension WCPayPaymentMethodType {
         .card
     }
 }
+extension Networking.WooPaymentsAccountDepositSummary {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsAccountDepositSummary {
+        .init(
+            depositsEnabled: .fake(),
+            depositsBlocked: .fake(),
+            depositsSchedule: .fake(),
+            defaultCurrency: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsBalance {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsBalance {
+        .init(
+            amount: .fake(),
+            currency: .fake(),
+            sourceTypes: .fake(),
+            depositsCount: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsCurrencyBalances {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsCurrencyBalances {
+        .init(
+            pending: .fake(),
+            available: .fake(),
+            instant: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsCurrencyDeposits {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsCurrencyDeposits {
+        .init(
+            lastPaid: .fake(),
+            nextScheduled: .fake(),
+            lastManualDeposits: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsDeposit {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDeposit {
+        .init(
+            id: .fake(),
+            date: .fake(),
+            type: .fake(),
+            amount: .fake(),
+            status: .fake(),
+            bankAccount: .fake(),
+            currency: .fake(),
+            automatic: .fake(),
+            fee: .fake(),
+            feePercentage: .fake(),
+            created: .fake()
+        )
+    }
+}
+extension WooPaymentsDepositInterval {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WooPaymentsDepositInterval {
+        .daily
+    }
+}
+extension WooPaymentsDepositStatus {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WooPaymentsDepositStatus {
+        .estimated
+    }
+}
+extension WooPaymentsDepositType {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> WooPaymentsDepositType {
+        .withdrawal
+    }
+}
+extension Networking.WooPaymentsDepositsOverview {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositsOverview {
+        .init(
+            deposit: .fake(),
+            balance: .fake(),
+            account: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsDepositsSchedule {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsDepositsSchedule {
+        .init(
+            delayDays: .fake(),
+            interval: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsManualDeposit {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsManualDeposit {
+        .init(
+            currency: .fake(),
+            date: .fake()
+        )
+    }
+}
+extension Networking.WooPaymentsSourceTypes {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.WooPaymentsSourceTypes {
+        .init(
+            card: .fake()
+        )
+    }
+}
 extension Networking.WordPressMedia {
     /// Returns a "ready to use" type filled with fake values.
     ///

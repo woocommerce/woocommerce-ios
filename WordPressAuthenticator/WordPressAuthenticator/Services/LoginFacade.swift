@@ -1,7 +1,9 @@
 import Foundation
 import WordPressKit
 
-extension LoginFacade {
+/// Extension for handling 2FA authentication.
+///
+public extension LoginFacade {
     private var tracker: AuthenticatorAnalyticsTracker {
         AuthenticatorAnalyticsTracker.shared
     }
@@ -113,7 +115,7 @@ extension LoginFacade {
     }
 
     @objc
-    public func trackSuccess() {
+    func trackSuccess() {
         tracker.track(step: .success)
     }
 }

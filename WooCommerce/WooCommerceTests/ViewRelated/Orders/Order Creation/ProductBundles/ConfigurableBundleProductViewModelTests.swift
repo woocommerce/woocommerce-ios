@@ -137,6 +137,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
+                                                           analytics: analytics,
                                                            onConfigure: { _ in })
 
         // When

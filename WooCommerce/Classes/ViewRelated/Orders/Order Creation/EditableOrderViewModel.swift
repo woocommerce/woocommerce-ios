@@ -90,8 +90,8 @@ final class EditableOrderViewModel: ObservableObject {
     var customerNavigationScreen: CustomerNavigationScreen {
         let shouldShowSelector = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
         // If there are no addresses added
-        orderSynchronizer.order.billingAddress == nil &&
-        orderSynchronizer.order.shippingAddress == nil
+        orderSynchronizer.order.billingAddress?.isEmpty ?? true &&
+        orderSynchronizer.order.shippingAddress?.isEmpty ?? true
 
         return shouldShowSelector ? .selector : .form
     }

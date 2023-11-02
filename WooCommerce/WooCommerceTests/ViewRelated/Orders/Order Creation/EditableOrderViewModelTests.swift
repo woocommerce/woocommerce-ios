@@ -1682,6 +1682,25 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customerNavigationScreen == .selector)
     }
 
+    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_an_empty_address_was_added_then_shows_the_selector() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        let customer = Customer.fake().copy(
+            email: "",
+            firstName: "",
+            lastName: "",
+            billing: .empty,
+            shipping: .empty
+        )
+
+        viewModel.addCustomerAddressToOrder(customer: customer)
+
+        // Then
+        XCTAssertTrue(viewModel.customerNavigationScreen == .selector)
+    }
+
     func test_resetAddressForm_discards_pending_address_field_changes() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)

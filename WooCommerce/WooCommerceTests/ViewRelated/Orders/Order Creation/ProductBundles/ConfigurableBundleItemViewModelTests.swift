@@ -3,6 +3,21 @@ import Yosemite
 @testable import WooCommerce
 
 final class ConfigurableBundleItemViewModelTests: XCTestCase {
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
+
+    override func setUp() {
+        super.setUp()
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    }
+
+    override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
+        super.tearDown()
+    }
+
     func test_init_with_existing_order_item_with_full_attributes_sets_selectedVariation_and_empty_selectableVariationAttributeViewModels() throws {
         // Given
         let existingOrderItem = OrderItem.fake().copy(variationID: 6,
@@ -115,6 +130,42 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
             .init(attribute: .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"]),
                   selectedOption: "Blackberry")
         ])
+    }
+
+    // MARK: - Analytics
+
+    func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {
+        // Given
+        let variableProduct = createVariableProduct()
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil,
+                                                        analytics: analytics)
+        viewModel.createVariationSelectorViewModel()
+
+        // When
+        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(.fake(), .fake())
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["order_form_bundle_product_configuration_changed"])
+        XCTAssertEqual(analyticsProvider.receivedProperties.first as? [String: String], ["changed_field": "variation"])
+    }
+
+    func test_updating_quantity_tracks_orderFormBundleProductConfigurationChanged_event() throws {
+        // Given
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil,
+                                                        analytics: analytics)
+
+        // When
+        viewModel.productRowViewModel.quantityUpdatedCallback(12)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["order_form_bundle_product_configuration_changed"])
+        XCTAssertEqual(analyticsProvider.receivedProperties.first as? [String: String], ["changed_field": "quantity"])
     }
 }
 

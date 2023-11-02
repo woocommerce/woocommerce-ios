@@ -2567,6 +2567,281 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
     }
+
+    // Existing items: bundle A with child item, non-bundle B —> select bundle A again and configure in product selector
+    // —> order items to update remotely: bundle A with child item, non-bundle B, bundle A with bundle configuration
+    func test_when_existing_items_contain_bundle_and_non_bundle_then_selecting_same_bundle_results_in_two_bundles() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: 777, purchasable: true)
+        storageManager.insertProducts([nonBundleProduct,
+                                       // Product of the bundled item.
+                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Bundle product order item.
+            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
+            // Child bundled item with `parent` equal to the bundle parent item ID.
+            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
+            // Non-bundle simple item.
+            .fake().copy(itemID: 8, productID: 777, quantity: 2),
+        ])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+
+        // When entering the product selector
+        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // The child bundled item is not counted as a product in the product selector
+        XCTAssertEqual(productSelector.totalSelectedItemsCount, 2)
+
+        // When selecting & configuring a bundle product
+        try selectAndConfigureBundleProduct(from: productSelector, productID: bundleProduct.productID, viewModel: viewModel)
+
+        // When completing the product selector, then it triggers `OrderAction.updateOrder`
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _, onCompletion):
+                    promise(order)
+                        onCompletion(.success(order))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            productSelector.completeMultipleSelection()
+        }
+
+        // Then order to be updated remotely contains the expected items
+        XCTAssertEqual(orderToUpdate.items.count, 4)
+
+        let existingBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(existingBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(existingBundleOrderItem.bundleConfiguration, [])
+        XCTAssertEqual(existingBundleOrderItem.quantity, 2)
+
+        let existingChildBundleOrderItem = try XCTUnwrap(orderToUpdate.items[1])
+        XCTAssertEqual(existingChildBundleOrderItem.productID, 5)
+        XCTAssertEqual(existingChildBundleOrderItem.quantity, 1)
+
+        let existingNonBundleOrderItem = try XCTUnwrap(orderToUpdate.items[2])
+        XCTAssertEqual(existingNonBundleOrderItem.productID, nonBundleProduct.productID)
+        XCTAssertEqual(existingNonBundleOrderItem.quantity, 2)
+
+        let newBundleOrderItem = try XCTUnwrap(orderToUpdate.items[3])
+        XCTAssertEqual(newBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertTrue(newBundleOrderItem.bundleConfiguration.isNotEmpty)
+    }
+
+    // Existing items: bundle A with child item —> select non-bundle B which is A's child item in product selector
+    // —> order items to update remotely: bundle A with child item, non-bundle B
+    func test_when_existing_items_contain_bundle_then_selecting_non_bundle_child_item_results_in_same_bundle_and_new_non_bundle_item() throws {
+        // Given
+        let itemProductID: Int64 = 777
+        let bundleItem = ProductBundleItem.fake().copy(productID: itemProductID)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Non-bundle product is in storage but not part of the order.
+        let nonBundleProduct = Product.fake().copy(siteID: sampleSiteID, productID: itemProductID, purchasable: true)
+        storageManager.insertProducts([nonBundleProduct,
+                                       // Product of the bundled item.
+                                       .fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Bundle product order item.
+            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
+            // Child bundled item with `parent` equal to the bundle parent item ID.
+            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
+        ])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+
+        // When entering the product selector
+        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // The child bundled item is not counted as a product in the product selector
+        XCTAssertEqual(productSelector.totalSelectedItemsCount, 1)
+
+        // When selecting the non-bundle product
+        productSelector.changeSelectionStateForProduct(with: nonBundleProduct.productID)
+
+        XCTAssertEqual(productSelector.totalSelectedItemsCount, 2)
+
+        // When completing the product selector, then it triggers `OrderAction.updateOrder`
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                    case let .updateOrder(_, order, _, _, onCompletion):
+                        promise(order)
+                        onCompletion(.success(order))
+                    default:
+                        XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            productSelector.completeMultipleSelection()
+        }
+
+        // Then order to be updated remotely contains the expected items
+        XCTAssertEqual(orderToUpdate.items.count, 3)
+
+        let existingBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(existingBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(existingBundleOrderItem.bundleConfiguration, [])
+        XCTAssertEqual(existingBundleOrderItem.quantity, 2)
+
+        let existingChildBundleOrderItem = try XCTUnwrap(orderToUpdate.items[1])
+        XCTAssertEqual(existingChildBundleOrderItem.productID, itemProductID)
+        XCTAssertEqual(existingChildBundleOrderItem.quantity, 1)
+
+        let newNonBundleOrderItem = try XCTUnwrap(orderToUpdate.items[2])
+        XCTAssertEqual(newNonBundleOrderItem.productID, nonBundleProduct.productID)
+        XCTAssertEqual(newNonBundleOrderItem.quantity, 1)
+        XCTAssertEqual(newNonBundleOrderItem.itemID, .zero)
+    }
+
+    // No existing items —> select bundle A and configure, repeat selecting and configuring bundle A in product selector
+    // —> order items to update remotely: bundle A with bundle configuration, bundle A with bundle configuration
+    func test_when_no_existing_items_then_selecting_bundle_twice_results_in_two_bundle_items() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Product of the bundled item.
+        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+
+        // When entering the product selector
+        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // The child bundled item is not counted as a product in the product selector
+        XCTAssertEqual(productSelector.totalSelectedItemsCount, 0)
+
+        // When selecting the bundle product twice
+        let firstBundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 1, isOptionalAndSelected: true)
+        ]
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: firstBundleConfiguration,
+                                            viewModel: viewModel)
+
+        let secondBundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 5, isOptionalAndSelected: false)
+        ]
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: secondBundleConfiguration,
+                                            viewModel: viewModel)
+
+        // When completing the product selector, then it triggers `OrderAction.updateOrder`
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                    case let .updateOrder(_, order, _, _, onCompletion):
+                        promise(order)
+                        onCompletion(.success(order))
+                    default:
+                        XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            productSelector.completeMultipleSelection()
+        }
+
+        // Then order to be updated remotely contains the expected items
+        XCTAssertEqual(orderToUpdate.items.count, 2)
+
+        let firstNewBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(firstNewBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(firstNewBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 1, isOptionalAndSelected: true)])
+        XCTAssertEqual(firstNewBundleOrderItem.quantity, 1)
+
+        let secondNewBundleOrderItem = try XCTUnwrap(orderToUpdate.items[1])
+        XCTAssertEqual(secondNewBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(secondNewBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
+        XCTAssertEqual(secondNewBundleOrderItem.quantity, 1)
+    }
+
+    // No existing items —> select bundle A and configure in product selector -> close product selector
+    // —> select bundle A and configure in product selector
+    // —> order items to update remotely: bundle A with the latest bundle configuration
+    func test_selecting_bundle_then_canceling_then_selecting_bundle_again_results_in_one_bundle_item_with_the_latest_configuration() throws {
+        // Given
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        // Product of the bundled item.
+        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
+
+        // When entering the product selector
+        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // The child bundled item is not counted as a product in the product selector
+        XCTAssertEqual(productSelector.totalSelectedItemsCount, 0)
+
+        // When selecting the bundle product twice
+        let firstBundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 1, isOptionalAndSelected: true)
+        ]
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: firstBundleConfiguration,
+                                            viewModel: viewModel)
+        productSelector.closeButtonTapped()
+
+        let secondBundleConfiguration: [BundledProductConfiguration] = [
+            .init(bundledItemID: 2, productOrVariation: .product(id: 5), quantity: 5, isOptionalAndSelected: false)
+        ]
+        try selectAndConfigureBundleProduct(from: productSelector,
+                                            productID: bundleProduct.productID,
+                                            bundleConfiguration: secondBundleConfiguration,
+                                            viewModel: viewModel)
+
+        // When completing the product selector, then it triggers `OrderAction.updateOrder`
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                    case let .updateOrder(_, order, _, _, onCompletion):
+                        promise(order)
+                        onCompletion(.success(order))
+                    default:
+                        XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            productSelector.completeMultipleSelection()
+        }
+
+        // Then order to be updated remotely contains the expected items
+        XCTAssertEqual(orderToUpdate.items.count, 1)
+
+        let newBundleOrderItem = try XCTUnwrap(orderToUpdate.items[0])
+        XCTAssertEqual(newBundleOrderItem.productID, bundleProduct.productID)
+        XCTAssertEqual(newBundleOrderItem.bundleConfiguration, [.fake().copy(bundledItemID: 2, productID: 5, quantity: 5, isOptionalAndSelected: false)])
+        XCTAssertEqual(newBundleOrderItem.quantity, 1)
+    }
+}
+
+private extension EditableOrderViewModelTests {
+    func selectAndConfigureBundleProduct(from productSelector: ProductSelectorViewModel,
+                                         productID: Int64,
+                                         bundleConfiguration: [BundledProductConfiguration] = [
+                                            .init(bundledItemID: 1, productOrVariation: .product(id: 2), quantity: 5, isOptionalAndSelected: nil)
+                                         ],
+                                         viewModel: EditableOrderViewModel) throws {
+        let bundleProductRow = try XCTUnwrap(productSelector.productsSectionViewModels.first?.productRows
+            .first(where: { $0.productOrVariationID == productID }))
+        bundleProductRow.configure?()
+
+        // Then the configurable product view model becomes non-nil
+        let configurableProductViewModel = try XCTUnwrap(viewModel.productToConfigureViewModel)
+
+        // When saving the bundle configuration of the bundle product
+        configurableProductViewModel
+            .onConfigure(bundleConfiguration)
+    }
 }
 
 private extension MockStorageManager {
@@ -2583,6 +2858,34 @@ private extension MockStorageManager {
             product.update(with: readOnlyProduct)
             viewStorage.saveIfNeeded()
         }
+    }
+
+    @discardableResult
+    func insert(_ readOnlyProduct: Product) -> StorageProduct {
+        let product = viewStorage.insertNewObject(ofType: StorageProduct.self)
+        product.update(with: readOnlyProduct)
+        return product
+    }
+
+    func insert(_ readOnlyProductBundleItem: ProductBundleItem, for product: StorageProduct) {
+        let bundleItem = viewStorage.insertNewObject(ofType: StorageProductBundleItem.self)
+        bundleItem.update(with: readOnlyProductBundleItem)
+        bundleItem.product = product
+    }
+
+    func createAndInsertBundleProduct(siteID: Int64, productID: Int64, bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
+        let bundleProduct = Product.fake().copy(siteID: siteID,
+                                                productID: productID,
+                                                productTypeKey: ProductType.bundle.rawValue,
+                                                purchasable: true,
+                                                bundledItems: bundleItems)
+        let storageProduct = insert(bundleProduct)
+
+        bundleItems.forEach { bundleItem in
+            insert(bundleItem, for: storageProduct)
+        }
+
+        return bundleProduct
     }
 }
 

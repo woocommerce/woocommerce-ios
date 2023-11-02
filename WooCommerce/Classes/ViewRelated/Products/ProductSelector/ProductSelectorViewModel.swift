@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import Combine
 import Foundation
@@ -54,6 +55,8 @@ final class ProductSelectorViewModel: ObservableObject {
     /// Analytics service
     ///
     private let analytics: Analytics
+
+    private let featureFlagService: FeatureFlagService
 
     /// Store for publishers subscriptions
     ///
@@ -191,12 +194,15 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private let onCloseButtonTapped: (() -> Void)?
 
+    private let onConfigureProductRow: ((_ product: Product) -> Void)?
+
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
          onProductSelectionStateChanged: ((Product) -> Void)? = nil,
@@ -204,11 +210,13 @@ final class ProductSelectorViewModel: ObservableObject {
          onMultipleSelectionCompleted: (([Int64]) -> Void)? = nil,
          onAllSelectionsCleared: (() -> Void)? = nil,
          onSelectedVariationsCleared: (() -> Void)? = nil,
-         onCloseButtonTapped: (() -> Void)? = nil) {
+         onCloseButtonTapped: (() -> Void)? = nil,
+         onConfigureProductRow: ((_ product: Product) -> Void)? = nil) {
         self.siteID = siteID
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -218,6 +226,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
+        self.onConfigureProductRow = onConfigureProductRow
         tracker = ProductSelectorViewModelTracker(analytics: analytics, trackProductsSource: topProductsProvider != nil)
 
         topProductsFromCachedOrders = topProductsProvider?.provideTopProducts(siteID: siteID) ?? .empty
@@ -681,7 +690,15 @@ private extension ProductSelectorViewModel {
                     selectedState = .partiallySelected
                 }
             }
-            return ProductRowViewModel(product: product, canChangeQuantity: false, selectedState: selectedState)
+
+            let configure: (() -> Void)? = onConfigureProductRow == nil ? nil: { [weak self] in
+                self?.onConfigureProductRow?(product)
+            }
+            return ProductRowViewModel(product: product,
+                                       canChangeQuantity: false,
+                                       selectedState: selectedState,
+                                       featureFlagService: featureFlagService,
+                                       configure: configure)
         }
     }
 }

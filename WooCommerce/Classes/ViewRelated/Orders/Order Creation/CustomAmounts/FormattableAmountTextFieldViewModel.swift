@@ -23,9 +23,10 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         }
     }
 
-    /// When true, the amount will be reset with the new input instead of appending
+    /// When true, the amount will be reset with the new input instead of appending.
+    /// This is useful when we want to edit the amount with a new one, otherwise we would be appending non visible decimals.
     /// 
-    var resetAmountWithNewValue = false
+    private var resetAmountWithNewValue = false
 
     var amountIsValid: Bool {
         guard let amountDecimal = priceFieldFormatter.amountDecimal else {
@@ -54,5 +55,11 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
     func reset() {
         amount = ""
+    }
+
+    func presetAmount(_ newAmount: String) {
+        resetAmountWithNewValue = false
+        amount = newAmount
+        resetAmountWithNewValue = true
     }
 }

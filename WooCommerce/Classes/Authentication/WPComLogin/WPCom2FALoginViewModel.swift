@@ -46,8 +46,13 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
 
     func handleLogin() {
         isLoggingIn = true
-        loginFields.multifactorCode = strippedCode
-        loginFacade.signIn(with: loginFields)
+        if let nonceInfo = loginFields.nonceInfo {
+            let (authType, nonce) = nonceInfo.authTypeAndNonce(for: strippedCode)
+            loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: strippedCode, twoStepNonce: nonce)
+        } else {
+            loginFields.multifactorCode = strippedCode
+            loginFacade.signIn(with: loginFields)
+        }
     }
 
     func requestOneTimeCode() {

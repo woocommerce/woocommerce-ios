@@ -1,1 +1,5 @@
-Preparati a un aggiornamento entusiasmante! Se hai un'attività con sede nel Regno Unito, siamo felici di introdurre la nuova funzionalità Tap to Pay su iPhone, che rende i pagamenti più fluidi ed efficienti che mai. Ma non è tutto: ora tutti possono usare comodamente i tuoi passepartout memorizzati per accedere a WordPress.com, per rendere l'accesso un gioco da ragazzi.
+Siamo felici di presentare gli ultimi aggiornamenti.
+
+In questo aggiornamento, abbiamo migliorato l'esperienza Blaze in "Il mio negozio" per creare e gestire campagne più facilmente. Abbiamo anche rimosso un paio di bug nella nostra funzionalità Ordini: uno che mostrava un tooltip errato durante la creazione degli ordini e un altro che mostrava un valore totale scontato del prodotto impreciso in determinati scenari. La cosa interessante è che abbiamo aggiunto una nuova funzionalità che consente di aggiungere importi personalizzati agli ordini.
+
+Ci impegniamo a migliorare continuamente la nostra app per offrire un servizio migliore. Grazie per aver scelto WooCommerce.

@@ -1,1 +1,5 @@
-Prepare-se para uma atualização emocionante! Se você é um comerciante baseado no Reino Unido, estamos empolgados em apresentar o novo recurso Toque para Pagar no iPhone, tornando os pagamentos mais suaves e eficientes do que nunca. Mas isso não é tudo - agora todos podem desfrutar da conveniência de usar suas senhas armazenadas no login do WordPress.com, tornando o processo de login muito mais fácil.
+Estamos felizes em anunciar que temos novidades!
+
+Nesta atualização, aprimoramos a experiência em "Minha loja" no Blaze para simplificar ainda mais a criação e o gerenciamento de campanhas. Também eliminamos dois bugs na funcionalidade Pedidos: um mostrava a dica errada durante a criação de pedidos e o outro exibia um valor total com desconto incorreto para alguns produtos. E fica ainda melhor: adicionamos uma nova funcionalidade, que permite inserir valores personalizados nos seus pedidos.
+
+Temos o compromisso contínuo de aprimorar nosso aplicativo para melhor atender você. Obrigado por escolher o WooCommerce!

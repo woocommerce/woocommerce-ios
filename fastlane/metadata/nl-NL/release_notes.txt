@@ -1,1 +1,5 @@
-Bereid je voor op een spannende update! Als je een winkel in het Verenigd Koninkrijk hebt, zijn we verheugd om de nieuwe Tap to Pay functie voor de iPhone te introduceren, waardoor betalingen soepeler en efficiënter dan ooit verlopen. Maar dat is nog niet alles - iedereen kan nu genieten van het gemak van het gebruik van je opgeslagen passkeys in de WordPress.com login, waardoor het inlogproces een fluitje van een cent wordt.
+We kijken uit naar de nieuwste updates!
+
+In deze update hebben we de Blaze-ervaring in 'Mijn winkel' verbeterd voor gestroomlijnd campagnes aanmaken en beheren. We hebben ook een paar bugs geplet in de functie Bestellingen. Eentje die een onjuiste tooltip weergaf wanneer een bestelling werd aangemaakt, en een andere die een onjuiste korting gaf bij de totale waarde van producten in bepaalde situaties. We hebben, zo enthousiast als we waren, een nieuwe functie toegevoegd waarmee je aangepaste bedragen kan toevoegen aan je bestelling.
+
+We proberen onze app continu te verbeteren om jou beter van dienst te kunnen zijn. Bedankt dat je voor WooCommerce hebt gekozen!

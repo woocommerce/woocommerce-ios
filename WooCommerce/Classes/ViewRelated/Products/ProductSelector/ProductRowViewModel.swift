@@ -31,6 +31,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
+    /// Whether a product in an order item has a parent order item
+    let hasParentProduct: Bool
+
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -268,6 +271,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
+         hasParentProduct: Bool,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -289,6 +293,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.maximumQuantity = maximumQuantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
+        self.hasParentProduct = hasParentProduct
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -307,6 +312,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
+                     hasParentProduct: Bool = false,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -372,6 +378,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
+                  hasParentProduct: hasParentProduct,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,
@@ -390,6 +397,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
+                     hasParentProduct: Bool = false,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -415,6 +423,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
+                  hasParentProduct: hasParentProduct,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

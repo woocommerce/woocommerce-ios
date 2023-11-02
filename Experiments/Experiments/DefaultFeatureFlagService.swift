@@ -70,10 +70,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .shareProductAI:
             return true
-        case .ordersWithCouponsM4:
-            return true
-        case .ordersWithCouponsM6:
-            return true
         case .betterCustomerSelectionInOrder:
             return true
         case .manualTaxesInOrderM2:

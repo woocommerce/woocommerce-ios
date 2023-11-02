@@ -151,13 +151,6 @@ public enum FeatureFlag: Int {
     ///
     case shareProductAI
 
-    /// Enables the Milestone 4 of the Orders with Coupons project: Adding discounts to products
-    case ordersWithCouponsM4
-
-    /// Enables the Milestone 6 of the Orders with Coupons project: UX improvements
-    ///
-    case ordersWithCouponsM6
-
     /// Enables the improvements in the customer selection logic when creating an order
     /// 
     case betterCustomerSelectionInOrder

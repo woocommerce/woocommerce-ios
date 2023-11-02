@@ -454,20 +454,7 @@ private struct ProductsSection: View {
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
                         ConfigurableBundleProductView(viewModel: configurableProductViewModel)
                     }
-                    .renderedIf(viewModel.shouldShowCollapsibleProductRows)
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
-                    ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
-                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
-                        .onTapGesture {
-                            viewModel.selectOrderItem(productRow.id)
-                        }
-                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
-                            ProductInOrder(viewModel: productViewModel)
-                        }
-                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
-
-                    Divider()
-                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                 }
 
                 HStack {

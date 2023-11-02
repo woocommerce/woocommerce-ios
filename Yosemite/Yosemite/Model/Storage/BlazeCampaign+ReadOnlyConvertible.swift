@@ -23,7 +23,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func toReadOnly() -> BlazeCampaign {
         BlazeCampaign(siteID: siteID,
                       campaignID: campaignID,
-                      productID: 0, // TODO-11059: update storage
+                      productID: productID,
                       name: name,
                       uiStatus: rawStatus,
                       contentImageURL: contentImageURL,

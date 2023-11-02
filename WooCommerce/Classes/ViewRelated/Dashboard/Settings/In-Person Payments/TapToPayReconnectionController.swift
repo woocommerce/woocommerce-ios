@@ -103,13 +103,25 @@ final class TapToPayReconnectionController {
 
 private extension TapToPayReconnectionController {
     func reconnectToTapToPayReader() {
-        // If we already have a connection controller, there's a reconnection in progress.
+        let connectionController = builtInConnectionControllerForReconnection()
+
+        connectionController.searchAndConnect(onCompletion: { [weak self] result in
+            guard let self = self else { return }
+            self.adoptedConnectionCompletionHandler?(result)
+            self.reset()
+        })
+    }
+
+    func builtInConnectionControllerForReconnection() -> BuiltInCardReaderConnectionControlling {
+        // If we already have a connection controller, there may be a reconnection in progress.
         // Starting again now would result in an SDK failure, and lose our original reference to the controller.
-        guard connectionController == nil else {
-            return
+        // Reusing the connection controller will only cause a restart if the controller is idle,
+        // and will update the completion to this object's completion.
+        if let connectionController {
+            return connectionController
         }
 
-        connectionController = connectionControllerFactory.createConnectionController(
+        let connectionController = connectionControllerFactory.createConnectionController(
             forSiteID: siteID,
             alertsPresenter: silencingAlertsPresenter,
             configuration: configuration,
@@ -117,12 +129,9 @@ private extension TapToPayReconnectionController {
                                                                    siteID: siteID,
                                                                    connectionType: .automaticReconnection),
             allowTermsOfServiceAcceptance: false)
+        self.connectionController = connectionController
 
-        connectionController?.searchAndConnect(onCompletion: { [weak self] result in
-            guard let self = self else { return }
-            self.adoptedConnectionCompletionHandler?(result)
-            self.reset()
-        })
+        return connectionController
     }
 
     func reset() {

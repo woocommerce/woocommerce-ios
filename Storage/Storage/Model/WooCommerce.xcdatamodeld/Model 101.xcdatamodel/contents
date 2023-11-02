@@ -25,7 +25,7 @@
         <attribute name="contentClickURL" optional="YES" attributeType="String"/>
         <attribute name="contentImageURL" optional="YES" attributeType="String"/>
         <attribute name="name" attributeType="String" defaultValueString=""/>
-        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="productID" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="rawStatus" attributeType="String" defaultValueString=""/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="totalBudget" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>

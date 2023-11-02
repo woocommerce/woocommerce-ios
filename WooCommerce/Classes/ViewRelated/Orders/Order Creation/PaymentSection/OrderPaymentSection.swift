@@ -208,7 +208,10 @@ private extension OrderPaymentSection {
     @ViewBuilder var appliedCouponsRows: some View {
         VStack {
             ForEach(viewModel.couponLineViewModels, id: \.title) { viewModel in
-                TitleAndValueRow(title: viewModel.title, value: .content(viewModel.discount), selectionStyle: .highlight) {
+                TitleAndValueRow(title: viewModel.title,
+                                 titleSuffixImage: rowsEditImage,
+                                 value: .content(viewModel.discount),
+                                 selectionStyle: editableRowsSelectionStyle) {
                     selectedCouponLineDetailsViewModel = viewModel.detailsViewModel
                 }
             }
@@ -230,7 +233,10 @@ private extension OrderPaymentSection {
     }
 
     @ViewBuilder var existingShippingRow: some View {
-        TitleAndValueRow(title: Localization.shippingTotal, value: .content(viewModel.shippingTotal), selectionStyle: .highlight) {
+        TitleAndValueRow(title: Localization.shippingTotal,
+                         titleSuffixImage: rowsEditImage,
+                         value: .content(viewModel.shippingTotal),
+                         selectionStyle: editableRowsSelectionStyle) {
             shouldShowShippingLineDetails = true
         }
         .renderedIf(viewModel.shouldShowShippingTotal)
@@ -398,6 +404,14 @@ private extension OrderPaymentSection {
             .padding(.bottom, Constants.orderTotalBottomPadding)
             .renderedIf(!viewModel.orderIsEmpty)
 
+    }
+
+    var rowsEditImage: Image? {
+        viewModel.showNonEditableIndicators ? nil : Image(systemName: "pencil")
+    }
+
+    var editableRowsSelectionStyle: TitleAndValueRow.SelectionStyle {
+        viewModel.showNonEditableIndicators ? .none : .highlight
     }
 }
 

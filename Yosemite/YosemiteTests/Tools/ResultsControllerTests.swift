@@ -388,6 +388,43 @@ final class ResultsControllerTests: XCTestCase {
         // Then
         XCTAssertNil(readonlyAccount)
     }
+
+    // MARK: Fetch limit
+
+    func test_fetchLimit_fetches_the_specified_count() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "A", username: "one"),
+            insertAccount(displayName: "B", username: "two"),
+            insertAccount(displayName: "C", username: "three"),
+        ]
+
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   fetchLimit: 1,
+                                                                   sortedBy: [sampleSortDescriptor])
+        try resultsController.performFetch()
+
+        // Then
+        XCTAssertEqual(resultsController.fetchedObjects.count, 1)
+    }
+
+    func test_all_matching_objects_are_fetched_when_fetchLimit_not_specified() throws {
+        // Given
+        let _ = [
+            insertAccount(displayName: "A", username: "one"),
+            insertAccount(displayName: "B", username: "two"),
+            insertAccount(displayName: "C", username: "three"),
+        ]
+
+        let resultsController = ResultsController<Storage.Account>(viewStorage: viewStorage,
+                                                                   sectionNameKeyPath: #keyPath(Storage.Account.displayName),
+                                                                   sortedBy: [sampleSortDescriptor])
+        try resultsController.performFetch()
+
+        // Then
+        XCTAssertEqual(resultsController.fetchedObjects.count, 3)
+    }
 }
 
 // MARK: - Utils

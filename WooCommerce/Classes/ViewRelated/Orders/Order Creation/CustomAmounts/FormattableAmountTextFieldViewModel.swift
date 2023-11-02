@@ -24,7 +24,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     }
 
     /// When true, the amount will be reset with the new input instead of appending
-    /// 
+    ///
     var resetAmountWithNewValue = false
 
     var amountIsValid: Bool {

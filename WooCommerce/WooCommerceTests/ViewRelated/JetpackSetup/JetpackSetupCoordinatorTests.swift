@@ -5,11 +5,9 @@ import enum Alamofire.AFError
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
 
-    private var stores: MockStoresManager!
     private var navigationController: UINavigationController!
 
     override func setUp() {
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
 
         let window = UIWindow(frame: UIScreen.main.bounds)
@@ -20,7 +18,6 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
     }
 
     override func tearDown() {
-        stores = nil
         navigationController = nil
         super.tearDown()
     }
@@ -115,6 +112,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)
@@ -144,6 +142,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)
@@ -190,6 +189,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
                 break
             }
         }
+        stores.mockJetpackCheck()
 
         // When
         _ = coordinator.handleAuthenticationUrl(url)
@@ -200,5 +200,20 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
         assertEqual(expectedSite.siteID, stores.sessionManager.defaultStoreID)
         assertEqual(expectedAccount, stores.sessionManager.defaultAccount)
+    }
+}
+
+private extension MockStoresManager {
+    func mockJetpackCheck(isJetpackInstalled: Bool = false,
+                          isJetpackActive: Bool = false) {
+        whenReceivingAction(ofType: SystemStatusAction.self) { action in
+            switch action {
+            case let .synchronizeSystemPlugins(_, onCompletion):
+                onCompletion(.success([.fake().copy(name: isJetpackInstalled ? "Jetpack" : "Plugin", active: isJetpackActive)]))
+            default:
+                break
+            }
+        }
+
     }
 }

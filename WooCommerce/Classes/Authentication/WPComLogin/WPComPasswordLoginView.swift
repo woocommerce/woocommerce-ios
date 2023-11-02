@@ -4,10 +4,16 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
-    init(viewModel: WPComPasswordLoginViewModel,
-         onMagicLinkRequest: @escaping (String) async -> Void) {
-        super.init(rootView: WPComPasswordLoginView(viewModel: viewModel,
-                                                    onMagicLinkRequest: onMagicLinkRequest))
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
+
+    init(title: String,
+         isJetpackSetup: Bool,
+         viewModel: WPComPasswordLoginViewModel) {
+        self.isJetpackSetup = isJetpackSetup
+        super.init(rootView: WPComPasswordLoginView(title: title,
+                                                    isJetpackSetup: isJetpackSetup,
+                                                    viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -22,7 +28,7 @@ final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswo
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -35,21 +41,28 @@ struct WPComPasswordLoginView: View {
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
-    private let onMagicLinkRequest: (String) async -> Void
+    /// Title to display at the top of the view.
+    private let title: String
 
-    init(viewModel: WPComPasswordLoginViewModel,
-         onMagicLinkRequest: @escaping (String) async -> Void) {
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
+
+    init(title: String,
+         isJetpackSetup: Bool = false,
+         viewModel: WPComPasswordLoginViewModel) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
-        self.onMagicLinkRequest = onMagicLinkRequest
     }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // Title
-                Text(viewModel.titleString)
+                Text(title)
                     .largeTitleStyle()
 
                 // Avatar and email
@@ -99,7 +112,9 @@ struct WPComPasswordLoginView: View {
                 // Primary CTA
                 Button(Localization.primaryAction) {
                     viewModel.handleLogin()
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .password, tap: .submit))
+                    }
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
                 .disabled(viewModel.password.isEmpty)
@@ -108,7 +123,7 @@ struct WPComPasswordLoginView: View {
                 Button(Localization.secondaryAction) {
                     Task { @MainActor in
                         isSecondaryButtonLoading = true
-                        await onMagicLinkRequest(viewModel.email)
+                        await viewModel.requestMagicLink()
                         isSecondaryButtonLoading = false
                     }
                 }
@@ -155,12 +170,13 @@ private extension WPComPasswordLoginView {
 
 struct WPComPasswordLoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComPasswordLoginView(viewModel: .init(siteURL: "https://example.com",
+        WPComPasswordLoginView(title: "Install Jetpack",
+                               isJetpackSetup: true,
+                               viewModel: .init(siteURL: "https://example.com",
                                                 email: "test@example.com",
-                                                requiresConnectionOnly: true,
+                                                onMagicLinkRequest: { _ in },
                                                 onMultifactorCodeRequest: { _ in },
                                                 onLoginFailure: { _ in },
-                                                onLoginSuccess: { _ in }),
-                               onMagicLinkRequest: { _ in })
+                                                onLoginSuccess: { _ in }))
     }
 }

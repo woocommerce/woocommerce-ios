@@ -4,14 +4,10 @@ import UIKit
 ///
 final class WPComMagicLinkViewModel {
 
-    /// Title for `WPComMagicLinkView`
-    let titleString: String
-
     /// Text for the instruction
     let instructionString: NSAttributedString
 
-    init(email: String, requiresConnectionOnly: Bool) {
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+    init(email: String) {
         self.instructionString = {
             let font: UIFont = .body
             let boldFont: UIFont = font.bold
@@ -35,14 +31,6 @@ final class WPComMagicLinkViewModel {
 
 extension WPComMagicLinkViewModel {
     enum Localization {
-        static let installJetpack = NSLocalizedString(
-            "Install Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not installed yet"
-        )
-        static let connectJetpack = NSLocalizedString(
-            "Connect Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not connected yet"
-        )
         static let sentLink = NSLocalizedString(
             "We just sent a magic link to %@",
             comment: "Instruction on the magic link screen of the WPCom login flow during Jetpack setup. " +

@@ -28,6 +28,11 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     // TODO: 10428 - only enable configure CTA when all bundle items are configured
     @Published private(set) var isConfigureEnabled: Bool = true
 
+    @Published private(set) var errorMessage: String?
+
+    /// View models for placeholder rows.
+    let placeholderItemViewModels: [ConfigurableBundleItemViewModel]
+
     /// Closure invoked when the configure CTA is tapped to submit the configuration.
     /// If there are no changes to the configuration, the closure is not invoked.
     let onConfigure: (_ configurations: [BundledProductConfiguration]) -> Void
@@ -53,6 +58,26 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         self.childItems = childItems
         self.stores = stores
         self.onConfigure = onConfigure
+        // The content does not matter because the text in placeholder rows is redacted.
+        placeholderItemViewModels = [Int64](0..<3).map { _ in
+                .init(bundleItem: .init(bundledItemID: 0,
+                                        productID: 0,
+                                        menuOrder: 0,
+                                        title: "   ",
+                                        stockStatus: .inStock,
+                                        minQuantity: 0,
+                                        maxQuantity: nil,
+                                        defaultQuantity: 0,
+                                        isOptional: true,
+                                        overridesVariations: false,
+                                        allowedVariations: [],
+                                        overridesDefaultVariationAttributes: false,
+                                        defaultVariationAttributes: []),
+                      product: product,
+                      variableProductSettings: nil,
+                      existingOrderItem: nil)
+        }
+
         loadProductsAndCreateItemViewModels()
     }
 
@@ -72,18 +97,25 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         }
         onConfigure(configurations)
     }
+
+    /// Invoked when the retry CTA is tapped.
+    func retry() {
+        loadProductsAndCreateItemViewModels()
+    }
 }
 
 private extension ConfigurableBundleProductViewModel {
     func loadProductsAndCreateItemViewModels() {
+        errorMessage = nil
+
         Task { @MainActor in
             do {
                 // When there is a long list of bundle items, products are loaded in a paginated way.
                 let products = try await loadProducts(from: product.bundledItems)
                 createItemViewModels(products: products)
             } catch {
-                // TODO: 10428 - handle error loading products for bundle items
-                DDLogError("⛔️ Error loading products for bundle product items in order form:  \(error)")
+                DDLogError("⛔️ Error loading products for bundle product items in order form: \(error)")
+                errorMessage = Localization.errorLoadingProducts
             }
         }
     }
@@ -144,5 +176,15 @@ private extension ConfigurableBundleProductViewModel {
                 continuation.resume(with: result)
             })
         }
+    }
+}
+
+private extension ConfigurableBundleProductViewModel {
+    enum Localization {
+        static let errorLoadingProducts = NSLocalizedString(
+            "configureBundleProductError.cannotLoadProducts",
+            value: "Cannot load the bundled products. Please try again.",
+            comment: "Error message when the products cannot be loaded in the bundle product configuration form."
+        )
     }
 }

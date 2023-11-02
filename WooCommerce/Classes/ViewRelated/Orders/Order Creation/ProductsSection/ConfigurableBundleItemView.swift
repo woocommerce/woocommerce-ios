@@ -34,12 +34,26 @@ struct ConfigurableBundleItemView: View {
                 viewModel.createVariationSelectorViewModel()
                 showsVariationSelector = true
             } label: {
-                Text(Localization.selectVariation)
+                Text(viewModel.selectedVariation == nil ?
+                     Localization.selectVariation: Localization.updateVariation)
             }
             .renderedIf(viewModel.isVariable)
 
             if let selectedVariation = viewModel.selectedVariation {
-                Text(selectedVariation.attributes.map { "\($0.name): \($0.option)" }.joined(separator: ", "))
+                Spacer()
+                    .frame(height: Layout.defaultPadding)
+
+                ForEach(selectedVariation.attributes, id: \.name) { attribute in
+                    HStack {
+                        Text(attribute.name)
+                            .bold()
+                        Text(attribute.option)
+                    }
+                }
+
+                ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
+                    ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
+                }
             }
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
@@ -57,6 +71,10 @@ struct ConfigurableBundleItemView: View {
 }
 
 private extension ConfigurableBundleItemView {
+    enum Layout {
+        static let defaultPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let add = NSLocalizedString(
             "configureBundleItem.add",
@@ -67,6 +85,11 @@ private extension ConfigurableBundleItemView {
             "configureBundleItem.selectVariation",
             value: "Select variation",
             comment: "Action to select a variation for a bundle item when it is variable."
+        )
+        static let updateVariation = NSLocalizedString(
+            "configureBundleItem.updateVariation",
+            value: "Update variation",
+            comment: "Action to update a variation for a bundle item when it is variable."
         )
     }
 }

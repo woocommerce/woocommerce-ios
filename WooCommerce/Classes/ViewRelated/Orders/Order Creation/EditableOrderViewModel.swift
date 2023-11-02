@@ -1203,10 +1203,12 @@ private extension EditableOrderViewModel {
         let productCount = addedItemsToSync.count - removedItemsToSync.count
 
         if addedItemsToSync.isNotEmpty {
+            let includesBundleProductConfiguration = addedItemsToSync.contains(where: { $0.bundleConfiguration.isNotEmpty })
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow,
                                                                             source: .orderCreation,
                                                                             addedVia: .manually,
-                                                                            productCount: productCount))
+                                                                            productCount: productCount,
+                                                                            includesBundleProductConfiguration: includesBundleProductConfiguration))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -1935,8 +1937,9 @@ extension EditableOrderViewModel {
             case let .success(result):
                 Task { @MainActor in
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
-                                                                                    source: .orderCreation,
-                                                                                    addedVia: .scanning))
+                                                                                         source: .orderCreation,
+                                                                                         addedVia: .scanning,
+                                                                                         includesBundleProductConfiguration: false))
                     self.updateOrderWithBaseItem(result)
                     onCompletion(.success(()))
                 }

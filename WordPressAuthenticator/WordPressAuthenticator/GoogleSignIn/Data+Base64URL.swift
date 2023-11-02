@@ -1,4 +1,4 @@
-extension Data {
+public extension Data {
 
     /// "base64url" is an encoding that is safe to use with URLs.
     /// It is defined in RFC 4648, section 5.

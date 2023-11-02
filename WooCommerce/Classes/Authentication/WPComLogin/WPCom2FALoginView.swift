@@ -86,19 +86,20 @@ struct WPCom2FALoginView: View {
                     if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Label(Localization.textMeACode, systemImage: "iphone")
+                        Label(Localization.textMeACode, systemImage: "platter.filled.top.iphone")
                             .linkStyle()
                     }
                 })
 
-                // Security key button
-                Button {
-                    viewModel.loginWithSecurityKey()
-                } label: {
-                    Label(Localization.securityKey, systemImage: "key.horizontal")
-                        .linkStyle()
+                if #available(iOS 16, *), viewModel.shouldEnableSecurityKeyOption {
+                    // Security key button
+                    Button {
+                        viewModel.loginWithSecurityKey()
+                    } label: {
+                        Label(Localization.securityKey, systemImage: "key.horizontal")
+                            .linkStyle()
+                    }
                 }
-                .renderedIf(viewModel.shouldEnableSecurityKeyOption)
 
                 Spacer()
             }

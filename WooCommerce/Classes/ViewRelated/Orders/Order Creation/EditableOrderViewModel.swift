@@ -134,6 +134,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var autodismissableNotice: Notice?
 
+    /// Optional view model for configurable a bundle product from the product selector.
+    /// When the value is non-nil, the bundle product configuration screen is shown.
+    @Published var productToConfigureViewModel: ConfigurableBundleProductViewModel?
+
     // MARK: Status properties
 
     /// Order creation date. For new order flow it's always current date.
@@ -217,7 +221,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     /// If both products and custom amounts lists are empty we don't split their sections
-    /// 
+    ///
     var shouldSplitProductsAndCustomAmountsSections: Bool {
         productRows.isNotEmpty || customAmountRows.isNotEmpty
     }
@@ -397,6 +401,10 @@ final class EditableOrderViewModel: ObservableObject {
         orderSynchronizer.order.items
     }
 
+    /// Keeps track of the list of bundle configurations by product ID from the product selector since bundle product
+    /// is configured outside of the product selector.
+    private var productSelectorBundleConfigurationsByProductID: [Int64: [[BundledProductConfiguration]]] = [:]
+
     /// Analytics engine.
     ///
     private let analytics: Analytics
@@ -481,6 +489,7 @@ final class EditableOrderViewModel: ObservableObject {
     private func clearAllSelectedItems() {
         selectedProducts.removeAll()
         selectedProductVariations.removeAll()
+        productSelectorBundleConfigurationsByProductID = [:]
     }
 
     private func trackClearAllSelectedItemsTapped() {
@@ -525,6 +534,13 @@ final class EditableOrderViewModel: ObservableObject {
             }, onCloseButtonTapped: { [weak self] in
                 guard let self = self else { return }
                 self.syncOrderItemSelectionStateOnDismiss()
+            }, onConfigureProductRow: { [weak self] product in
+                guard let self else { return }
+                productToConfigureViewModel = .init(product: product, childItems: [], onConfigure: { [weak self] configuration in
+                    guard let self else { return }
+                    self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                    self.productToConfigureViewModel = nil
+                })
             })
     }
 
@@ -600,6 +616,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes),
+                                       hasParentProduct: item.parent != nil,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -612,6 +629,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
+                                       hasParentProduct: item.parent != nil,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -1111,14 +1129,25 @@ private extension EditableOrderViewModel {
 
         for product in products {
             // Only perform the operation if the product has not been already added to the existing Order
-            if !itemsInOrder.contains(where: { $0.productID == product.productID }) {
-                productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+            if !itemsInOrder.contains(where: { $0.productID == product.productID && $0.parent == nil })
+                || productSelectorBundleConfigurationsByProductID[product.productID]?.isNotEmpty == true {
+                switch product.productType {
+                    case .bundle:
+                        if let bundleConfiguration = productSelectorBundleConfigurationsByProductID[product.productID]?.popFirst() {
+                            productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1, bundleConfiguration: bundleConfiguration))
+                        } else {
+                            productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+                        }
+                    default:
+                        productInputs.append(OrderSyncProductInput(product: .product(product), quantity: 1))
+                }
             }
         }
+        productSelectorBundleConfigurationsByProductID = [:]
 
         for variation in variations {
             // Only perform the operation if the variation has not been already added to the existing Order
-            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID }) {
+            if !itemsInOrder.contains(where: { $0.productOrVariationID == variation.productVariationID && $0.parent == nil }) {
                 productVariationInputs.append(OrderSyncProductInput(product: .variation(variation), quantity: 1))
             }
         }
@@ -1139,7 +1168,7 @@ private extension EditableOrderViewModel {
 
         // Products to be removed from the Order
         let removeProducts = itemsInOrder.filter { item in
-            return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID })
+            return item.variationID == 0 && !products.contains(where: { $0?.productID == item.productID }) && item.parent == nil
         }
 
         // Variations to be removed from the Order
@@ -1706,7 +1735,15 @@ private extension EditableOrderViewModel {
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
             let childItems = items.filter { $0.parent == item.itemID }
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
+            // If the parent product is a bundle product, quantity cannot be changed.
+            let canChangeQuantity: Bool = {
+                guard let parentItem = items.first(where: { $0.itemID == item.parent }),
+                      let parentProduct = allProducts.first(where: { $0.productID == parentItem.productID }) else {
+                    return true
+                }
+                return parentProduct.productType != .bundle
+            }()
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: canChangeQuantity) else {
                 return nil
             }
 
@@ -1723,6 +1760,12 @@ private extension EditableOrderViewModel {
 
             return productRowViewModel
         }
+    }
+
+    func saveBundleConfigurationFromProductSelector(product: Product, bundleConfiguration: [BundledProductConfiguration]) {
+        productSelectorBundleConfigurationsByProductID[product.productID] = (productSelectorBundleConfigurationsByProductID[product.productID] ?? [])
+        + [bundleConfiguration]
+        selectedProducts.append(product)
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {
@@ -1769,11 +1812,11 @@ private extension EditableOrderViewModel {
 
         let _ = orderSynchronizer.order.items.map { item in
             if item.variationID != 0 {
-                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID }) {
+                if let variation = allProductVariations.first(where: { $0.productVariationID == item.variationID && item.parent == nil }) {
                     selectedProductVariations.append(variation)
                 }
             } else {
-                if let product = allProducts.first(where: { $0.productID == item.productID }) {
+                if let product = allProducts.first(where: { $0.productID == item.productID && item.parent == nil }) {
                     selectedProducts.append(product)
                 }
             }

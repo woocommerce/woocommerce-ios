@@ -205,12 +205,22 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: true,
-                       viewModel: rowViewModel)
+            HStack {
+                ProductRow(multipleSelectionsEnabled: true,
+                           viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
-                .onTapGesture {
+
+                Text(Localization.configureButton)
+                    .linkStyle()
+                    .renderedIf(rowViewModel.isConfigurable)
+            }
+            .onTapGesture {
+                if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
+                    configure()
+                } else {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                 }
+            }
         }
     }
 }
@@ -244,6 +254,11 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
+        static let configureButton = NSLocalizedString(
+            "productSelector.configureProductRow",
+            value: "Configure",
+            comment: "Action to configure a product row in the product selector."
+        )
     }
 }
 

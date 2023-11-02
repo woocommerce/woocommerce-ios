@@ -56,13 +56,9 @@ private struct OrderCustomerSectionContent: View {
                         .headlineStyle()
                     Spacer()
 
-                    Button(Localization.editButton) {
+                    PencilEditButton() {
                         showAddressForm.toggle()
                     }
-                    .buttonStyle(LinkButtonStyle())
-                    .fixedSize(horizontal: true, vertical: true)
-                    .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
-                    .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
                     .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 }
             }
@@ -121,15 +117,12 @@ private extension OrderCustomerSectionContent {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
-        static let linkButtonTopPadding: CGFloat = 12.0
-        static let linkButtonTrailingPadding: CGFloat = 22.0
     }
 
     enum Localization {
         static let customer = NSLocalizedString("Customer", comment: "Title text of the section that shows Customer details when creating a new order")
         static let addCustomerDetails = NSLocalizedString("Add Customer Details",
                                                           comment: "Title text of the button that adds customer data when creating a new order")
-        static let editButton = NSLocalizedString("Edit", comment: "Button to edit a customer on the New Order screen")
         static let editButtonAccessibilityLabel = NSLocalizedString(
             "Edit Customer Details",
             comment: "Accessibility label for the button to edit customer details on the New Order screen"

@@ -15,12 +15,12 @@ struct ConfigurableBundleItemView: View {
                 Button {
                     viewModel.isOptionalAndSelected.toggle()
                 } label: {
-                    Image(uiImage: viewModel.isOptionalAndSelected ?
+                    Image(uiImage: viewModel.isOptionalAndSelected || !viewModel.isOptional ?
                         .checkCircleImage.withRenderingMode(.alwaysTemplate):
                             .checkEmptyCircleImage)
-                        .foregroundColor(.init(.brand))
+                    .foregroundColor(.init(viewModel.isOptional ? .accent: .placeholderImage))
                 }
-                    .renderedIf(viewModel.isOptional)
+                .disabled(!viewModel.isOptional)
 
                 ProductRow(viewModel: viewModel.productRowViewModel)
             }
@@ -75,10 +75,16 @@ private extension ConfigurableBundleItemView {
 
 struct ConfigurableBundleItemView_Previews: PreviewProvider {
     static var previews: some View {
-        ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample(),
-                                                    product: .swiftUIPreviewSample(),
-                                                    variableProductSettings: nil,
-                                                    existingOrderItem: nil))
+        VStack {
+            ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: false),
+                                                        product: .swiftUIPreviewSample(),
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil))
+            ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: true),
+                                                        product: .swiftUIPreviewSample(),
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil))
+        }
     }
 }
 

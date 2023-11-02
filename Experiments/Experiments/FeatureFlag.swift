@@ -167,10 +167,6 @@ public enum FeatureFlag: Int {
     ///
     case hazmatShipping
 
-    /// Enables a required refresh of the order before each IPP payment (or retry)
-    ///
-    case refreshOrderBeforeInPersonPayment
-
     /// Enables product creation with AI.
     ///
     case productCreationAI

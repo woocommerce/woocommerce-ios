@@ -231,10 +231,6 @@ private extension CollectOrderPaymentUseCase {
     func checkOrderIsStillEligibleForPayment(alertProvider paymentAlerts: CardReaderTransactionAlertsProviding,
                                              onPaymentCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> (),
                                              onCheckCompletion: @escaping (Result<Void, Error>) -> Void) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refreshOrderBeforeInPersonPayment) else {
-            return onCheckCompletion(.success(()))
-        }
-
         alertsPresenter.present(viewModel: paymentAlerts.validatingOrder(onCancel: { [weak self] in
             self?.cancelPayment(from: .paymentValidatingOrder) {
                 onPaymentCompletion(.failure(CollectOrderPaymentUseCaseError.flowCanceledByUser))

@@ -32,7 +32,7 @@ final class WPComLoginCoordinator {
     @MainActor
     func start(with email: String) async {
         do {
-            let passwordless = try await checkWordPressComAccount(email: email)
+            let passwordless = try await checkPasswordlessAccount(email: email)
             await startAuthentication(email: email, isPasswordlessAccount: passwordless)
         } catch {
             showAlert(message: error.localizedDescription)
@@ -132,7 +132,7 @@ private extension WPComLoginCoordinator {
 // MARK: - Private helpers
 private extension WPComLoginCoordinator {
     @MainActor
-    func checkWordPressComAccount(email: String) async throws -> Bool {
+    func checkPasswordlessAccount(email: String) async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
             accountService.isPasswordlessAccount(username: email, success: { passwordless in
                 continuation.resume(returning: passwordless)

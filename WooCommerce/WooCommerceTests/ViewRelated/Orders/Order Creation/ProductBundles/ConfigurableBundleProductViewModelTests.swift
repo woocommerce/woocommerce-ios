@@ -15,6 +15,50 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_errorMessage_is_set_when_retrieveProducts_fails() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(productID: 2)
+        ])
+        mockProductsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+
+        // Then
+        waitUntil {
+            viewModel.errorMessage != nil
+        }
+    }
+
+    func test_errorMessage_is_reset_when_retrieveProducts_fails_then_succeeds_after_retry() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(productID: 2)
+        ])
+        mockProductsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.errorMessage != nil
+        }
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        viewModel.retry()
+
+        // Then
+        waitUntil {
+            viewModel.errorMessage == nil
+        }
+    }
+
     func test_configure_invokes_onConfigure_if_configuration_is_changed() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [

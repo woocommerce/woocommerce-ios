@@ -50,10 +50,9 @@ private struct CustomerNoteSectionContent: View {
                     .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
                 Spacer()
-                if viewModel.customerNote.isNotEmpty {
-                    createEditNotesButton()
-                }
+                createEditNotesButton()
             }.padding([.leading, .top, .trailing])
+            .renderedIf(viewModel.customerNote.isNotEmpty)
 
             if viewModel.customerNote.isEmpty {
                 createOrderNotesView()
@@ -63,7 +62,6 @@ private struct CustomerNoteSectionContent: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-        .addingTopAndBottomDividers()
     }
 
     private func createEditNotesButton() -> some View {

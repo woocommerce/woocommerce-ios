@@ -5,12 +5,28 @@ public struct WooPaymentsDepositsOverview: Codable, GeneratedFakeable, Generated
     public let deposit: WooPaymentsCurrencyDeposits
     public let balance: WooPaymentsCurrencyBalances
     public let account: WooPaymentsAccountDepositSummary
+
+    public init(deposit: WooPaymentsCurrencyDeposits,
+                balance: WooPaymentsCurrencyBalances,
+                account: WooPaymentsAccountDepositSummary) {
+        self.deposit = deposit
+        self.balance = balance
+        self.account = account
+    }
 }
 
 public struct WooPaymentsCurrencyDeposits: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let lastPaid: [WooPaymentsDeposit]
     public let nextScheduled: [WooPaymentsDeposit]
     public let lastManualDeposits: [WooPaymentsManualDeposit]
+
+    public init(lastPaid: [WooPaymentsDeposit],
+                nextScheduled: [WooPaymentsDeposit],
+                lastManualDeposits: [WooPaymentsManualDeposit]) {
+        self.lastPaid = lastPaid
+        self.nextScheduled = nextScheduled
+        self.lastManualDeposits = lastManualDeposits
+    }
 
     enum CodingKeys: String, CodingKey {
         case lastPaid = "last_paid"
@@ -32,6 +48,30 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
     public let feePercentage: Int
     public let created: Int
 
+    public init(id: String,
+                date: Date,
+                type: WooPaymentsDepositType,
+                amount: Int,
+                status: WooPaymentsDepositStatus,
+                bankAccount: String?,
+                currency: String,
+                automatic: Bool,
+                fee: Int,
+                feePercentage: Int,
+                created: Int) {
+        self.id = id
+        self.date = date
+        self.type = type
+        self.amount = amount
+        self.status = status
+        self.bankAccount = bankAccount
+        self.currency = currency
+        self.automatic = automatic
+        self.fee = fee
+        self.feePercentage = feePercentage
+        self.created = created
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case date
@@ -50,6 +90,11 @@ public struct WooPaymentsDeposit: Codable, GeneratedFakeable, GeneratedCopiable,
 public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let currency: String
     public let date: Date
+
+    public init(currency: String, date: Date) {
+        self.currency = currency
+        self.date = date
+    }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -76,7 +121,7 @@ public struct WooPaymentsManualDeposit: Codable, GeneratedFakeable, GeneratedCop
 /// originates from 
 // https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/server/
 // wp-content/rest-api-plugins/endpoints/wcpay/class-deposits-controller.php#L753
-public enum WooPaymentsDepositType: String, Codable, Equatable {
+public enum WooPaymentsDepositType: String, Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     case withdrawal
     case deposit
 }
@@ -85,7 +130,7 @@ public enum WooPaymentsDepositType: String, Codable, Equatable {
 /// with additions in WooPayments e.g. 
 // https://github.com/Automattic/woocommerce-payments-server/blob/899963c61d9ad1c1aa5306087b8bb7ea253e66a0/
 // server/wp-content/rest-api-plugins/endpoints/wcpay/utils/class-deposit-utils.php#L141
-public enum WooPaymentsDepositStatus: String, Codable, Equatable {
+public enum WooPaymentsDepositStatus: String, Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     case estimated
     case pending
     case inTransit = "in_transit"
@@ -98,6 +143,12 @@ public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, Generated
     public let pending: [WooPaymentsBalance]
     public let available: [WooPaymentsBalance]
     public let instant: [WooPaymentsBalance]
+
+    public init(pending: [WooPaymentsBalance], available: [WooPaymentsBalance], instant: [WooPaymentsBalance]) {
+        self.pending = pending
+        self.available = available
+        self.instant = instant
+    }
 }
 
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -105,6 +156,13 @@ public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable,
     public let currency: String
     public let sourceTypes: WooPaymentsSourceTypes
     public let depositsCount: Int?
+
+    public init(amount: Int, currency: String, sourceTypes: WooPaymentsSourceTypes, depositsCount: Int?) {
+        self.amount = amount
+        self.currency = currency
+        self.sourceTypes = sourceTypes
+        self.depositsCount = depositsCount
+    }
 
     public enum CodingKeys: String, CodingKey {
         case amount
@@ -117,6 +175,10 @@ public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable,
 public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let card: Int
     // TODO: find out other possible source types, or remove
+
+    public init(card: Int) {
+        self.card = card
+    }
 }
 
 public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
@@ -124,6 +186,16 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
     public let depositsBlocked: Bool
     public let depositsSchedule: WooPaymentsDepositsSchedule
     public let defaultCurrency: String
+
+    public init(depositsEnabled: Bool,
+                depositsBlocked: Bool,
+                depositsSchedule: WooPaymentsDepositsSchedule,
+                defaultCurrency: String) {
+        self.depositsEnabled = depositsEnabled
+        self.depositsBlocked = depositsBlocked
+        self.depositsSchedule = depositsSchedule
+        self.defaultCurrency = defaultCurrency
+    }
 
     public enum CodingKeys: String, CodingKey {
         case depositsEnabled = "deposits_enabled"
@@ -136,6 +208,11 @@ public struct WooPaymentsAccountDepositSummary: Codable, GeneratedFakeable, Gene
 public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let delayDays: Int
     public let interval: WooPaymentsDepositInterval
+
+    public init(delayDays: Int, interval: WooPaymentsDepositInterval) {
+        self.delayDays = delayDays
+        self.interval = interval
+    }
 
     enum CodingKeys: String, CodingKey {
         case delayDays = "delay_days"
@@ -176,7 +253,7 @@ public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, Generated
 }
 
 /// originally from https://stripe.com/docs/api/accounts/object#account_object-settings-payouts-schedule-interval
-public enum WooPaymentsDepositInterval: Equatable {
+public enum WooPaymentsDepositInterval: Equatable, GeneratedFakeable, GeneratedCopiable {
     case daily
     case weekly(anchor: Weekday)
     case monthly(anchor: Int)

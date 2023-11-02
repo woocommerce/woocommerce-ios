@@ -1,15 +1,14 @@
 {
     "request": {
-        "method": "GET",
+        "method": "POST",
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
-        "queryParameters": {
-            "json": {
-                "equalTo": "true"
-            },
-            "path": {
-                "matches": "/wc/v3/orders/3337&_method=get"
-            }
-        }
+        "bodyPatterns": [
+            { "matches": ".*path=/wc/v3/orders/3337%26_method%3Dpost.*" },
+            { "contains": "%22product_id%22%3A2130" },
+            { "contains": "%22name%22%3A%22Custom%20amount%22" },
+            { "contains": "%22method_title%22%3A%22Flat%20Rate%22" },
+            { "contains": "%22first_name%22%3A%22Mira%22" }
+        ]
     },
     "response": {
         "status": 200,
@@ -17,7 +16,7 @@
             "data": {
                 "id": 3337,
                 "parent_id": 0,
-                "status": "processing",
+                "status": "auto-draft",
                 "currency": "USD",
                 "version": "6.3.1",
                 "prices_include_tax": true,
@@ -34,27 +33,28 @@
                 "order_key": "abc123",
                 "billing": {
                     "first_name": "Mira",
-                    "last_name": "Workman",
+                    "last_name": "",
                     "company": "",
                     "address_1": "",
                     "address_2": "",
                     "city": "",
                     "state": "",
                     "postcode": "",
-                    "country": "FR",
+                    "country": "",
                     "email": "",
                     "phone": ""
                 },
                 "shipping": {
-                    "first_name": "Mira",
-                    "last_name": "Workman",
+                    "first_name": "",
+                    "last_name": "",
                     "company": "",
-                    "address_1": "123 Main Street",
+                    "address_1": "",
                     "address_2": "",
-                    "city": "San Francisco",
-                    "state": "CA",
-                    "postcode": "94119",
-                    "country": "US"
+                    "city": "",
+                    "state": "",
+                    "postcode": "",
+                    "country": "",
+                    "phone": ""
                 },
                 "payment_method": "",
                 "payment_method_title": "",
@@ -62,7 +62,7 @@
                 "customer_ip_address": "",
                 "customer_user_agent": "",
                 "created_via": "rest-api",
-                "customer_note": "Adipiscing Ipsum Amet Ipsum Amet",
+                "customer_note": "",
                 "date_completed": null,
                 "date_paid": null,
                 "cart_hash": "",
@@ -70,19 +70,19 @@
                 "meta_data": [],
                 "line_items": [{
                     "id": 1,
-                    "name": "Akoya Pearl shades",
-                    "product_id": 2129,
+                    "name": "Black Coral shades",
+                    "product_id": 2130,
                     "variation_id": 0,
                     "quantity": 1,
                     "tax_class": "",
-                    "subtotal": "110.00",
+                    "subtotal": "150.00",
                     "subtotal_tax": "0.00",
-                    "total": "110.00",
+                    "total": "150.00",
                     "total_tax": "0.00",
                     "taxes": [],
                     "meta_data": [],
                     "sku": "",
-                    "price": 110
+                    "price": 150
                 }],
                 "tax_lines": [],
                 "shipping_lines": [{
@@ -94,30 +94,17 @@
                     "taxes": [],
                     "meta_data": []
                 }],
-                "fee_lines": [
-                    {
-                        "id": 1,
-                        "name": "Fee",
-                        "tax_class": "",
-                        "tax_status": "taxable",
-                        "amount": "2.34",
-                        "total": "2.34",
-                        "total_tax": "0.00",
-                        "taxes": [],
-                        "meta_data": []
-                    },
-                    {
-                        "id": 2,
-                        "name": "Custom amount",
-                        "tax_class": "",
-                        "tax_status": "taxable",
-                        "amount": "2",
-                        "total": "2",
-                        "total_tax": "0.00",
-                        "taxes": [],
-                        "meta_data": []
-                    }
-                ],
+                "fee_lines": [{
+                    "id": 3,
+                    "name": "Custom amount",
+                    "tax_class": "",
+                    "tax_status": "taxable",
+                    "amount": "",
+                    "total": "2.00",
+                    "total_tax": "0.00",
+                    "taxes": [],
+                    "meta_data": []
+                }],
                 "coupon_lines": [],
                 "refunds": [],
                 "date_created_gmt": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",

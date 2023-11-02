@@ -4,8 +4,15 @@ import class WordPressAuthenticator.LoginFields
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
+    /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
 
+    /// Inits the hosting controller for `WPCom2FALoginView`.
+    /// Params:
+    ///   - title: Title to display at the top of the 2FA view.
+    ///   - isJetpackSetup: Whether the view is part of the login step of the Jetpack setup flow.
+    ///   - viewModel: The model for the view.
+    ///
     init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
         self.isJetpackSetup = isJetpackSetup
         super.init(rootView: WPCom2FALoginView(title: title, isJetpackSetup: isJetpackSetup, viewModel: viewModel))
@@ -34,7 +41,10 @@ struct WPCom2FALoginView: View {
     @ObservedObject private var viewModel: WPCom2FALoginViewModel
     @FocusState private var isFieldFocused: Bool
 
+    /// Title to display at the top of the 2FA view.
     private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
 
     init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {

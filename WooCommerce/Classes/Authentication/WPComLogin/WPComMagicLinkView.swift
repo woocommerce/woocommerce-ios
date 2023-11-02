@@ -4,6 +4,8 @@ import WordPressAuthenticator
 /// Hosting controller for `WPComMagicLinkView`
 final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
 
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    ///
     private let isJetpackSetup: Bool
 
     init(email: String, title: String, isJetpackSetup: Bool) {
@@ -41,8 +43,12 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
 // The magic link screen for the WPCom authentication flow for Jetpack setup.
 //
 struct WPComMagicLinkView: View {
+    /// Title to display on top of the view.
     private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
+
     private let viewModel: WPComMagicLinkViewModel
     var onOpenMail: () -> Void = {}
 

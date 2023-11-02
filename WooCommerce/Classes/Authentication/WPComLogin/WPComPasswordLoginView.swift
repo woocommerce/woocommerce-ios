@@ -4,6 +4,7 @@ import Kingfisher
 /// Hosting controller for `WPComPasswordLoginView`
 final class WPComPasswordLoginHostingController: UIHostingController<WPComPasswordLoginView> {
 
+    /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
 
     init(title: String,
@@ -42,7 +43,10 @@ struct WPComPasswordLoginView: View {
     @FocusState private var isPasswordFieldFocused: Bool
     @ObservedObject private var viewModel: WPComPasswordLoginViewModel
 
+    /// Title to display at the top of the view.
     private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
     private let isJetpackSetup: Bool
     private let onMagicLinkRequest: (String) async -> Void
 

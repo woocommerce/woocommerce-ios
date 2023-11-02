@@ -63,7 +63,6 @@ private extension WPComLoginCoordinator {
 
     func showPasswordUIForLogin(email: String) {
         let viewModel = WPComPasswordLoginViewModel(
-            siteURL: "",
             email: email,
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)

@@ -30,7 +30,7 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
         return loginFields
     }
 
-    init(siteURL: String,
+    init(siteURL: String = "",
          email: String,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,

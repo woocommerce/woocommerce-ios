@@ -103,7 +103,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

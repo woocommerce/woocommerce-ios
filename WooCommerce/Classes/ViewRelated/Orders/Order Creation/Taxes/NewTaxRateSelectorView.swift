@@ -70,8 +70,8 @@ struct NewTaxRateSelectorView: View {
                         }
                     }
 
-                    storeTaxRateBotomView
-                        .renderedIf(viewModel.showFixedBottomPanel)
+                    storeTaxRateBottomView
+                    
                     case .empty:
                     EmptyState(title: Localization.emptyStateTitle,
                                    description: Localization.emptyStateDescription,
@@ -159,7 +159,7 @@ struct NewTaxRateSelectorView: View {
         }
     }
 
-    private var storeTaxRateBotomView: some View {
+    private var storeTaxRateBottomView: some View {
         VStack {
             Divider()
 

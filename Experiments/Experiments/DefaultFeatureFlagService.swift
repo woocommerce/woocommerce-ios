@@ -72,8 +72,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .hazmatShipping:
             return true
-        case .manualTaxesInOrderM3:
-            return true
         case .productCreationAI:
             return true
         case .giftCardInOrderForm:

@@ -5,11 +5,13 @@ extension ResultsController where T: StorageProduct {
     public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
+                            fetchLimit: Int? = nil,
                             sortOrder: ProductsSortOrder) {
 
         self.init(storageManager: storageManager,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
+                  fetchLimit: fetchLimit,
                   sortedBy: sortOrder.sortDescriptors ?? [])
     }
 

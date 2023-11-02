@@ -19,7 +19,6 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
-    private let manualTaxesInOrderM2: Bool
     private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
@@ -41,7 +40,6 @@ struct MockFeatureFlagService: FeatureFlagService {
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
-         manualTaxesInOrderM2: Bool = false,
          productCreationAI: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false) {
@@ -62,7 +60,6 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
-        self.manualTaxesInOrderM2 = manualTaxesInOrderM2
         self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
@@ -102,8 +99,6 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isShareProductAIEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
-        case .manualTaxesInOrderM2:
-            return manualTaxesInOrderM2
         case .productCreationAI:
             return productCreationAI
         case .productBundles:

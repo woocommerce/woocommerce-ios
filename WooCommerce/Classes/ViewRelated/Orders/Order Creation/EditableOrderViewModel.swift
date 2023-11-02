@@ -1477,8 +1477,7 @@ private extension EditableOrderViewModel {
                 case .success(let setting):
                 self.taxBasedOnSetting = setting
 
-                let canApplyTaxRates = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
-                (setting == .customerBillingAddress || setting == .customerShippingAddress)
+                let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
                 if canApplyTaxRates {
                     Task { @MainActor in
                         if self.flow == .creation {

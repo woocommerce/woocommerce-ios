@@ -70,8 +70,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .betterCustomerSelectionInOrder:
             return true
-        case .manualTaxesInOrderM2:
-            return true
         case .hazmatShipping:
             return true
         case .manualTaxesInOrderM3:

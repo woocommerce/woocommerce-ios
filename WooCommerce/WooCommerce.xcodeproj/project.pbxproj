@@ -9425,6 +9425,8 @@
 				026CAF7F2AC2B7FF002D23BB /* ConfigurableBundleProductView.swift */,
 				024124832AC54C3D0035A247 /* ConfigurableBundleItemView.swift */,
 				022266BB2AE7707000614F34 /* ConfigurableBundleItemViewModel.swift */,
+				02038C572AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift */,
+				02038C5B2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift */,
 			);
 			path = ProductsSection;
 			sourceTree = "<group>";
@@ -13053,6 +13055,7 @@
 				267C01CF29E89E1700FCC97B /* StorePlanSynchronizer.swift in Sources */,
 				B541B21C2189F3D8008FE7C1 /* StringStyles.swift in Sources */,
 				B58B4AB82108F14700076FDD /* NoticeNotificationInfo.swift in Sources */,
+				02038C5C2AF0E7FC00CD36D9 /* ConfigurableVariableBundleAttributePickerViewModel.swift in Sources */,
 				CE24BCD8212F25D4001CD12E /* StorageOrder+Woo.swift in Sources */,
 				DE2FE58A2925EAAE0018040A /* LoginJetpackSetupCoordinator.swift in Sources */,
 				021EBB362A3054BE003634CA /* BlazeEligibilityChecker.swift in Sources */,
@@ -13405,6 +13408,7 @@
 				B5290ED9219B3FA900A6AF7F /* Date+Woo.swift in Sources */,
 				DE36E09A2A86351100B98496 /* StoreNameSetupViewModel.swift in Sources */,
 				DE279BA626E9C582002BA963 /* ShippingLabelPackagesFormViewModel.swift in Sources */,
+				02038C582AF0D0F400CD36D9 /* ConfigurableVariableBundleAttributePicker.swift in Sources */,
 				02B1AA6729A4709400D54FCB /* FilterTabBar.swift in Sources */,
 				CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */,
 				DEC1508227F450AC00F4487C /* CouponAllowedEmails.swift in Sources */,

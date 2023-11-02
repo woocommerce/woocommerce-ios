@@ -4,13 +4,19 @@ import Yosemite
 
 final class ConfigurableBundleProductViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: WooAnalytics!
 
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
     override func tearDown() {
+        analytics = nil
+        analyticsProvider = nil
         stores = nil
         super.tearDown()
     }
@@ -118,6 +124,26 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // When
         viewModel.configure()
+    }
+
+    // MARK: - Analytics
+
+    func test_configure_tracks_orderFormBundleProductConfigurationSaveTapped_event() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(productID: 2)
+        ])
+
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+
+        // When
+        viewModel.configure()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, ["order_form_bundle_product_configuration_save_tapped"])
     }
 }
 

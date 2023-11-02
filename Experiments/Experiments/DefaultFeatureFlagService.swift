@@ -66,8 +66,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .euShippingNotification:
             return true
-        case .sdkLessGoogleSignIn:
-            return true
         case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:

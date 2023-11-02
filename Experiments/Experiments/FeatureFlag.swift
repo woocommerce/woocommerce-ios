@@ -30,10 +30,6 @@ public enum FeatureFlag: Int {
     ///
     case shippingLabelsOnboardingM1
 
-    /// Enable IPP reader manuals consolidation screen
-    ///
-    case consolidatedCardReaderManuals
-
     /// Enables searching products by partial SKU for WC version 6.6+.
     ///
     case searchProductsBySKU
@@ -142,10 +138,6 @@ public enum FeatureFlag: Int {
     /// Enables EU Bound notifications inside the Shipping Labels feature
     ///
     case euShippingNotification
-
-    /// Do not use the Google SDK when authenticating through a Google account.
-    ///
-    case sdkLessGoogleSignIn
 
     /// Enables generating share product content using AI
     ///

@@ -10,6 +10,11 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
     private let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
     private var cancellables: Set<AnyCancellable> = []
 
+    /// These are separate from other cancellables (if we add any) because they get cancelled whenever
+    /// we recieve an onboarding state, other than `.loading`.
+    /// This is unlikely to be what we want for other subscriptions.
+    private var onboardingStateObservations: Set<AnyCancellable> = []
+
     init(stores: StoresManager = ServiceLocator.stores,
          cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase()) {
         self.stores = stores
@@ -30,10 +35,10 @@ class CardPresentPaymentsOnboardingIPPUsersRefresher {
                         return
                     }
                     // Stop observing further state updates, to avoid memory cycles; this class is long-lived!
-                    _ = self?.cancellables.map { $0.cancel() }
+                    _ = self?.onboardingStateObservations.map { $0.cancel() }
                     completion()
                 }
-                .store(in: &cancellables)
+                .store(in: &onboardingStateObservations)
 
                 self.cardPresentPaymentsOnboardingUseCase.refresh()
             }

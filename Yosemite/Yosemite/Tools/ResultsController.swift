@@ -43,6 +43,9 @@ public class ResultsController<T: ResultsControllerMutableType> {
         let request = NSFetchRequest<T>(entityName: T.entityName)
         request.predicate = predicate
         request.sortDescriptors = sortDescriptors
+        if let fetchLimit {
+            request.fetchLimit = fetchLimit
+        }
         return request
     }()
 
@@ -85,17 +88,22 @@ public class ResultsController<T: ResultsControllerMutableType> {
     ///
     public var onDidResetContent: (() -> Void)?
 
+    /// Limits the number of objects fetched from storage
+    ///
+    private let fetchLimit: Int?
 
     /// Designated Initializer.
     ///
     public init(viewStorage: StorageType,
                 sectionNameKeyPath: String? = nil,
                 matching predicate: NSPredicate? = nil,
+                fetchLimit: Int? = nil,
                 sortedBy descriptors: [NSSortDescriptor]) {
 
         self.viewStorage = viewStorage
         self.sectionNameKeyPath = sectionNameKeyPath
         self.predicate = predicate
+        self.fetchLimit = fetchLimit
         self.sortDescriptors = descriptors
 
         setupResultsController()
@@ -108,11 +116,13 @@ public class ResultsController<T: ResultsControllerMutableType> {
     public convenience init(storageManager: StorageManagerType,
                             sectionNameKeyPath: String? = nil,
                             matching predicate: NSPredicate? = nil,
+                            fetchLimit: Int? = nil,
                             sortedBy descriptors: [NSSortDescriptor]) {
 
         self.init(viewStorage: storageManager.viewStorage,
                   sectionNameKeyPath: sectionNameKeyPath,
                   matching: predicate,
+                  fetchLimit: fetchLimit,
                   sortedBy: descriptors)
     }
 

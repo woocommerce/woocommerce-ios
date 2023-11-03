@@ -296,8 +296,9 @@ extension ProductFormViewModel {
         return isSitePublic && formType != .add && productHasLinkToShare
     }
 
+    /// Merchants can promote a product with Blaze if product and site are eligible, and there's no existing Blaze campaign for the product.
     func canPromoteWithBlaze() -> Bool {
-        isEligibleForBlaze
+        isEligibleForBlaze && !hasActiveBlazeCampaign
     }
 
     func canDeleteProduct() -> Bool {

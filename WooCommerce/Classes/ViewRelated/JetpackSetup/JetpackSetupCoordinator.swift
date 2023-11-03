@@ -353,7 +353,7 @@ private extension JetpackSetupCoordinator {
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(

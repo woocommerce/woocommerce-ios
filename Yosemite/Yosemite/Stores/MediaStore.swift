@@ -94,7 +94,7 @@ private extension MediaStore {
                      altText: String?,
                      filename: String?,
                      onCompletion: @escaping (Result<Media, Error>) -> Void) {
-        Task {
+        Task { @MainActor in
             do {
                 let uploadableMedia = try await mediaExportService.export(mediaAsset, filename: filename, altText: altText)
                 uploadMedia(siteID: siteID,

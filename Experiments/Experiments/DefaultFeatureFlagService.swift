@@ -83,7 +83,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM6:
             return true
         case .betterCustomerSelectionInOrder:
-            return true
+            return !isUITesting
         case .manualTaxesInOrderM2:
             return true
         case .hazmatShipping:
@@ -103,6 +103,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

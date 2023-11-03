@@ -705,12 +705,12 @@ private extension ProductFormViewModel {
         stores.dispatch(action)
     }
 
-    /// Recreates `actionsFactory` with the latest `product`, `formType`, `isEligibleForBlaze` and `isAddOnsFeatureEnabled` information.
+    /// Recreates `actionsFactory` with the latest `product`, `formType`, `canPromoteWithBlaze` and `isAddOnsFeatureEnabled` information.
     ///
     func updateActionsFactory() {
         actionsFactory = ProductFormActionsFactory(product: product,
                                                    formType: formType,
-                                                   isEligibleForBlaze: canPromoteWithBlaze(),
+                                                   canPromoteWithBlaze: canPromoteWithBlaze(),
                                                    addOnsFeatureEnabled: isAddOnsFeatureEnabled,
                                                    isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
                                                    variationsPrice: calculateVariationPriceState())

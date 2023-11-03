@@ -598,6 +598,11 @@ extension StripeCardReaderService: CardReaderService {
     }
 }
 
+struct ParametersMeta {
+    let readerIDMetadataKey: String
+    let readerModelMetadataKey: String
+    let platformMetadataKey: String
+}
 
 // MARK: - Payment collection
 private extension StripeCardReaderService {
@@ -613,17 +618,17 @@ private extension StripeCardReaderService {
 
     func createPaymentIntent(_ parameters: PaymentIntentParameters) -> Future<StripeTerminal.PaymentIntent, Error> {
         return Future() { [weak self] promise in
+            /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
+            ///
+            let meta = ParametersMeta(readerIDMetadataKey: self?.readerIDForIntent() ?? "",
+                                      readerModelMetadataKey: self?.readerModelForIntent() ?? "",
+                                      platformMetadataKey: Constants.platform)
+            
             // Shortcircuit if we have an inconsistent set of parameters
-            guard let parameters = parameters.toStripe() else {
+            guard let parameters = parameters.toStripe(with: meta) else {
                 promise(.failure(CardReaderServiceError.intentCreation()))
                 return
             }
-
-            /// Add the reader_ID to the request metadata so we can attribute this intent to the connected reader
-            ///
-            parameters.metadata?[Constants.readerIDMetadataKey] = self?.readerIDForIntent()
-            parameters.metadata?[Constants.readerModelMetadataKey] = self?.readerModelForIntent()
-            parameters.metadata?[Constants.platformMetadataKey] = Constants.platform
 
             Terminal.shared.createPaymentIntent(parameters) { (intent, error) in
                 if let error = error {

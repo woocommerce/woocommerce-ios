@@ -55,7 +55,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     private let product: EditableProductModel
     private let formType: ProductFormType
-    private let isEligibleForBlaze: Bool
+    private let canPromoteWithBlaze: Bool
     private let editable: Bool
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
@@ -74,7 +74,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
-         isEligibleForBlaze: Bool = false,
+         canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
@@ -84,7 +84,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
-        self.isEligibleForBlaze = isEligibleForBlaze
+        self.canPromoteWithBlaze = canPromoteWithBlaze
         self.editable = formType != .readonly
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
@@ -106,7 +106,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty
 
-        let shouldShowPromoteWithBlaze = isEligibleForBlaze
+        let shouldShowPromoteWithBlaze = canPromoteWithBlaze
 
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,

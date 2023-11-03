@@ -83,7 +83,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .ordersWithCouponsM6:
             return true
         case .betterCustomerSelectionInOrder:
-            return !isUITesting
+            return true
         case .manualTaxesInOrderM2:
             return true
         case .hazmatShipping:

@@ -16,6 +16,9 @@ struct ConfigurableBundleProductView: View {
                 VStack(spacing: Layout.noSpacing) {
                     ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
                         ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                        Divider()
+                            .dividerStyle()
+                            .padding(.leading, Layout.defaultPadding)
                     }
                     .background(Color(.listForeground(modal: false)))
                 }
@@ -51,6 +54,7 @@ struct ConfigurableBundleProductView: View {
 private extension ConfigurableBundleProductView {
     enum Layout {
         static let noSpacing: CGFloat = 0.0
+        static let defaultPadding: CGFloat = 16
     }
 
     enum Localization {

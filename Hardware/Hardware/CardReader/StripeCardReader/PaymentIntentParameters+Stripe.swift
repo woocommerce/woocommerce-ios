@@ -47,7 +47,10 @@ extension Hardware.PaymentIntentParameters {
                 "reader_model": "\(meta?.readerModelMetadataKey ?? "")",
                 "platform": "\(meta?.platformMetadataKey ?? "")"
             ]
-            paymentIntentParamBuilder.setMetadata(paramsMeta)
+
+            // Replace metadata with our metadata when there's a key collision
+            let mergedMeta = (metadata ?? [:]).merging(paramsMeta ?? [:]) { (_, new) in new }
+            paymentIntentParamBuilder.setMetadata(mergedMeta)
 
             // Return payment intent built config:
             return try paymentIntentParamBuilder.build()

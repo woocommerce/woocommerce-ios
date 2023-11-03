@@ -121,10 +121,33 @@ extension StripeCardReaderService: CardReaderService {
             Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
         }
 
-        let config = DiscoveryConfiguration(
-            discoveryMethod: discoveryMethod.toStripe(),
-            simulated: shouldUseSimulatedCardReader
-        )
+        let config: DiscoveryConfiguration
+        switch discoveryMethod {
+        case .bluetoothScan:
+            let blueToothConfig = BluetoothScanDiscoveryConfigurationBuilder()
+            do {
+                config = try blueToothConfig.setSimulated(shouldUseSimulatedCardReader).build()
+                // TODO: Better error handling
+            } catch let error as UnderlyingError {
+                DDLogError("\(String(describing: error.failureReason))")
+                throw error
+            } catch {
+                DDLogError("\(error)")
+                throw error
+            }
+        case .localMobile:
+            let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
+            do {
+                config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()
+                // TODO: Better error handling
+            } catch let error as UnderlyingError {
+                DDLogError("\(String(describing: error.failureReason))")
+                throw error
+            } catch {
+                DDLogError("\(error)")
+                throw error
+            }
+        }
 
         guard shouldSkipBluetoothCheck(discoveryConfiguration: config) ||
                 CBCentralManager.authorization != .denied else {
@@ -441,7 +464,14 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(BluetoothConnectionConfiguration(locationId: locationId)))
+                    let buildConfig = BluetoothConnectionConfigurationBuilder(locationId: locationId)
+                    do {
+                        let config = try buildConfig.build()
+                        return promise(.success(config))
+                    } catch {
+                        let underlyingError = UnderlyingError(with: error)
+                        return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
@@ -463,11 +493,17 @@ extension StripeCardReaderService: CardReaderService {
             self.readerLocationProvider?.fetchDefaultLocationID { result in
                 switch result {
                 case .success(let locationId):
-                    return promise(.success(LocalMobileConnectionConfiguration(
-                        locationId: locationId,
-                        merchantDisplayName: nil,
-                        onBehalfOf: nil,
-                        tosAcceptancePermitted: options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)))
+                    let localMobileConfig = LocalMobileConnectionConfigurationBuilder(locationId: locationId)
+                    localMobileConfig.setMerchantDisplayName(nil)
+                    localMobileConfig.setOnBehalfOf(nil)
+                    localMobileConfig.setTosAcceptancePermitted(options?.builtInOptions?.termsOfServiceAcceptancePermitted ?? true)
+                    do {
+                        let config = try localMobileConfig.build()
+                        return promise(.success(config))
+                    } catch {
+                        let underlyingError = UnderlyingError(with: error)
+                        return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))
+                    }
                 case .failure(let error):
                     let underlyingError = UnderlyingError(with: error)
                     return promise(.failure(CardReaderServiceError.connection(underlyingError: underlyingError)))

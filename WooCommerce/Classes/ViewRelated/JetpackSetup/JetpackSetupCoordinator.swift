@@ -385,7 +385,7 @@ private extension JetpackSetupCoordinator {
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,

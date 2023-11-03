@@ -17,7 +17,7 @@ extension Hardware.RefundParameters {
         let amountForStripe = NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
 
         let returnValueBuilder = StripeTerminal.RefundParametersBuilder(chargeId: chargeId, amount: amountForStripe, currency: currency)
-        
+
         do {
             return try returnValueBuilder.build()
         } catch {

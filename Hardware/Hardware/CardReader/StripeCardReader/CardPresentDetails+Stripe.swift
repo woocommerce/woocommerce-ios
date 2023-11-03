@@ -11,7 +11,6 @@ extension CardPresentTransactionDetails {
         self.expYear = details.expYear
         self.cardholderName = details.cardholderName
         self.brand = CardBrand(brand: details.brand)
-        self.fingerprint = details.fingerprint
         self.generatedCard = details.generatedCard
         self.receipt = Hardware.ReceiptDetails(receiptDetails: details.receipt)
         self.emvAuthData = details.emvAuthData
@@ -30,17 +29,11 @@ protocol StripeCardPresentDetails {
     var expYear: Int { get }
     var cardholderName: String? { get }
     var brand: StripeTerminal.CardBrand { get }
-    var fingerprint: String { get }
     var generatedCard: String? { get }
     var receipt: StripeTerminal.ReceiptDetails? { get }
     var emvAuthData: String? { get }
 }
 
 
-extension StripeTerminal.CardPresentDetails: StripeCardPresentDetails {
-    // TODO: Temporarily added here for conformance
-    var fingerprint: String {
-        ""
-    }
-}
+extension StripeTerminal.CardPresentDetails: StripeCardPresentDetails {}
 #endif

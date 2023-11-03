@@ -66,6 +66,8 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private var isEligibleForBlaze: Bool = false
 
+    private var hasActiveBlazeCampaign: Bool = false
+
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
         let predicate = NSPredicate(format: "siteID == %lld", product.siteID)
@@ -730,10 +732,23 @@ private extension ProductFormViewModel {
 
     /// Performs initial fetch from storage and updates results.
     func configureResultsController() {
+        blazeCampaignResultsController.onDidChangeContent = { [weak self] in
+            self?.updateResults()
+
+        }
+        blazeCampaignResultsController.onDidResetContent = { [weak self] in
+            self?.updateResults()
+        }
+
         do {
             try blazeCampaignResultsController.performFetch()
+            updateResults()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
+    }
+
+    func updateResults() {
+        hasActiveBlazeCampaign = false /* todo */
     }
 }

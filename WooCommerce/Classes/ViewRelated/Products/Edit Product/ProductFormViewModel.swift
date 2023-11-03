@@ -734,23 +734,23 @@ private extension ProductFormViewModel {
     /// Performs initial fetch from storage and updates results.
     func configureResultsController() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
-            self?.updateResults()
+            self?.updateBlazeCampaignResult()
 
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
-            self?.updateResults()
+            self?.updateBlazeCampaignResult()
         }
 
         do {
             try blazeCampaignResultsController.performFetch()
-            updateResults()
+            updateBlazeCampaignResult()
         } catch {
             ServiceLocator.crashLogging.logError(error)
         }
     }
 
-    func updateResults() {
-        hasActiveBlazeCampaign = checkBlazeCampaignForProduct()
+    func updateBlazeCampaignResult() {
+        hasActiveBlazeCampaign = hasBlazeCampaign()
     }
 }
 
@@ -762,7 +762,7 @@ private extension ProductFormViewModel {
     /// - approved,
     /// - scheduled, or
     /// - active.
-    func checkBlazeCampaignForProduct() -> Bool {
+    func hasBlazeCampaign() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
         return campaigns.contains(where: {
             ($0.productID == product.productID) &&

@@ -33,7 +33,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/wp-json/sample"
+        let expectedURL = "https://wordpress.com/?rest_route=/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 
@@ -56,7 +56,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/wp-json/wc/v3/sample"
+        let expectedURL = "https://wordpress.com/?rest_route=/wc/v3/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 
@@ -68,7 +68,7 @@ final class RESTRequestTests: XCTestCase {
         let url = try XCTUnwrap(request.asURLRequest().url)
 
         // Then
-        let expectedURL = "https://wordpress.com/wp-json/wp/v2/sample"
+        let expectedURL = "https://wordpress.com/?rest_route=/wp/v2/sample"
         assertEqual(url.absoluteString, expectedURL)
     }
 

@@ -496,6 +496,7 @@ extension WooAnalyticsEvent {
             static let hasDifferentShippingDetails = "has_different_shipping_details"
             static let orderStatus = "order_status"
             static let productCount = "product_count"
+            static let customAmountsCount = "custom_amounts_count"
             static let hasAddOns = "has_addons"
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
@@ -709,6 +710,7 @@ extension WooAnalyticsEvent {
         static func orderCreateButtonTapped(order: Order,
                                             status: OrderStatusEnum,
                                             productCount: Int,
+                                            customAmountsCount: Int,
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
                                             hasShippingMethod: Bool,
@@ -716,6 +718,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
+                Keys.customAmountsCount: Int64(customAmountsCount),
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,

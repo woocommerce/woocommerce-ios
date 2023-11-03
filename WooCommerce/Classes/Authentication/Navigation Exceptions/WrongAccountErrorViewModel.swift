@@ -20,10 +20,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let authenticatorType: Authenticator.Type
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var jetpackSetupCoordinator: LoginJetpackSetupCoordinator?
+
     private var siteXMLRPC: String = ""
     private var siteUsername: String = ""
-    private var jetpackConnectionURL: URL?
-    private var siteCredentials: WordPressOrgCredentials?
 
     @Published private var isSelfHostedSite = false
     @Published private var primaryButtonLoading = false
@@ -48,12 +48,9 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         self.authenticatorType = authenticatorType
 
-        self.siteCredentials = siteCredentials
         if let credentials = siteCredentials {
             siteUsername = credentials.username
             siteXMLRPC = credentials.xmlrpc
-            authenticate(with: credentials)
-            fetchJetpackConnectionURL()
         }
     }
 
@@ -134,14 +131,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             return
         }
 
-        guard let url = jetpackConnectionURL else {
-            if isSelfHostedSite {
-                return showSiteCredentialLoginAndJetpackConnection(from: viewController)
-            }
-            return presentConnectToWPComSiteAlert(from: viewController)
+        if isSelfHostedSite {
+            return showSiteCredentialLoginAndJetpackConnection(from: viewController)
         }
-
-        showJetpackConnectionWebView(url: url, from: viewController)
+        return presentConnectToWPComSiteAlert(from: viewController)
     }
 
     func didTapSecondaryButton(in viewController: UIViewController?) {
@@ -234,56 +227,15 @@ private extension WrongAccountErrorViewModel {
         }
     }
 
-    func authenticateWithJetpack(siteCredentials: WordPressOrgCredentials, from viewController: UIViewController) {
-        authenticate(with: siteCredentials)
-        fetchJetpackConnectionURL { [weak self] url in
-            self?.showJetpackConnectionWebView(url: url, from: viewController)
-        }
-    }
-
-    /// Prepares `JetpackConnectionStore` to authenticate subsequent requests to WP.org API.
-    ///
-    func authenticate(with credentials: WordPressOrgCredentials) {
-        guard let config = credentials.makeCookieNonceAuthenticatorConfig() else {
+    func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
+        guard let navigationController = viewController.navigationController else {
             return
         }
-        let network = WordPressOrgNetwork(configuration: config)
-        let action = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
-        storesManager.dispatch(action)
-    }
-
-    /// Fetches the URL for handling Jetpack connection in a web view
-    ///
-    func fetchJetpackConnectionURL(onCompletion: ((URL) -> Void)? = nil) {
-        primaryButtonLoading = true
-        let action = JetpackConnectionAction.fetchJetpackConnectionURL { [weak self] result in
-            guard let self = self else { return }
-            self.primaryButtonLoading = false
-            switch result {
-            case .success(let url):
-                onCompletion?(url)
-                self.jetpackConnectionURL = url
-            case .failure(let error):
-                self.analytics.track(.loginJetpackConnectionURLFetchFailed, withError: error)
-                DDLogWarn("⚠️ Error fetching Jetpack connection URL: \(error)")
-            }
-        }
-        storesManager.dispatch(action)
-    }
-
-    func showSiteCredentialLoginAndJetpackConnection(from viewController: UIViewController) {
-        guard let siteCredentials else {
-            return authenticatorType.showSiteCredentialLogin(from: viewController, siteURL: siteURL) { [weak self] credentials in
-                guard let self = self else { return }
-                // dismisses the site credential login flow
-                viewController.dismiss(animated: true)
-
-                self.siteXMLRPC = credentials.xmlrpc
-                self.siteCredentials = credentials
-                self.authenticateWithJetpack(siteCredentials: credentials, from: viewController)
-            }
-        }
-        authenticateWithJetpack(siteCredentials: siteCredentials, from: viewController)
+        let coordinator = LoginJetpackSetupCoordinator(siteURL: siteURL,
+                                                       connectionOnly: true,
+                                                       navigationController: navigationController)
+        self.jetpackSetupCoordinator = coordinator
+        coordinator.start()
     }
 
     func presentConnectToWPComSiteAlert(from viewController: UIViewController) {
@@ -291,85 +243,6 @@ private extension WrongAccountErrorViewModel {
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
         viewController.present(fancyAlert, animated: true)
-    }
-
-    /// Presents a web view pointing to the Jetpack connection URL.
-    ///
-    func showJetpackConnectionWebView(url: URL, from viewController: UIViewController) {
-        let viewModel = JetpackConnectionWebViewModel(initialURL: url, siteURL: siteURL, completion: { [weak self] in
-            self?.fetchJetpackUser(in: viewController)
-        })
-
-        let pluginViewController = AuthenticatedWebViewController(viewModel: viewModel)
-        viewController.navigationController?.show(pluginViewController, sender: nil)
-    }
-
-    /// Gets the connected WP.com email address if possible, or show error otherwise.
-    ///
-    func fetchJetpackUser(in viewController: UIViewController) {
-        showInProgressView(in: viewController)
-        let action = JetpackConnectionAction.fetchJetpackUser { [weak self] result in
-            guard let self = self else { return }
-            // dismisses the in-progress view
-            viewController.navigationController?.dismiss(animated: true)
-
-            switch result {
-            case .success(let user):
-                guard let emailAddress = user.wpcomUser?.email else {
-                    DDLogWarn("⚠️ Cannot find connected WPcom user")
-                    self.analytics.track(.loginJetpackConnectionVerificationFailed)
-                    return self.showSetupErrorNotice(in: viewController)
-                }
-
-                if self.defaultAccount?.email == emailAddress {
-                    // if user has already logged in with a WP.com account, show the store picker.
-                    self.showStorePickerForLogin(in: viewController.navigationController)
-                } else {
-                    self.jetpackSetupCompletionHandler(emailAddress, self.siteXMLRPC)
-                }
-
-            case .failure(let error):
-                DDLogWarn("⚠️ Error fetching Jetpack user: \(error)")
-                self.analytics.track(.loginJetpackConnectionVerificationFailed, withError: error)
-                self.showSetupErrorNotice(in: viewController)
-            }
-        }
-        storesManager.dispatch(action)
-    }
-
-    func showStorePickerForLogin(in navigationController: UINavigationController?) {
-        guard let navigationController = navigationController else {
-            return
-        }
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .login)
-
-        // Tries re-syncing to get an updated store list
-        storesManager.synchronizeEntities { [weak self] in
-            guard let self = self else { return }
-            let matcher = ULAccountMatcher()
-            matcher.refreshStoredSites()
-            guard let matchedSite = matcher.matchedSite(originalURL: self.siteURL) else {
-                DDLogWarn("⚠️ Could not find \(self.siteURL) connected to the account")
-                return
-            }
-            self.storePickerCoordinator?.didSelectStore(with: matchedSite.siteID, onCompletion: {})
-        }
-    }
-
-    func showInProgressView(in viewController: UIViewController) {
-        let viewProperties = InProgressViewProperties(title: Localization.inProgressMessage, message: "")
-        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = .overCurrentContext
-
-        viewController.navigationController?.present(inProgressViewController, animated: true, completion: nil)
-    }
-
-    func showSetupErrorNotice(in viewController: UIViewController) {
-        let message = Localization.setupErrorMessage
-        let notice = Notice(title: message, feedbackType: .error)
-        let noticePresenter = DefaultNoticePresenter()
-        noticePresenter.presentingViewController = viewController
-        noticePresenter.enqueue(notice: notice)
     }
 }
 

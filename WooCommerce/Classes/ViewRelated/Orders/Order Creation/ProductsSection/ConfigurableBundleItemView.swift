@@ -15,26 +15,45 @@ struct ConfigurableBundleItemView: View {
                 Button {
                     viewModel.isOptionalAndSelected.toggle()
                 } label: {
-                    Image(uiImage: viewModel.isOptionalAndSelected ?
+                    Image(uiImage: viewModel.isOptionalAndSelected || !viewModel.isOptional ?
                         .checkCircleImage.withRenderingMode(.alwaysTemplate):
                             .checkEmptyCircleImage)
-                        .foregroundColor(.init(.brand))
+                    .foregroundColor(.init(viewModel.isOptional ? .accent: .placeholderImage))
                 }
-                    .renderedIf(viewModel.isOptional)
+                .disabled(!viewModel.isOptional)
 
                 ProductRow(viewModel: viewModel.productRowViewModel)
+            }
+
+            if let errorMessage = viewModel.errorMessage {
+                Text(errorMessage)
+                    .errorStyle()
             }
 
             Button {
                 viewModel.createVariationSelectorViewModel()
                 showsVariationSelector = true
             } label: {
-                Text(Localization.selectVariation)
+                Text(viewModel.selectedVariation == nil ?
+                     Localization.selectVariation: Localization.updateVariation)
             }
             .renderedIf(viewModel.isVariable)
 
             if let selectedVariation = viewModel.selectedVariation {
-                Text(selectedVariation.attributes.map { "\($0.name): \($0.option)" }.joined(separator: ", "))
+                Spacer()
+                    .frame(height: Layout.defaultPadding)
+
+                ForEach(selectedVariation.attributes, id: \.name) { attribute in
+                    HStack {
+                        Text(attribute.name)
+                            .bold()
+                        Text(attribute.option)
+                    }
+                }
+
+                ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
+                    ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
+                }
             }
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
@@ -52,6 +71,10 @@ struct ConfigurableBundleItemView: View {
 }
 
 private extension ConfigurableBundleItemView {
+    enum Layout {
+        static let defaultPadding: CGFloat = 16
+    }
+
     enum Localization {
         static let add = NSLocalizedString(
             "configureBundleItem.add",
@@ -63,6 +86,11 @@ private extension ConfigurableBundleItemView {
             value: "Select variation",
             comment: "Action to select a variation for a bundle item when it is variable."
         )
+        static let updateVariation = NSLocalizedString(
+            "configureBundleItem.updateVariation",
+            value: "Update variation",
+            comment: "Action to update a variation for a bundle item when it is variable."
+        )
     }
 }
 
@@ -70,10 +98,16 @@ private extension ConfigurableBundleItemView {
 
 struct ConfigurableBundleItemView_Previews: PreviewProvider {
     static var previews: some View {
-        ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample(),
-                                                    product: .swiftUIPreviewSample(),
-                                                    variableProductSettings: nil,
-                                                    existingOrderItem: nil))
+        VStack {
+            ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: false),
+                                                        product: .swiftUIPreviewSample(),
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil))
+            ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: true),
+                                                        product: .swiftUIPreviewSample(),
+                                                        variableProductSettings: nil,
+                                                        existingOrderItem: nil))
+        }
     }
 }
 

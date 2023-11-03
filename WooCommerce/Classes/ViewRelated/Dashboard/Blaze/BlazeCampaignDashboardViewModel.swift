@@ -57,6 +57,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageBlazeCampaign.campaignID, ascending: false)
         let resultsController = ResultsController<StorageBlazeCampaign>(storageManager: storageManager,
                                                                         matching: predicate,
+                                                                        fetchLimit: 1,
                                                                         sortedBy: [sortDescriptorByID])
         return resultsController
     }()
@@ -66,6 +67,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         let predicate = NSPredicate(format: "siteID == %lld AND statusKey ==[c] %@ ", siteID, ProductStatus.published.rawValue)
         return ResultsController<StorageProduct>(storageManager: storageManager,
                                                  matching: predicate,
+                                                 fetchLimit: 1,
                                                  sortOrder: .dateDescending)
     }()
 
@@ -76,7 +78,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private var visibilitySubscription: AnyCancellable?
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultStoreURL ?? "",
+         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,

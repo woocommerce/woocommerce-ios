@@ -6,9 +6,6 @@ import class Networking.UserAgent
 ///
 final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
-    /// Title of the view.
-    let titleString: String
-
     /// Entered password
     @Published var password: String = ""
     @Published private(set) var isLoggingIn = false
@@ -18,33 +15,25 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     private let siteURL: String
     private let loginFacade: LoginFacade
+    private let onMagicLinkRequest: (String) async -> Void
     private let onMultifactorCodeRequest: (LoginFields) -> Void
     private let onLoginFailure: (Error) -> Void
-    private let onLoginSuccess: (String) -> Void
+    private let onLoginSuccess: (String) async -> Void
 
     private(set) var avatarURL: URL?
 
-    private var loginFields: LoginFields {
-        let loginFields = LoginFields()
-        loginFields.username = email
-        loginFields.password = password
-        loginFields.siteAddress = siteURL
-        loginFields.userIsDotCom = true
-        return loginFields
-    }
-
-    init(siteURL: String,
+    init(siteURL: String = "",
          email: String,
-         requiresConnectionOnly: Bool,
+         onMagicLinkRequest: @escaping (String) async -> Void,
          onMultifactorCodeRequest: @escaping (LoginFields) -> Void,
          onLoginFailure: @escaping (Error) -> Void,
-         onLoginSuccess: @escaping (String) -> Void) {
+         onLoginSuccess: @escaping (String) async -> Void) {
         self.siteURL = siteURL
         self.email = email
-        self.titleString = requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
                                        dotcomSecret: ApiCredentials.dotcomSecret,
                                        userAgent: UserAgent.defaultUserAgent)
+        self.onMagicLinkRequest = onMagicLinkRequest
         self.onMultifactorCodeRequest = onMultifactorCodeRequest
         self.onLoginFailure = onLoginFailure
         self.onLoginSuccess = onLoginSuccess
@@ -54,12 +43,19 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     }
 
     func resetPassword() {
+        let loginFields = createLoginFields()
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 
     func handleLogin() {
         isLoggingIn = true
+        let loginFields = createLoginFields()
         loginFacade.signIn(with: loginFields)
+    }
+
+    @MainActor
+    func requestMagicLink() async {
+        await onMagicLinkRequest(email)
     }
 }
 
@@ -84,11 +80,29 @@ private extension WPComPasswordLoginViewModel {
             .trimmingCharacters(in: .whitespaces)
             .md5Hash()
     }
+
+    func createLoginFields(with nonceInfo: SocialLogin2FANonceInfo? = nil, userID: Int = 0) -> LoginFields {
+        let loginFields = LoginFields()
+        loginFields.username = email
+        loginFields.password = password
+        loginFields.siteAddress = siteURL
+        loginFields.userIsDotCom = true
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
+        return loginFields
+    }
 }
 
 extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     func needsMultifactorCode() {
         isLoggingIn = false
+        let loginFields = createLoginFields()
+        onMultifactorCodeRequest(loginFields)
+    }
+
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        isLoggingIn = false
+        let loginFields = createLoginFields(with: nonceInfo, userID: userID)
         onMultifactorCodeRequest(loginFields)
     }
 
@@ -98,8 +112,10 @@ extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        isLoggingIn = false
-        onLoginSuccess(authToken)
+        Task { @MainActor in
+            await onLoginSuccess(authToken)
+            isLoggingIn = false
+        }
     }
 }
 
@@ -109,15 +125,5 @@ extension WPComPasswordLoginViewModel {
         static let baseGravatarURL = "https://gravatar.com/avatar"
         static let gravatarRating = "g" // safest rating
         static let gravatarDefaultOption = "mp" // a simple, cartoon-style silhouetted outline of a person
-    }
-    enum Localization {
-        static let installJetpack = NSLocalizedString(
-            "Install Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not installed yet"
-        )
-        static let connectJetpack = NSLocalizedString(
-            "Connect Jetpack",
-            comment: "Title for the WPCom magic link screen when Jetpack is not connected yet"
-        )
     }
 }

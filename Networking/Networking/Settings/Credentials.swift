@@ -37,16 +37,6 @@ public enum Credentials: Equatable {
         }
         return UUID(uuidString: username) != nil
     }
-
-    /// Returns true if the siteAddress is a placeholder.
-    ///
-    public func hasPlaceholderSiteAddress() -> Bool {
-        // Only WPCOM credentials will have placeholder `siteAddress`
-        guard case let .wpcom(_, _, siteAddress) = self else {
-            return false
-        }
-        return siteAddress == Constants.placeholderSiteAddress
-    }
 }
 
 private extension Credentials {

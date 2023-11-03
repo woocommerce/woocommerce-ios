@@ -33,6 +33,10 @@ class DefaultStoresManager: StoresManager {
     ///
     private var applicationPasswordGenerationFailureObserver: NSObjectProtocol?
 
+    /// Observes invalid WPCOM token notification
+    ///
+    private var invalidWPCOMTokenNotificationObserver: NSObjectProtocol?
+
     /// NotificationCenter
     ///
     private let notificationCenter: NotificationCenter
@@ -151,16 +155,27 @@ class DefaultStoresManager: StoresManager {
         sessionManager.defaultCredentials = credentials
 
         listenToApplicationPasswordGenerationFailureNotification()
+        listenToWPCOMInvalidWPCOMTokenNotification()
 
         return self
     }
 
-    /// Deauthenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
+    /// De-authenticates upon receiving `ApplicationPasswordsGenerationFailed` notification
     ///
     func listenToApplicationPasswordGenerationFailureNotification() {
         applicationPasswordGenerationFailureObserver = notificationCenter.addObserver(forName: .ApplicationPasswordsGenerationFailed,
                                                                                       object: nil,
                                                                                       queue: .main) { [weak self] note in
+            _ = self?.deauthenticate()
+        }
+    }
+
+    /// De-authenticates upon receiving `RemoteDidReceiveInvalidTokenError` notification
+    ///
+    func listenToWPCOMInvalidWPCOMTokenNotification() {
+        invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
+                                                                               object: nil,
+                                                                               queue: .main) { [weak self] note in
             _ = self?.deauthenticate()
         }
     }
@@ -560,7 +575,7 @@ private extension DefaultStoresManager {
         }
 
         if siteID == WooConstants.placeholderStoreID,
-           let url = sessionManager.defaultStoreURL {
+           let url = sessionManager.defaultCredentials?.siteAddress {
             restoreSessionSite(with: url)
         } else {
             restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)

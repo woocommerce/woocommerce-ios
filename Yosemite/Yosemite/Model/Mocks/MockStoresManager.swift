@@ -211,6 +211,10 @@ public class MockStoresManager: StoresManager {
     public func listenToApplicationPasswordGenerationFailureNotification() {
         // no-op
     }
+
+    public func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // no-op
+    }
 }
 
 private extension MockStoresManager {

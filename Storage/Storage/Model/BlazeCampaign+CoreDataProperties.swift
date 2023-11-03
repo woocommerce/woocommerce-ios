@@ -10,6 +10,7 @@ extension BlazeCampaign {
 
     @NSManaged public var siteID: Int64
     @NSManaged public var campaignID: Int64
+    @NSManaged public var productID: NSNumber?
     @NSManaged public var name: String
     @NSManaged public var rawStatus: String
     @NSManaged public var contentImageURL: String?

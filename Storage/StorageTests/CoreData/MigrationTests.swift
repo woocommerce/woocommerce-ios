@@ -2320,6 +2320,34 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(campaign.value(forKey: "totalClicks") as? Int64, 11)
         XCTAssertEqual(campaign.value(forKey: "totalImpressions") as? Int64, 33)
     }
+
+    func test_migrating_from_100_to_101_adds_productID_to_BlazeCampaign() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 100")
+        let sourceContext = sourceContainer.viewContext
+
+        let campaign = insertBlazeCampaign(to: sourceContext, forModel: 100)
+
+        try sourceContext.save()
+
+        XCTAssertNil(campaign.entity.attributesByName["productID"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 101")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedCampaign = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaign"))
+
+        // BlazeCampaign has the expected default value for the new attribute.
+        let productID = migratedCampaign.value(forKey: "productID") as? NSNumber
+        XCTAssertNil(productID, "Confirm expected property exists and is nil by default.")
+
+        // For model 101, saved BlazeCampaign with specific product ID has the expected product ID value.
+        let newCampaign = insertBlazeCampaign(to: targetContext, forModel: 101)
+        try targetContext.save()
+        XCTAssertEqual(newCampaign.value(forKey: "productID") as? NSNumber, .init(value: 123))
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -3033,6 +3061,11 @@ private extension MigrationTests {
         // Required since model 100
         if modelVersion >= 100 {
             campaign.setValue(1, forKey: "siteID")
+        }
+
+        // Required since model 101
+        if modelVersion >= 101 {
+            campaign.setValue(NSNumber(value: 123), forKey: "productID")
         }
 
         return campaign

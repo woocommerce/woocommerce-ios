@@ -4,8 +4,18 @@ import class WordPressAuthenticator.LoginFields
 /// Hosting controller for `WPCom2FALoginView`
 final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginView> {
 
-    init(viewModel: WPCom2FALoginViewModel) {
-        super.init(rootView: WPCom2FALoginView(viewModel: viewModel))
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
+
+    /// Inits the hosting controller for `WPCom2FALoginView`.
+    /// Params:
+    ///   - title: Title to display at the top of the 2FA view.
+    ///   - isJetpackSetup: Whether the view is part of the login step of the Jetpack setup flow.
+    ///   - viewModel: The model for the view.
+    ///
+    init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
+        self.isJetpackSetup = isJetpackSetup
+        super.init(rootView: WPCom2FALoginView(title: title, isJetpackSetup: isJetpackSetup, viewModel: viewModel))
     }
 
     @available(*, unavailable)
@@ -20,7 +30,7 @@ final class WPCom2FALoginHostingController: UIHostingController<WPCom2FALoginVie
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -31,7 +41,15 @@ struct WPCom2FALoginView: View {
     @ObservedObject private var viewModel: WPCom2FALoginViewModel
     @FocusState private var isFieldFocused: Bool
 
-    init(viewModel: WPCom2FALoginViewModel) {
+    /// Title to display at the top of the 2FA view.
+    private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
+
+    init(title: String, isJetpackSetup: Bool, viewModel: WPCom2FALoginViewModel) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
     }
 
@@ -39,10 +57,11 @@ struct WPCom2FALoginView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // title and description
                 VStack(alignment: .leading, spacing: Constants.contentVerticalSpacing) {
-                    Text(viewModel.titleString)
+                    Text(title)
                         .largeTitleStyle()
                     Text(Localization.subtitleString)
                         .subheadlineStyle()
@@ -67,10 +86,21 @@ struct WPCom2FALoginView: View {
                     if viewModel.isRequestingOTP {
                         ActivityIndicator(isAnimating: .constant(true), style: .medium)
                     } else {
-                        Text(Localization.textMeACode)
+                        Label(Localization.textMeACode, systemImage: "platter.filled.top.iphone")
                             .linkStyle()
                     }
                 })
+
+                if #available(iOS 16, *), viewModel.shouldEnableSecurityKeyOption {
+                    // Security key button
+                    Button {
+                        viewModel.loginWithSecurityKey()
+                    } label: {
+                        Label(Localization.securityKey, systemImage: "key.horizontal")
+                            .linkStyle()
+                    }
+                }
+
                 Spacer()
             }
             .padding(Constants.contentPadding)
@@ -78,8 +108,10 @@ struct WPCom2FALoginView: View {
         .safeAreaInset(edge: .bottom) {
             VStack {
                 // Primary CTA
-                Button(viewModel.titleString) {
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                Button(title) {
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, tap: .submit))
+                    }
                     viewModel.handleLogin()
                 }
                 .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.isLoggingIn))
@@ -100,23 +132,33 @@ private extension WPCom2FALoginView {
 
     enum Localization {
         static let subtitleString = NSLocalizedString(
-            "Almost there! Please enter the verification code from your Authentication app",
-            comment: "Instruction on the WPCom 2FA login screen of the Jetpack setup flow")
+            "wpCom2FALoginView.subtitleString",
+            value: "Almost there! Please enter the verification code from your Authentication app",
+            comment: "Instruction on the WPCom 2FA login screen")
         static let verificationCode = NSLocalizedString(
-            "Verification code",
-            comment: "Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow."
+            "wpCom2FALoginView.verificationCode",
+            value: "Verification code",
+            comment: "Placeholder for the 2FA code field on the WPCom 2FA login screen"
         )
         static let textMeACode = NSLocalizedString(
-            "Text me a code instead",
-            comment: "Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow."
+            "wpCom2FALoginView.textMeACode",
+            value: "Text me a code instead",
+            comment: "Button to request 2FA code via SMS on the WPCom 2FA login screen"
+        )
+        static let securityKey = NSLocalizedString(
+            "wpCom2FALoginView.securityKeyButton",
+            value: "Use a security key",
+            comment: "Button to enter security key on the WPCom 2FA login screen"
         )
     }
 }
 
 struct WPCom2FALoginView_Previews: PreviewProvider {
     static var previews: some View {
-        WPCom2FALoginView(viewModel: .init(loginFields: LoginFields(),
-                                           requiresConnectionOnly: true,
+        WPCom2FALoginView(title: "Login",
+                          isJetpackSetup: false,
+                          viewModel: .init(loginFields: LoginFields(),
+                                           onAuthWindowRequest: { UIViewController().view.window! },
                                            onLoginFailure: { _ in },
                                            onLoginSuccess: { _ in }))
     }

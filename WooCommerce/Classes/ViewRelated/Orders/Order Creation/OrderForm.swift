@@ -195,11 +195,22 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
+                            Divider()
+
                             OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                Divider()
+
+                                Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
                             CustomerNoteSection(viewModel: viewModel)
+
+                            Divider()
                         }
                     }
                     .disabled(viewModel.disabled)
@@ -485,6 +496,9 @@ private struct ProductsSection: View {
                     viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                 .onDisappear {
                     navigationButtonID = UUID()
+                }
+                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                    ConfigurableBundleProductView(viewModel: viewModel)
                 }
             })
             .actionSheet(isPresented: $showPermissionsSheet, content: {

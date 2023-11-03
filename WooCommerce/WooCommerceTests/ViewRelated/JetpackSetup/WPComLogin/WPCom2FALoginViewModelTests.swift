@@ -87,7 +87,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {
         // Given
         let window = UIWindow(frame: UIScreen.main.bounds)
-        var errorCaught: Error? = nil
+        var errorCaught: TwoFALoginError? = nil
         let expectedError = NSError(domain: "Test", code: 400)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
@@ -101,7 +101,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isLoggingIn)
-        assertEqual(expectedError, errorCaught as? NSError)
+        XCTAssertEqual(errorCaught, .genericFailure(underlyingError: expectedError))
     }
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginSuccess_is_triggered_when_login_succeeds() {

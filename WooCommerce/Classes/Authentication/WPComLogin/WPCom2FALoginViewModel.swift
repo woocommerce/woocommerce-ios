@@ -217,7 +217,7 @@ private extension WPCom2FALoginViewModel {
             }
             return .bad2FACode
         default:
-            return .genericFailure(underlyingError: error)
+            return .genericFailure(underlyingError: nsError)
         }
     }
 
@@ -239,13 +239,13 @@ private extension WPCom2FALoginViewModel {
     }
 }
 
-enum TwoFALoginError: Error {
+enum TwoFALoginError: Error, Equatable {
     case securityKeyChallengeTimeout
     case webAuthNonceNotFound
     case webAuthChallengeRequestFailed
     case invalidSecurityKey
     case bad2FACode
-    case genericFailure(underlyingError: Error)
+    case genericFailure(underlyingError: NSError)
 
     var errorMessage: String {
         switch self {

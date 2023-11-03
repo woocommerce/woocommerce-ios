@@ -2342,6 +2342,11 @@ final class MigrationTests: XCTestCase {
         // BlazeCampaign has the expected default value for the new attribute.
         let productID = migratedCampaign.value(forKey: "productID") as? NSNumber
         XCTAssertNil(productID, "Confirm expected property exists and is nil by default.")
+
+        // For model 101, saved BlazeCampaign with specific product ID has the expected product ID value.
+        let newCampaign = insertBlazeCampaign(to: targetContext, forModel: 101)
+        try targetContext.save()
+        XCTAssertEqual(newCampaign.value(forKey: "productID") as? NSNumber, .init(value: 123))
     }
 }
 

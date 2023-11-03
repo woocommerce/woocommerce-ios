@@ -51,7 +51,7 @@ def cocoa_lumberjack
 end
 
 def stripe_terminal
-  pod 'StripeTerminal', '~> 2.23.2'
+  pod 'StripeTerminal', '~> 3.0.0'
 end
 
 def networking_pods

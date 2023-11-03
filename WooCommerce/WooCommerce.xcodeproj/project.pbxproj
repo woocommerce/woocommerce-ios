@@ -1436,6 +1436,7 @@
 		80DA4F1C29CC505800BDF3BF /* products_search_results.json in Resources */ = {isa = PBXBuildFile; fileRef = 80DA4F1B29CC505800BDF3BF /* products_search_results.json */; };
 		80E6FC6D276312D50086CD67 /* products.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00C923E9BD5500157A78 /* products.json */; };
 		80E6FC79276C3FD60086CD67 /* MockDataReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E6FC742763579D0086CD67 /* MockDataReader.swift */; };
+		80E7E7F32AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80E7E7F22AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift */; };
 		80ECB4E229D2A51A00C62EEC /* ProductFilterScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80ECB4E129D2A51A00C62EEC /* ProductFilterScreen.swift */; };
 		80F9176D2A28638C00890A83 /* products_add_new_grouped_2130.json in Resources */ = {isa = PBXBuildFile; fileRef = 80F9176C2A28638C00890A83 /* products_add_new_grouped_2130.json */; };
 		8194A48313C34FE1782D51BC /* Pods_StoreWidgetsExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2886DE5218EEA78ABAF0BE67 /* Pods_StoreWidgetsExtension.framework */; };
@@ -3961,6 +3962,7 @@
 		80DA4F1B29CC505800BDF3BF /* products_search_results.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = products_search_results.json; sourceTree = "<group>"; };
 		80E6FC6E276325F60086CD67 /* Clibsodium.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Clibsodium.xcframework; path = ../Pods/Sodium/Clibsodium.xcframework; sourceTree = "<group>"; };
 		80E6FC742763579D0086CD67 /* MockDataReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDataReader.swift; sourceTree = "<group>"; };
+		80E7E7F22AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomerDetailsScreen.swift; sourceTree = "<group>"; };
 		80ECB4E129D2A51A00C62EEC /* ProductFilterScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFilterScreen.swift; sourceTree = "<group>"; };
 		80F9176C2A28638C00890A83 /* products_add_new_grouped_2130.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = products_add_new_grouped_2130.json; sourceTree = "<group>"; };
 		860B85F02ADE3A0E00E85884 /* BulletPointView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BulletPointView.swift; sourceTree = "<group>"; };
@@ -11434,6 +11436,7 @@
 				DEA426992875440500265B0C /* PaymentMethodsScreen.swift */,
 				DE3C5B1E286B18520049E6AA /* CardPresentPaymentsModalScreen.swift */,
 				D81867A22AF01A5F001DF14B /* AddCustomAmountScreen.swift */,
+				80E7E7F22AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -12301,6 +12304,7 @@
 				3F0CF30E2704490A00EF3D71 /* PasswordScreen.swift in Sources */,
 				3F0CF3092704490A00EF3D71 /* BetaFeaturesScreen.swift in Sources */,
 				80B8D34C278E8A0C00FE6E6B /* MenuScreen.swift in Sources */,
+				80E7E7F32AF4AD3E00AA52D3 /* AddCustomerDetailsScreen.swift in Sources */,
 				3F0CF3022704490A00EF3D71 /* LinkOrPasswordScreen.swift in Sources */,
 				3F0CF2FF2704490A00EF3D71 /* SettingsScreen.swift in Sources */,
 				3F0CF3052704490A00EF3D71 /* LoginEpilogueScreen.swift in Sources */,

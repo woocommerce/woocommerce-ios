@@ -2,6 +2,7 @@ import UIKit
 import enum Yosemite.Credentials
 import protocol Yosemite.StoresManager
 import WordPressAuthenticator
+import WooFoundation
 
 /// Coordinates navigation for the login flow with WPCom accounts.
 final class WPComLoginCoordinator {
@@ -86,12 +87,16 @@ private extension WPComLoginCoordinator {
     }
 
     func show2FALoginUI(with loginFields: LoginFields) {
+        guard let window = navigationController.view.window else {
+            logErrorAndExit("⛔️ Error finding window for security key login")
+        }
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
+            onAuthWindowRequest: { window },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
-                let message = error.localizedDescription
-                self.showAlert(message: message)
+                // TODO: Analytics
+                self.showAlert(message: error.errorMessage)
             },
             onLoginSuccess: { [weak self] authToken in
                 await self?.authenticateUserAndComplete(username: loginFields.username,

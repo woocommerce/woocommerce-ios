@@ -22,15 +22,6 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
 
     private(set) var avatarURL: URL?
 
-    private var loginFields: LoginFields {
-        let loginFields = LoginFields()
-        loginFields.username = email
-        loginFields.password = password
-        loginFields.siteAddress = siteURL
-        loginFields.userIsDotCom = true
-        return loginFields
-    }
-
     init(siteURL: String = "",
          email: String,
          onMagicLinkRequest: @escaping (String) async -> Void,
@@ -52,11 +43,13 @@ final class WPComPasswordLoginViewModel: NSObject, ObservableObject {
     }
 
     func resetPassword() {
+        let loginFields = createLoginFields()
         WordPressAuthenticator.openForgotPasswordURL(loginFields)
     }
 
     func handleLogin() {
         isLoggingIn = true
+        let loginFields = createLoginFields()
         loginFacade.signIn(with: loginFields)
     }
 
@@ -87,18 +80,29 @@ private extension WPComPasswordLoginViewModel {
             .trimmingCharacters(in: .whitespaces)
             .md5Hash()
     }
+
+    func createLoginFields(with nonceInfo: SocialLogin2FANonceInfo? = nil, userID: Int = 0) -> LoginFields {
+        let loginFields = LoginFields()
+        loginFields.username = email
+        loginFields.password = password
+        loginFields.siteAddress = siteURL
+        loginFields.userIsDotCom = true
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
+        return loginFields
+    }
 }
 
 extension WPComPasswordLoginViewModel: LoginFacadeDelegate {
     func needsMultifactorCode() {
         isLoggingIn = false
+        let loginFields = createLoginFields()
         onMultifactorCodeRequest(loginFields)
     }
 
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         isLoggingIn = false
-        loginFields.nonceInfo = nonceInfo
-        loginFields.nonceUserID = userID
+        let loginFields = createLoginFields(with: nonceInfo, userID: userID)
         onMultifactorCodeRequest(loginFields)
     }
 

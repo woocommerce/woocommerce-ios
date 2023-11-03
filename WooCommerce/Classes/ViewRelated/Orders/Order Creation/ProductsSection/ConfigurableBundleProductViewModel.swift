@@ -44,6 +44,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     private let product: Product
     private let childItems: [OrderItem]
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// - Parameters:
     ///   - product: Bundle product in an order item.
@@ -53,10 +54,12 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     init(product: Product,
          childItems: [OrderItem],
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onConfigure: @escaping (_ configurations: [BundledProductConfiguration]) -> Void) {
         self.product = product
         self.childItems = childItems
         self.stores = stores
+        self.analytics = analytics
         self.onConfigure = onConfigure
         // The content does not matter because the text in placeholder rows is redacted.
         placeholderItemViewModels = [Int64](0..<3).map { _ in
@@ -89,6 +92,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 
     /// Completes the bundle configuration and triggers the configuration callback.
     func configure() {
+        analytics.track(event: .Orders.orderFormBundleProductConfigurationSaveTapped())
         let configurations: [BundledProductConfiguration] = bundleItemViewModels.compactMap {
             $0.toConfiguration
         }

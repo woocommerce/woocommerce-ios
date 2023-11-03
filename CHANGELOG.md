@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.1
+In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!
+
 ## 16.0
 We're thrilled to roll out the latest updates! 
 

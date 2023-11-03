@@ -69,7 +69,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .shareProductAI:
             return true
         case .betterCustomerSelectionInOrder:
-            return !isUITesting
+            return true
         case .hazmatShipping:
             return true
         case .productCreationAI:
@@ -81,6 +81,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

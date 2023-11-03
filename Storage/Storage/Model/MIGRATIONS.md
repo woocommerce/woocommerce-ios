@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 101 (Release 16.1.0.0)
+- @hafizrahman 2023-11-02
+    - Added `productID` attribute to `BlazeCampaign` entity.
+
 ## Model 100 (Release 15.8.0.0)
 - @itsmeichigo 2023-10-11
     - Added new entity `BlazeCampaign`

@@ -12,7 +12,15 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
 
     init(viewModel: EditableOrderViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: OrderForm(viewModel: viewModel))
+        let flow: WooAnalyticsEvent.Orders.Flow = {
+            switch viewModel.flow {
+                case .creation:
+                    return .creation
+                case .editing:
+                    return .editing
+            }
+        }()
+        super.init(rootView: OrderForm(flow: flow, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -97,6 +105,8 @@ struct OrderForm: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Scale of the view based on accessibility changes
@@ -127,7 +137,9 @@ struct OrderForm: View {
 
                             Spacer(minLength: Layout.sectionSpacing)
 
-                            ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            ProductsSection(scroll: scroll,
+                                            flow: flow,
+                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
@@ -370,6 +382,8 @@ private struct NewTaxRateSection: View {
 private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -439,6 +453,7 @@ private struct ProductsSection: View {
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
+                                              flow: flow,
                                               shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                               shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                               onAddDiscount: {
@@ -478,7 +493,7 @@ private struct ProductsSection: View {
             }, content: {
                 ProductSelectorNavigationView(
                     configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                    source: .orderForm,
+                    source: .orderForm(flow: flow),
                     isPresented: $showAddProduct,
                     viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                 .onDisappear {
@@ -601,23 +616,23 @@ struct OrderForm_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")

@@ -451,6 +451,10 @@ public enum WooAnalyticsStat: String {
     case orderDetailWaitingTimeLoaded = "order_detail_waiting_time_loaded"
     case orderDetailsSubscriptionsShown = "order_details_subscriptions_shown"
     case orderDetailsGiftCardShown = "order_details_gift_card_shown"
+    case orderFormBundleProductConfigureCTAShown = "order_form_bundle_product_configure_cta_shown"
+    case orderFormBundleProductConfigureCTATapped = "order_form_bundle_product_configure_cta_tapped"
+    case orderFormBundleProductConfigurationChanged = "order_form_bundle_product_configuration_changed"
+    case orderFormBundleProductConfigurationSaveTapped = "order_form_bundle_product_configuration_save_tapped"
 
     // MARK: Custom amounts
     case addCustomAmountDoneButtonTapped = "add_custom_amount_done_tapped"

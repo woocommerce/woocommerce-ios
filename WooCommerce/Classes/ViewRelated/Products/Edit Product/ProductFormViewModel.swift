@@ -749,6 +749,7 @@ private extension ProductFormViewModel {
     }
 
     func updateResults() {
-        hasActiveBlazeCampaign = false /* todo */
+        let campaigns = blazeCampaignResultsController.fetchedObjects
+        hasActiveBlazeCampaign = campaigns.contains(where: { $0.productID == product.productID })
     }
 }

@@ -90,10 +90,10 @@ private extension WPComLoginCoordinator {
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             onAuthWindowRequest: { window },
-            onLoginFailure: { [weak self] error, errorMessage in
+            onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 // TODO: Analytics
-                self.showAlert(message: errorMessage)
+                self.showAlert(message: error.errorMessage)
             },
             onLoginSuccess: { [weak self] authToken in
                 await self?.authenticateUserAndComplete(username: loginFields.username,

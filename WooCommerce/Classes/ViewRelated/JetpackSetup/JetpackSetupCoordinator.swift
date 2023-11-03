@@ -380,10 +380,10 @@ private extension JetpackSetupCoordinator {
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
             onAuthWindowRequest: { window },
-            onLoginFailure: { [weak self] error, message in
+            onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
-                self.showAlert(message: message)
+                self.showAlert(message: error.errorMessage)
             },
             onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)

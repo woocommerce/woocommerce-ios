@@ -38,12 +38,12 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     private let loginFields: LoginFields
     private let loginFacade: LoginFacade
     private let onAuthWindowRequest: () -> UIWindow
-    private let onLoginFailure: (Error, String) -> Void
+    private let onLoginFailure: (TwoFALoginError) -> Void
     private let onLoginSuccess: (String) async -> Void
 
     init(loginFields: LoginFields,
          onAuthWindowRequest: @escaping () -> UIWindow,
-         onLoginFailure: @escaping (Error, String) -> Void,
+         onLoginFailure: @escaping (TwoFALoginError) -> Void,
          onLoginSuccess: @escaping (String) async -> Void) {
         self.loginFields = loginFields
         self.loginFacade = LoginFacade(dotcomClientID: ApiCredentials.dotcomAppId,
@@ -59,7 +59,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
     @available(iOS 16, *)
     func loginWithSecurityKey() {
         guard let twoStepNonce = loginFields.nonceInfo?.nonceWebauthn else {
-            return displaySecurityKeyError(error: TwoFALoginError.webAuthNonceNotFound)
+            return handleError(.webAuthNonceNotFound)
         }
 
         isLoggingIn = true
@@ -67,7 +67,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
 
         Task { @MainActor in
             guard let challengeInfo = await loginFacade.requestWebauthnChallenge(userID: loginFields.nonceUserID, twoStepNonce: twoStepNonce) else {
-                return displaySecurityKeyError()
+                return handleError(.webAuthChallengeRequestFailed)
             }
 
             signChallenge(challengeInfo)
@@ -79,8 +79,7 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
         if let nonceInfo = loginFields.nonceInfo {
             let (authType, nonce) = nonceInfo.authTypeAndNonce(for: strippedCode)
             guard nonce.isNotEmpty else {
-                isLoggingIn = false
-                return onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+                return handleError(.bad2FACode)
             }
             loginFacade.loginToWordPressDotCom(withUser: loginFields.nonceUserID, authType: authType, twoStepCode: strippedCode, twoStepNonce: nonce)
         } else {
@@ -106,8 +105,8 @@ final class WPCom2FALoginViewModel: NSObject, ObservableObject {
 extension WPCom2FALoginViewModel: LoginFacadeDelegate {
 
     func displayRemoteError(_ error: Error) {
-        isLoggingIn = false
-        handleFailure(error: error)
+        let twoFAError = checkFailure(error: error)
+        handleError(twoFAError)
     }
 
     func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
@@ -135,12 +134,12 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
               let credential = authorization.credential as? ASAuthorizationPlatformPublicKeyCredentialAssertion,
               let challengeInfo = loginFields.webauthnChallengeInfo,
               let clientDataJson = extractClientData(from: credential, challengeInfo: challengeInfo) else {
-            return displaySecurityKeyError()
+            return handleError(.webAuthChallengeRequestFailed)
         }
 
         // Validate that the submitted passkey is allowed.
         guard challengeInfo.allowedCredentialIDs.contains(credential.credentialID.base64URLEncodedString()) else {
-            return displaySecurityKeyError(message: Localization.invalidSecurityKey)
+            return handleError(.invalidSecurityKey)
         }
 
         loginFacade.authenticateWebauthnSignature(userID: loginFields.nonceUserID,
@@ -167,7 +166,7 @@ extension WPCom2FALoginViewModel: ASAuthorizationControllerDelegate, ASAuthoriza
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
         DDLogError("⛔️ Error signing challenge: \(error.localizedDescription)")
-        displaySecurityKeyError()
+        handleError(.webAuthChallengeRequestFailed)
     }
 
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
@@ -194,7 +193,8 @@ private extension WPCom2FALoginViewModel {
         authController.performRequests()
     }
 
-    func handleFailure(error: Error) {
+    /// Matches error with an equivalent `TwoFALoginError`.
+    func checkFailure(error: Error) -> TwoFALoginError {
         let nsError = error as NSError
 
         // If the error happened because the security key challenge request started more than 1 minute ago, show a timeout error.
@@ -202,29 +202,29 @@ private extension WPCom2FALoginViewModel {
         if let initialChallengeRequestTime,
             Date().timeIntervalSince(initialChallengeRequestTime) >= 60,
             nsError.code == .zero {
-            return displaySecurityKeyError(message: Localization.timeoutError)
+            return .securityKeyChallengeTimeout
         }
 
         switch (nsError.domain, nsError.code) {
         case (Constants.oauthErrorDomain,
               WordPressComOAuthError.invalidOneTimePassword.rawValue):
-            onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+            return .bad2FACode
         case (Constants.oauthErrorDomain,
               WordPressComOAuthError.invalidTwoStepCode.rawValue):
             // Invalid 2FA during social login
             if let newNonce = (error as NSError).userInfo[WordPressComOAuthClient.WordPressComOAuthErrorNewNonceKey] as? String {
                 loginFields.nonceInfo?.updateNonce(with: newNonce)
             }
-            onLoginFailure(TwoFALoginError.bad2FACode, Localization.bad2FAError)
+            return .bad2FACode
         default:
-            onLoginFailure(error, error.localizedDescription)
+            return .genericFailure(underlyingError: error)
         }
     }
 
-    func displaySecurityKeyError(error: Error = TwoFALoginError.webAuthChallengeRequestFailed,
-                                 message: String = Localization.unknownError) {
+    /// Triggers failure callback with the final error.
+    func handleError(_ error: TwoFALoginError) {
         isLoggingIn = false
-        onLoginFailure(error, message)
+        onLoginFailure(error)
     }
 }
 
@@ -236,6 +236,30 @@ private extension WPCom2FALoginViewModel {
         // swiftlint:enable line_length
         static let maximumCodeLength = 8
         static let oauthErrorDomain = "WordPressComOAuthError"
+    }
+}
+
+enum TwoFALoginError: Error {
+    case securityKeyChallengeTimeout
+    case webAuthNonceNotFound
+    case webAuthChallengeRequestFailed
+    case invalidSecurityKey
+    case bad2FACode
+    case genericFailure(underlyingError: Error)
+
+    var errorMessage: String {
+        switch self {
+        case .securityKeyChallengeTimeout:
+            return Localization.timeoutError
+        case .webAuthNonceNotFound, .webAuthChallengeRequestFailed:
+            return Localization.unknownError
+        case .invalidSecurityKey:
+            return Localization.invalidSecurityKey
+        case .bad2FACode:
+            return Localization.bad2FAError
+        case .genericFailure(let error):
+            return error.localizedDescription
+        }
     }
 
     enum Localization {
@@ -260,11 +284,5 @@ private extension WPCom2FALoginViewModel {
             value: "Time's up, but don't worry, your security is our priority. Please try again!",
             comment: "Error when the uses takes more than 1 minute to submit a security key."
         )
-    }
-
-    enum TwoFALoginError: Error {
-        case webAuthNonceNotFound
-        case webAuthChallengeRequestFailed
-        case bad2FACode
     }
 }

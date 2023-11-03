@@ -14,7 +14,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -29,7 +29,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -44,7 +44,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -59,7 +59,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -74,7 +74,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -91,7 +91,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let expectedError = NSError(domain: "Test", code: 400)
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { error, _ in errorCaught = error },
+                                               onLoginFailure: { errorCaught = $0 },
                                                onLoginSuccess: { _ in })
 
         // When
@@ -111,7 +111,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         let expectedToken = "secret"
         let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { token = $0 })
         // When
         viewModel.handleLogin()
@@ -134,7 +134,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         // When
         let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // Then
@@ -150,7 +150,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
         // When
         let viewModel = WPCom2FALoginViewModel(loginFields: loginFields,
                                                onAuthWindowRequest: { window },
-                                               onLoginFailure: { _, _ in },
+                                               onLoginFailure: { _ in },
                                                onLoginSuccess: { _ in })
 
         // Then

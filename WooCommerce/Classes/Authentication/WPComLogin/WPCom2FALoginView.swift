@@ -159,7 +159,7 @@ struct WPCom2FALoginView_Previews: PreviewProvider {
                           isJetpackSetup: false,
                           viewModel: .init(loginFields: LoginFields(),
                                            onAuthWindowRequest: { UIViewController().view.window! },
-                                           onLoginFailure: { _, _ in },
+                                           onLoginFailure: { _ in },
                                            onLoginSuccess: { _ in }))
     }
 }

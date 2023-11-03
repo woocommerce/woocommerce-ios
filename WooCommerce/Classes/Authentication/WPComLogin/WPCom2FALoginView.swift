@@ -132,20 +132,23 @@ private extension WPCom2FALoginView {
 
     enum Localization {
         static let subtitleString = NSLocalizedString(
-            "Almost there! Please enter the verification code from your Authentication app",
-            comment: "Instruction on the WPCom 2FA login screen of the Jetpack setup flow")
+            "wpCom2FALoginView.subtitleString",
+            value: "Almost there! Please enter the verification code from your Authentication app",
+            comment: "Instruction on the WPCom 2FA login screen")
         static let verificationCode = NSLocalizedString(
-            "Verification code",
-            comment: "Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow."
+            "wpCom2FALoginView.verificationCode",
+            value: "Verification code",
+            comment: "Placeholder for the 2FA code field on the WPCom 2FA login screen"
         )
         static let textMeACode = NSLocalizedString(
-            "Text me a code instead",
-            comment: "Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow."
+            "wpCom2FALoginView.textMeACode",
+            value: "Text me a code instead",
+            comment: "Button to request 2FA code via SMS on the WPCom 2FA login screen"
         )
         static let securityKey = NSLocalizedString(
             "wpCom2FALoginView.securityKeyButton",
             value: "Use a security key",
-            comment: "Button to enter security key on the WPCom 2FA login screen of the Jetpack setup flow."
+            comment: "Button to enter security key on the WPCom 2FA login screen"
         )
     }
 }

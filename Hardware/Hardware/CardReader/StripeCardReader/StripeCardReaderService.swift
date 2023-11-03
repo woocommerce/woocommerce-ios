@@ -623,7 +623,7 @@ private extension StripeCardReaderService {
             let meta = ParametersMeta(readerIDMetadataKey: self?.readerIDForIntent() ?? "",
                                       readerModelMetadataKey: self?.readerModelForIntent() ?? "",
                                       platformMetadataKey: Constants.platform)
-            
+
             // Shortcircuit if we have an inconsistent set of parameters
             guard let parameters = parameters.toStripe(with: meta) else {
                 promise(.failure(CardReaderServiceError.intentCreation()))

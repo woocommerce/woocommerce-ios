@@ -17,7 +17,8 @@ extension Hardware.PaymentIntentParameters {
 
         let amountForStripe = prepareAmountForStripe(amount)
 
-        let paymentIntentParamBuilder: PaymentIntentParametersBuilder = StripeTerminal.PaymentIntentParametersBuilder(amount: amountForStripe, currency: currency)
+        let paymentIntentParamBuilder: PaymentIntentParametersBuilder = StripeTerminal.PaymentIntentParametersBuilder(amount: amountForStripe,
+                                                                                                                      currency: currency)
 
         do {
             paymentIntentParamBuilder.setPaymentMethodTypes(paymentMethodTypes)

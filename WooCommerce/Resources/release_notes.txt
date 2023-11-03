@@ -1,5 +1,6 @@
-We're thrilled to roll out the latest updates!
+- [**] Orders: order creation sections are optimised for a simpler and more intuitive flow. [https://github.com/woocommerce/woocommerce-ios/pull/11042]
+- [*] Payments: Fix Tap to Pay reconnection on foreground, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11054]
+- [*] Payments: Fix Tap to Pay reconnection on fresh launch, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11056]
+- [*] Orders: Fix a bug that shows the wrong customer screen during the order creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11053]
+- [*] Orders: All order edit buttons render now with the pencil system image to make them consistent. [https://github.com/woocommerce/woocommerce-ios/pull/11048]
 
-In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
-
-We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!

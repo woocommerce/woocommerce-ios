@@ -104,6 +104,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .productBundlesInOrderForm:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .customLoginUIForAccountCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

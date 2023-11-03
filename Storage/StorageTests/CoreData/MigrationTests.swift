@@ -2340,7 +2340,7 @@ final class MigrationTests: XCTestCase {
         let migratedCampaign = try XCTUnwrap(targetContext.first(entityName: "BlazeCampaign"))
 
         // BlazeCampaign has the expected default value for the new attribute.
-        let productID = migratedCampaign.value(forKey: "productID") as? Int64
+        let productID = migratedCampaign.value(forKey: "productID") as? NSNumber
         XCTAssertNil(productID, "Confirm expected property exists and is nil by default.")
     }
 }
@@ -3060,7 +3060,7 @@ private extension MigrationTests {
 
         // Required since model 101
         if modelVersion >= 101 {
-            campaign.setValue(123, forKey: "productId")
+            campaign.setValue(NSNumber(value: 123), forKey: "productID")
         }
 
         return campaign

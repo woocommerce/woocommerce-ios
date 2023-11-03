@@ -11,16 +11,14 @@ extension UnderlyingError {
         }
 
         switch error.code {
-        case ErrorCode.Code.busy.rawValue:
-            self = .busy
+        case ErrorCode.Code.readerBusy.rawValue:
+            self = .readerBusy
         case ErrorCode.Code.notConnectedToReader.rawValue:
             self = .notConnectedToReader
         case ErrorCode.Code.alreadyConnectedToReader.rawValue:
             self = .alreadyConnectedToReader
-        case ErrorCode.Code.processInvalidPaymentIntent.rawValue:
-            self = .processInvalidPaymentIntent
-        case ErrorCode.Code.cannotConnectToUndiscoveredReader.rawValue:
-            self = .connectingToUndiscoveredReader
+        case ErrorCode.Code.confirmInvalidPaymentIntent.rawValue:
+            self = .confirmInvalidPaymentIntent
         case ErrorCode.Code.unsupportedSDK.rawValue:
             self = .unsupportedSDK
         case ErrorCode.Code.featureNotAvailableWithConnectedReader.rawValue:
@@ -76,8 +74,9 @@ extension UnderlyingError {
         case ErrorCode.Code.unexpectedSdkError.rawValue:
             self = .unexpectedSDKError
         case ErrorCode.Code.declinedByStripeAPI.rawValue:
-            let processPaymentError = error as? ProcessPaymentError
-            let declineReason = DeclineReason(with: processPaymentError?.declineCode ?? "")
+            // https://stripe.dev/stripe-terminal-ios/docs/Errors.html#/c:@SCPErrorKeyStripeAPIDeclineCode
+            let declineCode = error.userInfo["stripeAPIDeclineCode"] as? String
+            let declineReason = DeclineReason(with: declineCode ?? "")
             self = .paymentDeclinedByPaymentProcessorAPI(declineReason: declineReason)
         case ErrorCode.Code.declinedByReader.rawValue:
             self = .paymentDeclinedByCardReader

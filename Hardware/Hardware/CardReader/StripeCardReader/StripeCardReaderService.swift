@@ -137,7 +137,7 @@ extension StripeCardReaderService: CardReaderService {
         // another discovery process.
         // If we can't grab a lock quickly, let's fail rather than wait indefinitely
         guard discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
-            throw CardReaderServiceError.discovery(underlyingError: .busy)
+            throw CardReaderServiceError.discovery(underlyingError: .readerBusy)
         }
         // We only want to lock while we start the process to make sure another start or cancel doesn't collide.
         // The lock is released when we return from this method, when it will be OK to call cancel.
@@ -189,7 +189,7 @@ extension StripeCardReaderService: CardReaderService {
             // cancelable, then we attempt to grab a lock on the discovery process.
             // If it's not possible, then another start or cancel might be in progress, so we'll fail right away.
             guard self.discoveryLock.lock(before: Date().addingTimeInterval(1)) else {
-                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .busy)))
+                return promise(.failure(CardReaderServiceError.discovery(underlyingError: .readerBusy)))
             }
 
             // The completion block for cancel, apparently, is called when

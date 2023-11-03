@@ -33,5 +33,10 @@ protocol StripePaymentIntent {
 }
 
 
-extension StripeTerminal.PaymentIntent: StripePaymentIntent { }
+extension StripeTerminal.PaymentIntent: StripePaymentIntent {
+    // TODO: Temporarily added here for conformance
+    var stripeId: String {
+        ""
+    }
+}
 #endif

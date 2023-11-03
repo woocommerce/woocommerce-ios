@@ -37,5 +37,10 @@ protocol StripeCardPresentDetails {
 }
 
 
-extension StripeTerminal.CardPresentDetails: StripeCardPresentDetails {}
+extension StripeTerminal.CardPresentDetails: StripeCardPresentDetails {
+    // TODO: Temporarily added here for conformance
+    var fingerprint: String {
+        ""
+    }
+}
 #endif

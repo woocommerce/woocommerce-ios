@@ -749,7 +749,23 @@ private extension ProductFormViewModel {
     }
 
     func updateResults() {
+        hasActiveBlazeCampaign = checkBlazeCampaignForProduct()
+    }
+}
+
+// MARK: Blaze
+//
+private extension ProductFormViewModel {
+    /// Check whether there is already an existing campaign for the current Product, that also has one of these statuses:
+    /// - created (in moderation),
+    /// - approved,
+    /// - scheduled, or
+    /// - active.
+    func checkBlazeCampaignForProduct() -> Bool {
         let campaigns = blazeCampaignResultsController.fetchedObjects
-        hasActiveBlazeCampaign = campaigns.contains(where: { $0.productID == product.productID })
+        return campaigns.contains(where: {
+            ($0.productID == product.productID) &&
+            ($0.status == .created || $0.status == .approved || $0.status == .scheduled || $0.status == .active)
+        })
     }
 }

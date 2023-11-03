@@ -1,1 +1,5 @@
-¡Prepárate para una excitante actualización! Si eres un comerciante con sede en el Reino Unido, estamos encantados de presentarte la nueva función Contactless para pagar en iPhone,  consiguiendo que los pagos sean más fluidos y eficientes que nunca. Pero eso no es todo: ahora todo el mundo puede disfrutar de la comodidad de utilizar las contraseñas almacenadas en el inicio de sesión de WordPress.com, haciendo que el proceso de inicio de sesión sea más sencillo que nunca.
+¡Estamos emocionados con el lanzamiento de las últimas actualizaciones!
+
+En esta actualización, hemos mejorado la experiencia de Blaze en "Mi tienda" para una creación y gestión de campañas impecable. También hemos corregido algunos errores en nuestra función de Pedidos, uno mostraba una descripción emergente durante la Creación del pedido y otro mostraba una imprecisión del valor total del producto con descuento en algunas situaciones. Además, hemos añadido una emocionante función que te permite añadir cantidades personalizadas a tus pedidos.
+
+Nos comprometemos a seguir mejorando nuestra aplicación para ofrecerte el mejor servicio. Gracias por elegir WooCommerce.

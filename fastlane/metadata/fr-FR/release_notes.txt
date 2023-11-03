@@ -1,1 +1,5 @@
-Découvrez une mise à jour fantastique ! Si vous êtes un commerçant basé au Royaume-Uni, nous sommes ravis de vous présenter la nouvelle fonctionnalité Tap to Pay sur iPhone, qui rend les paiements plus fluides et plus efficaces que jamais. Et ce n'est pas tout : maintenant, tout le monde peut utiliser les clés stockées dans WordPress.com login, faisant du processus de connexion un jeu d'enfant.
+Les dernières mises à jour sont lancées, pour notre plus grande joie !
+
+Dans cette mise à jour, nous avons amélioré l’expérience Blaze dans Ma boutique pour simplifier davantage la gestion et la création des campagnes. Nous avons également corrigé des bugs dans notre fonctionnalité Commandes, à savoir l’affichage non seulement d’une info-bulle incorrecte pendant la création d’une commande, mais aussi d’un montant total réduit erroné pour les produits dans certains scénarios. Nous avons en outre ajouté une nouvelle fonctionnalité permettant de personnaliser les montants de vos commandes.
+
+Nous nous engageons à améliorer sans cesse notre application pour mieux vous servir. Merci d’avoir choisi WooCommerce !

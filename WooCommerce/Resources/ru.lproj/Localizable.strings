@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-24 11:48:32+0000 */
+/* Translation-Revision-Date: 2023-11-02 09:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -99,9 +99,6 @@ which should be translated separately and considered part of this sentence. */
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@ через %2$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@ x %2$@" = "%1$@ x %2$@";
-
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
 
@@ -113,9 +110,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
-
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
 "%1$d Categories" = "%1$d Категории";
@@ -518,8 +512,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in the CTA View for installing WCShip extension */
 "Add Extension To Store" = "Добавить расширение в магазин";
 
-/* Title for the Fee screen during order creation
-   Title text of the button that adds a fee when creating a new order */
+/* Title for the Fee screen during order creation */
 "Add Fee" = "Добавить комиссию";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
@@ -855,7 +848,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "Американское Самоа";
 
-/* Title for the discount amount of a product during order creation
+/* Title above the amount field on the add custom amount view in orders.
+   Title for the discount amount of a product during order creation
    Title of the Amount label on Coupon Details screen */
 "Amount" = "Сумма";
 
@@ -1223,8 +1217,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
-/* Title on the alert presented when dismissing the banner announcing Blaze feature. */
-"Blaze Ads" = "Реклама в Blaze";
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Кампании Blaze";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "Цитата";
@@ -1384,6 +1378,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "Камерун";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "Сведения о кампании";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Не удаётся запросить ссылку.";
 
@@ -1448,6 +1445,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
+   Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1660,6 +1658,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "Выбрать размер бумаги";
 
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments." = "На iPhone войдите в меню «Сведения о заказе → Платежи» и выберите «Оплата в касание» в настройках функции «Получение платежей».";
+
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "Выберите страну";
 
@@ -1862,7 +1863,8 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "Настройки обновлены";
 
-/* My Store > Settings > Configure section title */
+/* My Store > Settings > Configure section title
+   Text in the product row card to configure a bundle product */
 "Configure" = "Настроить";
 
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
@@ -2221,6 +2223,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation web view. */
 "Create a store" = "Создание магазина";
 
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "Создать кампанию";
+
 /* Title of the Create coupon screen */
 "Create coupon" = "Создание купона";
 
@@ -2250,9 +2255,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "Создание, редактирование и публикация товаров.";
-
-/* Status name of a newly created Blaze campaign */
-"Created" = "Создано";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "Создание вариантов для всех комбинаций ваших атрибутов.";
@@ -2310,7 +2312,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the Analytics Hub Custom selection range */
 "Custom" = "Дополнительно";
 
-/* Title text of the row that shows the provided amount when creating a simple payment */
+/* Navigation title on the add custom amount view in orders.
+   Title text of the row that shows the provided amount when creating a simple payment */
 "Custom Amount" = "Индивидуальная сумма";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
@@ -2333,6 +2336,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Navigation title of the orders filter selector screen for custom date range */
 "Custom Range" = "Произвольный период";
+
+/* Placeholder for the name field on the add custom amount view in orders. */
+"Custom amount" = "Индивидуальная сумма";
 
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "Для таможенных форм требуется 10-значный телефонный номер";
@@ -2738,6 +2744,10 @@ which should be translated separately and considered part of this sentence. */
 
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "Перетащите фотографии, чтобы изменить их порядок";
+
+/* Subtitle of the empty state of the Blaze campaign list view
+   Title for the Blaze campaign intro view */
+"Drive more sales to your store with Blaze" = "Повышайте продажи в своём магазине с помощью Blaze";
 
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "Дублировать";
@@ -3297,9 +3307,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "Отзыв отправлен!";
 
-/* Fees label for payment view
-   Label for the row showing the cost of fees in the order
-   Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "Сборы";
 
 /* Info message shown when the order contains multiple fees and shipping lines */
@@ -3307,9 +3315,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "Возврат платежей";
-
-/* Info message shown when the order contains multiple fee lines */
-"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "Неполные данные о комиссии.\nЧтобы изменить все комиссии, откройте заказ в разделе администрирования WooCommerce.";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "Получение вариантов...";
@@ -3631,8 +3636,7 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "Понятно!";
 
-/* Button on the alert presented when dismissing the banner announcing Blaze feature.
-   Button title that dismisses the Write with AI tooltip
+/* Button title that dismisses the Write with AI tooltip
    Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "Понятно";
@@ -4000,6 +4004,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "Увеличивайте продажи благодаря продаже дополнительных и связанных продуктов";
+
+/* Subtitle of the Blaze campaign view. */
+"Increase visibility and get your products sold quickly." = "Станьте заметнее и быстрее продавайте товары.";
 
 /* Country option for a site address. */
 "India" = "Индия";
@@ -4895,6 +4902,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
+   Title above the name field on the add custom amount view in orders.
    Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "Имя";
@@ -5026,6 +5034,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder for empty address in order customer data */
 "No address specified." = "Адрес не указан.";
 
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "Нет рекламных кампаний";
+
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "Нет подключённых устройств чтения карт. Подключите устройство и повторите попытку";
 
@@ -5145,9 +5156,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "Нет вариантов для создания";
-
-/* Message on the alert presented when dismissing the banner announcing Blaze feature. */
-"No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience." = "Не волнуйтесь! Для удобства пользователей реклама в Blaze отображается в меню и разделе сведений о товаре.";
 
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "Не стоит волноваться! Оставить отзыв можно в любое время в «Меню» > «Настройки».";
@@ -6009,7 +6017,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's private status */
 "Privately published" = "Опубликован как скрытый";
 
-/* Display label for processing order status. */
+/* Display label for processing order status.
+   Status name of a Blaze campaign under processing */
 "Processing" = "В обработке";
 
 /* Alert title when processing a payment without a user name.
@@ -6132,12 +6141,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Продвижение в TikTok";
 
-/* Description of the hub menu Blaze button
-   Title on the banner to highlight Blaze feature */
+/* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "Продвигайте товары с помощью Blaze";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "Продвигайте с помощью Blaze";
+
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "Прорекламируйте свой товар всего за несколько минут.";
 
 /* One of the possible options in Product Visibility */
 "Public" = "Общедоступный";
@@ -6229,6 +6240,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "Оцените первый опыт очной оплаты.";
+
+/* Third item in the description for Blaze campaign intro view */
+"Reach millions on WordPress and Tumblr sites." = "Взаимодействуйте с миллионами посетителей сайтов WordPress и Tumblr.";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
@@ -6523,6 +6537,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "Вернуться в мой магазин";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "Вернуться к платежам";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "Вернуть отправителю в случае невозможности доставки";
@@ -7125,6 +7142,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Short Description row on Product main screen */
 "Short description" = "Короткое описание";
 
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "Показать все кампании";
+
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "Показать заказы";
 
@@ -7401,6 +7421,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "Стандартный тариф";
 
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "Запустите кампанию Blaze";
+
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
 "Start Date" = "Дата начала";
@@ -7661,6 +7684,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "Сделать фото";
 
+/* Second item in the description for Blaze campaign intro view */
+"Take control with just a few dollars a day. It’s budget-friendly." = "Полный контроль всего за несколько долларов в день. Это очень выгодно.";
+
 /* Description of the hub menu payments button */
 "Take payments on the go" = "Принимайте платежи на ходу";
 
@@ -7906,6 +7932,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "В URL-адресе отсутствует допустимый хост.";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "Реклама отправлена на утверждение. Когда она будет одобрена и запущена, вы получите сообщение с подтверждением по электронной почте.";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone не поддерживает платежи на такую сумму. Используйте внешнее устройство чтения карт или другой способ оплаты.";
@@ -8458,6 +8487,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Track shipment button title */
 "Track Shipment" = "Отслеживать доставку";
 
+/* Fourth item in the description for Blaze campaign intro view */
+"Track performance, start and stop your Blaze campaign anytime." = "Отслеживайте производительность, запускайте и останавливайте кампанию Blaze в любое время.";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "Отслеживайте продажи и узнавайте, какие товары пользуются спросом";
 
@@ -8524,9 +8556,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "Повторить авторизацию";
 
-/* Title of the button on the banner to highlight Blaze feature */
-"Try Blaze now" = "Попробовать Blaze";
-
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "Повторите попытку";
 
@@ -8541,6 +8570,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "Оплатить ещё раз";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Попробуйте оплатить %1$@ банковской картой. После завершения вы сможете вернуть средства.";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Попробуйте выполнить платёж";
@@ -8610,9 +8642,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "Включите это, если купон не следует применять к товарам на распродаже. Купоны на один товар применяются только в том случае, если товар не на распродаже. Купоны на одну покупку применяются только в том случае, если в корзине есть товары не по распродаже.";
-
-/* Description on the banner to highlight Blaze feature */
-"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "Демонстрируйте товары в рекламных объявлениях на миллионах сайтов WordPress.com и Tumblr.";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "Расстановка акцентов";
@@ -9588,6 +9617,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "Сотрудничество";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Would you like to try a payment" = "Хотите попробовать новый способ оплаты?";
+
 /* Title in the product description AI generator view. */
 "Write a description" = "Добавьте описание";
 
@@ -10116,6 +10148,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡 Расскажите, почему вы пока не оформили подписку";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Кампания Blaze";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 Ещё знакомитесь с WooCommerce?";

@@ -1,1 +1,5 @@
-Kami memiliki informasi baru yang menarik! Jika Anda pemilik usaha yang berbasis di Inggris, kami ingin memperkenalkan fitur baru Tap to Pay di iPhone, yang menjadikan proses pembayaran lebih lancar dan efisien. Namun bukan hanya itu — Anda juga dapat menikmati kenyamanan menggunakan passkey yang Anda simpan di login WordPress.com, sehingga proses login menjadi lebih mudah.
+Ini dia pembaruan terkini kami!
+
+Dalam pembaruan ini, kami meningkatkan pengalaman Blaze di 'Toko Saya' sehingga kampanye dapat dibuat dan dikelola secara lebih efisien. Kami juga membasmi dua bug di fitur pesanan kami. Salah satu bug menunjukkan tooltip yang salah selama Pembuatan Pesanan. Bug lainnya menampilkan nilai produk total yang didiskon secara tidak akurat dalam skenario tertentu. Menariknya, kami menambahkan fitur baru sehingga Anda dapat menambahkan jumlah kustom pada pesanan Anda.
+
+Kami berkomitmen untuk terus menyempurnakan aplikasi kami demi pelayanan yang lebih baik.  Terima kasih telah memilih WooCommerce!

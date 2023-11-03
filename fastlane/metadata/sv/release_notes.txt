@@ -1,1 +1,5 @@
-Gör dig redo för en spännande uppdatering! Om du är en UK-baserad handlare är vi glada över att introducera den nya Tap to Pay-funktionen på iPhone, vilket gör betalningar smidigare och effektivare än någonsin. Men det är inte allt - nu kan alla njuta av bekvämligheten med att använda dina lagrade lösenord i WordPress.com-inloggningen, vilket gör inloggningsprocessen till en lek.
+Vi är glada över att kunna presentera de senaste uppdateringarna!
+
+I den här uppdateringen har vi förbättrat Blaze-upplevelsen i "Min butik" för mer strömlinjeformat skapande och hantering av kampanjer. Vi har också åtgärdat ett par buggar i vår beställningsfunktion, en som visade ett felaktigt verktygstips när en beställning skapas, och en annan som visade ett felaktigt rabatterat totalt produktvärde i vissa scenarier. Vi har lagt till en ny funktion som gör att du kan lägga till anpassade belopp i dina beställningar.
+
+Vi är mycket måna om att ständigt förbättra vår app för att kunna ge dig bättre service. Tack för att du väljer WooCommerce.

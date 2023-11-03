@@ -1,1 +1,5 @@
-Hey, hey! Birbirinden heyecanlı bir güncelleme için hazır olun! Eğer Birleşik Krallık merkezli bir satıcıysanız, iPhone'da yeni "Dokunarak Öde" özelliğini tanıtmaktan dolayı çok heyecanlıyız. Bu özellik sayesinde ödemeler daha da kolay ve verimli hale geliyor. Ama bu kadarı da değil - artık herkes WordPress.com girişinde kayıtlı şifrelerinizi kullanarak kolayca giriş yapabilecek, giriş süreci adeta bir esinti olacak.
+En yeni güncellemeleri sunmaktan heyecan duyuyoruz!
+
+Bu güncellemede daha kolaylaştırılmış bir kampanya oluşturma ve yönetimi için 'Mağazam' bölümünde Blaze deneyimini geliştirdik. Ayrıca, Siparişler özelliğimizde Sipariş Oluşturma sırasında yanlış bir araç ipucu gösteren bir hata ile bazı senaryolarda yanlış indirimli toplam ürün değerini gösteren başka bir hata dahil birkaç hatayı giderdik. Heyecan verici olarak, siparişlerinize özel tutarlar eklemenizi sağlayan yeni bir özellik ekledik.
+
+Size daha iyi hizmet vermek için uygulamamızı sürekli olarak geliştirmek için çalışıyoruz. WooCommerce'i seçtiğiniz için teşekkür ederiz!

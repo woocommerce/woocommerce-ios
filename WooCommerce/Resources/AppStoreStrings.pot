@@ -61,13 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v16.0-whats-new"
+msgctxt "v16.1-whats-new"
 msgid ""
-"We're thrilled to roll out the latest updates!\n"
-"\n"
-"In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.\n"
-"\n"
-"We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!\n"
+"In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

@@ -1,6 +1,1 @@
-- [**] Orders: order creation sections are optimised for a simpler and more intuitive flow. [https://github.com/woocommerce/woocommerce-ios/pull/11042]
-- [*] Payments: Fix Tap to Pay reconnection on foreground, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11054]
-- [*] Payments: Fix Tap to Pay reconnection on fresh launch, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11056]
-- [*] Orders: Fix a bug that shows the wrong customer screen during the order creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11053]
-- [*] Orders: All order edit buttons render now with the pencil system image to make them consistent. [https://github.com/woocommerce/woocommerce-ios/pull/11048]
-
+In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!

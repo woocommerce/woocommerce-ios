@@ -1465,7 +1465,6 @@ extension OrderDetailsDataSource {
     }
 
     enum Icons {
-        static let addNoteIcon = UIImage.addOutlineImage
         static let shippingNoticeIcon = UIImage.noticeImage
         static let plusImage = UIImage.plusImage
     }

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21679"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,7 +18,7 @@
                 <rect key="frame" x="0.0" y="0.0" width="320" height="130"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="6" baselineRelativeArrangement="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-Sc-g7S">
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalCentering" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="KmX-Sc-g7S">
                         <rect key="frame" x="16" y="19" width="288" height="92"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Address title" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c05-76-euV">
@@ -66,12 +68,14 @@
                             </stackView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PXt-fH-GM8">
                                 <rect key="frame" x="0.0" y="92" width="288" height="44"/>
+                                <color key="backgroundColor" name="Red50"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="44" id="1vO-Pa-Rrp"/>
                                 </constraints>
                                 <state key="normal" title="Add Customer Note"/>
                             </button>
                         </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ROw-w5-B5y" firstAttribute="leading" secondItem="KmX-Sc-g7S" secondAttribute="leading" id="748-v2-bRN"/>
                             <constraint firstAttribute="trailing" secondItem="ROw-w5-B5y" secondAttribute="trailing" id="HEe-FX-fCQ"/>
@@ -91,6 +95,7 @@
             <connections>
                 <outlet property="addButton" destination="PXt-fH-GM8" id="dUB-nu-XDA"/>
                 <outlet property="addressLabel" destination="KJW-Ch-VgS" id="W8H-je-t7J"/>
+                <outlet property="addressStackView" destination="ROw-w5-B5y" id="gf1-JL-J3e"/>
                 <outlet property="editButton" destination="zA3-Zq-pRC" id="Igf-KB-IhK"/>
                 <outlet property="nameLabel" destination="pQe-4r-eVj" id="vSy-Fd-TAw"/>
                 <outlet property="titleLabel" destination="c05-76-euV" id="SZI-ln-laJ"/>
@@ -98,4 +103,9 @@
             <point key="canvasLocation" x="34" y="114"/>
         </tableViewCell>
     </objects>
+    <resources>
+        <namedColor name="Red50">
+            <color red="0.83921568627450982" green="0.21176470588235294" blue="0.2196078431372549" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
 </document>

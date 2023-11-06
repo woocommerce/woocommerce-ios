@@ -21,12 +21,15 @@ class CustomerInfoTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var addButton: UIButton!
 
+    @IBOutlet private weak var addressStackView: UIStackView!
+
     var title: String? {
         get {
             return titleLabel.text
         }
         set {
             titleLabel.text = newValue
+            titleLabel.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 
@@ -96,6 +99,7 @@ class CustomerInfoTableViewCell: UITableViewCell {
         configureBackground()
         configureEditButton()
         configureAddButton()
+        configureLayout()
     }
 
     override func prepareForReuse() {
@@ -107,8 +111,11 @@ class CustomerInfoTableViewCell: UITableViewCell {
         onAddTapped = nil
         editButton.accessibilityLabel = nil
     }
-}
 
+    func configureLayout() {
+        addressStackView.isHidden = (name == nil || (name?.isEmpty ?? true)) && (address == nil || (address?.isEmpty ?? true))
+    }
+}
 
 private extension CustomerInfoTableViewCell {
     func configureBackground() {
@@ -124,7 +131,7 @@ private extension CustomerInfoTableViewCell {
         addButton.applyLinkButtonStyle()
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
-        addButton.contentVerticalAlignment = .bottom
+        addButton.contentVerticalAlignment = .center
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(.zero)
         configuration.imagePadding = Constants.buttonTitleAndImageSpacing

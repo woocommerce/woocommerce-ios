@@ -939,15 +939,16 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
 
         if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+            cell.title = Title.shippingAddress
             cell.address = formattedPostalAddress
             cell.onEditTapped = { [weak self] in
                 self?.onCellAction?(.editShippingAddress, nil)
             }
         } else {
+            cell.title = nil
             cell.address = nil
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editShippingAddress, nil)
@@ -958,6 +959,7 @@ private extension OrderDetailsDataSource {
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
+        cell.configureLayout()
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {

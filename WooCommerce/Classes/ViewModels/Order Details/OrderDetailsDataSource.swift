@@ -400,7 +400,7 @@ private extension OrderDetailsDataSource {
             }
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .addOrderNote:
+        case let cell as LargeHeightLeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
             configureOrderNoteHeader(cell: cell, at: indexPath)
@@ -439,7 +439,7 @@ private extension OrderDetailsDataSource {
             configureShippingLabelTrackingNumber(cell: cell, at: indexPath)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelRefunded:
             configureShippingLabelRefunded(cell: cell, at: indexPath)
-        case let cell as LeftImageTableViewCell where row == .trackingAdd:
+        case let cell as LargeHeightLeftImageTableViewCell where row == .trackingAdd:
             configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
@@ -556,10 +556,9 @@ private extension OrderDetailsDataSource {
                                                    comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
     }
 
-    private func configureNewNote(cell: LeftImageTableViewCell) {
-        cell.leftImage = Icons.addNoteIcon
+    private func configureNewNote(cell: LargeHeightLeftImageTableViewCell) {
         cell.imageView?.tintColor = .accent
-        cell.labelText = Titles.addNoteText
+        cell.configure(image: Icons.plusImage, text: Titles.addNoteText, textColor: .textLink)
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
@@ -918,11 +917,10 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    private func configureNewTracking(cell: LeftImageTableViewCell) {
+    private func configureNewTracking(cell: LargeHeightLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
-        cell.leftImage = .addOutlineImage
         cell.imageView?.tintColor = .accent
-        cell.labelText = cellTextContent
+        cell.configure(image: Icons.plusImage, text: cellTextContent, textColor: .textLink)
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
@@ -1247,15 +1245,15 @@ extension OrderDetailsDataSource {
 
         let addTracking: Section? = {
             // Add tracking section is hidden if there are non-empty non-refunded shipping labels.
-            guard shippingLabels.nonRefunded.isEmpty else {
-                return nil
-            }
-
-            // Hide the section if the shipment
-            // tracking plugin is not installed
-            guard trackingIsReachable else {
-                return nil
-            }
+//            guard shippingLabels.nonRefunded.isEmpty else {
+//                return nil
+//            }
+//
+//            // Hide the section if the shipment
+//            // tracking plugin is not installed
+//            guard trackingIsReachable else {
+//                return nil
+//            }
 
             let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
@@ -1469,6 +1467,7 @@ extension OrderDetailsDataSource {
     enum Icons {
         static let addNoteIcon = UIImage.addOutlineImage
         static let shippingNoticeIcon = UIImage.noticeImage
+        static let plusImage = UIImage.plusImage
     }
 
     enum Title {
@@ -1665,7 +1664,7 @@ extension OrderDetailsDataSource {
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
-                return LeftImageTableViewCell.reuseIdentifier
+                return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .collectCardPaymentButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .installWCShip:
@@ -1687,7 +1686,7 @@ extension OrderDetailsDataSource {
             case .shippingNotice:
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
-                return LeftImageTableViewCell.reuseIdentifier
+                return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:

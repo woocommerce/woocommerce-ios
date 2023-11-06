@@ -1479,7 +1479,7 @@ extension OrderDetailsDataSource {
         static let shippingAddress = NSLocalizedString("Shipping Details",
                                                        comment: "Shipping title for customer info cell")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
-        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+        static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
         static let shippingLabelCreationInfoAction =

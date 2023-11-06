@@ -476,14 +476,15 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
-        cell.headline = Title.customerNote
         cell.selectionStyle = .none
         if customerNote.isNotEmpty {
+            cell.headline = Title.customerNote
             cell.body = customerNote.quoted
             cell.onEditTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
             }
         } else {
+            cell.headline = nil
             cell.body = nil
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)

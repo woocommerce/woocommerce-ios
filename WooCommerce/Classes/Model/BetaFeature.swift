@@ -46,6 +46,8 @@ extension BetaFeature {
 
     var isAvailable: Bool {
         switch self {
+        case .inAppPurchases:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchases)
         default:
             return true
         }

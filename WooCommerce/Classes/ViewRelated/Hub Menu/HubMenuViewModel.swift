@@ -95,7 +95,7 @@ final class HubMenuViewModel: ObservableObject {
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
-        swiftUIPaymentsMenuEnabled = generalAppSettings.betaFeatureEnabled(.swiftUIPaymentsMenu)
+        swiftUIPaymentsMenuEnabled = featureFlagService.isFeatureFlagEnabled(.swiftUIPaymentsMenu) && generalAppSettings.betaFeatureEnabled(.swiftUIPaymentsMenu)
     }
 
     /// Resets the menu elements displayed on the menu.

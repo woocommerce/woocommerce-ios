@@ -2,6 +2,7 @@
 
 16.2
 -----
+- [**] Orders: order details show custom amounts on their own section. Other fields are re-designed towards a cleaner look. [https://github.com/woocommerce/woocommerce-ios/pull/11097]
 
 
 16.1

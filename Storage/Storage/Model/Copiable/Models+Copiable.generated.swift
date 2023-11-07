@@ -26,6 +26,7 @@ extension Storage.GeneralAppSettings {
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
         isTapToPayOnIPhoneSwitchEnabled: CopiableProp<Bool> = .copy,
+        isSwiftUIPaymentsMenuSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,
@@ -39,6 +40,7 @@ extension Storage.GeneralAppSettings {
         let isViewAddOnsSwitchEnabled = isViewAddOnsSwitchEnabled ?? self.isViewAddOnsSwitchEnabled
         let isInAppPurchasesSwitchEnabled = isInAppPurchasesSwitchEnabled ?? self.isInAppPurchasesSwitchEnabled
         let isTapToPayOnIPhoneSwitchEnabled = isTapToPayOnIPhoneSwitchEnabled ?? self.isTapToPayOnIPhoneSwitchEnabled
+        let isSwiftUIPaymentsMenuSwitchEnabled = isSwiftUIPaymentsMenuSwitchEnabled ?? self.isSwiftUIPaymentsMenuSwitchEnabled
         let knownCardReaders = knownCardReaders ?? self.knownCardReaders
         let lastEligibilityErrorInfo = lastEligibilityErrorInfo ?? self.lastEligibilityErrorInfo
         let lastJetpackBenefitsBannerDismissedTime = lastJetpackBenefitsBannerDismissedTime ?? self.lastJetpackBenefitsBannerDismissedTime
@@ -53,6 +55,7 @@ extension Storage.GeneralAppSettings {
             isViewAddOnsSwitchEnabled: isViewAddOnsSwitchEnabled,
             isInAppPurchasesSwitchEnabled: isInAppPurchasesSwitchEnabled,
             isTapToPayOnIPhoneSwitchEnabled: isTapToPayOnIPhoneSwitchEnabled,
+            isSwiftUIPaymentsMenuSwitchEnabled: isSwiftUIPaymentsMenuSwitchEnabled,
             knownCardReaders: knownCardReaders,
             lastEligibilityErrorInfo: lastEligibilityErrorInfo,
             lastJetpackBenefitsBannerDismissedTime: lastJetpackBenefitsBannerDismissedTime,

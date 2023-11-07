@@ -166,7 +166,7 @@ struct HubMenu: View {
 
     @ViewBuilder
     private func inPersonPaymentsMenu() -> some View {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.swiftUIPaymentsMenu) {
+        if viewModel.swiftUIPaymentsMenuEnabled {
             InPersonPaymentsMenu()
         } else {
             LegacyInPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)

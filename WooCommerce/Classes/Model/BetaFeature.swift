@@ -3,6 +3,7 @@ import Storage
 enum BetaFeature: String, CaseIterable {
     case viewAddOns
     case inAppPurchases
+    case swiftUIPaymentsMenu
 }
 
 extension BetaFeature {
@@ -12,6 +13,8 @@ extension BetaFeature {
             return Localization.viewAddOnsTitle
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementTitle
+        case .swiftUIPaymentsMenu:
+            return Localization.swiftUIPaymentsMenuTitle
         }
     }
 
@@ -21,6 +24,8 @@ extension BetaFeature {
             return Localization.viewAddOnsDescription
         case .inAppPurchases:
             return Localization.inAppPurchasesManagementDescription
+        case .swiftUIPaymentsMenu:
+            return Localization.swiftUIPaymentsMenuDescription
         }
     }
 
@@ -30,6 +35,8 @@ extension BetaFeature {
             return \.isViewAddOnsSwitchEnabled
         case .inAppPurchases:
             return \.isInAppPurchasesSwitchEnabled
+        case .swiftUIPaymentsMenu:
+            return \.isSwiftUIPaymentsMenuSwitchEnabled
         }
     }
 
@@ -48,6 +55,8 @@ extension BetaFeature {
         switch self {
         case .inAppPurchases:
             return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.inAppPurchasesDebugMenu)
+        case .swiftUIPaymentsMenu:
+            return ServiceLocator.featureFlagService.isFeatureFlagEnabled(.swiftUIPaymentsMenu)
         default:
             return true
         }
@@ -111,5 +120,14 @@ private extension BetaFeature {
         static let inAppPurchasesManagementDescription = NSLocalizedString(
             "Test out in-app purchases as we get ready to launch",
             comment: "Cell description on beta features screen to enable in-app purchases")
+
+        static let swiftUIPaymentsMenuTitle = NSLocalizedString(
+            "betaFeature.swiftUIPaymentsMenu.switch.title",
+            value: "New Payments Menu",
+            comment: "Cell title on beta features screen to enable new payments menu")
+        static let swiftUIPaymentsMenuDescription = NSLocalizedString(
+            "betaFeature.swiftUIPaymentsMenu.switch.description",
+            value: "Test out the SwiftUI rewrite of the payments menu as we get ready to launch.",
+            comment: "Cell title on beta features screen to enable new payments menu")
     }
 }

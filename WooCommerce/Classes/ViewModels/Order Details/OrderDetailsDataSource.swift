@@ -1163,7 +1163,8 @@ extension OrderDetailsDataSource {
             }.allSatisfy { $0.virtual == true }
 
 
-            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
+            let shippingAddressIsFilled = !(order.shippingAddress?.isEmpty ?? true)
+            if shippingAddressIsFilled && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
             }
 
@@ -1245,15 +1246,15 @@ extension OrderDetailsDataSource {
 
         let addTracking: Section? = {
             // Add tracking section is hidden if there are non-empty non-refunded shipping labels.
-//            guard shippingLabels.nonRefunded.isEmpty else {
-//                return nil
-//            }
-//
-//            // Hide the section if the shipment
-//            // tracking plugin is not installed
-//            guard trackingIsReachable else {
-//                return nil
-//            }
+            guard shippingLabels.nonRefunded.isEmpty else {
+                return nil
+            }
+
+            // Hide the section if the shipment
+            // tracking plugin is not installed
+            guard trackingIsReachable else {
+                return nil
+            }
 
             let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd

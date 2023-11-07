@@ -480,7 +480,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for eligible order without shipping labels")
             return
         }
@@ -499,7 +499,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for ineligible order")
             return
         }
@@ -517,7 +517,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for cash on delivery order")
             return
         }

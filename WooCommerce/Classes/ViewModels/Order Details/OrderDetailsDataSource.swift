@@ -1180,8 +1180,7 @@ extension OrderDetailsDataSource {
             }.allSatisfy { $0.virtual == true }
 
 
-            let shippingAddressIsFilled = !(order.shippingAddress?.isEmpty ?? true)
-            if shippingAddressIsFilled && orderContainsOnlyVirtualProducts == false {
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
             }
 

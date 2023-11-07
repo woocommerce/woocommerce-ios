@@ -121,7 +121,7 @@ private extension LedgerTableViewCell {
 
 private extension LedgerTableViewCell {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Product Total",
+        static let subtotalLabel = NSLocalizedString("Products",
                                                      comment: "Product Total label for payment view")
         static let feesLabel = NSLocalizedString("Custom Amounts",
                                                      comment: "Fees label for payment view")

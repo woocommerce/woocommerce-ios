@@ -22,7 +22,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentsMenu)
 
-    private let viewModel: InPersonPaymentsMenuViewModel
+    private let viewModel: LegacyInPersonPaymentsMenuViewModel
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
@@ -70,7 +70,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
          viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.viewModel = InPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
+        self.viewModel = LegacyInPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
         self.viewDidLoadAction = viewDidLoadAction

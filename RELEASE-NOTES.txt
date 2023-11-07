@@ -2,7 +2,7 @@
 
 16.2
 -----
-
+- [*] Add support for Universal Links in the woo.com domain [https://github.com/woocommerce/woocommerce-ios/pull/11098]
 
 16.1
 -----

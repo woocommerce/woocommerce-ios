@@ -105,7 +105,7 @@ struct HubMenu: View {
             EmptyView()
         }.hidden()
         NavigationLink(destination:
-                        InPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
+                        LegacyInPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
             .navigationTitle(InPersonPaymentsView.Localization.title),
                        isActive: $showingPayments) {
             EmptyView()

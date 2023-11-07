@@ -47,9 +47,9 @@
                                 </subviews>
                             </stackView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8sO-TX-YXZ">
-                                <rect key="frame" x="0.0" y="68" width="288" height="52"/>
+                                <rect key="frame" x="0.0" y="68" width="288" height="0.0"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="52" id="JD7-UH-chp"/>
+                                    <constraint firstAttribute="height" priority="999" constant="52" id="JD7-UH-chp"/>
                                 </constraints>
                                 <state key="normal" title="Add Customer Note"/>
                             </button>

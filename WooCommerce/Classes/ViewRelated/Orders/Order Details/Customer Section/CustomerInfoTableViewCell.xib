@@ -67,10 +67,10 @@
                                 </subviews>
                             </stackView>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="PXt-fH-GM8">
-                                <rect key="frame" x="0.0" y="92" width="288" height="44"/>
+                                <rect key="frame" x="0.0" y="92" width="288" height="0.0"/>
                                 <color key="backgroundColor" name="Red50"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="44" id="1vO-Pa-Rrp"/>
+                                    <constraint firstAttribute="height" priority="999" constant="44" id="1vO-Pa-Rrp"/>
                                 </constraints>
                                 <state key="normal" title="Add Customer Note"/>
                             </button>

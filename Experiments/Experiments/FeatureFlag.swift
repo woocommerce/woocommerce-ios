@@ -175,4 +175,8 @@ public enum FeatureFlag: Int {
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
     case customLoginUIForAccountCreation
+
+    /// Enables the rewritten Payments Menu
+    ///
+    case swiftUIPaymentsMenu
 }

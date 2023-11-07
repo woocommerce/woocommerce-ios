@@ -1086,12 +1086,11 @@ extension OrderDetailsDataSource {
                 }
                 headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
             } else {
-                headerStyle = .primary
+                headerStyle = .twoColumn
             }
 
             return Section(category: .products,
                            title: Localization.pluralizedProducts(count: items.count),
-                           rightTitle: nil,
                            rows: rows,
                            headerStyle: headerStyle)
         }()

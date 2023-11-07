@@ -1098,7 +1098,7 @@ extension OrderDetailsDataSource {
             }
 
             return Section(category: .products,
-                           title: Localization.pluralizedProducts(count: items.count),
+                           title: Title.products,
                            rows: rows,
                            headerStyle: headerStyle)
         }()
@@ -1109,7 +1109,7 @@ extension OrderDetailsDataSource {
             }
 
             return Section(category: .customAmounts,
-                          title: Localization.pluralizedCustomAmounts(count: order.fees.count),
+                          title: Title.customAmounts,
                           rows: Array(repeating: .customAmount, count: order.fees.count))
         }()
 
@@ -1490,13 +1490,9 @@ extension OrderDetailsDataSource {
 
     enum Title {
         static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
-        static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
         static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
                                                      value: "Custom Amounts",
                                                      comment: "Custom Amount section title if there is more than one custom amount.")
-        static let customAmount = NSLocalizedString("orderDetails.customAmounts.section.singularTitle",
-                                                     value: "Custom Amount",
-                                                     comment: "Custom Amount section title if there is one custom amount.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
         static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
@@ -1747,19 +1743,5 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
-    }
-}
-
-// MARK: - Private Utils
-
-private extension OrderDetailsDataSource {
-    enum Localization {
-        static func pluralizedProducts(count: Int) -> String {
-            count > 1 ? Title.products : Title.product
-        }
-
-        static func pluralizedCustomAmounts(count: Int) -> String {
-            count > 1 ? Title.customAmounts : Title.customAmount
-        }
     }
 }

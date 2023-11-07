@@ -112,10 +112,6 @@ public enum FeatureFlag: Int {
     ///
     case compositeProducts
 
-    /// Enables read-only support for the Subscriptions extension in product and order details
-    ///
-    case readOnlySubscriptions
-
     /// Enables generating product description using AI from product description editor.
     ///
     case productDescriptionAI

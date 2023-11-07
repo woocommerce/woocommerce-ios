@@ -18,9 +18,7 @@ struct MockFeatureFlagService: FeatureFlagService {
     private let isAddProductToOrderViaSKUScannerEnabled: Bool
     private let isBlazeEnabled: Bool
     private let isShareProductAIEnabled: Bool
-    private let isJustInTimeMessagesOnDashboardEnabled: Bool
     private let betterCustomerSelectionInOrder: Bool
-    private let manualTaxesInOrderM2: Bool
     private let productCreationAI: Bool
     private let productBundles: Bool
     private let productBundlesInOrderForm: Bool
@@ -41,9 +39,7 @@ struct MockFeatureFlagService: FeatureFlagService {
          isAddProductToOrderViaSKUScannerEnabled: Bool = false,
          isBlazeEnabled: Bool = false,
          isShareProductAIEnabled: Bool = false,
-         isJustInTimeMessagesOnDashboardEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
-         manualTaxesInOrderM2: Bool = false,
          productCreationAI: Bool = false,
          productBundles: Bool = false,
          productBundlesInOrderForm: Bool = false) {
@@ -63,9 +59,7 @@ struct MockFeatureFlagService: FeatureFlagService {
         self.isAddProductToOrderViaSKUScannerEnabled = isAddProductToOrderViaSKUScannerEnabled
         self.isBlazeEnabled = isBlazeEnabled
         self.isShareProductAIEnabled = isShareProductAIEnabled
-        self.isJustInTimeMessagesOnDashboardEnabled = isJustInTimeMessagesOnDashboardEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
-        self.manualTaxesInOrderM2 = manualTaxesInOrderM2
         self.productCreationAI = productCreationAI
         self.productBundles = productBundles
         self.productBundlesInOrderForm = productBundlesInOrderForm
@@ -103,12 +97,8 @@ struct MockFeatureFlagService: FeatureFlagService {
             return isAddProductToOrderViaSKUScannerEnabled
         case .shareProductAI:
             return isShareProductAIEnabled
-        case .justInTimeMessagesOnDashboard:
-            return isJustInTimeMessagesOnDashboardEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
-        case .manualTaxesInOrderM2:
-            return manualTaxesInOrderM2
         case .productCreationAI:
             return productCreationAI
         case .productBundles:

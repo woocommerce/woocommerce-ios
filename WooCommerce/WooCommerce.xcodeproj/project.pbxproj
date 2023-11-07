@@ -1686,6 +1686,7 @@
 		B935D3612A9F50F50067B927 /* MockWPAdminTaxSettingsURLProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = B935D3602A9F50F50067B927 /* MockWPAdminTaxSettingsURLProvider.swift */; };
 		B935D3632A9F57600067B927 /* NewTaxRateSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B935D3622A9F57600067B927 /* NewTaxRateSelectorViewModelTests.swift */; };
 		B93E03262A94EE63009CA9C1 /* TaxLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */; };
+		B943E7252AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B943E7242AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift */; };
 		B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */; };
 		B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880B29B626A1000646B0 /* SpotlightManager.swift */; };
 		B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */; };
@@ -4239,6 +4240,7 @@
 		B935D3602A9F50F50067B927 /* MockWPAdminTaxSettingsURLProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockWPAdminTaxSettingsURLProvider.swift; sourceTree = "<group>"; };
 		B935D3622A9F57600067B927 /* NewTaxRateSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaxRateSelectorViewModelTests.swift; sourceTree = "<group>"; };
 		B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxLineViewModel.swift; sourceTree = "<group>"; };
+		B943E7242AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsCustomAmountCellViewModel.swift; sourceTree = "<group>"; };
 		B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmountFlowOpener.swift; sourceTree = "<group>"; };
 		B946880B29B626A1000646B0 /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
 		B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
@@ -9153,6 +9155,14 @@
 			path = Taxes;
 			sourceTree = "<group>";
 		};
+		B943E7232AFA41BC009CBA20 /* Custom Amounts */ = {
+			isa = PBXGroup;
+			children = (
+				B943E7242AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift */,
+			);
+			path = "Custom Amounts";
+			sourceTree = "<group>";
+		};
 		B946880A29B6268D000646B0 /* Spotlight */ = {
 			isa = PBXGroup;
 			children = (
@@ -10475,6 +10485,7 @@
 		D817585C22BB5E6900289CFE /* Order Details */ = {
 			isa = PBXGroup;
 			children = (
+				B943E7232AFA41BC009CBA20 /* Custom Amounts */,
 				265284002624933B00F91BA1 /* AddOns */,
 				CECC758F23D226AC00486676 /* Aggregate Order Items */,
 				CECC758E23D2266300486676 /* Refund Details */,
@@ -12694,6 +12705,7 @@
 				02BBD6E529A2678100243BE2 /* StoreOnboardingView.swift in Sources */,
 				02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
+				B943E7252AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift in Sources */,
 				45EF7984244F26BB00B22BA2 /* Array+IndexPath.swift in Sources */,
 				02E6B97823853D81000A36F0 /* TitleAndValueTableViewCell.swift in Sources */,
 				AE2E5F6629685CF8009262D3 /* ProductsListViewModel.swift in Sources */,

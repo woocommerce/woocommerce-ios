@@ -420,6 +420,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProducts(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ProductDetailsTableViewCell where row == .customAmount:
+            configureCustomAmount(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
             configureCollectPaymentButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
@@ -833,6 +835,12 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let customAmount = order.fees[indexPath.row]
+        cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
+        cell.accessibilityIdentifier = "custom-amount-cell"
+    }
+
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
         let singular = NSLocalizedString("%@ Item",
                                          comment: "1 Item")
@@ -1095,6 +1103,16 @@ extension OrderDetailsDataSource {
                            headerStyle: headerStyle)
         }()
 
+        let customAmounts: Section? = {
+            guard order.fees.isNotEmpty else {
+                return nil
+            }
+
+            return Section(category: .customAmounts,
+                          title: Localization.pluralizedCustomAmounts(count: order.fees.count),
+                          rows: Array(repeating: .customAmount, count: order.fees.count))
+        }()
+
         let customFields: Section? = {
             guard order.customFields.isNotEmpty else {
                 return nil
@@ -1269,6 +1287,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
+                     customAmounts,
                      customFields,
                      installWCShipSection,
                      refundedProducts] +
@@ -1472,6 +1491,12 @@ extension OrderDetailsDataSource {
     enum Title {
         static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
         static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
+        static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
+                                                     value: "Custom Amounts",
+                                                     comment: "Custom Amount section title if there is more than one custom amount.")
+        static let customAmount = NSLocalizedString("orderDetails.customAmounts.section.singularTitle",
+                                                     value: "Custom Amount",
+                                                     comment: "Custom Amount section title if there is one custom amount.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
         static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
@@ -1515,6 +1540,7 @@ extension OrderDetailsDataSource {
             case summary
             case shippingNotice
             case products
+            case customAmounts
             case installWCShip
             case shippingLabel
             case refundedProducts
@@ -1598,6 +1624,7 @@ extension OrderDetailsDataSource {
     enum Row: Equatable {
         case summary
         case aggregateOrderItem
+        case customAmount
         case markCompleteButton(style: ButtonTableViewCell.Style, showsBottomSpacing: Bool)
         case refundedProducts
         case issueRefundButton
@@ -1635,6 +1662,8 @@ extension OrderDetailsDataSource {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .customAmount:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
@@ -1727,6 +1756,10 @@ private extension OrderDetailsDataSource {
     enum Localization {
         static func pluralizedProducts(count: Int) -> String {
             count > 1 ? Title.products : Title.product
+        }
+
+        static func pluralizedCustomAmounts(count: Int) -> String {
+            count > 1 ? Title.customAmounts : Title.customAmount
         }
     }
 }

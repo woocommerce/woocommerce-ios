@@ -721,6 +721,12 @@ extension UIImage {
         return UIImage(named: "icon-shopping-cart-purple")!
     }
 
+    /// Bordered Custom Amount
+    ///
+    static var borderedCustomAmount: UIImage {
+        return UIImage(named: "icon-bordered-custom-amount")!
+    }
+
     /// Credit card
     ///
     static var creditCardIcon: UIImage {

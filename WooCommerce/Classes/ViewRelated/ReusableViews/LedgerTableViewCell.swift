@@ -118,7 +118,6 @@ private extension LedgerTableViewCell {
     }
 }
 
-
 private extension LedgerTableViewCell {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Products",

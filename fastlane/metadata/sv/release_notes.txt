@@ -1,5 +1,1 @@
-Vi är glada över att kunna presentera de senaste uppdateringarna!
-
-I den här uppdateringen har vi förbättrat Blaze-upplevelsen i "Min butik" för mer strömlinjeformat skapande och hantering av kampanjer. Vi har också åtgärdat ett par buggar i vår beställningsfunktion, en som visade ett felaktigt verktygstips när en beställning skapas, och en annan som visade ett felaktigt rabatterat totalt produktvärde i vissa scenarier. Vi har lagt till en ny funktion som gör att du kan lägga till anpassade belopp i dina beställningar.
-
-Vi är mycket måna om att ständigt förbättra vår app för att kunna ge dig bättre service. Tack för att du väljer WooCommerce.
+I vår senaste uppdatering har vi förbättrat din WooCommerce-upplevelse! Vi har optimerat sektionerna för orderskapande för att tillhandahålla ett enklare och mer intuitivt flöde. Dessutom har vi åtgärdat en bugg som gjorde att fel kundsida visades när en order skapades. Njut av en smidigare och effektivare upplevelse av WooCommerce!

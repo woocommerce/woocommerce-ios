@@ -175,4 +175,8 @@ public enum FeatureFlag: Int {
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
     case customLoginUIForAccountCreation
+
+    /// Enables creating Subscription products
+    ///
+    case subscriptionProducts
 }

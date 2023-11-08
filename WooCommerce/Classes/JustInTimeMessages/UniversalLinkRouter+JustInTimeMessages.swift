@@ -32,6 +32,6 @@ private extension JustInTimeMessagesURLOpener {
     }
 
     enum Constants {
-        static let trustedDomains = ["woocommerce.com", "wordpress.com"]
+        static let trustedDomains = ["woo.com", "woocommerce.com", "wordpress.com"]
     }
 }

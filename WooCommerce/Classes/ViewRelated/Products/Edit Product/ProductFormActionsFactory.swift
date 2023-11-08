@@ -68,7 +68,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     }
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
-    private let isSubscriptionProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
 
     // TODO: Remove default parameter
@@ -79,7 +78,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isLinkedProductsPromoEnabled: Bool = false,
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
-         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
@@ -91,7 +89,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
-        self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
     }
 
@@ -152,7 +149,7 @@ private extension ProductFormActionsFactory {
         case .subscription:
             return allSettingsSectionActionsForSubscriptionProduct()
         case .variableSubscription:
-            return isSubscriptionProductsEnabled ? allSettingsSectionActionsForVariableSubscriptionProduct() : allSettingsSectionActionsForNonCoreProduct()
+            return allSettingsSectionActionsForVariableSubscriptionProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -304,20 +301,11 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
-        let subscriptionOrPriceRow: ProductFormEditAction? = {
-            if isSubscriptionProductsEnabled {
-                return .subscription(actionable: true)
-            } else if !product.regularPrice.isNilOrEmpty {
-                return .priceSettings(editable: false, hideSeparator: false)
-            } else {
-                return nil
-            }
-        }()
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = [
-            subscriptionOrPriceRow,
+            .subscription(actionable: true),
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,

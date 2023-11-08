@@ -628,14 +628,7 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    func syncSubscriptions(isFeatureFlagEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
-                           onCompletion: ((Error?) -> ())? = nil) {
-        // Only sync subscriptions if the feature flag is enabled.
-        guard isFeatureFlagEnabled else {
-            onCompletion?(nil)
-            return
-        }
-
+    func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point in continuing with a request that will fail.
         isPluginActive(SitePlugin.SupportedPlugin.WCSubscriptions) { [weak self] isActive in
 

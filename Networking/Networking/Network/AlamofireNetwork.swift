@@ -77,7 +77,11 @@ public class AlamofireNetwork: Network {
         sessionManager.request(request)
             .validateIfRestRequest(for: request)
             .responseData { response in
-                completion(response.result.toSwiftResult())
+                if let error = response.networkingError {
+                    completion(.failure(error))
+                } else {
+                    completion(response.result.toSwiftResult())
+                }
             }
     }
 
@@ -96,8 +100,12 @@ public class AlamofireNetwork: Network {
                 .request(request)
                 .validateIfRestRequest(for: request)
                 .responseData { response in
-                    let result = response.result.toSwiftResult()
-                    promise(.success(result))
+                    if let error = response.networkingError {
+                        promise(.success(.failure(error)))
+                    } else {
+                        let result = response.result.toSwiftResult()
+                        promise(.success(result))
+                    }
                 }
         }.eraseToAnyPublisher()
     }

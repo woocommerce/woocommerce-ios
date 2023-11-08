@@ -21,20 +21,15 @@ struct InPersonPaymentsLearnMore: View {
                 .renderedIf(showInfoIcon)
             AttributedText(viewModel.learnMoreAttributedString)
         }
-            .padding(.vertical, Constants.verticalPadding)
-            .onTapGesture {
-                viewModel.learnMoreTapped()
-                customOpenURL?(viewModel.url)
-            }
+        .onTapGesture {
+            viewModel.learnMoreTapped()
+            customOpenURL?(viewModel.url)
+        }
     }
 
     var iconSize: CGFloat {
         UIFontMetrics(forTextStyle: .subheadline).scaledValue(for: 20)
     }
-}
-
-private enum Constants {
-    static let verticalPadding: CGFloat = 8
 }
 
 struct InPersonPaymentsLearnMore_Previews: PreviewProvider {

@@ -85,6 +85,7 @@ struct SetUpTapToPayCompleteView: View {
                 viewModel: LearnMoreViewModel(
                     formatText: Localization.learnMore,
                     tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
+            .padding(.vertical, Constants.learnMorePadding)
             .customOpenURL(action: { _ in
                 showingAboutTapToPay = true
             })
@@ -101,6 +102,7 @@ private enum Constants {
     static let maxCompactImageHeight: CGFloat = 80
     static let imageFontSize: CGFloat = 120
     static let compactImageFontSize: CGFloat = 40
+    static let learnMorePadding: CGFloat = 8
 }
 
 // MARK: - Localization

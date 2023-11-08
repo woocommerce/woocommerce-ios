@@ -9,8 +9,6 @@ struct InPersonPaymentsLearnMore: View {
         self.viewModel = viewModel
     }
 
-    private let cardPresentConfiguration = CardPresentConfigurationLoader().configuration
-
     var body: some View {
         HStack(spacing: 16) {
             Image(uiImage: .infoOutlineImage)

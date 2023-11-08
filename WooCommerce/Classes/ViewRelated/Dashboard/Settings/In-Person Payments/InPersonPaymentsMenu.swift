@@ -145,13 +145,13 @@ private extension InPersonPaymentsMenu {
 
         static let purchaseCardReader = NSLocalizedString(
             "menu.payments.cardReader.purchase.row.title",
-            value: "Order card reader",
+            value: "Order Card Reader",
             comment: "Navigates to Card Reader purchase screen"
         )
 
         static let manageCardReader = NSLocalizedString(
             "menu.payments.cardReader.manage.row.title",
-            value: "Manage card reader",
+            value: "Manage Card Reader",
             comment: "Navigates to Card Reader management screen"
         )
 

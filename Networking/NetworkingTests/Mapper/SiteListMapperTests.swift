@@ -3,6 +3,15 @@ import XCTest
 
 final class SiteListMapperTests: XCTestCase {
 
+    func test_site_without_can_blaze_key_is_parsed_successfully() throws {
+        // Given
+        let sites = mapLoadSiteListResponse()
+
+        // Then
+        let second = try XCTUnwrap(sites[safe: 1])
+        XCTAssertFalse(second.canBlaze)
+    }
+
     /// `sites-malformed.json` contains a correct site and a site without options(malformed)
     ///
     func test_malformed_sites_are_evicted_from_site_list() throws {
@@ -24,6 +33,10 @@ private extension SiteListMapperTests {
         }
 
         return (try? SiteListMapper().map(response: response)) ?? []
+    }
+
+    func mapLoadSiteListResponse() -> [Site] {
+        mapSiteListData(from: "sites")
     }
 
     func mapLoadMalformedSiteListResponse() -> [Site] {

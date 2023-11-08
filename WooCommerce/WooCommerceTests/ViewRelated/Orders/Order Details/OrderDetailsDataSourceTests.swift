@@ -563,8 +563,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration
         )
 
         // When
@@ -580,8 +579,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder()
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
+                                                cardPresentPaymentsConfiguration: Mocks.configuration
         )
 
         // When
@@ -597,9 +595,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder(fees: [OrderFeeLine.fake()])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
-        )
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         insertFee(with: order)
@@ -616,9 +612,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder(fees: [])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
-        )
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()

@@ -265,10 +265,6 @@ final class DashboardViewModel {
     /// Checks for Just In Time Messages and prepares the announcement if needed.
     ///
     private func syncJustInTimeMessages(for siteID: Int64) async {
-        guard featureFlagService.isFeatureFlagEnabled(.justInTimeMessagesOnDashboard) else {
-            return
-        }
-
         let viewModel = try? await justInTimeMessagesManager.loadMessage(for: .dashboard, siteID: siteID)
         viewModel?.$showWebViewSheet.assign(to: &self.$showWebViewSheet)
         switch viewModel?.template {
@@ -280,7 +276,6 @@ final class DashboardViewModel {
             announcementViewModel = nil
             modalJustInTimeMessageViewModel = nil
         }
-
     }
 
     @MainActor

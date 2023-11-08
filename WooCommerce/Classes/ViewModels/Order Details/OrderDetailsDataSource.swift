@@ -1235,7 +1235,7 @@ extension OrderDetailsDataSource {
 
         let subscriptions: Section? = {
             // Subscriptions section is hidden if there are no subscriptions for the order.
-            guard orderSubscriptions.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlySubscriptions) else {
+            guard orderSubscriptions.isNotEmpty else {
                 return nil
             }
 

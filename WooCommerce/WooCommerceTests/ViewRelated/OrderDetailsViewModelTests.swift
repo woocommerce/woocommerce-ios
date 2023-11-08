@@ -251,7 +251,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                 }
             }
 
-            self.viewModel.syncSubscriptions(isFeatureFlagEnabled: true)
+            self.viewModel.syncSubscriptions()
         }
 
         // Then
@@ -283,7 +283,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                 }
             }
 
-            self.viewModel.syncSubscriptions(isFeatureFlagEnabled: true)
+            self.viewModel.syncSubscriptions()
         }
 
         // Then

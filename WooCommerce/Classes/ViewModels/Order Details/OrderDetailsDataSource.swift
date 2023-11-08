@@ -1116,7 +1116,7 @@ extension OrderDetailsDataSource {
 
             return Section(category: .customAmounts,
                           title: Title.customAmounts,
-                          rows: Array(repeating: .customAmount, count: order.fees.count))
+                          rows: Array(repeating: .customAmount, count: customAmounts.count))
         }()
 
         let customFields: Section? = {

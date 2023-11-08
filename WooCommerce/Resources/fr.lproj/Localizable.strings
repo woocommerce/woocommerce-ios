@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-07 17:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-08 15:27:20+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -8565,7 +8565,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Try Payment Again" = "Réessayer d’effectuer le paiement";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Essayez de procéder à un paiement  avec votre carte de débit ou de crédit. Le paiement sera remboursé lorsque vous aurez terminé.";
+"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "Essayez de procéder à %1$@ un paiement  avec votre carte de débit ou de crédit. Le paiement sera remboursé lorsque vous aurez terminé.";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "Essayer d’effectuer un paiement";

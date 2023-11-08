@@ -53,6 +53,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let expectedTitles = [
             nil,
             Title.products,
+            nil,
             Title.refundedProducts,
             Title.payment,
             Title.information,
@@ -594,9 +595,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder(fees: [OrderFeeLine.fake()])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
-        )
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()
@@ -611,9 +610,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let order = MockOrders().makeOrder(fees: [])
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
-                                                cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                featureFlags: MockFeatureFlagService(isReadOnlySubscriptionsEnabled: true)
-        )
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
         dataSource.reloadSections()

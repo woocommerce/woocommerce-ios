@@ -228,12 +228,8 @@ final class OrderListViewModel {
     }
 
     func updateBannerVisibility() {
-        if featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner) {
-            syncIPPBannerVisibility()
-            loadOrdersBannerVisibility()
-        } else {
-            loadOrdersBannerVisibility()
-        }
+        syncIPPBannerVisibility()
+        loadOrdersBannerVisibility()
     }
 
     /// Handles extra syncing upon pull-to-refresh.

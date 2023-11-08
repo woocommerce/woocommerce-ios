@@ -3,6 +3,7 @@
 16.2
 -----
 - [*] Add support for Universal Links in the woo.com domain [https://github.com/woocommerce/woocommerce-ios/pull/11098]
+- [*] Order form: when adding a product/variation by scanning a barcode, only the product/variation with the exact SKU should be added to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11089]
 
 16.1
 -----

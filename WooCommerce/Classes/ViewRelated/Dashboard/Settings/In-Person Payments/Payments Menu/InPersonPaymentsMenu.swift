@@ -7,6 +7,8 @@ struct InPersonPaymentsMenu: View {
 
     @State private var showingSimplePayments: Bool = false
 
+    @State private var showingManagePaymentGateways: Bool = false
+
     var body: some View {
         List {
             Section(Localization.paymentActionsSectionTitle) {
@@ -94,6 +96,22 @@ struct InPersonPaymentsMenu: View {
                     .customOpenURL(binding: $safariSheetURL)
             }
             .renderedIf(viewModel.shouldShowCardReaderSection)
+
+            Section {
+                NavigationLink(isActive: $showingManagePaymentGateways) {
+                    InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
+                        viewModel.dependencies.onboardingUseCase.clearPluginSelection()
+                        viewModel.dependencies.onboardingUseCase.selectPlugin(plugin)
+                        showingManagePaymentGateways = false
+                    }
+                } label: {
+                    PaymentsRow(image: Image(uiImage: .rectangleOnRectangleAngled),
+                                title: Localization.managePaymentGateways,
+                                subtitle: viewModel.activePaymentGatewayName)
+                }
+                .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
+            }
+            .renderedIf(viewModel.shouldShowPaymentOptionsSection)
         }
         .safariSheet(url: $safariSheetURL)
     }
@@ -140,60 +158,62 @@ private extension InPersonPaymentsMenu {
             "menu.payments.cardReader.purchase.row.title",
             value: "Order Card Reader",
             comment: "Navigates to Card Reader purchase screen"
-        )
+        ).localizedCapitalized
 
         static let manageCardReader = NSLocalizedString(
             "menu.payments.cardReader.manage.row.title",
             value: "Manage Card Reader",
             comment: "Navigates to Card Reader management screen"
-        )
+        ).localizedCapitalized
 
         static let managePaymentGateways = NSLocalizedString(
             "menu.payments.paymentGateway.manage.row.title",
             value: "Payment Provider",
             comment: "Navigates to Payment Gateway management screen"
-        )
+        ).localizedCapitalized
 
         static let toggleEnableCashOnDelivery = NSLocalizedString(
             "menu.payments.payInPerson.toggle.row.title",
             value: "Pay in Person",
             comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
-        )
+        ).localizedCapitalized
 
         static let cardReaderManuals = NSLocalizedString(
             "menu.payments.cardReader.manuals.row.title",
             value: "Card Reader Manuals",
             comment: "Navigates to Card Reader Manuals screen"
-        )
+        ).localizedCapitalized
 
         static let collectPayment = NSLocalizedString(
             "menu.payments.actions.collectPayment.row.title",
             value: "Collect Payment",
             comment: "Navigates to Collect a payment via the Simple Payment screen"
-        )
+        ).localizedCapitalized
 
         static let aboutTapToPayOnIPhone = NSLocalizedString(
             "menu.payments.tapToPay.about.row.title",
             value: "About Tap to Pay",
             comment: "Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits " +
-            "of Tap to Pay on iPhone, relevant to the store territory.")
+            "of Tap to Pay on iPhone, relevant to the store territory."
+        ).localizedCapitalized
 
         static let tapToPayOnIPhoneFeedback = NSLocalizedString(
             "menu.payments.tapToPay.feedback.row.title",
             value: "Share Feedback",
-            comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone.")
+            comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone."
+        ).localizedCapitalized
 
         static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
             "menu.payments.inPersonPayments.setup.incomplete.notice.title",
             value: "In-Person Payments setup is incomplete.",
             comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
-        )
+        ).localizedCapitalized
 
         static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
             "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
             value: "Continue setup",
             comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
-        )
+        ).localizedCapitalized
 
         static let done = NSLocalizedString(
             "menu.payments.wooPaymentsDeposits.navigation.done.button.title",

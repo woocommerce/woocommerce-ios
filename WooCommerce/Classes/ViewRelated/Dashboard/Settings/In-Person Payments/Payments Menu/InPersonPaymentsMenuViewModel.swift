@@ -2,13 +2,20 @@ import Foundation
 import SwiftUI
 import Yosemite
 import WooFoundation
+import Combine
 
 class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
+    @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
     @Published private(set) var shouldDisableManageCardReaders: Bool = false
+    @Published private(set) var backgroundOnboardingInProgress: Bool = false
+    @Published private(set) var shouldShowCardPresentPaymentsOnboardingNotice: Bool = false
+    @Published private(set) var shouldShowOnboarding: Bool = false
+    @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
+    @Published private(set) var activePaymentGatewayName: String?
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
     let siteID: Int64
@@ -23,10 +30,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     let dependencies: Dependencies
 
+    private var cancellables: Set<AnyCancellable> = []
+
     init(siteID: Int64,
          dependencies: Dependencies) {
         self.siteID = siteID
         self.dependencies = dependencies
+        runCardPresentPaymentsOnboardingIfPossible()
         updateOutputProperties()
     }
 
@@ -35,18 +45,6 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
         }
         updatePayInPersonToggleSelectedPlugin(from: dependencies.onboardingUseCase.state)
-    }
-
-    // TODO: refresh this when the onboarding state changes, when we do background onboarding properly
-    private func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {
-        switch state {
-        case let .completed(pluginState):
-            payInPersonToggleViewModel.selectedPlugin = pluginState.preferred
-        case let .codPaymentGatewayNotSetUp(plugin):
-            payInPersonToggleViewModel.selectedPlugin = plugin
-        default:
-            payInPersonToggleViewModel.selectedPlugin = nil
-        }
     }
 
     var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList {
@@ -79,6 +77,66 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 content: nil,
                 siteID: siteID),
             onDismiss: {})
+    }
+}
+
+// MARK: - Background onboarding
+private extension InPersonPaymentsMenuViewModel {
+    func runCardPresentPaymentsOnboardingIfPossible() {
+        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+            return
+        }
+
+        dependencies.onboardingUseCase.refreshIfNecessary()
+
+        dependencies.onboardingUseCase.statePublisher
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] state in
+                self?.refreshAfterNewOnboardingState(state)
+        }).store(in: &cancellables)
+    }
+
+    func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
+        guard state != .loading else {
+            backgroundOnboardingInProgress = true
+            return
+        }
+
+        switch state {
+        case let .completed(newPluginState):
+            shouldShowCardPresentPaymentsOnboardingNotice = false
+            shouldShowOnboarding = false
+            updateManagePaymentGatewaysRowVisibility(shouldShow: newPluginState.available.count > 1)
+            shouldDisableManageCardReaders = false
+            activePaymentGatewayName = newPluginState.preferred.pluginName
+        case .selectPlugin(true):
+            // Selected plugin was cleared manually (e.g by tapping in this view on the plugin selection row)
+            // No need to show the onboarding notice in this case.
+            break
+        default:
+            shouldShowCardPresentPaymentsOnboardingNotice = true
+            break
+        }
+        updatePayInPersonToggleSelectedPlugin(from: state)
+
+        backgroundOnboardingInProgress = false
+    }
+
+    func updateManagePaymentGatewaysRowVisibility(shouldShow: Bool) {
+        shouldShowManagePaymentGatewaysRow = shouldShow
+        shouldShowPaymentOptionsSection = shouldShow
+    }
+
+    func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {
+        switch state {
+        case let .completed(pluginState):
+            payInPersonToggleViewModel.selectedPlugin = pluginState.preferred
+        case let .codPaymentGatewayNotSetUp(plugin):
+            payInPersonToggleViewModel.selectedPlugin = plugin
+        default:
+            payInPersonToggleViewModel.selectedPlugin = nil
+        }
     }
 }
 

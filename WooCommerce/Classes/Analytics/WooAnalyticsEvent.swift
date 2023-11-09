@@ -1973,6 +1973,15 @@ extension WooAnalyticsEvent {
                               ])
         }
 
+        static func cashOnDeliveryToggleLearnMoreTapped(countryCode: CountryCode,
+                                                        source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggleLearnMoreTapped,
+                                     properties: [
+                                        Keys.countryCode: countryCode.rawValue,
+                                        Keys.source: source.rawValue
+                                     ])
+        }
+
         /// Tracked when the Cash on Delivery Payment Gateway disabling fails, e.g. from the toggle on the Payments hub menu.
         ///
         /// - Parameters:

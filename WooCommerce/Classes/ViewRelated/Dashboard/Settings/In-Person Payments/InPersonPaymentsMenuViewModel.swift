@@ -13,6 +13,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     let siteID: Int64
 
+    let payInPersonToggleViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
+
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
@@ -28,9 +30,22 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         updateOutputProperties()
     }
 
-    func updateOutputProperties() {
+    private func updateOutputProperties() {
         Task {
             await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+        }
+        updatePayInPersonToggleSelectedPlugin(from: dependencies.onboardingUseCase.state)
+    }
+
+    // TODO: refresh this when the onboarding state changes, when we do background onboarding properly
+    private func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {
+        switch state {
+        case let .completed(pluginState):
+            payInPersonToggleViewModel.selectedPlugin = pluginState.preferred
+        case let .codPaymentGatewayNotSetUp(plugin):
+            payInPersonToggleViewModel.selectedPlugin = plugin
+        default:
+            payInPersonToggleViewModel.selectedPlugin = nil
         }
     }
 
@@ -64,9 +79,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 content: nil,
                 siteID: siteID),
             onDismiss: {})
-
     }
-
 }
 
 private enum Constants {

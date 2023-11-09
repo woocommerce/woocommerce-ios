@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
+
     @State private var safariSheetURL: URL?
 
     @State private var showingSimplePayments: Bool = false
@@ -32,7 +33,11 @@ struct InPersonPaymentsMenu: View {
             }
 
             Section(Localization.paymentSettingsSectionTitle) {
-                EmptyView()
+                PaymentsToggleRow(
+                    image: Image(uiImage: .creditCardIcon),
+                    title: Localization.toggleEnableCashOnDelivery,
+                    toggleRowViewModel: viewModel.payInPersonToggleViewModel)
+                .customOpenURL(binding: $safariSheetURL)
             }
 
             Section(Localization.tapToPaySectionTitle) {
@@ -106,6 +111,45 @@ struct PaymentsRow: View {
     }
 }
 
+struct PaymentsToggleRow: View {
+    let image: Image
+    let title: String
+    @ObservedObject var toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
+    @Binding var toggleState: Bool
+
+    init(image: Image,
+         title: String,
+         toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel) {
+        self.image = image
+        self.title = title
+        self.toggleRowViewModel = toggleRowViewModel
+        self._toggleState = Binding(
+            get: {
+                toggleRowViewModel.cashOnDeliveryEnabledState
+            },
+            set: {
+                toggleRowViewModel.updateCashOnDeliverySetting(enabled: $0)
+            })
+    }
+
+    var body: some View {
+        Toggle(isOn: $toggleState) {
+            HStack(alignment: .top) {
+                image
+                VStack(alignment: .leading, spacing: Layout.narrowSpacing) {
+                    Text(title)
+                    InPersonPaymentsLearnMore(viewModel: toggleRowViewModel.learnMoreViewModel,
+                                              showInfoIcon: false)
+                }
+            }
+        }
+    }
+
+    private enum Layout {
+        static let narrowSpacing: CGFloat = 8.0
+    }
+}
+
 private extension InPersonPaymentsMenu {
     enum Localization {
         static let cardReaderSectionTitle = NSLocalizedString(
@@ -166,19 +210,6 @@ private extension InPersonPaymentsMenu {
             value: "Pay in Person",
             comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
         )
-
-        static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
-            "menu.payments.payInPerson.learnMore.description",
-            value: "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
-            comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
-            "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
-            "which should be translated separately and considered part of this sentence.")
-
-        static let toggleEnableCashOnDeliveryLearnMoreLink = NSLocalizedString(
-            "menu.payments.payInPerson.learnMore.link",
-            value: "Learn more",
-            comment: "The \"Learn more\" string replaces the placeholder in a label prompting users to learn " +
-            "more about adding Pay in Person to their checkout. ")
 
         static let cardReaderManuals = NSLocalizedString(
             "menu.payments.cardReader.manuals.row.title",

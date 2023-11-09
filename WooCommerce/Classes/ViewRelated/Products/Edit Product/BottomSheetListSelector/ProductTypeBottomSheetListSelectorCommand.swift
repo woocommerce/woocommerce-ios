@@ -8,6 +8,8 @@ public enum BottomSheetProductType: Hashable {
     case grouped
     case affiliate
     case variable
+    case subscription
+    case variableSubscription
     case custom(String) // in case there are extensions modifying product types
     case blank // used to create a simple product without a template
 
@@ -23,6 +25,10 @@ public enum BottomSheetProductType: Hashable {
             return .grouped
         case .affiliate:
             return .affiliate
+        case .subscription:
+            return .subscription
+        case .variableSubscription:
+            return .variableSubscription
         case .custom(let title):
             return .custom(title)
         }
@@ -62,6 +68,12 @@ public enum BottomSheetProductType: Hashable {
                                      comment: "Action sheet option when the user wants to change the Product type to external product")
         case .custom(let title):
             return title
+        case .subscription:
+            return NSLocalizedString("Simple subscription product",
+                                     comment: "Action sheet option when the user wants to change the Product type to Subscription product")
+        case .variableSubscription:
+            return NSLocalizedString("Variable subscription product",
+                                     comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .blank:
             return NSLocalizedString("Blank",
                                      comment: "Action sheet option when the user wants to create a product manually")
@@ -89,6 +101,12 @@ public enum BottomSheetProductType: Hashable {
         case .affiliate:
             return NSLocalizedString("Link a product to an external website",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to external product")
+        case .subscription:
+            return NSLocalizedString("A unique product subscription that enables recurring payments",
+                                     comment: "Description of the Action sheet option when the user wants to change the Product type to Subscription product")
+        case .variableSubscription:
+            return NSLocalizedString("A product subscription with variations",
+                                     comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .custom(let title):
             return title
         case .blank:
@@ -115,6 +133,8 @@ public enum BottomSheetProductType: Hashable {
             return UIImage.externalProductImage
         case .custom:
             return UIImage.productImage
+        case .subscription, .variableSubscription:
+            return UIImage.priceImage
         case .blank:
             return UIImage.blankProductImage
         }
@@ -131,11 +151,9 @@ public enum BottomSheetProductType: Hashable {
         case .grouped:
             self = .grouped
         case .subscription:
-            // We do not yet support product editing or creation for subscriptions
-            self = .custom("subscription")
+            self = .subscription
         case .variableSubscription:
-            // We do not yet support product editing or creation for variable subscriptions
-            self = .custom("variable-subscription")
+            self = .variableSubscription
         case .bundle:
             // We do not yet support product editing or creation for bundles
             self = .custom("bundle")

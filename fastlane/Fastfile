@@ -215,7 +215,7 @@ platform :ios do
       extracted_notes_file_path: RELEASE_NOTES_PATH
     )
     ios_update_release_notes(
-      new_version:,
+      new_version: new_version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
     )
 
@@ -1320,7 +1320,7 @@ def build_code_current
   # calculator can be used to calculate the next four-part version
   version = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version:)
+  BUILD_CODE_FORMATTER.build_code(version: version)
 end
 
 # Returns the build code of the app for the code freeze. It is the release version name plus sets the build number to 0
@@ -1341,7 +1341,7 @@ end
 def build_code_hotfix(release_version:)
   version = VERSION_FORMATTER.parse(release_version)
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version:)
+  BUILD_CODE_FORMATTER.build_code(version: version)
 end
 
 # Returns the next build code of the app

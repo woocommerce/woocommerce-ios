@@ -204,7 +204,14 @@ private extension AddProductCoordinator {
         case .template:
             command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable]
         case .manual:
-            command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
+            let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+            command.data = [.simple(isVirtual: false),
+                            .simple(isVirtual: true),
+                            isEligibleForWooSubscriptionProducts ? .subscription : nil,
+                            .variable,
+                            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
+                            .grouped,
+                            .affiliate].compactMap { $0 }
         }
 
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)

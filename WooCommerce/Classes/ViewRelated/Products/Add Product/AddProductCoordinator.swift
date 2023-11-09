@@ -405,8 +405,7 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { [weak self] bottomSheet in
-            guard let self else { return }
+        BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none

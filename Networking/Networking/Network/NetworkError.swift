@@ -15,7 +15,7 @@ public enum NetworkError: Error, Equatable {
 
     /// Any statusCode that's not in the [200, 300) range!
     ///
-    case unacceptableStatusCode(statusCode: Int, response: String? = nil)
+    case unacceptableStatusCode(statusCode: Int, response: Data?)
 
     case invalidURL
 
@@ -42,13 +42,7 @@ extension NetworkError {
         case StatusCode.timeout:
             self = .timeout
         default:
-            let response: String? = {
-                guard let responseData else {
-                    return nil
-                }
-                return String(data: responseData, encoding: .utf8)
-            }()
-            self = .unacceptableStatusCode(statusCode: statusCode, response: response)
+            self = .unacceptableStatusCode(statusCode: statusCode, response: responseData)
         }
     }
 
@@ -58,5 +52,31 @@ extension NetworkError {
         static let success  = 200..<300
         static let notFound = 404
         static let timeout  = 408
+    }
+}
+
+extension NetworkError: CustomStringConvertible {
+    public var description: String {
+        switch self {
+            case let .unacceptableStatusCode(statusCode, responseData):
+                let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil
+                let format = NSLocalizedString(
+                    "NetworkError.unacceptableStatusCode",
+                    // TODO: a more user-friendly message?
+                    value: "An error occurred with the server. (HTTP Status Code: %1$d). Response: %2$@",
+                    comment: "Error message when the a network call fails with unacceptable status code." +
+                    "%1$d is the status code like 500. %2$@ is the response string."
+                )
+                return String.localizedStringWithFormat(format, statusCode, response ?? "")
+            case .timeout:
+                return NSLocalizedString(
+                    "NetworkError.timeout",
+                    value: "The request timed out - please try again",
+                    comment: "Error message when a request times out."
+                )
+            default:
+                // TODO: error description for other cases
+                return "TODO: \(self)"
+        }
     }
 }

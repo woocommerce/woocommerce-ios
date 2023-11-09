@@ -41,7 +41,7 @@ public class Remote: NSObject {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(throwing: error)
+                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
                 }
             }
         }
@@ -69,7 +69,7 @@ public class Remote: NSObject {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(throwing: error)
+                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
                 }
             }
         }
@@ -142,7 +142,7 @@ public class Remote: NSObject {
                     completion(.failure(error))
                 }
             case .failure(let error):
-                completion(.failure(error))
+                completion(.failure(self.mapNetworkError(error: error, for: request)))
             }
         }
     }
@@ -159,7 +159,7 @@ public class Remote: NSObject {
     /// - Returns: A publisher that emits result upon completion.
     func enqueue<M: Mapper>(_ request: Request, mapper: M) -> AnyPublisher<Result<M.Output, Error>, Never> {
         network.responseDataPublisher(for: request)
-            .map { (result: Result<Data, Error>) -> Result<M.Output, Error> in
+            .map { [weak self] (result: Result<Data, Error>) -> Result<M.Output, Error> in
                 switch result {
                 case .success(let data):
                     do {
@@ -172,7 +172,7 @@ public class Remote: NSObject {
                         return .failure(error)
                     }
                 case .failure(let error):
-                    return .failure(error)
+                    return .failure(self?.mapNetworkError(error: error, for: request) ?? error)
                 }
             }
             .handleEvents(receiveOutput: { [weak self] result in
@@ -252,7 +252,7 @@ public class Remote: NSObject {
                         continuation.resume(throwing: error)
                     }
                 case .failure(let error):
-                    continuation.resume(throwing: error)
+                    continuation.resume(throwing: self.mapNetworkError(error: error, for: request))
                 }
             }
         }
@@ -288,6 +288,30 @@ private extension Remote {
             return
         }
         publishJSONParsingErrorNotification(error: decodingError, path: request.pathForAnalytics, entityName: entityName)
+    }
+
+    /// Maps an error from `network.responseData` so that the request's corresponding error can be returned.
+    ///
+    func mapNetworkError(error: Error, for request: Request) -> Error {
+        guard let networkError = error as? NetworkError else {
+            return error
+        }
+
+        let validator = request.responseDataValidator()
+        switch networkError {
+            case let .unacceptableStatusCode(_, response):
+                do {
+                    guard let response else {
+                        return networkError
+                    }
+                    try validator.validate(data: response)
+                    return networkError
+                } catch {
+                    return error
+                }
+            default:
+                return networkError
+        }
     }
 
 

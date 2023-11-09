@@ -174,7 +174,8 @@ extension Alamofire.DataResponse {
         }
 
         return response.flatMap { response in
-            NetworkError(from: response.statusCode)
+            NetworkError(responseData: data,
+                         statusCode: response.statusCode)
         }
     }
 }

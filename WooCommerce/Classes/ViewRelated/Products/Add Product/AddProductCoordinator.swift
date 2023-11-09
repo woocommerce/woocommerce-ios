@@ -55,6 +55,8 @@ final class AddProductCoordinator: Coordinator {
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
+    private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
@@ -72,6 +74,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
@@ -93,6 +96,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }

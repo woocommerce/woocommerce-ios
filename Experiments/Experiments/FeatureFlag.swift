@@ -176,6 +176,10 @@ public enum FeatureFlag: Int {
     ///
     case customLoginUIForAccountCreation
 
+    /// Enables the rewritten Payments Menu
+    ///
+    case swiftUIPaymentsMenu
+
     /// Enables creating Subscription products
     ///
     case subscriptionProducts

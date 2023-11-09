@@ -193,7 +193,7 @@ private extension TwoFAViewController {
 
         let (authType, nonce) = nonceInfo.authTypeAndNonce(for: loginFields.multifactorCode)
         if nonce.isEmpty {
-            return displayError(message: LocalizedText.bad2FAMessage, moveVoiceOverFocus: true)
+            return validateFormAndLogin()
         }
 
         loginWithNonce(nonce, authType: authType, code: loginFields.multifactorCode)

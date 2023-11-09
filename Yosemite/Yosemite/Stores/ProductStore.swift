@@ -390,7 +390,7 @@ private extension ProductStore {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
 
-                guard let product = products.first(where: { $0.purchasable }) else {
+                guard let product = skuProducts.first(where: { $0.purchasable }) else {
                     return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 

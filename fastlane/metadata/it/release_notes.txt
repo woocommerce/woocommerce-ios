@@ -1,5 +1,1 @@
-Siamo felici di presentare gli ultimi aggiornamenti.
-
-In questo aggiornamento, abbiamo migliorato l'esperienza Blaze in "Il mio negozio" per creare e gestire campagne più facilmente. Abbiamo anche rimosso un paio di bug nella nostra funzionalità Ordini: uno che mostrava un tooltip errato durante la creazione degli ordini e un altro che mostrava un valore totale scontato del prodotto impreciso in determinati scenari. La cosa interessante è che abbiamo aggiunto una nuova funzionalità che consente di aggiungere importi personalizzati agli ordini.
-
-Ci impegniamo a migliorare continuamente la nostra app per offrire un servizio migliore. Grazie per aver scelto WooCommerce.
+Nel nostro ultimo aggiornamento, abbiamo migliorato l'esperienza WooCommerce. Abbiamo ottimizzato le sezioni di creazione degli ordini per fornire un flusso più semplice e intuitivo. Inoltre, abbiamo rimosso un bug che mostrava la schermata cliente errata durante la creazione dell'ordine. Goditi un'esperienza WooCommerce più fluida ed efficiente.

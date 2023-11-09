@@ -1,5 +1,1 @@
-Les dernières mises à jour sont lancées, pour notre plus grande joie !
-
-Dans cette mise à jour, nous avons amélioré l’expérience Blaze dans Ma boutique pour simplifier davantage la gestion et la création des campagnes. Nous avons également corrigé des bugs dans notre fonctionnalité Commandes, à savoir l’affichage non seulement d’une info-bulle incorrecte pendant la création d’une commande, mais aussi d’un montant total réduit erroné pour les produits dans certains scénarios. Nous avons en outre ajouté une nouvelle fonctionnalité permettant de personnaliser les montants de vos commandes.
-
-Nous nous engageons à améliorer sans cesse notre application pour mieux vous servir. Merci d’avoir choisi WooCommerce !
+Dans notre dernière mise à jour, nous avons amélioré votre expérience WooCommerce ! Nous avons optimisé les sections dédiées à la création de commande pour vous fournir un flux plus simple et plus intuitif. En plus, nous avons corrigé un bug qui affichait le mauvais écran client lors de la création de la commande. Bénéficiez d’un cheminement plus fluide et plus efficace dans WooCommerce !

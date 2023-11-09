@@ -3,7 +3,7 @@ import Foundation
 
 /// Mapper: SiteList
 ///
-class SiteListMapper: Mapper {
+final class SiteListMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [Site].
     ///

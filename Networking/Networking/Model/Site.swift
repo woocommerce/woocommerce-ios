@@ -112,7 +112,7 @@ public struct Site: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
         let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL)
         let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL)
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
-        let canBlaze = try optionsContainer.decode(Bool.self, forKey: .canBlaze)
+        let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
         let isPublic = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .isPublic) ?? false
 
         let planContainer = try siteContainer.nestedContainer(keyedBy: PlanInfo.self, forKey: .plan)

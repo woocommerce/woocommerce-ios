@@ -99,57 +99,6 @@ struct InPersonPaymentsMenu: View {
     }
 }
 
-struct PaymentsRow: View {
-    let image: Image
-    let title: String
-
-    var body: some View {
-        HStack {
-            image
-            Text(title)
-        }
-    }
-}
-
-struct PaymentsToggleRow: View {
-    let image: Image
-    let title: String
-    @ObservedObject var toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
-    @Binding var toggleState: Bool
-
-    init(image: Image,
-         title: String,
-         toggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel) {
-        self.image = image
-        self.title = title
-        self.toggleRowViewModel = toggleRowViewModel
-        self._toggleState = Binding(
-            get: {
-                toggleRowViewModel.cashOnDeliveryEnabledState
-            },
-            set: {
-                toggleRowViewModel.updateCashOnDeliverySetting(enabled: $0)
-            })
-    }
-
-    var body: some View {
-        Toggle(isOn: $toggleState) {
-            HStack(alignment: .top) {
-                image
-                VStack(alignment: .leading, spacing: Layout.narrowSpacing) {
-                    Text(title)
-                    InPersonPaymentsLearnMore(viewModel: toggleRowViewModel.learnMoreViewModel,
-                                              showInfoIcon: false)
-                }
-            }
-        }
-    }
-
-    private enum Layout {
-        static let narrowSpacing: CGFloat = 8.0
-    }
-}
-
 private extension InPersonPaymentsMenu {
     enum Localization {
         static let cardReaderSectionTitle = NSLocalizedString(

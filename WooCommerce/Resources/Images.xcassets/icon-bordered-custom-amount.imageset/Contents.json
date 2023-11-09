@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "bordered-custom-amount.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

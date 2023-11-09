@@ -49,9 +49,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         dataSource.reloadSections()
 
         // Then
-        let actualTitles = dataSource.sections.map(\.title)
+        let actualTitles = dataSource.sections.compactMap(\.title)
         let expectedTitles = [
-            nil,
             Title.products,
             Title.refundedProducts,
             Title.payment,
@@ -480,7 +479,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for eligible order without shipping labels")
             return
         }
@@ -499,7 +498,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for ineligible order")
             return
         }
@@ -517,7 +516,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
         // Then
         let productSection = try section(withTitle: Title.products, from: dataSource)
-        guard case .primary = productSection.headerStyle else {
+        guard case .twoColumn = productSection.headerStyle else {
             XCTFail("Product section should not show button on the header for cash on delivery order")
             return
         }
@@ -587,6 +586,36 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let subscriptionSection = section(withCategory: .subscriptions, from: dataSource)
         XCTAssertNil(subscriptionSection)
+    }
+
+    func test_reloadSections_when_order_has_custom_amounts_then_custom_amounts_section_is_visible() {
+        // Given
+        let order = MockOrders().makeOrder(fees: [OrderFeeLine.fake()])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
+        XCTAssertNotNil(customAmountsSection)
+    }
+
+    func test_reloadSections_when_order_has_not_custom_amounts_then_custom_amounts_section_is_hidden() {
+        // Given
+        let order = MockOrders().makeOrder(fees: [])
+        let dataSource = OrderDetailsDataSource(order: order,
+                                                storageManager: storageManager,
+                                                cardPresentPaymentsConfiguration: Mocks.configuration)
+
+        // When
+        dataSource.reloadSections()
+
+        // Then
+        let customAmountsSection = section(withCategory: .customAmounts, from: dataSource)
+        XCTAssertNil(customAmountsSection)
     }
 
     func test_giftCards_section_is_visible_when_order_has_gift_cards() throws {

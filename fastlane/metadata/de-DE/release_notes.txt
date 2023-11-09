@@ -1,5 +1,1 @@
-Wir freuen uns, die neuesten Updates veröffentlichen zu können!
-
-In diesem Update haben wir Verbesserungen am Blaze-Erlebnis in „Mein Shop“ vorgenommen, um das Erstellen und Verwalten von Kampagnen zu optimieren. Darüber hinaus haben wir einige Fehler bei der Funktion für Bestellungen behoben. Bei einem wurde beim Erstellen einer Bestellung ein falscher Tooltip angezeigt und bei dem anderen war bei bestimmten Szenarien ein falscher rabattierter Gesamtpreis für das Produkt zu sehen. Spannend ist auch die neue Funktion, die wir hinzugefügt haben. Damit kannst du individuelle Beträge zu deinen Bestellungen hinzufügen.
-
-Unser Ziel ist es, unsere App und dein Erlebnis damit stets weiter zu verbessern. Danke, dass du dich für WooCommerce entschieden hast!
+Im Rahmen unseres letzten Updates wurde dein WooCommerce-Erlebnis verbessert! Wir haben die Abschnitte zur Bestellerstellung optimiert, um den Vorgang einfacher und intuitiver zu machen. Außerdem wurde ein Fehler behoben, aufgrund dessen während der Bestellerstellung der falsche Kundenbildschirm angezeigt wurde. Viel Spaß mit deinem reibungsloseren, effizienteren WooCommerce-Erlebnis!

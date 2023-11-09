@@ -1,5 +1,1 @@
-Estamos felizes em anunciar que temos novidades!
-
-Nesta atualização, aprimoramos a experiência em "Minha loja" no Blaze para simplificar ainda mais a criação e o gerenciamento de campanhas. Também eliminamos dois bugs na funcionalidade Pedidos: um mostrava a dica errada durante a criação de pedidos e o outro exibia um valor total com desconto incorreto para alguns produtos. E fica ainda melhor: adicionamos uma nova funcionalidade, que permite inserir valores personalizados nos seus pedidos.
-
-Temos o compromisso contínuo de aprimorar nosso aplicativo para melhor atender você. Obrigado por escolher o WooCommerce!
+Em nossa última atualização, aprimoramos sua experiência no WooCommerce. Otimizamos as seções de criação de pedidos para fornecer um fluxo mais simples e intuitivo. Além disso, eliminamos um bug que exibia a tela errada do cliente na criação do pedido. Aproveite uma jornada WooCommerce mais tranquila e eficiente!

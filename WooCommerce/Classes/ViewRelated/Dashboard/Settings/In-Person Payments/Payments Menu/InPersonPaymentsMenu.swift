@@ -10,110 +10,129 @@ struct InPersonPaymentsMenu: View {
     @State private var showingManagePaymentGateways: Bool = false
 
     var body: some View {
-        List {
-            Section(Localization.paymentActionsSectionTitle) {
-                // Modal
-                PaymentsRow(image: Image(uiImage: .moneyIcon),
-                            title: Localization.collectPayment)
-                .onTapGesture {
-                    showingSimplePayments = true
-                }
-                .sheet(isPresented: $showingSimplePayments,
-                       onDismiss: {
-                    // log analytics, maybe prevent, better if we can defer to the SimplePaymentsVM
-                }) {
-                    NavigationView {
-                        // TODO: fix IPP/TTP payments from this route – needs a rootVC
-                        SimplePaymentsAmount(
-                            dismiss: {
-                                showingSimplePayments = false
-                            },
-                            viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
-                        .navigationBarTitleDisplayMode(.inline)
+        VStack {
+            List {
+                Section(Localization.paymentActionsSectionTitle) {
+                    // Modal
+                    PaymentsRow(image: Image(uiImage: .moneyIcon),
+                                title: Localization.collectPayment)
+                    .onTapGesture {
+                        showingSimplePayments = true
+                    }
+                    .sheet(isPresented: $showingSimplePayments,
+                           onDismiss: {
+                        // log analytics, maybe prevent, better if we can defer to the SimplePaymentsVM
+                    }) {
+                        NavigationView {
+                            // TODO: fix IPP/TTP payments from this route – needs a rootVC
+                            SimplePaymentsAmount(
+                                dismiss: {
+                                    showingSimplePayments = false
+                                },
+                                viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
+                            .navigationBarTitleDisplayMode(.inline)
+                        }
                     }
                 }
-            }
 
-            Section(Localization.paymentSettingsSectionTitle) {
-                PaymentsToggleRow(
-                    image: Image(uiImage: .creditCardIcon),
-                    title: Localization.toggleEnableCashOnDelivery,
-                    toggleRowViewModel: viewModel.payInPersonToggleViewModel)
-                .customOpenURL(binding: $safariSheetURL)
-            }
-
-            Section(Localization.tapToPaySectionTitle) {
-                // Modal
-                NavigationLink(destination:
-                                PaymentSettingsFlowPresentingView(
-                                    viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)) {
-                    PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
-                                title: viewModel.setUpTryOutTapToPayRowTitle)
-                }
-
-                NavigationLink(destination: AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)) {
-                    PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                title: Localization.aboutTapToPayOnIPhone)
-                }
-
-                // Modal
-                NavigationLink(destination: Survey(source: .tapToPayFirstPayment)) {
-                    PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
-                                title: Localization.tapToPayOnIPhoneFeedback)
-                }
-                .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
-            }
-            .renderedIf(viewModel.shouldShowTapToPaySection)
-
-            Section {
-                NavigationLink {
-                    AuthenticatedWebView(isPresented: .constant(true),
-                                         viewModel: viewModel.purchaseCardReaderWebViewModel)
-                } label: {
-                    PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                title: Localization.purchaseCardReader)
-                }
-
-                NavigationLink {
-                    PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
-                } label: {
-                    PaymentsRow(image: Image(uiImage: .creditCardIcon),
-                                title: Localization.manageCardReader)
-                }
-                .disabled(viewModel.shouldDisableManageCardReaders)
-
-                NavigationLink {
-                    CardReaderManualsView()
-                } label: {
-                    PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                title: Localization.cardReaderManuals)
-                }
-            } header: {
-                Text(Localization.cardReaderSectionTitle)
-            } footer: {
-                InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
-                                          showInfoIcon: false)
+                Section(Localization.paymentSettingsSectionTitle) {
+                    PaymentsToggleRow(
+                        image: Image(uiImage: .creditCardIcon),
+                        title: Localization.toggleEnableCashOnDelivery,
+                        toggleRowViewModel: viewModel.payInPersonToggleViewModel)
                     .customOpenURL(binding: $safariSheetURL)
-            }
-            .renderedIf(viewModel.shouldShowCardReaderSection)
-
-            Section {
-                NavigationLink(isActive: $showingManagePaymentGateways) {
-                    InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
-                        viewModel.dependencies.onboardingUseCase.clearPluginSelection()
-                        viewModel.dependencies.onboardingUseCase.selectPlugin(plugin)
-                        showingManagePaymentGateways = false
-                    }
-                } label: {
-                    PaymentsRow(image: Image(uiImage: .rectangleOnRectangleAngled),
-                                title: Localization.managePaymentGateways,
-                                subtitle: viewModel.activePaymentGatewayName)
                 }
-                .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
+
+                Section(Localization.tapToPaySectionTitle) {
+                    // Modal
+                    NavigationLink(destination:
+                                    PaymentSettingsFlowPresentingView(
+                                        viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)) {
+                                            PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
+                                                        title: viewModel.setUpTryOutTapToPayRowTitle)
+                                        }
+
+                    NavigationLink(destination: AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)) {
+                        PaymentsRow(image: Image(uiImage: .infoOutlineImage),
+                                    title: Localization.aboutTapToPayOnIPhone)
+                    }
+
+                    // Modal
+                    NavigationLink(destination: Survey(source: .tapToPayFirstPayment)) {
+                        PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
+                                    title: Localization.tapToPayOnIPhoneFeedback)
+                    }
+                    .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
+                }
+                .renderedIf(viewModel.shouldShowTapToPaySection)
+
+                Section {
+                    NavigationLink {
+                        AuthenticatedWebView(isPresented: .constant(true),
+                                             viewModel: viewModel.purchaseCardReaderWebViewModel)
+                    } label: {
+                        PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
+                                    title: Localization.purchaseCardReader)
+                    }
+
+                    NavigationLink {
+                        PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
+                    } label: {
+                        PaymentsRow(image: Image(uiImage: .creditCardIcon),
+                                    title: Localization.manageCardReader)
+                    }
+                    .disabled(viewModel.shouldDisableManageCardReaders)
+
+                    NavigationLink {
+                        CardReaderManualsView()
+                    } label: {
+                        PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
+                                    title: Localization.cardReaderManuals)
+                    }
+                } header: {
+                    Text(Localization.cardReaderSectionTitle)
+                } footer: {
+                    InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
+                                              showInfoIcon: false)
+                    .customOpenURL(binding: $safariSheetURL)
+                }
+                .renderedIf(viewModel.shouldShowCardReaderSection)
+
+                Section {
+                    NavigationLink(isActive: $showingManagePaymentGateways) {
+                        InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
+                            viewModel.dependencies.onboardingUseCase.clearPluginSelection()
+                            viewModel.dependencies.onboardingUseCase.selectPlugin(plugin)
+                            showingManagePaymentGateways = false
+                        }
+                    } label: {
+                        PaymentsRow(image: Image(uiImage: .rectangleOnRectangleAngled),
+                                    title: Localization.managePaymentGateways,
+                                    subtitle: viewModel.activePaymentGatewayName)
+                    }
+                    .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
+                }
+                .renderedIf(viewModel.shouldShowPaymentOptionsSection)
             }
-            .renderedIf(viewModel.shouldShowPaymentOptionsSection)
+            .safariSheet(url: $safariSheetURL)
+
+            NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
+                InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
+            } label: {
+                EmptyView()
+            }.hidden()
+
+            if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
+                PermanentNoticeView(notice: onboardingNotice)
+            }
         }
-        .safariSheet(url: $safariSheetURL)
+        .onAppear(perform: viewModel.onAppear)
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,
+                                  style: .medium)
+            }
+        }
     }
 }
 
@@ -201,18 +220,6 @@ private extension InPersonPaymentsMenu {
             "menu.payments.tapToPay.feedback.row.title",
             value: "Share Feedback",
             comment: "Navigates to a screen to share feedback about Tap to Pay on iPhone."
-        ).localizedCapitalized
-
-        static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
-            "menu.payments.inPersonPayments.setup.incomplete.notice.title",
-            value: "In-Person Payments setup is incomplete.",
-            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
-        ).localizedCapitalized
-
-        static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
-            "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
-            value: "Continue setup",
-            comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
         ).localizedCapitalized
 
         static let done = NSLocalizedString(

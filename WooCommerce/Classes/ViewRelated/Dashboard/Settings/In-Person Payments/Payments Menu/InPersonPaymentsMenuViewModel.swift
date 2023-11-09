@@ -10,10 +10,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
-    @Published private(set) var shouldDisableManageCardReaders: Bool = false
-    @Published private(set) var backgroundOnboardingInProgress: Bool = false
-    @Published private(set) var shouldShowCardPresentPaymentsOnboardingNotice: Bool = false
-    @Published private(set) var shouldShowOnboarding: Bool = false
+    @Published private(set) var shouldDisableManageCardReaders: Bool = true
+    @Published var backgroundOnboardingInProgress: Bool = false
+    @Published private(set) var cardPresentPaymentsOnboardingNotice: PermanentNotice?
+    @Published var shouldShowOnboarding: Bool = false
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
@@ -44,7 +44,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         Task {
             await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
         }
-        updatePayInPersonToggleSelectedPlugin(from: dependencies.onboardingUseCase.state)
+    }
+
+    func onAppear() {
+        runCardPresentPaymentsOnboardingIfPossible()
     }
 
     var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList {
@@ -78,6 +81,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 siteID: siteID),
             onDismiss: {})
     }
+
+    lazy var onboardingViewModel: InPersonPaymentsViewModel = {
+        InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
+    }()
 }
 
 // MARK: - Background onboarding
@@ -105,7 +112,7 @@ private extension InPersonPaymentsMenuViewModel {
 
         switch state {
         case let .completed(newPluginState):
-            shouldShowCardPresentPaymentsOnboardingNotice = false
+            cardPresentPaymentsOnboardingNotice = nil
             shouldShowOnboarding = false
             updateManagePaymentGatewaysRowVisibility(shouldShow: newPluginState.available.count > 1)
             shouldDisableManageCardReaders = false
@@ -115,7 +122,7 @@ private extension InPersonPaymentsMenuViewModel {
             // No need to show the onboarding notice in this case.
             break
         default:
-            shouldShowCardPresentPaymentsOnboardingNotice = true
+            cardPresentPaymentsOnboardingNotice = onboardingNotice
             break
         }
         updatePayInPersonToggleSelectedPlugin(from: state)
@@ -138,6 +145,16 @@ private extension InPersonPaymentsMenuViewModel {
             payInPersonToggleViewModel.selectedPlugin = nil
         }
     }
+
+    var onboardingNotice: PermanentNotice {
+        PermanentNotice(
+            message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+            callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+            callToActionHandler: { [weak self] in
+                ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
+                self?.shouldShowOnboarding = true
+            })
+    }
 }
 
 private enum Constants {
@@ -156,5 +173,17 @@ private extension InPersonPaymentsMenuViewModel {
             "Try Out Tap to Pay on iPhone",
             comment: "Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it " +
             "primarily allows for a test payment. The full name is expected by Apple.")
+
+        static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
+            "menu.payments.inPersonPayments.setup.incomplete.notice.title",
+            value: "In-Person Payments setup is incomplete.",
+            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
+        )
+
+        static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
+            "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
+            value: "Continue setup",
+            comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
+        )
     }
 }

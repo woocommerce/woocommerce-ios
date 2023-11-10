@@ -52,6 +52,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     @MainActor
     private func updateOutputProperties() async {
+        updateCardReadersSection()
         await updateTapToPaySection()
     }
 
@@ -185,6 +186,17 @@ private extension InPersonPaymentsMenuViewModel {
                 ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
+    }
+}
+
+// MARK: - Card Reader visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    private func updateCardReadersSection() {
+        shouldShowCardReaderSection = isEligibleForCardPresentPayments
+    }
+
+    var isEligibleForCardPresentPayments: Bool { dependencies.cardPresentPaymentsConfiguration.isSupportedCountry
     }
 }
 

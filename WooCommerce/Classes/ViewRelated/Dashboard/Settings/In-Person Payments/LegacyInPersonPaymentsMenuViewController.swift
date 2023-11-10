@@ -4,7 +4,7 @@ import Yosemite
 import Experiments
 import Combine
 
-final class InPersonPaymentsMenuViewController: UIViewController {
+final class LegacyInPersonPaymentsMenuViewController: UIViewController {
     private let stores: StoresManager
     private var pluginState: CardPresentPaymentsPluginState?
     private var sections = [Section]()
@@ -22,7 +22,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
     private lazy var inPersonPaymentsLearnMoreViewModel = LearnMoreViewModel.inPersonPayments(source: .paymentsMenu)
 
-    private let viewModel: InPersonPaymentsMenuViewModel
+    private let viewModel: LegacyInPersonPaymentsMenuViewModel
 
     private let cashOnDeliveryToggleRowViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModel
 
@@ -57,7 +57,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
         return button
     }
 
-    private let viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)?
+    private let viewDidLoadAction: ((LegacyInPersonPaymentsMenuViewController) -> Void)?
 
     /// In Person Payments Menu View Controller contains the menu for managing and accepting payments with a card reader or Tap to Pay
     /// - Parameters:
@@ -67,10 +67,10 @@ final class InPersonPaymentsMenuViewController: UIViewController {
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-         viewDidLoadAction: ((InPersonPaymentsMenuViewController) -> Void)? = nil) {
+         viewDidLoadAction: ((LegacyInPersonPaymentsMenuViewController) -> Void)? = nil) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.viewModel = InPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
+        self.viewModel = LegacyInPersonPaymentsMenuViewModel(dependencies: .init(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker))
         self.cardPresentPaymentsOnboardingUseCase = CardPresentPaymentsOnboardingUseCase()
         self.cashOnDeliveryToggleRowViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
         self.viewDidLoadAction = viewDidLoadAction
@@ -101,7 +101,7 @@ final class InPersonPaymentsMenuViewController: UIViewController {
 
 // MARK: - Card Present Payments Readiness
 
-private extension InPersonPaymentsMenuViewController {
+private extension LegacyInPersonPaymentsMenuViewController {
     func runCardPresentPaymentsOnboardingIfPossible() {
         guard viewModel.isEligibleForCardPresentPayments else {
             return
@@ -192,7 +192,7 @@ private extension InPersonPaymentsMenuViewController {
 
 // MARK: - View configuration
 //
-private extension InPersonPaymentsMenuViewController {
+private extension LegacyInPersonPaymentsMenuViewController {
     func setupNavigationBar() {
         navigationController?.setNavigationBarHidden(false, animated: true)
         navigationItem.title = InPersonPaymentsView.Localization.title
@@ -485,7 +485,7 @@ private extension InPersonPaymentsMenuViewController {
 
 // MARK: - Convenience methods
 //
-private extension InPersonPaymentsMenuViewController {
+private extension LegacyInPersonPaymentsMenuViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         sections[indexPath.section].rows[indexPath.row]
     }
@@ -493,7 +493,7 @@ private extension InPersonPaymentsMenuViewController {
 
 // MARK: - Actions
 //
-extension InPersonPaymentsMenuViewController {
+extension LegacyInPersonPaymentsMenuViewController {
     func orderCardReaderWasPressed() {
         viewModel.orderCardReaderPressed()
     }
@@ -615,7 +615,7 @@ extension InPersonPaymentsMenuViewController {
 }
 
 // MARK: - UITableViewDataSource
-extension InPersonPaymentsMenuViewController: UITableViewDataSource {
+extension LegacyInPersonPaymentsMenuViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
         sections.count
     }
@@ -647,7 +647,7 @@ extension InPersonPaymentsMenuViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate
 //
-extension InPersonPaymentsMenuViewController: UITableViewDelegate {
+extension LegacyInPersonPaymentsMenuViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
@@ -688,7 +688,7 @@ extension InPersonPaymentsMenuViewController: UITableViewDelegate {
 
 // MARK: - Localizations
 //
-private extension InPersonPaymentsMenuViewController {
+private extension LegacyInPersonPaymentsMenuViewController {
     enum Localization {
         static let cardReaderSectionTitle = NSLocalizedString(
             "Card readers",
@@ -828,7 +828,7 @@ private enum Row: CaseIterable {
     }
 }
 
-private extension InPersonPaymentsMenuViewController {
+private extension LegacyInPersonPaymentsMenuViewController {
     enum Layout {
         static let tableViewFooterHeight = CGFloat(200)
     }
@@ -839,11 +839,11 @@ private extension InPersonPaymentsMenuViewController {
 
 /// SwiftUI wrapper for CardReaderSettingsPresentingViewController
 ///
-struct InPersonPaymentsMenu: UIViewControllerRepresentable {
+struct LegacyInPersonPaymentsMenu: UIViewControllerRepresentable {
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
     func makeUIViewController(context: Context) -> some UIViewController {
-        InPersonPaymentsMenuViewController(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
+        LegacyInPersonPaymentsMenuViewController(tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
     }
 
     func updateUIViewController(_ uiViewController: UIViewControllerType, context: Context) {

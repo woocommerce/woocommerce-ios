@@ -49,6 +49,8 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var switchStoreEnabled = false
 
+    @Published private(set) var swiftUIPaymentsMenuEnabled = false
+
     @Published var showingReviewDetail = false
 
     @Published var shouldAuthenticateAdminPage = false
@@ -93,6 +95,8 @@ final class HubMenuViewModel: ObservableObject {
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+        swiftUIPaymentsMenuEnabled = featureFlagService.isFeatureFlagEnabled(.swiftUIPaymentsMenu) &&
+        generalAppSettings.betaFeatureEnabled(.swiftUIPaymentsMenu)
     }
 
     /// Resets the menu elements displayed on the menu.

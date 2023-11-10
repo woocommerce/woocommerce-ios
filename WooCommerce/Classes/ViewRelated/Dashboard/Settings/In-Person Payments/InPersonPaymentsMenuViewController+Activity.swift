@@ -1,7 +1,7 @@
 import Foundation
 
 // MARK: - SearchableActivity Conformance
-extension InPersonPaymentsMenuViewController: SearchableActivityConvertible {
+extension LegacyInPersonPaymentsMenuViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.payments.rawValue
     }

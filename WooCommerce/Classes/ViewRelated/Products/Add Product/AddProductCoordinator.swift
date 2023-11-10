@@ -55,6 +55,8 @@ final class AddProductCoordinator: Coordinator {
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
 
+    private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
+
     init(siteID: Int64,
          source: Source,
          sourceBarButtonItem: UIBarButtonItem,
@@ -72,6 +74,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
@@ -93,6 +96,7 @@ final class AddProductCoordinator: Coordinator {
         self.productImageUploader = productImageUploader
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
     }
@@ -200,7 +204,14 @@ private extension AddProductCoordinator {
         case .template:
             command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable]
         case .manual:
-            command.data = [.simple(isVirtual: false), .simple(isVirtual: true), .variable, .grouped, .affiliate]
+            let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+            command.data = [.simple(isVirtual: false),
+                            .simple(isVirtual: true),
+                            isEligibleForWooSubscriptionProducts ? .subscription : nil,
+                            .variable,
+                            isEligibleForWooSubscriptionProducts ? .variableSubscription : nil,
+                            .grouped,
+                            .affiliate].compactMap { $0 }
         }
 
         let productTypesListPresenter = BottomSheetListSelectorPresenter(viewProperties: viewProperties, command: command)
@@ -394,8 +405,7 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { [weak self] bottomSheet in
-            guard let self else { return }
+        BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.largestUndimmedDetentIdentifier = .none

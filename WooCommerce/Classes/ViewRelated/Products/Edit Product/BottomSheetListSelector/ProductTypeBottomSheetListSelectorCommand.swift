@@ -69,10 +69,12 @@ public enum BottomSheetProductType: Hashable {
         case .custom(let title):
             return title
         case .subscription:
-            return NSLocalizedString("Simple subscription product",
+            return NSLocalizedString("product.sheet.option.simpleSubscription.title",
+                                     value: "Simple subscription product",
                                      comment: "Action sheet option when the user wants to change the Product type to Subscription product")
         case .variableSubscription:
-            return NSLocalizedString("Variable subscription product",
+            return NSLocalizedString("product.sheet.option.variableSubscription.title",
+                                     value: "Variable subscription product",
                                      comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .blank:
             return NSLocalizedString("Blank",
@@ -102,10 +104,12 @@ public enum BottomSheetProductType: Hashable {
             return NSLocalizedString("Link a product to an external website",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to external product")
         case .subscription:
-            return NSLocalizedString("A unique product subscription that enables recurring payments",
+            return NSLocalizedString("product.sheet.option.simpleSubscription.description",
+                                     value: "A unique product subscription that enables recurring payments",
                                      comment: "Description of the Action sheet option when the user wants to change the Product type to Subscription product")
         case .variableSubscription:
-            return NSLocalizedString("A product subscription with variations",
+            return NSLocalizedString("product.sheet.option.variableSubscription.description",
+                                     value: "A product subscription with variations",
                                      comment: "Action sheet option when the user wants to change the Product type to Variable subscription product")
         case .custom(let title):
             return title

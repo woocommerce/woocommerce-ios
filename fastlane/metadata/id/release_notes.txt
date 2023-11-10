@@ -1,5 +1,1 @@
-Ini dia pembaruan terkini kami!
-
-Dalam pembaruan ini, kami meningkatkan pengalaman Blaze di 'Toko Saya' sehingga kampanye dapat dibuat dan dikelola secara lebih efisien. Kami juga membasmi dua bug di fitur pesanan kami. Salah satu bug menunjukkan tooltip yang salah selama Pembuatan Pesanan. Bug lainnya menampilkan nilai produk total yang didiskon secara tidak akurat dalam skenario tertentu. Menariknya, kami menambahkan fitur baru sehingga Anda dapat menambahkan jumlah kustom pada pesanan Anda.
-
-Kami berkomitmen untuk terus menyempurnakan aplikasi kami demi pelayanan yang lebih baik.  Terima kasih telah memilih WooCommerce!
+Pembaruan terkini kami menyempurnakan pengalaman WooCommerce Anda. Kami telah mengoptimalkan bagian pembuatan pesanan agar alur makin sederhana dan intuitif. Kami juga telah mengatasi bug yang menampilkan layar konsumen yang salah saat membuat pesanan. Nikmati penggunaan WooCommerce yang makin mudah dan efisien!

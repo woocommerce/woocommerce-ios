@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-02 09:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-07 17:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -100,7 +100,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
-"%1$@ × %2$@" = "%1$@\/%2$@";
+"%1$@ × %2$@" = "%1$@ × %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -115,7 +115,7 @@ which should be translated separately and considered part of this sentence. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
 /* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
-"%1$@・%2$@ × %3$@" = "%1$@%2$@ (%3$@)";
+"%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
 "%1$d Categories" = "%1$d Categorieën";
@@ -832,9 +832,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "Staat gratis verzending toe";
-
-/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
-"Almost there! Please enter the verification code from your Authentication app" = "Bijna klaar! Voer de verificatiecode uit je Authenticator-app in.";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Bijna klaar. Voer de verificatiecode in van je authenticatie-app.";
@@ -1916,9 +1913,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
-   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
-   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Jetpack inschakelen";
 
@@ -2323,7 +2318,7 @@ which should be translated separately and considered part of this sentence. */
 "Custom Amount" = "Aangepast bedrag";
 
 /* Fees label for payment view */
-"Custom Amounts" = "Aangepast bedrag";
+"Custom Amounts" = "Aangepaste bedragen";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier
@@ -2522,12 +2517,12 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "Korting %1$@";
 
-/* Label for the the row showing the total discount of the order */
-"Discount Total" = "Totaal van kortingen";
-
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "Kortingstype";
+
+/* Label for the the row showing the total discount of the order */
+"Discount total" = "Totaal van kortingen";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "Bestellingen met korting";
@@ -2782,11 +2777,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ecwid" = "Ecwid";
 
-/* Button to edit a customer on the New Order screen
-   Button to edit a product category
+/* Button to edit a product category
    Button to edit an order on Order Details screen
-   Button to edit an order status on the New Order screen
-   Button to edit the customer note on the New Order screen
    Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Bewerken";
@@ -4059,9 +4051,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
-   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -5392,7 +5382,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Status" = "Bestelstatus";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "Totaalaantal bestellingen";
@@ -5405,6 +5394,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Order status update success notice */
 "Order status updated" = "Bestelstatus bijgewerkt";
+
+/* Label for the the row showing the total cost of the order */
+"Order total" = "Totaalaantal bestellingen";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Geordende lijst";
@@ -5545,8 +5537,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pay in Person" = "Fysiek betalen";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment
-   Title text of the section that shows Payment details when creating a new order */
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "Betaling";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -6137,9 +6128,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Productvergoeding";
-
-/* Label for the row showing the total cost of products in the order */
-"Products Total" = "Totaalaantal producten";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "Gepromote producten in de winkelwagen als het huidige product is geselecteerd";
@@ -7848,9 +7836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the tax educational dialog */
 "Taxes & Tax Rates" = "Belasting en belastingtarieven";
 
-/* Label for the title row showing the taxes in the order */
-"Taxes Total" = "Btw totaal";
-
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "Belastingen worden automatisch berekend op basis van je winkeladres.";
 
@@ -7881,8 +7866,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Test onze Add-ons bestelling bekijken terwijl we ons voorbereiden op de lancering";
 
-/* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
+/* Button title */
 "Text me a code instead" = "SMS een code naar me toe";
 
 /* The button's title text to send a 2FA code via SMS text message. */
@@ -9184,8 +9168,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "Venezuela";
 
-/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
-   two factor code placeholder */
+/* two factor code placeholder */
 "Verification code" = "Verificatiecode";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -9903,7 +9886,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "addCustomAmount.doneButton" = "Aangepast bedrag toevoegen";
 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
-"addCustomAmount.editButton" = "Aangepast bedrag toevoegen";
+"addCustomAmount.editButton" = "Aangepast bedrag bewerken";
 
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "WooCommerce snel implementeren";
@@ -9941,10 +9924,25 @@ which should be translated separately and considered part of this sentence. */
 "cardPresent.modalScanningForReader.title" = "Scannen op lezer";
 
 /* Action to toggle whether a bundle item is included when it is optional. */
-"configureBundleItem.add" = "Voeg toe";
+"configureBundleItem.add" = "Toevoegen";
 
 /* Action to select a variation for a bundle item when it is variable. */
-"configureBundleItem.selectVariation" = "Selecteer variatie ";
+"configureBundleItem.selectVariation" = "Variatie selecteren";
+
+/* Action to update a variation for a bundle item when it is variable. */
+"configureBundleItem.updateVariation" = "Variatie bijwerken";
+
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "De kwantiteit moet tussen %1$@ en %2$@ liggen";
+
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "De kwantiteit moet ten minste %1$@ zijn";
+
+/* Error message when a variable bundle item is missing a variation. */
+"configureBundleItemError.missingVariation" = "Selecteer een variatie";
+
+/* Error message when a variable bundle item is missing some attributes. */
+"configureBundleItemError.variationMissingAttributes" = "Selecteer een optie voor alle variatie-eigenschappen";
 
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Sluiten";
@@ -9952,8 +9950,14 @@ which should be translated separately and considered part of this sentence. */
 /* Text for the done button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.done" = "Gereed";
 
+/* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
+"configureBundleProduct.retry" = "Opnieuw proberen";
+
 /* Title for the bundle product configuration screen in the order form. */
-"configureBundleProduct.title" = "Mijn site configureren";
+"configureBundleProduct.title" = "Configureren";
+
+/* Error message when the products cannot be loaded in the bundle product configuration form. */
+"configureBundleProductError.cannotLoadProducts" = "Kan gebundelde producten niet laden. Probeer het nog eens.";
 
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "dag";
@@ -10001,6 +10005,12 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "Om foto's van je camera op te slaan als productafbeeldingen, of om foto's of video's toe te voegen aan je producten of ondersteuningstickets.";
 
+/* Title for the WPCom login screens when Jetpack is not connected yet */
+"jetpackSetupCoordinator.loginSubtitle" = "Jetpack verbinden";
+
+/* Title for the WPCom login screens when Jetpack is not installed yet */
+"jetpackSetupCoordinator.loginTitle" = "Jetpack installeren";
+
 /* Later today */
 "later today" = "later vandaag";
 
@@ -10023,10 +10033,16 @@ which should be translated separately and considered part of this sentence. */
 "no previous period" = "geen vorige periode";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
-"orderForm.customAmounts" = "Aangepast bedrag";
+"orderForm.customAmounts" = "Aangepaste bedragen";
 
 /* Label for the row showing the cost of fees in the order */
-"orderPaymentSection" = "Aangepast bedrag";
+"orderPaymentSection.customAmounts" = "Aangepaste bedragen";
+
+/* Title text of the section that shows Payment details when creating a new order */
+"orderPaymentSection.paymentTotals" = "Totale betalingen";
+
+/* Label for the row showing the total cost of products in the order */
+"orderPaymentSection.products" = "Producten";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -10056,7 +10072,10 @@ which should be translated separately and considered part of this sentence. */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promoten met Blaze";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
-"productRowViewModel.priceQuantityLine" = "%1$@\/%2$@";
+"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Action to configure a product row in the product selector. */
+"productSelector.configureProductRow" = "Configureren";
 
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld keer beoordeeld";
@@ -10065,7 +10084,7 @@ which should be translated separately and considered part of this sentence. */
 "rated once" = "één keer beoordeeld";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
-"setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "PDT betaling afgerond";
+"setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "Betaling is gelukt";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10150,6 +10169,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, producten, categorieën, nieuw product, producten zoeken.";
+
+/* Button to enter security key on the WPCom 2FA login screen */
+"wpCom2FALoginView.securityKeyButton" = "Gebruik een beveiligingssleutel";
+
+/* Instruction on the WPCom 2FA login screen */
+"wpCom2FALoginView.subtitleString" = "Bijna klaar! Voer de verificatiecode uit je Authenticator-app in";
+
+/* Button to request 2FA code via SMS on the WPCom 2FA login screen */
+"wpCom2FALoginView.textMeACode" = "Stuur mij de code via sms";
+
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen */
+"wpCom2FALoginView.verificationCode" = "Verificatiecode";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"wpCom2FALoginViewModel.bad2FA" = "Oeps, dat is geen geldige tweevoudige verificatiecode. Controleer je code en probeer het nogmaals!";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"wpCom2FALoginViewModel.invalidSecurityKey" = "Oeps, het lijkt erop dat die beveiligingssleutel niet geldig is. Probeer het opnieuw met een andere";
+
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"wpCom2FALoginViewModel.timeoutError" = "De tijd is om, maar maak je geen zorgen, jouw beveiliging is van het hoogste belang. Probeer het nog eens!";
+
+/* Generic error on the 2FA login screen */
+"wpCom2FALoginViewModel.unknownError" = "Oeps, er is iets fout gegaan. Probeer het nog eens!";
+
+/* Button to dismiss an error alert in the WPCom login flow */
+"wpComLoginCoordinator.cancelButton" = "Annuleren";
+
+/* Title for the screens in the login flow */
+"wpComLoginCoordinator.title" = "Inloggen";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

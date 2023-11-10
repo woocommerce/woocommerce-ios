@@ -1,6 +1,10 @@
 ---
 name: "✨ New Enhancement"
-about: "If you have an idea to improve an existing feature in the app please let us know or submit a Pull Request!"
+about: If you have an idea to improve an existing feature in the app please let us
+  know or submit a Pull Request!
+title: ''
+labels: 'type: enhancement'
+assignees: ''
 
 ---
 

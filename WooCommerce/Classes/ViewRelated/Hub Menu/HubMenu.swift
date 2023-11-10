@@ -104,8 +104,7 @@ struct HubMenu: View {
         NavigationLink(destination: SettingsView(), isActive: $showSettings) {
             EmptyView()
         }.hidden()
-        NavigationLink(destination:
-                        InPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
+        NavigationLink(destination: inPersonPaymentsMenu()
             .navigationTitle(InPersonPaymentsView.Localization.title),
                        isActive: $showingPayments) {
             EmptyView()
@@ -162,6 +161,15 @@ struct HubMenu: View {
             viewModel.presentSubscriptions()
         default:
             break
+        }
+    }
+
+    @ViewBuilder
+    private func inPersonPaymentsMenu() -> some View {
+        if viewModel.swiftUIPaymentsMenuEnabled {
+            InPersonPaymentsMenu()
+        } else {
+            LegacyInPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
         }
     }
 }

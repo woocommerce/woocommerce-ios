@@ -50,7 +50,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private func updateOutputProperties() {
         Task {
-            await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+            let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+            setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
+            shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
         }
     }
 

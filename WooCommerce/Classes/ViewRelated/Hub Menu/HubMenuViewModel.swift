@@ -73,6 +73,15 @@ final class HubMenuViewModel: ObservableObject {
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
 
+    lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
+        InPersonPaymentsMenuViewModel(
+            siteID: siteID,
+            dependencies: .init(
+                cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+                onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
+                cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID)))
+    }()
+
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,

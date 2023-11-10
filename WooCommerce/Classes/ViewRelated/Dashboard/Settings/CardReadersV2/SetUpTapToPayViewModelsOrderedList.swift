@@ -25,7 +25,7 @@ final class SetUpTapToPayViewModelsOrderedList: PaymentSettingsFlowPrioritizedVi
 
     init(siteID: Int64,
          configuration: CardPresentPaymentsConfiguration,
-         onboardingUseCase: CardPresentPaymentsOnboardingUseCase) {
+         onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol) {
         /// Initialize dependencies for viewmodels first, then viewmodels
         ///
         cardReaderConnectionAnalyticsTracker = .init(configuration: configuration,

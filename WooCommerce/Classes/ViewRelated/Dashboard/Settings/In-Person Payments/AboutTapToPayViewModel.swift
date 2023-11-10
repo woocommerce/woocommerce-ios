@@ -20,14 +20,14 @@ class AboutTapToPayViewModel: ObservableObject {
 
     let formattedMinimumOperatingSystemVersionForTapToPay: String
 
-    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    let cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
 
     let shouldAlwaysHideSetUpTapToPayButton: Bool
 
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCase? = nil,
+         cardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
          shouldAlwaysHideSetUpTapToPayButton: Bool = false) {
         self.siteID = siteID
         self.configuration = configuration

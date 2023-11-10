@@ -65,3 +65,10 @@ public enum SubscriptionPeriod: String, Codable, GeneratedFakeable {
     case month
     case year
 }
+
+/// Used to encode items as key value pairs
+///
+private struct KeyValuePair: Encodable {
+    let key: String
+    let value: String
+}

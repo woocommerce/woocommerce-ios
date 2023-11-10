@@ -437,7 +437,7 @@ extension MainTabBarController {
     }
 
     @discardableResult
-    static func presentPayments() -> InPersonPaymentsMenuViewController? {
+    static func presentPayments() -> LegacyInPersonPaymentsMenuViewController? {
         switchToHubMenuTab()
 
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {

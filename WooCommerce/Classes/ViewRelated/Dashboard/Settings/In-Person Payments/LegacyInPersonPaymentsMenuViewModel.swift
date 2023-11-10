@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-final class InPersonPaymentsMenuViewModel {
+final class LegacyInPersonPaymentsMenuViewModel {
     // MARK: - Dependencies
     struct Dependencies {
         let stores: StoresManager
@@ -184,7 +184,7 @@ private enum Constants {
     static let utmSource = "payments_menu"
 }
 
-private extension InPersonPaymentsMenuViewModel {
+private extension LegacyInPersonPaymentsMenuViewModel {
     enum Localization {
         static let setUpTapToPayOnIPhoneRowTitle = NSLocalizedString(
             "Set Up Tap to Pay on iPhone",

@@ -711,6 +711,11 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Subscription
+        if productType == .subscription || productType == .variableSubscription {
+            try container.encode(subscription, forKey: .metadata)
+        }
     }
 }
 

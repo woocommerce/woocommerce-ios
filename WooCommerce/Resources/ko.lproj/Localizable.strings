@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-31 09:54:22+0000 */
+/* Translation-Revision-Date: 2023-11-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -99,6 +99,9 @@ which should be translated separately and considered part of this sentence. */
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@을(를) 통한 %1$@";
 
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@ × %2$@" = "%1$@ × %2$@";
+
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
 
@@ -110,6 +113,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
+
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
 "%1$d Categories" = "%1$d 카테고리";
@@ -826,9 +832,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "무료 배송 허용";
-
-/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
-"Almost there! Please enter the verification code from your Authentication app" = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "마지막 부분입니다! 인증 앱의 확인 코드를 입력하세요.";
@@ -1910,9 +1913,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
-   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
-   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "젯팩 연결";
 
@@ -2316,6 +2317,9 @@ which should be translated separately and considered part of this sentence. */
    Title text of the row that shows the provided amount when creating a simple payment */
 "Custom Amount" = "사용자 정의 금액";
 
+/* Fees label for payment view */
+"Custom Amounts" = "사용자 정의 금액";
+
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier
    Title of button to add a custom tracking carrier if filtering the list yields no results. */
@@ -2513,12 +2517,12 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "할인 %1$@";
 
-/* Label for the the row showing the total discount of the order */
-"Discount Total" = "할인 합계";
-
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "할인 유형";
+
+/* Label for the the row showing the total discount of the order */
+"Discount total" = "할인 합계";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "할인된 주문";
@@ -2773,11 +2777,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ecwid" = "Ecwid";
 
-/* Button to edit a customer on the New Order screen
-   Button to edit a product category
+/* Button to edit a product category
    Button to edit an order on Order Details screen
-   Button to edit an order status on the New Order screen
-   Button to edit the customer note on the New Order screen
    Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "편집";
@@ -4050,9 +4051,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
-   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -5383,7 +5382,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Status" = "주문 상태";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "주문 총계";
@@ -5396,6 +5394,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Order status update success notice */
 "Order status updated" = "주문 상태 업데이트됨";
+
+/* Label for the the row showing the total cost of the order */
+"Order total" = "주문 총계";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "순서 있는 목록";
@@ -5536,8 +5537,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pay in Person" = "대면 결제";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment
-   Title text of the section that shows Payment details when creating a new order */
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "결제";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -6128,9 +6128,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Label for computed value `product refunds + taxes = subtotal`.
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "제품 환불";
-
-/* Label for the row showing the total cost of products in the order */
-"Products Total" = "상품 합계";
 
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "현재 제품이 선택될 때 장바구니에서 홍보되는 제품";
@@ -7839,9 +7836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the tax educational dialog */
 "Taxes & Tax Rates" = "세금 및 세율";
 
-/* Label for the title row showing the taxes in the order */
-"Taxes Total" = "세금 합계";
-
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "스토어 주소를 기준으로 세금이 자동으로 계산됩니다.";
 
@@ -7872,8 +7866,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "출시 준비가 끝나면 주문 애드온 테스트해 보기";
 
-/* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
+/* Button title */
 "Text me a code instead" = "코드를 문자로 대신 받기";
 
 /* The button's title text to send a 2FA code via SMS text message. */
@@ -9175,8 +9168,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "베네수엘라";
 
-/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
-   two factor code placeholder */
+/* two factor code placeholder */
 "Verification code" = "확인 코드";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -9890,6 +9882,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[자세히 알아보세요.](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to confirm the custom amount on the add custom amount view in orders. */
+"addCustomAmount.doneButton" = "사용자 정의 금액 추가";
+
+/* Button title to confirm the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.editButton" = "사용자 정의 금액 편집";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "빠르게 우커머스 시작";
 
@@ -9925,6 +9923,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "리더 스캔 중";
 
+/* Action to toggle whether a bundle item is included when it is optional. */
+"configureBundleItem.add" = "추가";
+
+/* Action to select a variation for a bundle item when it is variable. */
+"configureBundleItem.selectVariation" = "변형 선택";
+
+/* Action to update a variation for a bundle item when it is variable. */
+"configureBundleItem.updateVariation" = "변형 업데이트";
+
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "수량은 %1$@~%2$@개여야 합니다.";
+
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "수량은 %1$@개 이상이어야 합니다.";
+
+/* Error message when a variable bundle item is missing a variation. */
+"configureBundleItemError.missingVariation" = "변형을 선택하세요.";
+
+/* Error message when a variable bundle item is missing some attributes. */
+"configureBundleItemError.variationMissingAttributes" = "모든 변형 속성에 대한 옵션을 선택하세요.";
+
+/* Text for the close button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.close" = "닫기";
+
+/* Text for the done button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.done" = "완료";
+
+/* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
+"configureBundleProduct.retry" = "다시 시도";
+
+/* Title for the bundle product configuration screen in the order form. */
+"configureBundleProduct.title" = "구성";
+
+/* Error message when the products cannot be loaded in the bundle product configuration form. */
+"configureBundleProductError.cannotLoadProducts" = "번들 구매한 상품을 로드할 수 없습니다. 다시 시도하세요.";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "일";
 
@@ -9933,6 +9967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "전자상거래";
+
+/* Default name when the custom amount does not have a name in order creation. */
+"editableOrderViewModel.customAmountDefaultName" = "사용자 정의 금액";
 
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "EU(유럽연합) 세관 규칙을 따르는 국가로 배송 시 모든 아이템을 명확하게 설명해야 합니다. 예를 들어, 의류를 발송하는 경우 설명이 수락될 수 있으려면 의류 유형을 표시해야 합니다(예: 남성용 셔츠, 여아용 조끼, 남아용 재킷). 그렇지 않으면 배송이 세관에서 지체되거나 차단될 수 있습니다.";
@@ -9968,6 +10005,12 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "상품 이미지의 카메라 사진을 저장하거나 사진 또는 비디오를 상품 또는 지원 티켓에 추가하는 방법입니다.";
 
+/* Title for the WPCom login screens when Jetpack is not connected yet */
+"jetpackSetupCoordinator.loginSubtitle" = "젯팩 연결";
+
+/* Title for the WPCom login screens when Jetpack is not installed yet */
+"jetpackSetupCoordinator.loginTitle" = "젯팩 설치";
+
 /* Later today */
 "later today" = "오늘 중";
 
@@ -9988,6 +10031,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "이전 기간 없음";
+
+/* Title text of the section that shows the Custom Amounts when creating or editing an order */
+"orderForm.customAmounts" = "사용자 정의 금액";
+
+/* Label for the row showing the cost of fees in the order */
+"orderPaymentSection.customAmounts" = "사용자 정의 금액";
+
+/* Title text of the section that shows Payment details when creating a new order */
+"orderPaymentSection.paymentTotals" = "결제 총액";
+
+/* Label for the row showing the total cost of products in the order */
+"orderPaymentSection.products" = "상품";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -10013,11 +10068,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "비공개";
 
+/* Label for button on product form to open Blaze flow */
+"productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze로 홍보";
+
+/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Action to configure a product row in the product selector. */
+"productSelector.configureProductRow" = "구성";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld번 평가됨";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "한 번 평가됨";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
+"setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "결제 완료됨";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10102,6 +10169,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "우커머스, 우, 제품, 카테고리, 신규 제품, 제품 검색";
+
+/* Button to enter security key on the WPCom 2FA login screen */
+"wpCom2FALoginView.securityKeyButton" = "보안 키 사용";
+
+/* Instruction on the WPCom 2FA login screen */
+"wpCom2FALoginView.subtitleString" = "마무리 단계입니다! OTP 앱의 확인 코드를 입력하세요.";
+
+/* Button to request 2FA code via SMS on the WPCom 2FA login screen */
+"wpCom2FALoginView.textMeACode" = "대신에 문자로 코드 받기";
+
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen */
+"wpCom2FALoginView.verificationCode" = "확인 코드";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"wpCom2FALoginViewModel.bad2FA" = "유효한 2단계 확인 코드가 아닙니다. 코드를 다시 확인하고 다시 시도하세요.";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"wpCom2FALoginViewModel.invalidSecurityKey" = "죄송합니다. 보안 키가 유효하지 않은 것 같습니다. 다른 것으로 시도해 보세요.";
+
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"wpCom2FALoginViewModel.timeoutError" = "시간이 다 되었지만, 걱정하지 마세요. 보안이 무엇보다 중요합니다. 다시 시도해 보세요!";
+
+/* Generic error on the 2FA login screen */
+"wpCom2FALoginViewModel.unknownError" = "오류가 발생했습니다. 다시 시도해 보세요!";
+
+/* Button to dismiss an error alert in the WPCom login flow */
+"wpComLoginCoordinator.cancelButton" = "취소";
+
+/* Title for the screens in the login flow */
+"wpComLoginCoordinator.title" = "로그인";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

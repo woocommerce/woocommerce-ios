@@ -45,15 +45,13 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
-        updateOutputProperties()
+        Task { @MainActor in
+            await updateOutputProperties()
+        }
     }
 
-    private func updateOutputProperties() {
-        Task {
-            let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
-            setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
-            shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
-        }
+    private func updateOutputProperties() async {
+        await updateTapToPaySection()
     }
 
     func onAppear() {
@@ -184,6 +182,41 @@ private extension InPersonPaymentsMenuViewModel {
                 ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
+    }
+}
+
+// MARK: - Tap to Pay visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    private func updateTapToPaySection() async {
+        let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
+
+        shouldShowTapToPaySection = isEligibleForCardPresentPayments &&
+            countryEnabledForTapToPay &&
+            deviceSupportsTapToPay
+
+        await updateSetUpTryTapToPay()
+        await updateTapToPayFeedbackRowVisibility()
+    }
+
+    var countryEnabledForTapToPay: Bool {
+        dependencies.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
+    }
+
+    private func updateSetUpTryTapToPay() async {
+        let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+
+        setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
+        shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
+    }
+
+    private func updateTapToPayFeedbackRowVisibility() async {
+        guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
+              let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
+            return self.shouldShowTapToPayFeedbackRow = false
+        }
+
+        shouldShowTapToPayFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
     }
 }
 

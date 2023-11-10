@@ -18,6 +18,12 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         refreshWasCalled = true
     }
 
+    var refreshIfNecessaryWasCalled = false
+
+    func refreshIfNecessary() {
+        refreshIfNecessaryWasCalled = true
+    }
+
     func updateState() {
         // No op
     }

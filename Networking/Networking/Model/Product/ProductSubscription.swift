@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents the subscription settings extracted from product meta data for a Subscription-type Product.
-public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ProductSubscription: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
     /// Subscription automatically expires after this number of subscription periods.
     ///
     /// For example, subscription with period of `month` and length of "2" expires after 2 months. Subscription with length of "0" never expires.
@@ -40,6 +40,20 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
         self.signUpFee = signUpFee
         self.trialLength = trialLength
         self.trialPeriod = trialPeriod
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        let keyValuePairs: [KeyValuePair] = [
+            .init(key: CodingKeys.length.rawValue, value: length),
+            .init(key: CodingKeys.period.rawValue, value: period.rawValue),
+            .init(key: CodingKeys.periodInterval.rawValue, value: periodInterval),
+            .init(key: CodingKeys.price.rawValue, value: price),
+            .init(key: CodingKeys.signUpFee.rawValue, value: signUpFee),
+            .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
+            .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue)
+        ]
+        var container = encoder.singleValueContainer()
+        try container.encode(keyValuePairs)
     }
 }
 

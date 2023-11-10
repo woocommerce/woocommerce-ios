@@ -27,7 +27,10 @@ struct PaymentsRow: View {
             } else {
                 Text(title)
             }
+
+            Spacer()
         }
+        .contentShape(Rectangle())
     }
 }
 

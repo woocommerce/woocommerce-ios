@@ -15,7 +15,7 @@ public enum NetworkError: Error, Equatable {
 
     /// Any statusCode that's not in the [200, 300) range!
     ///
-    case unacceptableStatusCode(statusCode: Int, response: String? = nil)
+    case unacceptableStatusCode(statusCode: Int, response: Data? = nil)
 
     case invalidURL
 
@@ -42,13 +42,7 @@ extension NetworkError {
         case StatusCode.timeout:
             self = .timeout
         default:
-            let response: String? = {
-                guard let responseData else {
-                    return nil
-                }
-                return String(data: responseData, encoding: .utf8)
-            }()
-            self = .unacceptableStatusCode(statusCode: statusCode, response: response)
+            self = .unacceptableStatusCode(statusCode: statusCode, response: responseData)
         }
     }
 

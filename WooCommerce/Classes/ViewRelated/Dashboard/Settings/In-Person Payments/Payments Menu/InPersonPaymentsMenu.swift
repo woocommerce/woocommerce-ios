@@ -2,6 +2,7 @@ import SwiftUI
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
+
     @State private var safariSheetURL: URL?
 
     @State private var showingSimplePayments: Bool = false
@@ -32,7 +33,11 @@ struct InPersonPaymentsMenu: View {
             }
 
             Section(Localization.paymentSettingsSectionTitle) {
-                EmptyView()
+                PaymentsToggleRow(
+                    image: Image(uiImage: .creditCardIcon),
+                    title: Localization.toggleEnableCashOnDelivery,
+                    toggleRowViewModel: viewModel.payInPersonToggleViewModel)
+                .customOpenURL(binding: $safariSheetURL)
             }
 
             Section(Localization.tapToPaySectionTitle) {
@@ -91,18 +96,6 @@ struct InPersonPaymentsMenu: View {
             .renderedIf(viewModel.shouldShowCardReaderSection)
         }
         .safariSheet(url: $safariSheetURL)
-    }
-}
-
-struct PaymentsRow: View {
-    let image: Image
-    let title: String
-
-    var body: some View {
-        HStack {
-            image
-            Text(title)
-        }
     }
 }
 
@@ -166,19 +159,6 @@ private extension InPersonPaymentsMenu {
             value: "Pay in Person",
             comment: "Title for a switch on the In-Person Payments menu to enable Cash on Delivery"
         )
-
-        static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
-            "menu.payments.payInPerson.learnMore.description",
-            value: "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
-            comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
-            "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
-            "which should be translated separately and considered part of this sentence.")
-
-        static let toggleEnableCashOnDeliveryLearnMoreLink = NSLocalizedString(
-            "menu.payments.payInPerson.learnMore.link",
-            value: "Learn more",
-            comment: "The \"Learn more\" string replaces the placeholder in a label prompting users to learn " +
-            "more about adding Pay in Person to their checkout. ")
 
         static let cardReaderManuals = NSLocalizedString(
             "menu.payments.cardReader.manuals.row.title",

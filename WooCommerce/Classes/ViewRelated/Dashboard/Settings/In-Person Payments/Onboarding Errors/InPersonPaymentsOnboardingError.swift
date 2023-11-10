@@ -35,6 +35,7 @@ struct InPersonPaymentsOnboardingError: View {
             }
             if learnMore {
                 InPersonPaymentsLearnMore(viewModel: LearnMoreViewModel(tappedAnalyticEvent: learnMoreAnalyticEvent))
+                    .padding(.vertical, 8)
             }
         }.padding()
     }

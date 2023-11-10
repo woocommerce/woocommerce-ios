@@ -37,9 +37,9 @@ final class NetworkErrorTests: XCTestCase {
         }
     }
 
-    /// Verifies that provided response data if stored as string
+    /// Verifies that provided response data is stored when unacceptableStatusCode
     ///
-    func test_response_data_is_stored_as_string() throws {
+    func test_response_data_is_stored_when_unacceptableStatusCode_error() throws {
         // Given
         let error = ["error": "Failed to load"]
         let jsonData = try JSONSerialization.data(withJSONObject: error)
@@ -53,6 +53,20 @@ final class NetworkErrorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(statusCode, 300)
-        XCTAssertEqual(response, "{\"error\":\"Failed to load\"}")
+        XCTAssertEqual(response, jsonData)
+    }
+
+    /// Verifies that provided response data is returned as a String when unacceptableStatusCode
+    ///
+    func test_description_contains_response_data_as_a_string_when_unacceptableStatusCode_error() throws {
+        // Given
+        let errorDict = ["error": "Failed to load"]
+        let jsonData = try JSONSerialization.data(withJSONObject: errorDict)
+
+        // When
+        let network = try XCTUnwrap(NetworkError(responseData: jsonData, statusCode: 300))
+
+        // Then
+        XCTAssertTrue("\(network)".contains("{\"error\":\"Failed to load\"}"))
     }
 }

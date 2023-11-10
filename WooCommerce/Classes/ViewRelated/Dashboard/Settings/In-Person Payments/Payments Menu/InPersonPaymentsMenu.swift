@@ -18,7 +18,12 @@ struct InPersonPaymentsMenu: View {
                     .onTapGesture {
                         viewModel.collectPaymentTapped()
                     }
-                    .sheet(isPresented: $viewModel.presentCollectPayment) {
+                    .sheet(isPresented: $viewModel.presentCollectPayment,
+                           onDismiss: {
+                        Task { @MainActor in
+                            await viewModel.onAppear()
+                        }
+                    }) {
                         NavigationView {
                             SimplePaymentsAmountHosted(
                                 viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
@@ -42,9 +47,17 @@ struct InPersonPaymentsMenu: View {
                     .onTapGesture {
                         viewModel.setUpTryOutTapToPayTapped()
                     }
-                    .sheet(isPresented: $viewModel.presentSetUpTryOutTapToPay) {
-                        PaymentSettingsFlowPresentingView(
-                            viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                    .sheet(isPresented: $viewModel.presentSetUpTryOutTapToPay,
+                           onDismiss: {
+                        Task { @MainActor in
+                            await viewModel.onAppear()
+                        }
+                    }) {
+                        NavigationView {
+                            PaymentSettingsFlowPresentingView(
+                                viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                            .navigationBarHidden(true)
+                        }
                     }
 
                     NavigationLink {
@@ -127,7 +140,9 @@ struct InPersonPaymentsMenu: View {
                 PermanentNoticeView(notice: onboardingNotice)
             }
         }
-        .onAppear(perform: viewModel.onAppear)
+        .task {
+            await viewModel.onAppear()
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,

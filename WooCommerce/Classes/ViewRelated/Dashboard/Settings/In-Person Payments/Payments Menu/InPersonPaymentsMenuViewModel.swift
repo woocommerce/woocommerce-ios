@@ -50,12 +50,15 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
+    @MainActor
     private func updateOutputProperties() async {
         await updateTapToPaySection()
     }
 
-    func onAppear() {
+    @MainActor
+    func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
+        await updateOutputProperties()
     }
 
     func collectPaymentTapped() {
@@ -188,6 +191,7 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Tap to Pay visibility
 
 private extension InPersonPaymentsMenuViewModel {
+    @MainActor
     private func updateTapToPaySection() async {
         let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
 
@@ -203,6 +207,7 @@ private extension InPersonPaymentsMenuViewModel {
         dependencies.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
+    @MainActor
     private func updateSetUpTryTapToPay() async {
         let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
@@ -210,6 +215,7 @@ private extension InPersonPaymentsMenuViewModel {
         shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
     }
 
+    @MainActor
     private func updateTapToPayFeedbackRowVisibility() async {
         guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
               let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {

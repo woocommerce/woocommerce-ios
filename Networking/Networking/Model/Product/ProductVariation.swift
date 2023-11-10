@@ -412,6 +412,9 @@ public struct ProductVariation: Codable, GeneratedCopiable, Equatable, Generated
 
         // Variation (Local) Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Subscription
+        try container.encode(subscription, forKey: .metadata)
     }
 }
 

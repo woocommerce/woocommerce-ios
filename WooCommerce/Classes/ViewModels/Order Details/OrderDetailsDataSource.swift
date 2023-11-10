@@ -147,6 +147,12 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// Custom amounts (fees) from an Order
+    ///
+    var customAmounts: [OrderFeeLine] {
+        return resultsControllers.feeLines
+    }
+
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
@@ -836,7 +842,7 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let customAmount = order.fees[indexPath.row]
+        let customAmount = customAmounts[indexPath.row]
         cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
         cell.accessibilityIdentifier = "custom-amount-cell"
     }
@@ -1103,14 +1109,14 @@ extension OrderDetailsDataSource {
                            headerStyle: headerStyle)
         }()
 
-        let customAmounts: Section? = {
-            guard order.fees.isNotEmpty else {
+        let customAmountsSection: Section? = {
+            guard customAmounts.isNotEmpty else {
                 return nil
             }
 
             return Section(category: .customAmounts,
                           title: Title.customAmounts,
-                          rows: Array(repeating: .customAmount, count: order.fees.count))
+                          rows: Array(repeating: .customAmount, count: customAmounts.count))
         }()
 
         let customFields: Section? = {
@@ -1286,7 +1292,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
-                     customAmounts,
+                     customAmountsSection,
                      customFields,
                      installWCShipSection,
                      refundedProducts] +

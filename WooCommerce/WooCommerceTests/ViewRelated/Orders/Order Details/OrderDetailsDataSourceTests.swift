@@ -31,11 +31,12 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_payment_section_is_shown_right_after_the_products_and_refunded_products_sections() {
+    func test_payment_section_is_shown_right_after_the_products_custom_amounts_and_refunded_products_sections() {
         // Given
         let order = makeOrder()
 
         insert(refund: makeRefund(refundID: 1, orderID: order.orderID, siteID: order.siteID))
+        insertFee(with: order)
 
         let dataSource = OrderDetailsDataSource(
             order: order,
@@ -52,6 +53,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let actualTitles = dataSource.sections.compactMap(\.title)
         let expectedTitles = [
             Title.products,
+            Title.customAmounts,
             Title.refundedProducts,
             Title.payment,
             Title.information,
@@ -596,6 +598,8 @@ final class OrderDetailsDataSourceTests: XCTestCase {
                                                 cardPresentPaymentsConfiguration: Mocks.configuration)
 
         // When
+        insertFee(with: order)
+        dataSource.configureResultsControllers { }
         dataSource.reloadSections()
 
         // Then
@@ -655,7 +659,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
 
 private extension OrderDetailsDataSourceTests {
     func makeOrder() -> Order {
-        MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()])
+        MockOrders().makeOrder(items: [makeOrderItem(), makeOrderItem()], fees: [OrderFeeLine.fake()])
     }
 
     func makeOrderItem() -> OrderItem {
@@ -716,6 +720,13 @@ private extension OrderDetailsDataSourceTests {
         let storageRefund = storage.insertNewObject(ofType: StorageRefund.self)
         storageRefund.update(with: refund)
         storageRefund.addToItems(storageOrderItemRefunds as NSSet)
+    }
+
+    func insertFee(with order: Order) {
+        let storageOrder = storage.insertNewObject(ofType: StorageOrder.self)
+        storageOrder.update(with: order)
+        let storageFee = storage.insertNewObject(ofType: StorageOrderFeeLine.self)
+        storageFee.order = storageOrder
     }
 
     /// Inserts the shipping label into storage

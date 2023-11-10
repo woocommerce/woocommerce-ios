@@ -38,7 +38,7 @@ final class OrderDetailsResultsControllers {
     ///
     private lazy var feeLinesResultsController: ResultsController<StorageOrderFeeLine> = {
         let predicate = NSPredicate(format: "order.orderID == %ld", order.orderID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let descriptor = NSSortDescriptor(key: "feeID", ascending: true)
 
         return ResultsController<StorageOrderFeeLine>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()

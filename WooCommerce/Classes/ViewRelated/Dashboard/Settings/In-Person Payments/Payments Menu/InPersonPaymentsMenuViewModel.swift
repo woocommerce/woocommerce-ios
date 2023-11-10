@@ -17,6 +17,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
     @Published var presentCollectPayment: Bool = false
+    @Published var presentSetUpTryOutTapToPay: Bool = false
+    @Published var presentTapToPayFeedback: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -60,6 +62,14 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         presentCollectPayment = true
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+    }
+
+    func setUpTryOutTapToPayTapped() {
+        presentSetUpTryOutTapToPay = true
+    }
+
+    func tapToPayFeedbackTapped() {
+        presentTapToPayFeedback = true
     }
 
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {

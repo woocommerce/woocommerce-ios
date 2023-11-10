@@ -1,4 +1,5 @@
 import SwiftUI
+import WooFoundation
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
@@ -36,23 +37,31 @@ struct InPersonPaymentsMenu: View {
                 }
 
                 Section(Localization.tapToPaySectionTitle) {
-                    // Modal
-                    NavigationLink(destination:
-                                    PaymentSettingsFlowPresentingView(
-                                        viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)) {
-                                            PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
-                                                        title: viewModel.setUpTryOutTapToPayRowTitle)
-                                        }
+                    PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
+                                title: viewModel.setUpTryOutTapToPayRowTitle)
+                    .onTapGesture {
+                        viewModel.setUpTryOutTapToPayTapped()
+                    }
+                    .sheet(isPresented: $viewModel.presentSetUpTryOutTapToPay) {
+                        PaymentSettingsFlowPresentingView(
+                            viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                    }
 
-                    NavigationLink(destination: AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)) {
+                    NavigationLink {
+                        AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                    } label: {
                         PaymentsRow(image: Image(uiImage: .infoOutlineImage),
                                     title: Localization.aboutTapToPayOnIPhone)
                     }
 
-                    // Modal
-                    NavigationLink(destination: Survey(source: .tapToPayFirstPayment)) {
-                        PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
-                                    title: Localization.tapToPayOnIPhoneFeedback)
+                    PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
+                                title: Localization.tapToPayOnIPhoneFeedback)
+                    .foregroundColor(Color(uiColor: .textLink))
+                    .onTapGesture {
+                        viewModel.tapToPayFeedbackTapped()
+                    }
+                    .sheet(isPresented: $viewModel.presentTapToPayFeedback) {
+                        Survey(source: .tapToPayFirstPayment)
                     }
                     .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
                 }

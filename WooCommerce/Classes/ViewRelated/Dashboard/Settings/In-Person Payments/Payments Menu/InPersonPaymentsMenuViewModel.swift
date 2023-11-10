@@ -36,6 +36,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
          dependencies: Dependencies) {
         self.siteID = siteID
         self.dependencies = dependencies
+        observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
         updateOutputProperties()
     }
@@ -50,28 +51,28 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         runCardPresentPaymentsOnboardingIfPossible()
     }
 
-    var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList {
+    lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
         SetUpTapToPayViewModelsOrderedList(
             siteID: siteID,
             configuration: dependencies.cardPresentPaymentsConfiguration,
             onboardingUseCase: dependencies.onboardingUseCase)
-    }
+    }()
 
-    var aboutTapToPayViewModel: AboutTapToPayViewModel {
+    lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
         AboutTapToPayViewModel(
             siteID: siteID,
             configuration: dependencies.cardPresentPaymentsConfiguration,
             cardPresentPaymentsOnboardingUseCase: dependencies.onboardingUseCase,
             shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
-    }
+    }()
 
-    var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList {
+    lazy var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList = {
         CardReaderSettingsViewModelsOrderedList(
             configuration: dependencies.cardPresentPaymentsConfiguration,
             siteID: siteID)
-    }
+    }()
 
-    var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel {
+    lazy var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel = {
         PurchaseCardReaderWebViewViewModel(
             configuration: dependencies.cardPresentPaymentsConfiguration,
             utmProvider: WooCommerceComUTMProvider(
@@ -80,7 +81,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 content: nil,
                 siteID: siteID),
             onDismiss: {})
-    }
+    }()
 
     lazy var onboardingViewModel: InPersonPaymentsViewModel = {
         InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
@@ -89,12 +90,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
 // MARK: - Background onboarding
 private extension InPersonPaymentsMenuViewModel {
-    func runCardPresentPaymentsOnboardingIfPossible() {
+    func observeOnboardingChanges() {
         guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
             return
         }
-
-        dependencies.onboardingUseCase.refreshIfNecessary()
 
         dependencies.onboardingUseCase.statePublisher
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
@@ -102,6 +101,14 @@ private extension InPersonPaymentsMenuViewModel {
             .sink(receiveValue: { [weak self] state in
                 self?.refreshAfterNewOnboardingState(state)
         }).store(in: &cancellables)
+    }
+
+    func runCardPresentPaymentsOnboardingIfPossible() {
+        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+            return
+        }
+
+        dependencies.onboardingUseCase.refreshIfNecessary()
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {

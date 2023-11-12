@@ -66,7 +66,7 @@ extension NetworkError: CustomStringConvertible {
         case .timeout:
             return NSLocalizedString(
                 "NetworkError.timeout",
-                value: "Sorry, the request took too long to process. Please try again later. (Error code: 408)",
+                value: "Sorry, the request took too long to process. Please try again later.",
                 comment: "Error message when a request times out.")
         case let .unacceptableStatusCode(statusCode, responseData):
             let response: String? = responseData.map { String(data: $0, encoding: .utf8) } ?? nil

@@ -784,17 +784,12 @@ final class RemoteTests: XCTestCase {
         let data = Loader.contentsOf("timeout_error")
         network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
 
-        let expectationForRequest = expectation(description: "Request")
-
         // When
         let result: (Any?, Error?) = waitFor { promise in
             remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
                 promise((output, error))
-                expectationForRequest.fulfill()
             }
         }
-
-        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
 
         // Then
         XCTAssertNil(result.0)

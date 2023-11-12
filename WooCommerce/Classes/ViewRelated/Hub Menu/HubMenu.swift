@@ -167,7 +167,7 @@ struct HubMenu: View {
     @ViewBuilder
     private func inPersonPaymentsMenu() -> some View {
         if viewModel.swiftUIPaymentsMenuEnabled {
-            InPersonPaymentsMenu()
+            InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
         } else {
             LegacyInPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
         }

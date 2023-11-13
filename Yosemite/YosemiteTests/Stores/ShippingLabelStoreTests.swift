@@ -823,8 +823,8 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
-        let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
-        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(expectedLabel)
+        let inProgressLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
+        let labelStatusResponse = ShippingLabelStatusPollingResponse.purchased(inProgressLabel)
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,
@@ -838,13 +838,7 @@ final class ShippingLabelStoreTests: XCTestCase {
                                     labelIDs: [13579],
                                     thenReturn: .success([labelStatusResponse]))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-
-        // When
-        var purchaseResult: Result<[Yosemite.ShippingLabel], Error>? = waitFor(timeout: 6.0) { promise in
-            DispatchQueue.main.asyncAfter(deadline: .now() + 5.9) {
-                promise(nil)
-            }
-        }
+        var purchaseResult: Result<[Yosemite.ShippingLabel], Error>? = nil
         let action = ShippingLabelAction.purchaseShippingLabel(siteID: self.sampleSiteID,
                                                                orderID: self.sampleOrderID,
                                                                originAddress: mockAddress,
@@ -853,10 +847,33 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                emailCustomerReceipt: true) { result in
             purchaseResult = result
         }
+        // We want to test that purchaseShippingLabel does not call its completion ("return") with an error for the entire duration of the polling it makes under the hood when the status is progress.
+        // So, let's set an inverted expectation: Let's validate that the result will never be an error.
+        let exp = expectation(
+            for: NSPredicate(block: { _,_ in
+                switch purchaseResult {
+                case .failure: return true
+                default: return false
+                }
+            }),
+            evaluatedWith: nil
+        )
+        exp.isInverted = true
+
+        // When
         store.onAction(action)
 
         // Then
-        XCTAssertNil(purchaseResult)
+        //
+        // The 6 seconds was the wait time in the previous iteration of this test.
+        // As far as I, Gio, can test, it was arbitrary as "long enough to have a retry".
+        //
+        // Given:
+        // - the default delay after receiving the purchase label is 2s,
+        // - each retry has a 1s delay,
+        // - and there is no maximum retry count for the progress state
+        // any timeout longer that 3s plus a few decimal places for buffer would have been okay.
+        wait(for: [exp], timeout: 6.0)
     }
 }
 

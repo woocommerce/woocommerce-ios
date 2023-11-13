@@ -45,6 +45,26 @@ final class ProductPriceSettingsViewController: UIViewController {
         return keyboardFrameObserver
     }()
 
+    private lazy var subscriptionPeriodToolbar: UIToolbar = {
+        // Setting explicit frame size to avoid constraint conflicts.
+        let toolBar = UIToolbar(frame: .init(origin: .zero,
+                                             size: .init(width: UIScreen.main.bounds.width,
+                                                         height: Constants.subscriptionPeriodToolbarHeight)))
+        let doneButton = UIBarButtonItem(title: Localization.subscriptionPeriodToolBarButton,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(self.onSubscriptionPeriodUpdateDone))
+        toolBar.setItems([.flexibleSpace(), doneButton], animated: false)
+        return toolBar
+    }()
+
+    private lazy var subscriptionPeriodPickerView: UIPickerView = {
+        let pickerView = UIPickerView()
+        pickerView.dataSource = self
+        pickerView.delegate = self
+        return pickerView
+    }()
+
     /// Init
     ///
     init(product: ProductFormDataModel & TaxClassRequestable, completion: @escaping Completion) {
@@ -341,7 +361,7 @@ private extension ProductPriceSettingsViewController {
             configureTaxStatus(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
-        case let cell as TitleAndValueTableViewCell where row == .subscriptionPeriod:
+        case let cell as TitleAndTextFieldTableViewCell where row == .subscriptionPeriod:
             configureSubscriptionPeriod(cell: cell)
         default:
             fatalError()
@@ -358,10 +378,16 @@ private extension ProductPriceSettingsViewController {
         cell.configure(viewModel: cellViewModel)
     }
 
-    func configureSubscriptionPeriod(cell: TitleAndValueTableViewCell) {
-        cell.updateUI(title: Localization.subscriptionPeriod,
-                      value: viewModel.subscriptionPeriod)
-        cell.accessoryType = .disclosureIndicator
+    func configureSubscriptionPeriod(cell: TitleAndTextFieldTableViewCell) {
+        cell.configure(viewModel: .init(title: Localization.subscriptionPeriod,
+                                        text: viewModel.subscriptionPeriod,
+                                        placeholder: nil,
+                                        textFieldAlignment: .trailing,
+                                        inputView: subscriptionPeriodPickerView,
+                                        inputAccessoryView: subscriptionPeriodToolbar,
+                                        onEditingEnd: { [weak self] in
+            self?.refreshViewContent()
+        }))
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -450,6 +476,48 @@ private extension ProductPriceSettingsViewController {
     }
 }
 
+// MARK: - UIPickerViewDataSource & UIPickerViewDelegate performance
+//
+extension ProductPriceSettingsViewController: UIPickerViewDataSource, UIPickerViewDelegate {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        SubscriptionPeriodPickerComponent.allCases.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        switch component {
+        case SubscriptionPeriodPickerComponent.interval.rawValue:
+            return Constants.maximumSubscriptionPeriodInterval
+        case SubscriptionPeriodPickerComponent.period.rawValue:
+            return SubscriptionPeriod.allCases.count
+        default:
+            return 0
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        switch component {
+        case SubscriptionPeriodPickerComponent.interval.rawValue:
+            return "\(row + 1)"
+        case SubscriptionPeriodPickerComponent.period.rawValue:
+            if pickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.interval.rawValue) == 0 {
+                return SubscriptionPeriod.allCases[row].descriptionSingular
+            } else {
+                return SubscriptionPeriod.allCases[row].descriptionPlural
+            }
+        default:
+            return nil
+        }
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        if component == SubscriptionPeriodPickerComponent.interval.rawValue {
+            // reloads the period component to display the updated titles based on the interval.
+            pickerView.reloadComponent(SubscriptionPeriodPickerComponent.period.rawValue)
+        }
+        updateSubscriptionPeriodDescription()
+    }
+}
+
 // MARK: - Convenience Methods
 //
 private extension ProductPriceSettingsViewController {
@@ -465,6 +533,18 @@ private extension ProductPriceSettingsViewController {
 
     func configureSections() {
         sections = viewModel.sections
+    }
+
+    @objc
+    func onSubscriptionPeriodUpdateDone() {
+        view.endEditing(true)
+    }
+
+    func updateSubscriptionPeriodDescription() {
+        let selectedIntervalRow = subscriptionPeriodPickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.interval.rawValue)
+        let selectedPeriodRow = subscriptionPeriodPickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.period.rawValue)
+        viewModel.handleSubscriptionPeriodChange(interval: "\(selectedIntervalRow + 1)",
+                                                 period: SubscriptionPeriod.allCases[selectedPeriodRow])
     }
 }
 
@@ -498,7 +578,7 @@ extension ProductPriceSettingsViewController {
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self
-            case .scheduleSaleFrom, .scheduleSaleTo, .subscriptionPeriod:
+            case .scheduleSaleFrom, .scheduleSaleTo:
                 return TitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self
@@ -506,6 +586,8 @@ extension ProductPriceSettingsViewController {
                 return TitleAndValueTableViewCell.self
             case .removeSaleTo:
                 return BasicTableViewCell.self
+            case .subscriptionPeriod:
+                return TitleAndTextFieldTableViewCell.self
             }
         }
 
@@ -517,19 +599,26 @@ extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
+    static let maximumSubscriptionPeriodInterval = 6
+    static let subscriptionPeriodToolbarHeight: CGFloat = 35
 }
 
 private extension ProductPriceSettingsViewController {
+    enum SubscriptionPeriodPickerComponent: Int, CaseIterable {
+        case interval
+        case period
+    }
+
     enum Localization {
         static let subscriptionPeriod = NSLocalizedString(
-            "productPriceSettingsViewController.subscriptionPeriodRowTitle",
+            "productPriceSettingsViewController.subscriptionIntervalRowTitle",
             value: "Subscription period",
-            comment: "Title of the subscription period row on the Product Price screen"
+            comment: "Title of the subscription interval row on the Product Price screen"
         )
-        static let subscriptionPeriodInterval = NSLocalizedString(
-            "productPriceSettingsViewController.subscriptionPeriodIntervalRowTitle",
-            value: "Subscription period interval",
-            comment: "Title of the subscription period interval row on the Product Price screen"
+        static let subscriptionPeriodToolBarButton = NSLocalizedString(
+            "productPriceSettingsViewController.subscriptionPeriodToolBarButton",
+            value: "Done",
+            comment: "Button on the toolbar of the subscription period picker view on the Product Price screen"
         )
     }
 }

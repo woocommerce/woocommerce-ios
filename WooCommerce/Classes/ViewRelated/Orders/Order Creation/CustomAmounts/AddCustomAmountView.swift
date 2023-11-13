@@ -28,6 +28,9 @@ struct AddCustomAmountView: View {
                             .foregroundColor(Color(.textSubtle))
                             .multilineTextAlignment(.center)
 
+                        InputField(placeholder: Localization.percentagePlaceholder,
+                                   text: $viewModel.percentage)
+
                         Spacer()
 
                         Button(viewModel.doneButtonTitle) {
@@ -56,8 +59,35 @@ struct AddCustomAmountView: View {
 }
 
 private extension AddCustomAmountView {
+    struct InputField: View {
+        let placeholder: String
+        @Binding var text: String
+
+        var body: some View {
+            TextField(placeholder, text: $text)
+            .keyboardType(.numbersAndPunctuation)
+            .padding(EdgeInsets(top: 0, leading: Layout.inputFieldInnerVerticalPadding, bottom: 0, trailing: Layout.inputFieldInnerVerticalPadding))
+            .frame(maxWidth: .infinity, minHeight: Layout.inputFieldHeight, maxHeight: Layout.inputFieldHeight)
+            .overlay {
+                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                    .inset(by: Layout.inputFieldOverlayInset)
+                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
+            }
+            .cornerRadius(Layout.frameCornerRadius)
+            .padding()
+        }
+    }
+}
+
+private extension AddCustomAmountView {
     enum Layout {
         static let mainVerticalSpacing: CGFloat = 8
+        static let rowHeight: CGFloat = 44
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 1
+        static let inputFieldOverlayInset: CGFloat = 0.25
+        static let inputFieldHeight: CGFloat = 48
+        static let inputFieldInnerVerticalPadding: CGFloat = 8
     }
 }
 
@@ -68,6 +98,9 @@ private extension AddCustomAmountView {
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+        static let percentagePlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.input",
+                                                             value: "Enter Percentage",
+                                                             comment: "Placeholder for entering an custom amount through a percentage")
     }
 
     enum AccessibilityIdentifiers {

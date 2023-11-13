@@ -24,6 +24,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
+    @Published var percentage = ""
     @Published private(set) var shouldDisableDoneButton: Bool = true
     private var feeID: Int64? = nil
 

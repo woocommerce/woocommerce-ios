@@ -197,7 +197,7 @@ final class EditableOrderViewModel: ObservableObject {
     var addCustomAmountViewModel: AddCustomAmountViewModel {
         let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
 
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.orderTotal as Decimal,
                                         onCustomAmountEntered: { [weak self] amount, name, feeID in
             if let feeID = feeID {
                 self?.updateFee(with: feeID, total: amount, name: name)
@@ -806,6 +806,10 @@ final class EditableOrderViewModel: ObservableObject {
         forgetTaxRate()
     }
 
+    func onDismissAddCustomAmountView() {
+        editingFee = nil
+    }
+
     func onAddCustomAmountButtonTapped() {
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
@@ -908,7 +912,6 @@ extension EditableOrderViewModel {
         let shippingMethodTotal: String
 
         let shouldShowTotalCustomAmounts: Bool
-        let feesBaseAmountForPercentage: Decimal
         let customAmountsTotal: String
 
         let taxesTotal: String
@@ -956,7 +959,6 @@ extension EditableOrderViewModel {
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
              shouldShowTotalCustomAmounts: Bool = false,
-             feesBaseAmountForPercentage: Decimal = 0,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
@@ -994,7 +996,6 @@ extension EditableOrderViewModel {
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
-            self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
@@ -1416,7 +1417,6 @@ private extension EditableOrderViewModel {
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
-                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",

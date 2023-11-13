@@ -169,7 +169,9 @@ extension ProductPriceSettingsViewController {
 
     @objc private func completeUpdating() {
         viewModel.completeUpdating(
-            onCompletion: onCompletion,
+            onCompletion: { [weak self] in
+                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8)
+            },
             onError: { [weak self] error in
                 switch error {
                 case .salePriceWithoutRegularPrice:

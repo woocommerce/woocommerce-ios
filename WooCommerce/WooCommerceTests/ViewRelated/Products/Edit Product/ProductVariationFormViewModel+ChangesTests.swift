@@ -44,6 +44,8 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,
@@ -103,7 +105,14 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_variation_has_unsaved_changes_from_editing_price_settings() {
         // Action
-        viewModel.updatePriceSettings(regularPrice: "999999", salePrice: "888888", dateOnSaleStart: nil, dateOnSaleEnd: nil, taxStatus: .none, taxClass: nil)
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())

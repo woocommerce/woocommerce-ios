@@ -267,7 +267,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, 
+        onCompletion(regularPrice,
                      subscriptionPeriod,
                      subscriptionPeriodInterval,
                      salePrice,

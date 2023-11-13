@@ -57,6 +57,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
                                       salePrice: product.salePrice,
                                       dateOnSaleStart: product.dateOnSaleStart,
                                       dateOnSaleEnd: product.dateOnSaleEnd,
@@ -175,7 +177,14 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     func testProductHasUnsavedChangesFromEditingPriceSettings() {
         // When
-        viewModel.updatePriceSettings(regularPrice: "999999", salePrice: "888888", dateOnSaleStart: nil, dateOnSaleEnd: nil, taxStatus: .none, taxClass: nil)
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
 
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges())

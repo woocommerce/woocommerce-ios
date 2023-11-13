@@ -93,6 +93,8 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
                                       salePrice: product.salePrice,
                                       dateOnSaleStart: product.dateOnSaleStart,
                                       dateOnSaleEnd: product.dateOnSaleEnd,

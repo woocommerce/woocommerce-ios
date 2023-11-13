@@ -65,6 +65,8 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         let newTaxStatus = ProductTaxStatus.taxable
         let newTaxClass = TaxClass(siteID: productVariation.siteID, name: "Reduced rate", slug: "reduced-rate")
         viewModel.updatePriceSettings(regularPrice: newRegularPrice,
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
                                       salePrice: newSalePrice,
                                       dateOnSaleStart: newDateOnSaleStart,
                                       dateOnSaleEnd: newDateOnSaleEnd,

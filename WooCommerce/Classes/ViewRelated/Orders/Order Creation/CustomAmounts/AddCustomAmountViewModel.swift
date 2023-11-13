@@ -8,15 +8,20 @@ typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int6
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
+    var baseAmountForPercentage: Decimal
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
+    private let currencyFormatter: CurrencyFormatter
 
-    init(locale: Locale = Locale.autoupdatingCurrent,
+    init(baseAmountForPercentage: Decimal,
+         locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
+        self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.analytics = analytics
+        self.baseAmountForPercentage = baseAmountForPercentage
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
     }
@@ -24,7 +29,16 @@ final class AddCustomAmountViewModel: ObservableObject {
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
-    @Published var percentage = ""
+    @Published var percentage = "" {
+        didSet {
+            guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
+                return
+            }
+
+            formattableAmountTextFieldViewModel.amount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
+        }
+    }
+
     @Published private(set) var shouldDisableDoneButton: Bool = true
     private var feeID: Int64? = nil
 
@@ -50,6 +64,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func reset() {
         name = ""
+        baseAmountForPercentage = 0
         feeID = nil
         shouldDisableDoneButton = true
 

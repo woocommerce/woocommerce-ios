@@ -50,10 +50,10 @@ struct OrderCustomAmountsSection: View {
         }
         .padding()
         .background(Color(.listForeground(modal: true)))
-        .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+        .sheet(isPresented: $showAddCustomAmount, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
         })
-        .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+        .sheet(isPresented: $viewModel.showEditCustomAmount, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
         })
     }

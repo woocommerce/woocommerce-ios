@@ -193,15 +193,26 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name, feeID in
+    var editingFee: OrderFeeLine? = nil
+    var addCustomAmountViewModel: AddCustomAmountViewModel {
+        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
+
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
+                                        onCustomAmountEntered: { [weak self] amount, name, feeID in
             if let feeID = feeID {
                 self?.updateFee(with: feeID, total: amount, name: name)
             } else {
                 self?.addFee(with: amount, name: name)
             }
         })
-    }()
+
+        if let editingFee {
+            viewModel.preset(with: editingFee)
+            self.editingFee = nil
+        }
+
+        return viewModel
+    }
 
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
@@ -795,10 +806,6 @@ final class EditableOrderViewModel: ObservableObject {
         forgetTaxRate()
     }
 
-    func onDismissAddCustomAmountView() {
-        addCustomAmountViewModel.reset()
-    }
-
     func onAddCustomAmountButtonTapped() {
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
@@ -1264,7 +1271,8 @@ private extension EditableOrderViewModel {
                 guard let self = self else { return [] }
                 return fees.compactMap { fee in
                     guard !fee.isDeleted else { return nil }
-
+                    
+                    let orderTotals = OrderTotalsCalculator(for: self.orderSynchronizer.order, using: self.currencyFormatter)
                     return CustomAmountRowViewModel(id: fee.feeID,
                                              name: fee.name ?? Localization.customAmountDefaultName,
                                              total: self.currencyFormatter.formatAmount(fee.total) ?? "",
@@ -1274,7 +1282,7 @@ private extension EditableOrderViewModel {
                                              },
                                              onEditCustomAmount: {
                                                 self.analytics.track(.orderCreationEditCustomAmountTapped)
-                                                self.addCustomAmountViewModel.preset(with: fee)
+                                                self.editingFee = fee
                                                 self.showEditCustomAmount = true
                                              })
                     }

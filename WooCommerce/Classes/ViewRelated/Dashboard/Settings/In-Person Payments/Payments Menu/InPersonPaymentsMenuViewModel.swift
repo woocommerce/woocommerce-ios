@@ -52,6 +52,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     @MainActor
     private func updateOutputProperties() async {
+        payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
     }

@@ -11,10 +11,10 @@ final class ProductVariationEncoderTests: XCTestCase {
                                                signUpFee: "25",
                                                trialLength: "1",
                                                trialPeriod: .month)
-        let product = ProductVariation.fake().copy(subscription: subscription)
+        let variation = ProductVariation.fake().copy(subscription: subscription)
 
         // When
-        let parameters = try product.toDictionary()
+        let parameters = try variation.toDictionary()
 
         // Then
         let metadata =  try XCTUnwrap(parameters["meta_data"] as? [[String: Any]])
@@ -39,5 +39,16 @@ final class ProductVariationEncoderTests: XCTestCase {
 
         let trialPeriod = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_trial_period"}))
         XCTAssertEqual(trialPeriod["value"] as? String, "month")
+    }
+
+    func test_it_does_not_encode_meta_data_without_subscription() throws {
+        // Given
+        let variation = ProductVariation.fake()
+
+        // When
+        let parameters = try variation.toDictionary()
+
+        // Then
+        XCTAssertNil(parameters["meta_data"])
     }
 }

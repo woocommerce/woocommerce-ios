@@ -82,17 +82,9 @@ final class ProductEncoderTests: XCTestCase {
         XCTAssertEqual(trialPeriod["value"] as? String, "month")
     }
 
-    func test_it_does_not_encode_subscription_into_meta_data_for_non_subscription_order_types() throws {
+    func test_it_does_not_encode_metadata_without_subscription() throws {
         // Given
-        let subscription = ProductSubscription(length: "3",
-                                               period: .week,
-                                               periodInterval: "5",
-                                               price: "99",
-                                               signUpFee: "25",
-                                               trialLength: "1",
-                                               trialPeriod: .month)
-        let product = Product.fake().copy(productTypeKey: "simple",
-                                          subscription: subscription)
+        let product = Product.fake().copy(productTypeKey: "simple")
 
         // When
         let parameters = try product.toDictionary()

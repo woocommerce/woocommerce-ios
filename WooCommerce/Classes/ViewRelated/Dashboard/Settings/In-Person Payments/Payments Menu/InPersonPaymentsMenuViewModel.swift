@@ -16,7 +16,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var shouldShowOnboarding: Bool = false
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
+    @Published var presentCollectPayment: Bool = false
+
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
+
+    private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
     let siteID: Int64
 
@@ -36,6 +40,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
          dependencies: Dependencies) {
         self.siteID = siteID
         self.dependencies = dependencies
+        self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
         updateOutputProperties()
@@ -49,6 +54,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func onAppear() {
         runCardPresentPaymentsOnboardingIfPossible()
+    }
+
+    func collectPaymentTapped() {
+        presentCollectPayment = true
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {

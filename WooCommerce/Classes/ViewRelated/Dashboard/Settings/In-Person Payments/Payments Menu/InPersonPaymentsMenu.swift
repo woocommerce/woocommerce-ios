@@ -5,8 +5,6 @@ struct InPersonPaymentsMenu: View {
 
     @State private var safariSheetURL: URL?
 
-    @State private var showingSimplePayments: Bool = false
-
     @State private var showingManagePaymentGateways: Bool = false
 
     var body: some View {
@@ -17,19 +15,13 @@ struct InPersonPaymentsMenu: View {
                     PaymentsRow(image: Image(uiImage: .moneyIcon),
                                 title: Localization.collectPayment)
                     .onTapGesture {
-                        showingSimplePayments = true
+                        viewModel.collectPaymentTapped()
                     }
-                    .sheet(isPresented: $showingSimplePayments,
-                           onDismiss: {
-                        // log analytics, maybe prevent, better if we can defer to the SimplePaymentsVM
-                    }) {
+                    .sheet(isPresented: $viewModel.presentCollectPayment) {
                         NavigationView {
-                            // TODO: fix IPP/TTP payments from this route – needs a rootVC
-                            SimplePaymentsAmount(
-                                dismiss: {
-                                    showingSimplePayments = false
-                                },
-                                viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
+                            SimplePaymentsAmountHosted(
+                                viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
+                                presentNoticePublisher: viewModel.simplePaymentsNoticePublisher)
                             .navigationBarTitleDisplayMode(.inline)
                         }
                     }

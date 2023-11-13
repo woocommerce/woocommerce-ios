@@ -13,6 +13,18 @@ final class AddCustomAmountViewModel: ObservableObject {
     private let analytics: Analytics
     private let currencyFormatter: CurrencyFormatter
 
+    var baseAmountForPercentageString: String {
+        guard let baseAmountForPercentageString = currencyFormatter.formatAmount(baseAmountForPercentage) else {
+            return ""
+        }
+
+        return "(\(baseAmountForPercentageString))"
+    }
+
+    var showPercentageInput: Bool {
+        baseAmountForPercentage > 0
+    }
+
     init(baseAmountForPercentage: Decimal,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -31,11 +43,13 @@ final class AddCustomAmountViewModel: ObservableObject {
     @Published var name = ""
     @Published var percentage = "" {
         didSet {
-            guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
-                return
-            }
+            guard oldValue != percentage else { return }
 
-            formattableAmountTextFieldViewModel.amount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
+            guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
+
+            guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
+
+            formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
         }
     }
 

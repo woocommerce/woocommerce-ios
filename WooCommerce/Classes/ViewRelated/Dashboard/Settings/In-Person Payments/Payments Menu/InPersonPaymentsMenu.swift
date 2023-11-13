@@ -4,8 +4,6 @@ import WooFoundation
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
 
-    @State private var safariSheetURL: URL?
-
     @State private var showingManagePaymentGateways: Bool = false
 
     var body: some View {
@@ -37,7 +35,7 @@ struct InPersonPaymentsMenu: View {
                         image: Image(uiImage: .creditCardIcon),
                         title: Localization.toggleEnableCashOnDelivery,
                         toggleRowViewModel: viewModel.payInPersonToggleViewModel)
-                    .customOpenURL(binding: $safariSheetURL)
+                    .customOpenURL(binding: $viewModel.safariSheetURL)
                 }
 
                 Section(Localization.tapToPaySectionTitle) {
@@ -108,7 +106,7 @@ struct InPersonPaymentsMenu: View {
                 } footer: {
                     InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
                                               showInfoIcon: false)
-                    .customOpenURL(binding: $safariSheetURL)
+                    .customOpenURL(binding: $viewModel.safariSheetURL)
                 }
                 .renderedIf(viewModel.shouldShowCardReaderSection)
 
@@ -128,7 +126,7 @@ struct InPersonPaymentsMenu: View {
                 }
                 .renderedIf(viewModel.shouldShowPaymentOptionsSection)
             }
-            .safariSheet(url: $safariSheetURL)
+            .safariSheet(url: $viewModel.safariSheetURL)
 
             NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)

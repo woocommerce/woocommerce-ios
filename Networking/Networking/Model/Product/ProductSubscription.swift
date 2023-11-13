@@ -71,7 +71,7 @@ private extension ProductSubscription {
 
 /// Represents all possible subscription periods
 ///
-public enum SubscriptionPeriod: String, Decodable, GeneratedFakeable {
+public enum SubscriptionPeriod: String, Decodable, GeneratedFakeable, CaseIterable {
     case day
     case week
     case month

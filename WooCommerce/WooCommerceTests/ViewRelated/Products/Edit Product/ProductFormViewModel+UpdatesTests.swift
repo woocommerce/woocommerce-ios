@@ -76,7 +76,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingPriceSettings() {
         // Arrange
-        let product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        let product = Product.fake().copy(subscription: subscription)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -90,9 +91,11 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         let newDateOnSaleEnd = newDateOnSaleStart.addingTimeInterval(86400)
         let newTaxStatus = ProductTaxStatus.taxable
         let newTaxClass = TaxClass(siteID: product.siteID, name: "Reduced rate", slug: "reduced-rate")
+        let newSubscriptionPeriod = SubscriptionPeriod.month
+        let newSubscriptionInterval = "2"
         viewModel.updatePriceSettings(regularPrice: newRegularPrice,
-                                      subscriptionPeriod: nil,
-                                      subscriptionPeriodInterval: nil,
+                                      subscriptionPeriod: newSubscriptionPeriod,
+                                      subscriptionPeriodInterval: newSubscriptionInterval,
                                       salePrice: newSalePrice,
                                       dateOnSaleStart: newDateOnSaleStart,
                                       dateOnSaleEnd: newDateOnSaleEnd,
@@ -106,6 +109,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.dateOnSaleEnd, newDateOnSaleEnd)
         XCTAssertEqual(viewModel.productModel.taxStatusKey, newTaxStatus.rawValue)
         XCTAssertEqual(viewModel.productModel.taxClass, newTaxClass.slug)
+        XCTAssertEqual(viewModel.productModel.subscription?.period, newSubscriptionPeriod)
+        XCTAssertEqual(viewModel.productModel.subscription?.periodInterval, newSubscriptionInterval)
     }
 
     func testUpdatingInventorySettings() {

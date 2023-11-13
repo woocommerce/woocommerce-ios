@@ -22,6 +22,7 @@ private struct PermanentNoticeContentView: View {
         HStack(alignment: .top, spacing: Layout.hStackSpacing) {
             Image(uiImage: .infoOutlineImage)
                 .foregroundColor(Color(.gray(.shade40)))
+                .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: Layout.vStackSpacing) {
                 Text(notice.message)
@@ -36,6 +37,7 @@ private struct PermanentNoticeContentView: View {
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .padding(Layout.hStackPadding)
+        .accessibilityElement(children: .combine)
     }
 }
 

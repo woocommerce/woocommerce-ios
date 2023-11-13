@@ -12,7 +12,6 @@ struct InPersonPaymentsMenu: View {
         VStack {
             List {
                 Section(Localization.paymentActionsSectionTitle) {
-                    // Modal
                     PaymentsRow(image: Image(uiImage: .moneyIcon),
                                 title: Localization.collectPayment)
                     .onTapGesture {

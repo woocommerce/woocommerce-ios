@@ -19,7 +19,8 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        product = Product.fake().copy(subscription: subscription)
         model = EditableProductModel(product: product)
         mockProductImageUploader = MockProductImageUploader()
         productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
@@ -181,6 +182,21 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                       subscriptionPeriod: nil,
                                       subscriptionPeriodInterval: nil,
                                       salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_subscription_period_settings() {
+        // When
+        viewModel.updatePriceSettings(regularPrice: "",
+                                      subscriptionPeriod: .month,
+                                      subscriptionPeriodInterval: "1",
+                                      salePrice: "",
                                       dateOnSaleStart: nil,
                                       dateOnSaleEnd: nil,
                                       taxStatus: .none,

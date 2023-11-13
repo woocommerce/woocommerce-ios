@@ -85,6 +85,11 @@ extension ProductType: RawRepresentable {
             return payload // unable to localize at runtime.
         }
     }
+
+    /// Whether the current type is either simple or variable subscription.
+    public var isSubscriptionType: Bool {
+        self == .subscription || self == .variableSubscription
+    }
 }
 
 

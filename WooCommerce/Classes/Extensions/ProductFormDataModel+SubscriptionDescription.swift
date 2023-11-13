@@ -3,10 +3,10 @@ import struct Yosemite.Product
 
 extension ProductFormDataModel {
 
-    /// Formats subscription period info to readable text.
+    /// Returns the formatted subscription period info in readable text.
     /// Returns nil if the product does not have subscription info.
     ///
-    func subscriptionPeriodDescription() -> String? {
+    var subscriptionPeriodDescription: String? {
         guard let subscription = subscription else {
             return nil
         }

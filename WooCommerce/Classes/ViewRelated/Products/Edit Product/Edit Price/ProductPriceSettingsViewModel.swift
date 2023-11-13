@@ -95,7 +95,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
-        subscriptionPeriod = product.subscriptionPeriodDescription()
+        subscriptionPeriod = product.subscriptionPeriodDescription
 
         // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
         if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&

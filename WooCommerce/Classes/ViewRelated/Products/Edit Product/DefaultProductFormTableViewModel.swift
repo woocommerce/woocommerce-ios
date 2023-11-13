@@ -184,7 +184,15 @@ private extension DefaultProductFormTableViewModel {
         // Regular price and sale price are both available only when a sale price is set.
         if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
             let formattedRegularPrice = currencyFormatter.formatAmount(regularPrice, with: currency) ?? ""
-            priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
+            if let subscriptionPeriodDescription = product.subscriptionPeriodDescription {
+                priceDetails.append(String.localizedStringWithFormat(
+                    Localization.regularSubscriptionPriceFormat,
+                    formattedRegularPrice,
+                    subscriptionPeriodDescription
+                ))
+            } else {
+                priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
+            }
 
             if let salePrice = product.salePrice, salePrice.isNotEmpty {
                 let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
@@ -673,6 +681,12 @@ private extension DefaultProductFormTableViewModel {
         // Price
         static let regularPriceFormat = NSLocalizedString("Regular price: %@",
                                                           comment: "Format of the regular price on the Price Settings row")
+        static let regularSubscriptionPriceFormat = NSLocalizedString(
+            "defaultProductFormTableViewModel.regularSubscriptionPriceFormat",
+            value: "Regular price: %1$@ %2$@",
+            comment: "Format of the regular price for a subscription product on the Price Settings row. " +
+            "Reads like: 'Regular price: $60.00 every 2 months'."
+        )
         static let salePriceFormat = NSLocalizedString("Sale price: %@",
                                                        comment: "Format of the sale price on the Price Settings row")
         static let saleDatesFormat = NSLocalizedString("Sale dates: %@",

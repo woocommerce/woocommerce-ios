@@ -14,6 +14,9 @@ protocol ProductPriceSettingsViewModelOutput {
     var dateOnSaleEnd: Date? { get }
     var taxStatus: ProductTaxStatus { get }
     var taxClass: TaxClass? { get }
+
+    var subscriptionPeriod: SubscriptionPeriod? { get }
+    var subscriptionPeriodInterval: String? { get }
     var subscriptionPeriodDescription: String? { get }
 }
 
@@ -53,8 +56,8 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     private(set) var salePrice: String?
 
     private(set) var subscriptionPeriodDescription: String?
-    private var subscriptionPeriod: SubscriptionPeriod?
-    private var subscriptionPeriodInterval: String?
+    private(set) var subscriptionPeriod: SubscriptionPeriod?
+    private(set) var subscriptionPeriodInterval: String?
 
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?

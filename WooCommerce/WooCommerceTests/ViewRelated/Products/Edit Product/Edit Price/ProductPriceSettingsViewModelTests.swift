@@ -659,8 +659,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         let initialSections: [Section] = [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]
         XCTAssertEqual(sections, initialSections)
@@ -674,8 +674,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]
         XCTAssertEqual(viewModel.sections, initialSections)
@@ -688,8 +688,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(sectionsAfterTheFirstTap, [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .datePickerSaleFrom, .scheduleSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .datePickerSaleFrom, .scheduleSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
         XCTAssertEqual(sectionsAfterTheSecondTap, initialSections)
@@ -703,8 +703,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]
         XCTAssertEqual(viewModel.sections, initialSections)
@@ -717,8 +717,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(sectionsAfterTheFirstTap, [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .datePickerSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .datePickerSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
         XCTAssertEqual(sectionsAfterTheSecondTap, initialSections)
@@ -732,8 +732,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
         let initialSections: [Section] = [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]
         XCTAssertEqual(viewModel.sections, initialSections)
@@ -743,8 +743,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.sections, [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
     }
@@ -765,8 +765,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.sections, [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .datePickerSaleTo, .removeSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo, .datePickerSaleTo, .removeSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
     }
@@ -786,8 +786,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(viewModel.sections, [
-            Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice]),
-            Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+            Section(title: Strings.priceSectionTitle, rows: [.price]),
+            Section(title: Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
             Section(title: Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ])
     }
@@ -796,6 +796,11 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 private extension ProductPriceSettingsViewModelTests {
     enum Strings {
         static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
+        static let saleSectionTitle = NSLocalizedString(
+            "productPriceSettingsViewModel.saleSectionTitle",
+            value: "Sale",
+            comment: "Section header title for product sale price"
+        )
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
     }
 

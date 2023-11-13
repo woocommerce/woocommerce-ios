@@ -116,7 +116,11 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     var sections: [Section] {
         // Price section
-        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price])
+        var priceRows: [Row] = [.price]
+        if product.productType.isSubscriptionType {
+            priceRows.append(contentsOf: [.subscriptionPeriod, .subscriptionPeriodInterval])
+        }
+        let priceSection = Section(title: Strings.priceSectionTitle, rows: priceRows)
 
         // Sales section
         var saleScheduleRows: [Row] = [.salePrice, .scheduleSale]

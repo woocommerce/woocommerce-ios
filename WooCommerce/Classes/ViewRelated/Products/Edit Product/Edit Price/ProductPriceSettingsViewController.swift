@@ -341,6 +341,10 @@ private extension ProductPriceSettingsViewController {
             configureTaxStatus(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
+        case let cell as TitleAndValueTableViewCell where row == .subscriptionPeriod:
+            configureSubscriptionPeriod(cell: cell)
+        case let cell as TitleAndValueTableViewCell where row == .subscriptionPeriodInterval:
+            configureSubscriptionPeriodInterval(cell: cell)
         default:
             fatalError()
             break
@@ -354,6 +358,14 @@ private extension ProductPriceSettingsViewController {
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
+    }
+
+    func configureSubscriptionPeriod(cell: TitleAndValueTableViewCell) {
+        // TODO
+    }
+
+    func configureSubscriptionPeriodInterval(cell: TitleAndValueTableViewCell) {
+        // TODO
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -471,6 +483,8 @@ extension ProductPriceSettingsViewController {
 
     enum Row: CaseIterable {
         case price
+        case subscriptionPeriod
+        case subscriptionPeriodInterval
         case salePrice
 
         case scheduleSale
@@ -489,7 +503,7 @@ extension ProductPriceSettingsViewController {
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self
-            case .scheduleSaleFrom, .scheduleSaleTo:
+            case .scheduleSaleFrom, .scheduleSaleTo, .subscriptionPeriod, .subscriptionPeriodInterval:
                 return TitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self

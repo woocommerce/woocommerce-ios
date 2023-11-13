@@ -269,7 +269,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
         onCompletion(regularPrice, 
                      subscriptionPeriod,
-                     subscriptionPeriodInterval, 
+                     subscriptionPeriodInterval,
                      salePrice,
                      dateOnSaleStart,
                      dateOnSaleEnd,

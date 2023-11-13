@@ -4,7 +4,7 @@ import StripeTerminal
 // We can not mock SCPPaymentIntent directly, because its initializers
 // are annotated as NS_UNAVAILABLE
 struct MockStripePaymentIntent {
-    let stripeId: String
+    let stripeId: String?
     let created: Date
     let status: StripeTerminal.PaymentIntentStatus
     let amount: UInt
@@ -13,7 +13,11 @@ struct MockStripePaymentIntent {
     let charges: [StripeTerminal.Charge]
 }
 
-extension MockStripePaymentIntent: StripePaymentIntent {}
+extension MockStripePaymentIntent: StripePaymentIntent {
+    var id: String {
+        stripeId ?? ""
+    }
+}
 
 extension MockStripePaymentIntent {
     static func mock() -> Self {

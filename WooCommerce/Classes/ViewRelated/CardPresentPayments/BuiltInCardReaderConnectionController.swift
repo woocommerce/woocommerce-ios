@@ -139,6 +139,9 @@ final class BuiltInCardReaderConnectionController: BuiltInCardReaderConnectionCo
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         Task { @MainActor [weak self] in
             self?.onCompletion = onCompletion
+            guard case .idle = self?.state else {
+                return
+            }
             self?.state = .initializing
         }
     }
@@ -441,6 +444,13 @@ private extension BuiltInCardReaderConnectionController {
     }
 
     private func showConnectionFailed(error: Error) {
+        defer {
+            // N.B. this may cause issues with retry. It was added to allow a connection controller to be reused after a
+            // failure to automatically reconnect Tap to Pay on foreground. I'm fairly confident that it won't,
+            // but if you're seeing problems with retry, this could be the cause.
+            self.state = .idle
+        }
+
         let retrySearch = {
             self.state = .retry
         }

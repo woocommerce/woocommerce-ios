@@ -1,6 +1,19 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.2
+We've made a few updates to improve your WooCommerce app experience! Now, you'll see custom amounts in their own section on order details for a cleaner look. We've added support for Universal Links in the woo.com domain, making it easier to navigate. Additionally, when adding a product/variation by scanning a barcode on the order form, only the exact SKU will be added for precision. Enjoy!
+
+## 16.1
+In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!
+
+## 16.0
+We're thrilled to roll out the latest updates! 
+
+In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
+
+We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+
 ## 15.9
 Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.
 

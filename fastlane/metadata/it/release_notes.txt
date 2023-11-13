@@ -1,1 +1,1 @@
-Naviga senza problemi tra gli ordini, aggiungi sconti e codici promozionali con facilità e goditi l'IA migliorata per la creazione di prodotti grazie a questo aggiornamento. Grazie per aver scelto WooCommerce.
+Nel nostro ultimo aggiornamento, abbiamo migliorato l'esperienza WooCommerce. Abbiamo ottimizzato le sezioni di creazione degli ordini per fornire un flusso più semplice e intuitivo. Inoltre, abbiamo rimosso un bug che mostrava la schermata cliente errata durante la creazione dell'ordine. Goditi un'esperienza WooCommerce più fluida ed efficiente.

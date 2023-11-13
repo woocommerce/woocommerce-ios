@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-17 12:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-07 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -99,8 +99,8 @@ which should be translated separately and considered part of this sentence. */
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%1$@，通过 %2$@ 支付";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@ x %2$@" = "%1$@ x %2$@";
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@ × %2$@" = "%1$@ × %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -114,8 +114,8 @@ which should be translated separately and considered part of this sentence. */
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
 "%1$d Categories" = "%1$d 个分类";
@@ -518,8 +518,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in the CTA View for installing WCShip extension */
 "Add Extension To Store" = "将扩展程序添加到商店";
 
-/* Title for the Fee screen during order creation
-   Title text of the button that adds a fee when creating a new order */
+/* Title for the Fee screen during order creation */
 "Add Fee" = "手续费";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
@@ -802,6 +801,9 @@ which should be translated separately and considered part of this sentence. */
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "所有评论均已标记为已读";
 
+/* Title of the celebration view when a Blaze campaign is successfully created. */
+"All set!" = "准备就绪！";
+
 /* Subtitle of the store creation plan screen. */
 "All the features you need, already built in" = "您需要的所有功能，皆已内置其中";
 
@@ -831,9 +833,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "允许免运费";
 
-/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
-"Almost there! Please enter the verification code from your Authentication app" = "马上就好！ 请输入验证器应用程序中的验证码";
-
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "马上就好！请输入验证器应用程序中的验证码。";
 
@@ -852,7 +851,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "美属萨摩亚";
 
-/* Title for the discount amount of a product during order creation
+/* Title above the amount field on the add custom amount view in orders.
+   Title for the discount amount of a product during order creation
    Title of the Amount label on Coupon Details screen */
 "Amount" = "金额";
 
@@ -1220,8 +1220,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
-/* Title on the alert presented when dismissing the banner announcing Blaze feature. */
-"Blaze Ads" = "Blaze 广告";
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Blaze 广告活动";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "区块引用";
@@ -1381,6 +1381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "喀麦隆";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "广告活动详细信息";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "无法请求链接";
 
@@ -1414,6 +1417,7 @@ which should be translated separately and considered part of this sentence. */
    Button to cancel the creation of an order on the New Order screen
    Button to dismiss an alert on the product category list screen
    Button to dismiss an error alert in the Jetpack setup flow
+   Button to dismiss Blaze Campaign intro.
    Button to dismiss Select Categories screen
    Button to dismiss the action sheet on the store picker
    Button to dismiss the AI product creation flow.
@@ -1444,6 +1448,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
+   Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1656,6 +1661,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "选择纸张尺寸";
 
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments." = "在“订单详情菜单”→“付款”中的“收款”选项中选择“iPhone 点按付款”。";
+
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "选择国家\/地区";
 
@@ -1858,7 +1866,8 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "配置已更新";
 
-/* My Store > Settings > Configure section title */
+/* My Store > Settings > Configure section title
+   Text in the product row card to configure a bundle product */
 "Configure" = "配置";
 
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
@@ -1888,7 +1897,7 @@ which should be translated separately and considered part of this sentence. */
 /* Message on the celebratory screen after creating first product */
 "Congratulations! You're one step closer to getting the new store ready." = "恭喜！ 您离准备好新的商店又近了一步。";
 
-/* Subtitle in Woo Payments setup  celebration screen. */
+/* Subtitle in Woo Payments setup celebration screen. */
 "Congratulations! You've successfully navigated through the setup and your payment system is ready to roll." = "恭喜！ 您已成功完成设置，可以随时启用您的支付系统。";
 
 /* Settings > Manage Card Reader > Connected Reader > A prompt to update a reader running older software */
@@ -1904,9 +1913,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
-   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
-   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "连接 Jetpack";
 
@@ -2009,6 +2016,7 @@ which should be translated separately and considered part of this sentence. */
    Continue button inside every cell inside Create Shipping Label form
    Continue button on the add product from image form.
    Continue button on the product name field
+   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    The button title text when there is a next step for logging in or signing up.
    Title of continue button
    Title of dismiss button presented when users attempt to log in without Jetpack installed or connected
@@ -2168,7 +2176,8 @@ which should be translated separately and considered part of this sentence. */
 "Crash Immediately" = "立即崩溃";
 
 /* Action for creating a Coupon remotely
-   Button to create an order on the Order screen */
+   Button to create an order on the Order screen
+   Title of the button to create a new campaign on the Blaze campaign list view */
 "Create" = "创建";
 
 /* The button title text for creating a new account. */
@@ -2215,6 +2224,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation web view. */
 "Create a store" = "创建商店";
 
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "创建广告活动";
+
 /* Title of the Create coupon screen */
 "Create coupon" = "创建优惠券";
 
@@ -2244,9 +2256,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "创建、编辑并发布产品。";
-
-/* Status name of a newly created Blaze campaign */
-"Created" = "已创建";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "为属性的所有组合创建变体。";
@@ -2304,8 +2313,12 @@ which should be translated separately and considered part of this sentence. */
    Title of the Analytics Hub Custom selection range */
 "Custom" = "自定义";
 
-/* Title text of the row that shows the provided amount when creating a simple payment */
+/* Navigation title on the add custom amount view in orders.
+   Title text of the row that shows the provided amount when creating a simple payment */
 "Custom Amount" = "自定义金额";
+
+/* Fees label for payment view */
+"Custom Amounts" = "自定义金额";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier
@@ -2327,6 +2340,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Navigation title of the orders filter selector screen for custom date range */
 "Custom Range" = "自定义范围";
+
+/* Placeholder for the name field on the add custom amount view in orders. */
+"Custom amount" = "自定义金额";
 
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "自定义表单需要 10 位的电话号码";
@@ -2501,12 +2517,12 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "折扣 %1$@";
 
-/* Label for the the row showing the total discount of the order */
-"Discount Total" = "折扣总额";
-
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "折扣类型";
+
+/* Label for the the row showing the total discount of the order */
+"Discount total" = "折扣总额";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "享受折扣的订单";
@@ -2619,6 +2635,7 @@ which should be translated separately and considered part of this sentence. */
 /* Action title to select products to add to a grouped product from search results
    Button title for the done button in the tax educational dialog
    Button title to close the Scan to Pay screen
+   Button to dismiss the Blaze campaign detail view
    Button to dismiss the launch store screen.
    Button to dismiss the Order Editing screen
    Button to finish selecting the Coupon expiry date in the Add or Edit Coupon screen
@@ -2641,7 +2658,6 @@ which should be translated separately and considered part of this sentence. */
    Edit product categories screen - button title to apply categories selection
    Edit product downloadable files screen - button title to apply changes to downloadable files
    Navigation bar button on the domain settings screen to leave the flow.
-   Settings > Set up Tap to Pay on iPhone > Complete > A button to move to the next for testing Tap to Pay on iPhone
    Settings > Set up Tap to Pay on iPhone > Try a Payment > Payment flow > Review Order > Done button
    Text for the done button in the Coupon Details screen
    Text for the done button in the domain contact info form.
@@ -2733,6 +2749,10 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "通过拖放来排序照片";
 
+/* Subtitle of the empty state of the Blaze campaign list view
+   Title for the Blaze campaign intro view */
+"Drive more sales to your store with Blaze" = "通过 Blaze 提高您商店的销售额";
+
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "复制";
 
@@ -2757,11 +2777,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ecwid" = "Ecwid";
 
-/* Button to edit a customer on the New Order screen
-   Button to edit a product category
+/* Button to edit a product category
    Button to edit an order on Order Details screen
-   Button to edit an order status on the New Order screen
-   Button to edit the customer note on the New Order screen
    Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "编辑";
@@ -3291,9 +3308,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "反馈已发送！";
 
-/* Fees label for payment view
-   Label for the row showing the cost of fees in the order
-   Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "费用";
 
 /* Info message shown when the order contains multiple fees and shipping lines */
@@ -3301,9 +3316,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "退款金额";
-
-/* Info message shown when the order contains multiple fee lines */
-"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "费用不完整。\n要编辑所有费用，请在 WooCommerce 商店管理中查看订单。";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "正在获取变体…";
@@ -3625,8 +3637,8 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "知道了！";
 
-/* Button on the alert presented when dismissing the banner announcing Blaze feature.
-   Button title that dismisses the Write with AI tooltip
+/* Button title that dismisses the Write with AI tooltip
+   Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "知道了";
 
@@ -3994,6 +4006,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "通过追加销售和交叉销售增加销售额";
 
+/* Subtitle of the Blaze campaign view. */
+"Increase visibility and get your products sold quickly." = "提高展示率，让产品更快售出。";
+
 /* Country option for a site address. */
 "India" = "印度";
 
@@ -4036,9 +4051,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
-   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -4888,6 +4901,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
+   Title above the name field on the add custom amount view in orders.
    Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "名称";
@@ -5019,6 +5033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder for empty address in order customer data */
 "No address specified." = "未指定地址。";
 
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "尚无广告活动";
+
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "未连接读卡器，请连接读卡器并重试";
 
@@ -5138,9 +5155,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "没有要生成的变体";
-
-/* Message on the alert presented when dismissing the banner announcing Blaze feature. */
-"No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience." = "不必担心！ 为方便起见，您可以在“菜单”和产品详细信息菜单中访问 Blaze 广告。";
 
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "不必担心！您可以随时进入菜单中的设置，向我们发送反馈。";
@@ -5331,6 +5345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
 "Or Continue using Magic Link" = "或者继续使用魔术链接";
 
+/* Instruction text for other forms of two-factor auth methods. */
+"Or choose another form of authentication." = "或者选择另一种身份验证形式。";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "或通过 _输入您的站点地址_ 登录。";
 
@@ -5365,7 +5382,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Status" = "订单状态";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "订单总计";
@@ -5378,6 +5394,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Order status update success notice */
 "Order status updated" = "订单状态已更新";
+
+/* Label for the the row showing the total cost of the order */
+"Order total" = "订单总计";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "有序列表";
@@ -5518,8 +5537,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pay in Person" = "现场付款";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment
-   Title text of the section that shows Payment details when creating a new order */
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "付款";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5724,7 +5742,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "请输入您的 WordPress.com 帐户密码，以使用 Apple ID 登录。";
 
 /* Instruction text on the two-factor screen. */
-"Please enter the verification code from your authenticator app, or tap the link below to receive a code via SMS." = "请输入验证器应用程序中的验证码，或轻点以下链接以通过短信接收验证码。";
+"Please enter the verification code from your authenticator app." = "请输入验证器应用程序中的验证码。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "请输入你的验证信息";
@@ -5999,7 +6017,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's private status */
 "Privately published" = "已私密发布";
 
-/* Display label for processing order status. */
+/* Display label for processing order status.
+   Status name of a Blaze campaign under processing */
 "Processing" = "正在处理";
 
 /* Alert title when processing a payment without a user name.
@@ -6110,9 +6129,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "产品退款";
 
-/* Label for the row showing the total cost of products in the order */
-"Products Total" = "产品总计";
-
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "选择了当前产品后购物车中的促销产品";
 
@@ -6122,12 +6138,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "在 TikTok 上推广";
 
-/* Description of the hub menu Blaze button
-   Title on the banner to highlight Blaze feature */
+/* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "通过 Blaze 推广产品";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "通过 Blaze 推广";
+
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "在短短几分钟内推广您的产品。";
 
 /* One of the possible options in Product Visibility */
 "Public" = "公开";
@@ -6219,6 +6237,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "请评价您的现场付款体验。";
+
+/* Third item in the description for Blaze campaign intro view */
+"Reach millions on WordPress and Tumblr sites." = "覆盖 WordPress 和Tumblr 站点上的数百万用户。";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "请与我们快乐的工程师联系，他们可以帮助解答棘手的问题";
@@ -6513,6 +6534,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "返回“我的商店”";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "返回付款页面";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "如果包裹无法送达，请退回给寄件人";
@@ -7115,6 +7139,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Short Description row on Product main screen */
 "Short description" = "简短说明";
 
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "显示所有广告活动";
+
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "显示订单";
 
@@ -7206,8 +7233,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the expired WPCom plan alert */
 "Site plan expired" = "站点套餐已过期";
 
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow
-   The button title on the login onboarding screen to skip to the prologue screen.
+/* The button title on the login onboarding screen to skip to the prologue screen.
    Title for the button to skip the onboarding step informing the merchant of pending account requirements
    Title of the button to skip a profiler question. */
 "Skip" = "跳过";
@@ -7391,6 +7417,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "标准税率";
+
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "开启 Blaze 广告活动";
 
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
@@ -7652,6 +7681,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "拍照";
 
+/* Second item in the description for Blaze campaign intro view */
+"Take control with just a few dollars a day. It’s budget-friendly." = "每天只需几美元即可掌控一切。 这很超值。";
+
 /* Description of the hub menu payments button */
 "Take payments on the go" = "随时随地接受付款";
 
@@ -7804,9 +7836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the tax educational dialog */
 "Taxes & Tax Rates" = "税款和税率";
 
-/* Label for the title row showing the taxes in the order */
-"Taxes Total" = "税额总计";
-
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税款会根据您的店铺地址自动计算。";
 
@@ -7837,10 +7866,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "当我们准备发布时，测试查看订单加载项";
 
-/* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow.
-   The button's title text to send a 2FA code via SMS text message. */
+/* Button title */
 "Text me a code instead" = "通过短信向我发送代码";
+
+/* The button's title text to send a 2FA code via SMS text message. */
+"Text me a code via SMS" = "通过短信将代码发送给我";
 
 /* Country option for a site address. */
 "Thailand" = "泰国";
@@ -7895,6 +7925,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "URL 缺少有效主机。";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "广告已提交审批。 广告审批通过并发布后，我们会向您发送一封确认电子邮件。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "iPhone 上的“点按付款”不支持该金额 – 请尝试使用硬件读卡器或换一种付款方式。";
@@ -8318,6 +8351,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "这不会影响在线订单";
 
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"Time's up, but don't worry, your security is our priority. Please try again!" = "时间到了，请别担心，我们会优先保证您的安全。 请重试！";
+
 /* Country option for a site address. */
 "Timor-Leste" = "东帝汶";
 
@@ -8444,6 +8480,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Track shipment button title */
 "Track Shipment" = "跟踪配送";
 
+/* Fourth item in the description for Blaze campaign intro view */
+"Track performance, start and stop your Blaze campaign anytime." = "随时跟踪表现、开始和停止您的 Blaze 广告活动。";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "跟踪销售额和绩效高的产品";
 
@@ -8510,9 +8549,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "再次尝试授权";
 
-/* Title of the button on the banner to highlight Blaze feature */
-"Try Blaze now" = "立即试用 Blaze";
-
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "重新尝试收集";
 
@@ -8528,14 +8564,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "请再次尝试付款";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "尝试通过借记卡或信用卡完成一次 %1$@ 付款。 您可以在完成支付后选择退款。";
+
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "尝试付款";
 
 /* Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched */
 "Try a Test Order" = "体验测试订单";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
-"Try a payment" = "尝试付款";
 
 /* Settings > Set up Tap to Pay on iPhone > Information > Hint to try out payments using their own card */
 "Try a payment using your own card (and refund it when you're done.)" = "尝试使用您自己的银行卡付款（并在完成之后进行退款）。";
@@ -8566,9 +8602,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the button on the Linked Products announcement banner */
 "Try it now" = "立即试用";
-
-/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
-"Try taking a payment of %1$@ to see how Tap to Pay on iPhone works. Use your debit or credit card: you can refund it when you're done." = "尝试收取 %1$@ 的付款，了解“iPhone 点按付款”功能的工作原理。 使用您的借记卡或信用卡：您可以在完成后退款。";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "试试其他电子邮件地址";
@@ -8602,9 +8635,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "如果优惠券不适用于促销商品，请开启此选项。 基于商品应用的优惠券仅在该商品不促销时可用。 基于购物车应用的优惠券仅在购物车内无促销商品时可用。";
-
-/* Description on the banner to highlight Blaze feature */
-"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "将您的产品制作成广告，在 WordPress.com 和 Tumblr 的数百万个站点上投放。";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "指引方向";
@@ -9050,6 +9080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "使用推荐的地址";
 
+/* The button's title text to use a security key. */
+"Use a security key" = "使用安全密钥";
+
 /* Description for the option to create a template product */
 "Use a template to create physical, virtual, and variable products. You can edit it as you go." = "使用模板创建实体、虚拟和变体产品。 您可以随时进行编辑。";
 
@@ -9135,8 +9168,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "委内瑞拉";
 
-/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
-   two factor code placeholder */
+/* two factor code placeholder */
 "Verification code" = "验证码";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -9238,6 +9270,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "正在等待 Google 完成…";
+
+/* Text while the webauthn signature is being verified
+   Text while waiting for a security key challenge */
+"Waiting for security key" = "正在等待安全密钥插入";
 
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "正在等待您的首个订单";
@@ -9484,6 +9520,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "糟糕，出问题了，您无法登录。请重试！";
 
+/* Generic error on the 2FA screen */
+"Whoops, something went wrong. Please try again!" = "糟糕，出错了。 请重试！";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"Whoops, that security key does not seem valid. Please try again with another one" = "糟糕，安全密钥似乎无效。 请换个密钥再试一次";
+
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "糟糕，双因素验证码无效。请仔细检查代码，然后重试！";
 
@@ -9567,6 +9609,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "与我们合作";
 
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Would you like to try a payment" = "您想试试付款吗？";
+
 /* Title in the product description AI generator view. */
 "Write a description" = "撰写描述";
 
@@ -9634,9 +9679,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Info notice at the bottom of the subscription settings screen. */
 "You can edit subscription settings in the web dashboard" = "您可在 Web 仪表盘中编辑订阅设置";
-
-/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
-"You can find Tap to Pay on iPhone in Menu > Payments > Collect Payment, or from Order Details. Choose Tap to Pay on iPhone as the payment method." = "您可以依次点击“菜单”>“付款”>“收款”，或通过“订单详情”找到“轻点以在 iPhone 上付款”。 选择“轻点以在 iPhone 上付款”作为付款方式。";
 
 /* Instructions of the domain purchase success screen. */
 "You can find the domain settings in menu > settings" = "您可以在“菜单”>“设置”中查找域名设置";
@@ -9840,6 +9882,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[了解更多。] (https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to confirm the custom amount on the add custom amount view in orders. */
+"addCustomAmount.doneButton" = "添加自定义金额";
+
+/* Button title to confirm the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.editButton" = "编辑自定义金额";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "快速启动 WooCommerce";
 
@@ -9875,6 +9923,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "正在扫描读卡器";
 
+/* Action to toggle whether a bundle item is included when it is optional. */
+"configureBundleItem.add" = "添加";
+
+/* Action to select a variation for a bundle item when it is variable. */
+"configureBundleItem.selectVariation" = "选择变体";
+
+/* Action to update a variation for a bundle item when it is variable. */
+"configureBundleItem.updateVariation" = "更新变体";
+
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "数量应在 %1$@ 至 %2$@ 的范围内";
+
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "数量不得低于 %1$@";
+
+/* Error message when a variable bundle item is missing a variation. */
+"configureBundleItemError.missingVariation" = "请选择一个变体";
+
+/* Error message when a variable bundle item is missing some attributes. */
+"configureBundleItemError.variationMissingAttributes" = "请为所有变体属性选择一个选项";
+
+/* Text for the close button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.close" = "关闭";
+
+/* Text for the done button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.done" = "完成";
+
+/* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
+"configureBundleProduct.retry" = "重试";
+
+/* Title for the bundle product configuration screen in the order form. */
+"configureBundleProduct.title" = "配置";
+
+/* Error message when the products cannot be loaded in the bundle product configuration form. */
+"configureBundleProductError.cannotLoadProducts" = "无法加载捆绑产品。 请重试。";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
 
@@ -9883,6 +9967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "电子商务";
+
+/* Default name when the custom amount does not have a name in order creation. */
+"editableOrderViewModel.customAmountDefaultName" = "自定义金额";
 
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "现在，当运输到遵守欧盟 (EU) 海关规定的国家\/地区时，您需要清楚地描述每一件商品。 例如，假设您发送衣服，您的描述中需要指出是哪种类型的衣服（例如，男士衬衫、女孩背心、男孩夹克）才可被接受。 否则货物可能会在海关滞留或被扣留。";
@@ -9918,6 +10005,12 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "用于保存相机中的照片以当作产品图像，或者将照片或视频添加到您的产品或支持工单。";
 
+/* Title for the WPCom login screens when Jetpack is not connected yet */
+"jetpackSetupCoordinator.loginSubtitle" = "连接 Jetpack";
+
+/* Title for the WPCom login screens when Jetpack is not installed yet */
+"jetpackSetupCoordinator.loginTitle" = "安装 Jetpack";
+
 /* Later today */
 "later today" = "稍后再说";
 
@@ -9938,6 +10031,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "无前一个时段";
+
+/* Title text of the section that shows the Custom Amounts when creating or editing an order */
+"orderForm.customAmounts" = "自定义金额";
+
+/* Label for the row showing the cost of fees in the order */
+"orderPaymentSection.customAmounts" = "自定义金额";
+
+/* Title text of the section that shows Payment details when creating a new order */
+"orderPaymentSection.paymentTotals" = "付款总额";
+
+/* Label for the row showing the total cost of products in the order */
+"orderPaymentSection.products" = "产品";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -9963,11 +10068,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "私人";
 
+/* Label for button on product form to open Blaze flow */
+"productFormTableViewDataSource.promoteWithBlazeButton" = "通过 Blaze 推广";
+
+/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Action to configure a product row in the product selector. */
+"productSelector.configureProductRow" = "配置";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "%ld 次评分";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "1 次评分";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
+"setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "付款完成";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10053,6 +10170,36 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 产品, 分类, 新产品, 搜索产品";
 
+/* Button to enter security key on the WPCom 2FA login screen */
+"wpCom2FALoginView.securityKeyButton" = "使用安全密钥";
+
+/* Instruction on the WPCom 2FA login screen */
+"wpCom2FALoginView.subtitleString" = "马上就好！ 请输入身份验证器应用程序中的验证码";
+
+/* Button to request 2FA code via SMS on the WPCom 2FA login screen */
+"wpCom2FALoginView.textMeACode" = "给我发个代码";
+
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen */
+"wpCom2FALoginView.verificationCode" = "验证码";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"wpCom2FALoginViewModel.bad2FA" = "糟糕，双因素验证码无效。 请仔细检查代码，然后重试！";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"wpCom2FALoginViewModel.invalidSecurityKey" = "糟糕，安全密钥似乎无效。 请换个密钥再试一次";
+
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"wpCom2FALoginViewModel.timeoutError" = "时间到了，请别担心，我们会优先保证您的安全。 请重试！";
+
+/* Generic error on the 2FA login screen */
+"wpCom2FALoginViewModel.unknownError" = "糟糕，出错了。 请重试！";
+
+/* Button to dismiss an error alert in the WPCom login flow */
+"wpComLoginCoordinator.cancelButton" = "取消";
+
+/* Title for the screens in the login flow */
+"wpComLoginCoordinator.title" = "登录";
+
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
@@ -10098,6 +10245,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡 帮助我们了解您的订阅决定";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Blaze 广告活动";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 仍在探索 WooCommerce？";

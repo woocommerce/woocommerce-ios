@@ -1,1 +1,1 @@
-Med den här uppdateringen kan du enkelt navigera mellan beställningar, med lätthet lägga till rabatter och rabattkoder och använda förbättrad AI för produktskapande. Tack för att du väljer WooCommerce.
+I vår senaste uppdatering har vi förbättrat din WooCommerce-upplevelse! Vi har optimerat sektionerna för orderskapande för att tillhandahålla ett enklare och mer intuitivt flöde. Dessutom har vi åtgärdat en bugg som gjorde att fel kundsida visades när en order skapades. Njut av en smidigare och effektivare upplevelse av WooCommerce!

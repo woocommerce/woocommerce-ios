@@ -3,6 +3,7 @@ import Yosemite
 import enum Alamofire.AFError
 import class Networking.AlamofireNetwork
 import WordPressAuthenticator
+import WooFoundation
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
@@ -29,6 +30,11 @@ final class JetpackSetupCoordinator {
             self?.showAlert(message: message)
         })
     }()
+
+    /// Title for login views
+    private var loginViewTitle: String {
+        requiresConnectionOnly ? Localization.connectJetpack : Localization.installJetpack
+    }
 
     init(site: Site,
          dotcomAuthScheme: String = ApiCredentials.dotcomAuthScheme,
@@ -86,8 +92,7 @@ private extension JetpackSetupCoordinator {
             return presentJCPJetpackInstallFlow()
         }
         do {
-            let result = await fetchJetpackUser()
-            try saveJetpackConnectionStateIfPossible(result)
+            try await checkJetpackConnectionState()
             analytics.track(event: .JetpackSetup.connectionCheckCompleted(
                 isAlreadyConnected: jetpackConnectedEmail != nil,
                 requiresConnectionOnly: requiresConnectionOnly
@@ -125,26 +130,28 @@ private extension JetpackSetupCoordinator {
     /// Checks the Jetpack connection status for non-Jetpack sites to save the status and connected email locally if available.
     /// Throws any error if the Jetpack user fetch failed.
     ///
-    func saveJetpackConnectionStateIfPossible(_ result: Result<JetpackUser, Error>) throws {
-        switch result {
-        case .success(let user):
-            requiresConnectionOnly = true
+    func checkJetpackConnectionState() async throws {
+        do {
+            let user = try await fetchJetpackUser()
             jetpackConnectedEmail = user.wpcomUser?.email
-
-        case .failure(let error):
-            switch error {
-            case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)):
-                /// 404 error means Jetpack is not installed or activated yet.
-                requiresConnectionOnly = false
-                jetpackConnectedEmail = nil
-            case AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)):
-                /// 403 means the site Jetpack connection is not established yet
-                /// and the user has no permission to handle this.
-                throw JetpackCheckError.missingPermission
-            default:
-                throw error
-            }
+        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 404)) {
+            /// 404 error means Jetpack is not installed or activated yet.
+            requiresConnectionOnly = false
+            jetpackConnectedEmail = nil
+            /// Early return because we know that Jetpack is not installed
+            /// We don't have to check installation status by checking with the system plugin list.
+            return
+        } catch AFError.responseValidationFailed(reason: .unacceptableStatusCode(code: 403)) {
+            /// 403 means the site Jetpack connection is not established yet
+            /// and the user has no permission to handle this.
+            throw JetpackCheckError.missingPermission
+        } catch {
+            throw error
         }
+
+        /// confirms Jetpack plugin status by checking with the system plugin list.
+        /// this is to avoid the edge case when Jetpack user is returned even though Jetpack plugin is not installed.
+        requiresConnectionOnly = try await isJetpackInstalledAndActive()
     }
 
     func startAuthentication(with email: String?) {
@@ -186,19 +193,18 @@ private extension JetpackSetupCoordinator {
                 })
             }
 
-            let result = await fetchJetpackUser()
-            progressView.dismiss(animated: true, completion: { [weak self] in
-                guard let self else { return }
-                do {
-                    try self.saveJetpackConnectionStateIfPossible(result)
-                    self.showSetupSteps(username: username, authToken: authToken)
-                } catch JetpackCheckError.missingPermission {
-                    self.displayAdminRoleRequiredError()
-                } catch {
-                    DDLogError("⛔️ Jetpack status fetched error: \(error)")
-                    self.showAlert(message: Localization.errorCheckingJetpack)
-                }
-            })
+            do {
+                try await checkJetpackConnectionState()
+                await progressView.dismiss(animated: true)
+                showSetupSteps(username: username, authToken: authToken)
+            } catch JetpackCheckError.missingPermission {
+                await progressView.dismiss(animated: true)
+                displayAdminRoleRequiredError()
+            } catch {
+                await progressView.dismiss(animated: true)
+                DDLogError("⛔️ Jetpack status fetched error: \(error)")
+                showAlert(message: Localization.errorCheckingJetpack)
+            }
         }
     }
 
@@ -297,17 +303,37 @@ private extension JetpackSetupCoordinator {
     }
 
     @MainActor
-    func fetchJetpackUser() async -> Result<JetpackUser, Error> {
+    func fetchJetpackUser() async throws -> JetpackUser {
         /// Jetpack setup will fail anyway without admin role, so check that first.
         let roles = stores.sessionManager.defaultRoles
         guard roles.contains(.administrator) else {
-            return .failure(JetpackCheckError.missingPermission)
+            throw JetpackCheckError.missingPermission
         }
-        return await withCheckedContinuation { continuation in
+        return try await withCheckedThrowingContinuation { continuation in
             let action = JetpackConnectionAction.fetchJetpackUser { result in
-                continuation.resume(returning: result)
+                continuation.resume(with: result)
             }
             stores.dispatch(action)
+        }
+    }
+
+    @MainActor
+    func isJetpackInstalledAndActive() async throws -> Bool {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: 0) { result in
+                switch result {
+                case let .success(plugins):
+                    if let plugin = plugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
+                       plugin.active {
+                        continuation.resume(returning: true)
+                    } else {
+                        continuation.resume(returning: false)
+                    }
+                case let .failure(error):
+                    DDLogError("⛔️ Failed to sync system plugins. Error: \(error)")
+                    continuation.resume(throwing: error)
+                }
+            })
         }
     }
 
@@ -323,16 +349,22 @@ private extension JetpackSetupCoordinator {
 
     func showMagicLinkUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink))
-        let viewController = WPComMagicLinkHostingController(email: email, requiresConnectionOnly: requiresConnectionOnly)
+        let viewController = WPComMagicLinkHostingController(email: email,
+                                                             title: loginViewTitle,
+                                                             isJetpackSetup: true)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 
     func showPasswordUI(email: String) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .password))
+
         let viewModel = WPComPasswordLoginViewModel(
             siteURL: site.url,
             email: email,
-            requiresConnectionOnly: requiresConnectionOnly,
+            onMagicLinkRequest: { [weak self] email in
+                guard let self else { return }
+                await self.emailLoginViewModel.requestAuthenticationLink(email: email)
+            },
             onMultifactorCodeRequest: { [weak self] loginFields in
                 self?.show2FALoginUI(with: loginFields)
             },
@@ -342,15 +374,13 @@ private extension JetpackSetupCoordinator {
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
-            viewModel: viewModel,
-            onMagicLinkRequest: { [weak self] email in
-            guard let self else { return }
-            await self.emailLoginViewModel.requestAuthenticationLink(email: email)
-        })
+            title: loginViewTitle,
+            isJetpackSetup: true,
+            viewModel: viewModel)
 
         if let loginNavigationController {
             loginNavigationController.pushViewController(viewController, animated: true)
@@ -367,19 +397,23 @@ private extension JetpackSetupCoordinator {
 
     func show2FALoginUI(with loginFields: LoginFields) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode))
+        guard let window = rootViewController.view.window else {
+            logErrorAndExit("⛔️ Error finding window for security key login")
+        }
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
-            requiresConnectionOnly: requiresConnectionOnly,
+            onAuthWindowRequest: { window },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
-                let message = error.localizedDescription
-                self.showAlert(message: message)
+                self.showAlert(message: error.errorMessage)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
-        let viewController = WPCom2FALoginHostingController(viewModel: viewModel)
+        let viewController = WPCom2FALoginHostingController(title: loginViewTitle,
+                                                            isJetpackSetup: true,
+                                                            viewModel: viewModel)
         loginNavigationController?.pushViewController(viewController, animated: true)
     }
 }
@@ -414,6 +448,7 @@ private extension JetpackSetupCoordinator {
 
     enum Constants {
         static let magicLinkUrlHostname = "magic-login"
+        static let jetpackPluginName = "Jetpack"
     }
 
     enum Localization {
@@ -437,6 +472,16 @@ private extension JetpackSetupCoordinator {
         static let errorFetchingSites = NSLocalizedString(
             "Unable to refresh current site info",
             comment: "Error message displayed when failing to fetch the current site info."
+        )
+        static let installJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginTitle",
+            value: "Install Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not installed yet"
+        )
+        static let connectJetpack = NSLocalizedString(
+            "jetpackSetupCoordinator.loginSubtitle",
+            value: "Connect Jetpack",
+            comment: "Title for the WPCom login screens when Jetpack is not connected yet"
         )
     }
 }

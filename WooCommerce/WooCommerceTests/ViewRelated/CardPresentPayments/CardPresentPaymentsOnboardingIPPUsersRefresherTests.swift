@@ -36,7 +36,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
                                                              cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase)
 
         // When
-        sut.refreshIPPUsersOnboardingState()
+        sut.refreshIPPUsersOnboardingState(completion: {})
 
         // Then
         XCTAssertTrue(cardPresentPaymentsOnboardingUseCase.refreshWasCalled)
@@ -56,7 +56,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
                                                              cardPresentPaymentsOnboardingUseCase: cardPresentPaymentsOnboardingUseCase)
 
         // When
-        sut.refreshIPPUsersOnboardingState()
+        sut.refreshIPPUsersOnboardingState(completion: {})
 
         // Then
         XCTAssertFalse(cardPresentPaymentsOnboardingUseCase.refreshWasCalled)

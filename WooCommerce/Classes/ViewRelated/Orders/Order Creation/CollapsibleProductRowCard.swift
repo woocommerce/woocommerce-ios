@@ -3,6 +3,10 @@ import SwiftUI
 
 struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
+
+    /// Used for tracking order form events.
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     @State private var isCollapsed: Bool = true
 
     /// Indicates if the coupons informational tooltip should be shown or not.
@@ -25,6 +29,9 @@ struct CollapsibleProductRowCard: View {
         !isCollapsed
     }
 
+    /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
+    @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
+
     private let minusSign: String = NumberFormatter().minusSign
 
     private func dismissTooltip() {
@@ -33,8 +40,13 @@ struct CollapsibleProductRowCard: View {
         }
     }
 
-    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, shouldDisallowDiscounts: Bool, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel,
+         flow: WooAnalyticsEvent.Orders.Flow,
+         shouldDisableDiscountEditing: Bool,
+         shouldDisallowDiscounts: Bool,
+         onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.flow = flow
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.shouldDisallowDiscounts = shouldDisallowDiscounts
         self.onAddDiscount = onAddDiscount
@@ -45,6 +57,7 @@ struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: shouldShowDividers,
+                        backgroundColor: viewModel.backgroundColor,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -81,7 +94,7 @@ struct CollapsibleProductRowCard: View {
             HStack {
                 Text(Localization.priceAfterDiscountLabel)
                 Spacer()
-                Text(viewModel.priceAfterDiscountLabel ?? "")
+                Text(viewModel.totalPriceAfterDiscountLabel ?? "")
             }
             .padding(.top)
             .renderedIf(viewModel.hasDiscount)
@@ -92,6 +105,7 @@ struct CollapsibleProductRowCard: View {
             Group {
                 Button(Localization.configureBundleProduct) {
                     viewModel.configure?()
+                    ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
 
@@ -99,6 +113,14 @@ struct CollapsibleProductRowCard: View {
                     .padding()
             }
             .renderedIf(viewModel.isConfigurable)
+            .onAppear {
+                guard !hasTrackedBundleProductConfigureCTAShownEvent else {
+                    return
+                }
+                ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
+                hasTrackedBundleProductConfigureCTAShownEvent = true
+            }
+
 
             Button(Localization.removeProductLabel) {
                 viewModel.removeProductIntent()
@@ -117,13 +139,27 @@ struct CollapsibleProductRowCard: View {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
+        .background(Color(viewModel.backgroundColor))
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
                 .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black),
                         lineWidth: Layout.borderLineWidth)
+                .renderedIf(!viewModel.hasParentProduct)
         }
         .cornerRadius(Layout.frameCornerRadius)
+    }
+
+
+}
+
+private extension CollapsibleProductRowCard {
+    func trackAddDiscountTapped() {
+        viewModel.trackAddDiscountTapped()
+    }
+
+    func trackEditDiscountTapped() {
+        viewModel.trackEditDiscountTapped()
     }
 }
 
@@ -131,6 +167,7 @@ private extension CollapsibleProductRowCard {
     @ViewBuilder var discountRow: some View {
         if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
+                trackAddDiscountTapped()
                 onAddDiscount()
             }
             .buttonStyle(PlusButtonStyle())
@@ -138,6 +175,7 @@ private extension CollapsibleProductRowCard {
         } else {
             HStack {
                 Button(action: {
+                    trackEditDiscountTapped()
                     onAddDiscount()
                 }, label: {
                     HStack {
@@ -229,15 +267,31 @@ private extension CollapsibleProductRowCard {
     }
 }
 
+private extension ProductRowViewModel {
+    var backgroundColor: UIColor {
+        hasParentProduct ?
+        .tertiarySystemGroupedBackground: .listForeground(modal: false)
+    }
+}
+
 #if DEBUG
 struct CollapsibleProductRowCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
-        CollapsibleProductRowCard(viewModel: viewModel,
-                                  shouldDisableDiscountEditing: false,
-                                  shouldDisallowDiscounts: false,
-                                  onAddDiscount: {})
+        VStack {
+            CollapsibleProductRowCard(viewModel: viewModel,
+                                      flow: .creation,
+                                      shouldDisableDiscountEditing: false,
+                                      shouldDisallowDiscounts: false,
+                                      onAddDiscount: {})
+            CollapsibleProductRowCard(viewModel: ProductRowViewModel(product: product, canChangeQuantity: true, hasParentProduct: true),
+                                      flow: .creation,
+                                      shouldDisableDiscountEditing: false,
+                                      shouldDisallowDiscounts: false,
+                                      onAddDiscount: {})
+        }
+        .padding()
     }
 }
 #endif

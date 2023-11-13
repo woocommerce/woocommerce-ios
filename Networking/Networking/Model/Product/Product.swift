@@ -711,6 +711,19 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         // Attributes
         try container.encode(attributes, forKey: .attributes)
+
+        // Metadata
+        let metaDataValuePairs = buildMetaDataValuePairs()
+        if metaDataValuePairs.isEmpty == false {
+            try container.encode(metaDataValuePairs, forKey: .metadata)
+        }
+    }
+
+    private func buildMetaDataValuePairs() -> [KeyValuePair] {
+        if let subscription {
+            return subscription.toKeyValuePairs()
+        }
+        return []
     }
 }
 

@@ -35,12 +35,9 @@ struct OrderStatusSection: View {
 
                 Spacer()
 
-                Button(Localization.editButton) {
+                PencilEditButton {
                     viewModel.shouldShowOrderStatusList = true
                 }
-                .buttonStyle(LinkButtonStyle())
-                .fixedSize(horizontal: true, vertical: true)
-                .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove trailing padding to align button title to the side
                 .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
                 .accessibilityIdentifier("order-status-section-edit-button")
                 .sheet(isPresented: $viewModel.shouldShowOrderStatusList) {
@@ -72,7 +69,6 @@ private extension OrderStatusSection {
     }
 
     enum Localization {
-        static let editButton = NSLocalizedString("Edit", comment: "Button to edit an order status on the New Order screen")
         static let editButtonAccessibilityLabel = NSLocalizedString("Edit Status",
                                                                     comment: "Accessibility label for the button to edit order status on the New Order screen")
     }

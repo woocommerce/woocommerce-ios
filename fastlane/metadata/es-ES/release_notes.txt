@@ -1,1 +1,1 @@
-Navega sin esfuerzo entre los pedidos, añade descuentos y cupones con facilidad y disfruta de una IA de creación de productos mejorada en esta actualización. Gracias por elegir WooCommerce.
+En nuestra última actualización, hemos mejorado tu experiencia con WooCommerce. Hemos optimizado las secciones de creación de pedidos para ofrecer un flujo más sencillo e intuitivo. Además, hemos eliminado un error que mostraba una pantalla de cliente incorrecta al crear un pedido. Disfruta de un proceso de WooCommerce más fluido y eficaz.

@@ -36,7 +36,7 @@ final class OrdersTests: XCTestCase {
             .addProduct(byName: "Black Coral shades")
             .addCustomerDetails(name: order.billing.first_name)
             .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
-            .addFee(amount: order.fee_lines[0].amount)
+            .addCustomAmount(amount: order.fee_lines[1].amount)
             .addCustomerNote(order.customer_note)
             .createOrder()
             .verifySingleOrderScreenLoaded()

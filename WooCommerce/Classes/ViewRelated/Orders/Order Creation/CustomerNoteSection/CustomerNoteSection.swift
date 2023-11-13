@@ -50,10 +50,9 @@ private struct CustomerNoteSectionContent: View {
                     .accessibilityAddTraits(.isHeader)
                     .headlineStyle()
                 Spacer()
-                if viewModel.customerNote.isNotEmpty {
-                    createEditNotesButton()
-                }
+                createEditNotesButton()
             }.padding([.leading, .top, .trailing])
+            .renderedIf(viewModel.customerNote.isNotEmpty)
 
             if viewModel.customerNote.isEmpty {
                 createOrderNotesView()
@@ -63,17 +62,12 @@ private struct CustomerNoteSectionContent: View {
         }
         .padding(.horizontal, insets: safeAreaInsets)
         .background(Color(.listForeground(modal: true)))
-        .addingTopAndBottomDividers()
     }
 
     private func createEditNotesButton() -> some View {
-        Button(Localization.editButton) {
+        PencilEditButton() {
             showEditNotesView.toggle()
         }
-        .buttonStyle(LinkButtonStyle())
-        .fixedSize(horizontal: true, vertical: true)
-        .padding(.top, -Layout.linkButtonTopPadding) // remove padding to align button title to the top
-        .padding(.trailing, -Layout.linkButtonTrailingPadding) // remove padding to align button title to the side
         .accessibilityLabel(Text(Localization.editButtonAccessibilityLabel))
     }
 
@@ -101,15 +95,12 @@ private extension CustomerNoteSectionContent {
         static let verticalHeadlineSpacing: CGFloat = 22.0
         static let verticalEmailSpacing: CGFloat = 4.0
         static let verticalAddressSpacing: CGFloat = 6.0
-        static let linkButtonTopPadding: CGFloat = 12.0
-        static let linkButtonTrailingPadding: CGFloat = 22.0
     }
 
     enum Localization {
         static let notes = NSLocalizedString("Customer Note", comment: "Title text of the section that shows the Order customer note when creating a new order")
         static let addNotes = NSLocalizedString("Add Note",
                                                           comment: "Title text of the button that adds customer note data when creating a new order")
-        static let editButton = NSLocalizedString("Edit", comment: "Button to edit the customer note on the New Order screen")
         static let editButtonAccessibilityLabel = NSLocalizedString(
             "Edit customer note",
             comment: "Accessibility label for the button to edit customer note on the New Order screen"

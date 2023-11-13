@@ -31,6 +31,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let name: String
 
+    /// Whether a product in an order item has a parent order item
+    let hasParentProduct: Bool
+
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -125,7 +128,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         return priceLabelComponent + " - " + discountLabelComponent
     }
 
-    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// Formatted price label based on a product's price. Accounting for discounts, if any.
     /// e.g: If price is $5 and discount is $1, outputs "$4.00"
     ///
     var priceAfterDiscountLabel: String? {
@@ -138,6 +141,21 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let priceAfterDiscount = priceDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
 
         return currencyFormatter.formatAmount(priceAfterDiscount) ?? ""
+    }
+
+    /// Formatted price label based on a product's price and quantity. Accounting for discounts, if any.
+    /// e.g: If price is $5, quantity is 10, and discount is $1, outputs "$49.00"
+    ///
+    var totalPriceAfterDiscountLabel: String? {
+        guard let price = price,
+              let priceDecimal = currencyFormatter.convertToDecimal(price) else {
+            return nil
+        }
+        let subtotalDecimal = priceDecimal.multiplying(by: quantity as NSDecimalNumber)
+        let totalPriceAfterDiscount = subtotalDecimal.subtracting((discount ?? Decimal.zero) as NSDecimalNumber)
+
+        return currencyFormatter.formatAmount(totalPriceAfterDiscount)
+
     }
 
     /// Formatted price label based on a product's price and quantity.
@@ -201,7 +219,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Minimum value of the product quantity
     ///
-    private let minimumQuantity: Decimal = 1
+    private let minimumQuantity: Decimal
+
+    /// Optional maximum value of the product quantity
+    ///
+    private let maximumQuantity: Decimal?
 
     /// Whether the quantity can be decremented.
     ///
@@ -218,7 +240,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     var removeProductIntent: () -> Void
 
     /// Closure to configure a product if it is configurable.
-    var configure: (() -> Void)?
+    let configure: (() -> Void)?
 
     /// Number of variations in a variable product
     ///
@@ -227,6 +249,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether this row is currently selected
     ///
     let selectedState: ProductRow.SelectedState
+
+    /// Analytics
+    ///
+    let analytics: Analytics
 
     init(id: Int64? = nil,
          productOrVariationID: Int64,
@@ -238,13 +264,17 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          stockQuantity: Decimal?,
          manageStock: Bool,
          quantity: Decimal = 1,
+         minimumQuantity: Decimal = 1,
+         maximumQuantity: Decimal? = nil,
          canChangeQuantity: Bool,
          imageURL: URL?,
          numberOfVariations: Int = 0,
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
+         hasParentProduct: Bool,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
          removeProductIntent: @escaping (() -> Void) = {},
          configure: (() -> Void)? = nil) {
@@ -259,10 +289,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.stockQuantity = stockQuantity
         self.manageStock = manageStock
         self.quantity = quantity
+        self.minimumQuantity = minimumQuantity
+        self.maximumQuantity = maximumQuantity
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
+        self.hasParentProduct = hasParentProduct
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
+        self.analytics = analytics
         self.numberOfVariations = numberOfVariations
         self.variationDisplayMode = variationDisplayMode
         self.quantityUpdatedCallback = quantityUpdatedCallback
@@ -278,7 +312,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      quantity: Decimal = 1,
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
+                     hasParentProduct: Bool = false,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {},
                      featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -326,6 +362,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
         && product.productType == .bundle
         && product.bundledItems.isNotEmpty
+        && configure != nil
 
         self.init(id: id,
                   productOrVariationID: product.productID,
@@ -341,8 +378,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: product.imageURL,
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
+                  hasParentProduct: hasParentProduct,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent,
                   configure: configure)
@@ -358,7 +397,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
+                     hasParentProduct: Bool = false,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+                     analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
                      removeProductIntent: @escaping (() -> Void) = {}) {
         let imageURL: URL?
@@ -382,8 +423,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   imageURL: imageURL,
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
+                  hasParentProduct: hasParentProduct,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
+                  analytics: analytics,
                   quantityUpdatedCallback: quantityUpdatedCallback,
                   removeProductIntent: removeProductIntent)
     }
@@ -439,6 +482,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Increment the product quantity.
     ///
     func incrementQuantity() {
+        if let maximumQuantity, quantity >= maximumQuantity {
+            return
+        }
+
         quantity += 1
 
         quantityUpdatedCallback(quantity)
@@ -453,6 +500,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         quantity -= 1
 
         quantityUpdatedCallback(quantity)
+    }
+
+    func trackAddDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountAddButtonTapped())
+    }
+
+    func trackEditDiscountTapped() {
+        analytics.track(event: .Orders.productDiscountEditButtonTapped())
     }
 }
 

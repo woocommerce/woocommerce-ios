@@ -130,8 +130,8 @@ public class ProductStore: Store {
             generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
         case let .generateProductName(siteID, keywords, language, completion):
             generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
-        case let .generateProductDetails(siteID, productName, scannedTexts, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, completion: completion)
+        case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
+            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
         case let .fetchNumberOfProducts(siteID, completion):
             fetchNumberOfProducts(siteID: siteID, completion: completion)
         case let .generateAIProduct(siteID,
@@ -390,7 +390,7 @@ private extension ProductStore {
                     return onCompletion(.failure(ProductLoadError.notFound))
                 }
 
-                guard let product = products.first(where: { $0.purchasable }) else {
+                guard let product = skuProducts.first(where: { $0.purchasable }) else {
                     return onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 
@@ -632,6 +632,7 @@ private extension ProductStore {
     func generateProductDetails(siteID: Int64,
                                 productName: String?,
                                 scannedTexts: [String],
+                                language: String,
                                 completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {
@@ -641,10 +642,9 @@ private extension ProductStore {
         }()
         let prompt = [
             "Write a name and description of a product for an online store given the keywords at the end.",
-            "Return only a JSON dictionary with the name in `name` field, description in `description` field, " +
-            "and the detected language as the locale identifier in `language` field.",
+            "Return only a JSON dictionary with the name in `name` field, description in `description` field.",
             "The output should be in valid JSON format.",
-            "Detect the language in the array and use the same language to write the name and description.",
+            "The output should be in language \(language).",
             "Make the description 50-60 words or less.",
             "Use a 9th grade reading level.",
             "Perform in-depth keyword research relating to the product in the same language of the product title, " +
@@ -658,7 +658,7 @@ private extension ProductStore {
                     return completion(.failure(DotcomError.resourceDoesNotExist))
                 }
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
-                completion(.success(.init(name: details.name, description: details.description, language: details.language)))
+                completion(.success(.init(name: details.name, description: details.description)))
             } catch {
                 completion(.failure(error))
             }
@@ -1241,13 +1241,10 @@ public struct ProductDetailsFromScannedTexts: Equatable, Decodable {
     public let name: String
     /// Product description.
     public let description: String
-    /// The language code detected for the product.
-    public let language: String
 
-    public init(name: String, description: String, language: String) {
+    public init(name: String, description: String) {
         self.name = name
         self.description = description
-        self.language = language
     }
 }
 

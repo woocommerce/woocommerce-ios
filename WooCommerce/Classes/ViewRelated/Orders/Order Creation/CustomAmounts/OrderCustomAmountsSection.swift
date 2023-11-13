@@ -12,6 +12,7 @@ struct OrderCustomAmountsSection: View {
         VStack {
             HStack {
                 Button(Localization.addCustomAmount) {
+                    viewModel.onAddCustomAmountButtonTapped()
                     showAddCustomAmount.toggle()
                 }
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
@@ -32,6 +33,7 @@ struct OrderCustomAmountsSection: View {
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                     Button(action: {
+                        viewModel.onAddCustomAmountButtonTapped()
                         showAddCustomAmount.toggle()
                     }) {
                         Image(uiImage: .plusImage)
@@ -49,6 +51,9 @@ struct OrderCustomAmountsSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+        })
+        .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
         })
     }

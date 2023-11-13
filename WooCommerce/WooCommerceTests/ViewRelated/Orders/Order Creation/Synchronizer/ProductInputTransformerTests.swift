@@ -433,4 +433,34 @@ class ProductInputTransformerTests: XCTestCase {
         let item = try XCTUnwrap(orderUpdate.items.first)
         XCTAssertEqual(item.quantity, productInput2.quantity)
     }
+
+    func test_order_item_with_bundle_configuration_of_variable_and_simple_items_are_transformed_when_updateing_OrderSyncProductInput() throws {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let simpleBundledItem = BundledProductConfiguration(bundledItemID: 1,
+                                                            productOrVariation: .product(id: 6),
+                                                            quantity: 2,
+                                                            isOptionalAndSelected: true)
+        let variableBundledItem = BundledProductConfiguration(bundledItemID: 2,
+                                                              productOrVariation: .variation(productID: 25, variationID: 72, attributes: [
+                                                                .init(id: 1, name: "Color", option: "Clear")
+                                                              ]),
+                                                              quantity: 3,
+                                                              isOptionalAndSelected: nil)
+        let productInput = OrderSyncProductInput(id: sampleProductID, product: .product(product), quantity: 1, discount: 0, bundleConfiguration: [
+            simpleBundledItem, variableBundledItem
+        ])
+
+        // When
+        let orderUpdate = ProductInputTransformer.update(input: productInput, on: .fake(), shouldUpdateOrDeleteZeroQuantities: .update)
+
+        // Then
+        let item = try XCTUnwrap(orderUpdate.items.first)
+        XCTAssertEqual(item.bundleConfiguration, [
+            .init(bundledItemID: 1, productID: 6, quantity: 2, isOptionalAndSelected: true, variationID: nil, variationAttributes: nil),
+            .init(bundledItemID: 2, productID: 25, quantity: 3, isOptionalAndSelected: nil, variationID: 72, variationAttributes: [
+                .init(id: 1, name: "Color", option: "Clear")
+            ]),
+        ])
+    }
 }

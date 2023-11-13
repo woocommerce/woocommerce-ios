@@ -50,8 +50,8 @@ struct AddProductWithAIActionSheet: View {
                             .bodyStyle()
                         Text(Localization.aiDescription)
                             .subheadlineStyle()
-                        Group {
-                            Text(Localization.legalText) + Text(" ") +
+                        AdaptiveStack(horizontalAlignment: .leading) {
+                            Text(Localization.legalText)
                             Text(.init(Localization.learnMore)).underline()
                         }
                         .environment(\.openURL, OpenURLAction { url in

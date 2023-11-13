@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-final class InPersonPaymentsMenuViewModel {
+final class LegacyInPersonPaymentsMenuViewModel {
     // MARK: - Dependencies
     struct Dependencies {
         let stores: StoresManager
@@ -62,7 +62,7 @@ final class InPersonPaymentsMenuViewModel {
         synchronizePaymentGateways(siteID: siteID)
         checkTapToPaySupport(siteID: siteID)
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-        refreshTitleForTapToPay(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
         registerForNotifications()
         updateDepositsOverview()
     }
@@ -112,7 +112,7 @@ final class InPersonPaymentsMenuViewModel {
         return date
     }
 
-    private func refreshTitleForTapToPay(siteID: Int64) {
+    private func refreshPropertiesDependentOnTapToPaySetUpState(siteID: Int64) {
         Task { @MainActor in
             let firstTapToPayTransactionDate = await firstTapToPayTransactionDate(siteID: siteID)
             switch firstTapToPayTransactionDate {
@@ -136,7 +136,7 @@ final class InPersonPaymentsMenuViewModel {
             return
         }
         checkShouldShowTapToPayFeedbackRow(siteID: siteID)
-        refreshTitleForTapToPay(siteID: siteID)
+        refreshPropertiesDependentOnTapToPaySetUpState(siteID: siteID)
     }
 
     func orderCardReaderPressed() {
@@ -184,7 +184,7 @@ private enum Constants {
     static let utmSource = "payments_menu"
 }
 
-private extension InPersonPaymentsMenuViewModel {
+private extension LegacyInPersonPaymentsMenuViewModel {
     enum Localization {
         static let setUpTapToPayOnIPhoneRowTitle = NSLocalizedString(
             "Set Up Tap to Pay on iPhone",

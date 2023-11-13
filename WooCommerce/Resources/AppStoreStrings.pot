@@ -61,9 +61,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store from anywhere"
 msgstr ""
 
-msgctxt "v15.9-whats-new"
+msgctxt "v16.2-whats-new"
 msgid ""
-"Get ready for an exciting update! If you're a UK-based merchant, we're thrilled to introduce the new Tap to Pay feature on iPhone, making payments smoother and more efficient than ever. But that's not all — now everyone can enjoy the convenience of using your stored passkeys in WordPress.com login, making the login process a breeze.\n"
+"We've made a few updates to improve your WooCommerce app experience! Now, you'll see custom amounts in their own section on order details for a cleaner look. We've added support for Universal Links in the woo.com domain, making it easier to navigate. Additionally, when adding a product/variation by scanning a barcode on the order form, only the exact SKU will be added for precision. Enjoy!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

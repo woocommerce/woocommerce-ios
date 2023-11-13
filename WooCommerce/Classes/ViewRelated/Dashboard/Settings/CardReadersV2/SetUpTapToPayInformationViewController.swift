@@ -124,6 +124,7 @@ struct SetUpTapToPayInformationView: View {
                     viewModel: LearnMoreViewModel(
                         formatText: Localization.learnMore,
                         tappedAnalyticEvent: WooAnalyticsEvent.InPersonPayments.learnMoreTapped(source: .tapToPaySummary)))
+                .padding(.vertical, Constants.learnMorePadding)
                 .customOpenURL(action: { _ in
                     showingAboutTapToPay = true
                 })
@@ -133,7 +134,7 @@ struct SetUpTapToPayInformationView: View {
         .padding()
         .onAppear(perform: viewModel.viewDidAppear)
         .sheet(isPresented: $showingAboutTapToPay) {
-            AboutTapToPayViewInNavigationView()
+            AboutTapToPayViewInNavigationView(viewModel: AboutTapToPayViewModel(shouldAlwaysHideSetUpTapToPayButton: true))
         }
     }
 }
@@ -145,6 +146,7 @@ private enum Constants {
     static let maxImageHeight: CGFloat = 180
     static let maxCompactImageHeight: CGFloat = 80
     static let hintSpacing: CGFloat = 16
+    static let learnMorePadding: CGFloat = 8
 }
 
 // MARK: - Localization

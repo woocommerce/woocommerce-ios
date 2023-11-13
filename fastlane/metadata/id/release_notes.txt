@@ -1,1 +1,1 @@
-Dapatkan kemudahan untuk beralih antarpesanan, menambahkan diskon dan kupon, dan menggunakan AI pembuatan produk yang ditingkatkan dalam pembaruan ini. Terima kasih telah memilih WooCommerce.
+Pembaruan terkini kami menyempurnakan pengalaman WooCommerce Anda. Kami telah mengoptimalkan bagian pembuatan pesanan agar alur makin sederhana dan intuitif. Kami juga telah mengatasi bug yang menampilkan layar konsumen yang salah saat membuat pesanan. Nikmati penggunaan WooCommerce yang makin mudah dan efisien!

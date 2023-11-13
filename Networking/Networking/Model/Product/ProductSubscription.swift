@@ -41,6 +41,18 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
         self.trialLength = trialLength
         self.trialPeriod = trialPeriod
     }
+
+    func toKeyValuePairs() -> [KeyValuePair] {
+        [
+            .init(key: CodingKeys.length.rawValue, value: length),
+            .init(key: CodingKeys.period.rawValue, value: period.rawValue),
+            .init(key: CodingKeys.periodInterval.rawValue, value: periodInterval),
+            .init(key: CodingKeys.price.rawValue, value: price),
+            .init(key: CodingKeys.signUpFee.rawValue, value: signUpFee),
+            .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
+            .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue)
+        ]
+    }
 }
 
 // MARK: Coding Keys
@@ -64,4 +76,11 @@ public enum SubscriptionPeriod: String, Codable, GeneratedFakeable {
     case week
     case month
     case year
+}
+
+/// Used to encode items as key value pairs
+///
+struct KeyValuePair: Encodable, Equatable {
+    let key: String
+    let value: String
 }

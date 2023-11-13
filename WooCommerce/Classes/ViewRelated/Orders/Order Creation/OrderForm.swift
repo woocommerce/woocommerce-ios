@@ -12,7 +12,15 @@ final class OrderFormHostingController: UIHostingController<OrderForm> {
 
     init(viewModel: EditableOrderViewModel) {
         self.viewModel = viewModel
-        super.init(rootView: OrderForm(viewModel: viewModel))
+        let flow: WooAnalyticsEvent.Orders.Flow = {
+            switch viewModel.flow {
+                case .creation:
+                    return .creation
+                case .editing:
+                    return .editing
+            }
+        }()
+        super.init(rootView: OrderForm(flow: flow, viewModel: viewModel))
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
         rootView.dismissHandler = { [weak self] in
@@ -97,6 +105,8 @@ struct OrderForm: View {
     ///
     var dismissHandler: (() -> Void) = {}
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     @ObservedObject var viewModel: EditableOrderViewModel
 
     /// Scale of the view based on accessibility changes
@@ -127,21 +137,20 @@ struct OrderForm: View {
 
                             Spacer(minLength: Layout.sectionSpacing)
 
-                            ProductsSection(scroll: scroll, viewModel: viewModel, navigationButtonID: $navigationButtonID)
+                            ProductsSection(scroll: scroll,
+                                            flow: flow,
+                                            viewModel: viewModel, navigationButtonID: $navigationButtonID)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Group {
-                                Group {
-                                    Divider()
-                                    Spacer(minLength: Layout.sectionSpacing)
-                                    Divider()
-                                }
-                                .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
-
-                                OrderCustomAmountsSection(viewModel: viewModel)
-                                    .disabled(viewModel.shouldShowNonEditableIndicators)
+                                Divider()
+                                Spacer(minLength: Layout.sectionSpacing)
+                                Divider()
                             }
-                            .renderedIf(viewModel.shouldShowCustomAmountsWithProducts)
+                            .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
+
+                            OrderCustomAmountsSection(viewModel: viewModel)
+                                .disabled(viewModel.shouldShowNonEditableIndicators)
 
                             Divider()
 
@@ -198,11 +207,22 @@ struct OrderForm: View {
                             }
                             .renderedIf(viewModel.shouldShowNewTaxRateSection)
 
+                            Divider()
+
                             OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
 
-                            Spacer(minLength: Layout.sectionSpacing)
+                            Group {
+                                Divider()
+
+                                Spacer(minLength: Layout.sectionSpacing)
+
+                                Divider()
+                            }
+                            .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
                             CustomerNoteSection(viewModel: viewModel)
+
+                            Divider()
                         }
                     }
                     .disabled(viewModel.disabled)
@@ -362,6 +382,8 @@ private struct NewTaxRateSection: View {
 private struct ProductsSection: View {
     let scroll: ScrollViewProxy
 
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -425,12 +447,13 @@ private struct ProductsSection: View {
                         .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
                     }
                     .scaledToFit()
-                    .renderedIf(!viewModel.shouldShowNonEditableIndicators && viewModel.shouldShowCustomAmountsWithProducts)
+                    .renderedIf(!viewModel.shouldShowNonEditableIndicators)
                 }
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
                     CollapsibleProductRowCard(viewModel: productRow,
+                                              flow: flow,
                                               shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
                                               shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
                                               onAddDiscount: {
@@ -443,20 +466,10 @@ private struct ProductsSection: View {
                                             productRowViewModel: productRow,
                                             discountViewModel: productViewModel.discountDetailsViewModel)
                     })
-                    .renderedIf(viewModel.shouldShowCollapsibleProductRows)
+                    .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
+                        ConfigurableBundleProductView(viewModel: configurableProductViewModel)
+                    }
                     .redacted(reason: viewModel.disabled ? .placeholder : [] )
-                    ProductRow(viewModel: productRow, accessibilityHint: OrderForm.Localization.productRowAccessibilityHint)
-                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
-                        .onTapGesture {
-                            viewModel.selectOrderItem(productRow.id)
-                        }
-                        .sheet(item: $viewModel.selectedProductViewModel) { productViewModel in
-                            ProductInOrder(viewModel: productViewModel)
-                        }
-                        .redacted(reason: viewModel.disabled ? .placeholder : [] )
-
-                    Divider()
-                        .renderedIf(!viewModel.shouldShowCollapsibleProductRows)
                 }
 
                 HStack {
@@ -480,11 +493,14 @@ private struct ProductsSection: View {
             }, content: {
                 ProductSelectorNavigationView(
                     configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                    source: .orderForm,
+                    source: .orderForm(flow: flow),
                     isPresented: $showAddProduct,
                     viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
                 .onDisappear {
                     navigationButtonID = UUID()
+                }
+                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                    ConfigurableBundleProductView(viewModel: viewModel)
                 }
             })
             .actionSheet(isPresented: $showPermissionsSheet, content: {
@@ -600,23 +616,23 @@ struct OrderForm_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.sizeCategory, .accessibilityExtraExtraLarge)
         .previewDisplayName("Accessibility")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.colorScheme, .dark)
         .previewDisplayName("Dark")
 
         NavigationView {
-            OrderForm(viewModel: viewModel)
+            OrderForm(flow: .creation, viewModel: viewModel)
         }
         .environment(\.layoutDirection, .rightToLeft)
         .previewDisplayName("Right to left")

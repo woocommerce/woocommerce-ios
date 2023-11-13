@@ -57,6 +57,10 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let onSelectionsCleared: (() -> Void)?
 
+    /// A list of variation IDs that are allowed in the selector.
+    ///
+    private let allowedProductVariationIDs: [Int64]
+
     /// All selected product variations if the selector supports multiple selections.
     ///
     @Published private(set) var selectedProductVariationIDs: [Int64]
@@ -95,7 +99,14 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     /// Product Variations Results Controller.
     ///
     private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
-        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
+        let siteAndProductIDPredicate = NSPredicate(format: "siteID == %lld AND productID == %lld", siteID, productID)
+        let predicate: NSPredicate
+        if allowedProductVariationIDs.isNotEmpty {
+            let variationIDsPredicate = NSPredicate(format: "productVariationID IN %@", allowedProductVariationIDs)
+            predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [siteAndProductIDPredicate, variationIDsPredicate])
+        } else {
+            predicate = siteAndProductIDPredicate
+        }
         let menuOrderDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.menuOrder, ascending: true)
         let variationIdDescriptor = NSSortDescriptor(keyPath: \StorageProductVariation.productVariationID, ascending: false)
         let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager,
@@ -112,6 +123,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
+         allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -125,6 +137,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
+        self.allowedProductVariationIDs = allowedProductVariationIDs
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.purchasableItemsOnly = purchasableItemsOnly
         self.onSelectionsCleared = onSelectionsCleared
@@ -136,6 +149,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     convenience init(siteID: Int64,
                      product: Product,
+                     allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
                      purchasableItemsOnly: Bool = false,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -146,6 +160,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productID: product.productID,
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
+                  allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   purchasableItemsOnly: purchasableItemsOnly,
                   storageManager: storageManager,
@@ -188,10 +203,11 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
         transitionToSyncingState()
-        let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
-                                                                         productID: productID,
-                                                                         pageNumber: pageNumber,
-                                                                         pageSize: pageSize) { [weak self] result in
+        let action = ProductVariationAction.synchronizeProductVariationsSubset(siteID: siteID,
+                                                                               productID: productID,
+                                                                               variationIDs: allowedProductVariationIDs,
+                                                                               pageNumber: pageNumber,
+                                                                               pageSize: pageSize) { [weak self] result in
             guard let self = self else { return }
 
             switch result {
@@ -338,6 +354,7 @@ extension ProductVariationSelectorViewModel {
                             manageStock: false,
                             canChangeQuantity: false,
                             imageURL: nil,
+                            hasParentProduct: false,
                             isConfigurable: false)
     }
 

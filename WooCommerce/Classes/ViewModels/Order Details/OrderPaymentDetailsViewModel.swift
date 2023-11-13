@@ -22,6 +22,10 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(subAmount, with: order.currency) ?? String()
     }
 
+    var shouldHideSubtotal: Bool {
+        subtotal == 0
+    }
+
     /// Discounts
     /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
     ///
@@ -49,12 +53,16 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
     }
 
+    var shouldHideShipping: Bool {
+        return currencyFormatter.convertToDecimal(order.shippingTotal) == 0
+    }
+
     var taxesValue: String? {
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
 
     var shouldHideTaxes: Bool {
-        taxesValue == nil
+        return currencyFormatter.convertToDecimal(order.totalTax) == 0
     }
 
     var totalValue: String {

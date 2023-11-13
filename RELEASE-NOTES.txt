@@ -1,11 +1,32 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.3
+-----
+
+
+16.2
+-----
+- [**] Orders: order details show custom amounts on their own section. Other fields are re-designed towards a cleaner look. [https://github.com/woocommerce/woocommerce-ios/pull/11097]
+- [*] Add support for Universal Links in the woo.com domain [https://github.com/woocommerce/woocommerce-ios/pull/11098]
+- [*] Order form: when adding a product/variation by scanning a barcode, only the product/variation with the exact SKU should be added to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11089]
+
+16.1
+-----
+- [**] Orders: order creation sections are optimised for a simpler and more intuitive flow. [https://github.com/woocommerce/woocommerce-ios/pull/11042]
+- [*] Payments: Fix Tap to Pay reconnection on foreground, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11054]
+- [*] Payments: Fix Tap to Pay reconnection on fresh launch, to speed up TTP transactions. [https://github.com/woocommerce/woocommerce-ios/pull/11056]
+- [*] Orders: Fix a bug that shows the wrong customer screen during the order creation flow. [https://github.com/woocommerce/woocommerce-ios/pull/11053]
+- [*] Orders: All order edit buttons render now with the pencil system image to make them consistent. [https://github.com/woocommerce/woocommerce-ios/pull/11048]
+
 16.0
 -----
 - [*] Optimized Blaze experience in My store. Improved Blaze campaign creation and list screens. [https://github.com/woocommerce/woocommerce-ios/pull/10969, https://github.com/woocommerce/woocommerce-ios/pull/10959]
 - [*] Orders: Fixed UI issue where an incorrect tooltip is displayed during Order Creation [https://github.com/woocommerce/woocommerce-ios/pull/10998]
+- [*] Orders: Fixed UI issue showing incorrect discounted total product value in certain cases [https://github.com/woocommerce/woocommerce-ios/pull/11016]
 - [*] Fix a crash on launch related to Core Data and Tracks [https://github.com/woocommerce/woocommerce-ios/pull/10994]
 - [*] Login: Fixed issue checking site info for some users. [https://github.com/woocommerce/woocommerce-ios/pull/11006]
+- [**] Orders: Users can now add custom amounts to orders. [https://github.com/woocommerce/woocommerce-ios/pull/11022]
+- [*] Payments: hide the `Set up Tap to Pay` button in About Tap to Pay when set up is complete [https://github.com/woocommerce/woocommerce-ios/pull/11025]
 
 15.9
 -----

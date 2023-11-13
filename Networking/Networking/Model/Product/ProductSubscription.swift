@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents the subscription settings extracted from product meta data for a Subscription-type Product.
-public struct ProductSubscription: Codable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     /// Subscription automatically expires after this number of subscription periods.
     ///
     /// For example, subscription with period of `month` and length of "2" expires after 2 months. Subscription with length of "0" never expires.
@@ -42,8 +42,8 @@ public struct ProductSubscription: Codable, Equatable, GeneratedFakeable, Genera
         self.trialPeriod = trialPeriod
     }
 
-    public func encode(to encoder: Encoder) throws {
-        let keyValuePairs: [KeyValuePair] = [
+    func toKeyValuePairs() -> [KeyValuePair] {
+        [
             .init(key: CodingKeys.length.rawValue, value: length),
             .init(key: CodingKeys.period.rawValue, value: period.rawValue),
             .init(key: CodingKeys.periodInterval.rawValue, value: periodInterval),
@@ -52,8 +52,6 @@ public struct ProductSubscription: Codable, Equatable, GeneratedFakeable, Genera
             .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
             .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue)
         ]
-        var container = encoder.singleValueContainer()
-        try container.encode(keyValuePairs)
     }
 }
 
@@ -82,7 +80,7 @@ public enum SubscriptionPeriod: String, Codable, GeneratedFakeable {
 
 /// Used to encode items as key value pairs
 ///
-private struct KeyValuePair: Encodable {
+struct KeyValuePair: Encodable, Equatable {
     let key: String
     let value: String
 }

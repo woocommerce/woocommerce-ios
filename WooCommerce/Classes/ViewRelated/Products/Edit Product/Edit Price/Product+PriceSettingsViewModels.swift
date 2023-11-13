@@ -44,10 +44,15 @@ extension Product {
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
         let unit = ServiceLocator.currencySettings.symbol(from: currencyCode)
-        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? ""
-        value = value
-            .replacingOccurrences(of: unit, with: "")
-            .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
+        let value: String = {
+            guard let salePrice, salePrice.isNotEmpty else {
+                return ""
+            }
+            return (currencyFormatter.formatAmount(salePrice, with: unit) ?? "")
+                .replacingOccurrences(of: unit, with: "")
+                .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
+        }()
+
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,

@@ -20,10 +20,10 @@ extension ProductFormDataModel {
         }()
 
         let subscriptionPeriodFormat = NSLocalizedString(
-            "product.subscriptionPeriodFormat",
+            "productFormDataModel.subscriptionPeriodFormat",
             value: "every %1$@",
-            comment: "Description of the subscription price for a product, with the price " +
-            "and billing frequency. Reads like: 'every 2 months'."
+            comment: "Description of the subscription period for a product. " +
+            "Reads like: 'every 2 months'."
         )
         return String.localizedStringWithFormat(subscriptionPeriodFormat, billingFrequency)
     }

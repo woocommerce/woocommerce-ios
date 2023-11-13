@@ -14,7 +14,7 @@ protocol ProductPriceSettingsViewModelOutput {
     var dateOnSaleEnd: Date? { get }
     var taxStatus: ProductTaxStatus { get }
     var taxClass: TaxClass? { get }
-    var subscriptionPeriod: String? { get }
+    var subscriptionPeriodDescription: String? { get }
 }
 
 /// Handles actions related to the price settings data.
@@ -52,7 +52,9 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     private(set) var regularPrice: String?
     private(set) var salePrice: String?
 
-    private(set) var subscriptionPeriod: String?
+    private(set) var subscriptionPeriodDescription: String?
+    private var subscriptionPeriod: SubscriptionPeriod?
+    private var subscriptionPeriodInterval: String?
 
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?
@@ -96,7 +98,10 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
-        subscriptionPeriod = product.subscriptionPeriodDescription
+
+        subscriptionPeriod = product.subscription?.period
+        subscriptionPeriodInterval = product.subscription?.periodInterval
+        subscriptionPeriodDescription = product.subscriptionPeriodDescription
 
         // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
         if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&
@@ -245,7 +250,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
                 return "\(interval) \(period.descriptionPlural)"
             }
         }()
-        subscriptionPeriod = String.localizedStringWithFormat(Strings.subscriptionPeriodFormat, billingFrequency)
+        subscriptionPeriodDescription = String.localizedStringWithFormat(Strings.subscriptionPeriodFormat, billingFrequency)
+        subscriptionPeriod = period
+        subscriptionPeriodInterval = interval
     }
 
     // MARK: - Navigation actions
@@ -260,7 +267,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges())
+        onCompletion(regularPrice, subscriptionPeriod, subscriptionPeriodInterval, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {
@@ -276,7 +283,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
             newTaxClass != originalTaxClass ||
-            subscriptionPeriod != product.subscriptionPeriodDescription {
+            subscriptionPeriodDescription != product.subscriptionPeriodDescription {
             return true
         }
 

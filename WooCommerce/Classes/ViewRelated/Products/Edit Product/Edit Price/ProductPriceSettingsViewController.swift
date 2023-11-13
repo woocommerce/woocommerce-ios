@@ -30,12 +30,14 @@ final class ProductPriceSettingsViewController: UIViewController {
     // Completion callback
     //
     typealias Completion = (_ regularPrice: String?,
-        _ salePrice: String?,
-        _ dateOnSaleStart: Date?,
-        _ dateOnSaleEnd: Date?,
-        _ taxStatus: ProductTaxStatus,
-        _ taxClass: TaxClass?,
-        _ hasUnsavedChanges: Bool) -> Void
+                            _ subscriptionPeriod: SubscriptionPeriod?,
+                            _ subscriptionPeriodInterval: String?,
+                            _ salePrice: String?,
+                            _ dateOnSaleStart: Date?,
+                            _ dateOnSaleEnd: Date?,
+                            _ taxStatus: ProductTaxStatus,
+                            _ taxClass: TaxClass?,
+                            _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
@@ -167,9 +169,8 @@ extension ProductPriceSettingsViewController {
 
     @objc private func completeUpdating() {
         viewModel.completeUpdating(
-            onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
-                self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges)
-            }, onError: { [weak self] error in
+            onCompletion: onCompletion,
+            onError: { [weak self] error in
                 switch error {
                 case .salePriceWithoutRegularPrice:
                     self?.displaySalePriceWithoutRegularPriceErrorNotice()
@@ -380,7 +381,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureSubscriptionPeriod(cell: TitleAndTextFieldTableViewCell) {
         cell.configure(viewModel: .init(title: Localization.subscriptionPeriod,
-                                        text: viewModel.subscriptionPeriod,
+                                        text: viewModel.subscriptionPeriodDescription,
                                         placeholder: nil,
                                         textFieldAlignment: .trailing,
                                         inputView: subscriptionPeriodPickerView,

@@ -220,20 +220,29 @@ extension ProductVariationFormViewModel {
     }
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(dateOnSaleStart: dateOnSaleStart,
-                                                                                                                  dateOnSaleEnd: dateOnSaleEnd,
-                                                                                                                  regularPrice: regularPrice,
-                                                                                                                  salePrice: salePrice,
-                                                                                                                  taxStatusKey: taxStatus.rawValue,
-                                                                                                                  taxClass: taxClass?.slug),
-                                                         allAttributes: allAttributes,
-                                                         parentProductSKU: parentProductSKU,
-                                                         parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
+        let subscription = productVariation.subscription?.copy(period: subscriptionPeriod,
+                                                               periodInterval: subscriptionPeriodInterval,
+                                                               price: regularPrice)
+        productVariation = EditableProductVariationModel(
+            productVariation: productVariation.productVariation.copy(
+                dateOnSaleStart: dateOnSaleStart,
+                dateOnSaleEnd: dateOnSaleEnd,
+                regularPrice: regularPrice,
+                salePrice: salePrice,
+                taxStatusKey: taxStatus.rawValue,
+                taxClass: taxClass?.slug,
+                subscription: subscription
+            ),
+            allAttributes: allAttributes,
+            parentProductSKU: parentProductSKU,
+            parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
 
     func updateInventorySettings(sku: String?,

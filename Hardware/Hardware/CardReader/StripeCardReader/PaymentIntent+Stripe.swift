@@ -6,7 +6,7 @@ extension PaymentIntent {
     /// Convenience initializer
     /// - Parameter intent: An instance of a StripeTerminal.PaymentIntent
     init(intent: StripePaymentIntent) {
-        self.id = intent.stripeId
+        self.id = intent.stripeId ?? ""
         self.status = PaymentIntentStatus.with(status: intent.status)
         self.created = intent.created
         self.amount = intent.amount
@@ -23,7 +23,7 @@ extension PaymentIntent {
 /// SCPPaymentIntent that we are interested in, make Reader implement it,
 /// and initialize Harware.CardReader with a type conforming to it.
 protocol StripePaymentIntent {
-    var stripeId: String { get }
+    var stripeId: String? { get }
     var created: Date { get }
     var status: StripeTerminal.PaymentIntentStatus { get }
     var amount: UInt { get }
@@ -32,11 +32,10 @@ protocol StripePaymentIntent {
     var charges: [StripeTerminal.Charge] { get }
 }
 
+#endif
 
 extension StripeTerminal.PaymentIntent: StripePaymentIntent {
-    // TODO: Temporarily added here for conformance
-    var stripeId: String {
-        ""
+    var id: String {
+        stripeId ?? ""
     }
 }
-#endif

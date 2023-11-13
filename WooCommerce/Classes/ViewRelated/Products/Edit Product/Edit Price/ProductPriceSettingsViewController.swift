@@ -389,6 +389,7 @@ private extension ProductPriceSettingsViewController {
                                         onEditingEnd: { [weak self] in
             self?.refreshViewContent()
         }))
+        preselectSubscriptionPeriodPickerRows()
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -546,6 +547,31 @@ private extension ProductPriceSettingsViewController {
         let selectedPeriodRow = subscriptionPeriodPickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.period.rawValue)
         viewModel.handleSubscriptionPeriodChange(interval: "\(selectedIntervalRow + 1)",
                                                  period: SubscriptionPeriod.allCases[selectedPeriodRow])
+    }
+
+    func preselectSubscriptionPeriodPickerRows() {
+        let intervalRowIndex: Int = {
+            guard let interval = viewModel.subscriptionPeriodInterval,
+                let intervalNumber = Int(interval) else {
+                return 0
+            }
+            return intervalNumber - 1
+        }()
+
+        let periodRowIndex: Int = {
+            guard let period = viewModel.subscriptionPeriod,
+                  let index = SubscriptionPeriod.allCases.firstIndex(of: period) else {
+                return 0
+            }
+            return index
+        }()
+
+        subscriptionPeriodPickerView.selectRow(intervalRowIndex,
+                                               inComponent: SubscriptionPeriodPickerComponent.interval.rawValue,
+                                               animated: false)
+        subscriptionPeriodPickerView.selectRow(periodRowIndex,
+                                               inComponent: SubscriptionPeriodPickerComponent.period.rawValue,
+                                               animated: false)
     }
 }
 

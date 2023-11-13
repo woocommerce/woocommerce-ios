@@ -118,6 +118,21 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
 
+    func test_product_variation_has_unsaved_changes_from_editing_subscription_period_settings() {
+        // Action
+        viewModel.updatePriceSettings(regularPrice: "",
+                                      subscriptionPeriod: .week,
+                                      subscriptionPeriodInterval: "3",
+                                      salePrice: "",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
     func test_product_variation_has_unsaved_changes_from_editing_inventory_settings() {
         // Action
         viewModel.updateInventorySettings(sku: "", manageStock: false, soldIndividually: nil, stockQuantity: 888888, backordersSetting: nil, stockStatus: nil)

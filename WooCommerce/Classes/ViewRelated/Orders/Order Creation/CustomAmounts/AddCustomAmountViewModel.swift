@@ -57,8 +57,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
-        formattableAmountTextFieldViewModel.amount = fee.total
-        formattableAmountTextFieldViewModel.resetAmountWithNewValue = true
+        formattableAmountTextFieldViewModel.presetAmount(fee.total)
         feeID = fee.feeID
     }
 }

@@ -1442,8 +1442,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         waitUntil {
@@ -1471,8 +1470,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         waitUntil {
@@ -1491,8 +1489,7 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, featureFlagService: featureFlagService)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
@@ -1509,11 +1506,10 @@ final class EditableOrderViewModelTests: XCTestCase {
                 }
             })
 
-            let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
             let order = Order.fake().copy(isEditable: false)
             let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                    flow: .editing(initialOrder: order),
-                                                   stores: stores, featureFlagService: featureFlagService)
+                                                   stores: stores)
 
             // Then
             XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
@@ -1521,11 +1517,10 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_shouldShowTaxesInfoButton_when_order_is_not_editable_then_returns_false() {
         // Given
-        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
         let order = Order.fake().copy(isEditable: false)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: order),
-                                               stores: stores, featureFlagService: featureFlagService)
+                                               stores: stores)
 
         // Then
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
@@ -1533,11 +1528,10 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_shouldShowTaxesInfoButton_when_order_is_editable_then_returns_true() {
         // Given
-        let featureFlagService = MockFeatureFlagService(manualTaxesInOrderM2: true)
         let order = Order.fake().copy(isEditable: true)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                flow: .editing(initialOrder: order),
-                                               stores: stores, featureFlagService: featureFlagService)
+                                               stores: stores)
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)

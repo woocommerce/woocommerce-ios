@@ -79,12 +79,6 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.splitViewInOrdersTab) && flow == .creation
     }
 
-    /// Indicates whether product rows are collapsible
-    ///
-    var shouldShowCollapsibleProductRows: Bool {
-        featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM6)
-    }
-
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
@@ -1203,10 +1197,12 @@ private extension EditableOrderViewModel {
         let productCount = addedItemsToSync.count - removedItemsToSync.count
 
         if addedItemsToSync.isNotEmpty {
+            let includesBundleProductConfiguration = addedItemsToSync.contains(where: { $0.bundleConfiguration.isNotEmpty })
             analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: flow.analyticsFlow,
                                                                             source: .orderCreation,
                                                                             addedVia: .manually,
-                                                                            productCount: productCount))
+                                                                            productCount: productCount,
+                                                                            includesBundleProductConfiguration: includesBundleProductConfiguration))
         }
 
         if removedItemsToSync.isNotEmpty {
@@ -1512,8 +1508,7 @@ private extension EditableOrderViewModel {
                 case .success(let setting):
                 self.taxBasedOnSetting = setting
 
-                let canApplyTaxRates = self.featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM2) &&
-                (setting == .customerBillingAddress || setting == .customerShippingAddress)
+                let canApplyTaxRates = setting == .customerBillingAddress || setting == .customerShippingAddress
                 if canApplyTaxRates {
                     Task { @MainActor in
                         if self.flow == .creation {
@@ -1690,8 +1685,7 @@ private extension EditableOrderViewModel {
 
         return ProductInOrderViewModel(productRowViewModel: rowViewModel,
                                        productDiscountConfiguration: addProductDiscountConfiguration(on: orderItem),
-                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty &&
-                                                                     featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
+                                       showCouponsAndDiscountsAlert: orderSynchronizer.order.coupons.isNotEmpty,
                                        onRemoveProduct: { [weak self] in
                                             self?.removeItemFromOrder(orderItem)
                                        })
@@ -1700,8 +1694,7 @@ private extension EditableOrderViewModel {
     /// Creates the configuration related to adding a discount to a product. If the feature shouldn't be shown it returns `nil`
     ///
     func addProductDiscountConfiguration(on orderItem: OrderItem) -> ProductInOrderViewModel.DiscountConfiguration? {
-        guard featureFlagService.isFeatureFlagEnabled(.ordersWithCouponsM4),
-              orderSynchronizer.order.coupons.isEmpty,
+        guard orderSynchronizer.order.coupons.isEmpty,
               case OrderSyncState.synced = orderSynchronizer.state,
               let subTotalDecimal = currencyFormatter.convertToDecimal(orderItem.subtotal) else {
             return nil
@@ -1936,8 +1929,9 @@ extension EditableOrderViewModel {
             case let .success(result):
                 Task { @MainActor in
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: self.flow.analyticsFlow,
-                                                                                    source: .orderCreation,
-                                                                                    addedVia: .scanning))
+                                                                                         source: .orderCreation,
+                                                                                         addedVia: .scanning,
+                                                                                         includesBundleProductConfiguration: false))
                     self.updateOrderWithBaseItem(result)
                     onCompletion(.success(()))
                 }

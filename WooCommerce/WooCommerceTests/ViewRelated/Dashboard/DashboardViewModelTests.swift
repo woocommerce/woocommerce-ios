@@ -313,8 +313,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Sets the prerequisites for the product description AI local announcement.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true,
-                                                        isJustInTimeMessagesOnDashboardEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -342,8 +341,7 @@ final class DashboardViewModelTests: XCTestCase {
         // Sets the prerequisites for the product description AI local announcement.
         stores.updateDefaultStore(storeID: sampleSiteID)
         stores.updateDefaultStore(.fake().copy(siteID: sampleSiteID, isWordPressComStore: true))
-        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true,
-                                                        isJustInTimeMessagesOnDashboardEnabled: true)
+        let featureFlagService = MockFeatureFlagService(isProductDescriptionAIFromStoreOnboardingEnabled: true)
 
         let viewModel = DashboardViewModel(siteID: 0, stores: stores, featureFlags: featureFlagService)
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in

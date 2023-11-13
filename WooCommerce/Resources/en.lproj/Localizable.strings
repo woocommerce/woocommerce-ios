@@ -844,9 +844,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "Allows free shipping";
 
-/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
-"Almost there! Please enter the verification code from your Authentication app" = "Almost there! Please enter the verification code from your Authentication app";
-
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
 
@@ -1215,6 +1212,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Hosting title feature on the Free Trial Summary Screen */
 "Best-in-class hosting" = "Best-in-class hosting";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.description" = "Test out the SwiftUI rewrite of the payments menu as we get ready to launch.";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.title" = "New Payments Menu";
 
 /* Country option for a site address. */
 "Bhutan" = "Bhutan";
@@ -1919,14 +1922,35 @@ which should be translated separately and considered part of this sentence. */
 /* Action to select a variation for a bundle item when it is variable. */
 "configureBundleItem.selectVariation" = "Select variation";
 
+/* Action to update a variation for a bundle item when it is variable. */
+"configureBundleItem.updateVariation" = "Update variation";
+
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "The quantity needs to be within %1$@ and %2$@";
+
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "The quantity needs to be at least %1$@";
+
+/* Error message when a variable bundle item is missing a variation. */
+"configureBundleItemError.missingVariation" = "Please select a variation";
+
+/* Error message when a variable bundle item is missing some attributes. */
+"configureBundleItemError.variationMissingAttributes" = "Please select an option for all variation attributes";
+
 /* Text for the close button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.close" = "Close";
 
 /* Text for the done button in the bundle product configuration screen in the order form. */
 "configureBundleProduct.done" = "Done";
 
+/* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
+"configureBundleProduct.retry" = "Retry";
+
 /* Title for the bundle product configuration screen in the order form. */
 "configureBundleProduct.title" = "Configure";
+
+/* Error message when the products cannot be loaded in the bundle product configuration form. */
+"configureBundleProductError.cannotLoadProducts" = "Cannot load the bundled products. Please try again.";
 
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
 "Configuring iPhone" = "Configuring iPhone";
@@ -1974,9 +1998,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
-   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
-   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Connect Jetpack";
 
@@ -2593,7 +2615,7 @@ which should be translated separately and considered part of this sentence. */
 "Discount %1$@" = "Discount %1$@";
 
 /* Label for the the row showing the total discount of the order */
-"Discount Total" = "Discount Total";
+"Discount total" = "Discount total";
 
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
@@ -2855,11 +2877,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ecwid" = "Ecwid";
 
-/* Button to edit a customer on the New Order screen
-   Button to edit a product category
+/* Button to edit a product category
    Button to edit an order on Order Details screen
-   Button to edit an order status on the New Order screen
-   Button to edit the customer note on the New Order screen
    Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "Edit";
@@ -4142,9 +4161,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
-   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -4348,6 +4365,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Jetpack Setup screen */
 "Jetpack Setup" = "Jetpack Setup";
+
+/* Title for the WPCom login screens when Jetpack is not connected yet */
+"jetpackSetupCoordinator.loginSubtitle" = "Connect Jetpack";
+
+/* Title for the WPCom login screens when Jetpack is not installed yet */
+"jetpackSetupCoordinator.loginTitle" = "Install Jetpack";
 
 /* Subtitle for button displaying the Automattic Work With Us web page, indicating that Automattic employees can work from anywhere in the world */
 "Join from anywhere" = "Join from anywhere";
@@ -4885,6 +4908,77 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu order label in Product Settings
    Product Menu Order navigation title */
 "Menu Order" = "Menu Order";
+
+/* Navigates to Collect a payment via the Simple Payment screen */
+"menu.payments.actions.collectPayment.row.title" = "Collect Payment";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"menu.payments.actions.section.title" = "Actions";
+
+/* Navigates to Card Reader management screen */
+"menu.payments.cardReader.manage.row.title" = "Manage Card Reader";
+
+/* Navigates to Card Reader Manuals screen */
+"menu.payments.cardReader.manuals.row.title" = "Card Reader Manuals";
+
+/* Navigates to Card Reader purchase screen */
+"menu.payments.cardReader.purchase.row.title" = "Order Card Reader";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"menu.payments.cardReader.section.title" = "Card readers";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"menu.payments.inPersonPayments.learnMore.link" = "Learn more";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"menu.payments.inPersonPayments.learnMore.text" = "%1$@ about In‑Person Payments";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.setup.incomplete.notice.button.title" = "Continue setup";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"menu.payments.inPersonPayments.setup.incomplete.notice.title" = "In-Person Payments setup is incomplete.";
+
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description" = "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@";
+
+/* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout.  */
+"menu.payments.payInPerson.learnMore.link" = "Learn more";
+
+/* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"menu.payments.payInPerson.toggle.row.title" = "Pay in Person";
+
+/* Navigates to Payment Gateway management screen */
+"menu.payments.paymentGateway.manage.row.title" = "Payment Provider";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"menu.payments.paymentOptions.section.title" = "Payment options";
+
+/* Title for the section related to changing payment settings inside the In-Person Payments menu */
+"menu.payments.paymentSettings.section.title" = "Settings";
+
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
+"menu.payments.tapToPay.about.row.title" = "About Tap to Pay";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"menu.payments.tapToPay.feedback.row.title" = "Share Feedback";
+
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"menu.payments.tapToPay.section.title" = "Tap to Pay";
+
+/* Title for a done button in the navigation bar */
+"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "Done";
+
+/* Title for the row related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.row.title" = "Woo Payments Balance";
+
+/* Title for the section related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.section.title" = "Woo Payments Balance";
 
 /* Type Merchandise of content to be declared for the customs form in Shipping Label flow */
 "Merchandise" = "Merchandise";
@@ -5514,10 +5608,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order status updated" = "Order status updated";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "Order Total";
+
+/* Label for the the row showing the total cost of the order */
+"Order total" = "Order total";
+
+/* Custom Amount section title if there is more than one custom amount. */
+"orderDetails.customAmounts.section.pluralTitle" = "Custom Amounts";
+
+/* Subtitle of the custom amount row in order details */
+"orderDetails.customAmountsRow.subtitle" = "Custom Amount";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Ordered List";
@@ -5526,7 +5628,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "orderForm.customAmounts" = "Custom Amounts";
 
 /* Label for the row showing the cost of fees in the order */
-"orderPaymentSection" = "Custom amounts";
+"orderPaymentSection.customAmounts" = "Custom amounts";
+
+/* Title text of the section that shows Payment details when creating a new order */
+"orderPaymentSection.paymentTotals" = "Payment totals";
+
+/* Label for the row showing the total cost of products in the order */
+"orderPaymentSection.products" = "Products";
 
 /* Orders stat label on dashboard - should be plural.
    The title of the Orders tab.
@@ -5675,9 +5783,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Pay in Person";
 
-/* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment
-   Title text of the section that shows Payment details when creating a new order */
+/* Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "Payment";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
@@ -5712,6 +5818,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Payment successful";
+
+/* Payment section title */
+"Payment Totals" = "Payment Totals";
 
 /* Message when we don't know exactly why the payment was declined. */
 "Payment was declined for an unknown reason. Try another means of payment" = "Payment was declined for an unknown reason. Try another means of payment";
@@ -6190,7 +6299,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "PRODUCT" = "PRODUCT";
 
 /* Product section title
-   Product section title if there is only one product.
    Product section title in Review Order screen if there is one product.
    Title for the Product screen during order creation */
 "Product" = "Product";
@@ -6248,9 +6356,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Row title for filtering products by product status. */
 "Product Status" = "Product Status";
 
-/* Product Total label for payment view */
-"Product Total" = "Product Total";
-
 /* Row title for filtering products by product type. */
 "Product Type" = "Product Type";
 
@@ -6267,6 +6372,18 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Error message when the scanner cannot find a matching product. %@ is the SKU code. */
 "Product with SKU \"%@\" not found." = "Product with SKU \"%@\" not found.";
 
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.description" = "A unique product subscription that enables recurring payments";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.title" = "Simple subscription product";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.description" = "A product subscription with variations";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.title" = "Variable subscription product";
+
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promote with Blaze";
 
@@ -6277,6 +6394,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Product Total label for payment view
    Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
@@ -6296,8 +6414,8 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "Products Refund";
 
-/* Label for the row showing the total cost of products in the order */
-"Products Total" = "Products Total";
+/* Action to configure a product row in the product selector. */
+"productSelector.configureProductRow" = "Configure";
 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "Promote on TikTok";
@@ -8075,9 +8193,6 @@ which should be translated separately and considered part of this sentence. */
 /* First paragraph of the body for the tax educational dialog */
 "Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location." = "Taxes are calculated by matching your customer’s billing or shipping address, or your shop address to a tax rate location.";
 
-/* Label for the title row showing the taxes in the order */
-"Taxes Total" = "Taxes Total";
-
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Tell us all about your experience with in-person payments." = "Tell us all about your experience with in-person payments.";
 
@@ -8102,8 +8217,7 @@ which should be translated separately and considered part of this sentence. */
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "Test out viewing Order Add-Ons as we get ready to launch";
 
-/* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
+/* Button title */
 "Text me a code instead" = "Text me a code instead";
 
 /* The button's title text to send a 2FA code via SMS text message. */
@@ -9411,8 +9525,7 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Venezuela" = "Venezuela";
 
-/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
-   two factor code placeholder */
+/* two factor code placeholder */
 "Verification code" = "Verification code";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -9870,6 +9983,36 @@ which should be translated separately and considered part of this sentence. */
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
 "Would you like to try a payment" = "Would you like to try a payment";
+
+/* Button to enter security key on the WPCom 2FA login screen */
+"wpCom2FALoginView.securityKeyButton" = "Use a security key";
+
+/* Instruction on the WPCom 2FA login screen */
+"wpCom2FALoginView.subtitleString" = "Almost there! Please enter the verification code from your Authentication app";
+
+/* Button to request 2FA code via SMS on the WPCom 2FA login screen */
+"wpCom2FALoginView.textMeACode" = "Text me a code instead";
+
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen */
+"wpCom2FALoginView.verificationCode" = "Verification code";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"wpCom2FALoginViewModel.bad2FA" = "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"wpCom2FALoginViewModel.invalidSecurityKey" = "Whoops, that security key does not seem valid. Please try again with another one";
+
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"wpCom2FALoginViewModel.timeoutError" = "Time's up, but don't worry, your security is our priority. Please try again!";
+
+/* Generic error on the 2FA login screen */
+"wpCom2FALoginViewModel.unknownError" = "Whoops, something went wrong. Please try again!";
+
+/* Button to dismiss an error alert in the WPCom login flow */
+"wpComLoginCoordinator.cancelButton" = "Cancel";
+
+/* Title for the screens in the login flow */
+"wpComLoginCoordinator.title" = "Log In";
 
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";

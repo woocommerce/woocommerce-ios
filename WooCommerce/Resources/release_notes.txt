@@ -1,5 +1,1 @@
-We're thrilled to roll out the latest updates!
-
-In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
-
-We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+We've made a few updates to improve your WooCommerce app experience! Now, you'll see custom amounts in their own section on order details for a cleaner look. We've added support for Universal Links in the woo.com domain, making it easier to navigate. Additionally, when adding a product/variation by scanning a barcode on the order form, only the exact SKU will be added for precision. Enjoy!

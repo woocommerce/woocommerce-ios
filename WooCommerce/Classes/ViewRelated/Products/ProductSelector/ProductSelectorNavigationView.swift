@@ -37,6 +37,6 @@ struct ProductSelectorNavigationView_Previews: PreviewProvider {
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelectorNavigationView(configuration: configuration, source: .orderForm, isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorNavigationView(configuration: configuration, source: .orderForm(flow: .creation), isPresented: .constant(true), viewModel: viewModel)
     }
 }

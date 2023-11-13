@@ -319,7 +319,6 @@ final class OrderListViewModelTests: XCTestCase {
     func test_when_having_no_error_and_orders_banner_or_IPP_banner_should_be_shown_shows_correct_banner() {
         // Given
         insertCODPaymentGateway()
-        let isIPPFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.IPPInAppFeedbackBanner)
         let viewModel = OrderListViewModel(siteID: siteID,
                                            cardPresentPaymentsConfiguration: .init(country: .US),
                                            stores: stores,
@@ -340,15 +339,9 @@ final class OrderListViewModelTests: XCTestCase {
         viewModel.updateBannerVisibility()
 
         // Then
-        if isIPPFeatureFlagEnabled {
-            viewModel.hideIPPFeedbackBanner = false
-            waitUntil {
-                viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
-            }
-        } else {
-            waitUntil {
-                viewModel.topBanner == .orderCreation
-            }
+        viewModel.hideIPPFeedbackBanner = false
+        waitUntil {
+            viewModel.topBanner == .inPersonPaymentsFeedback(.inPersonPaymentsCashOnDelivery)
         }
     }
 

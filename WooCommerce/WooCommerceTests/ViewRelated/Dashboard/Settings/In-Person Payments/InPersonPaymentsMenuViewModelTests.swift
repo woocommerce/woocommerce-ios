@@ -9,7 +9,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: Analytics!
 
-    private var sut: InPersonPaymentsMenuViewModel!
+    private var sut: LegacyInPersonPaymentsMenuViewModel!
 
     private let sampleStoreID: Int64 = 12345
 
@@ -22,12 +22,12 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
 
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
+        let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
         configuration = CardPresentPaymentsConfiguration(country: .US)
 
-        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+        sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
     }
 
@@ -78,7 +78,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_isnt_in_configuration() {
         // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
+        let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
         let configuration = CardPresentPaymentsConfiguration(
@@ -93,7 +93,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
             contactlessLimitAmount: nil,
             minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
-        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+        sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
 
         // When
@@ -106,7 +106,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_isEligibleForTapToPayOnIPhone_true_when_built_in_reader_is_in_configuration() {
         // Given
-        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(stores: stores,
+        let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
                                                                       analytics: analytics)
 
         let configuration = CardPresentPaymentsConfiguration(
@@ -121,7 +121,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
             contactlessLimitAmount: nil,
             minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
-        sut = InPersonPaymentsMenuViewModel(dependencies: dependencies,
+        sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
                                             cardPresentPaymentsConfiguration: configuration)
 
         waitFor { promise in

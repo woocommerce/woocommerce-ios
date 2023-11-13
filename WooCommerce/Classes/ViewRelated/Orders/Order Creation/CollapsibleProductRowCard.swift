@@ -3,6 +3,10 @@ import SwiftUI
 
 struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
+
+    /// Used for tracking order form events.
+    let flow: WooAnalyticsEvent.Orders.Flow
+
     @State private var isCollapsed: Bool = true
 
     /// Indicates if the coupons informational tooltip should be shown or not.
@@ -25,6 +29,9 @@ struct CollapsibleProductRowCard: View {
         !isCollapsed
     }
 
+    /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
+    @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
+
     private let minusSign: String = NumberFormatter().minusSign
 
     private func dismissTooltip() {
@@ -33,8 +40,13 @@ struct CollapsibleProductRowCard: View {
         }
     }
 
-    init(viewModel: ProductRowViewModel, shouldDisableDiscountEditing: Bool, shouldDisallowDiscounts: Bool, onAddDiscount: @escaping () -> Void) {
+    init(viewModel: ProductRowViewModel,
+         flow: WooAnalyticsEvent.Orders.Flow,
+         shouldDisableDiscountEditing: Bool,
+         shouldDisallowDiscounts: Bool,
+         onAddDiscount: @escaping () -> Void) {
         self.viewModel = viewModel
+        self.flow = flow
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
         self.shouldDisallowDiscounts = shouldDisallowDiscounts
         self.onAddDiscount = onAddDiscount
@@ -93,6 +105,7 @@ struct CollapsibleProductRowCard: View {
             Group {
                 Button(Localization.configureBundleProduct) {
                     viewModel.configure?()
+                    ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productCard))
                 }
                 .buttonStyle(IconButtonStyle(icon: .cogImage))
 
@@ -100,6 +113,14 @@ struct CollapsibleProductRowCard: View {
                     .padding()
             }
             .renderedIf(viewModel.isConfigurable)
+            .onAppear {
+                guard !hasTrackedBundleProductConfigureCTAShownEvent else {
+                    return
+                }
+                ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productCard))
+                hasTrackedBundleProductConfigureCTAShownEvent = true
+            }
+
 
             Button(Localization.removeProductLabel) {
                 viewModel.removeProductIntent()
@@ -260,10 +281,12 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
         VStack {
             CollapsibleProductRowCard(viewModel: viewModel,
+                                      flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,
                                       onAddDiscount: {})
             CollapsibleProductRowCard(viewModel: ProductRowViewModel(product: product, canChangeQuantity: true, hasParentProduct: true),
+                                      flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,
                                       onAddDiscount: {})

@@ -1670,6 +1670,7 @@ private extension EditableOrderViewModel {
                                      product: product,
                                      quantity: quantity,
                                      discount: discount ?? currentDiscount(on: item),
+                                     baseSubtotal: baseSubtotal(on: item),
                                      bundleConfiguration: bundleConfiguration)
     }
 
@@ -1722,6 +1723,16 @@ private extension EditableOrderViewModel {
         }
 
         return subtotal.subtracting(total) as Decimal
+    }
+
+    /// Calculates the subtotal of a single quantity of an item
+    ///
+    func baseSubtotal(on item: OrderItem) -> Decimal? {
+        guard let itemSubtotal = Decimal(string: item.subtotal) else {
+            return nil
+        }
+
+        return itemSubtotal / item.quantity
     }
 
     /// Creates `ProductRowViewModels` ready to be used as product rows.

@@ -86,6 +86,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .swiftUIPaymentsMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .subscriptionProducts:
+            return false
         default:
             return true
         }

@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 16.2
+We've made a few updates to improve your WooCommerce app experience! Now, you'll see custom amounts in their own section on order details for a cleaner look. We've added support for Universal Links in the woo.com domain, making it easier to navigate. Additionally, when adding a product/variation by scanning a barcode on the order form, only the exact SKU will be added for precision. Enjoy!
+
 ## 16.1
 In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!
 

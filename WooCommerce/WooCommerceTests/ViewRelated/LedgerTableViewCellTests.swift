@@ -94,7 +94,7 @@ final class LedgerTableViewCellTests: XCTestCase {
 
 private extension LedgerTableViewCellTests {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Product Total",
+        static let subtotalLabel = NSLocalizedString("Products",
                                                      comment: "Product Total label for payment view")
         static let customAmountsLabel = NSLocalizedString("Custom Amounts",
                                                      comment: "Custom amounts label for payment view")

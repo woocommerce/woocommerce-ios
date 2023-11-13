@@ -1,5 +1,1 @@
-We're thrilled to roll out the latest updates!
-
-In this update, we've enhanced the Blaze experience in 'My Store' for more streamlined campaign creation and management. We've also squashed a couple of bugs in our Orders feature, one that showed an incorrect tooltip during Order Creation, and another that displayed an inaccurate discounted total product value in certain scenarios. Excitingly, we've added a new feature that lets you add custom amounts to your orders.
-
-We're committed to continuously improving our app to serve you better. Thank you for choosing WooCommerce!
+In our latest update, we've enhanced your WooCommerce experience! We've optimized the order creation sections to provide a simpler, more intuitive flow. Plus, we've squashed a bug that was showing the wrong customer screen during order creation. Enjoy a smoother, more efficient WooCommerce journey!

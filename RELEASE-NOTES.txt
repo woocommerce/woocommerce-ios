@@ -1,8 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
-16.2
+16.3
 -----
 
+
+16.2
+-----
+- [**] Orders: order details show custom amounts on their own section. Other fields are re-designed towards a cleaner look. [https://github.com/woocommerce/woocommerce-ios/pull/11097]
+- [*] Add support for Universal Links in the woo.com domain [https://github.com/woocommerce/woocommerce-ios/pull/11098]
+- [*] Order form: when adding a product/variation by scanning a barcode, only the product/variation with the exact SKU should be added to the order. [https://github.com/woocommerce/woocommerce-ios/pull/11089]
 
 16.1
 -----

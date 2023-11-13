@@ -344,7 +344,12 @@ extension OrderDetailsViewModel {
 //
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        dataSource.configureResultsControllers(onReload: onReload)
+        dataSource.configureResultsControllers(onReload: { [weak self] in
+            guard let self = self else { return }
+
+            self.updateMissingInfoInOrderAfterReload()
+            onReload()
+        })
     }
 }
 
@@ -356,6 +361,7 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
+            LargeHeightLeftImageTableViewCell.self,
             LeftImageTableViewCell.self,
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
@@ -749,6 +755,12 @@ extension OrderDetailsViewModel {
     ///
     private func insertNote(_ orderNote: OrderNote) {
         orderNotes.insert(orderNote, at: 0)
+    }
+
+    private func updateMissingInfoInOrderAfterReload() {
+        // Listening for changes in the order listener do not include changes in their relationships' properties.
+        // Update them here.
+        update(order: order.copy(fees: self.dataSource.customAmounts))
     }
 }
 

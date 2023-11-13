@@ -14,6 +14,7 @@ protocol ProductPriceSettingsViewModelOutput {
     var dateOnSaleEnd: Date? { get }
     var taxStatus: ProductTaxStatus { get }
     var taxClass: TaxClass? { get }
+    var subscriptionPeriod: String? { get }
 }
 
 /// Handles actions related to the price settings data.
@@ -49,6 +50,8 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     //
     private(set) var regularPrice: String?
     private(set) var salePrice: String?
+
+    private(set) var subscriptionPeriod: String?
 
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?
@@ -92,6 +95,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
+        subscriptionPeriod = product.subscriptionPeriodDescription()
 
         // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
         if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&
@@ -118,7 +122,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         // Price section
         var priceRows: [Row] = [.price]
         if product.productType.isSubscriptionType {
-            priceRows.append(contentsOf: [.subscriptionPeriod, .subscriptionPeriodInterval])
+            priceRows.append(contentsOf: [.subscriptionPeriod])
         }
         let priceSection = Section(title: Strings.priceSectionTitle, rows: priceRows)
 

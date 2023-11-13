@@ -343,8 +343,6 @@ private extension ProductPriceSettingsViewController {
             configureTaxClass(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .subscriptionPeriod:
             configureSubscriptionPeriod(cell: cell)
-        case let cell as TitleAndValueTableViewCell where row == .subscriptionPeriodInterval:
-            configureSubscriptionPeriodInterval(cell: cell)
         default:
             fatalError()
             break
@@ -361,11 +359,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSubscriptionPeriod(cell: TitleAndValueTableViewCell) {
-        // TODO
-    }
-
-    func configureSubscriptionPeriodInterval(cell: TitleAndValueTableViewCell) {
-        // TODO
+        cell.updateUI(title: Localization.subscriptionPeriod,
+                      value: viewModel.subscriptionPeriod)
+        cell.accessoryType = .disclosureIndicator
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -484,7 +480,6 @@ extension ProductPriceSettingsViewController {
     enum Row: CaseIterable {
         case price
         case subscriptionPeriod
-        case subscriptionPeriodInterval
         case salePrice
 
         case scheduleSale
@@ -503,7 +498,7 @@ extension ProductPriceSettingsViewController {
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self
-            case .scheduleSaleFrom, .scheduleSaleTo, .subscriptionPeriod, .subscriptionPeriodInterval:
+            case .scheduleSaleFrom, .scheduleSaleTo, .subscriptionPeriod:
                 return TitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self
@@ -522,4 +517,19 @@ extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
+}
+
+private extension ProductPriceSettingsViewController {
+    enum Localization {
+        static let subscriptionPeriod = NSLocalizedString(
+            "productPriceSettingsViewController.subscriptionPeriodRowTitle",
+            value: "Subscription period",
+            comment: "Title of the subscription period row on the Product Price screen"
+        )
+        static let subscriptionPeriodInterval = NSLocalizedString(
+            "productPriceSettingsViewController.subscriptionPeriodIntervalRowTitle",
+            value: "Subscription period interval",
+            comment: "Title of the subscription period interval row on the Product Price screen"
+        )
+    }
 }

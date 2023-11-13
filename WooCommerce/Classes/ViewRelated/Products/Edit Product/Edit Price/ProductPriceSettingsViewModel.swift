@@ -35,6 +35,7 @@ protocol ProductPriceSettingsActionHandler {
     func handleScheduleSaleChange(isEnabled: Bool)
     func handleSaleStartDateChange(_ date: Date)
     func handleSaleEndDateChange(_ date: Date?)
+    func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void)
@@ -235,6 +236,18 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         }
     }
 
+    func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod) {
+        let billingFrequency = {
+            switch interval {
+            case "1":
+                return period.descriptionSingular
+            default:
+                return "\(interval) \(period.descriptionPlural)"
+            }
+        }()
+        subscriptionPeriod = String.localizedStringWithFormat(Strings.subscriptionPeriodFormat, billingFrequency)
+    }
+
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void) {
@@ -262,7 +275,8 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             dateOnSaleStart != originalDateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
-            newTaxClass != originalTaxClass {
+            newTaxClass != originalTaxClass ||
+            subscriptionPeriod != product.subscriptionPeriodDescription {
             return true
         }
 
@@ -280,5 +294,11 @@ extension ProductPriceSettingsViewModel {
         )
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
         static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
+        static let subscriptionPeriodFormat = NSLocalizedString(
+            "productPriceSettingsViewModel.subscriptionPeriodFormat",
+            value: "every %1$@",
+            comment: "Description of the subscription period for a product. " +
+            "Reads like: 'every 2 months'."
+        )
     }
 }

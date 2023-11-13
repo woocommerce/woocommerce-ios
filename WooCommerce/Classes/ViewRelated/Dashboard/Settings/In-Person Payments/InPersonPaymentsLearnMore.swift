@@ -21,6 +21,7 @@ struct InPersonPaymentsLearnMore: View {
                 .renderedIf(showInfoIcon)
             AttributedText(viewModel.learnMoreAttributedString)
         }
+        .accessibilityAddTraits(.isButton)
         .onTapGesture {
             viewModel.learnMoreTapped()
             customOpenURL?(viewModel.url)

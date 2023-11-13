@@ -66,7 +66,7 @@ extension Hardware.Charge {
 
 extension Hardware.PaymentIntent {
     public func copy(
-        id: NullableCopiableProp<String> = .copy,
+        id: CopiableProp<String> = .copy,
         status: CopiableProp<PaymentIntentStatus> = .copy,
         created: CopiableProp<Date> = .copy,
         amount: CopiableProp<UInt> = .copy,

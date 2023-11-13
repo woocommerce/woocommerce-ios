@@ -4,7 +4,7 @@ import Codegen
 /// We would create exactly one PaymentIntent for each order
 public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable {
     /// Unique identifier for the PaymentIntent
-    public let id: String?
+    public let id: String
 
     /// The status of the Payment Intent
     public let status: PaymentIntentStatus
@@ -26,7 +26,7 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
 
-    public init(id: String?,
+    public init(id: String,
                 status: PaymentIntentStatus,
                 created: Date,
                 amount: UInt,

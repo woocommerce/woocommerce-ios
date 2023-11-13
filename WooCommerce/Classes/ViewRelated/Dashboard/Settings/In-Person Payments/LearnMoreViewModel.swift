@@ -11,8 +11,6 @@ class LearnMoreViewModel: ObservableObject {
     let formatText: String
     let tappedAnalyticEvent: WooAnalyticsEvent?
 
-    @Published var showLearnMoreWebViewURL: URL?
-
     init(url: URL = learnMoreURL,
          linkText: String = Localization.learnMoreLink,
          formatText: String = Localization.learnMoreText,
@@ -41,8 +39,6 @@ class LearnMoreViewModel: ObservableObject {
     }
 
     func learnMoreTapped() {
-        showLearnMoreWebViewURL = url
-
         guard let tappedAnalyticEvent = tappedAnalyticEvent else {
             return
         }

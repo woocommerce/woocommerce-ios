@@ -1,7 +1,8 @@
 import Foundation
 import UIKit
+import SwiftUI
 
-struct LearnMoreViewModel {
+class LearnMoreViewModel: ObservableObject {
 
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
 
@@ -9,6 +10,8 @@ struct LearnMoreViewModel {
     let linkText: String
     let formatText: String
     let tappedAnalyticEvent: WooAnalyticsEvent?
+
+    @Published var showLearnMoreWebViewURL: URL?
 
     init(url: URL = learnMoreURL,
          linkText: String = Localization.learnMoreLink,
@@ -38,6 +41,8 @@ struct LearnMoreViewModel {
     }
 
     func learnMoreTapped() {
+        showLearnMoreWebViewURL = url
+
         guard let tappedAnalyticEvent = tappedAnalyticEvent else {
             return
         }

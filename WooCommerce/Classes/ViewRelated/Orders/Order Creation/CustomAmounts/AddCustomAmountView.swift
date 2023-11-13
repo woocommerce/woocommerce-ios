@@ -19,6 +19,23 @@ struct AddCustomAmountView: View {
 
                         FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
+                        VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
+                            Text(Localization.percentageInputTitle + " " + viewModel.baseAmountForPercentageString)
+                                .font(.subheadline)
+                                .foregroundColor(Color(.textSubtle))
+
+                            HStack(spacing: Layout.inputFieldVerticalSpacing) {
+                                InputField(placeholder: Localization.percentageInputPlaceholder,
+                                           text: $viewModel.percentage)
+
+                                Text("%")
+                                    .font(.title3)
+                                    .foregroundColor(Color(.textSubtle))
+                            }
+                        }
+                        .padding(.bottom, Layout.mainVerticalSpacing)
+                        .renderedIf(viewModel.showPercentageInput)
+
                         Text(Localization.nameTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
@@ -27,9 +44,6 @@ struct AddCustomAmountView: View {
                             .secondaryTitleStyle()
                             .foregroundColor(Color(.textSubtle))
                             .multilineTextAlignment(.center)
-
-                        InputField(placeholder: Localization.percentagePlaceholder,
-                                   text: $viewModel.percentage)
 
                         Spacer()
 
@@ -65,7 +79,7 @@ private extension AddCustomAmountView {
 
         var body: some View {
             TextField(placeholder, text: $text)
-            .keyboardType(.numbersAndPunctuation)
+            .keyboardType(.decimalPad)
             .padding(EdgeInsets(top: 0, leading: Layout.inputFieldInnerVerticalPadding, bottom: 0, trailing: Layout.inputFieldInnerVerticalPadding))
             .frame(maxWidth: .infinity, minHeight: Layout.inputFieldHeight, maxHeight: Layout.inputFieldHeight)
             .overlay {
@@ -74,7 +88,6 @@ private extension AddCustomAmountView {
                     .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
             }
             .cornerRadius(Layout.frameCornerRadius)
-            .padding()
         }
     }
 }
@@ -86,8 +99,9 @@ private extension AddCustomAmountView {
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
         static let inputFieldOverlayInset: CGFloat = 0.25
-        static let inputFieldHeight: CGFloat = 48
+        static let inputFieldHeight: CGFloat = 44
         static let inputFieldInnerVerticalPadding: CGFloat = 8
+        static let inputFieldVerticalSpacing: CGFloat = 8
     }
 }
 
@@ -98,8 +112,11 @@ private extension AddCustomAmountView {
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
-        static let percentagePlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.input",
-                                                             value: "Enter Percentage",
+        static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
+                                                             value: "Or enter percentage of the order total",
+                                                             comment: "Title for entering an custom amount through a percentage")
+        static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
+                                                             value: "Enter percentage",
                                                              comment: "Placeholder for entering an custom amount through a percentage")
     }
 

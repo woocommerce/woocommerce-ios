@@ -116,10 +116,10 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
 
     var sections: [Section] {
         // Price section
-        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price, .salePrice])
+        let priceSection = Section(title: Strings.priceSectionTitle, rows: [.price])
 
         // Sales section
-        var saleScheduleRows: [Row] = [.scheduleSale]
+        var saleScheduleRows: [Row] = [.salePrice, .scheduleSale]
         if dateOnSaleStart != nil || dateOnSaleEnd != nil {
             saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
             if datePickerSaleFromVisible {
@@ -133,7 +133,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
                 saleScheduleRows.append(.removeSaleTo)
             }
         }
-        let salesSection = Section(title: nil, rows: saleScheduleRows)
+        let salesSection = Section(title: Strings.saleSectionTitle, rows: saleScheduleRows)
 
         switch product {
         case is EditableProductModel:
@@ -265,6 +265,11 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 extension ProductPriceSettingsViewModel {
     enum Strings {
         static let priceSectionTitle = NSLocalizedString("Price", comment: "Section header title for product price")
+        static let saleSectionTitle = NSLocalizedString(
+            "productPriceSettingsViewModel.saleSectionTitle",
+            value: "Sale",
+            comment: "Section header title for product sale price"
+        )
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
         static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
     }

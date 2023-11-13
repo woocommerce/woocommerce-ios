@@ -267,7 +267,15 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             return
         }
 
-        onCompletion(regularPrice, subscriptionPeriod, subscriptionPeriodInterval, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges())
+        onCompletion(regularPrice, 
+                     subscriptionPeriod,
+                     subscriptionPeriodInterval, 
+                     salePrice,
+                     dateOnSaleStart,
+                     dateOnSaleEnd,
+                     taxStatus,
+                     taxClass,
+                     hasUnsavedChanges())
     }
 
     func hasUnsavedChanges() -> Bool {

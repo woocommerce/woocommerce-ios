@@ -333,7 +333,7 @@ extension ProductFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        let subscription = product.subscription?.copy(period: subscriptionPeriod, 
+        let subscription = product.subscription?.copy(period: subscriptionPeriod,
                                                       periodInterval: subscriptionPeriodInterval,
                                                       price: regularPrice)
         product = EditableProductModel(product: product.product.copy(dateOnSaleStart: dateOnSaleStart,

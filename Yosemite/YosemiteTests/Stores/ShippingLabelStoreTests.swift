@@ -874,6 +874,13 @@ final class ShippingLabelStoreTests: XCTestCase {
         // - and there is no maximum retry count for the progress state
         // any timeout longer that 3s plus a few decimal places for buffer would have been okay.
         wait(for: [exp], timeout: 6.0)
+
+        // To ensure we didn't get a false positive, with the test simply waiting for 6 seconds but
+        // nothing happening in the SUT, let's inspect the remote test double to ensure that both
+        // the purchase labels and the check status API calls were made. For the status, let's also
+        // verify more that one was made, to ensure that it polled upon a "in progress" status.
+        XCTAssertTrue(remote.purchaseShippingLabelCalled)
+        XCTAssertGreaterThan(remote.checkLabelStatusCallsCount, 1)
     }
 }
 

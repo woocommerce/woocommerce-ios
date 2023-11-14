@@ -1359,8 +1359,10 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
-            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
+            (regularPrice, subscriptionPeriod, subscriptionPeriodInterval, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
             self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
+                                                subscriptionPeriod: subscriptionPeriod,
+                                                subscriptionPeriodInterval: subscriptionPeriodInterval,
                                                 salePrice: salePrice,
                                                 dateOnSaleStart: dateOnSaleStart,
                                                 dateOnSaleEnd: dateOnSaleEnd,
@@ -1372,6 +1374,8 @@ private extension ProductFormViewController {
     }
 
     func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       subscriptionPeriod: SubscriptionPeriod?,
+                                       subscriptionPeriodInterval: String?,
                                        salePrice: String?,
                                        dateOnSaleStart: Date?,
                                        dateOnSaleEnd: Date?,
@@ -1388,6 +1392,8 @@ private extension ProductFormViewController {
         }
 
         viewModel.updatePriceSettings(regularPrice: regularPrice,
+                                      subscriptionPeriod: subscriptionPeriod,
+                                      subscriptionPeriodInterval: subscriptionPeriodInterval,
                                       salePrice: salePrice,
                                       dateOnSaleStart: dateOnSaleStart,
                                       dateOnSaleEnd: dateOnSaleEnd,

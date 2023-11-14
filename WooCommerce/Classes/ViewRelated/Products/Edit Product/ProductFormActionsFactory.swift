@@ -303,9 +303,10 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let editableSubscription = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
 
         let actions: [ProductFormEditAction?] = [
-            .subscription(actionable: true),
+            editableSubscription ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,

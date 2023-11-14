@@ -55,6 +55,8 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
+                                      subscriptionPeriod: productVariation.subscription?.period,
+                                      subscriptionPeriodInterval: productVariation.subscription?.periodInterval,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,

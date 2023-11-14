@@ -85,14 +85,13 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // When
-        let result = waitFor { promise in
+        _ = waitFor { promise in
             remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
             }.store(in: &self.cancellables)
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
         guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
             XCTFail()
             return

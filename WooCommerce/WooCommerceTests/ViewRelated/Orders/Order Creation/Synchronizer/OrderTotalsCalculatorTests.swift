@@ -30,19 +30,19 @@ class OrderTotalsCalculatorTests: XCTestCase {
         XCTAssertEqual(orderTotalsCalculator.feesTotal, 10)
     }
 
-    func test_feesBaseAmountForPercentage_includes_expected_totals() {
+    func test_orderTotal_includes_expected_totals() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let order = Order.fake().copy(shippingTotal: "5.00",
                                       totalTax: "3.00",
-                                      items: [OrderItem.fake().copy(subtotal: "2.00"), OrderItem.fake().copy(subtotal: "8.00")],
+                                      items: [OrderItem.fake().copy(subtotal: "2.00", total: "1.00"), OrderItem.fake().copy(subtotal: "8.00", total: "8.00")],
                                       fees: [OrderFeeLine.fake().copy(total: "2.00"), OrderFeeLine.fake().copy(total: "8.00")])
 
         // When
         let orderTotalsCalculator = OrderTotalsCalculator(for: order, using: currencyFormatter)
 
         // Then
-        XCTAssertEqual(orderTotalsCalculator.feesBaseAmountForPercentage, 18)
+        XCTAssertEqual(orderTotalsCalculator.orderTotal, 27)
     }
 
     func test_updateOrderTotal_returns_order_with_expected_total() {

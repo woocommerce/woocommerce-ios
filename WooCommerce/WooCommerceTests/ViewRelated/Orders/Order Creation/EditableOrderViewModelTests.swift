@@ -436,8 +436,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         let customAmountName = "Test"
 
         // When
-        viewModel.addCustomAmountViewModel.name = customAmountName
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.name = customAmountName
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
@@ -501,15 +502,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         let newFeeName = "Test 2"
 
         // When
-        viewModel.addCustomAmountViewModel.name = "Test"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
 
-        viewModel.addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
-        viewModel.addCustomAmountViewModel.name = newFeeName
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
+        addCustomAmountViewModel.name = newFeeName
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertEqual(viewModel.customAmountRows.first?.name, newFeeName)
@@ -813,8 +815,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        viewModel.addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)

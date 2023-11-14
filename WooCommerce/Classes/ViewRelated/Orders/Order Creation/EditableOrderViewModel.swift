@@ -1273,21 +1273,20 @@ private extension EditableOrderViewModel {
                 guard let self = self else { return [] }
                 return fees.compactMap { fee in
                     guard !fee.isDeleted else { return nil }
-                
-                    let orderTotals = OrderTotalsCalculator(for: self.orderSynchronizer.order, using: self.currencyFormatter)
+
                     return CustomAmountRowViewModel(id: fee.feeID,
-                                             name: fee.name ?? Localization.customAmountDefaultName,
-                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                             onRemoveCustomAmount: {
-                                                self.analytics.track(.orderCreationRemoveCustomAmountTapped)
-                                                self.removeFee(fee)
-                                             },
-                                             onEditCustomAmount: {
-                                                self.analytics.track(.orderCreationEditCustomAmountTapped)
-                                                self.editingFee = fee
-                                                self.showEditCustomAmount = true
-                                             })
-                    }
+                                                    name: fee.name ?? Localization.customAmountDefaultName,
+                                                    total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                                    onRemoveCustomAmount: {
+                        self.analytics.track(.orderCreationRemoveCustomAmountTapped)
+                        self.removeFee(fee)
+                    },
+                                                    onEditCustomAmount: {
+                        self.analytics.track(.orderCreationEditCustomAmountTapped)
+                        self.editingFee = fee
+                        self.showEditCustomAmount = true
+                    })
+                }
             }
             .assign(to: &$customAmountRows)
     }

@@ -120,6 +120,7 @@ private extension ProductPriceSettingsViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.keyboardDismissMode = .onDragWithAccessory
 
         registerTableViewHeaderSections()
         registerTableViewCells()

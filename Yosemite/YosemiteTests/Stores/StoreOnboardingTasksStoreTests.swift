@@ -117,7 +117,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
 
     func test_loadOnboardingTasks_returns_error_on_failure() throws {
         // Given
-        remote.whenLoadingOnboardingTasks(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingOnboardingTasks(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result: Result<[StoreOnboardingTask], Error> = waitFor { promise in
@@ -130,6 +130,6 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 }

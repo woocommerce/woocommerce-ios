@@ -150,7 +150,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let remote = MockShippingLabelRemote()
         let orderID: Int64 = 22
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenLoadingShippingLabels(siteID: sampleSiteID, orderID: orderID, thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -197,7 +197,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_printShippingLabel_returns_ShippingLabelPrintData_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenPrintingShippingLabel(siteID: sampleSiteID,
                                          shippingLabelIDs: [sampleShippingLabelID],
                                          paperSize: "label",
@@ -292,7 +292,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_refundShippingLabel_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 134, shippingLabelID: sampleShippingLabelID)
         remote.whenRefundingShippingLabel(siteID: shippingLabel.siteID,
                                           orderID: shippingLabel.orderID,
@@ -380,7 +380,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_validateAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenValidatingAddress(siteID: sampleSiteID,
                                      thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -425,7 +425,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_packagesDetails_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenPackagesDetails(siteID: sampleSiteID,
                                    thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -475,7 +475,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         let expectedEligibility = false
         remote.whenCheckingCreationEligiblity(siteID: sampleSiteID,
                                               orderID: orderID,
-                                              thenReturn: .failure(NetworkError.notFound))
+                                              thenReturn: .failure(NetworkError.notFound()))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -515,7 +515,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenCreatePackage(siteID: sampleSiteID,
                                  thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -559,7 +559,7 @@ final class ShippingLabelStoreTests: XCTestCase {
     func test_loadCarriersAndRates_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenLoadCarriersAndRates(siteID: sampleSiteID, thenReturn: .failure(expectedError))
         let store = ShippingLabelStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -607,7 +607,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() throws {
         // Given
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         let remote = MockShippingLabelRemote()
         remote.whenLoadShippingLabelAccountSettings(siteID: sampleSiteID,
                                                     thenReturn: .failure(expectedError))
@@ -653,7 +653,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
         let remote = MockShippingLabelRemote()
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         remote.whenUpdateShippingLabelAccountSettings(siteID: sampleSiteID,
                                                       settings: settings,
                                                       thenReturn: .failure(expectedError))
@@ -715,7 +715,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
-        let expectedError = NetworkError.timeout
+        let expectedError = NetworkError.timeout()
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,
@@ -748,7 +748,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
         let mockPackages = [ShippingLabelPackagePurchase.fake()]
-        let expectedError = NetworkError.timeout
+        let expectedError = NetworkError.timeout()
         let remote = MockShippingLabelRemote()
         remote.whenPurchaseShippingLabel(siteID: sampleSiteID,
                                          orderID: sampleOrderID,

@@ -1381,7 +1381,7 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound())
 
         // When
         let product = sampleProduct()
@@ -1829,7 +1829,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1848,7 +1848,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
@@ -1967,7 +1967,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1989,7 +1989,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductSharingMessage_includes_parameters_in_remote_base_parameter() throws {
@@ -2087,7 +2087,7 @@ final class ProductStoreTests: XCTestCase {
     func test_identifyLanguage_returns_error_on_identify_language_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2105,7 +2105,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
 
@@ -2371,7 +2371,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDetails_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2390,7 +2390,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
@@ -2476,7 +2476,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductName_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2492,7 +2492,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductName_includes_parameters_in_remote_base_parameter() throws {
@@ -2563,7 +2563,7 @@ final class ProductStoreTests: XCTestCase {
     func test_fetchNumberOfProducts_returns_error_on_failure() throws {
         // Given
         let remote = MockProductsRemote()
-        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -2575,7 +2575,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
 
@@ -2616,7 +2616,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateAIProduct_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2641,7 +2641,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 }
 

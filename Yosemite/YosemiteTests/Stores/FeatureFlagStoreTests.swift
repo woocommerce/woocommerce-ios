@@ -54,7 +54,7 @@ final class FeatureFlagStoreTests: XCTestCase {
 
     func test_isRemoteFeatureFlagEnabled_returns_default_value_on_failure() throws {
         // Given
-        remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let isEnabled = waitFor { promise in

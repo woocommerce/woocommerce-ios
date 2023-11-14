@@ -69,7 +69,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             // When the parent order item quantity is incremented without configuring the bundle, the quantity of the child items
             // are not multiplied. Thus, we want to return the child item quantity when its quantity is smaller than the parent order
             // item quantity.
-            guard orderItemQuantity > parentOrderItemQuantity else {
+            guard orderItemQuantity >= parentOrderItemQuantity else {
                 return orderItemQuantity
             }
             return orderItemQuantity * 1.0 / parentOrderItemQuantity

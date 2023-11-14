@@ -83,6 +83,22 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 2)
     }
 
+    func test_init_with_existing_order_item_and_parent_order_item_with_same_quantity_sets_quantity_divided_by_parent_quantity() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 3)
+        let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 3)
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: existingParentOrderItem,
+                                                        existingOrderItem: existingOrderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
+
     func test_init_with_existing_order_item_with_full_attributes_sets_selectedVariation_and_empty_selectableVariationAttributeViewModels() throws {
         // Given
         let existingOrderItem = OrderItem.fake().copy(variationID: 6,

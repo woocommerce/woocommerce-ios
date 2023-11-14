@@ -103,8 +103,7 @@ public class AlamofireNetwork: Network {
                     if let error = response.networkingError {
                         promise(.success(.failure(error)))
                     } else {
-                        let result = response.result.toSwiftResult()
-                        promise(.success(result))
+                        promise(.success(response.result.toSwiftResult()))
                     }
                 }
         }.eraseToAnyPublisher()

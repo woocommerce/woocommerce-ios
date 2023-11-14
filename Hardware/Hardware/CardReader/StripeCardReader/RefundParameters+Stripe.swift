@@ -21,7 +21,7 @@ extension Hardware.RefundParameters {
         do {
             return try returnValueBuilder.build()
         } catch {
-            // TODO: Better error handling
+            DDLogError("Failed to build RefundParameters. Error:\(error)")
             return nil
         }
     }

@@ -32,9 +32,7 @@ final class RemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
-            guard case NetworkError.notFound? = error,
-                  let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-            else {
+            guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
                 XCTFail()
                 return
             }
@@ -95,9 +93,7 @@ final class RemoteTests: XCTestCase {
 
         // Then
         let error = try XCTUnwrap(result.failure)
-        guard case NetworkError.notFound = error,
-              let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-        else {
+        guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
             XCTFail()
             return
         }

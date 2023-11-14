@@ -53,9 +53,10 @@ final class ProductPriceSettingsViewController: UIViewController {
                                              size: .init(width: UIScreen.main.bounds.width,
                                                          height: Constants.subscriptionPeriodToolbarHeight)))
         let doneButton = UIBarButtonItem(title: Localization.subscriptionPeriodToolBarButton,
-                                         style: .plain,
+                                         style: .done,
                                          target: self,
                                          action: #selector(self.onSubscriptionPeriodUpdateDone))
+        doneButton.tintColor = .accent
         toolBar.setItems([.flexibleSpace(), doneButton], animated: false)
         return toolBar
     }()

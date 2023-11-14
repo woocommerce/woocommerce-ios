@@ -93,12 +93,7 @@ public class Remote: NSObject {
             }
 
             guard let data = data else {
-                let error: Error?  = {
-                    guard let networkError else {
-                        return nil
-                    }
-                    return self.mapNetworkError(error: networkError, for: request)
-                }()
+                let error: Error? = networkError.map { self.mapNetworkError(error: $0, for: request) }
                 completion(nil, error)
                 return
             }

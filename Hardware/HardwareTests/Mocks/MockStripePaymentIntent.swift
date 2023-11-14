@@ -14,6 +14,8 @@ struct MockStripePaymentIntent {
 }
 
 extension MockStripePaymentIntent: StripePaymentIntent {
+    // While SCPPaymentIntent `id` can be nullable in order to support offline payments
+    // this is not the case for the app. PaymentIntent always need to have an associated `id`
     var id: String {
         stripeId ?? ""
     }

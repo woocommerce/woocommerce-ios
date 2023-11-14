@@ -32,10 +32,13 @@ protocol StripePaymentIntent {
     var charges: [StripeTerminal.Charge] { get }
 }
 
-#endif
-
+/// Our implementation of PaymentIntent does not allow`id` to be nullable, as offline payments are not supported in the app.
+/// This differs from StripeTerminal.PaymentIntent since 3.0.0, these can be nullable to support offline payments.
+/// In order to not make our implementation accept a property that does not correspond to the app logic,
+/// we provide an empty string if no stripeID can be found.
 extension StripeTerminal.PaymentIntent: StripePaymentIntent {
     var id: String {
         stripeId ?? ""
     }
 }
+#endif

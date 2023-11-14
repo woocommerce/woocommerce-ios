@@ -1864,7 +1864,7 @@ private extension EditableOrderViewModel {
     func addFee(with total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
         let feeLine = OrderFactory.newOrderFee(total: total, name: name, taxStatus: taxStatus)
         orderSynchronizer.addFee.send(feeLine)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow, taxStatus: taxStatus.rawValue))
     }
 
     func updateFee(with id: Int64, total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
@@ -1874,7 +1874,7 @@ private extension EditableOrderViewModel {
 
         let updatedFee = updatingFee.copy(name: name, taxStatus: taxStatus, total: total)
         orderSynchronizer.updateFee.send(updatedFee)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow, taxStatus: taxStatus.rawValue))
     }
 
     func removeFee(_ fee: OrderFeeLine) {

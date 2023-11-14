@@ -62,7 +62,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 2.4)
+  - Automattic-Tracks-iOS (from `https://github.com/Automattic/Automattic-Tracks-iOS.git`, branch `update/release-name-value`)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -83,7 +83,6 @@ SPEC REPOS:
     - WordPressKit
   trunk:
     - Alamofire
-    - Automattic-Tracks-iOS
     - CocoaLumberjack
     - Gridicons
     - KeychainAccess
@@ -112,6 +111,16 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  Automattic-Tracks-iOS:
+    :branch: update/release-name-value
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
+
+CHECKOUT OPTIONS:
+  Automattic-Tracks-iOS:
+    :commit: 50375ae06c6d7a049f35a412e3520a2d9188cb2e
+    :git: https://github.com/Automattic/Automattic-Tracks-iOS.git
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
@@ -146,6 +155,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: 5e7ae933ba20024981cdc979c563bbb07d19ef17
+PODFILE CHECKSUM: eca7e85cd09bf2d00b98f62e82bc9ac4b63d4f48
 
 COCOAPODS: 1.14.0

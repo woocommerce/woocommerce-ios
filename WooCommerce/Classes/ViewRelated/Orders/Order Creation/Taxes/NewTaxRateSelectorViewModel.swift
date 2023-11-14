@@ -66,11 +66,6 @@ final class NewTaxRateSelectorViewModel: ObservableObject {
         wpAdminTaxSettingsURLProvider.provideWpAdminTaxSettingsURL()
     }
 
-    /// Whether to show the fixed bottom panel to save the selected tax rate or not
-    var showFixedBottomPanel: Bool {
-        featureFlagService.isFeatureFlagEnabled(.manualTaxesInOrderM3)
-    }
-
     private lazy var resultsController: ResultsController<StorageTaxRate> = {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let sortDescriptorByID = NSSortDescriptor(keyPath: \StorageTaxRate.order, ascending: true)

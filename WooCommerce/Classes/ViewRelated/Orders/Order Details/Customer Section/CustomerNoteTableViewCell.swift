@@ -18,6 +18,7 @@ final class CustomerNoteTableViewCell: UITableViewCell {
         }
         set {
             headlineLabel.text = newValue
+            headlineLabel.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 
@@ -94,7 +95,6 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     }
 }
 
-
 // MARK: - Private Methods
 //
 private extension CustomerNoteTableViewCell {
@@ -127,7 +127,7 @@ private extension CustomerNoteTableViewCell {
         addButton.applyLinkButtonStyle()
         addButton.setImage(.plusImage, for: .normal)
         addButton.contentHorizontalAlignment = .leading
-        addButton.contentVerticalAlignment = .bottom
+        addButton.contentVerticalAlignment = .center
         var configuration = UIButton.Configuration.plain()
         configuration.contentInsets = .init(.zero)
         configuration.imagePadding = Constants.buttonTitleAndImageSpacing

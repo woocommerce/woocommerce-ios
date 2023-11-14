@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-10-23 08:10:05+0000 */
+/* Translation-Revision-Date: 2023-11-07 11:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -99,8 +99,8 @@ which should be translated separately and considered part of this sentence. */
 /* Payment on <date> received via (payment method title) */
 "%1$@ via %2$@" = "%2$@ 経由 %1$@";
 
-/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 x $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@ x %2$@" = "%1$@ x %2$@";
+/* In Order Details, the pattern used to show the quantity multiplied by the price. For example, “23 × $400.00”. The %1$@ is the quantity. The %2$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@ × %2$@" = "%1$@ × %2$@";
 
 /* Order refunded shipping label title. The first variable shows the refunded amount (e.g. $12.90). The second variable shows the requested date (e.g. Jan 12, 2020 12:34 PM). */
 "%1$@ • %2$@" = "%1$@• %2$@";
@@ -114,8 +114,8 @@ which should be translated separately and considered part of this sentence. */
 /* In Shipping Labels Package Details if the product has attributes, the pattern used to show the attributes and weight. For example, “purple, has logo・1lbs”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the weight with the unit. */
 "%1$@・%2$@" = "%1$@・%2$@";
 
-/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 x $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). */
-"%1$@・%2$@ x %3$@" = "%1$@・%2$@ x %3$@";
+/* In Order Details > product details: if the product has attributes, the pattern used to show the attributes and quantity multiplied by the price. For example, “purple, has logo・23 × $400.00”. The %1$@ is the list of attributes (e.g. from variation). The %2$@ is the quantity. The %3$@ is the formatted price with currency (e.g. $400.00). Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"%1$@・%2$@ × %3$@" = "%1$@・%2$@ × %3$@";
 
 /* The number of category allowed for a coupon in plural form. Reads like: 10 Categories */
 "%1$d Categories" = "%1$d のカテゴリー";
@@ -518,8 +518,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button in the CTA View for installing WCShip extension */
 "Add Extension To Store" = "ストアに拡張機能を追加";
 
-/* Title for the Fee screen during order creation
-   Title text of the button that adds a fee when creating a new order */
+/* Title for the Fee screen during order creation */
 "Add Fee" = "手数料を追加";
 
 /* Action to add downloadable file on the Product Downloadable Files screen */
@@ -834,9 +833,6 @@ which should be translated separately and considered part of this sentence. */
 /* Text on Coupon Details screen to indicate that the coupon allows free shipping */
 "Allows free shipping" = "無料配送を許可";
 
-/* Instruction on the WPCom 2FA login screen of the Jetpack setup flow */
-"Almost there! Please enter the verification code from your Authentication app" = "もう少しです ! 認証アプリから認証コードを入力してください";
-
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
 
@@ -855,7 +851,8 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "American Samoa" = "アメリカ領サモア";
 
-/* Title for the discount amount of a product during order creation
+/* Title above the amount field on the add custom amount view in orders.
+   Title for the discount amount of a product during order creation
    Title of the Amount label on Coupon Details screen */
 "Amount" = "合計";
 
@@ -1223,8 +1220,8 @@ which should be translated separately and considered part of this sentence. */
    Title of the hub menu Blaze button */
 "Blaze" = "Blaze";
 
-/* Title on the alert presented when dismissing the banner announcing Blaze feature. */
-"Blaze Ads" = "Blaze 広告";
+/* Title of the Blaze campaign list view */
+"Blaze Campaigns" = "Blaze キャンペーン";
 
 /* Accessibility label for block quote button on formatting toolbar. */
 "Block Quote" = "ブロック引用";
@@ -1384,6 +1381,9 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Cameroon" = "カメルーン";
 
+/* Title of the Blaze campaign details view. */
+"Campaign Details" = "キャンペーン詳細";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
 
@@ -1448,6 +1448,7 @@ which should be translated separately and considered part of this sentence. */
    Cancel button title
    Cancel button title for the tax rate selector
    Cancel button title in the issue refund screen
+   Cancel button title on the navigation bar on the add custom amount view in orders.
    Cancel button title when showing the coupon list selector
    Cancel prompt for user information.
    Cancel the main more actions menu sheet.
@@ -1660,6 +1661,9 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title on the shipping label paper size selector screen */
 "Choose Paper Size" = "用紙サイズを選択";
 
+/* Settings > Set up Tap to Pay on iPhone > Complete > Detail */
+"Choose Tap to Pay on iPhone from the Collect Payment options in Order Details Menu → Payments." = "「注文詳細メニュー」→「支払い」の「支払いを受け取る」オプションから「Tap to Pay on iPhone」を選択します。";
+
 /* Navigation title on the shipping label country selector screen */
 "Choose a Country" = "国を選択";
 
@@ -1862,7 +1866,8 @@ which should be translated separately and considered part of this sentence. */
 /* Dialog title that displays when a configuration update just finished installing */
 "Configuration updated" = "設定を更新しました";
 
-/* My Store > Settings > Configure section title */
+/* My Store > Settings > Configure section title
+   Text in the product row card to configure a bundle product */
 "Configure" = "設定";
 
 /* Dialog title that displays when iPhone configuration is being updated for use as a card reader */
@@ -1908,9 +1913,7 @@ which should be translated separately and considered part of this sentence. */
    Button on the Jetpack setup interrupted screen to continue the setup
    Button title on the site credential login screen
    Button to authorize Jetpack connection from the Jetpack setup required screen
-   Title for the WPCom 2FA login screen when Jetpack is not connected yet
    Title for the WPCom email login screen when Jetpack is not connected yet
-   Title for the WPCom magic link screen when Jetpack is not connected yet
    Title of the Jetpack connection web view in the login flow */
 "Connect Jetpack" = "Jetpack を接続";
 
@@ -2221,6 +2224,9 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the store creation web view. */
 "Create a store" = "ストアを作成する";
 
+/* Button when tapped will launch create Blaze campaign flow. */
+"Create campaign" = "キャンペーンを作成";
+
 /* Title of the Create coupon screen */
 "Create coupon" = "クーポンを作成";
 
@@ -2250,9 +2256,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Description of the 'Products' screen - used for spotlight indexing on iOS. */
 "Create, edit, and publish products." = "商品を作成、編集、公開します。";
-
-/* Status name of a newly created Blaze campaign */
-"Created" = "作成日";
 
 /* Description for the option to generate all possible variations */
 "Creates variations for all combinations of your attributes." = "属性のすべての組み合わせについてバリエーションを作成します。";
@@ -2310,8 +2313,12 @@ which should be translated separately and considered part of this sentence. */
    Title of the Analytics Hub Custom selection range */
 "Custom" = "カスタム";
 
-/* Title text of the row that shows the provided amount when creating a simple payment */
+/* Navigation title on the add custom amount view in orders.
+   Title text of the row that shows the provided amount when creating a simple payment */
 "Custom Amount" = "カスタム金額";
+
+/* Fees label for payment view */
+"Custom Amounts" = "カスタム金額";
 
 /* Add custom shipping carrier. Content of cell titled Shipping Carrier
    Placeholder name of a custom shipment tracking carrier
@@ -2333,6 +2340,9 @@ which should be translated separately and considered part of this sentence. */
 /* Label for one of the filters in order date range
    Navigation title of the orders filter selector screen for custom date range */
 "Custom Range" = "カスタム範囲";
+
+/* Placeholder for the name field on the add custom amount view in orders. */
+"Custom amount" = "カスタム金額";
 
 /* Error shown in Shipping Label Origin Address validation for phone number when the it doesn't have expected length for international shipment. */
 "Custom forms require a 10-digit phone number" = "カスタムフォームには10桁の電話番号を入力してください";
@@ -2507,12 +2517,12 @@ which should be translated separately and considered part of this sentence. */
 /* Line description for 'Discount' cart total on the receipt. Only shown when non-zero. %1$@ is the coupon code(s) */
 "Discount %1$@" = "割引 %1$@";
 
-/* Label for the the row showing the total discount of the order */
-"Discount Total" = "割引合計";
-
 /* Field in the view for adding or editing a coupon's discount type.
    Title for the sheet to select discount type on the Add or Edit coupon screen. */
 "Discount Type" = "割引の種類";
+
+/* Label for the the row showing the total discount of the order */
+"Discount total" = "割引合計";
 
 /* Title of the Discounted Orders label on Coupon Details screen */
 "Discounted Orders" = "割引注文";
@@ -2739,6 +2749,10 @@ which should be translated separately and considered part of this sentence. */
 /* Drag and drop helper text above photo list in Product images screen */
 "Drag and drop to re-order photos" = "写真の順序を変更するにはドラッグ & ドロップしてください";
 
+/* Subtitle of the empty state of the Blaze campaign list view
+   Title for the Blaze campaign intro view */
+"Drive more sales to your store with Blaze" = "Blaze でストアの売上を増やす";
+
 /* Button title to duplicate a product in Product More Options Action Sheet */
 "Duplicate" = "複製";
 
@@ -2763,11 +2777,8 @@ which should be translated separately and considered part of this sentence. */
 /* Option in the store creation selling platforms question. */
 "Ecwid" = "Ecwid";
 
-/* Button to edit a customer on the New Order screen
-   Button to edit a product category
+/* Button to edit a product category
    Button to edit an order on Order Details screen
-   Button to edit an order status on the New Order screen
-   Button to edit the customer note on the New Order screen
    Text for the button to edit a discount to a product during order creation
    Title text of the button that edits a note when creating a simple payment */
 "Edit" = "編集";
@@ -3297,9 +3308,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title in the navigation bar when the survey is completed */
 "Feedback Sent!" = "フィードバックを送信しました";
 
-/* Fees label for payment view
-   Label for the row showing the cost of fees in the order
-   Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
+/* Line description for 'Fees' cart total on the receipt. Only shown when non-zero. */
 "Fees" = "手数料";
 
 /* Info message shown when the order contains multiple fees and shipping lines */
@@ -3307,9 +3316,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title on the refund screen that lists the fees total cost */
 "Fees Refund" = "料金の返金";
-
-/* Info message shown when the order contains multiple fee lines */
-"Fees are incomplete.\nTo edit all fees, view the order in your WooCommerce store admin." = "料金が未完了です。\nすべての料金を編集するには、WooCommerce ストア管理で注文を表示します。";
 
 /* Blocking indicator text when fetching existing variations prior generating them. */
 "Fetching Variations..." = "バリエーションを取得しています…";
@@ -3631,8 +3637,7 @@ which should be translated separately and considered part of this sentence. */
 /* Confirmation button for the alert after the support request is created. */
 "Got It!" = "承知しました !";
 
-/* Button on the alert presented when dismissing the banner announcing Blaze feature.
-   Button title that dismisses the Write with AI tooltip
+/* Button title that dismisses the Write with AI tooltip
    Button to dismiss the celebration view when a Blaze campaign is successfully created.
    Dismiss button title in AI product description celebration screen. */
 "Got it" = "理解しました";
@@ -4001,6 +4006,9 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the product form bottom sheet action for linked products. */
 "Increase sales with upsells and cross-sells" = "アップセルとクロスセルで販売を伸ばしましょう";
 
+/* Subtitle of the Blaze campaign view. */
+"Increase visibility and get your products sold quickly." = "認知度を高め、商品を迅速に販売します。";
+
 /* Country option for a site address. */
 "India" = "インド";
 
@@ -4043,9 +4051,7 @@ which should be translated separately and considered part of this sentence. */
 /* Button title on the site credential login screen
    Button to install Jetpack from the Jetpack setup required screen
    Navigates to Install Jetpack screen.
-   Title for the WPCom 2FA login screen when Jetpack is not installed yet
    Title for the WPCom email login screen when Jetpack is not installed yet
-   Title for the WPCom magic link screen when Jetpack is not installed yet
    Title of install action in the Jetpack benefits view.
    Title of the Install Jetpack intro view
    Title of the Install Jetpack view */
@@ -4895,6 +4901,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Name text field placeholder
    Product name placeholder on the add product from image form.
    Text field name in Shipping Label Address Validation
+   Title above the name field on the add custom amount view in orders.
    Title for the name field on the Shipping Line Details screen during order creation
    Title of the customer search filter to search by name. */
 "Name" = "名前";
@@ -5026,6 +5033,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Placeholder for empty address in order customer data */
 "No address specified." = "住所が指定されていません。";
 
+/* Title of the empty state of the Blaze campaign list view */
+"No campaigns yet" = "まだキャンペーンはありません";
+
 /* Error message when a card reader was expected to already have been connected. */
 "No card reader is connected - connect a reader and try again" = "カードリーダーが接続されていません。リーダーを接続してもう一度お試しください。";
 
@@ -5145,9 +5155,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for the notice when there were no variations to generate */
 "No variations to generate" = "生成するバリエーションはありません";
-
-/* Message on the alert presented when dismissing the banner announcing Blaze feature. */
-"No worries! Blaze ads are accessible in the Menu and product details' menu for your convenience." = "心配はご無用です。 Blaze 広告はご都合に合わせてメニューと商品詳細メニューから利用できるようになっています。";
 
 /* Message of the modal confirmation screen when the In-Person Payments feedback banner is dismissed */
 "No worries! You can always go to Settings in the Menu to send us feedback." = "心配はご無用です。 いつでも「メニュー」の「設定」からフィードバックを送信できます。";
@@ -5338,6 +5345,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button to switch to magic link on the WPCom password login screen of the Jetpack setup flow. */
 "Or Continue using Magic Link" = "またはマジックリンクで続行";
 
+/* Instruction text for other forms of two-factor auth methods. */
+"Or choose another form of authentication." = "または別の認証形式を選択してください。";
+
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
 "Or log in by _entering your site address_." = "または、サイトアドレスを入力してログインしてください。";
 
@@ -5372,7 +5382,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Order Status" = "注文ステータス";
 
 /* Create Shipping Label form -> Order Total label
-   Label for the the row showing the total cost of the order
    Order Total label for payment view
    Title text of the row that shows the total to charge when creating a simple payment */
 "Order Total" = "注文合計";
@@ -5385,6 +5394,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Order status update success notice */
 "Order status updated" = "注文ステータスを更新しました";
+
+/* Label for the the row showing the total cost of the order */
+"Order total" = "注文合計";
 
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "順序付きリスト";
@@ -5525,8 +5537,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Pay in Person" = "直接支払い";
 
 /* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment
-   Title text of the section that shows Payment details when creating a new order */
+   Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "決済";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5729,6 +5740,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Instructional text shown when requesting the user's password for a login initiated via Sign In with Apple */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID でログインするには、WordPress.com のアカウントのパスワードを入力してください。";
+
+/* Instruction text on the two-factor screen. */
+"Please enter the verification code from your authenticator app." = "認証アプリから認証コードを入力してください。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "ログイン情報を入力してください。";
@@ -6003,7 +6017,8 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Display label for the product's private status */
 "Privately published" = "非公開";
 
-/* Display label for processing order status. */
+/* Display label for processing order status.
+   Status name of a Blaze campaign under processing */
 "Processing" = "処理中";
 
 /* Alert title when processing a payment without a user name.
@@ -6114,9 +6129,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title on the refund screen that lists the products refund total cost */
 "Products Refund" = "商品の返金";
 
-/* Label for the row showing the total cost of products in the order */
-"Products Total" = "商品の合計";
-
 /* Cell description for Cross-sells products in Linked Products Settings screen */
 "Products promoted in the cart when current product is selected" = "現在の商品が選択された際にカートで宣伝される商品です";
 
@@ -6126,12 +6138,14 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* No comment provided by engineer. */
 "Promote on TikTok" = "TikTok で宣伝";
 
-/* Description of the hub menu Blaze button
-   Title on the banner to highlight Blaze feature */
+/* Description of the hub menu Blaze button */
 "Promote products with Blaze" = "Blaze を使って商品宣伝する";
 
 /* Button title Promote with Blaze in Edit Product More Options Action Sheet */
 "Promote with Blaze" = "Blaze を使って宣伝する";
+
+/* First item in the description for Blaze campaign intro view */
+"Promote your product in just minutes." = "わずか数分で商品を宣伝できます。";
 
 /* One of the possible options in Product Visibility */
 "Public" = "公開";
@@ -6223,6 +6237,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Content of the In-Person Payments feedback banner in the Orders tab */
 "Rate your first in-person payment experience." = "初めてのオフラインでの支払い体験を評価してください。";
+
+/* Third item in the description for Blaze campaign intro view */
+"Reach millions on WordPress and Tumblr sites." = "WordPress と Tumblr のサイトで数百万人のユーザーにリーチしましょう。";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
@@ -6517,6 +6534,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the secondary button displayed when activating the purchased plan fails, so the merchant can exit the flow. */
 "Return to My Store" = "ストアに戻る";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to skip to the trial payment and dismiss the Set up Tap to Pay on iPhone flow */
+"Return to Payments" = "支払いに戻る";
 
 /* Title for the return policy in Customs screen of Shipping Label flow */
 "Return to sender if package is unable to be delivered" = "荷物を配達できなかった場合、荷送人に差し戻す";
@@ -7119,6 +7139,9 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title of the Short Description row on Product main screen */
 "Short description" = "簡単な説明";
 
+/* Button when tapped will show the Blaze campaign list. */
+"Show All Campaigns" = "すべてのキャンペーンを表示";
+
 /* Button title for applying filters to a list of orders. */
 "Show Orders" = "注文を表示";
 
@@ -7395,6 +7418,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* The name of the default Tax Class in Product Price Settings */
 "Standard rate" = "標準税率";
 
+/* Start Blaze Campaign button label */
+"Start Blaze Campaign" = "Blaze キャンペーンを開始";
+
 /* Label for one of the filters in order custom date range
    Start Date label in custom range date picker */
 "Start Date" = "開始日";
@@ -7655,6 +7681,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Menu option for taking an image or video with the device's camera. */
 "Take a photo" = "写真を撮る";
 
+/* Second item in the description for Blaze campaign intro view */
+"Take control with just a few dollars a day. It’s budget-friendly." = "1日わずか数ドルでコントロールできます。 リーズナブル。";
+
 /* Description of the hub menu payments button */
 "Take payments on the go" = "外出先で支払いを受け取る";
 
@@ -7807,9 +7836,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Title for the tax educational dialog */
 "Taxes & Tax Rates" = "税金および税率";
 
-/* Label for the title row showing the taxes in the order */
-"Taxes Total" = "税合計";
-
 /* Disclaimer in the simple payments summary screen about taxes. */
 "Taxes are automatically calculated based on your store address." = "税金は店舗の住所に基づいて自動的に計算されます。";
 
@@ -7840,9 +7866,11 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Cell description on the beta features screen to enable the order add-ons feature */
 "Test out viewing Order Add-Ons as we get ready to launch" = "起動の準備ができたら、注文アドオンの表示をテストします";
 
-/* Button title
-   Button to request 2FA code via SMS on the WPCom 2FA login screen of the Jetpack setup flow. */
+/* Button title */
 "Text me a code instead" = "代わりに SMS でコードを送信する";
+
+/* The button's title text to send a 2FA code via SMS text message. */
+"Text me a code via SMS" = "SMS 経由でコードを送信";
 
 /* Country option for a site address. */
 "Thailand" = "タイ";
@@ -7897,6 +7925,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "この URL には有効なホストがありません。";
+
+/* Subtitle of the celebration view when a Blaze campaign is successfully created. */
+"The ad has been submitted for approval. We'll send you a confirmation email once it's approved and running." = "広告は承認を得るために送信されました。 承認されて掲載されると、確認メールが送信されます。";
 
 /* Error message shown when Tap to Pay on iPhone cannot be used because the amount for payment is not supported for Tap to Pay on iPhone. */
 "The amount is not supported for Tap to Pay on iPhone – please try a hardware reader or another payment method." = "Tap to Pay on iPhone ではその金額に対応していません。ハードウェアリーダーか、別の支払い方法をお試しください。";
@@ -8320,6 +8351,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Footnote for the action to store selected tax rate */
 "This will not affect online orders" = "オンラインの注文には影響しません";
 
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"Time's up, but don't worry, your security is our priority. Please try again!" = "時間切れですがご心配は要りません。皆さまの安全が当社の最優先事項です。 もう一度お試しください。";
+
 /* Country option for a site address. */
 "Timor-Leste" = "東ティモール";
 
@@ -8446,6 +8480,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Track shipment button title */
 "Track Shipment" = "発送を追跡";
 
+/* Fourth item in the description for Blaze campaign intro view */
+"Track performance, start and stop your Blaze campaign anytime." = "パフォーマンスの追跡、Blaze キャンペーンの開始と停止をいつでも実行できます。";
+
 /* Caption displayed in promotional screens shown during the login flow. */
 "Track sales and high performing products" = "セールスと売れ行きが好調な商品を追跡する";
 
@@ -8512,9 +8549,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action button to retry Jetpack connection. */
 "Try Authorizing Again" = "認証を再試行";
 
-/* Title of the button on the banner to highlight Blaze feature */
-"Try Blaze now" = "今すぐ Blaze を試す";
-
 /* Button to try to collect a payment again. Presented to users after collecting a payment fails */
 "Try Collecting Again" = "もう一度受け取りを試みる";
 
@@ -8529,6 +8563,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of the button displayed when purchasing a plan fails, so the merchant can try again. */
 "Try Payment Again" = "再度支払いを試す";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Description. %1$@ will be replaced with the amount of the trial payment, in the store's currency. */
+"Try a %1$@ payment with your debit or credit card. You can refund the payment when you’re done." = "デビットカードまたはクレジットカードで %1$@の支払いを試します。 完了したら返金できます。";
 
 /* Settings > Set up Tap to Pay on iPhone > Try a Payment > A button to start a payment for testing Tap to Pay on iPhone using the merchant's own card. */
 "Try a Payment" = "支払いを試す";
@@ -8598,9 +8635,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Description for the exclude sale items row in coupon usage restrictions screen. */
 "Turn this on if the coupon should not apply to items on sale. Per-item coupons will only work if the item is not on sale. Per-cart coupons will only work if there are items in the cart that are not on sale." = "セール価格商品へのクーポンの適用を禁止する場合は、この機能をオンにします。 商品単位で適用されるクーポンは、その商品がセール価格商品でない場合にのみ有効になります。 お買い物カゴ単位で適用されるクーポンは、お買い物カゴにセール価格商品ではない商品が含まれる場合にのみ有効になります。";
-
-/* Description on the banner to highlight Blaze feature */
-"Turn your products into ads that run across millions of sites on WordPress.com and Tumblr." = "商品を広告に変えると WordPress.com や Tumblr にある何百万件ものサイトに掲載されます。";
 
 /* Title text in the store creation loading screen */
 "Turning on the lights" = "明かりを点けています";
@@ -9046,6 +9080,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action to use the address in Shipping Label Suggested screen as suggested */
 "Use Suggested Address" = "提案された住所を使用";
 
+/* The button's title text to use a security key. */
+"Use a security key" = "セキュリティキーを使用";
+
 /* Description for the option to create a template product */
 "Use a template to create physical, virtual, and variable products. You can edit it as you go." = "テンプレートを使用して、物理的な商品、仮想商品、バリエーションのある商品を作成します。 途中で編集できます。";
 
@@ -9131,8 +9168,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Country option for a site address. */
 "Venezuela" = "ベネズエラ";
 
-/* Placeholder for the 2FA code field on the WPCom 2FA login screen of the Jetpack setup flow.
-   two factor code placeholder */
+/* two factor code placeholder */
 "Verification code" = "認証コード";
 
 /* Step 1 of shipping label printing instructions screen. The content inside two double asterisks **...** denote bolded text. */
@@ -9234,6 +9270,10 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Message shown on screen while waiting for Google to finish its signup process. */
 "Waiting for Google to complete…" = "Google が完了するのを待機しています…";
+
+/* Text while the webauthn signature is being verified
+   Text while waiting for a security key challenge */
+"Waiting for security key" = "セキュリティキーの待機中";
 
 /* The message shown in the Orders → All Orders tab if the list is empty. */
 "Waiting for your first order" = "最初の注文を待っています";
@@ -9480,6 +9520,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* An error message shown when a wpcom user provides the wrong password. */
 "Whoops, something went wrong and we couldn't log you in. Please try again!" = "エラーが発生し、ログインできませんでした。もう一度お試しください。";
 
+/* Generic error on the 2FA screen */
+"Whoops, something went wrong. Please try again!" = "エラーが発生しました。 もう一度お試しください。";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"Whoops, that security key does not seem valid. Please try again with another one" = "そのセキュリティキーは有効ではないようです。 今度は別のキーでお試しください。";
+
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "正しい二段階認証コードではありません。コードを再確認してもう一度お試しください。";
 
@@ -9562,6 +9608,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title of a button linking to the Automattic Work With Us web page */
 "Work with us" = "求人情報";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > Inform user that Tap to Pay on iPhone is ready */
+"Would you like to try a payment" = "支払いを試してみますか";
 
 /* Title in the product description AI generator view. */
 "Write a description" = "説明を入力してください";
@@ -9833,6 +9882,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Markdown content learn more link on the product creation action sheet. Please translate the words while keeping the markdown format and URL. */
 "[Learn more.](https:\/\/automattic.com\/ai-guidelines\/)" = "[詳細はこちら。](https:\/\/automattic.com\/ai-guidelines\/)";
 
+/* Button title to confirm the custom amount on the add custom amount view in orders. */
+"addCustomAmount.doneButton" = "カスタム金額を追加";
+
+/* Button title to confirm the custom amount on the edit custom amount view in orders. */
+"addCustomAmount.editButton" = "カスタム金額を編集";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "WooCommerce をクイック起動";
 
@@ -9868,6 +9923,42 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.title" = "Reader をスキャンしています";
 
+/* Action to toggle whether a bundle item is included when it is optional. */
+"configureBundleItem.add" = "追加";
+
+/* Action to select a variation for a bundle item when it is variable. */
+"configureBundleItem.selectVariation" = "バリエーションを選択";
+
+/* Action to update a variation for a bundle item when it is variable. */
+"configureBundleItem.updateVariation" = "バリエーションを更新する";
+
+/* Error message when setting a bundle item's quantity with minimum and maximum quantity rules. */
+"configureBundleItemError.invalidQuantityWithMinAndMaxQuantityRules" = "数量は%1$@～%2$@個以内である必要があります";
+
+/* Error message when setting a bundle item's quantity with a minimum quantity rule. */
+"configureBundleItemError.invalidQuantityWithMinQuantityRule" = "数量は最低でも%1$@個必要です";
+
+/* Error message when a variable bundle item is missing a variation. */
+"configureBundleItemError.missingVariation" = "バリエーションを選択してください";
+
+/* Error message when a variable bundle item is missing some attributes. */
+"configureBundleItemError.variationMissingAttributes" = "すべてのバリエーション属性のオプションを選択してください";
+
+/* Text for the close button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.close" = "閉じる";
+
+/* Text for the done button in the bundle product configuration screen in the order form. */
+"configureBundleProduct.done" = "完了";
+
+/* Text for the retry button to reload bundled products in the bundle product configuration screen in the order form. */
+"configureBundleProduct.retry" = "再試行";
+
+/* Title for the bundle product configuration screen in the order form. */
+"configureBundleProduct.title" = "設定";
+
+/* Error message when the products cannot be loaded in the bundle product configuration form. */
+"configureBundleProductError.cannotLoadProducts" = "パッケージ同梱商品を読み込むことができません。 もう一度お試しください。";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "日";
 
@@ -9876,6 +9967,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eコマース";
+
+/* Default name when the custom amount does not have a name in order creation. */
+"editableOrderViewModel.customAmountDefaultName" = "カスタム金額";
 
 /* The EU notice banner content describing how the shipping customs shall be configured */
 "eu_shipping_instructions_info" = "欧州連合 (EU) の関税法規則に従う国への発送は、すべての品目について明確な説明が求められるようになりました。 たとえば衣類を送る場合、どのようなタイプの衣類であるか (例: 男性用シャツ、女児用ベスト、男児用上着など) を明記しなければ認められません。 これを怠ると、配送が税関で遅延または中断されることがあります。";
@@ -9911,6 +10005,12 @@ which should be translated separately and considered part of this sentence. */
 /* A message that tells the user why the app is requesting access to the user’s photo library. */
 "infoplist.NSPhotoLibraryUsageDescription" = "商品画像用にカメラの写真を保存したり、商品やサポートチケットに写真や動画を追加したりするためです。";
 
+/* Title for the WPCom login screens when Jetpack is not connected yet */
+"jetpackSetupCoordinator.loginSubtitle" = "Jetpack を連携";
+
+/* Title for the WPCom login screens when Jetpack is not installed yet */
+"jetpackSetupCoordinator.loginTitle" = "Jetpack をインストール";
+
 /* Later today */
 "later today" = "今日あとで";
 
@@ -9931,6 +10031,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "前の期間はありません";
+
+/* Title text of the section that shows the Custom Amounts when creating or editing an order */
+"orderForm.customAmounts" = "カスタム金額";
+
+/* Label for the row showing the cost of fees in the order */
+"orderPaymentSection.customAmounts" = "カスタム金額";
+
+/* Title text of the section that shows Payment details when creating a new order */
+"orderPaymentSection.paymentTotals" = "支払総額";
+
+/* Label for the row showing the total cost of products in the order */
+"orderPaymentSection.products" = "商品";
 
 /* A format string for a software version with major and minor components. %1$@ will be replaced with the major, %2$@ with the minor. */
 "os.version.format.major.minor" = "%1$@.%2$@";
@@ -9956,11 +10068,23 @@ which should be translated separately and considered part of this sentence. */
 /* Label shown on the launch store task. */
 "private" = "非公開";
 
+/* Label for button on product form to open Blaze flow */
+"productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";
+
+/* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
+"productRowViewModel.priceQuantityLine" = "%1$@ × %2$@";
+
+/* Action to configure a product row in the product selector. */
+"productSelector.configureProductRow" = "設定";
+
 /* Format of the number of product ratings in plural form */
 "rated %ld times" = "評価回数%ld回";
 
 /* Format of the number of product ratings in singular form */
 "rated once" = "評価回数1回";
+
+/* Settings > Set up Tap to Pay on iPhone > Try a Payment > After trying a payments, the merchant is shown an order confirmation screen, showing their payment was successful and allowing them to refund themselves. This is the navigation bar title for that screen. */
+"setUpTapToPayPaymentPromptView.paymentComplete.navigation.title" = "支払いが完了しました";
 
 /* The action to be agreed upon when tapping the Connect Jetpack button on the Jetpack setup required screen.
    The action to be agreed upon when tapping the Connect Jetpack button on the Wrong Account screen. */
@@ -10046,6 +10170,36 @@ which should be translated separately and considered part of this sentence. */
 /* This is a comma separated list of keywords used for spotlight indexing of the 'Products' tab. */
 "woocommerce, woo, products, categories, new product, search products" = "woocommerce, woo, 商品, カテゴリー, 新商品, 商品を検索";
 
+/* Button to enter security key on the WPCom 2FA login screen */
+"wpCom2FALoginView.securityKeyButton" = "セキュリティキーを使用";
+
+/* Instruction on the WPCom 2FA login screen */
+"wpCom2FALoginView.subtitleString" = "もう少しです ! 認証アプリから認証コードを入力してください";
+
+/* Button to request 2FA code via SMS on the WPCom 2FA login screen */
+"wpCom2FALoginView.textMeACode" = "代わりに SMS でコードを送信";
+
+/* Placeholder for the 2FA code field on the WPCom 2FA login screen */
+"wpCom2FALoginView.verificationCode" = "認証コード";
+
+/* Error message shown when an incorrect two factor code is provided. */
+"wpCom2FALoginViewModel.bad2FA" = "有効な2要素認証コードではありません。 コードを再確認してもう一度お試しください。";
+
+/* Error when the uses chooses an invalid security key on the 2FA screen. */
+"wpCom2FALoginViewModel.invalidSecurityKey" = "そのセキュリティキーは有効ではないようです。 今度は別のキーでお試しください。";
+
+/* Error when the uses takes more than 1 minute to submit a security key. */
+"wpCom2FALoginViewModel.timeoutError" = "時間切れですがご心配は要りません。皆さまの安全が当社の最優先事項です。 もう一度お試しください。";
+
+/* Generic error on the 2FA login screen */
+"wpCom2FALoginViewModel.unknownError" = "エラーが発生しました。 もう一度お試しください。";
+
+/* Button to dismiss an error alert in the WPCom login flow */
+"wpComLoginCoordinator.cancelButton" = "キャンセル";
+
+/* Title for the screens in the login flow */
+"wpComLoginCoordinator.title" = "ログイン";
+
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";
 
@@ -10091,6 +10245,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the local notification to ask for Free trial survey. */
 "💡Help Us Understand Your Subscription Decision" = "💡サブスクリプションの決定についてお教えください";
+
+/* Title of the Blaze campaign view. */
+"🔥 Blaze campaign" = "🔥 Blaze キャンペーン";
 
 /* Title of the local notification to remind after three days. */
 "🧭 Still Exploring WooCommerce?" = "🧭 まだ WooCommerce を探索していますか ?";

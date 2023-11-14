@@ -147,6 +147,12 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// Custom amounts (fees) from an Order
+    ///
+    var customAmounts: [OrderFeeLine] {
+        return resultsControllers.feeLines
+    }
+
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
@@ -400,7 +406,7 @@ private extension OrderDetailsDataSource {
             }
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelPrintingInfo:
             configureShippingLabelPrintingInfo(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .addOrderNote:
+        case let cell as LargeHeightLeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
             configureOrderNoteHeader(cell: cell, at: indexPath)
@@ -420,6 +426,8 @@ private extension OrderDetailsDataSource {
             configureShippingLabelProducts(cell: cell, at: indexPath)
         case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
             configureAggregateOrderItem(cell: cell, at: indexPath)
+        case let cell as ProductDetailsTableViewCell where row == .customAmount:
+            configureCustomAmount(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .collectCardPaymentButton:
             configureCollectPaymentButton(cell: cell, at: indexPath)
         case let cell as ButtonTableViewCell where row == .shippingLabelCreateButton:
@@ -439,7 +447,7 @@ private extension OrderDetailsDataSource {
             configureShippingLabelTrackingNumber(cell: cell, at: indexPath)
         case let cell as ImageAndTitleAndTextTableViewCell where row == .shippingLabelRefunded:
             configureShippingLabelRefunded(cell: cell, at: indexPath)
-        case let cell as LeftImageTableViewCell where row == .trackingAdd:
+        case let cell as LargeHeightLeftImageTableViewCell where row == .trackingAdd:
             configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
@@ -476,14 +484,15 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
-        cell.headline = Title.customerNote
         cell.selectionStyle = .none
         if customerNote.isNotEmpty {
+            cell.headline = Title.customerNote
             cell.body = customerNote.quoted
             cell.onEditTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
             }
         } else {
+            cell.headline = nil
             cell.body = nil
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editCustomerNote, nil)
@@ -555,10 +564,9 @@ private extension OrderDetailsDataSource {
                                                    comment: "VoiceOver accessibility label for the Install WCShip banner in the Order Detail")
     }
 
-    private func configureNewNote(cell: LeftImageTableViewCell) {
-        cell.leftImage = Icons.addNoteIcon
+    private func configureNewNote(cell: LargeHeightLeftImageTableViewCell) {
         cell.imageView?.tintColor = .accent
-        cell.labelText = Titles.addNoteText
+        cell.configure(image: Icons.plusImage, text: Titles.addNoteText, textColor: .textLink)
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
@@ -833,6 +841,12 @@ private extension OrderDetailsDataSource {
         }
     }
 
+    private func configureCustomAmount(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let customAmount = customAmounts[indexPath.row]
+        cell.configure(customAmountViewModel: .init(customAmount: customAmount, currency: order.currency, currencyFormatter: currencyFormatter))
+        cell.accessibilityIdentifier = "custom-amount-cell"
+    }
+
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
         let singular = NSLocalizedString("%@ Item",
                                          comment: "1 Item")
@@ -917,11 +931,10 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    private func configureNewTracking(cell: LeftImageTableViewCell) {
+    private func configureNewTracking(cell: LargeHeightLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
-        cell.leftImage = .addOutlineImage
         cell.imageView?.tintColor = .accent
-        cell.labelText = cellTextContent
+        cell.configure(image: Icons.plusImage, text: cellTextContent, textColor: .textLink)
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
@@ -938,15 +951,16 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = Title.shippingAddress
         cell.name = shippingAddress?.fullNameWithCompany
 
         if let formattedPostalAddress = shippingAddress?.formattedPostalAddress {
+            cell.title = Title.shippingAddress
             cell.address = formattedPostalAddress
             cell.onEditTapped = { [weak self] in
                 self?.onCellAction?(.editShippingAddress, nil)
             }
         } else {
+            cell.title = nil
             cell.address = nil
             cell.onAddTapped = { [weak self] in
                 self?.onCellAction?(.editShippingAddress, nil)
@@ -957,6 +971,7 @@ private extension OrderDetailsDataSource {
         cell.editButtonAccessibilityLabel = NSLocalizedString(
             "Update Address",
             comment: "Accessibility Label for the edit button to change the Customer Shipping Address in Order Details")
+        cell.configureLayout()
     }
 
     private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
@@ -1085,14 +1100,23 @@ extension OrderDetailsDataSource {
                 }
                 headerStyle = .actionablePrimary(actionConfig: headerActionConfig)
             } else {
-                headerStyle = .primary
+                headerStyle = .twoColumn
             }
 
             return Section(category: .products,
-                           title: Localization.pluralizedProducts(count: items.count),
-                           rightTitle: nil,
+                           title: Title.products,
                            rows: rows,
                            headerStyle: headerStyle)
+        }()
+
+        let customAmountsSection: Section? = {
+            guard customAmounts.isNotEmpty else {
+                return nil
+            }
+
+            return Section(category: .customAmounts,
+                          title: Title.customAmounts,
+                          rows: Array(repeating: .customAmount, count: customAmounts.count))
         }()
 
         let customFields: Section? = {
@@ -1211,7 +1235,7 @@ extension OrderDetailsDataSource {
 
         let subscriptions: Section? = {
             // Subscriptions section is hidden if there are no subscriptions for the order.
-            guard orderSubscriptions.isNotEmpty && featureFlags.isFeatureFlagEnabled(.readOnlySubscriptions) else {
+            guard orderSubscriptions.isNotEmpty else {
                 return nil
             }
 
@@ -1268,6 +1292,7 @@ extension OrderDetailsDataSource {
         sections = ([summary,
                      shippingNotice,
                      products,
+                     customAmountsSection,
                      customFields,
                      installWCShipSection,
                      refundedProducts] +
@@ -1464,13 +1489,15 @@ extension OrderDetailsDataSource {
     }
 
     enum Icons {
-        static let addNoteIcon = UIImage.addOutlineImage
         static let shippingNoticeIcon = UIImage.noticeImage
+        static let plusImage = UIImage.plusImage
     }
 
     enum Title {
         static let products = NSLocalizedString("Products", comment: "Product section title if there is more than one product.")
-        static let product = NSLocalizedString("Product", comment: "Product section title if there is only one product.")
+        static let customAmounts = NSLocalizedString("orderDetails.customAmounts.section.pluralTitle",
+                                                     value: "Custom Amounts",
+                                                     comment: "Custom Amount section title if there is more than one custom amount.")
         static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let subscriptions = NSLocalizedString("Subscriptions", comment: "Subscriptions section title")
         static let giftCards = NSLocalizedString("Gift Cards", comment: "Gift Cards section title")
@@ -1479,7 +1506,7 @@ extension OrderDetailsDataSource {
         static let shippingAddress = NSLocalizedString("Shipping Details",
                                                        comment: "Shipping title for customer info cell")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
-        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+        static let payment = NSLocalizedString("Payment Totals", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
         static let customFields = NSLocalizedString("View Custom Fields", comment: "Custom Fields section title")
         static let shippingLabelCreationInfoAction =
@@ -1514,6 +1541,7 @@ extension OrderDetailsDataSource {
             case summary
             case shippingNotice
             case products
+            case customAmounts
             case installWCShip
             case shippingLabel
             case refundedProducts
@@ -1597,6 +1625,7 @@ extension OrderDetailsDataSource {
     enum Row: Equatable {
         case summary
         case aggregateOrderItem
+        case customAmount
         case markCompleteButton(style: ButtonTableViewCell.Style, showsBottomSpacing: Bool)
         case refundedProducts
         case issueRefundButton
@@ -1635,6 +1664,8 @@ extension OrderDetailsDataSource {
                 return SummaryTableViewCell.reuseIdentifier
             case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
+            case .customAmount:
+                return ProductDetailsTableViewCell.reuseIdentifier
             case .markCompleteButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .refundedProducts:
@@ -1662,7 +1693,7 @@ extension OrderDetailsDataSource {
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
-                return LeftImageTableViewCell.reuseIdentifier
+                return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .collectCardPaymentButton:
                 return ButtonTableViewCell.reuseIdentifier
             case .installWCShip:
@@ -1684,7 +1715,7 @@ extension OrderDetailsDataSource {
             case .shippingNotice:
                 return ImageAndTitleAndTextTableViewCell.reuseIdentifier
             case .addOrderNote:
-                return LeftImageTableViewCell.reuseIdentifier
+                return LargeHeightLeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
@@ -1717,15 +1748,5 @@ extension OrderDetailsDataSource {
         static let addOrderCell = 1
         static let paymentCell = 1
         static let paidByCustomerCell = 1
-    }
-}
-
-// MARK: - Private Utils
-
-private extension OrderDetailsDataSource {
-    enum Localization {
-        static func pluralizedProducts(count: Int) -> String {
-            count > 1 ? Title.products : Title.product
-        }
     }
 }

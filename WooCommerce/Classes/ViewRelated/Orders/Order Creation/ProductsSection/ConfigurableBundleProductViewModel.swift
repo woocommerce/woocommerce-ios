@@ -45,6 +45,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     private let orderItem: OrderItem?
     private let childItems: [OrderItem]
     private let stores: StoresManager
+    private let analytics: Analytics
 
     /// - Parameters:
     ///   - product: Bundle product in an order item.
@@ -56,11 +57,13 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
          orderItem: OrderItem? = nil,
          childItems: [OrderItem] = [],
          stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics,
          onConfigure: @escaping (_ configurations: [BundledProductConfiguration]) -> Void) {
         self.product = product
         self.orderItem = orderItem
         self.childItems = childItems
         self.stores = stores
+        self.analytics = analytics
         self.onConfigure = onConfigure
         // The content does not matter because the text in placeholder rows is redacted.
         placeholderItemViewModels = [Int64](0..<3).map { _ in
@@ -94,6 +97,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 
     /// Completes the bundle configuration and triggers the configuration callback.
     func configure() {
+        analytics.track(event: .Orders.orderFormBundleProductConfigurationSaveTapped())
         let configurations: [BundledProductConfiguration] = bundleItemViewModels.compactMap {
             $0.toConfiguration
         }
@@ -131,7 +135,6 @@ private extension ConfigurableBundleProductViewModel {
                 guard let product = products.first(where: { $0.productID == bundleItem.productID }) else {
                     return nil
                 }
-                let bundleOrderItemQuantity = max(orderItem?.quantity ?? 1, 1)
                 let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID })
                 switch product.productType {
                     case .variable:

@@ -20,9 +20,13 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     ///
     var statePublisher: Published<CardPresentPaymentOnboardingState>.Publisher { get }
 
-    /// Resynchronize the onboarding state if needed.
+    /// Resynchronize the onboarding state.
     ///
     func refresh()
+
+    /// Refresh the onboarding state unless a completed state is cached.
+    ///
+    func refreshIfNecessary()
 
     /// Update the onboarding state with the latest synced values.
     ///
@@ -397,10 +401,8 @@ private extension CardPresentPaymentsOnboardingUseCase {
         guard !isStripeAccountRejected(account: account) else {
             return .stripeAccountRejected(plugin: plugin)
         }
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.promptToEnableCodInIppOnboarding) {
-            if shouldShowCashOnDeliveryStep {
-                return .codPaymentGatewayNotSetUp(plugin: plugin)
-            }
+        if shouldShowCashOnDeliveryStep {
+            return .codPaymentGatewayNotSetUp(plugin: plugin)
         }
         guard accountStatusAllowedForCardPresentPayments(account: account) else {
             return .genericError

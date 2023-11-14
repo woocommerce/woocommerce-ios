@@ -3,6 +3,7 @@ import Yosemite
 import enum Alamofire.AFError
 import class Networking.AlamofireNetwork
 import WordPressAuthenticator
+import WooFoundation
 
 /// Coordinates the Jetpack setup flow in the authenticated state.
 ///
@@ -373,7 +374,7 @@ private extension JetpackSetupCoordinator {
                 let message = error.localizedDescription
                 self.showAlert(message: message)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: email, authToken: authToken)
             })
         let viewController = WPComPasswordLoginHostingController(
@@ -396,15 +397,18 @@ private extension JetpackSetupCoordinator {
 
     func show2FALoginUI(with loginFields: LoginFields) {
         analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode))
+        guard let window = rootViewController.view.window else {
+            logErrorAndExit("⛔️ Error finding window for security key login")
+        }
         let viewModel = WPCom2FALoginViewModel(
             loginFields: loginFields,
+            onAuthWindowRequest: { window },
             onLoginFailure: { [weak self] error in
                 guard let self else { return }
                 self.analytics.track(event: .JetpackSetup.loginFlow(step: .verificationCode, failure: error))
-                let message = error.localizedDescription
-                self.showAlert(message: message)
+                self.showAlert(message: error.errorMessage)
             },
-            onLoginSuccess: { [weak self] authToken in
+            onLoginSuccess: { @MainActor [weak self] authToken in
                 self?.showSetupSteps(username: loginFields.username, authToken: authToken)
             })
         let viewController = WPCom2FALoginHostingController(title: loginViewTitle,

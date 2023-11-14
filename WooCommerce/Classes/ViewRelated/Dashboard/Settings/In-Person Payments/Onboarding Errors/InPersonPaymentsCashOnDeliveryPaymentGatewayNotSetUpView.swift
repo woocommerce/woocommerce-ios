@@ -33,6 +33,7 @@ struct InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpView: View {
                     url: viewModel.learnMoreURL,
                     formatText: Localization.cashOnDeliveryLearnMore,
                     tappedAnalyticEvent: viewModel.learnMoreEvent))
+            .padding(.vertical, Constants.learnMorePadding)
         }
     }
 }
@@ -78,4 +79,5 @@ private enum Localization {
 
 private enum Constants {
     static let imageHeight: CGFloat = 140.0
+    static let learnMorePadding: CGFloat = 8
 }

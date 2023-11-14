@@ -1,5 +1,7 @@
 import UIKit
+import Experiments
 import enum WordPressAuthenticator.SignInSource
+import struct WordPressAuthenticator.NavigateToEnterAccount
 
 /// Coordinates navigation for store creation flow in logged-out state that starts with WPCOM authentication.
 final class LoggedOutStoreCreationCoordinator: Coordinator {
@@ -19,13 +21,18 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 
     private let analytics: Analytics
     private let source: Source
+    private let featureFlagService: FeatureFlagService
+
+    private lazy var signInSource: SignInSource = .custom(source: source.rawValue)
 
     init(source: Source,
          navigationController: UINavigationController,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.source = source
         self.navigationController = navigationController
         self.analytics = analytics
+        self.featureFlagService = featureFlagService
     }
 
     func start() {
@@ -37,7 +44,7 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
         })
         let accountCreationController = AccountCreationFormHostingController(
             viewModel: viewModel,
-            signInSource: .custom(source: source.rawValue),
+            signInSource: signInSource,
             analytics: analytics
         )
         navigationController.show(accountCreationController, sender: self)
@@ -47,6 +54,12 @@ final class LoggedOutStoreCreationCoordinator: Coordinator {
 private extension LoggedOutStoreCreationCoordinator {
     @MainActor
     func startLoginWithExistingAccount(email: String) async {
+        guard featureFlagService.isFeatureFlagEnabled(.customLoginUIForAccountCreation) else {
+            /// Navigates to login with the authenticator library.
+            let command = NavigateToEnterAccount(signInSource: signInSource, email: email)
+            command.execute(from: navigationController.topViewController ?? navigationController)
+            return
+        }
         let coordinator = WPComLoginCoordinator(navigationController: navigationController) { [weak self] in
             guard let self else { return }
             self.startStoreCreation(in: self.navigationController)

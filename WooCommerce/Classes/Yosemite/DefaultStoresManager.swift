@@ -575,7 +575,7 @@ private extension DefaultStoresManager {
         }
 
         if siteID == WooConstants.placeholderStoreID,
-           let url = sessionManager.defaultStoreURL {
+           let url = sessionManager.defaultCredentials?.siteAddress {
             restoreSessionSite(with: url)
         } else {
             restoreSessionSiteAndSynchronizeIfNeeded(with: siteID)

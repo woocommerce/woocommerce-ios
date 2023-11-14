@@ -51,6 +51,7 @@ struct AboutTapToPayView: View {
                 .buttonStyle(PrimaryButtonStyle())
 
                 InPersonPaymentsLearnMore(viewModel: .tapToPay(source: .aboutTapToPay))
+                    .padding(.vertical, Layout.learnMorePadding)
                     .customOpenURL(action: { _ in
                         showingWebView = true
                     })
@@ -145,6 +146,7 @@ private extension AboutTapToPayView {
 
     enum Layout {
         static let spacing: CGFloat = 8
+        static let learnMorePadding: CGFloat = 8
     }
 }
 

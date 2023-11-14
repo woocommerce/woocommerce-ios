@@ -54,7 +54,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
-         siteURL: String = ServiceLocator.stores.sessionManager.defaultStoreURL ?? "",
+         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,

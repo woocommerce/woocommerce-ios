@@ -116,13 +116,13 @@ public final class UnifiedOrderScreen: ScreenObject {
 
     /// Opens the Customer Details screen.
     /// - Returns: Customer Details screen object.
-    public func openCustomerDetailsScreen() throws -> CustomerDetailsScreen {
+    public func openCustomerDetailsScreen() throws -> AddCustomerDetailsScreen {
         // Swipe up to get the addCustomerDetailsButton in view.
         // There's no condition for this because somehow button.exists, button.isHittable and button.isEnabled
         // all returns true even when the button is not fully in view
         app.swipeUp()
         addCustomerDetailsButton.tap()
-        return try CustomerDetailsScreen()
+        return try AddCustomerDetailsScreen()
     }
 
     /// Opens the Add Shipping screen.
@@ -180,6 +180,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     public func addCustomerDetails(name: String) throws -> UnifiedOrderScreen {
         return try openCustomerDetailsScreen()
+            .tapAddCustomerDetailsPlusButton()
             .enterCustomerDetails(name: name)
     }
 

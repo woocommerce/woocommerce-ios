@@ -43,6 +43,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
 
     private let product: Product
     private let bundleItem: ProductBundleItem
+    private let analytics: Analytics
 
     /// Nil if the product is not a variable product.
     private let variableProductSettings: VariableProductSettings?
@@ -51,7 +52,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
          product: Product,
          variableProductSettings: VariableProductSettings?,
          existingParentOrderItem: OrderItem?,
-         existingOrderItem: OrderItem?) {
+         existingOrderItem: OrderItem?,
+         analytics: Analytics = ServiceLocator.analytics) {
         bundledItemID = bundleItem.bundledItemID
         self.product = product
         self.bundleItem = bundleItem
@@ -67,6 +69,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         }()
         self.quantity = quantity
         self.variableProductSettings = variableProductSettings
+        self.analytics = analytics
         isVariable = product.productType == .variable
         productRowViewModel = .init(productOrVariationID: bundleItem.productID,
                                     name: bundleItem.title,
@@ -83,11 +86,12 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                                     hasParentProduct: false,
                                     isConfigurable: false)
         productRowViewModel.quantityUpdatedCallback = { [weak self] quantity in
-            self?.quantity = quantity
+            guard let self else { return }
+            self.quantity = quantity
+            self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .quantity))
         }
         if let existingOrderItem, isVariable && existingOrderItem.variationID != .zero {
             selectedVariation = {
-                let variationID = existingOrderItem.variationID
                 let allVariationAttributeNames = product.attributesForVariations.map { $0.name }
                 let attributes = existingOrderItem.attributes
                     .filter { allVariationAttributeNames.contains($0.name) }
@@ -110,6 +114,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
             guard let self else { return }
             self.selectedVariation = .init(variationID: variation.productVariationID, attributes: variation.attributes)
             self.variationSelectorViewModel = nil
+            self.analytics.track(event: .Orders.orderFormBundleProductConfigurationChanged(changedField: .variation))
         })
     }
 

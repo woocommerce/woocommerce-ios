@@ -844,9 +844,14 @@ final class ShippingLabelStoreTests: XCTestCase {
                                                                originAddress: mockAddress,
                                                                destinationAddress: mockAddress,
                                                                packages: mockPackages,
-                                                               emailCustomerReceipt: true) { result in
-            purchaseResult = result
-        }
+                                                               emailCustomerReceipt: true,
+                                                               completion: { purchaseResult = $0 },
+                                                               backendProcessingDelay: 0.01,
+                                                               pollingDelay: 0.01,
+                                                               // Irrelevant, because it caps retries on error only.
+                                                               // Here just for reference.
+                                                               pollingMaximumRetries: 3)
+
         // We want to test that purchaseShippingLabel does not call its completion ("return") with an error for the entire duration of the polling it makes under the hood when the status is progress.
         // So, let's set an inverted expectation: Let's validate that the result will never be an error.
         let exp = expectation(
@@ -865,18 +870,24 @@ final class ShippingLabelStoreTests: XCTestCase {
 
         // Then
         //
-        // The 6 seconds was the wait time in the previous iteration of this test.
-        // As far as I, Gio, can test, it was arbitrary as "long enough to have a retry".
+        // The action has been dispatched and should result in:
         //
-        // Given:
-        // - the default delay after receiving the purchase label is 2s,
-        // - each retry has a 1s delay,
-        // - and there is no maximum retry count for the progress state
-        // any timeout longer that 3s plus a few decimal places for buffer would have been okay.
-        wait(for: [exp], timeout: 6.0)
+        // 1. API call to get the purchase labels
+        // 2. Wait for the given delay to "give the backend time to process the labels"
+        // 3. API call to get the status of those labels, which will be "in progress"
+        // 4. Another API call after a delay to check the status again
+        // 5. More API calls to check the status, because there currently is no limit to how many retries we fire...
+        //
+        // By waiting for an interval greater than the sum of the delays on the inverted expectation we will:
+        //
+        // - Simulate the whole process, including the retry mechanism
+        // - Ensure that the completion never gets called with an error throughout the process
+        //
+        // The delays configured above are both 0.01. Using a 0.1 timeout – one order of magnitude bigger –
+        wait(for: [exp], timeout: 0.1)
 
-        // To ensure we didn't get a false positive, with the test simply waiting for 6 seconds but
-        // nothing happening in the SUT, let's inspect the remote test double to ensure that both
+        // To ensure we didn't get a false positive, with the test simply waiting for the given timeout
+        // but nothing happening in the SUT, let's inspect the remote test double to ensure that both
         // the purchase labels and the check status API calls were made. For the status, let's also
         // verify more that one was made, to ensure that it polled upon a "in progress" status.
         XCTAssertTrue(remote.purchaseShippingLabelCalled)

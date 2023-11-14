@@ -7,11 +7,11 @@ public enum NetworkError: Error, Equatable {
 
     /// Resource Not Found (statusCode = 404)
     ///
-    case notFound
+    case notFound(response: Data? = nil)
 
     /// Request Timeout (statusCode = 408)
     ///
-    case timeout
+    case timeout(response: Data? = nil)
 
     /// Any statusCode that's not in the [200, 300) range!
     ///
@@ -38,9 +38,9 @@ extension NetworkError {
 
         switch statusCode {
         case StatusCode.notFound:
-            self = .notFound
+            self = .notFound(response: responseData)
         case StatusCode.timeout:
-            self = .timeout
+            self = .timeout(response: responseData)
         default:
             self = .unacceptableStatusCode(statusCode: statusCode, response: responseData)
         }

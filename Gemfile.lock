@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/Automattic/dangermattic
-  revision: 451932e8870ef3c52de0d8bea80edcfa3d879e53
+  revision: 06a54db4f546d20c0465e4d144049d061a2a1e20
   specs:
     danger-dangermattic (0.0.1)
       danger (~> 9.3)
@@ -336,7 +336,7 @@ GEM
       highline (>= 1.6, < 3)
       options (~> 2.3.0)
     public_suffix (4.0.7)
-    racc (1.7.1)
+    racc (1.7.3)
     rainbow (3.1.1)
     rake (12.3.3)
     rake-compiler (1.2.5)
@@ -351,8 +351,7 @@ GEM
     rexml (3.2.6)
     rmagick (4.3.0)
     rouge (2.0.7)
-    rubocop (1.57.1)
-      base64 (~> 0.1.1)
+    rubocop (1.57.2)
       json (~> 2.3)
       language_server-protocol (>= 3.17.0)
       parallel (~> 1.10)
@@ -363,7 +362,7 @@ GEM
       rubocop-ast (>= 1.28.1, < 2.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 2.4.0, < 3.0)
-    rubocop-ast (1.29.0)
+    rubocop-ast (1.30.0)
       parser (>= 3.2.1.0)
     rubocop-rake (0.6.0)
       rubocop (~> 1.0)
@@ -430,7 +429,7 @@ DEPENDENCIES
   cocoapods-catalyst-support (~> 0.1)
   danger-dangermattic!
   dotenv
-  fastlane (~> 2)
+  fastlane (~> 2.216)
   fastlane-plugin-appcenter (~> 2.0)
   fastlane-plugin-sentry (~> 1.0)
   fastlane-plugin-wpmreleasetoolkit (~> 9.1)

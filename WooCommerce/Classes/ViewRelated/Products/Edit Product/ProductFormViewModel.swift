@@ -328,6 +328,7 @@ extension ProductFormViewModel {
     func updatePriceSettings(regularPrice: String?,
                              subscriptionPeriod: SubscriptionPeriod?,
                              subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
@@ -335,7 +336,8 @@ extension ProductFormViewModel {
                              taxClass: TaxClass?) {
         let subscription = product.subscription?.copy(period: subscriptionPeriod,
                                                       periodInterval: subscriptionPeriodInterval,
-                                                      price: regularPrice)
+                                                      price: regularPrice,
+                                                      signUpFee: subscriptionSignupFee)
         product = EditableProductModel(product: product.product.copy(dateOnSaleStart: dateOnSaleStart,
                                                                      dateOnSaleEnd: dateOnSaleEnd,
                                                                      regularPrice: regularPrice,

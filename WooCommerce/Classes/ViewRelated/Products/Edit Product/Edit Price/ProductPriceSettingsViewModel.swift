@@ -272,6 +272,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         onCompletion(regularPrice,
                      subscriptionPeriod,
                      subscriptionPeriodInterval,
+                     subscriptionSignupFee,
                      salePrice,
                      dateOnSaleStart,
                      dateOnSaleEnd,
@@ -293,7 +294,8 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
             newTaxClass != originalTaxClass ||
-            subscriptionPeriodDescription != product.subscriptionPeriodDescription {
+            subscriptionPeriodDescription != product.subscriptionPeriodDescription ||
+            priceSettingsValidator.getDecimalPrice(subscriptionSignupFee) != priceSettingsValidator.getDecimalPrice(product.subscription?.signUpFee) {
             return true
         }
 

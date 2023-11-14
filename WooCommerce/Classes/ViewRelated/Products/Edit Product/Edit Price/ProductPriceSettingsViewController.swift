@@ -32,6 +32,7 @@ final class ProductPriceSettingsViewController: UIViewController {
     typealias Completion = (_ regularPrice: String?,
                             _ subscriptionPeriod: SubscriptionPeriod?,
                             _ subscriptionPeriodInterval: String?,
+                            _ subscriptionSignupFee: String?,
                             _ salePrice: String?,
                             _ dateOnSaleStart: Date?,
                             _ dateOnSaleEnd: Date?,
@@ -166,7 +167,7 @@ extension ProductPriceSettingsViewController {
     @objc private func completeUpdating() {
         viewModel.completeUpdating(
             onCompletion: { [weak self] in
-                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8)
+                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
             },
             onError: { [weak self] error in
                 switch error {

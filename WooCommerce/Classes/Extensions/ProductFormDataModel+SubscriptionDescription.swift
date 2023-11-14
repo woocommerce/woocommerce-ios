@@ -1,5 +1,6 @@
 import Foundation
 import struct Yosemite.Product
+import enum Yosemite.SubscriptionPeriod
 
 extension ProductFormDataModel {
 
@@ -7,15 +8,18 @@ extension ProductFormDataModel {
     /// Returns nil if the product does not have subscription info.
     ///
     var subscriptionPeriodDescription: String? {
-        guard let subscription = subscription else {
-            return nil
-        }
+        subscription.map { String.formatSubscriptionPeriodDescription(period: $0.period, interval: $0.periodInterval) }
+    }
+}
+
+extension String {
+    static func formatSubscriptionPeriodDescription(period: SubscriptionPeriod, interval: String) -> String {
         let billingFrequency = {
-            switch subscription.periodInterval {
+            switch interval {
             case "1":
-                return subscription.period.descriptionSingular
+                return period.descriptionSingular
             default:
-                return "\(subscription.periodInterval) \(subscription.period.descriptionPlural)"
+                return "\(interval) \(period.descriptionPlural)"
             }
         }()
 
@@ -25,6 +29,6 @@ extension ProductFormDataModel {
             comment: "Description of the subscription period for a product. " +
             "Reads like: 'every 2 months'."
         )
-        return String.localizedStringWithFormat(subscriptionPeriodFormat, billingFrequency)
+        return localizedStringWithFormat(subscriptionPeriodFormat, billingFrequency)
     }
 }

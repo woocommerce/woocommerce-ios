@@ -245,15 +245,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     }
 
     func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod) {
-        let billingFrequency = {
-            switch interval {
-            case "1":
-                return period.descriptionSingular
-            default:
-                return "\(interval) \(period.descriptionPlural)"
-            }
-        }()
-        subscriptionPeriodDescription = String.localizedStringWithFormat(Strings.subscriptionPeriodFormat, billingFrequency)
+        subscriptionPeriodDescription = String.formatSubscriptionPeriodDescription(period: period, interval: interval)
         subscriptionPeriod = period
         subscriptionPeriodInterval = interval
     }
@@ -312,11 +304,5 @@ extension ProductPriceSettingsViewModel {
         )
         static let taxSectionTitle = NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings")
         static let standardTaxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
-        static let subscriptionPeriodFormat = NSLocalizedString(
-            "productPriceSettingsViewModel.subscriptionPeriodFormat",
-            value: "every %1$@",
-            comment: "Description of the subscription period for a product. " +
-            "Reads like: 'every 2 months'."
-        )
     }
 }

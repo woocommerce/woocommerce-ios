@@ -20,7 +20,7 @@ extension Product {
             guard let regularPrice, regularPrice.isNotEmpty else {
                 return ""
             }
-            return currencyFormatter.formatAmount(regularPrice, with: unit) ?? ""
+            return (currencyFormatter.formatAmount(regularPrice, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         }()
@@ -73,7 +73,7 @@ extension Product {
             guard let fee, fee.isNotEmpty else {
                 return ""
             }
-            return currencyFormatter.formatAmount(fee, with: unit) ?? ""
+            return (currencyFormatter.formatAmount(fee, with: unit) ?? "")
                 .replacingOccurrences(of: unit, with: "")
                 .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         }()

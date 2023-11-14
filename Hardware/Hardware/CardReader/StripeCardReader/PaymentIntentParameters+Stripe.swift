@@ -4,7 +4,7 @@ import StripeTerminal
 extension Hardware.PaymentIntentParameters {
     /// Initializes a StripeTerminal.PaymentIntentParameters from a
     /// Hardware.PaymentIntentParameters
-    func toStripe(with meta: ParametersMeta? = nil) -> StripeTerminal.PaymentIntentParameters? {
+    func toStripe(with meta: CardReaderMetadata? = nil) -> StripeTerminal.PaymentIntentParameters? {
         // Shortcircuit if we do not have a valid currency code
         guard !currency.isEmpty else {
             return nil
@@ -42,15 +42,15 @@ extension Hardware.PaymentIntentParameters {
 
             paymentIntentParamBuilder.setReceiptEmail(receiptEmail)
 
-            let paramsMeta: [String: String]? = [
+            let cardReaderMetadata: [String: String]? = [
                 "reader_ID": "\(meta?.readerIDMetadataKey ?? "")",
                 "reader_model": "\(meta?.readerModelMetadataKey ?? "")",
                 "platform": "\(meta?.platformMetadataKey ?? "")"
             ]
 
-            // Replace metadata with our metadata when there's a key collision
-            let mergedMeta = (metadata ?? [:]).merging(paramsMeta ?? [:]) { (_, new) in new }
-            paymentIntentParamBuilder.setMetadata(mergedMeta)
+            // Updates the existing metadata with our cardReaderMetaData when there's a key collision in the dictionary
+            let updatedMetadata = (metadata ?? [:]).merging(cardReaderMetadata ?? [:]) { (_, new) in new }
+            paymentIntentParamBuilder.setMetadata(updatedMetadata)
 
             // Return payment intent built config:
             return try paymentIntentParamBuilder.build()

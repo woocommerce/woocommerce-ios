@@ -70,11 +70,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     func doneButtonPressed() {
-        if name.isNotEmpty {
-            analytics.track(.addCustomAmountNameAdded)
-        }
-
-        analytics.track(.addCustomAmountDoneButtonTapped)
+        trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
         onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
@@ -93,6 +89,18 @@ private extension AddCustomAmountViewModel {
         formattableAmountTextFieldViewModel.$amount.map { _ in
             !self.formattableAmountTextFieldViewModel.amountIsValid
         }.assign(to: &$shouldDisableDoneButton)
+    }
+
+    func trackEventsOnDoneButtonPressed() {
+        if name.isNotEmpty {
+            analytics.track(.addCustomAmountNameAdded)
+        }
+
+        if percentage.isNotEmpty {
+            analytics.track(.addCustomAmountPercentageAdded)
+        }
+
+        analytics.track(.addCustomAmountDoneButtonTapped)
     }
 }
 

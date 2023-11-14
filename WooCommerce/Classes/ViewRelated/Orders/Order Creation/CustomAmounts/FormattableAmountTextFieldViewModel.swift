@@ -15,6 +15,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
             if resetAmountWithNewValue,
                 let newInput = amount.last {
+                onResetAmountWithNewValue?()
                 amount = String(newInput)
                 resetAmountWithNewValue = false
             }
@@ -48,6 +49,8 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
     var amountTextColor: UIColor {
         amount.isEmpty ? .textSubtle : .text
     }
+
+    var onResetAmountWithNewValue: (() -> Void)?
 
     init(locale: Locale = Locale.autoupdatingCurrent,
         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {

@@ -47,14 +47,24 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Nil if the product is not a variable product.
     private let variableProductSettings: VariableProductSettings?
 
-    init(bundleItem: ProductBundleItem, product: Product, variableProductSettings: VariableProductSettings?, existingOrderItem: OrderItem?) {
+    init(bundleItem: ProductBundleItem,
+         product: Product,
+         variableProductSettings: VariableProductSettings?,
+         existingParentOrderItem: OrderItem?,
+         existingOrderItem: OrderItem?) {
         bundledItemID = bundleItem.bundledItemID
         self.product = product
         self.bundleItem = bundleItem
         isOptional = bundleItem.isOptional
         let isOptionalAndSelected = existingOrderItem != nil
         self.isOptionalAndSelected = isOptionalAndSelected
-        let quantity = existingOrderItem?.quantity ?? bundleItem.defaultQuantity
+        let quantity: Decimal = {
+            guard let orderItemQuantity = existingOrderItem?.quantity else {
+                return bundleItem.defaultQuantity
+            }
+            let parentOrderItemQuantity = max(existingParentOrderItem?.quantity ?? 1, 1)
+            return orderItemQuantity*1.0/parentOrderItemQuantity
+        }()
         self.quantity = quantity
         self.variableProductSettings = variableProductSettings
         isVariable = product.productType == .variable

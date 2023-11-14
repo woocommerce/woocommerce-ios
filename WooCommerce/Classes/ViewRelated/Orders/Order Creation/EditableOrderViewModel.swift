@@ -536,7 +536,7 @@ final class EditableOrderViewModel: ObservableObject {
                 self.syncOrderItemSelectionStateOnDismiss()
             }, onConfigureProductRow: { [weak self] product in
                 guard let self else { return }
-                productToConfigureViewModel = .init(product: product, childItems: [], onConfigure: { [weak self] configuration in
+                productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
                     guard let self else { return }
                     self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
                     self.productToConfigureViewModel = nil
@@ -641,6 +641,7 @@ final class EditableOrderViewModel: ObservableObject {
                 switch product.productType {
                     case .bundle:
                         self.configurableProductViewModel = .init(product: product,
+                                                                  orderItem: item,
                                                                   childItems: childItems,
                                                                   onConfigure: { [weak self] configuration in
                             guard let self else { return }

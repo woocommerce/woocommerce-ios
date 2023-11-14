@@ -42,19 +42,23 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     private var initialConfigurations: [BundledProductConfiguration] = []
 
     private let product: Product
+    private let orderItem: OrderItem?
     private let childItems: [OrderItem]
     private let stores: StoresManager
 
     /// - Parameters:
     ///   - product: Bundle product in an order item.
+    ///   - orderItem: Pre-existing order item of the bundle product.
     ///   - childItems: Pre-existing bundled order items.
     ///   - stores: For dispatching actions.
     ///   - onConfigure: Invoked when the configuration is confirmed.
     init(product: Product,
-         childItems: [OrderItem],
+         orderItem: OrderItem? = nil,
+         childItems: [OrderItem] = [],
          stores: StoresManager = ServiceLocator.stores,
          onConfigure: @escaping (_ configurations: [BundledProductConfiguration]) -> Void) {
         self.product = product
+        self.orderItem = orderItem
         self.childItems = childItems
         self.stores = stores
         self.onConfigure = onConfigure
@@ -75,6 +79,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
                                         defaultVariationAttributes: []),
                       product: product,
                       variableProductSettings: nil,
+                      existingParentOrderItem: nil,
                       existingOrderItem: nil)
         }
 
@@ -126,6 +131,7 @@ private extension ConfigurableBundleProductViewModel {
                 guard let product = products.first(where: { $0.productID == bundleItem.productID }) else {
                     return nil
                 }
+                let bundleOrderItemQuantity = max(orderItem?.quantity ?? 1, 1)
                 let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID })
                 switch product.productType {
                     case .variable:
@@ -135,9 +141,14 @@ private extension ConfigurableBundleProductViewModel {
                                      product: product,
                                      variableProductSettings:
                                 .init(allowedVariations: allowedVariations, defaultAttributes: defaultAttributes),
+                                     existingParentOrderItem: orderItem,
                                      existingOrderItem: existingOrderItem)
                     default:
-                        return .init(bundleItem: bundleItem, product: product, variableProductSettings: nil, existingOrderItem: existingOrderItem)
+                        return .init(bundleItem: bundleItem,
+                                     product: product,
+                                     variableProductSettings: nil,
+                                     existingParentOrderItem: orderItem,
+                                     existingOrderItem: existingOrderItem)
                 }
             }
         initialConfigurations = bundleItemViewModels.compactMap { $0.toConfiguration }

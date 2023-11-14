@@ -1,64 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22155" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22131"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="KGk-i7-Jjw" customClass="UnitInputTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" rowHeight="77" id="KGk-i7-Jjw" customClass="UnitInputTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                <rect key="frame" x="0.0" y="0.0" width="320" height="77"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="USm-hW-Nqm">
-                        <rect key="frame" x="16" y="16" width="41.5" height="12"/>
+                        <rect key="frame" x="16" y="14" width="41.5" height="20.5"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Ob4-NO-lKK">
-                        <rect key="frame" x="73.5" y="11" width="230.5" height="22"/>
+                        <rect key="frame" x="73.5" y="11" width="230.5" height="26.5"/>
                         <subviews>
                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Egc-4I-j1K">
-                                <rect key="frame" x="0.0" y="0.0" width="189" height="22"/>
+                                <rect key="frame" x="0.0" y="0.0" width="189" height="26.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Zeq-2u-wuX">
-                                <rect key="frame" x="189" y="0.0" width="41.5" height="22"/>
+                                <rect key="frame" x="189" y="0.0" width="41.5" height="26.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                         </subviews>
                     </stackView>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dbl-vr-5y8">
+                        <rect key="frame" x="16" y="45.5" width="288" height="20.5"/>
+                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <nil key="textColor"/>
+                        <nil key="highlightedColor"/>
+                    </label>
                 </subviews>
                 <constraints>
                     <constraint firstItem="Ob4-NO-lKK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="11" id="1SP-Ip-tgf"/>
-                    <constraint firstItem="USm-hW-Nqm" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="94h-Pu-yw9"/>
+                    <constraint firstItem="USm-hW-Nqm" firstAttribute="centerY" secondItem="Ob4-NO-lKK" secondAttribute="centerY" id="ARP-Nc-hmT"/>
                     <constraint firstAttribute="trailingMargin" secondItem="Ob4-NO-lKK" secondAttribute="trailing" id="Cgk-BX-4Tt"/>
-                    <constraint firstAttribute="bottom" secondItem="Ob4-NO-lKK" secondAttribute="bottom" constant="11" id="L3s-mF-7Se"/>
+                    <constraint firstItem="Dbl-vr-5y8" firstAttribute="top" secondItem="Ob4-NO-lKK" secondAttribute="bottom" constant="8" id="Hve-2K-mZS"/>
                     <constraint firstItem="USm-hW-Nqm" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="NaZ-l9-qgY"/>
-                    <constraint firstAttribute="bottom" secondItem="USm-hW-Nqm" secondAttribute="bottom" constant="16" id="jA4-Ga-8ge"/>
+                    <constraint firstAttribute="bottom" secondItem="Dbl-vr-5y8" secondAttribute="bottom" constant="11" id="clw-cl-zlD"/>
+                    <constraint firstItem="Dbl-vr-5y8" firstAttribute="leading" secondItem="USm-hW-Nqm" secondAttribute="leading" id="cqC-w9-MBg"/>
                     <constraint firstItem="Ob4-NO-lKK" firstAttribute="leading" secondItem="USm-hW-Nqm" secondAttribute="trailing" constant="16" id="ohO-Vo-Z9g"/>
+                    <constraint firstItem="Dbl-vr-5y8" firstAttribute="trailing" secondItem="Ob4-NO-lKK" secondAttribute="trailing" id="zZb-pW-mZ0"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="inputAndUnitStackView" destination="Ob4-NO-lKK" id="ENb-Cm-KUp"/>
-                <outlet property="inputAndUnitStackViewTotitleLabel" destination="ohO-Vo-Z9g" id="hD7-mw-hCx"/>
+                <outlet property="inputAndUnitStackViewToTitleLabel" destination="ohO-Vo-Z9g" id="9lo-kO-sjJ"/>
                 <outlet property="inputTextField" destination="Egc-4I-j1K" id="ABz-lR-XQG"/>
+                <outlet property="subtitleLabel" destination="Dbl-vr-5y8" id="zjR-s0-0PR"/>
+                <outlet property="subtitleLabelToInputAndUnitStackView" destination="Hve-2K-mZS" id="JwC-cj-8Ar"/>
                 <outlet property="titleLabel" destination="USm-hW-Nqm" id="z1x-su-ObU"/>
                 <outlet property="unitLabel" destination="Zeq-2u-wuX" id="GWc-C1-ftr"/>
             </connections>
-            <point key="canvasLocation" x="139" y="125"/>
+            <point key="canvasLocation" x="137.68115942028987" y="135.60267857142856"/>
         </tableViewCell>
     </objects>
 </document>

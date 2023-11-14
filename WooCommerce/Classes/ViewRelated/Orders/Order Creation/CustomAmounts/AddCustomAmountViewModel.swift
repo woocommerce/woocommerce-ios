@@ -38,12 +38,9 @@ final class AddCustomAmountViewModel: ObservableObject {
         listenToAmountChanges()
 
         formattableAmountTextFieldViewModel.onWillResetAmountWithNewValue = { [weak self] in
-            self?.updateFormattableAmountWithNextPercentageChange = false
             self?.percentage = ""
         }
     }
-
-    var updateFormattableAmountWithNextPercentageChange = true
 
     /// Variable that holds the name of the custom amount.
     ///
@@ -51,11 +48,6 @@ final class AddCustomAmountViewModel: ObservableObject {
     @Published var percentage = "" {
         didSet {
             guard oldValue != percentage else { return }
-
-            guard updateFormattableAmountWithNextPercentageChange else {
-                updateFormattableAmountWithNextPercentageChange = true
-                return
-            }
 
             guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
 

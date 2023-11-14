@@ -362,6 +362,8 @@ private extension ProductPriceSettingsViewController {
             configureTaxClass(cell: cell)
         case let cell as TitleAndTextFieldTableViewCell where row == .subscriptionPeriod:
             configureSubscriptionPeriod(cell: cell)
+        case let cell as UnitInputTableViewCell where row == .subscriptionSignupFee:
+            configureSubscriptionSignupFee(cell: cell)
         default:
             fatalError()
             break
@@ -396,6 +398,10 @@ private extension ProductPriceSettingsViewController {
                                         onEditingEnd: { [weak self] in
             self?.refreshViewContent()
         }))
+    }
+
+    func configureSubscriptionSignupFee(cell: UnitInputTableViewCell) {
+        // TODO
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -519,6 +525,7 @@ extension ProductPriceSettingsViewController {
     enum Row: CaseIterable {
         case price
         case subscriptionPeriod
+        case subscriptionSignupFee
         case salePrice
 
         case scheduleSale
@@ -533,7 +540,7 @@ extension ProductPriceSettingsViewController {
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .price, .salePrice:
+            case .price, .salePrice, .subscriptionSignupFee:
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self

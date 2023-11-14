@@ -131,7 +131,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         // Price section
         var priceRows: [Row] = [.price]
         if product.productType.isSubscriptionType {
-            priceRows.append(contentsOf: [.subscriptionPeriod])
+            priceRows.append(contentsOf: [.subscriptionPeriod, .subscriptionSignupFee])
         }
         let priceSection = Section(title: Strings.priceSectionTitle, rows: priceRows)
 

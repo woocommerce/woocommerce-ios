@@ -127,9 +127,8 @@ extension StripeCardReaderService: CardReaderService {
             let blueToothConfig = BluetoothScanDiscoveryConfigurationBuilder()
             do {
                 config = try blueToothConfig.setSimulated(shouldUseSimulatedCardReader).build()
-                // TODO: Better error handling
             } catch let error as UnderlyingError {
-                DDLogError("\(String(describing: error.failureReason))")
+                DDLogError("Failed to start BluetoothScanDiscovery. Error:\(String(describing: error.failureReason))")
                 throw error
             } catch {
                 DDLogError("\(error)")
@@ -139,9 +138,8 @@ extension StripeCardReaderService: CardReaderService {
             let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
             do {
                 config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()
-                // TODO: Better error handling
             } catch let error as UnderlyingError {
-                DDLogError("\(String(describing: error.failureReason))")
+                DDLogError("Failed to start LocalMobileDiscovery. Error:\(String(describing: error.failureReason))")
                 throw error
             } catch {
                 DDLogError("\(error)")

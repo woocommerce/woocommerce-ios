@@ -4,7 +4,7 @@ import StripeTerminal
 extension Hardware.PaymentIntentParameters {
     /// Initializes a StripeTerminal.PaymentIntentParameters from a
     /// Hardware.PaymentIntentParameters
-    func toStripe(with meta: CardReaderMetadata? = nil) -> StripeTerminal.PaymentIntentParameters? {
+    func toStripe(with cardReaderMetadata: CardReaderMetadata? = nil) -> StripeTerminal.PaymentIntentParameters? {
         // Shortcircuit if we do not have a valid currency code
         guard !currency.isEmpty else {
             return nil
@@ -42,14 +42,7 @@ extension Hardware.PaymentIntentParameters {
 
             paymentIntentParamBuilder.setReceiptEmail(receiptEmail)
 
-            let cardReaderMetadata: [String: String]? = [
-                "reader_ID": "\(meta?.readerIDMetadataKey ?? "")",
-                "reader_model": "\(meta?.readerModelMetadataKey ?? "")",
-                "platform": "\(meta?.platformMetadataKey ?? "")"
-            ]
-
-            // Updates the existing metadata with our cardReaderMetaData when there's a key collision in the dictionary
-            let updatedMetadata = (metadata ?? [:]).merging(cardReaderMetadata ?? [:]) { (_, new) in new }
+            let updatedMetadata = prepareMetadataForStripe(with: cardReaderMetadata)
             paymentIntentParamBuilder.setMetadata(updatedMetadata)
 
             // Return payment intent built config:
@@ -65,6 +58,19 @@ private extension Hardware.PaymentIntentParameters {
     func prepareAmountForStripe(_ amount: Decimal) -> UInt {
         let amountInSmallestUnit = amount * stripeSmallestCurrencyUnitMultiplier
         return NSDecimalNumber(decimal: amountInSmallestUnit).uintValue
+    }
+
+    func prepareMetadataForStripe(with meta: CardReaderMetadata? = nil) -> [String: String]? {
+        let cardReaderMetadata: [String: String]? = [
+            "reader_ID": "\(meta?.readerIDMetadataKey ?? "")",
+            "reader_model": "\(meta?.readerModelMetadataKey ?? "")",
+            "platform": "\(meta?.platformMetadataKey ?? "")"
+        ]
+
+        // Updates the existing PaymentIntentParameters metadata with our cardReaderMetaData when there's a key collision in the dictionary
+        let updatedMetadata = (metadata ?? [:]).merging(cardReaderMetadata ?? [:]) { (_, new) in new }
+
+        return updatedMetadata
     }
 }
 #endif

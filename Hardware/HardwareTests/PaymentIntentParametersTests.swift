@@ -137,4 +137,30 @@ final class PaymentIntentParametersTests: XCTestCase {
 
         XCTAssertNil(stripeParameters?.statementDescriptor)
     }
+
+    func test_cardReaderMetadata_is_passed_when_sent_toStripe_then_stripeParameters_contains_cardReaderMetadata() {
+        let sut = createPaymentIntentParameters()
+
+        let expectedReaderID = "somereaderID"
+        let expectedReaderModel = "someModel"
+        let expectedPlatform = "somePlatform"
+        let cardReaderMeta = CardReaderMetadata(readerIDMetadataKey: expectedReaderID, 
+                                                readerModelMetadataKey: expectedReaderModel,
+                                                platformMetadataKey: expectedPlatform)
+
+        let stripeParameters = sut.toStripe(with: cardReaderMeta)
+
+        XCTAssertEqual(stripeParameters?.metadata?["reader_ID"], expectedReaderID)
+        XCTAssertEqual(stripeParameters?.metadata?["reader_model"], expectedReaderModel)
+        XCTAssertEqual(stripeParameters?.metadata?["platform"], expectedPlatform)
+    }
+}
+
+private extension PaymentIntentParametersTests {
+    func createPaymentIntentParameters() -> PaymentIntentParameters {
+        return PaymentIntentParameters(amount: 100,
+                                       currency: "usd",
+                                       stripeSmallestCurrencyUnitMultiplier: 100,
+                                       paymentMethodTypes: ["card_present"])
+    }
 }

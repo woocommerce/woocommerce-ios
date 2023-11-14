@@ -1,5 +1,4 @@
 import Foundation
-import struct Yosemite.Product
 import enum Yosemite.SubscriptionPeriod
 
 extension ProductFormDataModel {

@@ -387,7 +387,7 @@ private extension ProductPriceSettingsViewController {
         )
         self.subscriptionPeriodPickerUseCase = useCase
 
-        cell.configure(viewModel: .init(title: Localization.subscriptionPeriod,
+        cell.configure(viewModel: .init(title: Localization.billingInterval,
                                         text: viewModel.subscriptionPeriodDescription,
                                         placeholder: nil,
                                         textFieldAlignment: .trailing,
@@ -563,10 +563,10 @@ private struct Constants {
 
 private extension ProductPriceSettingsViewController {
     enum Localization {
-        static let subscriptionPeriod = NSLocalizedString(
-            "productPriceSettingsViewController.subscriptionIntervalRowTitle",
-            value: "Subscription period",
-            comment: "Title of the subscription interval row on the Product Price screen"
+        static let billingInterval = NSLocalizedString(
+            "productPriceSettingsViewController.billingIntervalRowTitle",
+            value: "Billing interval",
+            comment: "Title of the billing interval row on the Product Price screen"
         )
         static let subscriptionPeriodToolBarButton = NSLocalizedString(
             "productPriceSettingsViewController.subscriptionPeriodToolBarButton",

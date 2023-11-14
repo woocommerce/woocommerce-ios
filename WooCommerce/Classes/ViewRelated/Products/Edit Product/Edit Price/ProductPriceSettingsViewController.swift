@@ -401,7 +401,11 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSubscriptionSignupFee(cell: UnitInputTableViewCell) {
-        // TODO
+        let cellViewModel = Product.createSubscriptionSignupFeeViewModel(fee: viewModel.subscriptionSignupFee, using: ServiceLocator.currencySettings) { [weak self] fee in
+            self?.viewModel.handleSubscriptionSignupFeeChange(fee)
+        }
+        cell.selectionStyle = .none
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {

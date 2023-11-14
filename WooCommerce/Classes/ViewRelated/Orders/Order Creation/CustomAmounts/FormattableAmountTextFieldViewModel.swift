@@ -15,7 +15,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
 
             if resetAmountWithNewValue,
                 let newInput = amount.last {
-                onResetAmountWithNewValue?()
+                onWillResetAmountWithNewValue?()
                 amount = String(newInput)
                 resetAmountWithNewValue = false
             }
@@ -50,7 +50,7 @@ final class FormattableAmountTextFieldViewModel: ObservableObject {
         amount.isEmpty ? .textSubtle : .text
     }
 
-    var onResetAmountWithNewValue: (() -> Void)?
+    var onWillResetAmountWithNewValue: (() -> Void)?
 
     init(locale: Locale = Locale.autoupdatingCurrent,
         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings) {

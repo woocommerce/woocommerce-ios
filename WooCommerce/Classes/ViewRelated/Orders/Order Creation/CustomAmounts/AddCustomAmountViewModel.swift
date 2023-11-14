@@ -8,7 +8,7 @@ typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int6
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
-    var baseAmountForPercentage: Decimal
+    private var baseAmountForPercentage: Decimal
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
     private let currencyFormatter: CurrencyFormatter
@@ -25,7 +25,7 @@ final class AddCustomAmountViewModel: ObservableObject {
         baseAmountForPercentage > 0
     }
 
-    init(baseAmountForPercentage: Decimal,
+    init(baseAmountForPercentage: Decimal = 0,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
@@ -37,7 +37,7 @@ final class AddCustomAmountViewModel: ObservableObject {
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
 
-        formattableAmountTextFieldViewModel.onResetAmountWithNewValue = { [weak self] in
+        formattableAmountTextFieldViewModel.onWillResetAmountWithNewValue = { [weak self] in
             self?.updateFormattableAmountWithNextPercentageChange = false
             self?.percentage = ""
         }

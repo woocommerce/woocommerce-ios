@@ -60,12 +60,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         return toolBar
     }()
 
-    private lazy var subscriptionPeriodPickerView: UIPickerView = {
-        let pickerView = UIPickerView()
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        return pickerView
-    }()
+    private var subscriptionPeriodPickerUseCase: ProductSubscriptionPeriodPickerUseCase?
 
     /// Init
     ///
@@ -382,16 +377,24 @@ private extension ProductPriceSettingsViewController {
     }
 
     func configureSubscriptionPeriod(cell: TitleAndTextFieldTableViewCell) {
+        let useCase = ProductSubscriptionPeriodPickerUseCase(
+            initialPeriod: viewModel.subscriptionPeriod,
+            initialInterval: viewModel.subscriptionPeriodInterval,
+            updateHandler: { [weak self] period, interval in
+                self?.viewModel.handleSubscriptionPeriodChange(interval: interval, period: period)
+            }
+        )
+        self.subscriptionPeriodPickerUseCase = useCase
+
         cell.configure(viewModel: .init(title: Localization.subscriptionPeriod,
                                         text: viewModel.subscriptionPeriodDescription,
                                         placeholder: nil,
                                         textFieldAlignment: .trailing,
-                                        inputView: subscriptionPeriodPickerView,
+                                        inputView: useCase.pickerView,
                                         inputAccessoryView: subscriptionPeriodToolbar,
                                         onEditingEnd: { [weak self] in
             self?.refreshViewContent()
         }))
-        preselectSubscriptionPeriodPickerRows()
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -480,48 +483,6 @@ private extension ProductPriceSettingsViewController {
     }
 }
 
-// MARK: - UIPickerViewDataSource & UIPickerViewDelegate performance
-//
-extension ProductPriceSettingsViewController: UIPickerViewDataSource, UIPickerViewDelegate {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        SubscriptionPeriodPickerComponent.allCases.count
-    }
-
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        switch component {
-        case SubscriptionPeriodPickerComponent.interval.rawValue:
-            return Constants.maximumSubscriptionPeriodInterval
-        case SubscriptionPeriodPickerComponent.period.rawValue:
-            return SubscriptionPeriod.allCases.count
-        default:
-            return 0
-        }
-    }
-
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        switch component {
-        case SubscriptionPeriodPickerComponent.interval.rawValue:
-            return "\(row + 1)"
-        case SubscriptionPeriodPickerComponent.period.rawValue:
-            if pickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.interval.rawValue) == 0 {
-                return SubscriptionPeriod.allCases[row].descriptionSingular
-            } else {
-                return SubscriptionPeriod.allCases[row].descriptionPlural
-            }
-        default:
-            return nil
-        }
-    }
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        if component == SubscriptionPeriodPickerComponent.interval.rawValue {
-            // reloads the period component to display the updated titles based on the interval.
-            pickerView.reloadComponent(SubscriptionPeriodPickerComponent.period.rawValue)
-        }
-        updateSubscriptionPeriodDescription()
-    }
-}
-
 // MARK: - Convenience Methods
 //
 private extension ProductPriceSettingsViewController {
@@ -542,38 +503,6 @@ private extension ProductPriceSettingsViewController {
     @objc
     func onSubscriptionPeriodUpdateDone() {
         view.endEditing(true)
-    }
-
-    func updateSubscriptionPeriodDescription() {
-        let selectedIntervalRow = subscriptionPeriodPickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.interval.rawValue)
-        let selectedPeriodRow = subscriptionPeriodPickerView.selectedRow(inComponent: SubscriptionPeriodPickerComponent.period.rawValue)
-        viewModel.handleSubscriptionPeriodChange(interval: "\(selectedIntervalRow + 1)",
-                                                 period: SubscriptionPeriod.allCases[selectedPeriodRow])
-    }
-
-    func preselectSubscriptionPeriodPickerRows() {
-        let intervalRowIndex: Int = {
-            guard let interval = viewModel.subscriptionPeriodInterval,
-                let intervalNumber = Int(interval) else {
-                return 0
-            }
-            return intervalNumber - 1
-        }()
-
-        let periodRowIndex: Int = {
-            guard let period = viewModel.subscriptionPeriod,
-                  let index = SubscriptionPeriod.allCases.firstIndex(of: period) else {
-                return 0
-            }
-            return index
-        }()
-
-        subscriptionPeriodPickerView.selectRow(intervalRowIndex,
-                                               inComponent: SubscriptionPeriodPickerComponent.interval.rawValue,
-                                               animated: false)
-        subscriptionPeriodPickerView.selectRow(periodRowIndex,
-                                               inComponent: SubscriptionPeriodPickerComponent.period.rawValue,
-                                               animated: false)
     }
 }
 
@@ -628,16 +557,10 @@ extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
-    static let maximumSubscriptionPeriodInterval = 6
     static let subscriptionPeriodToolbarHeight: CGFloat = 35
 }
 
 private extension ProductPriceSettingsViewController {
-    enum SubscriptionPeriodPickerComponent: Int, CaseIterable {
-        case interval
-        case period
-    }
-
     enum Localization {
         static let subscriptionPeriod = NSLocalizedString(
             "productPriceSettingsViewController.subscriptionIntervalRowTitle",

@@ -479,7 +479,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _, _) in
             XCTFail("Completion block should not be called")
         }, onError: { error in
             XCTAssertEqual(error, .salePriceWithoutRegularPrice)
@@ -503,7 +503,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _, _) in
             XCTFail("Completion block should not be called")
         }, onError: { error in
             // Assert
@@ -523,7 +523,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Act
         let result = waitFor { promise in
-            viewModel.completeUpdating { (_, _, _, _, _, _, _, _, _) in
+            viewModel.completeUpdating { (_, _, _, _, _, _, _, _, _, _) in
                 XCTFail("Completion block should not be called")
             } onError: { error in
                 promise(error)
@@ -547,7 +547,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (finalRegularPrice, _, _, finalSalePrice, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { (finalRegularPrice, _, _, _, finalSalePrice, _, _, _, _, _) in
             expectation.fulfill()
 
             // Assert

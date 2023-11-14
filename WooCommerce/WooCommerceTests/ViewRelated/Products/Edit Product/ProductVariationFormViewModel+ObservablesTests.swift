@@ -57,6 +57,7 @@ final class ProductVariationFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
                                       subscriptionPeriod: productVariation.subscription?.period,
                                       subscriptionPeriodInterval: productVariation.subscription?.periodInterval,
+                                      subscriptionSignupFee: productVariation.subscription?.signUpFee,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,

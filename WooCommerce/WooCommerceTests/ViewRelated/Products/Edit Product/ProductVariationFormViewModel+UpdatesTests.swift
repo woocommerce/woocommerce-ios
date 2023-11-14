@@ -68,6 +68,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         viewModel.updatePriceSettings(regularPrice: newRegularPrice,
                                       subscriptionPeriod: .month,
                                       subscriptionPeriodInterval: "2",
+                                      subscriptionSignupFee: "0.99",
                                       salePrice: newSalePrice,
                                       dateOnSaleStart: newDateOnSaleStart,
                                       dateOnSaleEnd: newDateOnSaleEnd,
@@ -83,6 +84,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.taxClass, newTaxClass.slug)
         XCTAssertEqual(viewModel.productModel.subscription?.period, .month)
         XCTAssertEqual(viewModel.productModel.subscription?.periodInterval, "2")
+        XCTAssertEqual(viewModel.productModel.subscription?.signUpFee, "0.99")
     }
 
     func testUpdatingInventorySettings() {

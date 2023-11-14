@@ -1273,7 +1273,6 @@ private extension EditableOrderViewModel {
                 return fees.compactMap { fee in
                     guard !fee.isDeleted else { return nil }
 
-                    let orderTotals = OrderTotalsCalculator(for: self.orderSynchronizer.order, using: self.currencyFormatter)
                     return CustomAmountRowViewModel(id: fee.feeID,
                                                     name: fee.name ?? Localization.customAmountDefaultName,
                                                     total: self.currencyFormatter.formatAmount(fee.total) ?? "",

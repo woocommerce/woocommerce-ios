@@ -11,8 +11,6 @@ extension UnderlyingError {
         }
 
         switch error.code {
-        case ErrorCode.Code.readerBusy.rawValue:
-            self = .readerBusy
         case ErrorCode.Code.notConnectedToReader.rawValue:
             self = .notConnectedToReader
         case ErrorCode.Code.alreadyConnectedToReader.rawValue:

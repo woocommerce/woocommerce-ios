@@ -223,7 +223,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         let remote = ProductCategoriesRemote(network: network)
         let category = ProductCategory.fake().copy(categoryID: 44)
 
-        network.simulateError(requestUrlSuffix: "products/categories/\(category.categoryID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/categories/\(category.categoryID)", error: NetworkError.notFound())
 
         // When
         do {
@@ -231,7 +231,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
             XCTFail("Request should fail!")
         } catch {
             // Then
-            XCTAssertEqual(error as? NetworkError, .notFound)
+            XCTAssertEqual(error as? NetworkError, .notFound())
         }
     }
 
@@ -254,7 +254,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         let categoryID: Int64 = 44
         let siteID: Int64 = 123
 
-        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
 
         // When
         do {
@@ -262,7 +262,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
             XCTFail("Request should fail!")
         } catch {
             // Then
-            XCTAssertEqual(error as? NetworkError, .notFound)
+            XCTAssertEqual(error as? NetworkError, .notFound())
         }
     }
 }

@@ -404,7 +404,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Given
         let categoryID: Int64 = 104
         let category = ProductCategory.fake().copy(categoryID: categoryID)
-        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
 
         // When
         let result = waitFor { promise in
@@ -417,7 +417,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
     }
 
     func test_deleteProductCategory_does_not_throw_error_upon_success() {
@@ -440,7 +440,7 @@ final class ProductCategoryStoreTests: XCTestCase {
     func test_deleteProductCategory_throws_correct_error_upon_failure() {
         // Given
         let categoryID: Int64 = 104
-        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: NetworkError.notFound())
 
         // When
         let result = waitFor { promise in
@@ -452,7 +452,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
     }
 
     // MARK: Batch creation of categories
@@ -508,7 +508,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         // Given
         let network = MockNetwork()
         let remote = MockProductCategoriesRemote()
-        remote.whenCreatingProductCategories(thenReturn: .failure(NetworkError.timeout))
+        remote.whenCreatingProductCategories(thenReturn: .failure(NetworkError.timeout()))
         let store = ProductCategoryStore(dispatcher: dispatcher,
                                          storageManager: storageManager,
                                          network: network,
@@ -523,7 +523,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 }
 

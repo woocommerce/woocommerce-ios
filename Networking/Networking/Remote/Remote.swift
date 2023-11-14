@@ -209,7 +209,7 @@ public class Remote: NSObject {
                                             }
 
                                             guard let data = data else {
-                                                completion(.failure(networkError ?? NetworkError.notFound))
+                                                completion(.failure(networkError ?? NetworkError.notFound()))
                                                 return
                                             }
 

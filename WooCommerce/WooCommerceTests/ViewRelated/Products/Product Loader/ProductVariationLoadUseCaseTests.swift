@@ -85,7 +85,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
     func test_loadProductVariation_with_variation_and_product_error_returns_the_variation_error() throws {
         // Arrange
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
-        mockRetrieveProductVariation(result: .failure(NetworkError.timeout))
+        mockRetrieveProductVariation(result: .failure(NetworkError.timeout()))
         mockRetrieveProduct(result: .failure(ProductLoadError.notFoundInStorage))
 
         // Action
@@ -99,7 +99,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         XCTAssertEqual(stores.receivedActions.count, 2)
         XCTAssertNotNil(stores.receivedActions[0] as? ProductVariationAction)
         XCTAssertNotNil(stores.receivedActions[1] as? ProductAction)
-        XCTAssertEqual(result, .failure(.init(NetworkError.timeout)))
+        XCTAssertEqual(result, .failure(.init(NetworkError.timeout())))
     }
 }
 

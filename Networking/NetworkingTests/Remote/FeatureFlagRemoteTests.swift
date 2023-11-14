@@ -55,7 +55,7 @@ final class FeatureFlagRemoteTests: XCTestCase {
         // When
         await assertThrowsError({ _ = try await remote.loadAllFeatureFlags() }, errorAssert: {
             // Then
-            ($0 as? NetworkError) == .notFound
+            ($0 as? NetworkError) == .notFound()
         })
     }
 }

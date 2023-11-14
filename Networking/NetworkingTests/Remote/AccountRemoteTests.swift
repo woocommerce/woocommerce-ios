@@ -110,7 +110,7 @@ final class AccountRemoteTests: XCTestCase {
         // Given
         let siteID = Int64(277)
         let remote = AccountRemote(network: network)
-        network.simulateError(requestUrlSuffix: "settings", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "settings", error: NetworkError.notFound())
 
         // When
         let result = waitFor { promise in
@@ -122,7 +122,7 @@ final class AccountRemoteTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure as? NetworkError)
-        XCTAssertEqual(error, .notFound)
+        XCTAssertEqual(error, .notFound())
     }
 
     // MARK: - `fetchWordPressSiteSettings`
@@ -164,7 +164,7 @@ final class AccountRemoteTests: XCTestCase {
         // Given
         let remote = AccountRemote(network: network)
 
-        await assertThrowsError({  _ = try await remote.loadUsernameSuggestions(from: "woo")}, errorAssert: { ($0 as? NetworkError) == .notFound })
+        await assertThrowsError({  _ = try await remote.loadUsernameSuggestions(from: "woo")}, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `createAccount`
@@ -258,7 +258,7 @@ final class AccountRemoteTests: XCTestCase {
     func test_closeAccount_relays_error_on_request_failure() async {
         // Given
         let remote = AccountRemote(network: network)
-        let expectedError = NetworkError.timeout
+        let expectedError = NetworkError.timeout()
         network.simulateError(requestUrlSuffix: "me/account/close", error: expectedError)
 
         // When

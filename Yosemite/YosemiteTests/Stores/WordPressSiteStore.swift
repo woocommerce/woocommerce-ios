@@ -50,7 +50,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchSiteInfo_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
@@ -106,7 +106,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When

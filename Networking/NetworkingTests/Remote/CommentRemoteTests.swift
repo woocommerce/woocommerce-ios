@@ -178,7 +178,7 @@ class CommentRemoteTests: XCTestCase {
     func test_replyToComment_properly_parses_error_responses() throws {
         // Given
         let remote = CommentRemote(network: network)
-        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout)
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout())
 
         // When
         var result: Result<CommentStatus, Error>?

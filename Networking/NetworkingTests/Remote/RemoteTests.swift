@@ -696,7 +696,7 @@ final class RemoteTests: XCTestCase {
         let mapper = DummyMapper()
         let remote = Remote(network: network)
 
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for error in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: error)
@@ -747,7 +747,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // Other than `unacceptableStatusCode` error
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for error in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: error)
@@ -792,7 +792,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // Other than `unacceptableStatusCode` error
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for otherError in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: otherError)
@@ -834,7 +834,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // Other than `unacceptableStatusCode` error
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for otherError in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: otherError)
@@ -877,7 +877,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // Other than `unacceptableStatusCode` error
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for otherError in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: otherError)
@@ -923,7 +923,7 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // Other than `unacceptableStatusCode` error
-        let otherErrors: [NetworkError] = [.notFound, .timeout, .invalidURL, .invalidCookieNonce]
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
 
         for error in otherErrors {
             network.simulateError(requestUrlSuffix: "something", error: error)

@@ -37,6 +37,40 @@ final class NetworkErrorTests: XCTestCase {
         }
     }
 
+    // MARK: `notFound`
+
+    /// Verifies that provided response data is returned as a String when notFound
+    ///
+    func test_description_contains_response_data_as_a_string_when_notFound_error() throws {
+        // Given
+        let errorDict = ["error": "Failed to load"]
+        let jsonData = try JSONSerialization.data(withJSONObject: errorDict)
+
+        // When
+        let network = try XCTUnwrap(NetworkError.notFound(response: jsonData))
+
+        // Then
+        XCTAssertTrue("\(network)".contains("{\"error\":\"Failed to load\"}"))
+    }
+
+    // MARK: `timeout`
+
+    /// Verifies that provided response data is returned as a String when timeout
+    ///
+    func test_description_contains_response_data_as_a_string_when_timeout_error() throws {
+        // Given
+        let errorDict = ["error": "Failed to load"]
+        let jsonData = try JSONSerialization.data(withJSONObject: errorDict)
+
+        // When
+        let network = try XCTUnwrap(NetworkError.timeout(response: jsonData))
+
+        // Then
+        XCTAssertTrue("\(network)".contains("{\"error\":\"Failed to load\"}"))
+    }
+
+    // MARK: `unacceptableStatusCode`
+
     /// Verifies that provided response data is stored when unacceptableStatusCode
     ///
     func test_response_data_is_stored_when_unacceptableStatusCode_error() throws {

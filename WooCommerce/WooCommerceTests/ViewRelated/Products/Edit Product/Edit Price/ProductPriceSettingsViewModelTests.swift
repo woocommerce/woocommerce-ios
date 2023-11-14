@@ -666,7 +666,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(sections, initialSections)
     }
 
-    func test_price_section_includes_subscription_period_if_product_type_is_subscription() {
+    func test_price_section_includes_subscription_rows_if_product_type_is_subscription() {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate: Date? = nil
@@ -679,7 +679,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Assert
         let initialSections: [Section] = [
-            Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price, .subscriptionPeriod]),
+            Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price, .subscriptionPeriod, .subscriptionSignupFee]),
             Section(title: ProductPriceSettingsViewModel.Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale]),
             Section(title: ProductPriceSettingsViewModel.Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]

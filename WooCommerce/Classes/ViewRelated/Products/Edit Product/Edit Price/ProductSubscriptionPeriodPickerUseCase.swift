@@ -11,12 +11,8 @@ final class ProductSubscriptionPeriodPickerUseCase: NSObject {
 
     typealias UpdateHandler = (_ period: SubscriptionPeriod, _ interval: String) -> Void
 
-    private(set) lazy var pickerView: UIPickerView = {
-        let pickerView = UIPickerView()
-        pickerView.dataSource = self
-        pickerView.delegate = self
-        return pickerView
-    }()
+    let pickerView: UIPickerView = .init()
+
     private let updateHandler: UpdateHandler
 
     init(initialPeriod: SubscriptionPeriod?,
@@ -24,27 +20,8 @@ final class ProductSubscriptionPeriodPickerUseCase: NSObject {
          updateHandler: @escaping UpdateHandler) {
         self.updateHandler = updateHandler
         super.init()
+        configurePickerView()
         preselectSubscriptionPeriodPickerRows(period: initialPeriod, interval: initialInterval)
-    }
-
-    func selectedRow(for component: Component) {
-        
-    }
-
-    func intervalRowIndexFor(interval: String?) -> Int {
-        guard let interval,
-            let intervalNumber = Int(interval) else {
-            return 0
-        }
-        return intervalNumber - 1
-    }
-
-    func periodRowIndex(for period: SubscriptionPeriod?) -> Int {
-        guard let period,
-              let index = SubscriptionPeriod.allCases.firstIndex(of: period) else {
-            return 0
-        }
-        return index
     }
 }
 
@@ -93,6 +70,12 @@ extension ProductSubscriptionPeriodPickerUseCase: UIPickerViewDataSource, UIPick
 // MARK: Helpers
 //
 private extension ProductSubscriptionPeriodPickerUseCase {
+
+    func configurePickerView() {
+        pickerView.dataSource = self
+        pickerView.delegate = self
+    }
+
     func preselectSubscriptionPeriodPickerRows(period: SubscriptionPeriod?, interval: String?) {
         let intervalRowIndex: Int = {
             guard let interval,

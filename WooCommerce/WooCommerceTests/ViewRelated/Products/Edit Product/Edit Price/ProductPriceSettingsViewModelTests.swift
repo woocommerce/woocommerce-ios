@@ -670,7 +670,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate: Date? = nil
-        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate, productTypeKey: "subscription")
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate, subscription: .fake())
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 

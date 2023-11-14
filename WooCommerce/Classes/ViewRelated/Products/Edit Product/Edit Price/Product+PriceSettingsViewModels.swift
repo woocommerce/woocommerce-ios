@@ -78,6 +78,7 @@ extension Product {
                 .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         }()
         return UnitInputViewModel(title: Localization.signupFeeTitle,
+                                  subtitle: Localization.signupFeeSubtitle,
                                   unit: unit,
                                   value: value,
                                   placeholder: placeholder,
@@ -114,6 +115,12 @@ extension Product {
             "productPriceSettingsViewModel.signupFeeTitle",
             value: "Sign-up Fee",
             comment: "Title of the cell in Product Price Settings > Sign-up Fee"
+        )
+        static let signupFeeSubtitle = NSLocalizedString(
+            "productPriceSettingsViewModel.signupFeeSubtitle",
+            value: "Optionally include an amount to be charged at the outset of the subscription. " +
+            "The sign-up fee will be charged immediately, even if the product has a free trial or the payment dates are synced.",
+            comment: "Subtitle of the cell in Product Price Settings > Sign-up Fee"
         )
         static let signupFeeAccessibilityHint = NSLocalizedString(
             "productPriceSettingsViewModel.signupFeeAccessibilityHint",

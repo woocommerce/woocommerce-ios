@@ -36,6 +36,11 @@ struct AddCustomAmountView: View {
                         .padding(.bottom, Layout.mainVerticalSpacing)
                         .renderedIf(viewModel.showPercentageInput)
 
+                        Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
+                            .padding(.bottom, Layout.mainVerticalSpacing)
+
                         Text(Localization.nameTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
@@ -118,6 +123,9 @@ private extension AddCustomAmountView {
         static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
                                                              value: "Enter percentage",
                                                              comment: "Placeholder for entering an custom amount through a percentage")
+        static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
+                                                             value: "Charge Taxes",
+                                                             comment: "Title for the charge taxes toggle in the custom amounts screen.")
     }
 
     enum AccessibilityIdentifiers {

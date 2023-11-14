@@ -198,11 +198,12 @@ final class EditableOrderViewModel: ObservableObject {
         let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
 
         let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.orderTotal as Decimal,
-                                        onCustomAmountEntered: { [weak self] amount, name, feeID in
+                                        onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
+            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {
-                self?.updateFee(with: feeID, total: amount, name: name)
+                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
             } else {
-                self?.addFee(with: amount, name: name)
+                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
             }
         })
 
@@ -1860,18 +1861,18 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(with total: String, name: String? = nil) {
-        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+    func addFee(with total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name, taxStatus: taxStatus)
         orderSynchronizer.addFee.send(feeLine)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
     }
 
-    func updateFee(with id: Int64, total: String, name: String? = nil) {
+    func updateFee(with id: Int64, total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
         guard let updatingFee = orderSynchronizer.order.fees.first(where: { $0.feeID == id }) else {
             return
         }
 
-        let updatedFee = updatingFee.copy(name: name, total: total)
+        let updatedFee = updatingFee.copy(name: name, taxStatus: taxStatus, total: total)
         orderSynchronizer.updateFee.send(updatedFee)
         analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow))
     }

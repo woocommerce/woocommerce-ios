@@ -306,7 +306,7 @@ private extension ProductFormActionsFactory {
         let editableSubscription = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
 
         let actions: [ProductFormEditAction?] = [
-            editableSubscription ? .priceSettings(editable: true, hideSeparator: false) : .subscription(actionable: true),
+            editableSubscription ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,

@@ -65,7 +65,14 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                 return bundleItem.defaultQuantity
             }
             let parentOrderItemQuantity = max(existingParentOrderItem?.quantity ?? 1, 1)
-            return orderItemQuantity*1.0/parentOrderItemQuantity
+
+            // When the parent order item quantity is incremented without configuring the bundle, the quantity of the child items
+            // are not multiplied. Thus, we want to return the child item quantity when its quantity is smaller than the parent order
+            // item quantity.
+            guard orderItemQuantity > parentOrderItemQuantity else {
+                return orderItemQuantity
+            }
+            return orderItemQuantity * 1.0 / parentOrderItemQuantity
         }()
         self.quantity = quantity
         self.variableProductSettings = variableProductSettings

@@ -36,7 +36,6 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         // Given
         let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 24)
         let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 3)
-        let product = Product.fake().copy()
 
         // When
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
@@ -53,7 +52,6 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         // Given
         let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 24)
         let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 0)
-        let product = Product.fake().copy()
 
         // When
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),

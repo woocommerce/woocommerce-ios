@@ -1,6 +1,6 @@
 PODS:
   - Alamofire (4.8.0)
-  - Automattic-Tracks-iOS (3.0.0):
+  - Automattic-Tracks-iOS (2.4.0):
     - Sentry (~> 8.0)
     - Sodium (>= 0.9.1)
     - UIDeviceIdentifier (~> 2.0)
@@ -62,7 +62,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 3.0)
+  - Automattic-Tracks-iOS (~> 2.4)
   - CocoaLumberjack (~> 3.7.4)
   - CocoaLumberjack/Swift (~> 3.7.4)
   - Gridicons (~> 1.2.0)
@@ -115,7 +115,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  Automattic-Tracks-iOS: f30bf3362a77010ccb9fe9aded453645089f6ccb
+  Automattic-Tracks-iOS: eb06b138cd65453dc565ab047f55fbb759aca133
   CocoaLumberjack: 543c79c114dadc3b1aba95641d8738b06b05b646
   Gridicons: 4455b9f366960121430e45997e32112ae49ffe1d
   KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
@@ -146,6 +146,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: 685b5d185af47ced0ec40564ec46355c838bbd06
   ZendeskSupportSDK: 92e6f9d334e81e9186f8a17583862350460a5393
 
-PODFILE CHECKSUM: c469f317ab3bbac389f5da1eb1ce3f196ee2aa1f
+PODFILE CHECKSUM: 5e7ae933ba20024981cdc979c563bbb07d19ef17
 
 COCOAPODS: 1.14.0

@@ -478,10 +478,11 @@ extension MainTabBarController {
 
 // MARK: - DeeplinkForwarder
 //
-extension MainTabBarController: DeepLinkForwarder {
-    func forwardHubMenuDeepLink(to destination: HubMenuCoordinator.DeepLinkDestination) {
-        Self.switchToHubMenuTab()
-        hubMenuTabCoordinator?.navigate(to: destination)
+extension MainTabBarController: DeepLinkNavigator {
+    func navigate(to destination: DeepLinkDestinationProtocol) {
+        navigateTo(.hubMenu) { [weak self] in
+            self?.hubMenuTabCoordinator?.navigate(to: destination)
+        }
     }
 }
 

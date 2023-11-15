@@ -1,5 +1,7 @@
 import Foundation
 
-protocol DeepLinkForwarder {
-    func forwardHubMenuDeepLink(to destination: HubMenuCoordinator.DeepLinkDestination)
+protocol DeepLinkNavigator {
+    func navigate(to destination: DeepLinkDestinationProtocol)
 }
+
+protocol DeepLinkDestinationProtocol {}

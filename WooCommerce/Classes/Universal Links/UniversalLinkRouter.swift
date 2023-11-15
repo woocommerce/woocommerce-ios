@@ -35,7 +35,7 @@ struct UniversalLinkRouter {
             DDLogWarn("⛔️ Unable to create tab bar dependent Universal Link routes, some links will not be handled")
             return routes
         }
-        return routes + [PaymentsRoute(deepLinkForwarder: tabBarController)]
+        return routes + [PaymentsRoute(deepLinkNavigator: tabBarController)]
     }
 
     func handle(url: URL) {

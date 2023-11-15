@@ -3,28 +3,28 @@ import Foundation
 /// Links supported URLs with a /payments root path to various destinations in the Payments Hub Menu
 /// 
 struct PaymentsRoute: Route {
-    private let deepLinkForwarder: DeepLinkForwarder
+    private let deepLinkNavigator: DeepLinkNavigator
 
-    init(deepLinkForwarder: DeepLinkForwarder) {
-        self.deepLinkForwarder = deepLinkForwarder
+    init(deepLinkNavigator: DeepLinkNavigator) {
+        self.deepLinkNavigator = deepLinkNavigator
     }
 
     func canHandle(subPath: String) -> Bool {
-        return HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) != nil
+        return HubMenuViewController.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) != nil
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        guard let destination = HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) else {
+        guard let destination = HubMenuViewController.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) else {
             return false
         }
 
-        deepLinkForwarder.forwardHubMenuDeepLink(to: destination)
+        deepLinkNavigator.navigate(to: destination)
 
         return true
     }
 }
 
-private extension HubMenuCoordinator.DeepLinkDestination {
+private extension HubMenuViewController.DeepLinkDestination {
     init?(paymentsDeepLinkSubPath: String) {
         guard paymentsDeepLinkSubPath.hasPrefix(Constants.paymentsRoot) else {
             return nil

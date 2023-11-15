@@ -33,7 +33,7 @@ struct ProductFactory {
 private extension ProductFactory {
     func createEmptyProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product {
         let subscription: ProductSubscription? = {
-            guard type == .subscription || type == .variableSubscription else {
+            guard type == .subscription else {
                 return nil
             }
             return .empty

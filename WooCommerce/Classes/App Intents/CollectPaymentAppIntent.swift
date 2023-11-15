@@ -10,7 +10,7 @@ struct CollectPaymentAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        MainTabBarController.presentCollectPayment()
+        AppDelegate.shared.tabBarController?.presentCollectPayment()
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.AppIntents.shortcutWasOpened(with: .collectPayment))
 
         return .result()

@@ -212,6 +212,12 @@ final class MainTabBarController: UITabBarController {
         }
         hubMenuTabCoordinator = nil
     }
+
+    func presentCollectPayment() {
+        navigateTo(.hubMenu)
+
+        hubMenuTabCoordinator?.navigate(to: HubMenuViewController.DeepLinkDestination.simplePayments)
+    }
 }
 
 

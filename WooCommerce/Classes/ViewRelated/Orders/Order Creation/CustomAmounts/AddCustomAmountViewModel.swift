@@ -14,11 +14,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     private let currencyFormatter: CurrencyFormatter
 
     var baseAmountForPercentageString: String {
-        guard let baseAmountForPercentageString = currencyFormatter.formatAmount(baseAmountForPercentage) else {
-            return ""
-        }
-
-        return "(\(baseAmountForPercentageString))"
+        currencyFormatter.formatAmount(baseAmountForPercentage) ?? ""
     }
 
     var showPercentageInput: Bool {

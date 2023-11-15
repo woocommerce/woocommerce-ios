@@ -20,7 +20,7 @@ struct AddCustomAmountView: View {
                         FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
                         VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
-                            Text(Localization.percentageInputTitle + " " + viewModel.baseAmountForPercentageString)
+                            Text(String.localizedStringWithFormat(Localization.percentageInputTitle, viewModel.baseAmountForPercentageString))
                                 .font(.subheadline)
                                 .foregroundColor(Color(.textSubtle))
 
@@ -113,7 +113,7 @@ private extension AddCustomAmountView {
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
         static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
-                                                             value: "Or enter percentage of the order total",
+                                                             value: "Or enter percentage of the order total (%1$@)",
                                                              comment: "Title for entering an custom amount through a percentage")
         static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
                                                              value: "Enter percentage",

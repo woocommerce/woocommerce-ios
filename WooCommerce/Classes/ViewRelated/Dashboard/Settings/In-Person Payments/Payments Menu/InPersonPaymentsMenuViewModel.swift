@@ -10,6 +10,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
+    @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
     @Published private(set) var shouldDisableManageCardReaders: Bool = true
     @Published var backgroundOnboardingInProgress: Bool = false
     @Published private(set) var cardPresentPaymentsOnboardingNotice: PermanentNotice?
@@ -32,6 +33,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
+        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
     }
 
     let dependencies: Dependencies
@@ -45,6 +47,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
+
+        dependencies.tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges
+            .share()
+            .assign(to: &$shouldBadgeTapToPayOnIPhone)
+
         Task { @MainActor in
             await updateOutputProperties()
         }

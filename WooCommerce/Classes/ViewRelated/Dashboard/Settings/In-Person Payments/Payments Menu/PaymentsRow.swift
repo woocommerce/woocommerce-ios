@@ -25,6 +25,7 @@ struct PaymentsRow: View {
                         .frame(width: Layout.dotSize, height: Layout.dotSize)
                         .renderedIf(badgeImage)
                 })
+                .accessibilityHidden(true)
 
             if let subtitle {
                 VStack(alignment: .leading, spacing: Layout.subtitleSpacing) {

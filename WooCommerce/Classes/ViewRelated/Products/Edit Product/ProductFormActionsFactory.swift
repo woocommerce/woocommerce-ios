@@ -315,7 +315,7 @@ private extension ProductFormActionsFactory {
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: editableSubscription ? editable : false)
         ]
         return actions.compactMap { $0 }
     }
@@ -324,8 +324,7 @@ private extension ProductFormActionsFactory {
         // When variable subscription product is editable, show similar options as regular variable products.
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts) {
             let shouldShowReviewsRow = product.reviewsAllowed
-            // TODO: edit this when enabling switching type for subscription products
-            let canEditProductType = false
+            let canEditProductType = editable
             let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
             let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
             let shouldShowNoPriceWarningRow: Bool = {
@@ -356,7 +355,7 @@ private extension ProductFormActionsFactory {
             let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
             let shouldShowReviewsRow = product.reviewsAllowed
             let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
-            
+
             let actions: [ProductFormEditAction?] = [
                 shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
                 shouldShowAttributesRow ? .attributes(editable: editable) : nil,

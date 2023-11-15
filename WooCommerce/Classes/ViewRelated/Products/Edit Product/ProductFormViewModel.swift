@@ -356,9 +356,18 @@ extension ProductFormViewModel {
         if productType == .affiliate {
             manageStock = false
         }
+
+        let subscription: ProductSubscription? = {
+            guard productType == .subscription || productType == .variableSubscription else {
+                return nil
+            }
+            return .empty
+        }()
+
         product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
                                                                      virtual: productType.isVirtual,
-                                                                     manageStock: manageStock))
+                                                                     manageStock: manageStock,
+                                                                     subscription: subscription))
     }
 
     func updateInventorySettings(sku: String?,

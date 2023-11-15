@@ -1083,6 +1083,34 @@ final class ProductStoreTests: XCTestCase {
         assertEqual(mockBundleItem, storageBundleItem.toReadOnly())
     }
 
+    func test_searchProducts_effectively_persists_product_bundle_properties() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        let mockProduct = Product.fake().copy(bundleMinSize: 2, bundleMaxSize: 6)
+        remote.whenSearchingProducts(query: "Accessory", thenReturn: .success([mockProduct]))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // When
+        waitFor { promise in
+            productStore.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                               keyword: "Accessory",
+                                                               pageNumber: self.defaultPageNumber,
+                                                               pageSize: self.defaultPageSize,
+                                                               excludedProductIDs: [],
+                                                               onCompletion: { _ in
+                promise(())
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        let product = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Product.self)?.toReadOnly())
+        XCTAssertEqual(product.bundleMinSize, 2)
+        XCTAssertEqual(product.bundleMaxSize, 6)
+    }
+
     func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
         // Given
         let keyword = "test"
@@ -1261,6 +1289,8 @@ final class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product.downloads.count, expectedDownloadableFileCount)
             XCTAssertEqual(product.bundleStockStatus, expectedBundleStockStatus)
             XCTAssertEqual(product.bundleStockQuantity, expectedBundleStockQuantity)
+            XCTAssertNil(product.bundleMinSize)
+            XCTAssertNil(product.bundleMaxSize)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -2659,7 +2689,7 @@ private extension ProductStoreTests {
                        isSampleItem: Bool = false) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: testProductID,
                        name: name ?? "Book the Green Room",
                        slug: "book-the-green-room",
@@ -2825,7 +2855,7 @@ private extension ProductStoreTests {
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
 
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: sampleProductID,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",
@@ -2970,7 +3000,7 @@ private extension ProductStoreTests {
 
     func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
-        return Product(siteID: testSiteID,
+        return Product.fake().copy(siteID: testSiteID,
                        productID: sampleVariationTypeProductID,
                        name: "Paper Airplane - Black, Long",
                        slug: "paper-airplane-3",

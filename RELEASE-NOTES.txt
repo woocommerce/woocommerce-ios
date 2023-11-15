@@ -2,7 +2,7 @@
 
 16.3
 -----
-
+- [internal] Payments Menu: rewritten in SwiftUI [https://github.com/woocommerce/woocommerce-ios/pull/11169]
 
 16.2
 -----

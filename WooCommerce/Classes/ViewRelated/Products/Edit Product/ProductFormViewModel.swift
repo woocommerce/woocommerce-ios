@@ -358,7 +358,7 @@ extension ProductFormViewModel {
         }
 
         let subscription: ProductSubscription? = {
-            guard productType == .subscription || productType == .variableSubscription else {
+            guard productType == .subscription else {
                 return nil
             }
             return .empty

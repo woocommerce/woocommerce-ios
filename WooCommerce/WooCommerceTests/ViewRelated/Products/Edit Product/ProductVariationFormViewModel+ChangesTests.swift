@@ -44,8 +44,9 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         viewModel.updateImages(model.images)
         viewModel.updateDescription(productVariation.description ?? "")
         viewModel.updatePriceSettings(regularPrice: productVariation.regularPrice,
-                                      subscriptionPeriod: nil,
-                                      subscriptionPeriodInterval: nil,
+                                      subscriptionPeriod: productVariation.subscription?.period,
+                                      subscriptionPeriodInterval: productVariation.subscription?.periodInterval,
+                                      subscriptionSignupFee: productVariation.subscription?.signUpFee,
                                       salePrice: productVariation.salePrice,
                                       dateOnSaleStart: productVariation.dateOnSaleStart,
                                       dateOnSaleEnd: productVariation.dateOnSaleEnd,
@@ -108,6 +109,7 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         viewModel.updatePriceSettings(regularPrice: "999999",
                                       subscriptionPeriod: nil,
                                       subscriptionPeriodInterval: nil,
+                                      subscriptionSignupFee: nil,
                                       salePrice: "888888",
                                       dateOnSaleStart: nil,
                                       dateOnSaleEnd: nil,
@@ -123,6 +125,23 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         viewModel.updatePriceSettings(regularPrice: "",
                                       subscriptionPeriod: .week,
                                       subscriptionPeriodInterval: "3",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Assert
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_variation_has_unsaved_changes_from_editing_subscription_signup_fee() {
+        // Action
+        viewModel.updatePriceSettings(regularPrice: "",
+                                      subscriptionPeriod: nil,
+                                      subscriptionPeriodInterval: nil,
+                                      subscriptionSignupFee: "0.99",
                                       salePrice: "",
                                       dateOnSaleStart: nil,
                                       dateOnSaleEnd: nil,

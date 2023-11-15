@@ -26,6 +26,29 @@ final class ProductPriceSettingsViewModel_ProductVariationTests: XCTestCase {
         XCTAssertEqual(sections, initialSections)
     }
 
+    func test_price_section_contains_subscription_rows_if_variation_is_subscription_type() {
+        // Arrange
+        let saleStartDate: Date? = nil
+        let saleEndDate: Date? = nil
+        let productVariation = MockProductVariation().productVariation().copy(
+            dateOnSaleStart: saleStartDate,
+            dateOnSaleEnd: saleEndDate,
+            subscription: .fake()
+        )
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
+
+        // Act
+        let sections = viewModel.sections
+
+        // Assert
+        let initialSections: [Section] = [
+            Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price, .subscriptionPeriod, .subscriptionSignupFee]),
+            Section(title: ProductPriceSettingsViewModel.Strings.saleSectionTitle, rows: [.salePrice, .scheduleSale]),
+        ]
+        XCTAssertEqual(sections, initialSections)
+    }
+
     func testTappingScheduleSaleToRowTogglesPickerRowInSalesSection() {
         // Arrange
         let saleStartDate: Date? = nil

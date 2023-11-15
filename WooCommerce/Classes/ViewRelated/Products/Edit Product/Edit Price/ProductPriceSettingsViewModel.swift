@@ -18,6 +18,7 @@ protocol ProductPriceSettingsViewModelOutput {
     var subscriptionPeriod: SubscriptionPeriod? { get }
     var subscriptionPeriodInterval: String? { get }
     var subscriptionPeriodDescription: String? { get }
+    var subscriptionSignupFee: String? { get }
 }
 
 /// Handles actions related to the price settings data.
@@ -39,6 +40,7 @@ protocol ProductPriceSettingsActionHandler {
     func handleSaleStartDateChange(_ date: Date)
     func handleSaleEndDateChange(_ date: Date?)
     func handleSubscriptionPeriodChange(interval: String, period: SubscriptionPeriod)
+    func handleSubscriptionSignupFeeChange(_ fee: String?)
 
     // Navigation actions
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void)
@@ -58,6 +60,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     private(set) var subscriptionPeriodDescription: String?
     private(set) var subscriptionPeriod: SubscriptionPeriod?
     private(set) var subscriptionPeriodInterval: String?
+    private(set) var subscriptionSignupFee: String?
 
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?
@@ -105,6 +108,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         subscriptionPeriod = product.subscription?.period
         subscriptionPeriodInterval = product.subscription?.periodInterval
         subscriptionPeriodDescription = product.subscriptionPeriodDescription
+        subscriptionSignupFee = product.subscription?.signUpFee
 
         // If the product sale start date is nil and the sale end date is not in the past, defaults the sale start date to today.
         if let saleEndDate = product.dateOnSaleEnd, product.dateOnSaleStart == nil &&
@@ -133,7 +137,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
             if product.subscription == nil {
                 return [.price]
             }
-            return [.price, .subscriptionPeriod]
+            return [.price, .subscriptionPeriod, .subscriptionSignupFee]
         }()
 
         let priceSection = Section(title: Strings.priceSectionTitle, rows: priceRows)
@@ -253,6 +257,9 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         subscriptionPeriodInterval = interval
     }
 
+    func handleSubscriptionSignupFeeChange(_ fee: String?) {
+        self.subscriptionSignupFee = fee
+    }
     // MARK: - Navigation actions
 
     func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSettingsError) -> Void) {
@@ -268,6 +275,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
         onCompletion(regularPrice,
                      subscriptionPeriod,
                      subscriptionPeriodInterval,
+                     subscriptionSignupFee,
                      salePrice,
                      dateOnSaleStart,
                      dateOnSaleEnd,
@@ -289,7 +297,8 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
             newTaxClass != originalTaxClass ||
-            subscriptionPeriodDescription != product.subscriptionPeriodDescription {
+            subscriptionPeriodDescription != product.subscriptionPeriodDescription ||
+            priceSettingsValidator.getDecimalPrice(subscriptionSignupFee) != priceSettingsValidator.getDecimalPrice(product.subscription?.signUpFee) {
             return true
         }
 

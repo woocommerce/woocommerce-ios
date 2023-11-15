@@ -17,6 +17,7 @@ struct UnitInputViewModel {
     }
 
     let title: String
+    var subtitle: String? = nil
     let unit: String
     let value: String?
     let placeholder: String?
@@ -35,7 +36,9 @@ final class UnitInputTableViewCell: UITableViewCell {
     @IBOutlet private weak var inputAndUnitStackView: UIStackView!
     @IBOutlet private weak var inputTextField: UITextField!
     @IBOutlet private weak var unitLabel: UILabel!
-    @IBOutlet private weak var inputAndUnitStackViewTotitleLabel: NSLayoutConstraint!
+    @IBOutlet private weak var inputAndUnitStackViewToTitleLabel: NSLayoutConstraint!
+    @IBOutlet private weak var subtitleLabel: UILabel!
+    @IBOutlet private weak var subtitleLabelToInputAndUnitStackView: NSLayoutConstraint!
 
     private var inputFormatter: UnitInputFormatter?
     private var onInputChange: ((_ input: String?) -> Void)?
@@ -45,6 +48,7 @@ final class UnitInputTableViewCell: UITableViewCell {
 
         configureSelectionStyle()
         configureTitleLabel()
+        configureSubtitleLabel()
         configureInputAndUnitStackView()
         configureInputTextField()
         configureUnitLabel()
@@ -54,6 +58,8 @@ final class UnitInputTableViewCell: UITableViewCell {
 
     func configure(viewModel: UnitInputViewModel) {
         titleLabel.text = viewModel.title
+        subtitleLabel.text = viewModel.subtitle
+        subtitleLabelToInputAndUnitStackView.constant = viewModel.subtitle == nil ? 0 : Constants.subtitleLabelToInputAndUnitStackViewSpacing
         unitLabel.text = viewModel.unit
         unitLabel.isHidden = viewModel.unit.isEmpty
         inputTextField.text = viewModel.value
@@ -107,6 +113,11 @@ private extension UnitInputTableViewCell {
         titleLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
+    func configureSubtitleLabel() {
+        subtitleLabel.applyFootnoteStyle()
+        subtitleLabel.numberOfLines = 0
+    }
+
     func configureInputAndUnitStackView() {
         inputAndUnitStackView.spacing = Constants.stackViewSpacing
         inputAndUnitStackView.distribution = .fill
@@ -126,12 +137,12 @@ private extension UnitInputTableViewCell {
     private func configureStyle(_ style: UnitInputViewModel.Style) {
 
         if style == .primary {
-            inputAndUnitStackViewTotitleLabel.constant = Constants.inputAndUnitStackViewTotitleLabelSpacing
+            inputAndUnitStackViewToTitleLabel.constant = Constants.inputAndUnitStackViewToTitleLabelSpacing
             inputTextField.setContentHuggingPriority(.required, for: .horizontal)
         } else {
             // In secondary style we have no title do we need to remove the extra space between
             // the title and the stackView
-            inputAndUnitStackViewTotitleLabel.constant = 0.0
+            inputAndUnitStackViewToTitleLabel.constant = 0.0
             // If the title label has higher hugging priority then this textfield will stretch take all the free space
             inputTextField.setContentHuggingPriority(.defaultLow, for: .horizontal)
         }
@@ -191,7 +202,8 @@ private extension UnitInputTableViewCell {
 private extension UnitInputTableViewCell {
     enum Constants {
         static let stackViewSpacing: CGFloat = 6
-        static let inputAndUnitStackViewTotitleLabelSpacing: CGFloat = 16
+        static let inputAndUnitStackViewToTitleLabelSpacing: CGFloat = 16
+        static let subtitleLabelToInputAndUnitStackViewSpacing: CGFloat = 8
     }
 }
 

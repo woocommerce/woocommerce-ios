@@ -32,6 +32,7 @@ final class ProductPriceSettingsViewController: UIViewController {
     typealias Completion = (_ regularPrice: String?,
                             _ subscriptionPeriod: SubscriptionPeriod?,
                             _ subscriptionPeriodInterval: String?,
+                            _ subscriptionSignupFee: String?,
                             _ salePrice: String?,
                             _ dateOnSaleStart: Date?,
                             _ dateOnSaleEnd: Date?,
@@ -167,7 +168,7 @@ extension ProductPriceSettingsViewController {
     @objc private func completeUpdating() {
         viewModel.completeUpdating(
             onCompletion: { [weak self] in
-                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8)
+                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
             },
             onError: { [weak self] error in
                 switch error {
@@ -363,6 +364,8 @@ private extension ProductPriceSettingsViewController {
             configureTaxClass(cell: cell)
         case let cell as TitleAndTextFieldTableViewCell where row == .subscriptionPeriod:
             configureSubscriptionPeriod(cell: cell)
+        case let cell as UnitInputTableViewCell where row == .subscriptionSignupFee:
+            configureSubscriptionSignupFee(cell: cell)
         default:
             fatalError()
             break
@@ -397,6 +400,17 @@ private extension ProductPriceSettingsViewController {
                                         onEditingEnd: { [weak self] in
             self?.refreshViewContent()
         }))
+    }
+
+    func configureSubscriptionSignupFee(cell: UnitInputTableViewCell) {
+        let cellViewModel = Product.createSubscriptionSignupFeeViewModel(
+            fee: viewModel.subscriptionSignupFee,
+            using: ServiceLocator.currencySettings
+        ) { [weak self] fee in
+            self?.viewModel.handleSubscriptionSignupFeeChange(fee)
+        }
+        cell.selectionStyle = .none
+        cell.configure(viewModel: cellViewModel)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
@@ -520,6 +534,7 @@ extension ProductPriceSettingsViewController {
     enum Row: CaseIterable {
         case price
         case subscriptionPeriod
+        case subscriptionSignupFee
         case salePrice
 
         case scheduleSale
@@ -534,7 +549,7 @@ extension ProductPriceSettingsViewController {
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .price, .salePrice:
+            case .price, .salePrice, .subscriptionSignupFee:
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self

@@ -2287,6 +2287,7 @@
 		DED9740B2AD7D09E00122EB4 /* BlazeCampaignListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */; };
 		DED9740D2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */; };
 		DED974112AD8F05A00122EB4 /* URL+Identifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = DED974102AD8F05A00122EB4 /* URL+Identifiable.swift */; };
+		DEDA8D972B034C260076BF0F /* ProductSubscriptionPeriodPickerUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDA8D962B034C260076BF0F /* ProductSubscriptionPeriodPickerUseCaseTests.swift */; };
 		DEDAE30B2A0B523F00F9635F /* LocalNotificationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */; };
 		DEDAE30D2A12091500F9635F /* UpgradePlanCoordinatingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */; };
 		DEDB2D262845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */; };
@@ -4862,6 +4863,7 @@
 		DED9740A2AD7D09E00122EB4 /* BlazeCampaignListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListView.swift; sourceTree = "<group>"; };
 		DED9740C2AD7D27000122EB4 /* BlazeCampaignListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlazeCampaignListViewModel.swift; sourceTree = "<group>"; };
 		DED974102AD8F05A00122EB4 /* URL+Identifiable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Identifiable.swift"; sourceTree = "<group>"; };
+		DEDA8D962B034C260076BF0F /* ProductSubscriptionPeriodPickerUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSubscriptionPeriodPickerUseCaseTests.swift; sourceTree = "<group>"; };
 		DEDAE30A2A0B523F00F9635F /* LocalNotificationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalNotificationTests.swift; sourceTree = "<group>"; };
 		DEDAE30C2A12091500F9635F /* UpgradePlanCoordinatingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradePlanCoordinatingController.swift; sourceTree = "<group>"; };
 		DEDB2D252845D31900CE7D35 /* CouponAllowedEmailsViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CouponAllowedEmailsViewModel.swift; sourceTree = "<group>"; };
@@ -6224,6 +6226,7 @@
 				09BE3A8F27C921980070B69D /* Bulk Edit Price */,
 				02153210242376B5003F2BBD /* ProductPriceSettingsViewModelTests.swift */,
 				02BAB02024D0235F00F8B06E /* ProductPriceSettingsViewModel+ProductVariationTests.swift */,
+				DEDA8D962B034C260076BF0F /* ProductSubscriptionPeriodPickerUseCaseTests.swift */,
 				09EA565127C8235200407D40 /* ProductPriceSettingsValidatorTests.swift */,
 			);
 			path = "Edit Price";
@@ -14109,6 +14112,7 @@
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
 				2667BFE92530ECE4008099D4 /* RefundProductsTotalViewModelTests.swift in Sources */,
 				D810F8F82639EDE900437C67 /* CardPresentPaymentsModalViewControllerTests.swift in Sources */,
+				DEDA8D972B034C260076BF0F /* ProductSubscriptionPeriodPickerUseCaseTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
 				31F635DC273AF0B100E14F10 /* VersionHelpersTests.swift in Sources */,
 				EE6F08682A721DCB00AA9B88 /* FreeTrialSurveyCoordinatorTests.swift in Sources */,

@@ -194,6 +194,12 @@ private extension DefaultProductFormTableViewModel {
                 priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
             }
 
+            if let signupFee = product.subscription?.signUpFee,
+               signupFee.isNotEmpty,
+               let formattedFee = currencyFormatter.formatAmount(signupFee, with: currency) {
+                priceDetails.append(String.localizedStringWithFormat(Localization.subscriptionSignupFeeFormat, formattedFee))
+            }
+
             if let salePrice = product.salePrice, salePrice.isNotEmpty {
                 let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
                 priceDetails.append(String.localizedStringWithFormat(Localization.salePriceFormat, formattedSalePrice))
@@ -686,6 +692,12 @@ private extension DefaultProductFormTableViewModel {
             value: "Regular price: %1$@ %2$@",
             comment: "Format of the regular price for a subscription product on the Price Settings row. " +
             "Reads like: 'Regular price: $60.00 every 2 months'."
+        )
+        static let subscriptionSignupFeeFormat = NSLocalizedString(
+            "defaultProductFormTableViewModel.subscriptionSignupFeeFormat",
+            value: "Sign-up fee: %1$@",
+            comment: "Format of the sign-up fee for a subscription product on the Price Settings row. " +
+            "Reads like: 'Sign-up fee: $0.99'."
         )
         static let salePriceFormat = NSLocalizedString("Sale price: %@",
                                                        comment: "Format of the sale price on the Price Settings row")

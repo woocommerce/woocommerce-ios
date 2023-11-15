@@ -39,6 +39,14 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     let dependencies: Dependencies
 
+    private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
+        dependencies.cardPresentPaymentsConfiguration
+    }
+
+    private var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
+        dependencies.onboardingUseCase
+    }
+
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
@@ -88,27 +96,27 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
         SetUpTapToPayViewModelsOrderedList(
             siteID: siteID,
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            onboardingUseCase: dependencies.onboardingUseCase)
+            configuration: cardPresentPaymentsConfiguration,
+            onboardingUseCase: onboardingUseCase)
     }()
 
     lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
         AboutTapToPayViewModel(
             siteID: siteID,
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            cardPresentPaymentsOnboardingUseCase: dependencies.onboardingUseCase,
+            configuration: cardPresentPaymentsConfiguration,
+            cardPresentPaymentsOnboardingUseCase: onboardingUseCase,
             shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
     }()
 
     lazy var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList = {
         CardReaderSettingsViewModelsOrderedList(
-            configuration: dependencies.cardPresentPaymentsConfiguration,
+            configuration: cardPresentPaymentsConfiguration,
             siteID: siteID)
     }()
 
     lazy var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel = {
         PurchaseCardReaderWebViewViewModel(
-            configuration: dependencies.cardPresentPaymentsConfiguration,
+            configuration: cardPresentPaymentsConfiguration,
             utmProvider: WooCommerceComUTMProvider(
                 campaign: Constants.utmCampaign,
                 source: Constants.utmSource,
@@ -118,7 +126,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }()
 
     lazy var onboardingViewModel: InPersonPaymentsViewModel = {
-        let onboardingViewModel = InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
         onboardingViewModel.showURL = { [weak self] url in
             self?.safariSheetURL = url
         }
@@ -129,11 +137,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 // MARK: - Background onboarding
 private extension InPersonPaymentsMenuViewModel {
     func observeOnboardingChanges() {
-        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             return
         }
 
-        dependencies.onboardingUseCase.statePublisher
+        onboardingUseCase.statePublisher
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
             .sink(receiveValue: { [weak self] state in
@@ -142,11 +150,11 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     func runCardPresentPaymentsOnboardingIfPossible() {
-        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             return
         }
 
-        dependencies.onboardingUseCase.refreshIfNecessary()
+        onboardingUseCase.refreshIfNecessary()
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
@@ -209,7 +217,7 @@ private extension InPersonPaymentsMenuViewModel {
         shouldShowCardReaderSection = isEligibleForCardPresentPayments
     }
 
-    var isEligibleForCardPresentPayments: Bool { dependencies.cardPresentPaymentsConfiguration.isSupportedCountry
+    var isEligibleForCardPresentPayments: Bool { cardPresentPaymentsConfiguration.isSupportedCountry
     }
 }
 
@@ -229,7 +237,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     var countryEnabledForTapToPay: Bool {
-        dependencies.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
+        cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
     @MainActor

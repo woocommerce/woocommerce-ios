@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel

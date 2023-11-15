@@ -626,7 +626,7 @@
 		0386CFEB2852108B00134466 /* PaymentMethodsHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */; };
 		0388E1A629E04433007DF84D /* PaymentsRouteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */; };
 		0388E1A829E04687007DF84D /* DeepLinkNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A729E04687007DF84D /* DeepLinkNavigator.swift */; };
-		0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */; };
+		0388E1AA29E04715007DF84D /* MockDeepLinkNavigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0388E1A929E04715007DF84D /* MockDeepLinkNavigator.swift */; };
 		038BC37D29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */; };
 		038BC37F29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */; };
 		038BC38129C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */; };
@@ -3190,7 +3190,7 @@
 		0386CFEA2852108B00134466 /* PaymentMethodsHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentMethodsHostingController.swift; sourceTree = "<group>"; };
 		0388E1A529E04433007DF84D /* PaymentsRouteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentsRouteTests.swift; sourceTree = "<group>"; };
 		0388E1A729E04687007DF84D /* DeepLinkNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeepLinkNavigator.swift; sourceTree = "<group>"; };
-		0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDeepLinkForwarder.swift; sourceTree = "<group>"; };
+		0388E1A929E04715007DF84D /* MockDeepLinkNavigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockDeepLinkNavigator.swift; sourceTree = "<group>"; };
 		038BC37C29C37AA400EAF565 /* SetUpTapToPayCompleteViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewModel.swift; sourceTree = "<group>"; };
 		038BC37E29C37B0E00EAF565 /* SetUpTapToPayCompleteViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayCompleteViewController.swift; sourceTree = "<group>"; };
 		038BC38029C4B8AC00EAF565 /* SetUpTapToPayTryPaymentPromptViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetUpTapToPayTryPaymentPromptViewModel.swift; sourceTree = "<group>"; };
@@ -8149,7 +8149,7 @@
 				03D7985F2A960FDF00809B0E /* MockPaymentCaptureOrchestrator.swift */,
 				EE2EDFE02987A189004E702B /* MockABTestVariationProvider.swift */,
 				DE4D23B329B58C5A003A4B5D /* MockWordPressComAccountService.swift */,
-				0388E1A929E04715007DF84D /* MockDeepLinkForwarder.swift */,
+				0388E1A929E04715007DF84D /* MockDeepLinkNavigator.swift */,
 				B9DC770629F2D4910013B191 /* MockProductSelectorTopProductsProvider.swift */,
 				026A23FE2A3173F100EFE4BD /* MockBlazeEligibilityChecker.swift */,
 				02863F6E2925FC29006A06AA /* MockInAppPurchasesForWPComPlansManager.swift */,
@@ -14198,7 +14198,7 @@
 				DE8BEB8E2ABAC96700F5E56C /* ProductNameGenerationViewModelTests.swift in Sources */,
 				0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */,
 				FEED57FA2686544D00E47FD9 /* RoleErrorViewModelTests.swift in Sources */,
-				0388E1AA29E04715007DF84D /* MockDeepLinkForwarder.swift in Sources */,
+				0388E1AA29E04715007DF84D /* MockDeepLinkNavigator.swift in Sources */,
 				022C7D7729793ABE0036568D /* PaidDomainSelectorDataProviderTests.swift in Sources */,
 				03CF78D127C3DBC000523706 /* WCPayCardBrand+IconsTests.swift in Sources */,
 				AEFF77AA29786DAA00667F7A /* PriceInputViewModelTests.swift in Sources */,

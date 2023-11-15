@@ -17,6 +17,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
     @Published var presentCollectPayment: Bool = false
+    @Published var presentSetUpTryOutTapToPay: Bool = false
+    @Published var presentTapToPayFeedback: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -43,23 +45,35 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
-        updateOutputProperties()
-    }
-
-    private func updateOutputProperties() {
-        Task {
-            await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+        Task { @MainActor in
+            await updateOutputProperties()
         }
     }
 
-    func onAppear() {
+    @MainActor
+    private func updateOutputProperties() async {
+        updateCardReadersSection()
+        await updateTapToPaySection()
+    }
+
+    @MainActor
+    func onAppear() async {
         runCardPresentPaymentsOnboardingIfPossible()
+        await updateOutputProperties()
     }
 
     func collectPaymentTapped() {
         presentCollectPayment = true
 
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+    }
+
+    func setUpTryOutTapToPayTapped() {
+        presentSetUpTryOutTapToPay = true
+    }
+
+    func tapToPayFeedbackTapped() {
+        presentTapToPayFeedback = true
     }
 
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
@@ -172,6 +186,55 @@ private extension InPersonPaymentsMenuViewModel {
                 ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
+    }
+}
+
+// MARK: - Card Reader visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    private func updateCardReadersSection() {
+        shouldShowCardReaderSection = isEligibleForCardPresentPayments
+    }
+
+    var isEligibleForCardPresentPayments: Bool { dependencies.cardPresentPaymentsConfiguration.isSupportedCountry
+    }
+}
+
+// MARK: - Tap to Pay visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    @MainActor
+    private func updateTapToPaySection() async {
+        let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
+
+        shouldShowTapToPaySection = isEligibleForCardPresentPayments &&
+            countryEnabledForTapToPay &&
+            deviceSupportsTapToPay
+
+        await updateSetUpTryTapToPay()
+        await updateTapToPayFeedbackRowVisibility()
+    }
+
+    var countryEnabledForTapToPay: Bool {
+        dependencies.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
+    }
+
+    @MainActor
+    private func updateSetUpTryTapToPay() async {
+        let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+
+        setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
+        shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
+    }
+
+    @MainActor
+    private func updateTapToPayFeedbackRowVisibility() async {
+        guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
+              let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
+            return self.shouldShowTapToPayFeedbackRow = false
+        }
+
+        shouldShowTapToPayFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
     }
 }
 

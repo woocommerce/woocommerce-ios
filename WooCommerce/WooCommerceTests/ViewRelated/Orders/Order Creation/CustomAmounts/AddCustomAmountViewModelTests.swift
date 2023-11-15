@@ -134,6 +134,14 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowPercentageInput)
     }
 
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_negative_then_returns_false() {
+        // When
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: -1, onCustomAmountEntered: {_, _, _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowPercentageInput)
+    }
+
     func test_percentage_then_updates_amount() {
         // Given
         let baseAmountForPercentage = 200

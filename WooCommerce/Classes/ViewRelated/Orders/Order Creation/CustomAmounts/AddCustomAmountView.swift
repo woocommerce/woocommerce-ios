@@ -34,7 +34,7 @@ struct AddCustomAmountView: View {
                             }
                         }
                         .padding(.bottom, Layout.mainVerticalSpacing)
-                        .renderedIf(viewModel.showPercentageInput)
+                        .renderedIf(viewModel.shouldShowPercentageInput)
 
                         Text(Localization.nameTitle)
                             .font(.title3)

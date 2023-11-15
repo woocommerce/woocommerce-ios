@@ -119,20 +119,20 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.addCustomAmountNameAdded.rawValue }))
     }
 
-    func test_showPercentageInput_when_baseAmountForPercentage_is_zero_then_returns_false() {
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_zero_then_returns_false() {
         // When
         let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 0, onCustomAmountEntered: {_, _, _ in })
 
         // Then
-        XCTAssertFalse(viewModel.showPercentageInput)
+        XCTAssertFalse(viewModel.shouldShowPercentageInput)
     }
 
-    func test_showPercentageInput_when_baseAmountForPercentage_is_bigger_than_zero_then_returns_true() {
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_bigger_than_zero_then_returns_true() {
         // When
         let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 1, onCustomAmountEntered: {_, _, _ in })
 
         // Then
-        XCTAssertTrue(viewModel.showPercentageInput)
+        XCTAssertTrue(viewModel.shouldShowPercentageInput)
     }
 
     func test_percentage_then_updates_amount() {

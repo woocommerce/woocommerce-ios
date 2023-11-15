@@ -17,7 +17,7 @@ final class AddCustomAmountViewModel: ObservableObject {
         currencyFormatter.formatAmount(baseAmountForPercentage) ?? ""
     }
 
-    var showPercentageInput: Bool {
+    var shouldShowPercentageInput: Bool {
         baseAmountForPercentage > 0
     }
 

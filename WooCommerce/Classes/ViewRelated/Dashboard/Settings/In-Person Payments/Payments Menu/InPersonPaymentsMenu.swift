@@ -40,7 +40,7 @@ struct InPersonPaymentsMenu: View {
                 Section(Localization.tapToPaySectionTitle) {
                     PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
                                 title: viewModel.setUpTryOutTapToPayRowTitle,
-                                badgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
+                                shouldBadgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
                     .onTapGesture {
                         viewModel.setUpTryOutTapToPayTapped()
                     }

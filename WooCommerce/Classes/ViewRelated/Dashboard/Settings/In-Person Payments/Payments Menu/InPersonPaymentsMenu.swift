@@ -135,6 +135,10 @@ struct InPersonPaymentsMenu: View {
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
+                LazyNavigationLink(destination: HostedSupportForm(viewModel: .init()),
+                                   isActive: $viewModel.presentSupport) {
+                    EmptyView()
+                }
             }
         }
         .task {

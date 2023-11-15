@@ -113,7 +113,7 @@ public final class ProductsScreen: ScreenObject {
 
     public func tapProductType(productType: String) throws -> SingleProductScreen {
         // Swipe up to get all the list in view
-        app.swipeUp()
+        app.tables.firstMatch.swipeUp()
         let productTypeLabel = NSPredicate(format: "label CONTAINS[c] %@", productType)
         app.staticTexts.containing(productTypeLabel).firstMatch.tap()
         return try SingleProductScreen()

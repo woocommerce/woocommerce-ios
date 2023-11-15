@@ -31,18 +31,29 @@ class OrderTotalsCalculatorTests: XCTestCase {
     }
 
     func test_orderTotal_includes_expected_totals() {
+        let shippingTotal = 5
+        let taxTotal = 3
+        let firstItemTotal = 1
+        let secondItemTotal = 8
+        let firstFeeTotal = 2
+        let secondFeeTotal = 8
+
+
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
-        let order = Order.fake().copy(shippingTotal: "5.00",
-                                      totalTax: "3.00",
-                                      items: [OrderItem.fake().copy(subtotal: "2.00", total: "1.00"), OrderItem.fake().copy(subtotal: "8.00", total: "8.00")],
-                                      fees: [OrderFeeLine.fake().copy(total: "2.00"), OrderFeeLine.fake().copy(total: "8.00")])
+        let order = Order.fake().copy(shippingTotal: String(shippingTotal),
+                                      totalTax: String(taxTotal),
+                                      items: [OrderItem.fake().copy(subtotal: "2.00", 
+                                                                    total: String(firstItemTotal)),
+                                              OrderItem.fake().copy(subtotal: "8.00", total: String(secondItemTotal))],
+                                      fees: [OrderFeeLine.fake().copy(total: String(firstFeeTotal)), OrderFeeLine.fake().copy(total: String(secondFeeTotal))])
 
         // When
         let orderTotalsCalculator = OrderTotalsCalculator(for: order, using: currencyFormatter)
 
         // Then
-        XCTAssertEqual(orderTotalsCalculator.orderTotal, 27)
+        let expectedTotal = shippingTotal + taxTotal + firstItemTotal + secondItemTotal + firstFeeTotal + secondFeeTotal
+        XCTAssertEqual(orderTotalsCalculator.orderTotal, NSDecimalNumber(decimal: Decimal(expectedTotal)))
     }
 
     func test_updateOrderTotal_returns_order_with_expected_total() {

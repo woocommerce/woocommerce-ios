@@ -20,6 +20,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
+    @Published var safariSheetURL: URL? = nil
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -117,7 +118,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }()
 
     lazy var onboardingViewModel: InPersonPaymentsViewModel = {
-        InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
+        onboardingViewModel.showURL = { [weak self] url in
+            self?.safariSheetURL = url
+        }
+        return onboardingViewModel
     }()
 }
 

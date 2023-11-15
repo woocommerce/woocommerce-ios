@@ -25,15 +25,11 @@ struct InPersonPaymentsLearnMore: View {
         .accessibilityHint(viewModel.learnMoreAttributedString.string)
         .accessibilityAction(named: Localization.toggleEnableCashOnDeliveryLearnMoreAccessibilityAction) {
             viewModel.learnMoreTapped()
+            customOpenURL?(viewModel.url)
         }
         .onTapGesture {
             viewModel.learnMoreTapped()
-        }
-        .task(id: viewModel.showLearnMoreWebViewURL) {
-            guard let url = viewModel.showLearnMoreWebViewURL else {
-                return
-            }
-            customOpenURL?(url)
+            customOpenURL?(viewModel.url)
         }
     }
 

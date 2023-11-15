@@ -259,7 +259,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
     func loadNumberOfProducts(siteID: Int64) async throws -> Int64 {
         guard let result = loadNumberOfProductsResultsBySiteID[siteID] else {
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         do {
             let numberOfProducts = try result.get()

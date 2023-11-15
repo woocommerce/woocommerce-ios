@@ -100,7 +100,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
 
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_fails_then_returns_result_isFailure() {
         // Given
-        network.simulateError(requestUrlSuffix: "", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "", error: NetworkError.notFound())
 
         // When
         let result = waitFor { promise in
@@ -116,7 +116,7 @@ class WCAnalyticsCustomerRemoteTests: XCTestCase {
     func test_WCAnalyticsCustomerRemote_when_calls_retrieveCustomersByName_returns_early_and_fails_if_search_term_is_empty() {
 
         // Given
-        network.simulateError(requestUrlSuffix: "customers?search=", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "customers?search=", error: NetworkError.notFound())
 
         // When
         let result = waitFor { promise in

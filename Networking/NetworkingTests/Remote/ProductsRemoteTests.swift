@@ -707,7 +707,7 @@ final class ProductsRemoteTests: XCTestCase {
         await assertThrowsError({ _ = try await remote.loadNumberOfProducts(siteID: 7) },
                                 errorAssert: {
             // Then
-            $0 as? NetworkError == .notFound
+            $0 as? NetworkError == .notFound()
         })
     }
 }

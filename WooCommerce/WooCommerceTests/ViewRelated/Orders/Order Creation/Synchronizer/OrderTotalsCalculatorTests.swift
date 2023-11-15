@@ -38,12 +38,11 @@ class OrderTotalsCalculatorTests: XCTestCase {
         let firstFeeTotal = 2
         let secondFeeTotal = 8
         
-        
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let order = Order.fake().copy(shippingTotal: String(shippingTotal),
                                       totalTax: String(taxTotal),
-                                      items: [OrderItem.fake().copy(subtotal: "2.00", 
+                                      items: [OrderItem.fake().copy(subtotal: "2.00",
                                                                     total: String(firstItemTotal)),
                                               OrderItem.fake().copy(subtotal: "8.00", total: String(secondItemTotal))],
                                       fees: [OrderFeeLine.fake().copy(total: String(firstFeeTotal)), OrderFeeLine.fake().copy(total: String(secondFeeTotal))])

@@ -10,7 +10,7 @@ struct CollectPaymentAppIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        AppDelegate.shared.tabBarController?.presentCollectPayment()
+        AppDelegate.shared.tabBarController?.navigate(to: HubMenuViewController.DeepLinkDestination.simplePayments)
         ServiceLocator.analytics.track(event: WooAnalyticsEvent.AppIntents.shortcutWasOpened(with: .collectPayment))
 
         return .result()

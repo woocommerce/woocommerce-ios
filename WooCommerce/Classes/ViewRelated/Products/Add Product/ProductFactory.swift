@@ -36,13 +36,7 @@ private extension ProductFactory {
             guard type == .subscription || type == .variableSubscription else {
                 return nil
             }
-            return ProductSubscription(length: "0",
-                                       period: .month,
-                                       periodInterval: "1",
-                                       price: "",
-                                       signUpFee: "",
-                                       trialLength: "3",
-                                       trialPeriod: .day)
+            return .empty
         }()
         return Product(siteID: siteID,
                        productID: 0,

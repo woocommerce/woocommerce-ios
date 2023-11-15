@@ -128,7 +128,7 @@ final class HubMenuCoordinator: Coordinator {
 
 // MARK: - Deeplinks
 extension HubMenuCoordinator: DeepLinkNavigator {
-    func navigate(to destination: DeepLinkDestinationProtocol) {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let hubMenuController = hubMenuController else {
             return
         }

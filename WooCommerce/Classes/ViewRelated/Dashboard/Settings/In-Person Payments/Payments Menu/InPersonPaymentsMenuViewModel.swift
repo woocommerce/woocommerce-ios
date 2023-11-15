@@ -261,21 +261,16 @@ private extension InPersonPaymentsMenuViewModel {
 
 // MARK: - Deeplink navigation
 extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
-    func navigate(to destination: DeepLinkDestinationProtocol) {
-        guard let paymentsDestination = destination as? PaymentsDeepLinkDestination else {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        guard let paymentsDestination = destination as? PaymentsMenuDestination else {
             return
         }
         switch paymentsDestination {
-        case .simplePayments:
+        case .collectPayment:
             presentCollectPayment = true
         case .tapToPay:
             presentSetUpTryOutTapToPay = true
         }
-    }
-
-    enum PaymentsDeepLinkDestination: DeepLinkDestinationProtocol {
-        case simplePayments
-        case tapToPay
     }
 }
 

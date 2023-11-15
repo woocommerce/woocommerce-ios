@@ -216,7 +216,7 @@ final class MainTabBarController: UITabBarController {
     func presentCollectPayment() {
         navigateTo(.hubMenu)
 
-        hubMenuTabCoordinator?.navigate(to: HubMenuViewController.DeepLinkDestination.simplePayments)
+        hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
     }
 }
 
@@ -485,7 +485,7 @@ extension MainTabBarController {
 // MARK: - DeeplinkForwarder
 //
 extension MainTabBarController: DeepLinkNavigator {
-    func navigate(to destination: DeepLinkDestinationProtocol) {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
         navigateTo(.hubMenu) { [weak self] in
             self?.hubMenuTabCoordinator?.navigate(to: destination)
         }

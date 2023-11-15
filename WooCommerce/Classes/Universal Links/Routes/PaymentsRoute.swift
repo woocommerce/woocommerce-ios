@@ -10,11 +10,11 @@ struct PaymentsRoute: Route {
     }
 
     func canHandle(subPath: String) -> Bool {
-        return HubMenuViewController.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) != nil
+        return deepLinkDestination(for: subPath) != nil
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        guard let destination = HubMenuViewController.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) else {
+        guard let destination = deepLinkDestination(for: subPath) else {
             return false
         }
 
@@ -24,8 +24,8 @@ struct PaymentsRoute: Route {
     }
 }
 
-private extension HubMenuViewController.DeepLinkDestination {
-    init?(paymentsDeepLinkSubPath: String) {
+private extension PaymentsRoute {
+    func deepLinkDestination(for paymentsDeepLinkSubPath: String) -> (any DeepLinkDestinationProtocol)? {
         guard paymentsDeepLinkSubPath.hasPrefix(Constants.paymentsRoot) else {
             return nil
         }
@@ -36,11 +36,11 @@ private extension HubMenuViewController.DeepLinkDestination {
 
         switch destinationSubPath {
         case "":
-            self = .paymentsMenu
+            return HubMenuDestination.paymentsMenu
         case "collect-payment":
-            self = .simplePayments
+            return PaymentsMenuDestination.collectPayment
         case "tap-to-pay":
-            self = .tapToPayOnIPhone
+            return PaymentsMenuDestination.tapToPay
         default:
             return nil
         }

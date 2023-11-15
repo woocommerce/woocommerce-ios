@@ -101,7 +101,7 @@ final class BlazeStoreTests: XCTestCase {
 
     func test_synchronizeCampaigns_returns_error_on_failure() throws {
         // Given
-        remote.whenLoadingCampaign(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingCampaign(thenReturn: .failure(NetworkError.timeout()))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,
                                network: network,
@@ -116,7 +116,7 @@ final class BlazeStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_synchronizeCampaigns_stores_campaigns_upon_success() throws {

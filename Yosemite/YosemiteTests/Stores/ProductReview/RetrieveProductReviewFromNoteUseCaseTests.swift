@@ -217,14 +217,14 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
 
         let note = TestData.note
 
-        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .failure(NetworkError.notFound))
+        notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .failure(NetworkError.notFound()))
 
         // When
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound())
 
         XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 1)
         XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 0)
@@ -241,14 +241,14 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         notificationsRemote.whenLoadingNotes(noteIDs: [note.noteID], thenReturn: .success([note]))
         productReviewsRemote.whenLoadingProductReview(siteID: productReview.siteID,
                                                       reviewID: productReview.reviewID,
-                                                      thenReturn: .failure(NetworkError.timeout))
+                                                      thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = try retrieveAndWait(using: useCase, noteID: note.noteID)
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, NetworkError.timeout)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.timeout())
 
         XCTAssertEqual(notificationsRemote.invocationCountOfLoadNotes, 1)
         XCTAssertEqual(productReviewsRemote.invocationCountOfLoadProductReview, 1)

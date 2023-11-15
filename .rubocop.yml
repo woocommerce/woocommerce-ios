@@ -16,3 +16,6 @@ Metrics/MethodLength:
 
 Layout/LineLength:
   Max: 180
+
+Style/HashSyntax:
+  EnforcedShorthandSyntax: never

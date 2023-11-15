@@ -55,7 +55,7 @@ final class AccountCreationStoreTests: XCTestCase {
 
     func test_createAccount_returns_invalidUsername_error_when_loadUsernameSuggestions_fails() throws {
         // Given
-        remote.whenLoadingUsernameSuggestions(thenReturn: .failure(NetworkError.notFound))
+        remote.whenLoadingUsernameSuggestions(thenReturn: .failure(NetworkError.notFound()))
 
         // When
         let result: Result<CreateAccountResult, CreateAccountError> = waitFor { promise in

@@ -194,8 +194,9 @@ private extension DefaultProductFormTableViewModel {
                 priceDetails.append(String.localizedStringWithFormat(Localization.regularPriceFormat, formattedRegularPrice))
             }
 
-            if let signupFee = product.subscription?.signUpFee, signupFee.isNotEmpty {
-                let formattedFee = currencyFormatter.formatAmount(signupFee, with: currency) ?? ""
+            if let signupFee = product.subscription?.signUpFee,
+               signupFee.isNotEmpty,
+               let formattedFee = currencyFormatter.formatAmount(signupFee, with: currency) {
                 priceDetails.append(String.localizedStringWithFormat(Localization.subscriptionSignupFeeFormat, formattedFee))
             }
 

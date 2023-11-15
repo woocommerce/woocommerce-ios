@@ -310,7 +310,7 @@ private extension ProductFormActionsFactory {
         let canEditProductType = editingSubscriptionEnabled && editable
 
         let actions: [ProductFormEditAction?] = [
-            editingSubscriptionEnabled ? .priceSettings(editable: true, hideSeparator: false) : .subscription(actionable: true),
+            editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,

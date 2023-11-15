@@ -67,7 +67,7 @@ class MockNetwork: Network {
         }
 
         guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
-            completion(.failure(NetworkError.notFound))
+            completion(.failure(NetworkError.notFound()))
             return
         }
 
@@ -82,7 +82,7 @@ class MockNetwork: Network {
         }
 
         guard let name = filename(for: request), let data = Loader.contentsOf(name) else {
-            return Just<Swift.Result<Data, Error>>(.failure(NetworkError.notFound)).eraseToAnyPublisher()
+            return Just<Swift.Result<Data, Error>>(.failure(NetworkError.notFound())).eraseToAnyPublisher()
         }
 
         return Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()

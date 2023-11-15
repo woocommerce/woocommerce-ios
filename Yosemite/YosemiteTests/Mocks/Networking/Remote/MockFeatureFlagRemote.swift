@@ -17,7 +17,7 @@ extension MockFeatureFlagRemote: FeatureFlagRemoteProtocol {
     func loadAllFeatureFlags() async throws -> [RemoteFeatureFlag: Bool] {
         guard let result = loadAllFeatureFlagsResult else {
             XCTFail("Could not find result for loading all feature flags.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

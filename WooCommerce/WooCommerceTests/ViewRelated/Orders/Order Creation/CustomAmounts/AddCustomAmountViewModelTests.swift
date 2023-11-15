@@ -2,7 +2,6 @@
 @testable import Yosemite
 import XCTest
 import Fakes
-import WooFoundation
 
 final class AddCustomAmountViewModelTests: XCTestCase {
     func test_shouldDisableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {

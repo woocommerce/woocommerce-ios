@@ -34,9 +34,12 @@ public class AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials?) {
+    public required init(credentials: Credentials?, sessionManager: Alamofire.SessionManager? = nil) {
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        if let sessionManager {
+            self.sessionManager = sessionManager
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.

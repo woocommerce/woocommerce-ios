@@ -38,6 +38,7 @@ final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet private weak var totalBottomConstraint: NSLayoutConstraint?
     private lazy var totalViews = RowGroup(containerView: totalView, label: totalLabel, value: totalValue)
 
+    @IBOutlet weak var verticalStackViewTopConstraint: NSLayoutConstraint!
     struct RowGroup {
         let containerView: UIView
         let label: UILabel
@@ -60,14 +61,15 @@ final class LedgerTableViewCell: UITableViewCell {
     /// Configure an order payment summary "table"
     ///
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
-        subtotalViews.configure(title: Titles.subtotalLabel, amount: viewModel.subtotalValue, hidden: false)
+        subtotalViews.configure(title: Titles.subtotalLabel, amount: viewModel.subtotalValue, hidden: viewModel.shouldHideSubtotal)
         discountViews.configure(title: viewModel.discountText, amount: viewModel.discountValue, hidden: viewModel.shouldHideDiscount)
         feesViews.configure(title: Titles.feesLabel, amount: viewModel.feesValue, hidden: viewModel.shouldHideFees)
-        shippingViews.configure(title: Titles.shippingLabel, amount: viewModel.shippingValue, hidden: false)
+        shippingViews.configure(title: Titles.shippingLabel, amount: viewModel.shippingValue, hidden: viewModel.shouldHideShipping)
         taxesViews.configure(title: Titles.taxesLabel, amount: viewModel.taxesValue, hidden: viewModel.shouldHideTaxes)
         giftCardsViews.configure(title: viewModel.giftCardsText, amount: viewModel.giftCardsValue, hidden: viewModel.shouldHideGiftCards)
         totalViews.configure(title: Titles.totalLabel, amount: viewModel.totalValue, hidden: false)
         configureAccessibility()
+        configureLayout(with: viewModel)
     }
 
     /// Configure a refund details "table"
@@ -82,8 +84,23 @@ final class LedgerTableViewCell: UITableViewCell {
         totalViews.configure(title: Titles.productsRefund, amount: viewModel.productsRefund, hidden: false)
         configureAccessibility()
     }
+}
 
-    private func configureAccessibility() {
+private extension LedgerTableViewCell {
+    func configureLayout(with viewModel: OrderPaymentDetailsViewModel) {
+        let shouldRemoveTopPadding = viewModel.shouldHideSubtotal &&
+                                     viewModel.shouldHideDiscount &&
+                                     viewModel.shouldHideFees &&
+                                     viewModel.shouldHideShipping &&
+                                     viewModel.shouldHideTaxes &&
+                                     viewModel.shouldHideGiftCards
+
+        if shouldRemoveTopPadding {
+            verticalStackViewTopConstraint.constant = 0
+        }
+    }
+
+    func configureAccessibility() {
         let visibleViews = [subtotalView,
                             discountView,
                             feesView,
@@ -101,12 +118,11 @@ final class LedgerTableViewCell: UITableViewCell {
     }
 }
 
-
 private extension LedgerTableViewCell {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Product Total",
+        static let subtotalLabel = NSLocalizedString("Products",
                                                      comment: "Product Total label for payment view")
-        static let feesLabel = NSLocalizedString("Fees",
+        static let feesLabel = NSLocalizedString("Custom Amounts",
                                                      comment: "Fees label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")

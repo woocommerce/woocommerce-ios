@@ -272,7 +272,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
     func test_loadWPComAccount_returns_nil_upon_error() {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)
-        network.simulateError(requestUrlSuffix: "me", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "me", error: NetworkError.notFound())
 
         // When
         let result: Account? = waitFor { promise in

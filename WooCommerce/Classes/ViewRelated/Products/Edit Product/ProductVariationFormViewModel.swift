@@ -26,6 +26,14 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         isUpdateEnabledSubject.eraseToAnyPublisher()
     }
 
+    /// Unused in variations but needed to satisfy protocol
+    var blazeEligibilityUpdate: AnyPublisher<Void, Never> {
+        Just(Void()).eraseToAnyPublisher()
+    }
+
+    /// Also unused in variations but needed to satisfy protocol
+    var shouldShowBlazeIntroView = false
+
     /// The product variation ID
     var productionVariationID: Int64? {
         productVariation.productVariation.productVariationID
@@ -212,20 +220,31 @@ extension ProductVariationFormViewModel {
     }
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(dateOnSaleStart: dateOnSaleStart,
-                                                                                                                  dateOnSaleEnd: dateOnSaleEnd,
-                                                                                                                  regularPrice: regularPrice,
-                                                                                                                  salePrice: salePrice,
-                                                                                                                  taxStatusKey: taxStatus.rawValue,
-                                                                                                                  taxClass: taxClass?.slug),
-                                                         allAttributes: allAttributes,
-                                                         parentProductSKU: parentProductSKU,
-                                                         parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
+        let subscription = productVariation.subscription?.copy(period: subscriptionPeriod,
+                                                               periodInterval: subscriptionPeriodInterval,
+                                                               price: regularPrice,
+                                                               signUpFee: subscriptionSignupFee)
+        productVariation = EditableProductVariationModel(
+            productVariation: productVariation.productVariation.copy(
+                dateOnSaleStart: dateOnSaleStart,
+                dateOnSaleEnd: dateOnSaleEnd,
+                regularPrice: regularPrice,
+                salePrice: salePrice,
+                taxStatusKey: taxStatus.rawValue,
+                taxClass: taxClass?.slug,
+                subscription: subscription
+            ),
+            allAttributes: allAttributes,
+            parentProductSKU: parentProductSKU,
+            parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
 
     func updateInventorySettings(sku: String?,

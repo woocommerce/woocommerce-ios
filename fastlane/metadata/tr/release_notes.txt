@@ -1,1 +1,1 @@
-Bu güncelleme ile siparişler arasında zahmetsizce gezinin, kolayca indirimlerle kuponlar ekleyin ve gelişmiş ürün oluşturma yapay zekasının keyfini çıkarın. WooCommerce'i seçtiğiniz için teşekkür ederiz.
+En yeni güncellememizde WooCommerce deneyiminizi geliştirdik! Daha basit ve sezgisel bir akış sağlamak için sipariş oluşturma bölümlerini optimize ettik. Ayrıca, sipariş oluşturma sırasında yanlış müşteri ekranını gösteren bir hata giderildi. Daha kolay ve daha verimli bir WooCommerce yolculuğunun keyfini çıkarın!

@@ -4,9 +4,16 @@ import WordPressAuthenticator
 /// Hosting controller for `WPComMagicLinkView`
 final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkView> {
 
-    init(email: String, requiresConnectionOnly: Bool) {
-        let viewModel = WPComMagicLinkViewModel(email: email, requiresConnectionOnly: requiresConnectionOnly)
-        super.init(rootView: WPComMagicLinkView(viewModel: viewModel))
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    ///
+    private let isJetpackSetup: Bool
+
+    init(email: String, title: String, isJetpackSetup: Bool) {
+        self.isJetpackSetup = isJetpackSetup
+        let viewModel = WPComMagicLinkViewModel(email: email)
+        super.init(rootView: WPComMagicLinkView(title: title,
+                                                isJetpackSetup: isJetpackSetup,
+                                                viewModel: viewModel))
         rootView.onOpenMail = {
             let linkMailPresenter = LinkMailPresenter(emailAddress: email)
             let appSelector = AppSelector(sourceView: self.view)
@@ -26,7 +33,7 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        if isMovingFromParent {
+        if isMovingFromParent, isJetpackSetup {
             ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .dismiss))
         }
     }
@@ -36,10 +43,18 @@ final class WPComMagicLinkHostingController: UIHostingController<WPComMagicLinkV
 // The magic link screen for the WPCom authentication flow for Jetpack setup.
 //
 struct WPComMagicLinkView: View {
+    /// Title to display on top of the view.
+    private let title: String
+
+    /// Whether the view is part of the login step of the Jetpack setup flow.
+    private let isJetpackSetup: Bool
+
     private let viewModel: WPComMagicLinkViewModel
     var onOpenMail: () -> Void = {}
 
-    init(viewModel: WPComMagicLinkViewModel) {
+    init(title: String, isJetpackSetup: Bool, viewModel: WPComMagicLinkViewModel) {
+        self.title = title
+        self.isJetpackSetup = isJetpackSetup
         self.viewModel = viewModel
     }
 
@@ -47,10 +62,11 @@ struct WPComMagicLinkView: View {
         ScrollView {
             VStack(spacing: Constants.blockVerticalPadding) {
                 JetpackInstallHeaderView()
+                    .renderedIf(isJetpackSetup)
 
                 // title
                 HStack {
-                    Text(viewModel.titleString)
+                    Text(title)
                         .largeTitleStyle()
                     Spacer()
                 }
@@ -74,7 +90,9 @@ struct WPComMagicLinkView: View {
             VStack {
                 // Primary CTA
                 Button(Localization.openMail) {
-                    ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
+                    if isJetpackSetup {
+                        ServiceLocator.analytics.track(event: .JetpackSetup.loginFlow(step: .magicLink, tap: .submit))
+                    }
                     onOpenMail()
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -106,6 +124,8 @@ private extension WPComMagicLinkView {
 
 struct WPComMagicLinkView_Previews: PreviewProvider {
     static var previews: some View {
-        WPComMagicLinkView(viewModel: .init(email: "test@example.com", requiresConnectionOnly: true))
+        WPComMagicLinkView(title: "Login",
+                           isJetpackSetup: false,
+                           viewModel: .init(email: "test@example.com"))
     }
 }

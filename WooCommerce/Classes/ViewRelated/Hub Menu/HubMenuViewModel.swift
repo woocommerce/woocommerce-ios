@@ -49,6 +49,8 @@ final class HubMenuViewModel: ObservableObject {
     ///
     @Published private(set) var switchStoreEnabled = false
 
+    @Published private(set) var swiftUIPaymentsMenuEnabled = false
+
     @Published var showingReviewDetail = false
 
     @Published var shouldAuthenticateAdminPage = false
@@ -70,6 +72,15 @@ final class HubMenuViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
+
+    lazy var inPersonPaymentsMenuViewModel: InPersonPaymentsMenuViewModel = {
+        InPersonPaymentsMenuViewModel(
+            siteID: siteID,
+            dependencies: .init(
+                cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+                onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
+                cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: siteID)))
+    }()
 
     init(siteID: Int64,
          navigationController: UINavigationController? = nil,
@@ -93,6 +104,8 @@ final class HubMenuViewModel: ObservableObject {
 
     func viewDidAppear() {
         NotificationCenter.default.post(name: .hubMenuViewDidAppear, object: nil)
+        swiftUIPaymentsMenuEnabled = featureFlagService.isFeatureFlagEnabled(.swiftUIPaymentsMenu) &&
+        generalAppSettings.betaFeatureEnabled(.swiftUIPaymentsMenu)
     }
 
     /// Resets the menu elements displayed on the menu.
@@ -146,7 +159,6 @@ final class HubMenuViewModel: ObservableObject {
             } else {
                 generalElements.append(Blaze())
             }
-            ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointDisplayed(source: .menu))
         } else {
             generalElements.removeAll(where: { $0.id == Blaze.id })
         }
@@ -189,18 +201,10 @@ final class HubMenuViewModel: ObservableObject {
             return
         }
 
-        ServiceLocator.analytics.track(event: .Blaze.blazeEntryPointTapped(source: .menu))
-
-        if featureFlagService.isFeatureFlagEnabled(.optimizedBlazeExperience) {
-            // shows campaign list for the new Blaze experience.
-            let controller = BlazeCampaignListHostingController(site: site, viewModel: .init(siteID: site.siteID))
-            navigationController?.show(controller, sender: self)
-            ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
-        } else {
-            let viewModel = BlazeWebViewModel(source: .menu, site: site, productID: nil)
-            let webViewController = AuthenticatedWebViewController(viewModel: viewModel)
-            navigationController?.show(webViewController, sender: self)
-        }
+        // shows campaign list for the new Blaze experience.
+        let controller = BlazeCampaignListHostingController(viewModel: .init(siteID: site.siteID))
+        navigationController?.show(controller, sender: self)
+        ServiceLocator.analytics.track(event: .Blaze.blazeCampaignListEntryPointSelected(source: .menu))
     }
 
     private func observeSiteForUIUpdates() {

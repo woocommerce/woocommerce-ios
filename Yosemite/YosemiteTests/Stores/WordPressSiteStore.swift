@@ -21,7 +21,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchSiteInfo_returns_correct_site() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/", filename: "wordpress-site-info")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
@@ -50,7 +50,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchSiteInfo_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
@@ -68,7 +68,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/", filename: "wordpress-site-info")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
@@ -87,7 +87,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "wp-json", filename: "wordpress-site-info-with-auth-url")
+        network.simulateResponse(requestUrlSuffix: "?rest_route=/", filename: "wordpress-site-info-with-auth-url")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
@@ -106,7 +106,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
         // Given
-        network.simulateError(requestUrlSuffix: "wp-json", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When

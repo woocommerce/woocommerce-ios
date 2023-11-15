@@ -220,8 +220,9 @@ final class OrdersRootViewController: UIViewController {
                 switch result {
                 case let .success(product):
                     self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductAdd(flow: .creation,
-                                                                                    source: .orderList,
-                                                                                    addedVia: .scanning))
+                                                                                         source: .orderList,
+                                                                                         addedVia: .scanning,
+                                                                                         includesBundleProductConfiguration: false))
                     self.presentOrderCreationFlowWithScannedProduct(product)
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)

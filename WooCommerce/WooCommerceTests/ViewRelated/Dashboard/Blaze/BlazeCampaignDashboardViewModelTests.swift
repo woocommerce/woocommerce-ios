@@ -627,6 +627,24 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowIntroView)
     }
 
+    // MARK: `selectedCampaignURL`
+
+    func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
+        // Given
+        let testURL = "https://example.com"
+        let campaign = BlazeCampaign.fake().copy(siteID: sampleSiteID, campaignID: 123)
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, siteURL: testURL)
+
+        // Confidence check
+        XCTAssertNil(viewModel.selectedCampaignURL)
+
+        // When
+        viewModel.didSelectCampaignDetails(campaign)
+
+        // Then
+        XCTAssertEqual(viewModel.selectedCampaignURL?.absoluteString, "https://wordpress.com/advertising/campaigns/123/example.com?source=my_store_section")
+    }
+
     // MARK: Analytics
 
     func test_blazeEntryPointDisplayed_is_tracked_when_shouldShowIntroView_is_set_to_true() throws {
@@ -662,7 +680,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID, analytics: analytics)
 
         // When
-        viewModel.didSelectCampaignDetails()
+        viewModel.didSelectCampaignDetails(.fake())
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_campaign_detail_selected"))
@@ -683,6 +701,119 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
         let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_tapped"))
         let properties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
         XCTAssertEqual(properties["source"] as? String, "intro_view")
+    }
+
+    func test_blazeEntryPointDisplayed_tracked_if_blaze_campaign_available() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  analytics: analytics,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_displayed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "my_store_section")
+    }
+
+    func test_blazeEntryPointDisplayed_tracked_if_published_product_available_and_blaze_campaign_not_available() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.published.rawValue))
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  analytics: analytics,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "blaze_entry_point_displayed"))
+        let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[index])
+        XCTAssertEqual(eventProperties["source"] as? String, "my_store_section")
+    }
+
+    func test_blazeEntryPointDisplayed_is_not_tracked_if_draft_product_available_and_blaze_campaign_not_available() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeProduct = Product.fake().copy(siteID: sampleSiteID,
+                                              statusKey: (ProductStatus.draft.rawValue))
+
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  analytics: analytics,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts(insertProductToStorage: fakeProduct)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+    }
+
+    func test_blazeEntryPointDisplayed_is_not_tracked_if_no_blaze_campaign_no_product_available() async {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  analytics: analytics,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns()
+        mockSynchronizeProducts()
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("blaze_entry_point_displayed"))
+    }
+
+    func test_blazeEntryPointDisplayed_is_not_tracked_again_after_reload() async throws {
+        // Given
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        let sut = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                  stores: stores,
+                                                  storageManager: storageManager,
+                                                  analytics: analytics,
+                                                  blazeEligibilityChecker: checker)
+
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
+
+        // When
+        await sut.reload()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
     }
 }
 

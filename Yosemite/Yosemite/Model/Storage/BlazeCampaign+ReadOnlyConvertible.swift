@@ -9,6 +9,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func update(with campaign: Yosemite.BlazeCampaign) {
         siteID = campaign.siteID
         campaignID = campaign.campaignID
+        productID = campaign.productID != nil ? NSNumber(value: campaign.productID!) : nil
         name = campaign.name
         rawStatus = campaign.uiStatus
         contentClickURL = campaign.contentClickURL
@@ -23,6 +24,7 @@ extension Storage.BlazeCampaign: ReadOnlyConvertible {
     public func toReadOnly() -> BlazeCampaign {
         BlazeCampaign(siteID: siteID,
                       campaignID: campaignID,
+                      productID: productID?.int64Value,
                       name: name,
                       uiStatus: rawStatus,
                       contentImageURL: contentImageURL,

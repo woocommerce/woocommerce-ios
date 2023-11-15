@@ -6,6 +6,7 @@ enum ProductFormEditAction: Equatable {
     case linkedProductsPromo(viewModel: FeatureAnnouncementCardViewModel)
     case name(editable: Bool)
     case description(editable: Bool)
+    case promoteWithBlaze
     case priceSettings(editable: Bool, hideSeparator: Bool)
     case reviews
     case productType(editable: Bool)
@@ -54,6 +55,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
 
     private let product: EditableProductModel
     private let formType: ProductFormType
+    private let canPromoteWithBlaze: Bool
     private let editable: Bool
     private let addOnsFeatureEnabled: Bool
     private let variationsPrice: VariationsPrice
@@ -66,28 +68,27 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     }
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
-    private let isSubscriptionProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
          formType: ProductFormType,
+         canPromoteWithBlaze: Bool = false,
          addOnsFeatureEnabled: Bool = true,
          isLinkedProductsPromoEnabled: Bool = false,
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
-         isSubscriptionProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlySubscriptions),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
+        self.canPromoteWithBlaze = canPromoteWithBlaze
         self.editable = formType != .readonly
         self.addOnsFeatureEnabled = addOnsFeatureEnabled
         self.variationsPrice = variationsPrice
         self.isLinkedProductsPromoEnabled = isLinkedProductsPromoEnabled
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
-        self.isSubscriptionProductsEnabled = isSubscriptionProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
     }
 
@@ -102,11 +103,14 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         && product.upsellIDs.isEmpty
         && product.crossSellIDs.isEmpty
 
+        let shouldShowPromoteWithBlaze = canPromoteWithBlaze
+
         let actions: [ProductFormEditAction?] = [
             shouldShowImagesRow ? .images(editable: editable): nil,
             shouldShowLinkedProductsPromo ? .linkedProductsPromo(viewModel: newLinkedProductsPromoViewModel) : nil,
             .name(editable: editable),
-            shouldShowDescriptionRow ? .description(editable: editable): nil
+            shouldShowDescriptionRow ? .description(editable: editable): nil,
+            shouldShowPromoteWithBlaze ? .promoteWithBlaze : nil
         ]
         return actions.compactMap { $0 }
     }
@@ -145,7 +149,7 @@ private extension ProductFormActionsFactory {
         case .subscription:
             return allSettingsSectionActionsForSubscriptionProduct()
         case .variableSubscription:
-            return isSubscriptionProductsEnabled ? allSettingsSectionActionsForVariableSubscriptionProduct() : allSettingsSectionActionsForNonCoreProduct()
+            return allSettingsSectionActionsForVariableSubscriptionProduct()
         default:
             return allSettingsSectionActionsForNonCoreProduct()
         }
@@ -297,20 +301,12 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
-        let subscriptionOrPriceRow: ProductFormEditAction? = {
-            if isSubscriptionProductsEnabled {
-                return .subscription(actionable: true)
-            } else if !product.regularPrice.isNilOrEmpty {
-                return .priceSettings(editable: false, hideSeparator: false)
-            } else {
-                return nil
-            }
-        }()
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
+        let editableSubscription = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
 
         let actions: [ProductFormEditAction?] = [
-            subscriptionOrPriceRow,
+            editableSubscription ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,

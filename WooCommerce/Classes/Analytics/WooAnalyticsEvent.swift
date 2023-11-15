@@ -491,12 +491,27 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceOrderAddNew = "milliseconds_since_order_add_new"
         }
 
+        /// The raw value is the analytics event property value.
+        enum BundleProductConfigurationSource: String {
+            case productCard = "product_card"
+            case productSelector = "product_selector"
+        }
+
+        /// The raw value is the analytics event property value.
+        enum BundleProductConfigurationChangedField: String {
+            case quantity
+            case variation
+        }
+
         private enum Keys {
+            static let changedField = "changed_field"
             static let flow = "flow"
             static let hasDifferentShippingDetails = "has_different_shipping_details"
             static let orderStatus = "order_status"
             static let productCount = "product_count"
+            static let customAmountsCount = "custom_amounts_count"
             static let hasAddOns = "has_addons"
+            static let hasBundleProductConfiguration = "has_bundle_configuration"
             static let hasCustomerDetails = "has_customer_details"
             static let hasFees = "has_fees"
             static let hasShippingMethod = "has_shipping_method"
@@ -609,12 +624,17 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderProductAdd(flow: Flow, source: BarcodeScanningSource, addedVia: OrderProductAdditionVia, productCount: Int = 1) -> WooAnalyticsEvent {
+        static func orderProductAdd(flow: Flow,
+                                    source: BarcodeScanningSource,
+                                    addedVia: OrderProductAdditionVia,
+                                    productCount: Int = 1,
+                                    includesBundleProductConfiguration: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderProductAdd, properties: [
                 Keys.flow: flow.rawValue,
                 Keys.productCount: Int64(productCount),
                 Keys.source: source.rawValue,
-                Keys.addedVia: addedVia.rawValue
+                Keys.addedVia: addedVia.rawValue,
+                Keys.hasBundleProductConfiguration: includesBundleProductConfiguration
             ])
         }
 
@@ -635,6 +655,10 @@ extension WooAnalyticsEvent {
 
         static func orderFeeAdd(flow: Flow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
+        }
+
+        static func orderFeeUpdate(flow: Flow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeUpdate, properties: [Keys.flow: flow.rawValue])
         }
 
         static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {
@@ -705,6 +729,7 @@ extension WooAnalyticsEvent {
         static func orderCreateButtonTapped(order: Order,
                                             status: OrderStatusEnum,
                                             productCount: Int,
+                                            customAmountsCount: Int,
                                             hasCustomerDetails: Bool,
                                             hasFees: Bool,
                                             hasShippingMethod: Bool,
@@ -712,6 +737,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreateButtonTapped, properties: [
                 Keys.orderStatus: status.rawValue,
                 Keys.productCount: Int64(productCount),
+                Keys.customAmountsCount: Int64(customAmountsCount),
                 Keys.hasCustomerDetails: hasCustomerDetails,
                 Keys.hasFees: hasFees,
                 Keys.hasShippingMethod: hasShippingMethod,
@@ -813,6 +839,38 @@ extension WooAnalyticsEvent {
         ///
         static func giftCardsShown() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderDetailsGiftCardShown, properties: [:])
+        }
+
+        /// Tracked when the Configure button is shown in the order form.
+        ///
+        static func orderFormBundleProductConfigureCTAShown(flow: Flow, source: BundleProductConfigurationSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigureCTAShown, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue
+            ])
+        }
+
+        /// Tracked when the Configure button is tapped in the order form.
+        ///
+        static func orderFormBundleProductConfigureCTATapped(flow: Flow, source: BundleProductConfigurationSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigureCTATapped, properties: [
+                Keys.flow: flow.rawValue,
+                Keys.source: source.rawValue
+            ])
+        }
+
+        /// Tracked the user changes any field for any bundle item in the configuration form from the order form.
+        ///
+        static func orderFormBundleProductConfigurationChanged(changedField: BundleProductConfigurationChangedField) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigurationChanged, properties: [
+                Keys.changedField: changedField.rawValue
+            ])
+        }
+
+        /// Tracked when the user taps to save a valid bundle product configuration from the order form.
+        ///
+        static func orderFormBundleProductConfigurationSaveTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFormBundleProductConfigurationSaveTapped, properties: [:])
         }
     }
 }
@@ -1913,6 +1971,15 @@ extension WooAnalyticsEvent {
                                 Keys.countryCode: countryCode.rawValue,
                                 Keys.source: source.rawValue
                               ])
+        }
+
+        static func cashOnDeliveryToggleLearnMoreTapped(countryCode: CountryCode,
+                                                        source: CashOnDeliverySource) -> WooAnalyticsEvent {
+            return WooAnalyticsEvent(statName: .paymentsHubCashOnDeliveryToggleLearnMoreTapped,
+                                     properties: [
+                                        Keys.countryCode: countryCode.rawValue,
+                                        Keys.source: source.rawValue
+                                     ])
         }
 
         /// Tracked when the Cash on Delivery Payment Gateway disabling fails, e.g. from the toggle on the Payments hub menu.

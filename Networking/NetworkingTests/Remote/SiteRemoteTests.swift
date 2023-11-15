@@ -58,7 +58,7 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.createSite(name: "Wapuu swags", flow: .onboarding(domain: "wapuu.store"))
-        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+        }, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `launchSite`
@@ -106,7 +106,7 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.launchSite(siteID: 134)
-        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+        }, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `enableFreeTrial`
@@ -145,7 +145,7 @@ final class SiteRemoteTests: XCTestCase {
         await assertThrowsError({
             // When
             _ = try await remote.updateSiteTitle(siteID: 123, title: "Test")
-        }, errorAssert: { ($0 as? NetworkError) == .notFound })
+        }, errorAssert: { ($0 as? NetworkError) == .notFound() })
     }
 
     // MARK: - `uploadStoreProfilerAnswers`

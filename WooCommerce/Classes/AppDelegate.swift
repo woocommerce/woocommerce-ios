@@ -74,7 +74,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Yosemite Initialization
         synchronizeEntitiesIfPossible()
-        listenToApplicationPasswordGenerationFailureNotification()
+        listenToAuthenticationFailureNotifications()
 
         // Since we are using Injection for refreshing the content of the app in debug mode,
         // we are going to enable Inject.animation that will be used when
@@ -89,10 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         checkForUpgrades()
 
         // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
-
-        // Silently connect to Tap to Pay if previously connected, to speed up IPP
-        reconnectToTapToPayReaderIfNeeded()
+        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
 
         return true
     }
@@ -188,11 +185,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
         // Called as part of the transition from the background to the active state; here you can undo many of the changes made on entering the background.
 
-        // Cache onboarding state to speed IPP process
-        refreshCardPresentPaymentsOnboardingIfNeeded()
-
-        // Silently connect to Tap to Pay if previously connected, to speed up IPP
-        reconnectToTapToPayReaderIfNeeded()
+        // Cache onboarding state to speed IPP process, then silently connect to Tap to Pay if previously connected, to speed up IPP
+        refreshCardPresentPaymentsOnboardingIfNeeded(completion: reconnectToTapToPayReaderIfNeeded)
     }
 
     func applicationDidBecomeActive(_ application: UIApplication) {
@@ -444,8 +438,8 @@ private extension AppDelegate {
             }
     }
 
-    func refreshCardPresentPaymentsOnboardingIfNeeded() {
-        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState()
+    func refreshCardPresentPaymentsOnboardingIfNeeded(completion: @escaping (() -> Void)) {
+        ServiceLocator.cardPresentPaymentsOnboardingIPPUsersRefresher.refreshIPPUsersOnboardingState(completion: completion)
     }
 
     func reconnectToTapToPayReaderIfNeeded() {
@@ -503,14 +497,15 @@ extension AppDelegate {
         ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
     }
 
-    /// Deauthenticates the user upon application password generation failure.
+    /// De-authenticates the user upon application password generation failure or WPCOM token expiry.
     ///
-    private func listenToApplicationPasswordGenerationFailureNotification() {
-        guard ServiceLocator.stores.isAuthenticatedWithoutWPCom else {
-            return
+    private func listenToAuthenticationFailureNotifications() {
+        let stores = ServiceLocator.stores
+        if stores.isAuthenticatedWithoutWPCom {
+            stores.listenToApplicationPasswordGenerationFailureNotification()
+        } else {
+            stores.listenToWPCOMInvalidWPCOMTokenNotification()
         }
-
-        ServiceLocator.stores.listenToApplicationPasswordGenerationFailureNotification()
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

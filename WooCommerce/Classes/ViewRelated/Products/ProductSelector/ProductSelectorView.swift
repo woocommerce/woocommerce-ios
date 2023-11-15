@@ -5,7 +5,7 @@ import Yosemite
 ///
 struct ProductSelectorView: View {
     enum Source {
-        case orderForm
+        case orderForm(flow: WooAnalyticsEvent.Orders.Flow)
         case couponForm
         case couponRestrictions
     }
@@ -37,6 +37,9 @@ struct ProductSelectorView: View {
     @State private var showingFilters: Bool = false
 
     @State private var searchHeaderisBeingEdited = false
+
+    /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
+    @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
     /// Title for the multi-selection button
     ///
@@ -205,12 +208,40 @@ struct ProductSelectorView: View {
             }
             .accessibilityHint(configuration.variableProductRowAccessibilityHint)
         } else {
-            ProductRow(multipleSelectionsEnabled: true,
-                       viewModel: rowViewModel)
+            HStack {
+                ProductRow(multipleSelectionsEnabled: true,
+                           viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
-                .onTapGesture {
+
+                Text(Localization.configureButton)
+                    .linkStyle()
+                    .renderedIf(rowViewModel.isConfigurable)
+                    .onAppear {
+                        guard !hasTrackedBundleProductConfigureCTAShownEvent else {
+                            return
+                        }
+                        switch source {
+                            case let .orderForm(flow):
+                                ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTAShown(flow: flow, source: .productSelector))
+                                hasTrackedBundleProductConfigureCTAShownEvent = true
+                            default:
+                                break
+                        }
+                    }
+            }
+            .onTapGesture {
+                if let configure = rowViewModel.configure, rowViewModel.isConfigurable {
+                    configure()
+                    switch source {
+                        case let .orderForm(flow):
+                            ServiceLocator.analytics.track(event: .Orders.orderFormBundleProductConfigureCTATapped(flow: flow, source: .productSelector))
+                        default:
+                            break
+                    }
+                } else {
                     viewModel.changeSelectionStateForProduct(with: rowViewModel.productOrVariationID)
                 }
+            }
         }
     }
 }
@@ -244,6 +275,11 @@ private extension ProductSelectorView {
                                                                      comment: "Accessibility label for placeholder rows while products are loading")
         static let clearSelection = NSLocalizedString("Clear selection", comment: "Button to clear selection on the Select Products screen")
         static let doneButton = NSLocalizedString("Done", comment: "Button to submit the product selector without any product selected.")
+        static let configureButton = NSLocalizedString(
+            "productSelector.configureProductRow",
+            value: "Configure",
+            comment: "Action to configure a product row in the product selector."
+        )
     }
 }
 
@@ -268,6 +304,6 @@ struct AddProduct_Previews: PreviewProvider {
             cancelButtonTitle: "Close",
             productRowAccessibilityHint: "Add product to order",
             variableProductRowAccessibilityHint: "Open variation list")
-        ProductSelectorView(configuration: configuration, source: .orderForm, isPresented: .constant(true), viewModel: viewModel)
+        ProductSelectorView(configuration: configuration, source: .orderForm(flow: .creation), isPresented: .constant(true), viewModel: viewModel)
     }
 }

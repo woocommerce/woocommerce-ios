@@ -22,16 +22,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .shippingLabelsOnboardingM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .promptToEnableCodInIppOnboarding:
-            return true
         case .searchProductsBySKU:
             return true
-        case .inAppPurchases:
+        case .inAppPurchasesDebugMenu:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .justInTimeMessagesOnDashboard:
-            return true
-        case .IPPInAppFeedbackBanner:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -58,8 +52,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .compositeProducts:
             return true
-        case .readOnlySubscriptions:
-            return true
         case .productDescriptionAI:
             return true
         case .productDescriptionAIFromStoreOnboarding:
@@ -74,38 +66,28 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .euShippingNotification:
             return true
-        case .sdkLessGoogleSignIn:
-            return true
         case .shareProductAI:
-            return true
-        case .ordersWithCouponsM4:
-            return true
-        case .ordersWithCouponsM6:
             return true
         case .betterCustomerSelectionInOrder:
             return true
-        case .manualTaxesInOrderM2:
-            return true
         case .hazmatShipping:
-            return true
-        case .reusePaymentIntentOnRetryInPersonPayment:
-            return true
-        case .refreshOrderBeforeInPersonPayment:
-            return true
-        case .manualTaxesInOrderM3:
             return true
         case .productCreationAI:
             return true
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
-            return (buildConfig == .localDeveloper || buildConfig == .alpha) && !isUITesting
-        case .orderCustomAmountsM1:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .tapToPayOnIPhoneInUK:
             return true
-        case .optimizedBlazeExperience:
+        case .productBundlesInOrderForm:
             return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .customLoginUIForAccountCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .swiftUIPaymentsMenu:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .subscriptionProducts:
+            return false
         default:
             return true
         }

@@ -1381,7 +1381,7 @@ final class ProductStoreTests: XCTestCase {
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound())
 
         // When
         let product = sampleProduct()
@@ -1829,7 +1829,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductDescription_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1848,7 +1848,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
@@ -1967,7 +1967,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -1989,7 +1989,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductSharingMessage_includes_parameters_in_remote_base_parameter() throws {
@@ -2087,7 +2087,7 @@ final class ProductStoreTests: XCTestCase {
     func test_identifyLanguage_returns_error_on_identify_language_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenIdentifyingLanguage(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2105,7 +2105,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
 
@@ -2194,6 +2194,34 @@ final class ProductStoreTests: XCTestCase {
         let error = try XCTUnwrap(result.failure as? ProductLoadError)
         XCTAssertEqual(result.isFailure, true)
         XCTAssertEqual(error, ProductLoadError.notPurchasable)
+    }
+
+    func test_retrieveFirstPurchasableItemMatchFromSKU_when_two_successful_SKU_partial_match_products_then_returns_matched_product() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        remote.whenSearchingProductsBySKU(sku: "chocobars", thenReturn: .success([
+            .fake().copy(sku: "chocobars-dark", purchasable: true),
+            // The product of the exact SKU match is not the first result.
+            .fake().copy(sku: "chocobars", purchasable: true)
+        ]))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductAction.retrieveFirstPurchasableItemMatchFromSKU(siteID: self.sampleSiteID,
+                                                                                  sku: "chocobars",
+                                                                                  onCompletion: { product in
+                promise(product)
+            }))
+        }
+
+        let skuSearchResult = try XCTUnwrap(result.get())
+
+        guard case let .product(productMatch) = skuSearchResult else {
+            return XCTFail("It didn't provide a product as expected")
+        }
+
+        XCTAssertEqual(productMatch.sku, "chocobars")
     }
 
     func test_retrieveFirstPurchasableItemMatchFromSKU_when_partial_SKU_match_then_returns_not_found_error() throws {
@@ -2328,7 +2356,8 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
@@ -2336,14 +2365,13 @@ final class ProductStoreTests: XCTestCase {
         // Then
         let productDetails = try XCTUnwrap(result.get())
         XCTAssertEqual(productDetails, .init(name: "Cheese and Garlic Croutons",
-                                             description: "Enhance your salads.",
-                                             language: "en"))
+                                             description: "Enhance your salads."))
     }
 
     func test_generateProductDetails_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2354,20 +2382,22 @@ final class ProductStoreTests: XCTestCase {
         let result = waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { result in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { result in
                 promise(result)
             })
         }
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let scannedTexts = ["onion", "chives"]
         let productName = "food"
+        let language = "en"
         let generativeContentRemote = MockGenerativeContentRemote()
         generativeContentRemote.whenGeneratingText(thenReturn: .success(""))
         let productStore = ProductStore(dispatcher: dispatcher,
@@ -2380,7 +2410,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: productName,
-                                                                       scannedTexts: scannedTexts) { _ in
+                                                                       scannedTexts: scannedTexts,
+                                                                       language: language) { _ in
                 promise(())
             })
         }
@@ -2389,6 +2420,7 @@ final class ProductStoreTests: XCTestCase {
         let base = try XCTUnwrap(generativeContentRemote.generateTextBase)
         let combinedKeywords = scannedTexts + [productName]
         XCTAssertTrue(base.contains("\(combinedKeywords)"))
+        XCTAssertTrue(base.contains("\(language)"))
     }
 
     func test_generateProductDetails_uses_correct_feature() throws {
@@ -2405,7 +2437,8 @@ final class ProductStoreTests: XCTestCase {
         waitFor { promise in
             productStore.onAction(ProductAction.generateProductDetails(siteID: self.sampleSiteID,
                                                                        productName: nil,
-                                                                       scannedTexts: [""]) { _ in
+                                                                       scannedTexts: [""],
+                                                                       language: "en") { _ in
                 promise(())
             })
         }
@@ -2443,7 +2476,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateProductName_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingText(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2459,7 +2492,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
     func test_generateProductName_includes_parameters_in_remote_base_parameter() throws {
@@ -2530,7 +2563,7 @@ final class ProductStoreTests: XCTestCase {
     func test_fetchNumberOfProducts_returns_error_on_failure() throws {
         // Given
         let remote = MockProductsRemote()
-        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingNumberOfProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
@@ -2542,7 +2575,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
 
@@ -2583,7 +2616,7 @@ final class ProductStoreTests: XCTestCase {
     func test_generateAIProduct_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
-        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout))
+        generativeContentRemote.whenGeneratingAIProduct(thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher,
                                         storageManager: storageManager,
                                         network: network,
@@ -2608,7 +2641,7 @@ final class ProductStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .timeout)
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 }
 

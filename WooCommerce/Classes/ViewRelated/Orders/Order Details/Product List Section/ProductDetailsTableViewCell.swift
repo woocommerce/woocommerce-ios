@@ -198,12 +198,23 @@ extension ProductDetailsTableViewCell {
         viewAddOnsStackView.isHidden = !item.hasAddOns
         configureChildProductPadding(isChildProduct: item.isChildProduct)
     }
+
+    func configure(customAmountViewModel: OrderDetailsCustomAmountCellViewModel) {
+        nameLabel.text = customAmountViewModel.name
+        productImageView.image = customAmountViewModel.image
+        priceLabel.text = customAmountViewModel.total
+        subtitleLabel.text = Localization.customAmount
+        viewAddOnsStackView.isHidden = true
+    }
 }
 
 // MARK: Localization
 private extension ProductDetailsTableViewCell {
     enum Localization {
         static let viewAddOns = NSLocalizedString("View Add-Ons", comment: "Title of the button on the order detail item to navigate to add-ons")
+        static let customAmount = NSLocalizedString("orderDetails.customAmountsRow.subtitle",
+                                                    value: "Custom Amount",
+                                                    comment: "Subtitle of the custom amount row in order details")
     }
 
     enum Constants {

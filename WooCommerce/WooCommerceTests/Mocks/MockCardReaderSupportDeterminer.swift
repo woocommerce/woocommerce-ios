@@ -3,7 +3,6 @@ import Yosemite
 @testable import WooCommerce
 
 final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
-
     var shouldReturnLocationIsAuthorized = false
     var locationIsAuthorized: Bool {
         return shouldReturnLocationIsAuthorized
@@ -28,4 +27,10 @@ final class MockCardReaderSupportDeterminer: CardReaderSupportDetermining {
     func deviceSupportsLocalMobileReader() async -> Bool {
         return shouldReturnDeviceSupportsLocalMobileReader
     }
+
+    var mockFirstTapToPayTransactionDate: Date? = nil
+    func firstTapToPayTransactionDate() async -> Date? {
+        mockFirstTapToPayTransactionDate
+    }
+
 }

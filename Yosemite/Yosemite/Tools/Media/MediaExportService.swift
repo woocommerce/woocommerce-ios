@@ -18,6 +18,7 @@ protocol MediaExportService {
 /// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `UploadableMedia`.
 ///
 final class DefaultMediaExportService: MediaExportService {
+    @MainActor
     func export(_ exportable: ExportableAsset, filename: String?, altText: String?) async throws -> UploadableMedia {
         guard let exporter = createExporter(for: exportable, filename: filename, altText: altText) else {
             preconditionFailure("An exporter needs to be available for asset: \(exportable)")

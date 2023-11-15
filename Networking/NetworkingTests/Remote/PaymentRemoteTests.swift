@@ -55,7 +55,7 @@ final class PaymentRemoteTests: XCTestCase {
             _ = try await remote.loadPlan(thatMatchesID: 9)
         } errorAssert: { error in
             // Then
-            (error as? NetworkError) == .notFound
+            (error as? NetworkError) == .notFound()
         }
     }
 
@@ -101,7 +101,7 @@ final class PaymentRemoteTests: XCTestCase {
             _ = try await remote.loadSiteCurrentPlan(siteID: 6)
         } errorAssert: { error in
             // Then
-            (error as? NetworkError) == .notFound
+            (error as? NetworkError) == .notFound()
         }
     }
 
@@ -146,7 +146,7 @@ final class PaymentRemoteTests: XCTestCase {
             _ = try await remote.createCart(siteID: 606, productID: 685)
         } errorAssert: { error in
             // Then
-            (error as? NetworkError) == .notFound
+            (error as? NetworkError) == .notFound()
         }
     }
 
@@ -195,7 +195,7 @@ final class PaymentRemoteTests: XCTestCase {
             _ = try await remote.createCart(siteID: 606, domain: .init(name: "fun.toys", productID: 254, supportsPrivacy: true), isTemporary: false)
         } errorAssert: { error in
             // Then
-            (error as? NetworkError) == .notFound
+            (error as? NetworkError) == .notFound()
         }
     }
 
@@ -224,7 +224,7 @@ final class PaymentRemoteTests: XCTestCase {
             try await remote.checkoutCartWithDomainCredit(cart: [:], contactInfo: .fake())
         } errorAssert: { error in
             // Then
-            (error as? NetworkError) == .notFound
+            (error as? NetworkError) == .notFound()
         }
     }
 }

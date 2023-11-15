@@ -4,20 +4,16 @@ import struct Yosemite.Site
 
 /// Blaze entry points.
 enum BlazeSource {
-    /// From the Menu tab.
-    case menu
     /// From the product more menu.
     case productMoreMenu
-    /// From the banner on product list.
-    case productListBanner
-    /// From the banner on My Store tab.
-    case myStoreBanner
     /// From the Blaze campaign list
     case campaignList
     /// From the Blaze intro view
     case introView
     /// From the Create campaign button on the Blaze section of the My Store screen
-    case myStoreSectionCreateCampaignButton
+    case myStoreSection
+    /// From the "Promote with Blaze" button on product form
+    case productDetailPromoteButton
 }
 
 /// View model for Blaze webview.
@@ -32,31 +28,31 @@ final class BlazeWebViewModel {
     private var isCompleted: Bool = false
 
     private let source: BlazeSource
-    private let site: Site
+    private let siteURL: String
     private let productID: Int64?
     private let onCampaignCreated: (() -> Void)?
 
     init(source: BlazeSource,
-         site: Site,
+         siteURL: String,
          productID: Int64?,
          onCampaignCreated: (() -> Void)? = nil) {
         self.source = source
-        self.site = site
+        self.siteURL = siteURL
         self.productID = productID
         self.onCampaignCreated = onCampaignCreated
         self.initialURL = {
-            let siteURL = site.url.trimHTTPScheme()
+            let url = siteURL.trimHTTPScheme()
             let urlString: String = {
                 if let productID {
-                    return String(format: Constants.blazePostURLFormat, siteURL, productID, source.analyticsValue)
+                    return String(format: Constants.blazePostURLFormat, url, productID, source.analyticsValue)
                 } else {
-                    return String(format: Constants.blazeSiteURLFormat, siteURL, source.analyticsValue)
+                    return String(format: Constants.blazeSiteURLFormat, url, source.analyticsValue)
                 }
             }()
             return URL(string: urlString)
         }()
         self.baseURLString = {
-            let siteURL = site.url.trimHTTPScheme()
+            let siteURL = siteURL.trimHTTPScheme()
             return String(format: Constants.baseURLFormat, siteURL)
         }()
     }

@@ -21,11 +21,13 @@ final class BlazeCampaignListViewModel: ObservableObject {
             }
         }
     }
+    @Published var selectedCampaignURL: URL?
 
     /// Tracks whether the intro view has been presented.
     private var didShowIntroView = false
 
     private let siteID: Int64
+    let siteURL: String
     private let stores: StoresManager
     private let storageManager: StorageManagerType
     private let userDefaults: UserDefaults
@@ -52,11 +54,13 @@ final class BlazeCampaignListViewModel: ObservableObject {
     }()
 
     init(siteID: Int64,
+         siteURL: String = ServiceLocator.stores.sessionManager.defaultSite?.url ?? "",
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
+        self.siteURL = siteURL
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
@@ -100,8 +104,14 @@ final class BlazeCampaignListViewModel: ObservableObject {
         }
     }
 
-    func didSelectCampaignDetails() {
+    func didSelectCampaignDetails(_ campaign: BlazeCampaign) {
         analytics.track(event: .Blaze.blazeCampaignDetailSelected(source: .campaignList))
+
+        let path = String(format: Constants.campaignDetailsURLFormat,
+                          campaign.campaignID,
+                          siteURL.trimHTTPScheme(),
+                          BlazeCampaignDetailSource.campaignList.rawValue)
+        selectedCampaignURL = URL(string: path)
     }
 
     func didSelectCreateCampaign(source: BlazeSource) {
@@ -211,5 +221,11 @@ extension UserDefaults {
         } else {
             self[.hasDisplayedTipAfterBlazeCampaignCreation] = [idAsString: true]
         }
+    }
+}
+
+private extension BlazeCampaignListViewModel {
+    enum Constants {
+        static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
     }
 }

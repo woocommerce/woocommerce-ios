@@ -428,7 +428,34 @@ private extension OrderStore {
     /// Updates the specified fields from an order.
     ///
     func updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: @escaping (Result<Order, Error>) -> Void) {
-        remote.updateOrder(from: siteID, order: order, giftCard: giftCard, fields: fields) { [weak self] result in
+        /// When an order item has a remote ID and bundle configuration, the order's line items need to be updated in the following way:
+        /// - Set the original order item with the bundle configuration quantity to 0, and remove the bundle configuration
+        /// - Create a new order item with the bundle configuration
+        /// - Remove the child order items by setting the quantity to 0
+        let itemIDsWithBundleConfiguration = order.items.filter { !$0.bundleConfiguration.isEmpty }.map { $0.itemID }
+        let items: [OrderItem] = {
+            guard fields.contains(.items) && !itemIDsWithBundleConfiguration.isEmpty else {
+                return order.items
+            }
+
+            return order.items.flatMap { orderItem -> [OrderItem] in
+                // Removes the bundled item if its parent order item has bundle configuration.
+                // Excluding the order item does not work, setting its quantity to zero is required.
+                if let parentItemID = orderItem.parent, itemIDsWithBundleConfiguration.contains(parentItemID) {
+                    return [orderItem.copy(quantity: 0)]
+                }
+
+                // Returns the original order item if it doesn't have bundle configuration.
+                guard !orderItem.bundleConfiguration.isEmpty && orderItem.itemID != .zero else {
+                    return [orderItem]
+                }
+                let existingOrderItemWithBundleConfig = orderItem.copy(quantity: 0, bundleConfiguration: [])
+                let newOrderItemWithBundleConfig = orderItem.copy(itemID: 0)
+                return [existingOrderItemWithBundleConfig, newOrderItemWithBundleConfig]
+            }
+        }()
+
+        remote.updateOrder(from: siteID, order: order.copy(items: items), giftCard: giftCard, fields: fields) { [weak self] result in
             self?.handleCreateOrUpdateOrderResult(result, giftCard: giftCard, onCompletion: onCompletion)
         }
     }

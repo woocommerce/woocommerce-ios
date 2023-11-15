@@ -10,7 +10,6 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    @State private var showingPayments = false
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingInbox = false
@@ -106,7 +105,7 @@ struct HubMenu: View {
         }.hidden()
         NavigationLink(destination: inPersonPaymentsMenu()
             .navigationTitle(InPersonPaymentsView.Localization.title),
-                       isActive: $showingPayments) {
+                       isActive: $viewModel.showingPayments) {
             EmptyView()
         }.hidden()
         NavigationLink(destination:
@@ -142,7 +141,7 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
             showSettings = true
         case HubMenuViewModel.Payments.id:
-            showingPayments = true
+            viewModel.showingPayments = true
         case HubMenuViewModel.Blaze.id:
             viewModel.showBlaze()
         case HubMenuViewModel.WoocommerceAdmin.id:

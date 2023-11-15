@@ -132,24 +132,7 @@ extension HubMenuCoordinator: DeepLinkNavigator {
         guard let hubMenuController = hubMenuController else {
             return
         }
-        switch destination {
-        case .paymentsMenu:
-            _ = hubMenuController.showPaymentsMenu()
-        case .simplePayments:
-            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
-                paymentsMenu.openSimplePaymentsAmountFlow()
-            }
-        case .tapToPayOnIPhone:
-            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
-                paymentsMenu.presentSetUpTapToPayOnIPhoneViewController()
-            }
-        }
-    }
-
-    enum DeepLinkDestination: DeepLinkDestinationProtocol {
-        case paymentsMenu
-        case simplePayments
-        case tapToPayOnIPhone
+        hubMenuController.navigate(to: destination)
     }
 }
 

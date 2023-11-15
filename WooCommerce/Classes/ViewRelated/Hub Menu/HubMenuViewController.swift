@@ -34,7 +34,21 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.showReviewDetails(using: parcel)
     }
 
-    func showPaymentsMenu(onCompletion: ((LegacyInPersonPaymentsMenuViewController) -> Void)? = nil) -> LegacyInPersonPaymentsMenuViewController {
+    func showPaymentsMenu(onCompletion: ((LegacyInPersonPaymentsMenuViewController?) -> Void)? = nil) -> LegacyInPersonPaymentsMenuViewController? {
+        if viewModel.swiftUIPaymentsMenuEnabled {
+            showNewPaymentsMenu()
+            onCompletion?(nil)
+            return nil
+        } else {
+            return showLegacyPaymentsMenu(onCompletion: onCompletion)
+        }
+    }
+
+    func showNewPaymentsMenu() {
+        viewModel.showingPayments = true
+    }
+
+    func showLegacyPaymentsMenu(onCompletion: ((LegacyInPersonPaymentsMenuViewController) -> Void)? = nil) -> LegacyInPersonPaymentsMenuViewController {
         let inPersonPaymentsMenuViewController = LegacyInPersonPaymentsMenuViewController(
             tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
             viewDidLoadAction: onCompletion)
@@ -79,6 +93,42 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
         }
+    }
+}
+
+extension HubMenuViewController: DeepLinkNavigator {
+    func navigate(to destination: DeepLinkDestinationProtocol) {
+        guard let hubMenuDestination = destination as? DeepLinkDestination else {
+            return
+        }
+        switch hubMenuDestination {
+        case .paymentsMenu:
+            _ = showPaymentsMenu()
+        case .simplePayments:
+            _ = showPaymentsMenu { [weak self] legacyPaymentsMenu in
+                if let legacyPaymentsMenu {
+                    legacyPaymentsMenu.openSimplePaymentsAmountFlow()
+                } else {
+                    self?.viewModel.inPersonPaymentsMenuViewModel.navigate(
+                        to: InPersonPaymentsMenuViewModel.PaymentsDeepLinkDestination.simplePayments)
+                }
+            }
+        case .tapToPayOnIPhone:
+            _ = showPaymentsMenu { [weak self] legacyPaymentsMenu in
+                if let legacyPaymentsMenu {
+                    legacyPaymentsMenu.presentSetUpTapToPayOnIPhoneViewController()
+                } else {
+                    self?.viewModel.inPersonPaymentsMenuViewModel.navigate(
+                        to: InPersonPaymentsMenuViewModel.PaymentsDeepLinkDestination.tapToPay)
+                }
+            }
+        }
+    }
+
+    enum DeepLinkDestination: DeepLinkDestinationProtocol {
+        case paymentsMenu
+        case simplePayments
+        case tapToPayOnIPhone
     }
 }
 

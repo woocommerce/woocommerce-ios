@@ -10,7 +10,7 @@ extension ProductSubscription {
               periodInterval: "1",
               price: "",
               signUpFee: "",
-              trialLength: "3",
+              trialLength: "",
               trialPeriod: .day)
     }()
 }

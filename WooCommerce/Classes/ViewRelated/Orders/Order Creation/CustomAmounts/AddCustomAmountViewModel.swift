@@ -51,9 +51,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
             guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
 
-            guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
-
-            formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
+            presetAmountBasedOnPercentage(percentage)
         }
     }
 
@@ -101,6 +99,12 @@ private extension AddCustomAmountViewModel {
         }
 
         analytics.track(.addCustomAmountDoneButtonTapped)
+    }
+
+    func presetAmountBasedOnPercentage(_ percentage: String) {
+        guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
+
+        formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
     }
 }
 

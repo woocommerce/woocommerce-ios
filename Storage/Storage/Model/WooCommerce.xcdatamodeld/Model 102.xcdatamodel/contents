@@ -395,8 +395,8 @@
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersKey" attributeType="String"/>
         <attribute name="briefDescription" optional="YES" attributeType="String"/>
-        <attribute name="bundleMaxSize" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
-        <attribute name="bundleMinSize" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="bundleMaxSize" optional="YES" attributeType="Decimal"/>
+        <attribute name="bundleMinSize" optional="YES" attributeType="Decimal"/>
         <attribute name="bundleStockQuantity" optional="YES" attributeType="Integer 64" usesScalarValueType="YES"/>
         <attribute name="bundleStockStatus" optional="YES" attributeType="String"/>
         <attribute name="buttonText" attributeType="String" defaultValueString=""/>

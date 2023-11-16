@@ -2380,6 +2380,7 @@
 		EE3B17AF2A9EFE97004D3E0C /* WooPaymentsSetupInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */; };
 		EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17B52AA03837004D3E0C /* CelebrationView.swift */; };
 		EE3E9E8C2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E8B2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift */; };
+		EE3E9E932B06379000985B2C /* SubscriptionPeriod+Limit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E922B06379000985B2C /* SubscriptionPeriod+Limit.swift */; };
 		EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */; };
 		EE45E29F2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */; };
 		EE45E2B72A409BA40085F227 /* Tooltip.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E2B22A409B9E0085F227 /* Tooltip.swift */; };
@@ -4959,6 +4960,7 @@
 		EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooPaymentsSetupInstructionsView.swift; sourceTree = "<group>"; };
 		EE3B17B52AA03837004D3E0C /* CelebrationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		EE3E9E8B2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionTrialViewModelTests.swift; sourceTree = "<group>"; };
+		EE3E9E922B06379000985B2C /* SubscriptionPeriod+Limit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubscriptionPeriod+Limit.swift"; sourceTree = "<group>"; };
 		EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationView.swift; sourceTree = "<group>"; };
 		EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationViewModel.swift; sourceTree = "<group>"; };
 		EE45E2B02A409B9D0085F227 /* ProductDescriptionAITooltipUseCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductDescriptionAITooltipUseCase.swift; sourceTree = "<group>"; };
@@ -9453,6 +9455,7 @@
 				CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */,
 				CCE73D2229ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift */,
 				CCE73D2429EDAB5C0064E797 /* SubscriptionPeriod+UI.swift */,
+				EE3E9E922B06379000985B2C /* SubscriptionPeriod+Limit.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -12521,6 +12524,7 @@
 				CCC284112768C18500F6CC8B /* ProductInOrder.swift in Sources */,
 				DE2FE5882925DD950018040A /* JetpackInstallHeaderView.swift in Sources */,
 				263C4CC02963784900CA7E05 /* ProductVariationGenerator.swift in Sources */,
+				EE3E9E932B06379000985B2C /* SubscriptionPeriod+Limit.swift in Sources */,
 				02D681A929C358BA00348510 /* StoreOnboardingPaymentsSetupView.swift in Sources */,
 				02D681AB29C3F8AC00348510 /* StoreOnboardingPaymentsSetupCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,

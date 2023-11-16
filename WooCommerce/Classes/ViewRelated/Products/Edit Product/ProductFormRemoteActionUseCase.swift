@@ -73,13 +73,14 @@ final class ProductFormRemoteActionUseCase {
         addProduct(product: productModelToSave,
                    password: password,
                    successEventName: successEventName,
-                   failureEventName: failureEventName) { result in
+                   failureEventName: failureEventName) { [weak self] result in
+            guard let self else { return }
             switch result {
             case .success(let data):
-                guard data.product.productType == .variable else {
+                let variableTypes: [ProductType] = [.variable, .variableSubscription]
+                guard variableTypes.contains(data.product.productType) else {
                     return onCompletion(.success(data))
                 }
-                // `self` is retained because the use case is not usually strongly held.
                 self.duplicateVariations(originalProduct.product.variations,
                                          from: originalProduct.productID,
                                          to: data.product,
@@ -264,10 +265,10 @@ private extension ProductFormRemoteActionUseCase {
                              from oldProductID: Int64,
                              to newProduct: EditableProductModel,
                              onCompletion: @escaping (Result<EditableProductModel, ProductUpdateError>) -> Void) {
-        Task { [weak self] in
-            guard let self = self else { return }
+        Task {
             // Retrieves and duplicate product variations
-            await withTaskGroup(of: Void.self, body: { group in
+            await withTaskGroup(of: Void.self, body: { [weak self] group in
+                guard let self else { return }
                 for id in variationIDs {
                     group.addTask {
                         guard let variation = await self.retrieveProductVariation(variationID: id, siteID: newProduct.siteID, productID: oldProductID) else {

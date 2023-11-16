@@ -318,9 +318,19 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
 
+    /// Whether the user tan select a new tax rate.
+    /// The User can change the tax rate by changing the customer address if:
+    ///
+    /// 1-. The 'Tax based on' setting is based on shipping or billing addresses.
+    /// 2-. The initial stored tax rate finished applying.
+    ///
+    private var canChangeTaxRate = false
+
     /// Whether it should show the tax rate selector
     ///
-    @Published private(set) var shouldShowNewTaxRateSection: Bool = false
+    var shouldShowNewTaxRateSection: Bool {
+        (orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty) && canChangeTaxRate
+    }
 
     /// Keeps track of selected/unselected Products, if any
     ///
@@ -1523,8 +1533,7 @@ private extension EditableOrderViewModel {
                             await self.applySelectedStoredTaxRateIfAny()
                         }
 
-                        // Show the tax rate section once we know if any stored tax rate applies, as it can change the text
-                        self.shouldShowNewTaxRateSection = true
+                        self.canChangeTaxRate = true
                     }
                 }
 

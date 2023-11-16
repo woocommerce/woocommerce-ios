@@ -49,7 +49,7 @@ private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
         let shouldShowSubscriptionRow = !editingSubscriptionEnabled && productVariation.subscription != nil
-        let shouldShowPriceSettingsRow = editingSubscriptionEnabled && (editable || productVariation.regularPrice?.isNotEmpty == true)
+        let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
         let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity

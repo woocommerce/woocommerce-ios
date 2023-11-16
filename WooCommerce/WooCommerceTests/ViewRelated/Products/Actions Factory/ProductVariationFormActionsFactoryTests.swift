@@ -10,7 +10,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -33,7 +33,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -56,7 +56,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -78,7 +78,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -100,7 +100,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -124,7 +124,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
         let model = EditableProductVariationModel(productVariation: productVariation)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]
@@ -204,7 +204,10 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
                                                   parentProductDisablesQuantityRules: false)
 
         // Action
-        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true, isMinMaxQuantitiesEnabled: true)
+        let factory = ProductVariationFormActionsFactory(productVariation: model,
+                                                         editable: true,
+                                                         isMinMaxQuantitiesEnabled: true,
+                                                         editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .variationName, .description(editable: true)]

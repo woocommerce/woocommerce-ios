@@ -21,6 +21,19 @@ public enum NetworkError: Error, Equatable {
 
     /// Error for REST API requests with invalid cookie nonce
     case invalidCookieNonce
+
+    var response: Data? {
+        switch self {
+        case .notFound(let response):
+            return response
+        case .timeout(let response):
+            return response
+        case .unacceptableStatusCode(_, let response):
+            return response
+        case .invalidURL, .invalidCookieNonce:
+            return nil
+        }
+    }
 }
 
 

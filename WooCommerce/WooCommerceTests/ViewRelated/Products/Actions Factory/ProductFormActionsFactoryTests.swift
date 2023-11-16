@@ -892,6 +892,7 @@ private extension ProductFormActionsFactoryTests {
         static let variableSubscriptionProduct = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue)
 
         // Variable subscription product with no variations
+        // swiftlint:disable:next line_length
         static let variableSubscriptionProductWithoutVariations = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue, variations: [])
 
         // Variable subscription product with one variation, missing short description/categories/tags

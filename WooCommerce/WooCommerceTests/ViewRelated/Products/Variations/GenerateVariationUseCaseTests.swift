@@ -76,7 +76,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
                                                        attributes: expectedAttributes,
                                                        description: "",
                                                        image: nil,
-                                                       subscription: nil)
+                                                       subscription: .empty)
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 

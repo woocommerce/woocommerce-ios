@@ -2380,6 +2380,8 @@
 		EE3B17AF2A9EFE97004D3E0C /* WooPaymentsSetupInstructionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */; };
 		EE3B17B62AA03837004D3E0C /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B17B52AA03837004D3E0C /* CelebrationView.swift */; };
 		EE3E9E8C2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E8B2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift */; };
+		EE3E9E8F2B05FDD500985B2C /* SubscriptionExpiryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E8E2B05FDD500985B2C /* SubscriptionExpiryViewController.swift */; };
+		EE3E9E912B05FE0700985B2C /* SubscriptionExpiryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E902B05FE0700985B2C /* SubscriptionExpiryViewModel.swift */; };
 		EE3E9E932B06379000985B2C /* SubscriptionPeriod+Limit.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3E9E922B06379000985B2C /* SubscriptionPeriod+Limit.swift */; };
 		EE45E29D2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */; };
 		EE45E29F2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */; };
@@ -2392,6 +2394,7 @@
 		EE46CEDF29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */; };
 		EE486DD02A7013C80079F7B8 /* FreeTrialSurveyCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE486DCF2A7013C80079F7B8 /* FreeTrialSurveyCoordinator.swift */; };
 		EE486DD22A70270C0079F7B8 /* WooAnalyticsEvent+FreeTrialSurvey.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE486DD12A70270C0079F7B8 /* WooAnalyticsEvent+FreeTrialSurvey.swift */; };
+		EE5366A52B0673760008E61E /* SubscriptionExpiryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5366A42B0673760008E61E /* SubscriptionExpiryViewModelTests.swift */; };
 		EE57C11D297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */; };
 		EE57C11F297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */; };
 		EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */; };
@@ -4960,6 +4963,8 @@
 		EE3B17AE2A9EFE96004D3E0C /* WooPaymentsSetupInstructionsView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WooPaymentsSetupInstructionsView.swift; sourceTree = "<group>"; };
 		EE3B17B52AA03837004D3E0C /* CelebrationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		EE3E9E8B2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionTrialViewModelTests.swift; sourceTree = "<group>"; };
+		EE3E9E8E2B05FDD500985B2C /* SubscriptionExpiryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionExpiryViewController.swift; sourceTree = "<group>"; };
+		EE3E9E902B05FE0700985B2C /* SubscriptionExpiryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionExpiryViewModel.swift; sourceTree = "<group>"; };
 		EE3E9E922B06379000985B2C /* SubscriptionPeriod+Limit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SubscriptionPeriod+Limit.swift"; sourceTree = "<group>"; };
 		EE45E29C2A381A250085F227 /* ProductDescriptionGenerationCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationView.swift; sourceTree = "<group>"; };
 		EE45E29E2A381A2E0085F227 /* ProductDescriptionGenerationCelebrationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDescriptionGenerationCelebrationViewModel.swift; sourceTree = "<group>"; };
@@ -4972,6 +4977,7 @@
 		EE46CEDE29CB31DF004E4524 /* StoreOnboardingStoreDetailsCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreOnboardingStoreDetailsCoordinator.swift; sourceTree = "<group>"; };
 		EE486DCF2A7013C80079F7B8 /* FreeTrialSurveyCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeTrialSurveyCoordinator.swift; sourceTree = "<group>"; };
 		EE486DD12A70270C0079F7B8 /* WooAnalyticsEvent+FreeTrialSurvey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+FreeTrialSurvey.swift"; sourceTree = "<group>"; };
+		EE5366A42B0673760008E61E /* SubscriptionExpiryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionExpiryViewModelTests.swift; sourceTree = "<group>"; };
 		EE57C11C297AC27300BC31E7 /* TrackEventRequestNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandler.swift; sourceTree = "<group>"; };
 		EE57C11E297E742200BC31E7 /* WooAnalyticsEvent+ApplicationPassword.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooAnalyticsEvent+ApplicationPassword.swift"; sourceTree = "<group>"; };
 		EE57C120297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackEventRequestNotificationHandlerTests.swift; sourceTree = "<group>"; };
@@ -9461,6 +9467,7 @@
 		CC24A4F229ED6FC00009D6DA /* Subscription */ = {
 			isa = PBXGroup;
 			children = (
+				EE3E9E8D2B05FDB900985B2C /* Expiry */,
 				EE35AF9F2B0491500074E7AC /* Trial */,
 				CC24A4F329ED6FF70009D6DA /* SubscriptionSettings.swift */,
 				CCE73D2229ED8DAC0064E797 /* SubscriptionSettingsViewModel.swift */,
@@ -9606,6 +9613,7 @@
 			children = (
 				CCE64E3D29EEA9DA00C1C937 /* SubscriptionSettingsViewModelTests.swift */,
 				EE3E9E8B2B05B7D600985B2C /* SubscriptionTrialViewModelTests.swift */,
+				EE5366A42B0673760008E61E /* SubscriptionExpiryViewModelTests.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -11213,6 +11221,15 @@
 			path = Payments;
 			sourceTree = "<group>";
 		};
+		EE3E9E8D2B05FDB900985B2C /* Expiry */ = {
+			isa = PBXGroup;
+			children = (
+				EE3E9E8E2B05FDD500985B2C /* SubscriptionExpiryViewController.swift */,
+				EE3E9E902B05FE0700985B2C /* SubscriptionExpiryViewModel.swift */,
+			);
+			path = Expiry;
+			sourceTree = "<group>";
+		};
 		EE45E29B2A381A050085F227 /* Celebration */ = {
 			isa = PBXGroup;
 			children = (
@@ -12503,6 +12520,7 @@
 				680BA59A2A4C377900F5559D /* UpgradeViewState.swift in Sources */,
 				E11228BE2707267F004E9F2D /* CardPresentModalUpdateFailedNonRetryable.swift in Sources */,
 				EEC5E01129A70CC300416CAC /* StoreSetupProgressView.swift in Sources */,
+				EE3E9E912B05FE0700985B2C /* SubscriptionExpiryViewModel.swift in Sources */,
 				B9C4AB2728002AF3007008B8 /* PaymentReceiptEmailParameterDeterminer.swift in Sources */,
 				5739D2D426274D580020E737 /* NoSecureConnectionErrorViewModel.swift in Sources */,
 				7459A6C621B0680300F83A78 /* RequirementsChecker.swift in Sources */,
@@ -13211,6 +13229,7 @@
 				B946881A29BA2AC6000646B0 /* WooAnalyticsEvent+Spotlight.swift in Sources */,
 				0235BFD9246E959500778909 /* ProductFormActionsFactory.swift in Sources */,
 				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
+				EE3E9E8F2B05FDD500985B2C /* SubscriptionExpiryViewController.swift in Sources */,
 				68B6F22B2ADE7ED500D171FC /* TooltipView.swift in Sources */,
 				02EAF5BE29FA04750058071C /* ProductDescriptionGenerationView.swift in Sources */,
 				DE8BEB912ABAEBF800F5E56C /* AddProductFeaturesView.swift in Sources */,
@@ -14367,6 +14386,7 @@
 				020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */,
 				DE4D23B429B58C5A003A4B5D /* MockWordPressComAccountService.swift in Sources */,
 				57A5D8D92534FEBB00AA54D6 /* TotalRefundedCalculationUseCaseTests.swift in Sources */,
+				EE5366A52B0673760008E61E /* SubscriptionExpiryViewModelTests.swift in Sources */,
 				B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */,
 				EE57C121297E76E000BC31E7 /* TrackEventRequestNotificationHandlerTests.swift in Sources */,
 				D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */,

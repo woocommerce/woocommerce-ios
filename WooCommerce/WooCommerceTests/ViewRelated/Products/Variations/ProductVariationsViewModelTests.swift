@@ -115,13 +115,48 @@ final class ProductVariationsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.formType, .readonly)
     }
 
-    func test_generating_and_bulk_editing_variations_not_allowed_for_variable_subscription_products() {
+    func test_generating_variations_is_not_allowed_for_variable_subscription_product_if_editing_subscription_is_not_enabled() {
         // Given
         let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue)
-        let viewModel = ProductVariationsViewModel(formType: .edit)
+        let viewModel = ProductVariationsViewModel(formType: .edit, editingSubscriptionEnabled: false)
 
         // Then
         XCTAssertFalse(viewModel.shouldAllowGeneration(for: product))
+    }
+
+    func test_generating_variations_is_allowed_for_variable_subscription_product_if_editing_subscription_is_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue)
+        let viewModel = ProductVariationsViewModel(formType: .edit, editingSubscriptionEnabled: true)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldAllowGeneration(for: product))
+    }
+
+    func test_bulk_editing_variations_is_not_allowed_if_no_variation_is_available() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.variable.rawValue)
+        let viewModel = ProductVariationsViewModel(formType: .edit)
+
+        // Then
         XCTAssertFalse(viewModel.shouldAllowBulkEditing(for: product))
+    }
+
+    func test_bulk_editing_variations_is_not_allowed_if_there_is_at_least_one_variation_and_editing_subscription_is_not_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue, variations: [123])
+        let viewModel = ProductVariationsViewModel(formType: .edit, editingSubscriptionEnabled: false)
+
+        // Then
+        XCTAssertFalse(viewModel.shouldAllowBulkEditing(for: product))
+    }
+
+    func test_bulk_editing_variations_is_allowed_if_there_is_at_least_one_variation_and_editing_subscription_is_enabled() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue, variations: [123])
+        let viewModel = ProductVariationsViewModel(formType: .edit, editingSubscriptionEnabled: true)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldAllowBulkEditing(for: product))
     }
 }

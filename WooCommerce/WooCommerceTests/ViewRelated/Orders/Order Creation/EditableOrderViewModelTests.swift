@@ -436,8 +436,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         let customAmountName = "Test"
 
         // When
-        viewModel.addCustomAmountViewModel.name = customAmountName
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.name = customAmountName
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.customAmountRows.contains(where: { $0.name == customAmountName }))
@@ -501,15 +502,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         let newFeeName = "Test 2"
 
         // When
-        viewModel.addCustomAmountViewModel.name = "Test"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
 
-        viewModel.addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
-        viewModel.addCustomAmountViewModel.name = newFeeName
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
+        addCustomAmountViewModel.name = newFeeName
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertEqual(viewModel.customAmountRows.first?.name, newFeeName)
@@ -789,7 +791,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£10.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 18.50)
 
         // When
         viewModel.saveShippingLine(nil)
@@ -799,7 +800,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
     func test_payment_when_custom_amount_is_added_then_section_is_updated() {
@@ -815,15 +815,15 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        viewModel.addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTotalCustomAmounts)
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.customAmountsTotal, "£10.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£18.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
     func test_payment_section_is_updated_when_coupon_line_updated() throws {
@@ -881,7 +881,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "-£5.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£3.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 3.50)
 
         // When
         viewModel.saveShippingLine(nil)
@@ -891,7 +890,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£8.50")
         XCTAssertEqual(viewModel.paymentDataViewModel.shippingTotal, "£0.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 8.50)
     }
 
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
@@ -961,7 +959,6 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Then
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
         XCTAssertEqual(viewModel.paymentDataViewModel.taxesTotal, "$2.50")
-        XCTAssertEqual(viewModel.paymentDataViewModel.feesBaseAmountForPercentage, 2.50)
 
     }
 
@@ -1422,7 +1419,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.discardOrder()
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_then_returns_true() {
+    func test_shouldShowNewTaxRateSection_when_there_are_not_items_then_it_returns_false() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1445,12 +1442,46 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
 
         // Then
+        XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
+    }
+
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_items_then_returns_true() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.completeMultipleSelection()
+
+        // Then
         waitUntil {
             viewModel.shouldShowNewTaxRateSection
         }
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_then_returns_true() {
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_items_then_returns_true() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1470,7 +1501,15 @@ final class EditableOrderViewModelTests: XCTestCase {
             }
         })
 
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.completeMultipleSelection()
 
         // Then
         waitUntil {
@@ -1478,7 +1517,69 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_then_returns_false() {
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_custom_amounts_then_returns_true() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerBillingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        waitUntil {
+            viewModel.shouldShowNewTaxRateSection
+        }
+    }
+
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_custom_amounts_then_returns_true() {
+        // Given
+        stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
+            switch action {
+            case .retrieveTaxBasedOnSetting(_, let onCompletion):
+                onCompletion(.success(.customerShippingAddress))
+            default:
+                break
+            }
+        })
+
+        stores.whenReceivingAction(ofType: AppSettingsAction.self, thenCall: { action in
+            switch action {
+            case .loadSelectedTaxRateID(_, let onCompletion):
+                onCompletion(nil)
+            default:
+                break
+            }
+        })
+
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        viewModel.addCustomAmountViewModel.doneButtonPressed()
+
+        // Then
+        waitUntil {
+            viewModel.shouldShowNewTaxRateSection
+        }
+    }
+
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_and_there_are_items_then_returns_false() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1490,6 +1591,14 @@ final class EditableOrderViewModelTests: XCTestCase {
         })
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores)
+
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+
+        // When
+        productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
+        productSelectorViewModel.completeMultipleSelection()
 
         // Then
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)

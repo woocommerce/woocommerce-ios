@@ -109,9 +109,6 @@ class AuthenticationManager: Authentication {
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
     func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
-        let source = options[.sourceApplication] as? String
-        let annotation = options[.annotation]
-
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
                                                                         rootViewController: rootViewController)
@@ -443,13 +440,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func presentSupport(from sourceViewController: UIViewController, screen: CustomHelpCenterContent.Screen) {
         let customHelpCenterContent = CustomHelpCenterContent(screen: screen,
                                                               flow: AuthenticatorAnalyticsTracker.shared.state.lastFlow)
-        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: nil)
     }
 
     /// Presents the Support Interface from a given ViewController, with a specified SourceTag.
     ///
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        presentSupport(from: sourceViewController)
+        presentHelpAndSupport(from: sourceViewController, sourceTag: sourceTag)
     }
 
     /// Presents the Support Interface from a given ViewController.
@@ -465,17 +462,17 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                         lastStep: AuthenticatorAnalyticsTracker.Step,
                         lastFlow: AuthenticatorAnalyticsTracker.Flow) {
         guard let customHelpCenterContent = CustomHelpCenterContent(step: lastStep, flow: lastFlow) else {
-            presentSupport(from: sourceViewController)
+            presentSupport(from: sourceViewController, sourceTag: sourceTag)
             return
         }
 
-        presentSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent)
+        presentHelpAndSupport(from: sourceViewController, customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag)
     }
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.name))
+        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin))
         supportForm.show(from: sourceViewController)
     }
 
@@ -912,8 +909,9 @@ private extension AuthenticationManager {
 // MARK: - Help and support helpers
 private extension AuthenticationManager {
 
-    func presentSupport(from sourceViewController: UIViewController,
-                        customHelpCenterContent: CustomHelpCenterContent? = nil) {
+    func presentHelpAndSupport(from sourceViewController: UIViewController,
+                               customHelpCenterContent: CustomHelpCenterContent? = nil,
+                               sourceTag: WordPressSupportSourceTag?) {
         let identifier = HelpAndSupportViewController.classNameWithoutNamespaces
         let supportViewController = UIStoryboard.dashboard.instantiateViewController(identifier: identifier,
                                                                                      creator: { coder -> HelpAndSupportViewController? in
@@ -924,7 +922,7 @@ private extension AuthenticationManager {
                 return nil
             }
 
-            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, coder: coder)
+            return HelpAndSupportViewController(customHelpCenterContent: customHelpCenterContent, sourceTag: sourceTag?.origin, coder: coder)
         })
         supportViewController.displaysDismissAction = true
 

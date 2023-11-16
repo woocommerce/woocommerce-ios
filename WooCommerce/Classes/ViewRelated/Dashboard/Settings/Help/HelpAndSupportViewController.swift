@@ -61,13 +61,19 @@ final class HelpAndSupportViewController: UIViewController {
     ///
     private let customHelpCenterContent: CustomHelpCenterContent?
 
-    init?(customHelpCenterContent: CustomHelpCenterContent, coder: NSCoder) {
+    /// Source tag from where this request was originated.
+    ///
+    private let sourceTag: String?
+
+    init?(customHelpCenterContent: CustomHelpCenterContent, sourceTag: String? = nil, coder: NSCoder) {
         self.customHelpCenterContent = customHelpCenterContent
+        self.sourceTag = sourceTag
         super.init(coder: coder)
     }
 
     required init?(coder: NSCoder) {
         self.customHelpCenterContent = nil
+        self.sourceTag = nil
         super.init(coder: coder)
     }
 
@@ -306,7 +312,7 @@ private extension HelpAndSupportViewController {
     /// Contact Support action
     ///
     func contactSupportWasPressed() {
-        let viewController = SupportFormHostingController(viewModel: .init())
+        let viewController = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag))
         viewController.show(from: self)
     }
 

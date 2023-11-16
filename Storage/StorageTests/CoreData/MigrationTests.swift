@@ -2348,6 +2348,36 @@ final class MigrationTests: XCTestCase {
         try targetContext.save()
         XCTAssertEqual(newCampaign.value(forKey: "productID") as? NSNumber, .init(value: 123))
     }
+
+    func test_migrating_from_101_to_102_adds_bundleMinSize_and_bundleMaxSize_to_Product() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 101")
+        let sourceContext = sourceContainer.viewContext
+
+        let product = insertProduct(to: sourceContext, forModel: 101)
+
+        try sourceContext.save()
+
+        XCTAssertNil(product.entity.attributesByName["bundleMinSize"], "Precondition. Property does not exist.")
+        XCTAssertNil(product.entity.attributesByName["bundleMaxSize"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 102")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Product"))
+
+        // The new properties are nil by default.
+        XCTAssertNil(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, "Confirm expected property exists and is nil by default.")
+        XCTAssertNil(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, "Confirm expected property exists and is nil by default.")
+
+        migratedProduct.setValue(2, forKey: "bundleMinSize")
+        migratedProduct.setValue(6, forKey: "bundleMaxSize")
+        try targetContext.save()
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, 2)
+        XCTAssertEqual(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, 6)
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations
@@ -2520,7 +2550,7 @@ private extension MigrationTests {
             "amount": "2.00",
             "code": "2off2021",
             "usedBy": ["me@example.com"],
-            "emailRestrictions": ["*@woocommerce.com"],
+            "emailRestrictions": ["*@woo.com"],
             "siteID": 1212,
             "products": [1231, 111],
             "excludedProducts": [19182, 192],
@@ -2556,7 +2586,7 @@ private extension MigrationTests {
             "name": "renew-subscription",
             "label": "Renew Subscription",
             "status": "actioned",
-            "url": "https://woocommerce.com/products/woocommerce-bookings/"
+            "url": "https://woo.com/products/woocommerce-bookings/"
         ])
     }
 

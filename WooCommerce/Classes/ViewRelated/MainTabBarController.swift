@@ -194,12 +194,12 @@ final class MainTabBarController: UITabBarController {
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete.
     func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UINavigationController) -> Void)? = nil) {
-        dismiss(animated: true, completion: nil)
-
-        selectedIndex = tab.visibleIndex()
-        if let navController = selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: animated) {
-                completion?(navController)
+        dismiss(animated: animated) { [weak self] in
+            self?.selectedIndex = tab.visibleIndex()
+            if let navController = self?.selectedViewController as? UINavigationController {
+                navController.popToRootViewController(animated: animated) {
+                    completion?(navController)
+                }
             }
         }
     }
@@ -214,9 +214,9 @@ final class MainTabBarController: UITabBarController {
     }
 
     func presentCollectPayment() {
-        navigateTo(.hubMenu)
-
-        hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
+        navigateTo(.hubMenu) { [weak self] in
+            self?.hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
+        }
     }
 }
 
@@ -453,12 +453,13 @@ extension MainTabBarController {
     }
 
     static func presentCoupons() {
-        switchToHubMenuTab()
-        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return
-        }
+        switchToHubMenuTab() {
+            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+                return
+            }
 
-        hubMenuViewController.showCoupons()
+            hubMenuViewController.showCoupons()
+        }
     }
 
     /// Switches to the hub Menu & Navigates to the Privacy Settings Screen.

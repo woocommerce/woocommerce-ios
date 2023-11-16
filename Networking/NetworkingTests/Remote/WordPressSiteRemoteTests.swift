@@ -32,7 +32,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSiteInfo_properly_relays_networking_errors() async {
         let remote = WordPressSiteRemote(network: network)
-        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
 
         // When
         var fetchError: Error?

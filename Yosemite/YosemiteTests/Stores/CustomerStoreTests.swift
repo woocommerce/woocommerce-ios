@@ -75,7 +75,7 @@ final class CustomerStoreTests: XCTestCase {
 
     func test_retrieveCustomer_returns_Error_upon_failure() {
         // Given
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When
@@ -130,7 +130,7 @@ final class CustomerStoreTests: XCTestCase {
 
     func test_searchCustomers_returns_Error_upon_failure() {
         // Given
-        let expectedError = NetworkError.notFound
+        let expectedError = NetworkError.notFound()
         network.simulateError(requestUrlSuffix: "", error: expectedError)
 
         // When

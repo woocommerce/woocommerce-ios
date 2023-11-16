@@ -1358,20 +1358,25 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editPriceSettings() {
-        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
-            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
-            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
-                                                salePrice: salePrice,
-                                                dateOnSaleStart: dateOnSaleStart,
-                                                dateOnSaleEnd: dateOnSaleEnd,
-                                                taxStatus: taxStatus,
-                                                taxClass: taxClass,
-                                                hasUnsavedChanges: hasUnsavedChanges)
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self] in
+            self?.onEditPriceSettingsCompletion(regularPrice: $0,
+                                                subscriptionPeriod: $1,
+                                                subscriptionPeriodInterval: $2,
+                                                subscriptionSignupFee: $3,
+                                                salePrice: $4,
+                                                dateOnSaleStart: $5,
+                                                dateOnSaleEnd: $6,
+                                                taxStatus: $7,
+                                                taxClass: $8,
+                                                hasUnsavedChanges: $9)
         }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
 
     func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       subscriptionPeriod: SubscriptionPeriod?,
+                                       subscriptionPeriodInterval: String?,
+                                       subscriptionSignupFee: String?,
                                        salePrice: String?,
                                        dateOnSaleStart: Date?,
                                        dateOnSaleEnd: Date?,
@@ -1388,6 +1393,9 @@ private extension ProductFormViewController {
         }
 
         viewModel.updatePriceSettings(regularPrice: regularPrice,
+                                      subscriptionPeriod: subscriptionPeriod,
+                                      subscriptionPeriodInterval: subscriptionPeriodInterval,
+                                      subscriptionSignupFee: subscriptionSignupFee,
                                       salePrice: salePrice,
                                       dateOnSaleStart: dateOnSaleStart,
                                       dateOnSaleEnd: dateOnSaleEnd,

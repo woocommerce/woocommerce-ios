@@ -96,7 +96,8 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         let configurations: [BundledProductConfiguration] = bundleItemViewModels.compactMap {
             $0.toConfiguration
         }
-        guard configurations != initialConfigurations else {
+        let isNewBundle = childItems.isEmpty
+        guard configurations != initialConfigurations || isNewBundle else {
             return
         }
         onConfigure(configurations)

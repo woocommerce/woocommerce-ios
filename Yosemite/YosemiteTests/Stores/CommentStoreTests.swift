@@ -280,7 +280,7 @@ class CommentStoreTests: XCTestCase {
         // Given
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout)
+        network.simulateError(requestUrlSuffix: "sites/\(sampleSiteID)/comments", error: NetworkError.timeout())
 
         // When
         let result: Result<Yosemite.CommentStatus, Error> = waitFor { promise in

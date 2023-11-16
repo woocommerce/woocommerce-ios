@@ -34,9 +34,12 @@ public class AlamofireNetwork: Network {
 
     /// Public Initializer
     ///
-    public required init(credentials: Credentials?) {
+    public required init(credentials: Credentials?, sessionManager: Alamofire.SessionManager? = nil) {
         self.requestConverter = RequestConverter(credentials: credentials)
         self.requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        if let sessionManager {
+            self.sessionManager = sessionManager
+        }
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -77,7 +80,11 @@ public class AlamofireNetwork: Network {
         sessionManager.request(request)
             .validateIfRestRequest(for: request)
             .responseData { response in
-                completion(response.result.toSwiftResult())
+                if let error = response.networkingError {
+                    completion(.failure(error))
+                } else {
+                    completion(response.result.toSwiftResult())
+                }
             }
     }
 
@@ -96,8 +103,11 @@ public class AlamofireNetwork: Network {
                 .request(request)
                 .validateIfRestRequest(for: request)
                 .responseData { response in
-                    let result = response.result.toSwiftResult()
-                    promise(.success(result))
+                    if let error = response.networkingError {
+                        promise(.success(.failure(error)))
+                    } else {
+                        promise(.success(response.result.toSwiftResult()))
+                    }
                 }
         }.eraseToAnyPublisher()
     }
@@ -166,7 +176,8 @@ extension Alamofire.DataResponse {
         }
 
         return response.flatMap { response in
-            NetworkError(from: response.statusCode)
+            NetworkError(responseData: data,
+                         statusCode: response.statusCode)
         }
     }
 }

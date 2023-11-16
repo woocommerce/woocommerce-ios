@@ -45,8 +45,6 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         let product = Product.fake()
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: defaultSiteID, product: model)
-        let mockProductImageUploader = MockProductImageUploader()
-        let blazeEligibilityChecker = MockBlazeEligibilityChecker(isProductEligible: true)
         var isBlazeEligibilityUpdated: Bool? = nil
         let expectationForBlazeEligibility = self.expectation(description: "blazeEligibilityUpdateSubject is called")
         expectationForBlazeEligibility.expectedFulfillmentCount = 1
@@ -93,6 +91,9 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.updateShortDescription(product.shortDescription ?? "")
         viewModel.updateProductSettings(ProductSettings(from: product, password: nil))
         viewModel.updatePriceSettings(regularPrice: product.regularPrice,
+                                      subscriptionPeriod: product.subscription?.period,
+                                      subscriptionPeriodInterval: product.subscription?.periodInterval,
+                                      subscriptionSignupFee: product.subscription?.signUpFee,
                                       salePrice: product.salePrice,
                                       dateOnSaleStart: product.dateOnSaleStart,
                                       dateOnSaleEnd: product.dateOnSaleEnd,

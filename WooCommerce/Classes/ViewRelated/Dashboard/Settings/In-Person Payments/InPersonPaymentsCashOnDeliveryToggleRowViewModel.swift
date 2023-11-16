@@ -89,6 +89,15 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
                                                         sortedBy: [])
     }
 
+    func refreshState() {
+        guard let siteID = siteID else {
+            return
+        }
+
+        let action = PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID) { _ in }
+        stores.dispatch(action)
+    }
+
     private func updateCashOnDeliveryEnabledState() {
         cashOnDeliveryEnabledState = cashOnDeliveryGateway?.enabled ?? false
     }

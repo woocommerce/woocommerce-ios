@@ -925,6 +925,8 @@ extension Networking.Product {
             isSampleItem: .fake(),
             bundleStockStatus: .fake(),
             bundleStockQuantity: .fake(),
+            bundleMinSize: .fake(),
+            bundleMaxSize: .fake(),
             bundledItems: .fake(),
             compositeComponents: .fake(),
             subscription: .fake(),

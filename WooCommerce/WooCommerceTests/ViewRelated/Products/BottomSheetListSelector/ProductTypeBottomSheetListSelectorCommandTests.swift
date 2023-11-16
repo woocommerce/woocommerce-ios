@@ -17,13 +17,17 @@ final class ProductTypeBottomSheetListSelectorCommandTests: XCTestCase {
         command.handleSelectedChange(selected: .grouped)
         command.handleSelectedChange(selected: .variable)
         command.handleSelectedChange(selected: .affiliate)
+        command.handleSelectedChange(selected: .subscription)
+        command.handleSelectedChange(selected: .variableSubscription)
 
         // Assert
         let expectedActions: [BottomSheetProductType] = [
             .simple(isVirtual: true),
             .grouped,
             .variable,
-            .affiliate
+            .affiliate,
+            .subscription,
+            .variableSubscription
         ]
         XCTAssertEqual(selectedActions, expectedActions)
     }

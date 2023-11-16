@@ -102,7 +102,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         insert(order: Fixtures.order)
 
         let network = MockNetwork()
-        network.simulateError(requestUrlSuffix: "orders", error: NetworkError.timeout)
+        network.simulateError(requestUrlSuffix: "orders", error: NetworkError.timeout())
 
         // Act
         executeActionAndWait(using: createOrderStore(using: network),

@@ -30,12 +30,15 @@ final class ProductPriceSettingsViewController: UIViewController {
     // Completion callback
     //
     typealias Completion = (_ regularPrice: String?,
-        _ salePrice: String?,
-        _ dateOnSaleStart: Date?,
-        _ dateOnSaleEnd: Date?,
-        _ taxStatus: ProductTaxStatus,
-        _ taxClass: TaxClass?,
-        _ hasUnsavedChanges: Bool) -> Void
+                            _ subscriptionPeriod: SubscriptionPeriod?,
+                            _ subscriptionPeriodInterval: String?,
+                            _ subscriptionSignupFee: String?,
+                            _ salePrice: String?,
+                            _ dateOnSaleStart: Date?,
+                            _ dateOnSaleEnd: Date?,
+                            _ taxStatus: ProductTaxStatus,
+                            _ taxClass: TaxClass?,
+                            _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
@@ -44,6 +47,22 @@ final class ProductPriceSettingsViewController: UIViewController {
         }
         return keyboardFrameObserver
     }()
+
+    private lazy var subscriptionPeriodToolbar: UIToolbar = {
+        // Setting explicit frame size to avoid constraint conflicts.
+        let toolBar = UIToolbar(frame: .init(origin: .zero,
+                                             size: .init(width: UIScreen.main.bounds.width,
+                                                         height: Constants.subscriptionPeriodToolbarHeight)))
+        let doneButton = UIBarButtonItem(title: Localization.subscriptionPeriodToolBarButton,
+                                         style: .done,
+                                         target: self,
+                                         action: #selector(self.onSubscriptionPeriodUpdateDone))
+        doneButton.tintColor = .accent
+        toolBar.setItems([.flexibleSpace(), doneButton], animated: false)
+        return toolBar
+    }()
+
+    private var subscriptionPeriodPickerUseCase: ProductSubscriptionPeriodPickerUseCase?
 
     /// Init
     ///
@@ -103,6 +122,7 @@ private extension ProductPriceSettingsViewController {
     func configureTableView() {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+        tableView.keyboardDismissMode = .onDragWithAccessory
 
         registerTableViewHeaderSections()
         registerTableViewCells()
@@ -147,9 +167,10 @@ extension ProductPriceSettingsViewController {
 
     @objc private func completeUpdating() {
         viewModel.completeUpdating(
-            onCompletion: { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges) in
-                self?.onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass, hasUnsavedChanges)
-            }, onError: { [weak self] error in
+            onCompletion: { [weak self] in
+                self?.onCompletion($0, $1, $2, $3, $4, $5, $6, $7, $8, $9)
+            },
+            onError: { [weak self] error in
                 switch error {
                 case .salePriceWithoutRegularPrice:
                     self?.displaySalePriceWithoutRegularPriceErrorNotice()
@@ -341,6 +362,10 @@ private extension ProductPriceSettingsViewController {
             configureTaxStatus(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
+        case let cell as TitleAndTextFieldTableViewCell where row == .subscriptionPeriod:
+            configureSubscriptionPeriod(cell: cell)
+        case let cell as UnitInputTableViewCell where row == .subscriptionSignupFee:
+            configureSubscriptionSignupFee(cell: cell)
         default:
             fatalError()
             break
@@ -351,6 +376,38 @@ private extension ProductPriceSettingsViewController {
         let cellViewModel = Product.createRegularPriceViewModel(regularPrice: viewModel.regularPrice,
                                                                 using: ServiceLocator.currencySettings) { [weak self] value in
             self?.viewModel.handleRegularPriceChange(value)
+        }
+        cell.selectionStyle = .none
+        cell.configure(viewModel: cellViewModel)
+    }
+
+    func configureSubscriptionPeriod(cell: TitleAndTextFieldTableViewCell) {
+        let useCase = ProductSubscriptionPeriodPickerUseCase(
+            initialPeriod: viewModel.subscriptionPeriod,
+            initialInterval: viewModel.subscriptionPeriodInterval,
+            updateHandler: { [weak self] period, interval in
+                self?.viewModel.handleSubscriptionPeriodChange(interval: interval, period: period)
+            }
+        )
+        self.subscriptionPeriodPickerUseCase = useCase
+
+        cell.configure(viewModel: .init(title: Localization.billingInterval,
+                                        text: viewModel.subscriptionPeriodDescription,
+                                        placeholder: nil,
+                                        textFieldAlignment: .trailing,
+                                        inputView: useCase.pickerView,
+                                        inputAccessoryView: subscriptionPeriodToolbar,
+                                        onEditingEnd: { [weak self] in
+            self?.refreshViewContent()
+        }))
+    }
+
+    func configureSubscriptionSignupFee(cell: UnitInputTableViewCell) {
+        let cellViewModel = Product.createSubscriptionSignupFeeViewModel(
+            fee: viewModel.subscriptionSignupFee,
+            using: ServiceLocator.currencySettings
+        ) { [weak self] fee in
+            self?.viewModel.handleSubscriptionSignupFeeChange(fee)
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: cellViewModel)
@@ -458,6 +515,11 @@ private extension ProductPriceSettingsViewController {
     func configureSections() {
         sections = viewModel.sections
     }
+
+    @objc
+    func onSubscriptionPeriodUpdateDone() {
+        view.endEditing(true)
+    }
 }
 
 // MARK: - Private Types
@@ -471,6 +533,8 @@ extension ProductPriceSettingsViewController {
 
     enum Row: CaseIterable {
         case price
+        case subscriptionPeriod
+        case subscriptionSignupFee
         case salePrice
 
         case scheduleSale
@@ -485,7 +549,7 @@ extension ProductPriceSettingsViewController {
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
-            case .price, .salePrice:
+            case .price, .salePrice, .subscriptionSignupFee:
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self
@@ -497,6 +561,8 @@ extension ProductPriceSettingsViewController {
                 return TitleAndValueTableViewCell.self
             case .removeSaleTo:
                 return BasicTableViewCell.self
+            case .subscriptionPeriod:
+                return TitleAndTextFieldTableViewCell.self
             }
         }
 
@@ -508,4 +574,20 @@ extension ProductPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
+    static let subscriptionPeriodToolbarHeight: CGFloat = 35
+}
+
+private extension ProductPriceSettingsViewController {
+    enum Localization {
+        static let billingInterval = NSLocalizedString(
+            "productPriceSettingsViewController.billingIntervalRowTitle",
+            value: "Billing interval",
+            comment: "Title of the billing interval row on the Product Price screen"
+        )
+        static let subscriptionPeriodToolBarButton = NSLocalizedString(
+            "productPriceSettingsViewController.subscriptionPeriodToolBarButton",
+            value: "Done",
+            comment: "Button on the toolbar of the subscription period picker view on the Product Price screen"
+        )
+    }
 }

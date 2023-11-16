@@ -2,14 +2,29 @@ import Foundation
 import SwiftUI
 import Yosemite
 import WooFoundation
+import Combine
 
 class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
+    @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
-    @Published private(set) var shouldDisableManageCardReaders: Bool = false
+    @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
+    @Published private(set) var shouldDisableManageCardReaders: Bool = true
+    @Published var backgroundOnboardingInProgress: Bool = false
+    @Published private(set) var cardPresentPaymentsOnboardingNotice: PermanentNotice?
+    @Published var shouldShowOnboarding: Bool = false
+    @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
+    @Published private(set) var activePaymentGatewayName: String?
+    @Published var presentCollectPayment: Bool = false
+    @Published var presentSetUpTryOutTapToPay: Bool = false
+    @Published var presentTapToPayFeedback: Bool = false
+    @Published var safariSheetURL: URL? = nil
+
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
+
+    private(set) var simplePaymentsNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never>
 
     let siteID: Int64
 
@@ -19,26 +34,153 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
+        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
     }
 
     let dependencies: Dependencies
+
+    private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
          dependencies: Dependencies) {
         self.siteID = siteID
         self.dependencies = dependencies
-        updateOutputProperties()
-    }
+        self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
+        observeOnboardingChanges()
+        runCardPresentPaymentsOnboardingIfPossible()
 
-    private func updateOutputProperties() {
-        Task {
-            await shouldAlwaysHideSetUpButtonOnAboutTapToPay = dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+        dependencies.tapToPayBadgePromotionChecker.$shouldShowTapToPayBadges
+            .share()
+            .assign(to: &$shouldBadgeTapToPayOnIPhone)
+
+        Task { @MainActor in
+            await updateOutputProperties()
         }
-        updatePayInPersonToggleSelectedPlugin(from: dependencies.onboardingUseCase.state)
     }
 
-    // TODO: refresh this when the onboarding state changes, when we do background onboarding properly
-    private func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {
+    @MainActor
+    private func updateOutputProperties() async {
+        payInPersonToggleViewModel.refreshState()
+        updateCardReadersSection()
+        await updateTapToPaySection()
+    }
+
+    @MainActor
+    func onAppear() async {
+        runCardPresentPaymentsOnboardingIfPossible()
+        await updateOutputProperties()
+    }
+
+    func collectPaymentTapped() {
+        presentCollectPayment = true
+
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+    }
+
+    func setUpTryOutTapToPayTapped() {
+        presentSetUpTryOutTapToPay = true
+    }
+
+    func tapToPayFeedbackTapped() {
+        presentTapToPayFeedback = true
+    }
+
+    lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
+        SetUpTapToPayViewModelsOrderedList(
+            siteID: siteID,
+            configuration: dependencies.cardPresentPaymentsConfiguration,
+            onboardingUseCase: dependencies.onboardingUseCase)
+    }()
+
+    lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
+        AboutTapToPayViewModel(
+            siteID: siteID,
+            configuration: dependencies.cardPresentPaymentsConfiguration,
+            cardPresentPaymentsOnboardingUseCase: dependencies.onboardingUseCase,
+            shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
+    }()
+
+    lazy var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList = {
+        CardReaderSettingsViewModelsOrderedList(
+            configuration: dependencies.cardPresentPaymentsConfiguration,
+            siteID: siteID)
+    }()
+
+    lazy var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel = {
+        PurchaseCardReaderWebViewViewModel(
+            configuration: dependencies.cardPresentPaymentsConfiguration,
+            utmProvider: WooCommerceComUTMProvider(
+                campaign: Constants.utmCampaign,
+                source: Constants.utmSource,
+                content: nil,
+                siteID: siteID),
+            onDismiss: {})
+    }()
+
+    lazy var onboardingViewModel: InPersonPaymentsViewModel = {
+        let onboardingViewModel = InPersonPaymentsViewModel(useCase: dependencies.onboardingUseCase)
+        onboardingViewModel.showURL = { [weak self] url in
+            self?.safariSheetURL = url
+        }
+        return onboardingViewModel
+    }()
+}
+
+// MARK: - Background onboarding
+private extension InPersonPaymentsMenuViewModel {
+    func observeOnboardingChanges() {
+        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+            return
+        }
+
+        dependencies.onboardingUseCase.statePublisher
+            .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
+            .removeDuplicates()
+            .sink(receiveValue: { [weak self] state in
+                self?.refreshAfterNewOnboardingState(state)
+        }).store(in: &cancellables)
+    }
+
+    func runCardPresentPaymentsOnboardingIfPossible() {
+        guard dependencies.cardPresentPaymentsConfiguration.isSupportedCountry else {
+            return
+        }
+
+        dependencies.onboardingUseCase.refreshIfNecessary()
+    }
+
+    func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
+        guard state != .loading else {
+            backgroundOnboardingInProgress = true
+            return
+        }
+
+        switch state {
+        case let .completed(newPluginState):
+            cardPresentPaymentsOnboardingNotice = nil
+            shouldShowOnboarding = false
+            updateManagePaymentGatewaysRowVisibility(shouldShow: newPluginState.available.count > 1)
+            shouldDisableManageCardReaders = false
+            activePaymentGatewayName = newPluginState.preferred.pluginName
+        case .selectPlugin(true):
+            // Selected plugin was cleared manually (e.g by tapping in this view on the plugin selection row)
+            // No need to show the onboarding notice in this case.
+            break
+        default:
+            cardPresentPaymentsOnboardingNotice = onboardingNotice
+            break
+        }
+        updatePayInPersonToggleSelectedPlugin(from: state)
+
+        backgroundOnboardingInProgress = false
+    }
+
+    func updateManagePaymentGatewaysRowVisibility(shouldShow: Bool) {
+        shouldShowManagePaymentGatewaysRow = shouldShow
+        shouldShowPaymentOptionsSection = shouldShow
+    }
+
+    func updatePayInPersonToggleSelectedPlugin(from state: CardPresentPaymentOnboardingState) {
         switch state {
         case let .completed(pluginState):
             payInPersonToggleViewModel.selectedPlugin = pluginState.preferred
@@ -49,36 +191,63 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList {
-        SetUpTapToPayViewModelsOrderedList(
-            siteID: siteID,
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            onboardingUseCase: dependencies.onboardingUseCase)
+    var onboardingNotice: PermanentNotice {
+        PermanentNotice(
+            message: Localization.inPersonPaymentsSetupNotFinishedNotice,
+            callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
+            callToActionHandler: { [weak self] in
+                ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
+                self?.shouldShowOnboarding = true
+            })
+    }
+}
+
+// MARK: - Card Reader visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    private func updateCardReadersSection() {
+        shouldShowCardReaderSection = isEligibleForCardPresentPayments
     }
 
-    var aboutTapToPayViewModel: AboutTapToPayViewModel {
-        AboutTapToPayViewModel(
-            siteID: siteID,
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            cardPresentPaymentsOnboardingUseCase: dependencies.onboardingUseCase,
-            shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
+    var isEligibleForCardPresentPayments: Bool { dependencies.cardPresentPaymentsConfiguration.isSupportedCountry
+    }
+}
+
+// MARK: - Tap to Pay visibility
+
+private extension InPersonPaymentsMenuViewModel {
+    @MainActor
+    private func updateTapToPaySection() async {
+        let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
+
+        shouldShowTapToPaySection = isEligibleForCardPresentPayments &&
+            countryEnabledForTapToPay &&
+            deviceSupportsTapToPay
+
+        await updateSetUpTryTapToPay()
+        await updateTapToPayFeedbackRowVisibility()
     }
 
-    var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList {
-        CardReaderSettingsViewModelsOrderedList(
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            siteID: siteID)
+    var countryEnabledForTapToPay: Bool {
+        dependencies.cardPresentPaymentsConfiguration.supportedReaders.contains(.appleBuiltIn)
     }
 
-    var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel {
-        PurchaseCardReaderWebViewViewModel(
-            configuration: dependencies.cardPresentPaymentsConfiguration,
-            utmProvider: WooCommerceComUTMProvider(
-                campaign: Constants.utmCampaign,
-                source: Constants.utmSource,
-                content: nil,
-                siteID: siteID),
-            onDismiss: {})
+    @MainActor
+    private func updateSetUpTryTapToPay() async {
+        let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
+
+        setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
+        shouldAlwaysHideSetUpButtonOnAboutTapToPay = tapToPayWasPreviouslyUsed
+    }
+
+    @MainActor
+    private func updateTapToPayFeedbackRowVisibility() async {
+        guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
+              let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
+            return self.shouldShowTapToPayFeedbackRow = false
+        }
+
+        shouldShowTapToPayFeedbackRow = firstTapToPayTransactionDate >= thirtyDaysAgo
     }
 }
 
@@ -98,5 +267,17 @@ private extension InPersonPaymentsMenuViewModel {
             "Try Out Tap to Pay on iPhone",
             comment: "Navigates to the Tap to Pay on iPhone set up flow, after set up has been completed, when it " +
             "primarily allows for a test payment. The full name is expected by Apple.")
+
+        static let inPersonPaymentsSetupNotFinishedNotice = NSLocalizedString(
+            "menu.payments.inPersonPayments.setup.incomplete.notice.title",
+            value: "In-Person Payments setup is incomplete.",
+            comment: "Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled."
+        )
+
+        static let inPersonPaymentsSetupNotFinishedNoticeButtonTitle = NSLocalizedString(
+            "menu.payments.inPersonPayments.setup.incomplete.notice.button.title",
+            value: "Continue setup",
+            comment: "Call to Action to finish the setup of In-Person Payments in the Menu"
+        )
     }
 }

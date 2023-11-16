@@ -9,7 +9,7 @@ end
 gem 'cocoapods', '~> 1.14'
 gem 'cocoapods-catalyst-support', '~> 0.1'
 gem 'dotenv'
-gem 'fastlane', '~> 2'
+gem 'fastlane', '~> 2.216'
 gem 'fastlane-plugin-appcenter', '~> 2.0'
 gem 'fastlane-plugin-sentry', '~> 1.0'
 # This comment avoids typing to switch to a development version for testing.

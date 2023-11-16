@@ -109,7 +109,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
     func loadUsernameSuggestions(from text: String) async throws -> [String] {
         guard let result = loadUsernameSuggestionsResult else {
             XCTFail("Could not find result for loading username suggestions.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try result.get()

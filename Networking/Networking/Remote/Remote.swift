@@ -301,8 +301,7 @@ private extension Remote {
         /// We will to attempt to validate the response using `ResponseDataValidator`
         /// if the error status code is unacceptable
         ///
-        guard case let .unacceptableStatusCode(_, response) = networkError,
-              let response else {
+        guard let response = networkError.response else {
             return networkError
         }
 

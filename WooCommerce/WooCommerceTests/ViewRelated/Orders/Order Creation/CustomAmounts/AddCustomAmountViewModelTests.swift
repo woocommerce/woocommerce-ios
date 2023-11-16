@@ -91,20 +91,6 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertEqual(passedFeeID, feeID)
     }
 
-    func test_reset_then_reset_values() {
-        // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _ in })
-        viewModel.preset(with: OrderFeeLine.fake().copy(feeID: 1234, name: "test", total: "10"))
-
-        // When
-        viewModel.reset()
-
-        // Then
-        XCTAssertTrue(viewModel.formattableAmountTextFieldViewModel.amount.isEmpty)
-        XCTAssertTrue(viewModel.name.isEmpty)
-        XCTAssertTrue(viewModel.shouldDisableDoneButton)
-    }
-
     func test_doneButtonPressed_when_name_is_empty_then_it_tracks_only_done_event() {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -130,5 +116,43 @@ final class AddCustomAmountViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.addCustomAmountNameAdded.rawValue }))
+    }
+
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_zero_then_returns_false() {
+        // When
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 0, onCustomAmountEntered: {_, _, _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowPercentageInput)
+    }
+
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_bigger_than_zero_then_returns_true() {
+        // When
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 1, onCustomAmountEntered: {_, _, _ in })
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowPercentageInput)
+    }
+
+    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_negative_then_returns_false() {
+        // When
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: -1, onCustomAmountEntered: {_, _, _ in })
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowPercentageInput)
+    }
+
+    func test_percentage_then_updates_amount() {
+        // Given
+        let baseAmountForPercentage = 200
+        let percentage = 25
+
+        // When
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: Decimal(baseAmountForPercentage),
+                                                 onCustomAmountEntered: {_, _, _ in })
+        viewModel.percentage = "\(percentage)"
+
+        // Then
+        XCTAssertEqual(viewModel.formattableAmountTextFieldViewModel.amount, "\(baseAmountForPercentage / 100 * percentage)")
     }
 }

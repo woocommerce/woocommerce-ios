@@ -8,22 +8,49 @@ typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int6
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
+    private var baseAmountForPercentage: Decimal
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
+    private let currencyFormatter: CurrencyFormatter
 
-    init(locale: Locale = Locale.autoupdatingCurrent,
+    var baseAmountForPercentageString: String {
+        currencyFormatter.formatAmount(baseAmountForPercentage) ?? ""
+    }
+
+    var shouldShowPercentageInput: Bool {
+        baseAmountForPercentage > 0
+    }
+
+    init(baseAmountForPercentage: Decimal = 0,
+         locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
+        self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.analytics = analytics
+        self.baseAmountForPercentage = baseAmountForPercentage
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
+
+        formattableAmountTextFieldViewModel.onWillResetAmountWithNewValue = { [weak self] in
+            self?.percentage = ""
+        }
     }
 
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
+    @Published var percentage = "" {
+        didSet {
+            guard oldValue != percentage else { return }
+
+            guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
+
+            presetAmountBasedOnPercentage(percentage)
+        }
+    }
+
     @Published private(set) var shouldDisableDoneButton: Bool = true
     private var feeID: Int64? = nil
 
@@ -37,23 +64,12 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     func doneButtonPressed() {
-        if name.isNotEmpty {
-            analytics.track(.addCustomAmountNameAdded)
-        }
-
-        analytics.track(.addCustomAmountDoneButtonTapped)
+        trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
         onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
     }
 
-    func reset() {
-        name = ""
-        feeID = nil
-        shouldDisableDoneButton = true
-
-        formattableAmountTextFieldViewModel.reset()
-    }
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
@@ -67,6 +83,24 @@ private extension AddCustomAmountViewModel {
         formattableAmountTextFieldViewModel.$amount.map { _ in
             !self.formattableAmountTextFieldViewModel.amountIsValid
         }.assign(to: &$shouldDisableDoneButton)
+    }
+
+    func trackEventsOnDoneButtonPressed() {
+        if name.isNotEmpty {
+            analytics.track(.addCustomAmountNameAdded)
+        }
+
+        if percentage.isNotEmpty {
+            analytics.track(.addCustomAmountPercentageAdded)
+        }
+
+        analytics.track(.addCustomAmountDoneButtonTapped)
+    }
+
+    func presetAmountBasedOnPercentage(_ percentage: String) {
+        guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
+
+        formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
     }
 }
 

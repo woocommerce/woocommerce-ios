@@ -63,6 +63,8 @@ extension Product {
     @NSManaged public var backordersAllowed: Bool
     @NSManaged public var backordered: Bool
     @NSManaged public var buttonText: String
+    @NSManaged public var bundleMinSize: NSDecimalNumber?
+    @NSManaged public var bundleMaxSize: NSDecimalNumber?
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var minAllowedQuantity: String?
     @NSManaged public var maxAllowedQuantity: String?

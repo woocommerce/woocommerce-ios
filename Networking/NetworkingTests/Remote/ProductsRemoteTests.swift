@@ -44,7 +44,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedProduct = Product(siteID: sampleSiteID,
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                       productID: 3007,
                                       name: "Product",
                                       slug: "product",
@@ -157,7 +157,7 @@ final class ProductsRemoteTests: XCTestCase {
         }
 
         // Then
-        let expectedProduct = Product(siteID: sampleSiteID,
+        let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
                                       productID: 3007,
                                       name: "Product",
                                       slug: "product",
@@ -717,7 +717,7 @@ final class ProductsRemoteTests: XCTestCase {
 private extension ProductsRemoteTests {
 
     func sampleProduct() -> Product {
-        return Product(siteID: sampleSiteID,
+        Product.fake().copy(siteID: sampleSiteID,
                        productID: sampleProductID,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",

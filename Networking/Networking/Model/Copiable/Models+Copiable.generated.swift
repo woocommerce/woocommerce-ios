@@ -1254,6 +1254,8 @@ extension Networking.Product {
         isSampleItem: CopiableProp<Bool> = .copy,
         bundleStockStatus: NullableCopiableProp<ProductStockStatus> = .copy,
         bundleStockQuantity: NullableCopiableProp<Int64> = .copy,
+        bundleMinSize: NullableCopiableProp<Decimal> = .copy,
+        bundleMaxSize: NullableCopiableProp<Decimal> = .copy,
         bundledItems: CopiableProp<[ProductBundleItem]> = .copy,
         compositeComponents: CopiableProp<[ProductCompositeComponent]> = .copy,
         subscription: NullableCopiableProp<ProductSubscription> = .copy,
@@ -1328,6 +1330,8 @@ extension Networking.Product {
         let isSampleItem = isSampleItem ?? self.isSampleItem
         let bundleStockStatus = bundleStockStatus ?? self.bundleStockStatus
         let bundleStockQuantity = bundleStockQuantity ?? self.bundleStockQuantity
+        let bundleMinSize = bundleMinSize ?? self.bundleMinSize
+        let bundleMaxSize = bundleMaxSize ?? self.bundleMaxSize
         let bundledItems = bundledItems ?? self.bundledItems
         let compositeComponents = compositeComponents ?? self.compositeComponents
         let subscription = subscription ?? self.subscription
@@ -1403,6 +1407,8 @@ extension Networking.Product {
             isSampleItem: isSampleItem,
             bundleStockStatus: bundleStockStatus,
             bundleStockQuantity: bundleStockQuantity,
+            bundleMinSize: bundleMinSize,
+            bundleMaxSize: bundleMaxSize,
             bundledItems: bundledItems,
             compositeComponents: compositeComponents,
             subscription: subscription,

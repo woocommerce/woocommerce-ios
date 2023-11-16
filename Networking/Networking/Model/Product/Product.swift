@@ -96,6 +96,12 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
     /// Quantity of bundles left in stock, taking bundled product quantity requirements into account. Applicable for bundle-type products only.
     public let bundleStockQuantity: Int64?
 
+    /// Optional min bundle size (total number of bundle items) used in bundle configuration. Applicable for bundle-type products only.
+    public let bundleMinSize: Decimal?
+
+    /// Optional max bundle size (total number of bundle items) used in bundle configuration. Applicable for bundle-type products only.
+    public let bundleMaxSize: Decimal?
+
     /// List of bundled item data contained in this product.
     public let bundledItems: [ProductBundleItem]
 
@@ -242,6 +248,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                 isSampleItem: Bool,
                 bundleStockStatus: ProductStockStatus?,
                 bundleStockQuantity: Int64?,
+                bundleMinSize: Decimal?,
+                bundleMaxSize: Decimal?,
                 bundledItems: [ProductBundleItem],
                 compositeComponents: [ProductCompositeComponent],
                 subscription: ProductSubscription?,
@@ -315,6 +323,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         self.isSampleItem = isSampleItem
         self.bundleStockStatus = bundleStockStatus
         self.bundleStockQuantity = bundleStockQuantity
+        self.bundleMinSize = bundleMinSize
+        self.bundleMaxSize = bundleMaxSize
         self.bundledItems = bundledItems
         self.compositeComponents = compositeComponents
         self.subscription = subscription
@@ -518,6 +528,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let bundleStockStatus = container.failsafeDecodeIfPresent(ProductStockStatus.self, forKey: .bundleStockStatus)
         // When the bundle stock quantity is not set for a product bundle, the API returns an empty string and the value will be `nil`.
         let bundleStockQuantity = container.failsafeDecodeIfPresent(Int64.self, forKey: .bundleStockQuantity)
+        let bundleMinSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMinSize)
+        let bundleMaxSize = container.failsafeDecodeIfPresent(decimalForKey: .bundleMaxSize)
         let bundledItems = try container.decodeIfPresent([ProductBundleItem].self, forKey: .bundledItems) ?? []
 
         // Composite Product properties
@@ -603,6 +615,8 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
                   isSampleItem: isSampleItem,
                   bundleStockStatus: bundleStockStatus,
                   bundleStockQuantity: bundleStockQuantity,
+                  bundleMinSize: bundleMinSize,
+                  bundleMaxSize: bundleMaxSize,
                   bundledItems: bundledItems,
                   compositeComponents: compositeComponents,
                   subscription: subscription,
@@ -811,6 +825,8 @@ private extension Product {
 
         case bundleStockStatus              = "bundle_stock_status"
         case bundleStockQuantity            = "bundle_stock_quantity"
+        case bundleMinSize                  = "bundle_min_size"
+        case bundleMaxSize                  = "bundle_max_size"
         case bundledItems                   = "bundled_items"
 
         case compositeComponents    = "composite_components"

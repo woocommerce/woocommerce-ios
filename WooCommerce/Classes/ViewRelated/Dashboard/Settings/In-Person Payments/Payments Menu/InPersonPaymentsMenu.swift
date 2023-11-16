@@ -1,9 +1,8 @@
 import SwiftUI
+import WooFoundation
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
-
-    @State private var safariSheetURL: URL?
 
     @State private var showingManagePaymentGateways: Bool = false
 
@@ -11,13 +10,17 @@ struct InPersonPaymentsMenu: View {
         VStack {
             List {
                 Section(Localization.paymentActionsSectionTitle) {
-                    // Modal
                     PaymentsRow(image: Image(uiImage: .moneyIcon),
                                 title: Localization.collectPayment)
                     .onTapGesture {
                         viewModel.collectPaymentTapped()
                     }
-                    .sheet(isPresented: $viewModel.presentCollectPayment) {
+                    .sheet(isPresented: $viewModel.presentCollectPayment,
+                           onDismiss: {
+                        Task { @MainActor in
+                            await viewModel.onAppear()
+                        }
+                    }) {
                         NavigationView {
                             SimplePaymentsAmountHosted(
                                 viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
@@ -32,27 +35,44 @@ struct InPersonPaymentsMenu: View {
                         image: Image(uiImage: .creditCardIcon),
                         title: Localization.toggleEnableCashOnDelivery,
                         toggleRowViewModel: viewModel.payInPersonToggleViewModel)
-                    .customOpenURL(binding: $safariSheetURL)
+                    .customOpenURL(binding: $viewModel.safariSheetURL)
                 }
 
                 Section(Localization.tapToPaySectionTitle) {
-                    // Modal
-                    NavigationLink(destination:
-                                    PaymentSettingsFlowPresentingView(
-                                        viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)) {
-                                            PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
-                                                        title: viewModel.setUpTryOutTapToPayRowTitle)
-                                        }
+                    PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
+                                title: viewModel.setUpTryOutTapToPayRowTitle,
+                                badgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
+                    .onTapGesture {
+                        viewModel.setUpTryOutTapToPayTapped()
+                    }
+                    .sheet(isPresented: $viewModel.presentSetUpTryOutTapToPay,
+                           onDismiss: {
+                        Task { @MainActor in
+                            await viewModel.onAppear()
+                        }
+                    }) {
+                        NavigationView {
+                            PaymentSettingsFlowPresentingView(
+                                viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                            .navigationBarHidden(true)
+                        }
+                    }
 
-                    NavigationLink(destination: AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)) {
+                    NavigationLink {
+                        AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                    } label: {
                         PaymentsRow(image: Image(uiImage: .infoOutlineImage),
                                     title: Localization.aboutTapToPayOnIPhone)
                     }
 
-                    // Modal
-                    NavigationLink(destination: Survey(source: .tapToPayFirstPayment)) {
-                        PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
-                                    title: Localization.tapToPayOnIPhoneFeedback)
+                    PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
+                                title: Localization.tapToPayOnIPhoneFeedback)
+                    .foregroundColor(Color(uiColor: .textLink))
+                    .onTapGesture {
+                        viewModel.tapToPayFeedbackTapped()
+                    }
+                    .sheet(isPresented: $viewModel.presentTapToPayFeedback) {
+                        Survey(source: .tapToPayFirstPayment)
                     }
                     .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
                 }
@@ -86,7 +106,7 @@ struct InPersonPaymentsMenu: View {
                 } footer: {
                     InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
                                               showInfoIcon: false)
-                    .customOpenURL(binding: $safariSheetURL)
+                    .customOpenURL(binding: $viewModel.safariSheetURL)
                 }
                 .renderedIf(viewModel.shouldShowCardReaderSection)
 
@@ -106,7 +126,7 @@ struct InPersonPaymentsMenu: View {
                 }
                 .renderedIf(viewModel.shouldShowPaymentOptionsSection)
             }
-            .safariSheet(url: $safariSheetURL)
+            .safariSheet(url: $viewModel.safariSheetURL)
 
             NavigationLink(isActive: $viewModel.shouldShowOnboarding) {
                 InPersonPaymentsView(viewModel: viewModel.onboardingViewModel)
@@ -118,7 +138,9 @@ struct InPersonPaymentsMenu: View {
                 PermanentNoticeView(notice: onboardingNotice)
             }
         }
-        .onAppear(perform: viewModel.onAppear)
+        .task {
+            await viewModel.onAppear()
+        }
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 ActivityIndicator(isAnimating: $viewModel.backgroundOnboardingInProgress,

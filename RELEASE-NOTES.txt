@@ -4,6 +4,7 @@
 -----
 - [*] Orders: users can now calculate a custom amount based on the order total percentage. [https://github.com/woocommerce/woocommerce-ios/pull/11154]
 - [*] Orders: users can now decide whether their custom amounts are taxable or not. [https://github.com/woocommerce/woocommerce-ios/pull/11156]
+- [*] Order form: the merchant can now configure a bundle product (quantity and variation attributes of the bundled products). Testing plan: pe5pgL-3Ze-p2 [https://github.com/woocommerce/woocommerce-ios/pull/11186]
 
 16.2
 -----

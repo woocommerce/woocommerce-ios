@@ -11,6 +11,12 @@ final class SubscriptionTrialViewModel: ObservableObject {
 
     @Published var isInputValid: Bool = true
 
+    var errorMessage: String {
+        String.localizedStringWithFormat(Localization.validationError,
+                                         trialPeriod.limit,
+                                         trialPeriod.descriptionPlural)
+    }
+
     var trialPeriodDescription: String {
         switch trialLength {
         case "1":
@@ -75,6 +81,14 @@ private extension SubscriptionTrialViewModel {
 // MARK: Constants
 private extension SubscriptionTrialViewModel {
     enum Localization {
-        static let title = NSLocalizedString("Free trial", comment: "Title for the Free trial info screen of the subscription product.")
+        static let title = NSLocalizedString("subscriptionTrialViewModel.title",
+                                             value: "Free trial",
+                                             comment: "Title for the Free trial info screen of the subscription product.")
+
+        static let validationError = NSLocalizedString("subscriptionTrialViewModel.errorMessage",
+                                             value: "The trial period cannot exceed %1$d %2$@",
+                                             comment: "Validation error message in the Free trial info screen of the subscription product. " +
+                                                       "Reads like: The trial period cannot exceed 90 days.")
+
     }
 }

@@ -51,7 +51,7 @@ struct SubscriptionTrialView: View {
 
                 // Validation error
                 Group {
-                    ValidationErrorRow(errorMessage: "The trial period can not exceed: 90 days, 52 weeks, 24 months or 5 years.")
+                    ValidationErrorRow(errorMessage: viewModel.errorMessage)
 
                     Divider()
                         .padding(.leading, Layout.margin)

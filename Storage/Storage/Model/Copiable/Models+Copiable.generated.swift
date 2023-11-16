@@ -25,7 +25,6 @@ extension Storage.GeneralAppSettings {
         feedbacks: CopiableProp<[FeedbackType: FeedbackSettings]> = .copy,
         isViewAddOnsSwitchEnabled: CopiableProp<Bool> = .copy,
         isInAppPurchasesSwitchEnabled: CopiableProp<Bool> = .copy,
-        isSwiftUIPaymentsMenuSwitchEnabled: CopiableProp<Bool> = .copy,
         knownCardReaders: CopiableProp<[String]> = .copy,
         lastEligibilityErrorInfo: NullableCopiableProp<EligibilityErrorInfo> = .copy,
         lastJetpackBenefitsBannerDismissedTime: NullableCopiableProp<Date> = .copy,

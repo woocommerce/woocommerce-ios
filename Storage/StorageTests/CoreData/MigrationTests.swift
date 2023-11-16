@@ -2550,7 +2550,7 @@ private extension MigrationTests {
             "amount": "2.00",
             "code": "2off2021",
             "usedBy": ["me@example.com"],
-            "emailRestrictions": ["*@woocommerce.com"],
+            "emailRestrictions": ["*@woo.com"],
             "siteID": 1212,
             "products": [1231, 111],
             "excludedProducts": [19182, 192],
@@ -2586,7 +2586,7 @@ private extension MigrationTests {
             "name": "renew-subscription",
             "label": "Renew Subscription",
             "status": "actioned",
-            "url": "https://woocommerce.com/products/woocommerce-bookings/"
+            "url": "https://woo.com/products/woocommerce-bookings/"
         ])
     }
 

@@ -192,17 +192,12 @@ private extension StoreOnboardingPaymentsSetupView.Task {
     }
 
     var learnMoreURL: URL {
-        let urlString: String
         switch self {
         case .wcPay:
-            urlString = "https://woocommerce.com/document/woocommerce-payments/startup-guide"
+            return WooConstants.URLs.wooPaymentsStartupGuide.asURL()
         case .payments:
-            urlString = "https://woocommerce.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
+            return WooConstants.URLs.wooCorePaymentOptions.asURL()
         }
-        guard let url = URL(string: urlString) else {
-            fatalError("Unexpected URL: \(urlString)")
-        }
-        return url
     }
 }
 

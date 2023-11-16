@@ -68,7 +68,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         // Then
         let cardReaderPurchaseURL = try XCTUnwrap(sut.showWebView?.initialURL)
         assertEqual("https", cardReaderPurchaseURL.scheme)
-        assertEqual("woocommerce.com", cardReaderPurchaseURL.host)
+        assertEqual("woo.com", cardReaderPurchaseURL.host)
         assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
         let query = try XCTUnwrap(cardReaderPurchaseURL.query)
         XCTAssert(query.contains("utm_medium=woo_ios"))

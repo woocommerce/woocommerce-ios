@@ -17,7 +17,7 @@ struct WooPaymentsDepositsOverviewView: View {
             TopTabView(tabs: tabs)
 
             Button {
-                // TODO: Open a webview here: https://woocommerce.com/document/woopayments/deposits/deposit-schedule/
+                // TODO: Open a webview here: https://woo.com/document/woopayments/deposits/deposit-schedule/
             } label: {
                 HStack {
                     Image(systemName: "info.circle")

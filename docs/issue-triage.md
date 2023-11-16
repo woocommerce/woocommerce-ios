@@ -56,4 +56,4 @@ In addition to the guidelines above, we have specific criteria for prioritizing 
 
 The matrix and criteria outline above are meant as a guideline, to avoid having to rely solely on "gut instinct" when prioritizing issues. However, there will likely be exceptions or cases that are unclear. Trust your instincts if an issue seems to be higher priority than the matrix gives it!
 
-You can also always reach out for help prioritizing or escalating issues: Contributors are welcome to get in touch in the `#mobile-apps` channel on the [WooCommerce Community Slack](https://woocommerce.com/community-slack/), and WooCommerce team members can reach out to the WooCommerce Mobile lead, team leads, or quality lead for help.
+You can also always reach out for help prioritizing or escalating issues: Contributors are welcome to get in touch in the `#mobile-apps` channel on the [WooCommerce Community Slack](https://woo.com/community-slack/), and WooCommerce team members can reach out to the WooCommerce Mobile lead, team leads, or quality lead for help.

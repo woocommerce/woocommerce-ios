@@ -37,7 +37,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         let secondItemTotal = 8
         let firstFeeTotal = 2
         let secondFeeTotal = 8
-        
+
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
         let order = Order.fake().copy(shippingTotal: String(shippingTotal),
@@ -46,10 +46,10 @@ class OrderTotalsCalculatorTests: XCTestCase {
                                                                     total: String(firstItemTotal)),
                                               OrderItem.fake().copy(subtotal: "8.00", total: String(secondItemTotal))],
                                       fees: [OrderFeeLine.fake().copy(total: String(firstFeeTotal)), OrderFeeLine.fake().copy(total: String(secondFeeTotal))])
-        
+
         // When
         let orderTotalsCalculator = OrderTotalsCalculator(for: order, using: currencyFormatter)
-        
+
         // Then
         let expectedTotal = shippingTotal + taxTotal + firstItemTotal + secondItemTotal + firstFeeTotal + secondFeeTotal
         XCTAssertEqual(orderTotalsCalculator.orderTotal, NSDecimalNumber(decimal: Decimal(expectedTotal)))

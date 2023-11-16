@@ -127,29 +127,12 @@ final class HubMenuCoordinator: Coordinator {
 }
 
 // MARK: - Deeplinks
-extension HubMenuCoordinator {
-    func navigate(to destination: DeepLinkDestination) {
+extension HubMenuCoordinator: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
         guard let hubMenuController = hubMenuController else {
             return
         }
-        switch destination {
-        case .paymentsMenu:
-            _ = hubMenuController.showPaymentsMenu()
-        case .simplePayments:
-            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
-                paymentsMenu.openSimplePaymentsAmountFlow()
-            }
-        case .tapToPayOnIPhone:
-            _ = hubMenuController.showPaymentsMenu { paymentsMenu in
-                paymentsMenu.presentSetUpTapToPayOnIPhoneViewController()
-            }
-        }
-    }
-
-    enum DeepLinkDestination {
-        case paymentsMenu
-        case simplePayments
-        case tapToPayOnIPhone
+        hubMenuController.navigate(to: destination)
     }
 }
 

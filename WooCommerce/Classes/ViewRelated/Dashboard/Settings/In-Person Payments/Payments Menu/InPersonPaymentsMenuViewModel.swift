@@ -259,6 +259,21 @@ private extension InPersonPaymentsMenuViewModel {
     }
 }
 
+// MARK: - Deeplink navigation
+extension InPersonPaymentsMenuViewModel: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        guard let paymentsDestination = destination as? PaymentsMenuDestination else {
+            return
+        }
+        switch paymentsDestination {
+        case .collectPayment:
+            presentCollectPayment = true
+        case .tapToPay:
+            presentSetUpTryOutTapToPay = true
+        }
+    }
+}
+
 private enum Constants {
     static let utmCampaign = "payments_menu_item"
     static let utmSource = "payments_menu"

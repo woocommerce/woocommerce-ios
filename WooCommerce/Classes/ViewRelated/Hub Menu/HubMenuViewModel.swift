@@ -53,6 +53,8 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published var showingReviewDetail = false
 
+    @Published var showingPayments = false
+
     @Published var shouldAuthenticateAdminPage = false
 
     private let stores: StoresManager

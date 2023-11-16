@@ -66,7 +66,18 @@ public final class ShippingLabelStore: Store {
             synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
         case .updateShippingLabelAccountSettings(let siteID, let settings, let completion):
             updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
-        case .purchaseShippingLabel(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let emailCustomerReceipt, let completion, let backendProcessingDelay, let pollingDelay, let pollingMaximumRetries):
+        case .purchaseShippingLabel(
+            let siteID,
+            let orderID,
+            let originAddress,
+            let destinationAddress,
+            let packages,
+            let emailCustomerReceipt,
+            let completion,
+            let backendProcessingDelay,
+            let pollingDelay,
+            let pollingMaximumRetries
+        ):
             purchaseShippingLabel(siteID: siteID,
                                   orderID: orderID,
                                   originAddress: originAddress,

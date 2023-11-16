@@ -14,6 +14,26 @@ struct ConfigurableBundleProductView: View {
         NavigationView {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
+                    if let validationErrorMessage = viewModel.validationErrorMessage {
+                        Group {
+                            Text(validationErrorMessage)
+                                .errorStyle()
+                        }
+                        .padding()
+                    }
+
+                    if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
+                        Group {
+                            Text(loadProductsErrorMessage)
+                                .errorStyle()
+                            Button(Localization.retry) {
+                                viewModel.retry()
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                        }
+                        .padding()
+                    }
+
                     ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
                         ConfigurableBundleItemView(viewModel: bundleItemViewModel)
                         Divider()
@@ -31,18 +51,6 @@ struct ConfigurableBundleProductView: View {
                     .redacted(reason: .placeholder)
                     .shimmering()
                     .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
-
-                    if let errorMessage = viewModel.loadProductsErrorMessage {
-                        Group {
-                            Text(errorMessage)
-                                .errorStyle()
-                            Button(Localization.retry) {
-                                viewModel.retry()
-                            }
-                            .buttonStyle(PrimaryButtonStyle())
-                        }
-                        .padding()
-                    }
                 }
                 .background(Color(.listForeground(modal: false)))
             }

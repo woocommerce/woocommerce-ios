@@ -21,7 +21,106 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_errorMessage_is_set_when_retrieveProducts_fails() throws {
+    // MARK: - `validationErrorMessage`
+
+    func test_validationErrorMessage_is_nil_when_bundle_size_matches() throws {
+        // Given
+        // The bundle size has to be 5.
+        let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
+            // One optional item
+            .fake().copy(productID: 2, isOptional: true),
+            .fake().copy(productID: 3, isOptional: false)
+        ])
+        let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: self.stores,
+                                                           onConfigure: { _ in })
+
+        // The products are loaded async before the bundle item view models are set.
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Optional non-selected bundle item quantity is not counted for the bundle size.
+        let optionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[0])
+        optionalItem.quantity = 3
+        optionalItem.isOptionalAndSelected = true
+
+        let nonOptionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[1])
+        nonOptionalItem.quantity = 2
+
+        // Then
+        XCTAssertTrue(viewModel.validate())
+        XCTAssertNil(viewModel.validationErrorMessage)
+    }
+
+    func test_validationErrorMessage_is_set_when_bundle_size_exceeds_max() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundleMaxSize: 5, bundledItems: [
+            // One optional item
+            .fake().copy(productID: 2, isOptional: true),
+            .fake().copy(productID: 3, isOptional: false)
+        ])
+        let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: self.stores,
+                                                           onConfigure: { _ in })
+
+        // The products are loaded async before the bundle item view models are set.
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Optional non-selected bundle item quantity is not counted for the bundle size.
+        let optionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[0])
+        optionalItem.quantity = 6
+        optionalItem.isOptionalAndSelected = false
+
+        XCTAssertTrue(viewModel.validate())
+
+        let nonOptionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[1])
+        nonOptionalItem.quantity = 6
+
+        // Then
+        XCTAssertFalse(viewModel.validate())
+        XCTAssertNotNil(viewModel.validationErrorMessage)
+    }
+
+    func test_validationErrorMessage_is_set_when_bundle_size_smaller_than_min() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundledItems: [
+            .fake().copy(productID: 2)
+        ])
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: self.stores,
+                                                           onConfigure: { _ in })
+
+        // The products are loaded async before the bundle item view models are set.
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        let item = try XCTUnwrap(viewModel.bundleItemViewModels[0])
+        item.quantity = 4
+
+        // Then
+        XCTAssertFalse(viewModel.validate())
+        XCTAssertNotNil(viewModel.validationErrorMessage)
+    }
+
+    // MARK: - `loadProductsErrorMessage`
+
+    func test_loadProductsErrorMessage_is_set_when_retrieveProducts_fails() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)

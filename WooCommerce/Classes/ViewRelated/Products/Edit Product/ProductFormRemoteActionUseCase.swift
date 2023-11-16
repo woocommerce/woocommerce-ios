@@ -277,7 +277,8 @@ private extension ProductFormRemoteActionUseCase {
                                                                   salePrice: variation.salePrice ?? "",
                                                                   attributes: variation.attributes,
                                                                   description: variation.description ?? "",
-                                                                  image: variation.image)
+                                                                  image: variation.image,
+                                                                  subscription: variation.subscription)
                         await self.duplicateProductVariation(newVariation, parent: newProduct)
                     }
                 }

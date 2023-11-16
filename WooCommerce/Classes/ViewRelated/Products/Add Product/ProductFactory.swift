@@ -12,7 +12,7 @@ struct ProductFactory {
     ///   - status: The status of the new product.
     func createNewProduct(type: ProductType, isVirtual: Bool, siteID: Int64) -> Product? {
         switch type {
-        case .simple, .grouped, .variable, .affiliate:
+        case .simple, .grouped, .variable, .affiliate, .subscription, .variableSubscription:
             return createEmptyProduct(type: type, isVirtual: isVirtual, siteID: siteID)
         default:
             return nil
@@ -102,7 +102,7 @@ private extension ProductFactory {
                 bundleMaxSize: nil,
                 bundledItems: [],
                 compositeComponents: [],
-                subscription: nil,
+                subscription: type == .subscription ? .empty : nil,
                 minAllowedQuantity: nil,
                 maxAllowedQuantity: nil,
                 groupOfQuantity: nil,

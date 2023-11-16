@@ -342,6 +342,15 @@ extension ProductVariationFormViewModel {
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
+
+    func updateSubscriptionExpirySettings(length: String) {
+        // TODO: 11090 - Check this while implementing variation form
+        let subscription = productVariation.subscription?.copy(length: length)
+        productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
+                                                         allAttributes: allAttributes,
+                                                         parentProductSKU: parentProductSKU,
+                                                         parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
+    }
 }
 
 // MARK: Remote actions

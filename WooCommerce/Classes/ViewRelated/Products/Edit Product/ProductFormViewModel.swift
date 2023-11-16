@@ -496,6 +496,11 @@ extension ProductFormViewModel {
                                                       trialPeriod: trialPeriod)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
+
+    func updateSubscriptionExpirySettings(length: String) {
+        let subscription = product.subscription?.copy(length: length)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
 }
 
 // MARK: Remote actions

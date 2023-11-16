@@ -36,7 +36,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.errorMessage != nil
+            viewModel.loadProductsErrorMessage != nil
         }
     }
 
@@ -53,7 +53,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                                                            stores: stores,
                                                            onConfigure: { _ in })
         waitUntil {
-            viewModel.errorMessage != nil
+            viewModel.loadProductsErrorMessage != nil
         }
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
@@ -61,7 +61,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // Then
         waitUntil {
-            viewModel.errorMessage == nil
+            viewModel.loadProductsErrorMessage == nil
         }
     }
 

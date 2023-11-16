@@ -4,7 +4,7 @@ import XCTest
 
 final class ProductVariationGeneratorTests: XCTestCase {
 
-    func test_all_variations_are_generated_correctly() {
+    func test_all_variations_are_generated_correctly_for_regular_variable_product() {
         // Given
         let product = Product.fake().copy(attributes: [
             ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
@@ -25,7 +25,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -34,7 +35,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -43,7 +45,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -52,7 +55,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -61,7 +65,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -70,7 +75,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -79,7 +85,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -88,7 +95,104 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
+        ])
+    }
+
+    func test_all_variations_are_generated_correctly_for_subscription_variable_product() {
+        // Given
+        let product = Product.fake().copy(productTypeKey: "variable-subscription", attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green"]),
+            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon"]),
+        ])
+
+        // When
+        let variations = ProductVariationGenerator.generateVariations(for: product, excluding: [])
+
+        // Then
+        XCTAssertEqual(variations, [
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "S"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Red"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Cotton")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
+            CreateProductVariation(regularPrice: "",
+                                   salePrice: "",
+                                   attributes: [
+                                    .init(id: 1, name: "Size", option: "M"),
+                                    .init(id: 2, name: "Color", option: "Green"),
+                                    .init(id: 3, name: "Fabric", option: "Nylon")
+                                   ],
+                                   description: "",
+                                   image: nil,
+                                   subscription: .empty),
         ])
     }
 
@@ -126,7 +230,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -135,7 +240,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -144,7 +250,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -153,7 +260,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Cotton")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -162,7 +270,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
             CreateProductVariation(regularPrice: "",
                                    salePrice: "",
                                    attributes: [
@@ -171,7 +280,8 @@ final class ProductVariationGeneratorTests: XCTestCase {
                                     .init(id: 3, name: "Fabric", option: "Nylon")
                                    ],
                                    description: "",
-                                   image: nil),
+                                   image: nil,
+                                   subscription: nil),
         ])
     }
 }

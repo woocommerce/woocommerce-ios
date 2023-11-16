@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents the entity sent for creating a new Product Variation entity.
 ///
-public struct CreateProductVariation: Encodable, Equatable, GeneratedFakeable {
+public struct CreateProductVariation: Encodable, Equatable, GeneratedFakeable, GeneratedCopiable {
     public let regularPrice: String
     public let salePrice: String
     public let attributes: [ProductVariationAttribute]

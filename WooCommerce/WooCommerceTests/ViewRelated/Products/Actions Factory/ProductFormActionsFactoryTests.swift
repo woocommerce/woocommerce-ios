@@ -892,10 +892,10 @@ private extension ProductFormActionsFactoryTests {
         static let variableSubscriptionProduct = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue)
 
         // Variable subscription product with no variations
-        static let variableSubscriptionProductWithoutVariations = affiliateProduct.copy(productTypeKey: ProductType.variable.rawValue, variations: [])
+        static let variableSubscriptionProductWithoutVariations = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue, variations: [])
 
         // Variable subscription product with one variation, missing short description/categories/tags
-        static let variableSubscriptionProductWithVariations = variableProductWithoutVariations.copy(variations: [123])
+        static let variableSubscriptionProductWithVariations = variableSubscriptionProductWithoutVariations.copy(variations: [123])
 
         // Non-core product, missing price/short description/categories/tags
         static let nonCoreProductWithoutPrice = affiliateProduct.copy(productTypeKey: "other", regularPrice: "")

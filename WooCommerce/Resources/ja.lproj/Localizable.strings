@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-07 11:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-14 09:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -5536,8 +5536,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "直接支払い";
 
-/* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment */
+/* Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "決済";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5553,6 +5552,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "決済サービス業者";
+
+/* Payment section title */
+"Payment Totals" = "支払総額";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "資金が不足しているため支払いが拒否されました。 別の支払方法をお試しください";
@@ -6035,7 +6037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "返金を処理しています";
 
 /* Product section title
-   Product section title if there is only one product.
    Product section title in Review Order screen if there is one product.
    Title for the Product screen during order creation */
 "Product" = "商品";
@@ -6063,9 +6064,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Row title for filtering products by product status. */
 "Product Status" = "商品ステータス";
-
-/* Product Total label for payment view */
-"Product Total" = "商品合計";
 
 /* Row title for filtering products by product type. */
 "Product Type" = "商品タイプ";
@@ -6116,6 +6114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Product Total label for payment view
    Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
@@ -9894,6 +9893,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "アイコン";
 
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.description" = "開始の準備ができたら支払いメニューの SwiftUI の書き換えをテストします。";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.title" = "新しい支払いメニュー";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = " キャンセル";
 
@@ -10023,6 +10028,77 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "要求に応じて手動";
 
+/* Navigates to Collect a payment via the Simple Payment screen */
+"menu.payments.actions.collectPayment.row.title" = "支払いを受け取る";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"menu.payments.actions.section.title" = "アクション";
+
+/* Navigates to Card Reader management screen */
+"menu.payments.cardReader.manage.row.title" = "カードリーダーを管理";
+
+/* Navigates to Card Reader Manuals screen */
+"menu.payments.cardReader.manuals.row.title" = "カードリーダーマニュアル";
+
+/* Navigates to Card Reader purchase screen */
+"menu.payments.cardReader.purchase.row.title" = "カードリーダーを注文";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"menu.payments.cardReader.section.title" = "カードリーダー";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"menu.payments.inPersonPayments.learnMore.link" = "さらに詳しく";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"menu.payments.inPersonPayments.learnMore.text" = "オフラインでの支払いについて%1$@";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.setup.incomplete.notice.button.title" = "セットアップを続行";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"menu.payments.inPersonPayments.setup.incomplete.notice.title" = "直接支払いのセットアップが完了していません。";
+
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description" = "「直接支払い」の購入手続きオプションを使用すると、ウェブサイトでの注文の支払いを集荷または配達時に受け取ることができます。 %1$@";
+
+/* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link" = "さらに詳しく";
+
+/* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"menu.payments.payInPerson.toggle.row.title" = "直接支払い";
+
+/* Navigates to Payment Gateway management screen */
+"menu.payments.paymentGateway.manage.row.title" = "決済サービス業者";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"menu.payments.paymentOptions.section.title" = "支払いオプション";
+
+/* Title for the section related to changing payment settings inside the In-Person Payments menu */
+"menu.payments.paymentSettings.section.title" = "設定";
+
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
+"menu.payments.tapToPay.about.row.title" = "Tap to Pay について";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"menu.payments.tapToPay.feedback.row.title" = "フィードバックを共有";
+
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"menu.payments.tapToPay.section.title" = "Tap To Pay";
+
+/* Title for a done button in the navigation bar */
+"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "完了";
+
+/* Title for the row related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.row.title" = "Woo 支払い残高";
+
+/* Title for the section related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.section.title" = "Woo 支払い残高";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "月";
 
@@ -10031,6 +10107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "前の期間はありません";
+
+/* Custom Amount section title if there is more than one custom amount. */
+"orderDetails.customAmounts.section.pluralTitle" = "カスタム金額";
+
+/* Subtitle of the custom amount row in order details */
+"orderDetails.customAmountsRow.subtitle" = "カスタム金額";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "カスタム金額";
@@ -10067,6 +10149,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "非公開";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.description" = "定期支払いを可能にする独自の商品の定期購入";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.title" = "シンプルな定期購入商品";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.description" = "バリエーションのある商品の定期購入";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.title" = "バリエーションのある定期購入商品";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Blaze を使って宣伝する";

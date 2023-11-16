@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-07 20:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-14 21:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -5536,8 +5536,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Очная оплата";
 
-/* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment */
+/* Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "Оплата";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5553,6 +5552,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "Платёжный сервис";
+
+/* Payment section title */
+"Payment Totals" = "Итоговые суммы платежей";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Платёж отклонён из-за нехватки средств. Попробуйте другое средство платежа";
@@ -6035,7 +6037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "Обработка возврата";
 
 /* Product section title
-   Product section title if there is only one product.
    Product section title in Review Order screen if there is one product.
    Title for the Product screen during order creation */
 "Product" = "Товар";
@@ -6063,9 +6064,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Row title for filtering products by product status. */
 "Product Status" = "Статус товара";
-
-/* Product Total label for payment view */
-"Product Total" = "Итог по товару";
 
 /* Row title for filtering products by product type. */
 "Product Type" = "Тип товара";
@@ -6116,6 +6114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Product Total label for payment view
    Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
@@ -9894,6 +9893,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Иконка";
 
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.description" = "Попробуйте новый вариант меню платежей, переработанный SwiftUI, который готовится к запуску.";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.title" = "Новое меню платежей";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Отмена";
 
@@ -10023,6 +10028,77 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "вручную, по запросу";
 
+/* Navigates to Collect a payment via the Simple Payment screen */
+"menu.payments.actions.collectPayment.row.title" = "Получение платежей";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"menu.payments.actions.section.title" = "Действия";
+
+/* Navigates to Card Reader management screen */
+"menu.payments.cardReader.manage.row.title" = "Управление устройством чтения карт";
+
+/* Navigates to Card Reader Manuals screen */
+"menu.payments.cardReader.manuals.row.title" = "Руководства по устройствам чтения карт";
+
+/* Navigates to Card Reader purchase screen */
+"menu.payments.cardReader.purchase.row.title" = "Заказать устройство чтения карт";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"menu.payments.cardReader.section.title" = "Устройства чтения карт";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"menu.payments.inPersonPayments.learnMore.link" = "Подробнее";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"menu.payments.inPersonPayments.learnMore.text" = "%1$@ об очных платежах";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.setup.incomplete.notice.button.title" = "Продолжить настройку";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"menu.payments.inPersonPayments.setup.incomplete.notice.title" = "Настройка очной оплаты не завершена.";
+
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description" = "Опция очной оплаты позволяет принимать платежи за заказы, сделанные на веб-сайте, при получении или доставке. %1$@";
+
+/* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link" = "Подробнее";
+
+/* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"menu.payments.payInPerson.toggle.row.title" = "Очная оплата";
+
+/* Navigates to Payment Gateway management screen */
+"menu.payments.paymentGateway.manage.row.title" = "Платёжный сервис";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"menu.payments.paymentOptions.section.title" = "Способы оплаты";
+
+/* Title for the section related to changing payment settings inside the In-Person Payments menu */
+"menu.payments.paymentSettings.section.title" = "Настройки";
+
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
+"menu.payments.tapToPay.about.row.title" = "О функции Tap to Pay (Оплата в касание)";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"menu.payments.tapToPay.feedback.row.title" = "Отправить отзыв";
+
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"menu.payments.tapToPay.section.title" = "Tap to Pay (Оплата в касание)";
+
+/* Title for a done button in the navigation bar */
+"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "Готово";
+
+/* Title for the row related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.row.title" = "Баланс Woo Payments";
+
+/* Title for the section related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.section.title" = "Баланс Woo Payments";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Месяц";
 
@@ -10031,6 +10107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "нет предыдущего периода";
+
+/* Custom Amount section title if there is more than one custom amount. */
+"orderDetails.customAmounts.section.pluralTitle" = "Индивидуальные суммы";
+
+/* Subtitle of the custom amount row in order details */
+"orderDetails.customAmountsRow.subtitle" = "Индивидуальная сумма";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Индивидуальные суммы";
@@ -10067,6 +10149,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "закрытым";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.description" = "Уникальная подписка на продукт, включающая регулярные платежи";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.title" = "Продукт по простой подписке";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.description" = "Подписка на продукт с вариантами";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.title" = "Продукт по подписке с вариантами";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Рекламируйте при помощи Blaze";

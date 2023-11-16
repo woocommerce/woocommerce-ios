@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-07 15:54:28+0000 */
+/* Translation-Revision-Date: 2023-11-15 15:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -5536,8 +5536,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "親自收款";
 
-/* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment */
+/* Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "付款";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5553,6 +5552,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "付款服務供應商";
+
+/* Payment section title */
+"Payment Totals" = "付款總金額";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "付款因餘額不足遭拒。 請嘗試其他付款方式";
@@ -6035,7 +6037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "正在處理退款";
 
 /* Product section title
-   Product section title if there is only one product.
    Product section title in Review Order screen if there is one product.
    Title for the Product screen during order creation */
 "Product" = "產品";
@@ -6063,9 +6064,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Row title for filtering products by product status. */
 "Product Status" = "產品狀態";
-
-/* Product Total label for payment view */
-"Product Total" = "產品總額";
 
 /* Row title for filtering products by product type. */
 "Product Type" = "產品類型";
@@ -6116,6 +6114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Product Total label for payment view
    Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
@@ -9894,6 +9893,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "圖示";
 
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.description" = "在籌備推出階段，請試試 SwiftUI 重寫的付款選單。";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.title" = "新的付款選單";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "取消";
 
@@ -10023,6 +10028,77 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "依要求手動存入";
 
+/* Navigates to Collect a payment via the Simple Payment screen */
+"menu.payments.actions.collectPayment.row.title" = "收取付款";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"menu.payments.actions.section.title" = "動作";
+
+/* Navigates to Card Reader management screen */
+"menu.payments.cardReader.manage.row.title" = "管理讀卡機";
+
+/* Navigates to Card Reader Manuals screen */
+"menu.payments.cardReader.manuals.row.title" = "讀卡機手冊";
+
+/* Navigates to Card Reader purchase screen */
+"menu.payments.cardReader.purchase.row.title" = "訂購讀卡機";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"menu.payments.cardReader.section.title" = "讀卡機";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"menu.payments.inPersonPayments.learnMore.link" = "深入瞭解";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"menu.payments.inPersonPayments.learnMore.text" = "%1$@ 關於貨到付款";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.setup.incomplete.notice.button.title" = "繼續設定";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"menu.payments.inPersonPayments.setup.incomplete.notice.title" = "「貨到付款」設定未完成。";
+
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description" = "「貨到付款」結帳選項會在客戶取貨或是貨物到府時，收取網站訂單付款。%1$@";
+
+/* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link" = "深入瞭解";
+
+/* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"menu.payments.payInPerson.toggle.row.title" = "貨到付款";
+
+/* Navigates to Payment Gateway management screen */
+"menu.payments.paymentGateway.manage.row.title" = "付款服務供應商";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"menu.payments.paymentOptions.section.title" = "付款選項";
+
+/* Title for the section related to changing payment settings inside the In-Person Payments menu */
+"menu.payments.paymentSettings.section.title" = "設定";
+
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
+"menu.payments.tapToPay.about.row.title" = "關於「卡緊收」";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"menu.payments.tapToPay.feedback.row.title" = "分享意見反應";
+
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"menu.payments.tapToPay.section.title" = "卡緊收";
+
+/* Title for a done button in the navigation bar */
+"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "完成";
+
+/* Title for the row related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.row.title" = "Woo Payments 餘額";
+
+/* Title for the section related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.section.title" = "Woo Payments 餘額";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "月";
 
@@ -10031,6 +10107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "沒有上個期間";
+
+/* Custom Amount section title if there is more than one custom amount. */
+"orderDetails.customAmounts.section.pluralTitle" = "自訂金額";
+
+/* Subtitle of the custom amount row in order details */
+"orderDetails.customAmountsRow.subtitle" = "自訂金額";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "自訂金額";
@@ -10067,6 +10149,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "私密";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.description" = "支援定期付款的獨特產品訂閱";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.title" = "簡單訂閱產品";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.description" = "有多種選項的產品訂閱";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.title" = "多選項訂閱產品";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "使用 Blaze 進行宣傳";

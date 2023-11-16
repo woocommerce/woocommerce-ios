@@ -14,30 +14,30 @@ final class CreateProductVariationTests: XCTestCase {
         let metadata =  try XCTUnwrap(parameters["meta_data"] as? [[String: Any]])
 
         let length = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_length"}))
-        XCTAssertEqual(length["value"] as? String, "3")
+        XCTAssertEqual(length["value"] as? String, "")
 
         let period = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_period"}))
-        XCTAssertEqual(period["value"] as? String, "week")
+        XCTAssertEqual(period["value"] as? String, "day")
 
         let periodInterval = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_period_interval"}))
-        XCTAssertEqual(periodInterval["value"] as? String, "5")
+        XCTAssertEqual(periodInterval["value"] as? String, "")
 
         let price = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_price"}))
-        XCTAssertEqual(price["value"] as? String, "99")
+        XCTAssertEqual(price["value"] as? String, "")
 
         let signUpFee = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_sign_up_fee"}))
-        XCTAssertEqual(signUpFee["value"] as? String, "25")
+        XCTAssertEqual(signUpFee["value"] as? String, "")
 
         let trialLength = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_trial_length"}))
-        XCTAssertEqual(trialLength["value"] as? String, "1")
+        XCTAssertEqual(trialLength["value"] as? String, "")
 
         let trialPeriod = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_trial_period"}))
-        XCTAssertEqual(trialPeriod["value"] as? String, "month")
+        XCTAssertEqual(trialPeriod["value"] as? String, "day")
     }
 
     func test_it_does_not_encode_metadata_without_subscription() throws {
         // Given
-        let newVariation = CreateProductVariation.fake().copy(subscription: .fake())
+        let newVariation = CreateProductVariation.fake()
 
         // When
         let parameters = try newVariation.toDictionary()

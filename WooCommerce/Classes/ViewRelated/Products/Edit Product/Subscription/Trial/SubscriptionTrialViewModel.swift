@@ -51,16 +51,7 @@ final class SubscriptionTrialViewModel: ObservableObject {
                 return false
             }
 
-            switch trialPeriod {
-            case .day:
-                return length <= 90
-            case .week:
-                return length <= 52
-            case .month:
-                return length <= 24
-            case .year:
-                return length <= 5
-            }
+            return length <= trialPeriod.limit
         }
         .assign(to: &$isInputValid)
     }

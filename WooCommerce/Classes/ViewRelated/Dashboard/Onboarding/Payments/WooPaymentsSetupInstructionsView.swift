@@ -224,7 +224,7 @@ private extension WooPaymentsSetupInstructionsView {
 
     enum URLs {
         static let wpcomAccount = WooConstants.URLs.wooPaymentsStartupGuideConnectWordPressComAccount.asURL()
-                                      
+
         static let learnMore = WooConstants.URLs.wooPaymentsKnowYourCustomer.asURL()
     }
 }

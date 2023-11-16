@@ -21,6 +21,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
     @Published var safariSheetURL: URL? = nil
+    @Published var presentSupport: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -129,6 +130,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let onboardingViewModel = InPersonPaymentsViewModel(useCase: onboardingUseCase)
         onboardingViewModel.showURL = { [weak self] url in
             self?.safariSheetURL = url
+        }
+        onboardingViewModel.showSupport = { [weak self] in
+            self?.presentSupport = true
         }
         return onboardingViewModel
     }()

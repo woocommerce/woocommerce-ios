@@ -228,7 +228,18 @@ extension ProductVariationFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        let subscription = productVariation.subscription?.copy(period: subscriptionPeriod,
+        // Sets "Expire after" to "0" (i.e. Never expire)
+        // if the subscription period or interval is changed
+        let subscriptionLength: String? = {
+            if productVariation.subscription?.period != subscriptionPeriod || productVariation.subscription?.periodInterval != subscriptionPeriodInterval {
+                return "0"
+            } else {
+                return productVariation.subscription?.length
+            }
+        }()
+
+        let subscription = productVariation.subscription?.copy(length: subscriptionLength,
+                                                               period: subscriptionPeriod,
                                                                periodInterval: subscriptionPeriodInterval,
                                                                price: regularPrice,
                                                                signUpFee: subscriptionSignupFee)

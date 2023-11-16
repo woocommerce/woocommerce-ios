@@ -1835,13 +1835,13 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showVariations() {
-        guard let originalProduct = viewModel.originalProductModel as? EditableProductModel else {
+        guard let currentProduct = viewModel.productModel as? EditableProductModel else {
             return
         }
         let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
         let variationsViewController = ProductVariationsViewController(initialViewController: self,
                                                                        viewModel: variationsViewModel,
-                                                                       product: originalProduct.product)
+                                                                       product: currentProduct.product)
         variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
             viewModel.updateProductVariations(from: updatedProduct)
         }

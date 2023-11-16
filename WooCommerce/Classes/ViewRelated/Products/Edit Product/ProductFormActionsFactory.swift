@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
@@ -36,6 +37,7 @@ enum ProductFormEditAction: Equatable {
     // Composite products only
     case components(actionable: Bool)
     // Subscription products only
+    case subscriptionFreeTrial(editable: Bool)
     case subscription(actionable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
@@ -69,6 +71,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
+    private let featureFlagService: FeatureFlagService
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -79,7 +82,8 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
-         variationsPrice: VariationsPrice = .unknown) {
+         variationsPrice: VariationsPrice = .unknown,
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -90,6 +94,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
+        self.featureFlagService = featureFlagService
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -303,10 +308,11 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
-        let editableSubscription = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
+        let editableSubscription = featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
 
         let actions: [ProductFormEditAction?] = [
             editableSubscription ? .priceSettings(editable: true, hideSeparator: false) : .subscription(actionable: true),
+            editableSubscription ? .subscriptionFreeTrial(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: false),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
@@ -372,6 +378,9 @@ private extension ProductFormActionsFactory {
         switch action {
         case .priceSettings:
             // The price settings action is always visible in the settings section.
+            return true
+        case .subscriptionFreeTrial:
+            // The Free trial row is always visible in the settings section for a subscription product.
             return true
         case .reviews:
             // The reviews action is always visible in the settings section.

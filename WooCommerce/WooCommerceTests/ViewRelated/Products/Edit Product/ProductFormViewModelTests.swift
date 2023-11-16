@@ -722,12 +722,12 @@ final class ProductFormViewModelTests: XCTestCase {
         let viewModel = createViewModel(product: product, formType: .edit)
 
         // When
-        viewModel.updateDownloadableFiles(downloadableFiles: [], downloadLimit: 0, downloadExpiry: 0)
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: "5", trialPeriod: .week)
 
         // Then
         let subscription = try XCTUnwrap(viewModel.productModel.subscription)
-        XCTAssertEqual(subscription.trialLength, "4")
-        XCTAssertEqual(subscription.trialPeriod, .month)
+        XCTAssertEqual(subscription.trialLength, "5")
+        XCTAssertEqual(subscription.trialPeriod, .week)
     }
 }
 

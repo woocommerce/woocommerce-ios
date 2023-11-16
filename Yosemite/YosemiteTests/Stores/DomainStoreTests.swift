@@ -63,7 +63,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_loadFreeDomainSuggestions_returns_error_on_failure() throws {
         // Given
-        remote.whenLoadingDomainSuggestions(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingDomainSuggestions(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result: Result<[FreeDomainSuggestion], Error> = waitFor { promise in
@@ -76,7 +76,7 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `loadPaidDomainSuggestions`
@@ -181,7 +181,7 @@ final class DomainStoreTests: XCTestCase {
     func test_loadPaidDomainSuggestions_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingPaidDomainSuggestions(thenReturn: .failure(NetworkError.invalidURL))
-        remote.whenLoadingDomainProducts(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingDomainProducts(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -194,7 +194,7 @@ final class DomainStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
         // The error of `loadDomainProducts` is returned since it is the first async call.
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
 
@@ -225,7 +225,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_loadDomains_returns_error_on_failure() throws {
         // Given
-        remote.whenLoadingDomains(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingDomains(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result: Result<[SiteDomain], Error> = waitFor { promise in
@@ -237,7 +237,7 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `createDomainShoppingCart`
@@ -262,7 +262,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_createDomainShoppingCart_returns_error_on_failure() throws {
         // Given
-        paymentRemote.whenCreatingDomainCart(thenReturn: .failure(NetworkError.timeout))
+        paymentRemote.whenCreatingDomainCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -277,7 +277,7 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `redeemDomainCredit`
@@ -303,7 +303,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_redeemDomainCredit_returns_createCart_error_on_failure() throws {
         // Given
-        paymentRemote.whenCreatingDomainCart(thenReturn: .failure(NetworkError.timeout))
+        paymentRemote.whenCreatingDomainCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -318,13 +318,13 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     func test_redeemDomainCredit_returns_checkoutCartWithDomainCredit_error_on_failure() throws {
         // Given
         paymentRemote.whenCreatingDomainCart(thenReturn: .success([:]))
-        paymentRemote.whenCheckingOutCartWithDomainCredit(thenReturn: .failure(NetworkError.notFound))
+        paymentRemote.whenCheckingOutCartWithDomainCredit(thenReturn: .failure(NetworkError.notFound()))
 
         // When
         let result = waitFor { promise in
@@ -339,7 +339,7 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .notFound)
+        XCTAssertEqual(error as? NetworkError, .notFound())
     }
 
     // MARK: - `loadDomainContactInfo`
@@ -374,7 +374,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_loadDomainContactInfo_returns_error_on_failure() throws {
         // Given
-        remote.whenLoadingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+        remote.whenLoadingDomainContactInfo(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -386,7 +386,7 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 
     // MARK: - `validateDomainContactInfo`
@@ -408,7 +408,7 @@ final class DomainStoreTests: XCTestCase {
 
     func test_validateDomainContactInfo_returns_error_on_failure() throws {
         // Given
-        remote.whenValidatingDomainContactInfo(thenReturn: .failure(NetworkError.timeout))
+        remote.whenValidatingDomainContactInfo(thenReturn: .failure(NetworkError.timeout()))
 
         // When
         let result = waitFor { promise in
@@ -420,6 +420,6 @@ final class DomainStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isFailure)
         let error = try XCTUnwrap(result.failure)
-        XCTAssertEqual(error as? NetworkError, .timeout)
+        XCTAssertEqual(error as? NetworkError, .timeout())
     }
 }

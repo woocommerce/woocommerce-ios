@@ -325,7 +325,7 @@ final class AccountStoreTests: XCTestCase {
                              isJetpackConnected: true,
                              isWooCommerceActive: false)
         ])
-        remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
+        remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .failure(NetworkError.timeout()))
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .success(true))
 
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -372,7 +372,7 @@ final class AccountStoreTests: XCTestCase {
         remote.whenFetchingWordPressSiteSettings(siteID: siteID, thenReturn: .success(.init(name: "new name",
                                                                                                      description: "new description",
                                                                                                      url: "newurl")))
-        remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .failure(NetworkError.timeout))
+        remote.whenCheckingIfWooCommerceIsActive(siteID: siteID, thenReturn: .failure(NetworkError.timeout()))
 
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
@@ -486,7 +486,7 @@ final class AccountStoreTests: XCTestCase {
             Site.fake().copy(siteID: 2, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         ])
         remote.whenCheckingIfWooCommerceIsActive(siteID: 2, thenReturn: .success(true))
-        remote.whenFetchingWordPressSiteSettings(siteID: 2, thenReturn: .failure(NetworkError.notFound))
+        remote.whenFetchingWordPressSiteSettings(siteID: 2, thenReturn: .failure(NetworkError.notFound()))
 
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
@@ -587,13 +587,13 @@ final class AccountStoreTests: XCTestCase {
 
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
-        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound)
+        XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound())
     }
 
     func test_synchronizeSitesAndReturnSelectedSiteInfo_relays_error_when_loadSites_fails() {
         // Given
         let expectedSiteURL = "https://example.com"
-        let expectedError = NetworkError.timeout
+        let expectedError = NetworkError.timeout()
         let remote = MockAccountRemote()
         remote.loadSitesResult = .failure(expectedError)
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
@@ -800,7 +800,7 @@ final class AccountStoreTests: XCTestCase {
             Site.fake().copy(siteID: siteIDOfJCPSite, isJetpackThePluginInstalled: false, isJetpackConnected: true)
         ])
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteIDOfJCPSite, thenReturn: .success(true))
-        remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .failure(NetworkError.notFound))
+        remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .failure(NetworkError.notFound()))
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When

@@ -40,7 +40,7 @@ final class AnnouncementsRemoteTests: XCTestCase {
 
     func test_loadAnnouncements_relays_error_on_failure() throws {
         // Given
-        let expectedError = NetworkError.timeout
+        let expectedError = NetworkError.timeout()
         network.simulateError(requestUrlSuffix: "mobile/feature-announcements/", error: expectedError)
 
         // When

@@ -192,7 +192,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(result.isFailure)
-        XCTAssertEqual(result.failure as? NetworkError, .notFound)
+        XCTAssertEqual(result.failure as? NetworkError, .notFound())
     }
 
     // MARK: - Create ProductVariations in batch tests

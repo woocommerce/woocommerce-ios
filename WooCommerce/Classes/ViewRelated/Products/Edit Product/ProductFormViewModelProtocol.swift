@@ -101,6 +101,9 @@ protocol ProductFormViewModelProtocol {
     func updateDescription(_ newDescription: String)
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,

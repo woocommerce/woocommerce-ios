@@ -101,7 +101,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertEqual(configurationFromOnConfigure.quantity, 8)
     }
 
-    func test_configure_does_not_invoke_onConfigure_if_configuration_is_the_same() throws {
+    func test_configure_does_not_invoke_onConfigure_if_configuration_is_the_same_when_bundle_is_not_new() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
@@ -110,7 +110,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
-                                                           childItems: [],
+                                                           // The bundle is not new when there are non-empty child items.
+                                                           childItems: [.fake()],
                                                            stores: stores,
                                                            onConfigure: { configurations in
             // Then
@@ -124,6 +125,37 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // When
         viewModel.configure()
+    }
+
+    func test_configure_invokes_onConfigure_if_configuration_is_the_same_when_bundle_is_new() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(productID: 2, minQuantity: 2, maxQuantity: 8, defaultQuantity: 6)
+        ])
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+
+        var configurationsFromOnConfigure: [BundledProductConfiguration] = []
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           // The bundle is new when there are no child items.
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { configurations in
+            // Then
+            configurationsFromOnConfigure = configurations
+        })
+
+        // The products are loaded async before the bundle item view models are set.
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // When
+        viewModel.configure()
+
+        // Then the quantity is the default quantity
+        let configurationFromOnConfigure = try XCTUnwrap(configurationsFromOnConfigure.first)
+        XCTAssertEqual(configurationFromOnConfigure.quantity, 6)
     }
 
     func test_bundleItemViewModels_have_correct_quantity_when_parent_order_item_quantity_is_more_than_one() throws {

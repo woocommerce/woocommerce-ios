@@ -408,7 +408,6 @@ private extension AddProductCoordinator {
         BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
-            sheet.largestUndimmedDetentIdentifier = .none
 
             // Sets detents for the sheet.
             // Skips large detent if the device is iPad.

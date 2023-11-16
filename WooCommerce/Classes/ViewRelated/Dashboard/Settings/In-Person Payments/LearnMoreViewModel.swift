@@ -1,7 +1,8 @@
 import Foundation
 import UIKit
+import SwiftUI
 
-struct LearnMoreViewModel {
+class LearnMoreViewModel: ObservableObject {
 
     static let learnMoreURL = URL(string: "woocommerce://in-person-payments/learn-more")!
 

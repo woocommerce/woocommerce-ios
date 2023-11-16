@@ -193,15 +193,27 @@ final class EditableOrderViewModel: ObservableObject {
         return TaxRateViewModel(taxRate: storedTaxRate, showChevron: false)
     }
 
-    lazy private(set) var addCustomAmountViewModel = {
-        return AddCustomAmountViewModel(onCustomAmountEntered: { [weak self] amount, name, feeID in
+    var editingFee: OrderFeeLine? = nil
+    var addCustomAmountViewModel: AddCustomAmountViewModel {
+        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
+
+        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.orderTotal as Decimal,
+                                        onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
+            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {
-                self?.updateFee(with: feeID, total: amount, name: name)
+                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
             } else {
-                self?.addFee(with: amount, name: name)
+                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
             }
         })
-    }()
+
+        if let editingFee {
+            viewModel.preset(with: editingFee)
+            self.editingFee = nil
+        }
+
+        return viewModel
+    }
 
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
@@ -797,7 +809,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onDismissAddCustomAmountView() {
-        addCustomAmountViewModel.reset()
+        editingFee = nil
     }
 
     func onAddCustomAmountButtonTapped() {
@@ -902,7 +914,6 @@ extension EditableOrderViewModel {
         let shippingMethodTotal: String
 
         let shouldShowTotalCustomAmounts: Bool
-        let feesBaseAmountForPercentage: Decimal
         let customAmountsTotal: String
 
         let taxesTotal: String
@@ -950,7 +961,6 @@ extension EditableOrderViewModel {
              shippingMethodTitle: String = "",
              shippingMethodTotal: String = "",
              shouldShowTotalCustomAmounts: Bool = false,
-             feesBaseAmountForPercentage: Decimal = 0,
              customAmountsTotal: String = "0",
              taxesTotal: String = "0",
              orderTotal: String = "0",
@@ -988,7 +998,6 @@ extension EditableOrderViewModel {
             self.shippingMethodTitle = shippingMethodTitle
             self.shippingMethodTotal = currencyFormatter.formatAmount(shippingMethodTotal) ?? "0.00"
             self.shouldShowTotalCustomAmounts = shouldShowTotalCustomAmounts
-            self.feesBaseAmountForPercentage = feesBaseAmountForPercentage
             self.customAmountsTotal = currencyFormatter.formatAmount(customAmountsTotal) ?? "0.00"
             self.taxesTotal = currencyFormatter.formatAmount(taxesTotal) ?? "0.00"
             self.orderTotal = currencyFormatter.formatAmount(orderTotal) ?? "0.00"
@@ -1267,18 +1276,18 @@ private extension EditableOrderViewModel {
                     guard !fee.isDeleted else { return nil }
 
                     return CustomAmountRowViewModel(id: fee.feeID,
-                                             name: fee.name ?? Localization.customAmountDefaultName,
-                                             total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                             onRemoveCustomAmount: {
-                                                self.analytics.track(.orderCreationRemoveCustomAmountTapped)
-                                                self.removeFee(fee)
-                                             },
-                                             onEditCustomAmount: {
-                                                self.analytics.track(.orderCreationEditCustomAmountTapped)
-                                                self.addCustomAmountViewModel.preset(with: fee)
-                                                self.showEditCustomAmount = true
-                                             })
-                    }
+                                                    name: fee.name ?? Localization.customAmountDefaultName,
+                                                    total: self.currencyFormatter.formatAmount(fee.total) ?? "",
+                                                    onRemoveCustomAmount: {
+                        self.analytics.track(.orderCreationRemoveCustomAmountTapped)
+                        self.removeFee(fee)
+                    },
+                                                    onEditCustomAmount: {
+                        self.analytics.track(.orderCreationEditCustomAmountTapped)
+                        self.editingFee = fee
+                        self.showEditCustomAmount = true
+                    })
+                }
             }
             .assign(to: &$customAmountRows)
     }
@@ -1409,7 +1418,6 @@ private extension EditableOrderViewModel {
                                             shippingMethodTitle: shippingMethodTitle,
                                             shippingMethodTotal: order.shippingLines.first?.total ?? "0",
                                             shouldShowTotalCustomAmounts: order.fees.filter { $0.name != nil }.isNotEmpty,
-                                            feesBaseAmountForPercentage: orderTotals.feesBaseAmountForPercentage as Decimal,
                                             customAmountsTotal: orderTotals.feesTotal.stringValue,
                                             taxesTotal: order.totalTax.isNotEmpty ? order.totalTax : "0",
                                             orderTotal: order.total.isNotEmpty ? order.total : "0",
@@ -1864,20 +1872,20 @@ private extension EditableOrderViewModel {
         orderSynchronizer.removeCoupon.send(code)
     }
 
-    func addFee(with total: String, name: String? = nil) {
-        let feeLine = OrderFactory.newOrderFee(total: total, name: name)
+    func addFee(with total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
+        let feeLine = OrderFactory.newOrderFee(total: total, name: name, taxStatus: taxStatus)
         orderSynchronizer.addFee.send(feeLine)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeAdd(flow: flow.analyticsFlow, taxStatus: taxStatus.rawValue))
     }
 
-    func updateFee(with id: Int64, total: String, name: String? = nil) {
+    func updateFee(with id: Int64, total: String, name: String? = nil, taxStatus: OrderFeeTaxStatus) {
         guard let updatingFee = orderSynchronizer.order.fees.first(where: { $0.feeID == id }) else {
             return
         }
 
-        let updatedFee = updatingFee.copy(name: name, total: total)
+        let updatedFee = updatingFee.copy(name: name, taxStatus: taxStatus, total: total)
         orderSynchronizer.updateFee.send(updatedFee)
-        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow))
+        analytics.track(event: WooAnalyticsEvent.Orders.orderFeeUpdate(flow: flow.analyticsFlow, taxStatus: taxStatus.rawValue))
     }
 
     func removeFee(_ fee: OrderFeeLine) {

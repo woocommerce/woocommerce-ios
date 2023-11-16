@@ -314,6 +314,8 @@ extension MockObjectGraph {
             isSampleItem: false,
             bundleStockStatus: nil,
             bundleStockQuantity: nil,
+            bundleMinSize: nil,
+            bundleMaxSize: nil,
             bundledItems: [],
             compositeComponents: [],
             subscription: nil,

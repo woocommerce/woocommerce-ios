@@ -626,7 +626,7 @@ final class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
-        network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound)
+        network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound())
         let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(order)

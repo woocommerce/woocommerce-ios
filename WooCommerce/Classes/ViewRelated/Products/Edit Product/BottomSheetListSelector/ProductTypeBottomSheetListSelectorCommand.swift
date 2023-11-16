@@ -176,13 +176,26 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     typealias Model = BottomSheetProductType
     typealias Cell = ImageAndTitleAndTextTableViewCell
 
-    var data: [BottomSheetProductType] = [
-        .simple(isVirtual: false),
-        .simple(isVirtual: true),
-        .variable,
-        .grouped,
-        .affiliate
-    ]
+    var data: [BottomSheetProductType] = {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts) else {
+            return [
+                .simple(isVirtual: false),
+                .simple(isVirtual: true),
+                .variable,
+                .grouped,
+                .affiliate
+            ]
+        }
+        return [
+            .simple(isVirtual: false),
+            .simple(isVirtual: true),
+            .subscription,
+            .variable,
+            .variableSubscription,
+            .grouped,
+            .affiliate
+        ]
+    }()
 
     var selected: BottomSheetProductType? = nil
 

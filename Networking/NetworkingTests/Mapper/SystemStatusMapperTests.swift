@@ -116,7 +116,7 @@ private extension SystemStatusMapperTests {
     ///
     func mapReport(from filename: String) throws -> SystemStatus {
         guard let response = Loader.contentsOf(filename) else {
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
 
         return try SystemStatusMapper(siteID: dummySiteID).map(response: response)

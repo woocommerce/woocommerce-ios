@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 102 (Release 16.2.0.0)
+- @jaclync 2023-11-15
+    - Added `bundleMinSize` and `bundleMaxSize` attributes to `Product` entity.
+
 ## Model 101 (Release 16.1.0.0)
 - @hafizrahman 2023-11-02
     - Added `productID` attribute to `BlazeCampaign` entity.

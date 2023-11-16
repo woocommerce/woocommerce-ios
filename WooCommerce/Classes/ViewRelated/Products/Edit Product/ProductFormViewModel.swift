@@ -326,17 +326,25 @@ extension ProductFormViewModel {
     }
 
     func updatePriceSettings(regularPrice: String?,
+                             subscriptionPeriod: SubscriptionPeriod?,
+                             subscriptionPeriodInterval: String?,
+                             subscriptionSignupFee: String?,
                              salePrice: String?,
                              dateOnSaleStart: Date?,
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
+        let subscription = product.subscription?.copy(period: subscriptionPeriod,
+                                                      periodInterval: subscriptionPeriodInterval,
+                                                      price: regularPrice,
+                                                      signUpFee: subscriptionSignupFee)
         product = EditableProductModel(product: product.product.copy(dateOnSaleStart: dateOnSaleStart,
                                                                      dateOnSaleEnd: dateOnSaleEnd,
                                                                      regularPrice: regularPrice,
                                                                      salePrice: salePrice,
                                                                      taxStatusKey: taxStatus.rawValue,
-                                                                     taxClass: taxClass?.slug))
+                                                                     taxClass: taxClass?.slug,
+                                                                     subscription: subscription))
     }
 
     func updateProductType(productType: BottomSheetProductType) {
@@ -348,9 +356,12 @@ extension ProductFormViewModel {
         if productType == .affiliate {
             manageStock = false
         }
+
+        let subscription = productType == .subscription ? ProductSubscription.empty : nil
         product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
                                                                      virtual: productType.isVirtual,
-                                                                     manageStock: manageStock))
+                                                                     manageStock: manageStock,
+                                                                     subscription: subscription))
     }
 
     func updateInventorySettings(sku: String?,

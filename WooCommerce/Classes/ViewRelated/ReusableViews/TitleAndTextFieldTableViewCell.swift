@@ -10,7 +10,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         let state: State
         let keyboardType: UIKeyboardType
         let textFieldAlignment: TextFieldTextAlignment
+        let inputView: UIView?
+        let inputAccessoryView: UIView?
         let onTextChange: ((_ text: String?) -> Void)?
+        let onEditingEnd: (() -> Void)?
 
         enum State {
             case normal
@@ -23,14 +26,20 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
              state: State = .normal,
              keyboardType: UIKeyboardType = .default,
              textFieldAlignment: TextFieldTextAlignment,
-             onTextChange: ((_ text: String?) -> Void)?) {
+             inputView: UIView? = nil,
+             inputAccessoryView: UIView? = nil,
+             onTextChange: ((_ text: String?) -> Void)? = nil,
+             onEditingEnd: (() -> Void)? = nil) {
             self.title = title
             self.text = text
             self.placeholder = placeholder
             self.state = state
             self.keyboardType = keyboardType
             self.textFieldAlignment = textFieldAlignment
+            self.inputView = inputView
+            self.inputAccessoryView = inputAccessoryView
             self.onTextChange = onTextChange
+            self.onEditingEnd = onEditingEnd
         }
     }
 
@@ -39,6 +48,7 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
     @IBOutlet private weak var textField: UITextField!
 
     private var onTextChange: ((_ text: String?) -> Void)?
+    private var onEditingEnd: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -60,7 +70,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         textField.keyboardType = viewModel.keyboardType
         textField.textAlignment = viewModel.textFieldAlignment.toTextAlignment()
         textField.isEnabled = textFieldEnabled
+        textField.inputView = viewModel.inputView
+        textField.inputAccessoryView = viewModel.inputAccessoryView
         onTextChange = viewModel.onTextChange
+        onEditingEnd = viewModel.onEditingEnd
     }
 
     func textFieldBecomeFirstResponder() {
@@ -81,6 +94,7 @@ private extension TitleAndTextFieldTableViewCell {
         textField.applyBodyStyle()
         textField.borderStyle = .none
         textField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
+        textField.addTarget(self, action: #selector(textFieldDidResignFirstResponder(textField:)), for: .editingDidEnd)
     }
 
     func configureContentStackView() {
@@ -106,6 +120,10 @@ private extension TitleAndTextFieldTableViewCell {
 private extension TitleAndTextFieldTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {
         onTextChange?(textField.text)
+    }
+
+    @objc func textFieldDidResignFirstResponder(textField: UITextField) {
+        onEditingEnd?()
     }
 }
 

@@ -140,6 +140,6 @@ class InAppPurchasesRemoteTests: XCTestCase {
 
         // Then
         let expectedError = try XCTUnwrap(expectedResult?.failure)
-        XCTAssertEqual(expectedError as? NetworkError, Networking.NetworkError.notFound)
+        XCTAssertEqual(expectedError as? NetworkError, Networking.NetworkError.notFound())
     }
 }

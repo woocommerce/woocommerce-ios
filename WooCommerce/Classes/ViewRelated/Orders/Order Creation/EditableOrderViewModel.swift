@@ -318,7 +318,7 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var configurableProductViewModel: ConfigurableBundleProductViewModel? = nil
 
-    /// Whether the user tan select a new tax rate.
+    /// Whether the user can select a new tax rate.
     /// The User can change the tax rate by changing the customer address if:
     ///
     /// 1-. The 'Tax based on' setting is based on shipping or billing addresses.

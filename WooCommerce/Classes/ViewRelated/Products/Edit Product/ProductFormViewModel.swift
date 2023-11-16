@@ -357,13 +357,7 @@ extension ProductFormViewModel {
             manageStock = false
         }
 
-        let subscription: ProductSubscription? = {
-            guard productType == .subscription else {
-                return nil
-            }
-            return .empty
-        }()
-
+        let subscription = productType == .subscription ? ProductSubscription.empty : nil
         product = EditableProductModel(product: product.product.copy(productTypeKey: productType.productType.rawValue,
                                                                      virtual: productType.isVirtual,
                                                                      manageStock: manageStock,

@@ -134,6 +134,8 @@ private extension DefaultProductFormTableViewModel {
                 return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .components(let actionable):
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .subscriptionFreeTrial(let editable):
+                return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: product, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             case .noVariationsWarning:
@@ -163,6 +165,8 @@ private extension DefaultProductFormTableViewModel {
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
+            case .subscriptionFreeTrial(let editable):
+                return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             case .quantityRules:
@@ -612,6 +616,24 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isActionable)
     }
 
+    func subscriptionFreeTrialRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.hourglass
+        let title = Localization.subscriptionFreeTrialTitle
+
+        let details: String = {
+            guard let subscription = product.subscription else {
+                return ""
+            }
+
+            return Localization.subscriptionFreeTrialDescription(trialLength: subscription.trialLength,
+                                                                 trialPeriod: subscription.trialPeriod)
+        }()
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isEditable)
+    }
+
     // MARK: Variable Subscription products only
 
     func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
@@ -908,6 +930,19 @@ private extension DefaultProductFormTableViewModel {
                                            comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
 
             return String.localizedStringWithFormat(format, expiry)
+        }
+
+        // Subscription Free Trial
+        static let subscriptionFreeTrialTitle = NSLocalizedString("Free Trial", comment: "Title for Subscription Free Trial row in the product form screen.")
+        static func subscriptionFreeTrialDescription(trialLength: String, trialPeriod: SubscriptionPeriod) -> String {
+            switch trialLength {
+            case "", "0":
+                return NSLocalizedString("No trial period", comment: "Display label when a subscription has no trial period.")
+            case "1":
+                return "1 \(trialPeriod.descriptionSingular)"
+            default:
+                return "\(trialLength) \(trialPeriod.descriptionPlural)"
+            }
         }
 
         // No variations warning row (read-only variable subscription)

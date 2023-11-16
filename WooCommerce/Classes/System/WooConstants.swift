@@ -243,10 +243,9 @@ extension WooConstants {
         ///
         case shippingLabelCreationInfo = "https://woo.com/products/shipping"
 
-        #warning("This post longer exists")
         /// URL for product review information
         ///
-        case productReviewInfo = "https://woocommerce.com/posts/reviews-woocommerce-best-practices/"
+        case productReviewInfo = "https://woo.com/document/product-reviews/"
 
         /// URL for troubleshooting documentation used in Error Loading Data banner
         ///

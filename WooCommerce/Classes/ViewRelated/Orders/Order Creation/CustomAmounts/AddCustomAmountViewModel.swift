@@ -4,7 +4,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int64?) -> Void
+typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int64?, _ isTaxable: Bool) -> Void
 
 final class AddCustomAmountViewModel: ObservableObject {
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
@@ -52,6 +52,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     @Published private(set) var shouldDisableDoneButton: Bool = true
+    @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
     var customAmountPlaceholder: String {
@@ -67,7 +68,7 @@ final class AddCustomAmountViewModel: ObservableObject {
         trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
-        onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID)
+        onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID, isTaxable)
     }
 
 

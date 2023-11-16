@@ -102,7 +102,7 @@ private extension Product_ProductFormTests {
     }
 
     func sampleProduct(description: String? = "", shortDescription: String? = "", categories: [ProductCategory] = []) -> Product {
-        return Product(siteID: sampleSiteID,
+        Product.fake().copy(siteID: sampleSiteID,
                        productID: 177,
                        name: "Book the Green Room",
                        slug: "book-the-green-room",

@@ -321,6 +321,8 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.bundleStockStatus, .insufficientStock)
         XCTAssertEqual(product.bundleStockQuantity, 0)
         XCTAssertEqual(product.bundledItems.count, 3)
+        XCTAssertEqual(product.bundleMinSize, 3)
+        XCTAssertNil(product.bundleMaxSize)
 
         // Check parsed ProductBundleItem properties
         XCTAssertEqual(bundledItem.bundledItemID, 6)

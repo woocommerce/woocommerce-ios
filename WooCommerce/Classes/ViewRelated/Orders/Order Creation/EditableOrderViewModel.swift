@@ -427,6 +427,8 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
 
+    private let quantityDebounceDuration: Double
+
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
@@ -436,7 +438,8 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialItem: OrderBaseItem? = nil) {
+         initialItem: OrderBaseItem? = nil,
+         quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -449,6 +452,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
         self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
+        self.quantityDebounceDuration = quantityDebounceDuration
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -1679,7 +1683,7 @@ private extension EditableOrderViewModel {
         // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
         // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
         if case let .product(productValue) = product,
-            productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty {
+           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && childItems.isNotEmpty {
             let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
                 .compactMap { bundleItem -> BundledProductConfiguration? in
                     guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
@@ -1801,8 +1805,8 @@ private extension EditableOrderViewModel {
                 .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
                 // The quantity can be incremented/decremented quickly, and the order sync can be blocking (e.g. with bundle configuration).
                 // To avoid the UI being blocked for each quantity update, a debounce is added to wait for the final quantity
-                // within a 0.5 time frame.
-                .debounce(for: .milliseconds(500), scheduler: DispatchQueue.main)
+                // within a 0.5s time frame.
+                .debounce(for: .seconds(quantityDebounceDuration), scheduler: DispatchQueue.main)
                 .sink { [weak self] newQuantity in
                     guard let self else { return }
                     let childItems = items.filter { $0.parent == item.itemID }
@@ -2188,6 +2192,10 @@ private extension EditableOrderViewModel {
 
     enum SystemPluginPaths {
         static let giftCards = "woocommerce-gift-cards/woocommerce-gift-cards.php"
+    }
+
+    enum Constants {
+        static let quantityDebounceDuration = 0.5
     }
 }
 

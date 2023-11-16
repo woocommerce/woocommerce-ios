@@ -19,7 +19,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager = MockStorageManager()
         viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           storageManager: storageManager)
+                                           storageManager: storageManager,
+                                           quantityDebounceDuration: 0)
     }
 
     // MARK: - Initialization
@@ -321,6 +322,59 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
+    }
+
+    func test_bundle_order_item_with_child_items_includes_bundle_configuration_when_quantity_is_incremented() throws {
+        // Given
+        let bundledProduct = Product.fake().copy(siteID: sampleSiteID, productID: 665, productTypeKey: ProductType.simple.rawValue)
+        let bundleItem = ProductBundleItem.fake().copy(bundledItemID: 1, productID: bundledProduct.productID)
+        let bundleProduct = Product.fake().copy(siteID: sampleSiteID,
+                                                productID: 600,
+                                                productTypeKey: ProductType.bundle.rawValue,
+                                                bundledItems: [
+                                                    bundleItem
+                                                ])
+        // Inserts necessary objects to storage.
+        storageManager.insertSampleProduct(readOnlyProduct: bundledProduct)
+        let storageBundleProduct = storageManager.insertSampleProduct(readOnlyProduct: bundleProduct)
+        storageManager.insert(bundleItem, for: storageBundleProduct)
+
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, items: [
+            // Bundle order item
+            .fake().copy(itemID: 1, productID: bundleProduct.productID, quantity: 2),
+            // Bundled child order item
+            .fake().copy(itemID: 2, productID: bundledProduct.productID, quantity: 6, parent: 1),
+        ])
+        viewModel = .init(siteID: sampleSiteID,
+                          flow: .editing(initialOrder: order),
+                          stores: stores,
+                          storageManager: storageManager,
+                          quantityDebounceDuration: 0)
+
+        waitUntil {
+            self.viewModel.productRows.count == 2
+        }
+
+        let orderToUpdate: Order = waitFor { promise in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .updateOrder(_, order, _, _, onCompletion):
+                    promise(order)
+                    onCompletion(.success(.fake()))
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            // When
+            self.viewModel.productRows[0].incrementQuantity()
+        }
+
+        // Then
+        let bundleOrderItemToUpdate = try XCTUnwrap(orderToUpdate.items.first)
+        XCTAssertEqual(bundleOrderItemToUpdate.bundleConfiguration, [
+            .init(bundledItemID: 1, productID: 665, quantity: 3, isOptionalAndSelected: nil, variationID: nil, variationAttributes: nil)
+        ])
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
@@ -749,7 +803,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
-                                               currencySettings: currencySettings)
+                                               currencySettings: currencySettings,
+                                               quantityDebounceDuration: 0)
         let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
 
         // When & Then
@@ -760,6 +815,11 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When & Then
         viewModel.productRows[0].incrementQuantity()
+
+        // Debounce makes the quantity update async even though the duration is 0.
+        waitUntil {
+            viewModel.paymentDataViewModel.itemsTotal != "£8.50"
+        }
         XCTAssertEqual(viewModel.paymentDataViewModel.itemsTotal, "£17.00")
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
     }

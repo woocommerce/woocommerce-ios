@@ -748,6 +748,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertTrue(containsWarningAction)
     }
 
+    // swiftlint:disable:next line_length
     func test_actions_for_variable_subscription_product_with_variations_price_set_does_not_contains_noPriceWarning_action_when_editing_subscription_is_enabled() {
         // Given
         let product = Fixtures.variableProductWithVariations.copy(price: "")

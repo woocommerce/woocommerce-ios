@@ -46,7 +46,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
         let attribute2 = sampleAttribute(attributeID: 1, name: "attr-2", options: ["Option 3", "Option 4"])
         let attribute3 = sampleNonVariationAttribute(name: "attr-extra", options: ["Option X", "Option Y"])
-        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue, 
+        let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue,
                                           attributes: [attribute, attribute2, attribute3])
 
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

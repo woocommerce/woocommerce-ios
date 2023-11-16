@@ -30,9 +30,9 @@ struct ConfigurableBundleProductView: View {
                     }
                     .redacted(reason: .placeholder)
                     .shimmering()
-                    .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.errorMessage == nil)
+                    .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
 
-                    if let errorMessage = viewModel.errorMessage {
+                    if let errorMessage = viewModel.loadProductsErrorMessage {
                         Group {
                             Text(errorMessage)
                                 .errorStyle()

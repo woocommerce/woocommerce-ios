@@ -28,7 +28,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     // TODO: 10428 - only enable configure CTA when all bundle items are configured
     @Published private(set) var isConfigureEnabled: Bool = true
 
-    @Published private(set) var errorMessage: String?
+    @Published private(set) var loadProductsErrorMessage: String?
 
     /// View models for placeholder rows.
     let placeholderItemViewModels: [ConfigurableBundleItemViewModel]
@@ -111,7 +111,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 
 private extension ConfigurableBundleProductViewModel {
     func loadProductsAndCreateItemViewModels() {
-        errorMessage = nil
+        loadProductsErrorMessage = nil
 
         Task { @MainActor in
             do {
@@ -120,7 +120,7 @@ private extension ConfigurableBundleProductViewModel {
                 createItemViewModels(products: products)
             } catch {
                 DDLogError("⛔️ Error loading products for bundle product items in order form: \(error)")
-                errorMessage = Localization.errorLoadingProducts
+                loadProductsErrorMessage = Localization.errorLoadingProducts
             }
         }
     }

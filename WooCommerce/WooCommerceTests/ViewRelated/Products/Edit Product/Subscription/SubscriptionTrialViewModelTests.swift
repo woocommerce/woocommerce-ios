@@ -83,6 +83,24 @@ final class SubscriptionTrialViewModelTests: XCTestCase {
         }
     }
 
+    func test_didTapDone_fires_completion_block_with_expected_values_when_trial_period_changed_but_trial_length_remains_zero() {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "0", trialPeriod: .day)
+
+        waitFor { promise in
+            let viewModel = SubscriptionTrialViewModel(subscription: subscription) { trialLength, trialPeriod, hasUnsavedChanges in
+                XCTAssertEqual(trialLength, "0")
+                XCTAssertEqual(trialPeriod, .month)
+                XCTAssertEqual(hasUnsavedChanges, false)
+                promise(())
+            }
+
+            // When
+            viewModel.trialPeriod = .month
+            viewModel.didTapDone()
+        }
+    }
+
     // MARK: `isInputValid`
 
     func test_isInputValid_turns_false_when_day_limit_exceeds() {

@@ -74,7 +74,11 @@ final class SubscriptionTrialViewModel: ObservableObject {
 
 private extension SubscriptionTrialViewModel {
     func hasUnsavedChanges() -> Bool {
-        trialLength != subscription.trialLength || trialPeriod != subscription.trialPeriod
+        if trialLength == "0" && subscription.trialLength == "0" {
+            return false
+        }
+
+        return trialLength != subscription.trialLength || trialPeriod != subscription.trialPeriod
     }
 }
 

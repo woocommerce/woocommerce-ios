@@ -71,7 +71,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
-    private let featureFlagService: FeatureFlagService
+    private let editingSubscriptionEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -83,7 +83,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
          variationsPrice: VariationsPrice = .unknown,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         editingSubscriptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -94,7 +94,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
-        self.featureFlagService = featureFlagService
+        self.editingSubscriptionEnabled = editingSubscriptionEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -308,20 +308,21 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
-        let editableSubscription = featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)
+        let canEditInventorySettingsRow = editingSubscriptionEnabled && editable && product.hasIntegerStockQuantity
+        let canEditProductType = editingSubscriptionEnabled && editable
 
         let actions: [ProductFormEditAction?] = [
-            editableSubscription ? .priceSettings(editable: true, hideSeparator: false) : .subscription(actionable: true),
-            editableSubscription ? .subscriptionFreeTrial(editable: editable) : nil,
+            editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
+            editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
-            .inventorySettings(editable: false),
+            .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
-            .productType(editable: false)
+            .productType(editable: canEditProductType)
         ]
         return actions.compactMap { $0 }
     }

@@ -20,7 +20,6 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where Command.Model
         guard let tableView = tableView else {
             return .zero
         }
-        tableView.layoutIfNeeded()
         return tableView.contentSize
     }
 
@@ -134,6 +133,7 @@ private extension BottomSheetListSelectorViewController {
     }
 
     func configurePreferredContentSize() {
+        tableView.layoutIfNeeded()
         preferredContentSize = contentSize
     }
 }

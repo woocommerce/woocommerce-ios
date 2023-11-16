@@ -22,15 +22,20 @@ struct PaymentsToggleRow: View {
     }
 
     var body: some View {
-        Toggle(isOn: $toggleState) {
-            HStack(alignment: .top) {
-                image
+        HStack(alignment: .top) {
+            image
+                .accessibilityHidden(true)
+            HStack {
                 VStack(alignment: .leading, spacing: Layout.narrowSpacing) {
                     Text(title)
                     InPersonPaymentsLearnMore(viewModel: toggleRowViewModel.learnMoreViewModel,
                                               showInfoIcon: false)
                 }
+                .layoutPriority(1)
+                Toggle(isOn: $toggleState) {}
+                    .accessibilityAddTraits(toggleState == true ? .isSelected : [])
             }
+            .accessibilityElement(children: .combine)
         }
     }
 

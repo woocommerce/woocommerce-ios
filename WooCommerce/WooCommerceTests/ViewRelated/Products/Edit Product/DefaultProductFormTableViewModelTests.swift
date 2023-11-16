@@ -272,8 +272,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: .month)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let featureFlagService = MockFeatureFlagService(subscriptionProducts: true)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
@@ -281,8 +280,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
                                                               currencyFormatter: currencyFormatter,
-                                                              isDescriptionAIEnabled: true,
-                                                              featureFlagService: featureFlagService)
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -306,8 +304,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(trialLength: "2", trialPeriod: .week)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let featureFlagService = MockFeatureFlagService(subscriptionProducts: true)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
@@ -315,8 +312,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
                                                               currencyFormatter: currencyFormatter,
-                                                              isDescriptionAIEnabled: true,
-                                                              featureFlagService: featureFlagService)
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {
@@ -340,8 +336,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(trialLength: "0", trialPeriod: .week)
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let featureFlagService = MockFeatureFlagService(subscriptionProducts: true)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, featureFlagService: featureFlagService)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
@@ -349,8 +344,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                               actionsFactory: actionsFactory,
                                                               currency: "",
                                                               currencyFormatter: currencyFormatter,
-                                                              isDescriptionAIEnabled: true,
-                                                              featureFlagService: featureFlagService)
+                                                              isDescriptionAIEnabled: true)
 
         // Then
         guard case let .settings(rows) = tableViewModel.sections[1] else {

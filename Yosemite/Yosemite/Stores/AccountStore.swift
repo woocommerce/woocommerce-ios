@@ -124,7 +124,7 @@ private extension AccountStore {
                 switch result {
                 case .success(let sites):
                     guard let selectedSite = sites.first(where: { $0.url == siteAddress }) else {
-                        return onCompletion(.failure(NetworkError.notFound))
+                        return onCompletion(.failure(NetworkError.notFound()))
                     }
                     self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSite.siteID) {
                         onCompletion(.success(selectedSite))

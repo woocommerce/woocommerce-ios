@@ -32,9 +32,7 @@ final class RemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Enqueue with Mapper")
 
         remote.enqueue(request, mapper: mapper) { (payload, error) in
-            guard case NetworkError.notFound? = error,
-                  let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-            else {
+            guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
                 XCTFail()
                 return
             }
@@ -87,17 +85,14 @@ final class RemoteTests: XCTestCase {
         let remote = Remote(network: network)
 
         // When
-        let result = waitFor { promise in
+        _ = waitFor { promise in
             remote.enqueue(self.request, mapper: mapper).sink { result in
                 promise(result)
             }.store(in: &self.cancellables)
         }
 
         // Then
-        let error = try XCTUnwrap(result.failure)
-        guard case NetworkError.notFound = error,
-              let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-        else {
+        guard let receivedRequest = network.requestsForResponseData.first as? JetpackRequest else {
             XCTFail()
             return
         }
@@ -664,6 +659,286 @@ final class RemoteTests: XCTestCase {
         let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
+    }
+
+    // MARK: Mapping `unacceptableStatusCode`
+
+    /// Verifies that `enqueue:mapper:` (with `Result`) maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueue_request_with_result_throws_DotcomError_from_unacceptableStatusCode_NetworkError() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+
+        // When
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(try XCTUnwrap(result.failure) is DotcomError)
+    }
+
+    /// Verifies that `enqueue:mapper:` (with `Result`) throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    func test_enqueue_request_with_result_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for error in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { result in
+                    promise(result)
+                }
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) as? NetworkError == error)
+        }
+    }
+
+    /// Verifies that `enqueuePublisher` maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueuePublisher_throws_DotcomError_from_unacceptableStatusCode_NetworkError() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+
+        // When
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper).sink { result in
+                promise(result)
+            }.store(in: &self.cancellables)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertTrue(try XCTUnwrap(result.failure) is DotcomError)
+    }
+
+    /// Verifies that `enqueuePublisher` throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    func test_enqueuePublisher_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        // Other than `unacceptableStatusCode` error
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for error in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: Result<Any, Error> = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper).sink { result in
+                    promise(result)
+                }.store(in: &self.cancellables)
+            }
+
+            // Then
+            XCTAssertTrue(result.isFailure)
+            XCTAssertTrue(try XCTUnwrap(result.failure) as? NetworkError == error)
+        }
+    }
+
+    /// Verifies that `enqueue` async version maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueue_async_throws_DotcomError_from_unacceptableStatusCode_NetworkError() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+        // When
+        do {
+            _ = try await remote.enqueue(request)
+        } catch {
+            // Then
+            XCTAssertTrue(error is DotcomError)
+        }
+    }
+
+    /// Verifies that `enqueue` async version throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    func test_enqueue_async_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        // Other than `unacceptableStatusCode` error
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for otherError in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                _ = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version with return type maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueue_async_with_return_type_throws_DotcomError_from_unacceptableStatusCode_NetworkError() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+        } catch {
+            // Then
+            XCTAssertTrue(error is DotcomError)
+        }
+    }
+
+    /// Verifies that `enqueue` async version with return type throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    ///
+    func test_enqueue_async_with_return_type_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+
+        // Other than `unacceptableStatusCode` error
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for otherError in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                let _: String = try await remote.enqueue(request)
+            } catch {
+                // Then
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue` async version maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueueWithMapper_async_throws_DotcomError_from_unacceptableStatusCode_NetworkError() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: mapper)
+        } catch {
+            XCTAssertTrue(error is DotcomError)
+        }
+    }
+
+
+    /// Verifies that `enqueue` async version throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    func test_enqueueWithMapper_async_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() async throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        // Other than `unacceptableStatusCode` error
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for otherError in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: otherError)
+            // When
+            do {
+                _ = try await remote.enqueue(request, mapper: mapper)
+            } catch {
+                XCTAssertTrue(error as? NetworkError == otherError)
+            }
+        }
+    }
+
+    /// Verifies that `enqueue:mapper:` maps an error from `responseData` when `unacceptableStatusCode`
+    ///
+    func test_enqueue_request_throws_DotcomError_from_unacceptableStatusCode_NetworkError() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        let data = Loader.contentsOf("timeout_error")
+        network.simulateError(requestUrlSuffix: "something", error: NetworkError.unacceptableStatusCode(statusCode: 403, response: data))
+
+        // When
+        let result: (Any?, Error?) = waitFor { promise in
+            remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
+                promise((output, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.0)
+        XCTAssertNotNil(result.1)
+        XCTAssertTrue(result.1 is DotcomError)
+    }
+
+    /// Verifies that `enqueue:mapper:` throws same error when NetworkError is not `unacceptableStatusCode`
+    ///
+    func test_enqueue_request_throws_same_error_for_non_unacceptableStatusCode_NetworkError_types() throws {
+        // Given
+        let network = MockNetwork()
+        let mapper = DummyMapper()
+        let remote = Remote(network: network)
+
+        // Other than `unacceptableStatusCode` error
+        let otherErrors: [NetworkError] = [.notFound(), .timeout(), .invalidURL, .invalidCookieNonce]
+
+        for error in otherErrors {
+            network.simulateError(requestUrlSuffix: "something", error: error)
+
+            // When
+            let result: (Any?, Error?) = waitFor { promise in
+                remote.enqueue(self.request, mapper: mapper) { (output: Any?, error: Error?) in
+                    promise((output, error))
+                }
+            }
+
+            // Then
+            XCTAssertNil(result.0)
+            XCTAssertNotNil(result.1)
+            XCTAssertTrue(result.1 as? NetworkError == error)
+        }
     }
 }
 

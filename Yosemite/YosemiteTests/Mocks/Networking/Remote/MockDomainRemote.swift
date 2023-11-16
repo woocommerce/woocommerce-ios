@@ -64,7 +64,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func loadFreeDomainSuggestions(query: String) async throws -> [FreeDomainSuggestion] {
         guard let result = loadDomainSuggestionsResult else {
             XCTFail("Could not find result for loading domain suggestions.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -72,14 +72,14 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func loadPaidDomainSuggestions(query: String) async throws -> [PaidDomainSuggestion] {
         guard let result = loadPaidDomainSuggestionsResult else {
             XCTFail("Could not find result for loading domain suggestions.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
 
     func loadPremiumDomainPrice(domain: String) async throws -> PremiumDomainPrice {
         guard let price = loadPremiumDomainPriceResult[domain] else {
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return price
     }
@@ -87,7 +87,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func loadDomainProducts() async throws -> [DomainProduct] {
         guard let result = loadDomainProductsResult else {
             XCTFail("Could not find result for loading domain products.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -95,7 +95,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func loadDomains(siteID: Int64) async throws -> [SiteDomain] {
         guard let result = loadDomainsResult else {
             XCTFail("Could not find result for loading domains.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -103,7 +103,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func loadDomainContactInfo() async throws -> DomainContactInfo {
         guard let result = loadDomainContactInfoResult else {
             XCTFail("Could not find result for loading domain contact info.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -111,7 +111,7 @@ extension MockDomainRemote: DomainRemoteProtocol {
     func validate(domainContactInfo: DomainContactInfo, domain: String) async throws {
         guard let result = validateDomainContactInfoResult else {
             XCTFail("Could not find result for validating domain contact info.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

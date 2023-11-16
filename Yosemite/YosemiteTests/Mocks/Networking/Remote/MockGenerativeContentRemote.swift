@@ -43,7 +43,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         generateTextFeature = feature
         guard let result = generateTextResult else {
             XCTFail("Could not find result for generating text.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -55,7 +55,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
         identifyLanguageFeature = feature
         guard let result = identifyLanguageResult else {
             XCTFail("Could not find result for generating text.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }
@@ -72,7 +72,7 @@ extension MockGenerativeContentRemote: GenerativeContentRemoteProtocol {
                            tags: [ProductTag]) async throws -> AIProduct {
         guard let result = generateAIProduct else {
             XCTFail("Could not find result for generating product.")
-            throw NetworkError.notFound
+            throw NetworkError.notFound()
         }
         return try result.get()
     }

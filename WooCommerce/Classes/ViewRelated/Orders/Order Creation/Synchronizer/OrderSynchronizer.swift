@@ -17,11 +17,13 @@ struct OrderSyncProductInput {
          product: OrderSyncProductInput.ProductType,
          quantity: Decimal,
          discount: Decimal = .zero,
+         baseSubtotal: Decimal? = nil,
          bundleConfiguration: [BundledProductConfiguration] = []) {
         self.id = id
         self.product = product
         self.quantity = quantity
         self.discount = discount
+        self.baseSubtotal = baseSubtotal
         self.bundleConfiguration = bundleConfiguration
     }
 
@@ -37,8 +39,17 @@ struct OrderSyncProductInput {
     var discount: Decimal = .zero
     let bundleConfiguration: [BundledProductConfiguration]
 
+    /// The subtotal of one element. This might be different than the product price, if the price includes tax (subtotal does not).
+    ///
+    var baseSubtotal: Decimal? = nil
+
     func updating(id: Int64) -> OrderSyncProductInput {
-        .init(id: id, product: self.product, quantity: self.quantity, discount: discount, bundleConfiguration: bundleConfiguration)
+        .init(id: id,
+              product: self.product,
+              quantity: self.quantity,
+              discount: discount,
+              baseSubtotal: self.baseSubtotal,
+              bundleConfiguration: bundleConfiguration)
     }
 }
 

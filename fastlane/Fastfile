@@ -215,7 +215,7 @@ platform :ios do
       extracted_notes_file_path: RELEASE_NOTES_PATH
     )
     ios_update_release_notes(
-      new_version:,
+      new_version: new_version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
     )
 
@@ -614,7 +614,7 @@ platform :ios do
     version = options[:beta_release] ? build_code_current : release_version_current
     create_release(
       repository: GITHUB_REPO,
-      version:,
+      version: version,
       release_notes_file_path: RELEASE_NOTES_PATH,
       release_assets: archive_zip_path.to_s,
       prerelease: options[:beta_release]
@@ -749,7 +749,7 @@ platform :ios do
       team_id: '299112',
       skip_binary_upload: true,
       screenshots_path: File.join(FASTLANE_DIR, 'promo_screenshots'),
-      skip_screenshots:,
+      skip_screenshots: skip_screenshots,
       overwrite_screenshots: true, # won't have effect if `skip_screenshots` is true
       phased_release: true,
       precheck_include_in_app_purchases: false,
@@ -801,9 +801,9 @@ platform :ios do
       scheme: SCREENSHOTS_SCHEME,
 
       localize_simulator: true,
-      languages:,
+      languages: languages,
 
-      devices:,
+      devices: devices,
 
       # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
       test_without_building: true,
@@ -938,7 +938,7 @@ platform :ios do
 
     gp_downloadmetadata(
       project_url: GLOTPRESS_APP_STORE_METADATA_PROJECT_URL,
-      target_files:,
+      target_files: target_files,
       locales: locales_map,
       download_path: metadata_directory
     )
@@ -1085,8 +1085,8 @@ platform :ios do
       type: 'enterprise',
       team_id: get_required_env('INT_EXPORT_TEAM_ID'),
       app_identifier: ALPHA_BUNDLE_IDENTIFIERS,
-      readonly:,
-      api_key_path:
+      readonly: readonly,
+      api_key_path: api_key_path
     )
   end
 
@@ -1200,7 +1200,7 @@ lane :test_without_building do |options|
 
   UI.user_error!("Unable to find .xctestrun file at #{xctestrun_path}") unless !xctestrun_path.nil? && File.exist?(xctestrun_path)
 
-  inject_buildkite_analytics_environment(xctestrun_path:) if buildkite_ci?
+  inject_buildkite_analytics_environment(xctestrun_path: xctestrun_path) if buildkite_ci?
 
   # Only run UI tests in parallel.
   # At the time of writing with Xcode 14.3, we need to explicitly set this value despite using test plans that configure parallelism.
@@ -1264,7 +1264,7 @@ def trigger_buildkite_release_build(branch:, beta:)
   buildkite_trigger_build(
     buildkite_organization: 'automattic',
     buildkite_pipeline: 'woocommerce-ios',
-    branch:,
+    branch: branch,
     environment: { BETA_RELEASE: beta },
     pipeline_file: 'release-builds.yml'
   )
@@ -1320,7 +1320,7 @@ def build_code_current
   # calculator can be used to calculate the next four-part version
   version = VERSION_FORMATTER.parse(VERSION_FILE.read_build_code(attribute_name: 'VERSION_LONG'))
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version:)
+  BUILD_CODE_FORMATTER.build_code(version: version)
 end
 
 # Returns the build code of the app for the code freeze. It is the release version name plus sets the build number to 0
@@ -1341,7 +1341,7 @@ end
 def build_code_hotfix(release_version:)
   version = VERSION_FORMATTER.parse(release_version)
   # Return the formatted build code
-  BUILD_CODE_FORMATTER.build_code(version:)
+  BUILD_CODE_FORMATTER.build_code(version: version)
 end
 
 # Returns the next build code of the app

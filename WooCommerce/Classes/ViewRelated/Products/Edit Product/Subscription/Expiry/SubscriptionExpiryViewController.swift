@@ -80,11 +80,6 @@ struct SubscriptionExpiryView: View {
 }
 
 private extension SubscriptionExpiryView {
-    enum Layout {
-        static let margin: CGFloat = 16
-        static let verticalSpacing: CGFloat = 8
-    }
-
     enum Localization {
         static let expireAfter = NSLocalizedString("subscriptionExpiryView.expireAfter",
                                                    value: "Expire after",

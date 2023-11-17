@@ -336,9 +336,6 @@ extension IssueRefundViewModel {
             "Refund Custom Amounts", comment: "Title of the switch in the IssueRefund screen to refund customAmounts")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
-        static let unsupportedCustomAmountsRefund = NSLocalizedString(
-            "You can refund customAmounts in your store admin",
-            comment: "Shown in Refunds screen. Refunding customAmounts are currently not supported.")
     }
 }
 

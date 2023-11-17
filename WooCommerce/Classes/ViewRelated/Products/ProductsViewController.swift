@@ -1167,7 +1167,12 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.dataLoadingError = error
                                     case .success:
-                                        ServiceLocator.analytics.track(.productListLoaded)
+                                        ServiceLocator.analytics.track(
+                                            event: .ProductsList.productListLoaded(
+                                                isEligibleForSubscriptions:
+                                                    viewModel.isEligibleForSubscriptions
+                                            )
+                                        )
                                     }
 
                                     self.transitionToResultsUpdatedState()

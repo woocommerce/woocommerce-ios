@@ -517,7 +517,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
                 // TODO: 11090 - Analytics
-                editSubscriptionFreeTrialSettings()
+                showSubscriptionFreeTrialSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
@@ -1897,7 +1897,7 @@ private extension ProductFormViewController {
 // MARK: Action - Show Subscription Free trial Settings
 //
 private extension ProductFormViewController {
-    func editSubscriptionFreeTrialSettings() {
+    func showSubscriptionFreeTrialSettings() {
         guard let subscription = product.subscription else {
             return
         }

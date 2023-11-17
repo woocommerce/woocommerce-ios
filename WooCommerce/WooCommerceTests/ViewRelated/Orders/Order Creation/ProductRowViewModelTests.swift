@@ -388,6 +388,28 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableQuantityDecrementer)
     }
 
+    func quantity_incrementer_disabled_at_maximum_quantity() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
+                                            name: "",
+                                            sku: nil,
+                                            price: nil,
+                                            stockStatusKey: "",
+                                            stockQuantity: nil,
+                                            manageStock: false,
+                                            quantity: 6,
+                                            minimumQuantity: 4,
+                                            maximumQuantity: 6,
+                                            canChangeQuantity: true,
+                                            imageURL: nil,
+                                            hasParentProduct: false,
+                                            isConfigurable: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableQuantityIncrementer)
+    }
+
     func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
         // Given
         let product = Product.fake()

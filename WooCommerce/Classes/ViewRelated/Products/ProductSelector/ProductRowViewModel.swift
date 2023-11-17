@@ -235,6 +235,15 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         }
     }
 
+    /// Whether the quantity can be incremented.
+    ///
+    var shouldDisableQuantityIncrementer: Bool {
+        guard let maximumQuantity else {
+            return false
+        }
+        return quantity >= maximumQuantity
+    }
+
     /// Closure to run when the quantity is changed.
     ///
     var quantityUpdatedCallback: (Decimal) -> Void

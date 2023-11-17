@@ -2434,11 +2434,18 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case property
             case selectedProductsCount = "selected_products_count"
+            case isEligibleForSubscriptions = "is_eligible_for_subscriptions"
         }
 
         enum BulkUpdateField: String {
             case price
             case status
+        }
+
+        static func productListLoaded(isEligibleForSubscriptions: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListLoaded,
+                              properties: [Keys.isEligibleForSubscriptions.rawValue: isEligibleForSubscriptions]
+            )
         }
 
         static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {

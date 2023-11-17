@@ -12,6 +12,8 @@ struct TitleAndTextFieldRow: View {
     private let fieldAlignment: TextAlignment
     private let inputFormatter: UnitInputFormatter?
     private let contentColor: Color
+    private let minHeight: CGFloat
+    private let horizontalPadding: CGFloat
 
     @Binding private var text: String
 
@@ -31,6 +33,8 @@ struct TitleAndTextFieldRow: View {
          keyboardType: UIKeyboardType = .default,
          contentColor: Color = Color(.label),
          inputFormatter: UnitInputFormatter? = nil,
+         minHeight: CGFloat = Constants.height,
+         horizontalPadding: CGFloat = Constants.padding,
          onEditingChanged: ((Bool) -> Void)? = nil) {
         self.title = title
         self._titleWidth = titleWidth
@@ -42,6 +46,8 @@ struct TitleAndTextFieldRow: View {
         self.keyboardType = keyboardType
         self.contentColor = contentColor
         self.inputFormatter = inputFormatter
+        self.minHeight = minHeight
+        self.horizontalPadding = horizontalPadding
         self.onEditingChanged = onEditingChanged
     }
 
@@ -73,8 +79,8 @@ struct TitleAndTextFieldRow: View {
                 }
             }
         }
-        .frame(minHeight: Constants.height)
-        .padding([.leading, .trailing], Constants.padding)
+        .frame(minHeight: minHeight)
+        .padding([.leading, .trailing], horizontalPadding)
     }
 
     private func formatText(_ newValue: String) -> String {

@@ -671,8 +671,31 @@ private extension DefaultProductFormTableViewModel {
     }
 }
 
-private extension DefaultProductFormTableViewModel {
+extension DefaultProductFormTableViewModel {
     enum Localization {
+        // Subscription Free Trial
+        static let subscriptionFreeTrialTitle = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+                                                                  value: "Free Trial",
+                                                                  comment: "Title for Subscription Free Trial row in the product form screen.")
+
+        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+                                                     value: "No trial period",
+                                                     comment: "Display label when a subscription has no trial period.")
+
+        static func subscriptionFreeTrialDescription(trialLength: String, trialPeriod: SubscriptionPeriod) -> String {
+            switch trialLength {
+            case "", "0":
+                return noTrialPeriod
+            case "1":
+                return "1 \(trialPeriod.descriptionSingular)"
+            default:
+                return "\(trialLength) \(trialPeriod.descriptionPlural)"
+            }
+        }
+    }
+}
+
+private extension DefaultProductFormTableViewModel.Localization {
         static let addPriceSettingsTitle = NSLocalizedString("Add Price",
                                                              comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
@@ -931,19 +954,6 @@ private extension DefaultProductFormTableViewModel {
             return String.localizedStringWithFormat(format, expiry)
         }
 
-        // Subscription Free Trial
-        static let subscriptionFreeTrialTitle = NSLocalizedString("Free Trial", comment: "Title for Subscription Free Trial row in the product form screen.")
-        static func subscriptionFreeTrialDescription(trialLength: String, trialPeriod: SubscriptionPeriod) -> String {
-            switch trialLength {
-            case "", "0":
-                return NSLocalizedString("No trial period", comment: "Display label when a subscription has no trial period.")
-            case "1":
-                return "1 \(trialPeriod.descriptionSingular)"
-            default:
-                return "\(trialLength) \(trialPeriod.descriptionPlural)"
-            }
-        }
-
         // No variations warning row (read-only variable subscription)
         static let noVariationsWarningTitle =
             NSLocalizedString("You can only add variable subscriptions in the web dashboard",
@@ -957,5 +967,4 @@ private extension DefaultProductFormTableViewModel {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
-    }
 }

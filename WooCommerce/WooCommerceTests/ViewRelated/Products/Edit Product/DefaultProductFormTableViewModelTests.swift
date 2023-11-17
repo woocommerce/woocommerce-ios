@@ -360,7 +360,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
-        XCTAssertEqual(viewModel.details, Localization.noTrialPeriod)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.noTrialPeriod)
     }
 
     func test_subscription_free_trial_row_returns_expected_details_for_empty_trial_length() throws {
@@ -392,7 +392,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
-        XCTAssertEqual(viewModel.details, Localization.noTrialPeriod)
+        XCTAssertEqual(viewModel.details, DefaultProductFormTableViewModel.Localization.noTrialPeriod)
     }
 
     // MARK: Quantity
@@ -701,8 +701,5 @@ private extension DefaultProductFormTableViewModelTests {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
-        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModelTests.noFreeTrial",
-                                                   value: "No trial period",
-                                                   comment: "Display label when a subscription has no trial period.")
     }
 }

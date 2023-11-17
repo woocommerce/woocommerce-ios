@@ -343,6 +343,51 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 6)
     }
 
+    func quantity_decrementer_disabled_at_minimum_quantity_when_removeProductIntent_is_nil() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
+                                            name: "",
+                                            sku: nil,
+                                            price: nil,
+                                            stockStatusKey: "",
+                                            stockQuantity: nil,
+                                            manageStock: false,
+                                            quantity: 3,
+                                            minimumQuantity: 3,
+                                            maximumQuantity: nil,
+                                            canChangeQuantity: true,
+                                            imageURL: nil,
+                                            hasParentProduct: false,
+                                            isConfigurable: false)
+
+        // Then
+        XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer)
+    }
+
+    func quantity_decrementer_not_disabled_at_minimum_quantity_when_removeProductIntent_is_not_nil() {
+        // Given
+        let product = Product.fake()
+        let viewModel = ProductRowViewModel(productOrVariationID: 1,
+                                            name: "",
+                                            sku: nil,
+                                            price: nil,
+                                            stockStatusKey: "",
+                                            stockQuantity: nil,
+                                            manageStock: false,
+                                            quantity: 3,
+                                            minimumQuantity: 3,
+                                            maximumQuantity: nil,
+                                            canChangeQuantity: true,
+                                            imageURL: nil,
+                                            hasParentProduct: false,
+                                            isConfigurable: false,
+                                            removeProductIntent: {})
+
+        // Then
+        XCTAssertFalse(viewModel.shouldDisableQuantityDecrementer)
+    }
+
     func test_productRow_when_add_discount_button_is_tapped_then_orderProductDiscountAddButtonTapped_is_tracked() {
         // Given
         let product = Product.fake()

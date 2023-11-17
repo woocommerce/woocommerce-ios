@@ -32,7 +32,7 @@ final class IssueRefundViewModel {
 
         /// Bool indicating if custom amounts will be refunded
         ///
-        var shouldRefundCustomAmounts: Bool = false
+        var shouldRefundCustomAmounts: Bool = true
 
         ///  Holds the quantity of items to refund
         ///

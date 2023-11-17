@@ -342,6 +342,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             Fixtures.affiliateProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.groupedProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.variableProductWithVariations.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.subscriptionProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.variableSubscriptionProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.nonCoreProductWithPrice.copy(addOns: [ProductAddOn.fake()])
         ]
 
@@ -364,6 +366,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             Fixtures.affiliateProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.groupedProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.variableProductWithVariations.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.subscriptionProduct.copy(addOns: [ProductAddOn.fake()]),
+            Fixtures.variableSubscriptionProduct.copy(addOns: [ProductAddOn.fake()]),
             Fixtures.nonCoreProductWithPrice.copy(addOns: [ProductAddOn.fake()])
         ]
 
@@ -386,6 +390,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             Fixtures.affiliateProduct.copy(addOns: []),
             Fixtures.groupedProduct.copy(addOns: []),
             Fixtures.variableProductWithVariations.copy(addOns: []),
+            Fixtures.subscriptionProduct.copy(addOns: []),
+            Fixtures.variableSubscriptionProduct.copy(addOns: []),
             Fixtures.nonCoreProductWithPrice.copy(addOns: [])
         ]
 
@@ -630,13 +636,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_variable_subscription_product_with_no_variations() {
+    func test_view_model_for_variable_subscription_product_with_no_variations_when_editing_susbscription_is_not_enabled() {
         // Arrange
         let product = Fixtures.variableSubscriptionProduct
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -653,13 +659,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_variable_subscription_product_with_variations() {
+    func test_view_model_for_variable_subscription_product_with_variations_when_editing_susbscription_is_not_enabled() {
         // Arrange
         let product = Fixtures.variableSubscriptionProduct.copy(attributes: [.fake().copy(variation: true)], variations: [123])
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -675,6 +681,59 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_viewModel_for_variable_subscription_product_without_variations_when_editing_subscription_is_enabled() {
+        // Arrange
+        let product = Fixtures.variableSubscriptionProductWithoutVariations
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .variations(hideSeparator: false),
+            .reviews,
+            .shippingSettings(editable: true),
+            .inventorySettings(editable: true),
+            .linkedProducts(editable: true),
+            .productType(editable: true)
+        ]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_viewModel_for_variable_subscription_product_with_variations_when_editing_subscription_is_enabled() {
+        // Arrange
+        let product = Fixtures.variableSubscriptionProductWithVariations
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        XCTAssertEqual(factory.primarySectionActions(), expectedPrimarySectionActions)
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [
+            .variations(hideSeparator: true),
+            .noPriceWarning,
+            .reviews,
+            .shippingSettings(editable: true),
+            .inventorySettings(editable: true),
+            .linkedProducts(editable: true),
+            .productType(editable: true)
+        ]
+        XCTAssertEqual(factory.settingsSectionActions(), expectedSettingsSectionActions)
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
     func test_viewModel_for_product_with_min_max_quantities_shows_quantity_rules_row_in_settings_section() {
@@ -764,6 +823,13 @@ private extension ProductFormActionsFactoryTests {
 
         // Variable subscription product with no variations or variation attributes
         static let variableSubscriptionProduct = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue)
+
+        // Variable subscription product with no variations
+        // swiftlint:disable:next line_length
+        static let variableSubscriptionProductWithoutVariations = affiliateProduct.copy(productTypeKey: ProductType.variableSubscription.rawValue, variations: [])
+
+        // Variable subscription product with one variation, missing short description/categories/tags
+        static let variableSubscriptionProductWithVariations = variableSubscriptionProductWithoutVariations.copy(variations: [123])
 
         // Non-core product, missing price/short description/categories/tags
         static let nonCoreProductWithoutPrice = affiliateProduct.copy(productTypeKey: "other", regularPrice: "")

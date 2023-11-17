@@ -13,9 +13,16 @@ final class ProductVariationsViewModel {
     ///
     private(set) var formType: ProductFormType
 
-    init(stores: StoresManager = ServiceLocator.stores, formType: ProductFormType) {
+    /// Whether editing variable subscription products is enabled.
+    ///
+    private let editingSubscriptionEnabled: Bool
+
+    init(stores: StoresManager = ServiceLocator.stores,
+         formType: ProductFormType,
+         editingSubscriptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)) {
         self.stores = stores
         self.formType = formType
+        self.editingSubscriptionEnabled = editingSubscriptionEnabled
     }
 
     /// Generates a variation in the host site using the product attributes
@@ -61,17 +68,16 @@ extension ProductVariationsViewModel {
 
     /// Defines if screen should show the options to generate new variations.
     ///
-    /// Generating variations is currently disabled for variable subscription products.
-    ///
     func shouldAllowGeneration(for product: Product) -> Bool {
-        product.productType != .variableSubscription
+        product.productType != .variableSubscription || editingSubscriptionEnabled
     }
 
     /// Defines if screen should allow bulk editing.
     ///
-    /// Bulk editing is currently disabled for variable subscription products.
-    ///
     func shouldAllowBulkEditing(for product: Product) -> Bool {
-        product.productType != .variableSubscription
+        guard product.productType != .variableSubscription || editingSubscriptionEnabled else {
+            return false
+        }
+        return product.variations.isNotEmpty
     }
 }

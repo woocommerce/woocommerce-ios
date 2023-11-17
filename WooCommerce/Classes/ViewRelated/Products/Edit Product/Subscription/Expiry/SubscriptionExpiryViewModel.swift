@@ -47,7 +47,7 @@ final class SubscriptionExpiryViewModel: ObservableObject {
         ///
         var options = [neverExpireOption]
         var selectedLength = neverExpireOption
-        for i in stride(from: periodInterval, through: subscription.period.limit, by: periodInterval) {
+        for i in stride(from: periodInterval, through: subscription.period.freeTrialLimit, by: periodInterval) {
             let title: String = {
                 let interval = "\(i)"
                 let period = i == 1 ? subscription.period.descriptionSingular : subscription.period.descriptionPlural

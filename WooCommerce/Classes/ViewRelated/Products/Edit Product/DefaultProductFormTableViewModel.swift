@@ -640,11 +640,10 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.subscriptionExpiryTitle
 
         let details: String = {
-            guard let subscription = product.subscription else {
-                return ""
-            }
+            let length = product.subscription?.length ?? ""
+            let period = product.subscription?.period ?? .month
 
-            return Localization.expiryDescription(length: subscription.length, period: subscription.period)
+            return Localization.expiryDescription(length: length, period: period)
         }()
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
@@ -713,16 +712,21 @@ extension DefaultProductFormTableViewModel {
         }
 
         // Subscription Expire After
-        static let subscriptionExpiryTitle = NSLocalizedString("Expire after", comment: "Title for Subscription expiry row in the product form screen.")
+        static let subscriptionExpiryTitle = NSLocalizedString("defaultProductFormTableViewModel.expireAfter",
+                                                               value: "Expire after",
+                                                               comment: "Title for Subscription expiry row in the product form screen.")
+        static let neverExpire = NSLocalizedString("defaultProductFormTableViewModel.neverExpire",
+                                                   value: "Never expire",
+                                                   comment: "Display label when a subscription never expires.")
 
         /// Localized string describing when the subscription expires.
         ///
-        /// Example: "Never expires" or "6 months" or "1 year"
+        /// Example: "Never expire" or "6 months" or "1 year"
         ///
         static func expiryDescription(length: String, period: SubscriptionPeriod) -> String {
             switch length {
             case "", "0":
-                return NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
+                return neverExpire
             case "1":
                 return "1 \(period.descriptionSingular)"
             default:

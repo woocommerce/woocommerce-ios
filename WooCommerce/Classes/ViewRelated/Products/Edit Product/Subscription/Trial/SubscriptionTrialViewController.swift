@@ -64,7 +64,7 @@ struct SubscriptionTrialView: View {
                     .subheadlineStyle()
                     .padding(Layout.margin)
                     .renderedIf(viewModel.isInputValid)
-                
+
                 Divider()
                     .padding(.leading, Layout.margin)
             }
@@ -145,8 +145,7 @@ private extension SubscriptionTrialView {
         static let freeTrialSubtitle = NSLocalizedString(
             "subscriptionTrialView.freeTrialSubtitle",
             value: "Free trial is an optional period of time to wait before charging the first recurring payment. " +
-            "Any sign up fee will still be charged at the outset of the subscription. " +
-            "The trial period can not exceed: 90 days, 52 weeks, 24 months or 5 years.",
+            "Any sign up fee will still be charged at the outset of the subscription.",
             comment: "Subtitle text to explain subscription free trial."
         )
     }

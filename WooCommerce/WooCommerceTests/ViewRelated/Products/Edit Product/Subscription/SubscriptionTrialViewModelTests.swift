@@ -32,73 +32,110 @@ final class SubscriptionTrialViewModelTests: XCTestCase {
         // Given
         let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: samplePeriod)
 
+        var trialLength: String?
+        var trialPeriod: SubscriptionPeriod?
+        var hasUnsavedChanges: Bool?
+
         waitFor { promise in
-            let viewModel = SubscriptionTrialViewModel(subscription: subscription) { [weak self] trialLength, trialPeriod, hasUnsavedChanges in
-                guard let self else { return }
-                XCTAssertEqual(trialLength, "1")
-                XCTAssertEqual(trialPeriod, samplePeriod)
-                XCTAssertEqual(hasUnsavedChanges, false)
+            let viewModel = SubscriptionTrialViewModel(subscription: subscription) {
+                trialLength = $0
+                trialPeriod = $1
+                hasUnsavedChanges = $2
                 promise(())
             }
 
             // When
             viewModel.didTapDone()
         }
+
+        // Then
+        XCTAssertEqual(trialLength, "1")
+        XCTAssertEqual(trialPeriod, samplePeriod)
+        XCTAssertEqual(hasUnsavedChanges, false)
     }
 
     func test_didTapDone_fires_completion_block_with_expected_values_when_trial_length_changed() {
         // Given
         let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: samplePeriod)
 
+        var trialLength: String?
+        var trialPeriod: SubscriptionPeriod?
+        var hasUnsavedChanges: Bool?
+
         waitFor { promise in
-            let viewModel = SubscriptionTrialViewModel(subscription: subscription) { [weak self] trialLength, trialPeriod, hasUnsavedChanges in
-                guard let self else { return }
-                XCTAssertEqual(trialLength, "4")
-                XCTAssertEqual(trialPeriod, samplePeriod)
-                XCTAssertEqual(hasUnsavedChanges, true)
+            let viewModel = SubscriptionTrialViewModel(subscription: subscription) {
+                trialLength = $0
+                trialPeriod = $1
+                hasUnsavedChanges = $2
                 promise(())
             }
+            // Confidence check
+            viewModel.trialLength = "4"
 
             // When
-            viewModel.trialLength = "4"
             viewModel.didTapDone()
         }
+
+        // Then
+        XCTAssertEqual(trialLength, "4")
+        XCTAssertEqual(trialPeriod, samplePeriod)
+        XCTAssertEqual(hasUnsavedChanges, true)
     }
 
     func test_didTapDone_fires_completion_block_with_expected_values_when_trial_period_changed() {
         // Given
         let subscription = ProductSubscription.fake().copy(trialLength: "1", trialPeriod: samplePeriod)
 
+        var trialLength: String?
+        var trialPeriod: SubscriptionPeriod?
+        var hasUnsavedChanges: Bool?
+
         waitFor { promise in
-            let viewModel = SubscriptionTrialViewModel(subscription: subscription) { trialLength, trialPeriod, hasUnsavedChanges in
-                XCTAssertEqual(trialLength, "1")
-                XCTAssertEqual(trialPeriod, .day)
-                XCTAssertEqual(hasUnsavedChanges, true)
+            let viewModel = SubscriptionTrialViewModel(subscription: subscription) {
+                trialLength = $0
+                trialPeriod = $1
+                hasUnsavedChanges = $2
                 promise(())
             }
+            // Confidence check
+            viewModel.trialPeriod = .day
 
             // When
-            viewModel.trialPeriod = .day
             viewModel.didTapDone()
         }
+
+        // Then
+        XCTAssertEqual(trialLength, "1")
+        XCTAssertEqual(trialPeriod, .day)
+        XCTAssertEqual(hasUnsavedChanges, true)
     }
 
     func test_didTapDone_fires_completion_block_with_expected_values_when_trial_period_changed_but_trial_length_remains_zero() {
         // Given
         let subscription = ProductSubscription.fake().copy(trialLength: "0", trialPeriod: .day)
 
+        var trialLength: String?
+        var trialPeriod: SubscriptionPeriod?
+        var hasUnsavedChanges: Bool?
+
         waitFor { promise in
-            let viewModel = SubscriptionTrialViewModel(subscription: subscription) { trialLength, trialPeriod, hasUnsavedChanges in
-                XCTAssertEqual(trialLength, "0")
-                XCTAssertEqual(trialPeriod, .month)
-                XCTAssertEqual(hasUnsavedChanges, false)
+            let viewModel = SubscriptionTrialViewModel(subscription: subscription) {
+                trialLength = $0
+                trialPeriod = $1
+                hasUnsavedChanges = $2
                 promise(())
             }
+            // Confidence check
+            viewModel.trialPeriod = .month
 
             // When
-            viewModel.trialPeriod = .month
             viewModel.didTapDone()
         }
+
+        // Then
+        XCTAssertEqual(trialLength, "0")
+        XCTAssertEqual(trialPeriod, .month)
+        XCTAssertEqual(hasUnsavedChanges, false)
     }
 
     // MARK: `isInputValid`

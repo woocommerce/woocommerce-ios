@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Experiments.FeatureFlagService
 
 /// Edit actions in the product form. Each action allows the user to edit a subset of product properties.
 enum ProductFormEditAction: Equatable {
@@ -36,6 +37,7 @@ enum ProductFormEditAction: Equatable {
     // Composite products only
     case components(actionable: Bool)
     // Subscription products only
+    case subscriptionFreeTrial(editable: Bool)
     case subscription(actionable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
@@ -311,6 +313,7 @@ private extension ProductFormActionsFactory {
 
         let actions: [ProductFormEditAction?] = [
             editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
+            editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
@@ -325,24 +328,53 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
-        let shouldShowNoVariationsWarning = product.product.variations.isEmpty
-        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
-        let actions: [ProductFormEditAction?] = [
-            shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
-            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
-            shouldShowReviewsRow ? .reviews: nil,
-            .inventorySettings(editable: false),
-            shouldShowQuantityRulesRow ? .quantityRules : nil,
-            .categories(editable: editable),
-            .addOns(editable: editable),
-            .tags(editable: editable),
-            .shortDescription(editable: editable),
-            .linkedProducts(editable: editable),
-            .productType(editable: false)
-        ]
+        let actions: [ProductFormEditAction?] = {
+            guard editingSubscriptionEnabled else {
+                let shouldShowNoVariationsWarning = product.product.variations.isEmpty
+                return [
+                    shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
+                    shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                    shouldShowReviewsRow ? .reviews: nil,
+                    .inventorySettings(editable: false),
+                    shouldShowQuantityRulesRow ? .quantityRules : nil,
+                    .categories(editable: editable),
+                    .addOns(editable: editable),
+                    .tags(editable: editable),
+                    .shortDescription(editable: editable),
+                    .linkedProducts(editable: editable),
+                    .productType(editable: false)
+                ]
+            }
+
+            let canEditProductType = editable
+            let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+            let shouldShowNoPriceWarningRow: Bool = {
+                let variationsHaveNoPriceSet = variationsPrice == .notSet
+                let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
+                return canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
+            }()
+
+            return [
+                .variations(hideSeparator: shouldShowNoPriceWarningRow),
+                shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
+                shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                shouldShowReviewsRow ? .reviews: nil,
+                .shippingSettings(editable: editable),
+                .inventorySettings(editable: canEditInventorySettingsRow),
+                shouldShowQuantityRulesRow ? .quantityRules : nil,
+                .addOns(editable: editable),
+                .categories(editable: editable),
+                .tags(editable: editable),
+                .shortDescription(editable: editable),
+                .linkedProducts(editable: editable),
+                .productType(editable: canEditProductType)
+            ]
+        }()
+
         return actions.compactMap { $0 }
     }
 
@@ -376,6 +408,9 @@ private extension ProductFormActionsFactory {
         switch action {
         case .priceSettings:
             // The price settings action is always visible in the settings section.
+            return true
+        case .subscriptionFreeTrial:
+            // The Free trial row is always visible in the settings section for a subscription product.
             return true
         case .reviews:
             // The reviews action is always visible in the settings section.

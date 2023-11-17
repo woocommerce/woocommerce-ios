@@ -69,7 +69,8 @@ struct ProductVariationGenerator {
     /// Convert the provided combinations into `[CreateProductVariation]` types that are consumed by our Yosemite stores.
     ///
     private static func buildVariations(from combinations: [Combination], for product: Product) -> [CreateProductVariation] {
-        combinations.map { combination in
+        let subscription = product.productType == .variableSubscription ? ProductSubscription.empty : nil
+        return combinations.map { combination in
             let attributes = combination.options.map { option in
                 ProductVariationAttribute(id: option.attributeID, name: option.attributeName, option: option.value)
             }
@@ -78,7 +79,8 @@ struct ProductVariationGenerator {
                                           salePrice: "",
                                           attributes: attributes,
                                           description: "",
-                                          image: nil)
+                                          image: nil,
+                                          subscription: subscription)
         }
     }
 }

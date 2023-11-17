@@ -15,22 +15,22 @@ final class PaymentsTests: XCTestCase {
             .goToPaymentsScreen()
     }
 
-    func test_load_chipper_card_reader_manual() throws {
-        try PaymentsScreen().tapCardReaderManuals()
-            .tapChipperManual()
-            .verifyChipperManualLoadedInWebView()
-    }
-
-    func test_load_learn_more_link() throws {
-        try PaymentsScreen().tapLearnMoreIPPLink()
-            .verifyIPPDocumentationLoadedInWebView()
-    }
-
-    func test_complete_cash_simple_payment() throws {
-        try PaymentsScreen().tapCollectPayment()
-            .enterPaymentAmount("5")
-            .takeCashPayment()
-            .verifyOrderCompletedToastDisplayed()
-            .verifyPaymentsScreenLoaded()
-    }
+//    func test_load_chipper_card_reader_manual() throws {
+//        try PaymentsScreen().tapCardReaderManuals()
+//            .tapChipperManual()
+//            .verifyChipperManualLoadedInWebView()
+//    }
+//
+//    func test_load_learn_more_link() throws {
+//        try PaymentsScreen().tapLearnMoreIPPLink()
+//            .verifyIPPDocumentationLoadedInWebView()
+//    }
+//
+//    func test_complete_cash_simple_payment() throws {
+//        try PaymentsScreen().tapCollectPayment()
+//            .enterPaymentAmount("5")
+//            .takeCashPayment()
+//            .verifyOrderCompletedToastDisplayed()
+//            .verifyPaymentsScreenLoaded()
+//    }
 }

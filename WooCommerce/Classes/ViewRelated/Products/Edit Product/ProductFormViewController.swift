@@ -512,6 +512,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 eventLogger.logSubscriptionsTapped()
                 showSubscriptionSettings()
+            case .subscriptionFreeTrial(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                // TODO: 11090 - Analytics
+                showSubscriptionFreeTrialSettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
@@ -1835,13 +1841,13 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func showVariations() {
-        guard let originalProduct = viewModel.originalProductModel as? EditableProductModel else {
+        guard let currentProduct = viewModel.productModel as? EditableProductModel else {
             return
         }
         let variationsViewModel = ProductVariationsViewModel(formType: viewModel.formType)
         let variationsViewController = ProductVariationsViewController(initialViewController: self,
                                                                        viewModel: variationsViewModel,
-                                                                       product: originalProduct.product)
+                                                                       product: currentProduct.product)
         variationsViewController.onProductUpdate = { [viewModel] updatedProduct in
             viewModel.updateProductVariations(from: updatedProduct)
         }
@@ -1887,6 +1893,39 @@ private extension ProductFormViewController {
         show(viewController, sender: self)
     }
 }
+
+// MARK: Action - Show Subscription Free trial Settings
+//
+private extension ProductFormViewController {
+    func showSubscriptionFreeTrialSettings() {
+        guard let subscription = product.subscription else {
+            return
+        }
+        let viewModel = SubscriptionTrialViewModel(subscription: subscription) { [weak self] trialLength, trialPeriod, hasUnsavedChanges in
+            self?.onEditSubscriptionFreeTrialSettings(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod,
+                                                      hasUnsavedChanges: hasUnsavedChanges)
+        }
+        let viewController = SubscriptionTrialViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+
+    func onEditSubscriptionFreeTrialSettings(trialLength: String,
+                                             trialPeriod: SubscriptionPeriod,
+                                             hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO: 11090 - Analytics
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod)
+    }
+}
+
 
 // MARK: Action - Show Quantity Rules
 //

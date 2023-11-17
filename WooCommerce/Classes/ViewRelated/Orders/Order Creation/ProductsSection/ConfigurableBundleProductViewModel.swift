@@ -28,7 +28,8 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     // TODO: 10428 - only enable configure CTA when all bundle items are configured
     @Published private(set) var isConfigureEnabled: Bool = true
 
-    @Published private(set) var errorMessage: String?
+    @Published private(set) var validationErrorMessage: String?
+    @Published private(set) var loadProductsErrorMessage: String?
 
     /// View models for placeholder rows.
     let placeholderItemViewModels: [ConfigurableBundleItemViewModel]
@@ -42,21 +43,25 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     private var initialConfigurations: [BundledProductConfiguration] = []
 
     private let product: Product
+    private let orderItem: OrderItem?
     private let childItems: [OrderItem]
     private let stores: StoresManager
     private let analytics: Analytics
 
     /// - Parameters:
     ///   - product: Bundle product in an order item.
+    ///   - orderItem: Pre-existing order item of the bundle product.
     ///   - childItems: Pre-existing bundled order items.
     ///   - stores: For dispatching actions.
     ///   - onConfigure: Invoked when the configuration is confirmed.
     init(product: Product,
-         childItems: [OrderItem],
+         orderItem: OrderItem? = nil,
+         childItems: [OrderItem] = [],
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          onConfigure: @escaping (_ configurations: [BundledProductConfiguration]) -> Void) {
         self.product = product
+        self.orderItem = orderItem
         self.childItems = childItems
         self.stores = stores
         self.analytics = analytics
@@ -78,6 +83,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
                                         defaultVariationAttributes: []),
                       product: product,
                       variableProductSettings: nil,
+                      existingParentOrderItem: nil,
                       existingOrderItem: nil)
         }
 
@@ -87,7 +93,17 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     /// Validates the bundle configuration of all bundled items.
     /// - Returns: A boolean that indicates whether the configuration is valid.
     func validate() -> Bool {
-        !bundleItemViewModels.map({ $0.validate() }).contains(false)
+        validationErrorMessage = nil
+
+        guard validateBundleSize() else {
+            return false
+        }
+
+        guard !bundleItemViewModels.map({ $0.validate() }).contains(false) else {
+            return false
+        }
+
+        return true
     }
 
     /// Completes the bundle configuration and triggers the configuration callback.
@@ -111,7 +127,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 
 private extension ConfigurableBundleProductViewModel {
     func loadProductsAndCreateItemViewModels() {
-        errorMessage = nil
+        loadProductsErrorMessage = nil
 
         Task { @MainActor in
             do {
@@ -120,7 +136,7 @@ private extension ConfigurableBundleProductViewModel {
                 createItemViewModels(products: products)
             } catch {
                 DDLogError("⛔️ Error loading products for bundle product items in order form: \(error)")
-                errorMessage = Localization.errorLoadingProducts
+                loadProductsErrorMessage = Localization.errorLoadingProducts
             }
         }
     }
@@ -140,9 +156,14 @@ private extension ConfigurableBundleProductViewModel {
                                      product: product,
                                      variableProductSettings:
                                 .init(allowedVariations: allowedVariations, defaultAttributes: defaultAttributes),
+                                     existingParentOrderItem: orderItem,
                                      existingOrderItem: existingOrderItem)
                     default:
-                        return .init(bundleItem: bundleItem, product: product, variableProductSettings: nil, existingOrderItem: existingOrderItem)
+                        return .init(bundleItem: bundleItem,
+                                     product: product,
+                                     variableProductSettings: nil,
+                                     existingParentOrderItem: orderItem,
+                                     existingOrderItem: existingOrderItem)
                 }
             }
         initialConfigurations = bundleItemViewModels.compactMap { $0.toConfiguration }
@@ -185,11 +206,83 @@ private extension ConfigurableBundleProductViewModel {
 }
 
 private extension ConfigurableBundleProductViewModel {
+    func validateBundleSize() -> Bool {
+        let bundleItemCount = bundleItemViewModels.map { !$0.isOptional || $0.isOptionalAndSelected ? $0.quantity: 0 }.sum()
+        if let bundleMinSize = product.bundleMinSize, bundleItemCount < bundleMinSize {
+            validationErrorMessage = createBundleSizeValidationErrorMessage()
+            return false
+        }
+        if let bundleMaxSize = product.bundleMaxSize, bundleItemCount > bundleMaxSize {
+            validationErrorMessage = createBundleSizeValidationErrorMessage()
+            return false
+        }
+        return true
+    }
+
+    func createBundleSizeValidationErrorMessage() -> String? {
+        let itemSingular = Localization.ValidationError.itemSingular
+        let itemPlural = Localization.ValidationError.itemPlural
+        if let bundleMinSize = product.bundleMinSize, let bundleMaxSize = product.bundleMaxSize {
+            return bundleMinSize == bundleMaxSize ?
+            String.localizedStringWithFormat(Localization.ValidationError.bundleSizeNotExactFormat,
+                                             "\(bundleMinSize)", String.pluralize(bundleMinSize, singular: itemSingular, plural: itemPlural)):
+            String.localizedStringWithFormat(Localization.ValidationError.bundleSizeNotWithinRangeFormat,
+                                             "\(bundleMinSize)", "\(bundleMaxSize)")
+        } else if let bundleMinSize = product.bundleMinSize {
+            return String.localizedStringWithFormat(Localization.ValidationError.bundleSizeLessThanMinimumFormat,
+                                                    "\(bundleMinSize)", String.pluralize(bundleMinSize, singular: itemSingular, plural: itemPlural))
+        } else if let bundleMaxSize = product.bundleMaxSize {
+            return String.localizedStringWithFormat(Localization.ValidationError.bundleSizeGreaterThanMaximumFormat,
+                                                    "\(bundleMaxSize)", String.pluralize(bundleMaxSize, singular: itemSingular, plural: itemPlural))
+        } else {
+            return nil
+        }
+    }
+}
+
+private extension ConfigurableBundleProductViewModel {
     enum Localization {
         static let errorLoadingProducts = NSLocalizedString(
             "configureBundleProductError.cannotLoadProducts",
             value: "Cannot load the bundled products. Please try again.",
             comment: "Error message when the products cannot be loaded in the bundle product configuration form."
         )
+        enum ValidationError {
+            static let bundleSizeNotWithinRangeFormat = NSLocalizedString(
+                "configureBundleProductValidationError.bundleSizeNotWithinRange",
+                value: "Please choose %1$@-%2$@ items.",
+                comment: "Error message when the product bundle size is not within a min/max range if both rules are specified." +
+                "%1$@ is the minimum bundle size. %2$@ is the minimum bundle size."
+            )
+            static let bundleSizeNotExactFormat = NSLocalizedString(
+                "configureBundleProductValidationError.bundleSizeNotExact",
+                value: "Please choose %1$@ %2$@.",
+                comment: "Error message when the product bundle size is not matching the exact size if both rules are specified and " +
+                "the min/max are the same." +
+                "%1$@ is the expected bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more."
+            )
+            static let bundleSizeLessThanMinimumFormat = NSLocalizedString(
+                "configureBundleProductValidationError.bundleSizeLessThanMinimum",
+                value: "Please choose at least %1$@ %2$@.",
+                comment: "Error message when the product bundle size is less than the minimum if a minimum rule is specified." +
+                "%1$@ is the minimum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more."
+            )
+            static let bundleSizeGreaterThanMaximumFormat = NSLocalizedString(
+                "configureBundleProductValidationError.bundleSizeGreaterThanMaximum",
+                value: "Please choose up to %1$@ %2$@.",
+                comment: "Error message when the product bundle size is greater than the maximum if a maximum rule is specified." +
+                "%1$@ is the maximum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more."
+            )
+            static let itemSingular = NSLocalizedString(
+                "configureBundleProductValidationError.itemSingular",
+                value: "item",
+                comment: "Used in configureBundleProductValidationError strings for the singular form of item."
+            )
+            static let itemPlural = NSLocalizedString(
+                "configureBundleProductValidationError.itemPlural",
+                value: "items",
+                comment: "Used in configureBundleProductValidationError strings for the plural form of item."
+            )
+        }
     }
 }

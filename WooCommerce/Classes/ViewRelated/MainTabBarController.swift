@@ -442,15 +442,14 @@ extension MainTabBarController {
         }
     }
 
-    @discardableResult
-    static func presentPayments() -> LegacyInPersonPaymentsMenuViewController? {
+    static func presentPayments() {
         switchToHubMenuTab()
 
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return nil
+            return
         }
 
-        return hubMenuViewController.showPaymentsMenu()
+        hubMenuViewController.showPaymentsMenu()
     }
 
     static func presentCoupons() {
@@ -460,14 +459,6 @@ extension MainTabBarController {
             }
 
             hubMenuViewController.showCoupons()
-        }
-    }
-
-    static func presentCollectPayment() {
-        let viewController = presentPayments()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-            viewController?.openSimplePaymentsAmountFlow()
         }
     }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-08 15:27:20+0000 */
+/* Translation-Revision-Date: 2023-11-14 11:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -5536,8 +5536,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "Pay in Person" = "Payer en personne";
 
-/* Payment section title
-   Title text of the row that shows the payment headline when creating a simple payment */
+/* Title text of the row that shows the payment headline when creating a simple payment */
 "Payment" = "Paiement";
 
 /* Navigation bar title in the Shipping Label Payment Method screen
@@ -5553,6 +5552,9 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Navigates to Payment Gateway management screen */
 "Payment Provider" = "Fournisseur de paiement";
+
+/* Payment section title */
+"Payment Totals" = "Totaux des paiements";
 
 /* Message when the presented card remaining credit or balance is insufficient for the purchase. */
 "Payment declined due to insufficient funds. Try another means of payment" = "Le paiement a été refusé en raison de fonds insuffisants. Essayez un autre moyen de paiement";
@@ -6035,7 +6037,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 "Processing refund" = "Traitement du remboursement en cours";
 
 /* Product section title
-   Product section title if there is only one product.
    Product section title in Review Order screen if there is one product.
    Title for the Product screen during order creation */
 "Product" = "Produit";
@@ -6063,9 +6064,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Row title for filtering products by product status. */
 "Product Status" = "État du produit";
-
-/* Product Total label for payment view */
-"Product Total" = "Total des produits";
 
 /* Row title for filtering products by product type. */
 "Product Type" = "Type de produit";
@@ -6116,6 +6114,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Display label for the composite product's component option type
    Product section title if there is more than one product.
    Product section title in Review Order screen if there is more than one product.
+   Product Total label for payment view
    Section title for products on the Select Product screen.
    Title for the products card at the top of the top performers section in dashboard stats.
    Title for the products card on the analytics hub screen.
@@ -9894,6 +9893,12 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Icône";
 
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.description" = "Testez la nouvelle version SwiftUI du menu Paiements pendant que nous préparons son lancement.";
+
+/* Cell title on beta features screen to enable new payments menu */
+"betaFeature.swiftUIPaymentsMenu.switch.title" = "Nouveau menu Paiements";
+
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annuler";
 
@@ -10023,6 +10028,77 @@ which should be translated separately and considered part of this sentence. */
 /* on request (lower case), shown in a sentence like 'Deposit schedule: manual, on request' */
 "manually, on request" = "manuellement, sur demande";
 
+/* Navigates to Collect a payment via the Simple Payment screen */
+"menu.payments.actions.collectPayment.row.title" = "Percevoir le paiement";
+
+/* Title for the section related to actions inside In-Person Payments settings */
+"menu.payments.actions.section.title" = "Actions";
+
+/* Navigates to Card Reader management screen */
+"menu.payments.cardReader.manage.row.title" = "Gérer le lecteur de carte";
+
+/* Navigates to Card Reader Manuals screen */
+"menu.payments.cardReader.manuals.row.title" = "Manuels de lecteurs de carte";
+
+/* Navigates to Card Reader purchase screen */
+"menu.payments.cardReader.purchase.row.title" = "Commander un lecteur de carte";
+
+/* Title for the section related to card readers inside In-Person Payments settings */
+"menu.payments.cardReader.section.title" = "Lecteurs de carte";
+
+/* A label prompting users to learn more about card readers.
+This part is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
+"menu.payments.inPersonPayments.learnMore.link" = "En savoir plus";
+
+/* A label prompting users to learn more about In-Person Payments.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it.
+%1$@ is a placeholder that always replaced with \"Learn more\" string,
+which should be translated separately and considered part of this sentence. */
+"menu.payments.inPersonPayments.learnMore.text" = "%1$@ sur l’option Payer en personne";
+
+/* Call to Action to finish the setup of In-Person Payments in the Menu */
+"menu.payments.inPersonPayments.setup.incomplete.notice.button.title" = "Poursuivre la configuration";
+
+/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
+"menu.payments.inPersonPayments.setup.incomplete.notice.title" = "La configuration de l’option Payer en personne est incomplète.";
+
+/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
+"menu.payments.payInPerson.learnMore.description" = "L’option Payer en personne à la validation de la commande vous permet d’accepter les paiements pour les commandes passées sur votre site au retrait ou à la livraison. %1$@";
+
+/* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link" = "En savoir plus";
+
+/* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+"menu.payments.payInPerson.toggle.row.title" = "Payer en personne";
+
+/* Navigates to Payment Gateway management screen */
+"menu.payments.paymentGateway.manage.row.title" = "Fournisseur de paiement";
+
+/* Title for the section related to payments inside In-Person Payments settings */
+"menu.payments.paymentOptions.section.title" = "Options de paiement";
+
+/* Title for the section related to changing payment settings inside the In-Person Payments menu */
+"menu.payments.paymentSettings.section.title" = "Réglages";
+
+/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory. */
+"menu.payments.tapToPay.about.row.title" = "À propos d’Appuyer pour payer";
+
+/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
+"menu.payments.tapToPay.feedback.row.title" = "Partager des commentaires";
+
+/* Title for the Tap to Pay section in the In-Person payments settings */
+"menu.payments.tapToPay.section.title" = "Appuyer pour payer";
+
+/* Title for a done button in the navigation bar */
+"menu.payments.wooPaymentsDeposits.navigation.done.button.title" = "Terminé";
+
+/* Title for the row related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.row.title" = "Solde Woo Payments";
+
+/* Title for the section related to Woo Payments Deposits/Balances. */
+"menu.payments.wooPaymentsDeposits.section.title" = "Solde Woo Payments";
+
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Mois";
 
@@ -10031,6 +10107,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* A error message when it's not possible toacquire the Analytics Hub previous selection range */
 "no previous period" = "aucune période précédente";
+
+/* Custom Amount section title if there is more than one custom amount. */
+"orderDetails.customAmounts.section.pluralTitle" = "Montants personnalisés";
+
+/* Subtitle of the custom amount row in order details */
+"orderDetails.customAmountsRow.subtitle" = "Montant personnalisé";
 
 /* Title text of the section that shows the Custom Amounts when creating or editing an order */
 "orderForm.customAmounts" = "Montants personnalisés";
@@ -10067,6 +10149,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Label shown on the launch store task. */
 "private" = "privé";
+
+/* Description of the Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.description" = "Un abonnement à un produit unique qui permet les paiements récurrents";
+
+/* Action sheet option when the user wants to change the Product type to Subscription product */
+"product.sheet.option.simpleSubscription.title" = "Produit à abonnement simple";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.description" = "Un abonnement à un produit avec des variantes";
+
+/* Action sheet option when the user wants to change the Product type to Variable subscription product */
+"product.sheet.option.variableSubscription.title" = "Produit à abonnement variable";
 
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promouvoir avec Blaze";

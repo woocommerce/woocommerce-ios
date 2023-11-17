@@ -359,8 +359,8 @@ private extension RemoteOrderSynchronizer {
                 $0.orderID != .zero
             }
             .handleEvents(receiveOutput: { order in
-                // Set a `blocking` state if the order contains new lines
-                self.state = .syncing(blocking: order.containsLocalLines())
+                // Set a `blocking` state if the order contains new lines or bundle configurations.
+                self.state = .syncing(blocking: order.containsLocalLines() || order.containsBundleConfigurations())
             })
             .debounce(for: 1.0, scheduler: DispatchQueue.main) // Group & wait for 1.0 since the last signal was emitted.
             .map { [weak self] order -> AnyPublisher<Order, Never> in // Allow multiple requests, once per update request.
@@ -556,5 +556,11 @@ private extension Order {
             return item.copy(itemID: .zero, subtotal: "", total: "")
         }
         return copy(items: sanitizedItems)
+    }
+
+    /// Returns true if the order contains any items with bundle configuration updates.
+    ///
+    func containsBundleConfigurations() -> Bool {
+        items.map { $0.bundleConfiguration.isNotEmpty }.contains(true)
     }
 }

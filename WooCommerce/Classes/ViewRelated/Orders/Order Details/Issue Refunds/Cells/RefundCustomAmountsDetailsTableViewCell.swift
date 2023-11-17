@@ -75,7 +75,7 @@ private extension RefundCustomAmountsDetailsTableViewCell {
         static let subtotalTitle = NSLocalizedString(
             "Subtotal", comment: "Title on the refund screen that lists the fees subtotal cost")
         static let totalTitle = NSLocalizedString("refundIssue.customAmounts.totalTitle",
-                                                  value:"Custom Amounts Refund",
+                                                  value: "Custom Amounts Refund",
                                                   comment: "Title on the refund screen that lists the custom amounts total cost")
     }
 }

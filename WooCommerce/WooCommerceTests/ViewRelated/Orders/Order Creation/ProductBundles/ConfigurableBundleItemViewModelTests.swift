@@ -18,6 +18,87 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    // MARK: - Quantity from initialization
+
+    func test_init_without_existing_order_item_sets_quantity_to_bundle_defaultQuantity() throws {
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(defaultQuantity: 2),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: .fake(),
+                                                        existingOrderItem: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 2)
+    }
+
+    func test_init_with_existing_order_item_and_parent_order_item_with_quantity_3_sets_quantity_divided_by_3() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 24)
+        let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 3)
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: existingParentOrderItem,
+                                                        existingOrderItem: existingOrderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 8)
+    }
+
+    func test_init_with_existing_order_item_and_parent_order_item_with_quantity_0_sets_quantity_divided_by_1() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 24)
+        let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 0)
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: existingParentOrderItem,
+                                                        existingOrderItem: existingOrderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 24)
+    }
+
+    func test_init_with_existing_order_item_and_parent_order_item_with_higher_quantity_sets_quantity_divided_by_1() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 2)
+        // When the parent order item has a bigger quantity, this means the quantity of bundled items isn't updated altogether.
+        // This is the behavior when the parent order item (with the bundle product) has the quantity updated without configuring
+        // the product.
+        let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 3)
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: existingParentOrderItem,
+                                                        existingOrderItem: existingOrderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 2)
+    }
+
+    func test_init_with_existing_order_item_and_parent_order_item_with_same_quantity_sets_quantity_divided_by_parent_quantity() throws {
+        // Given
+        let existingOrderItem = OrderItem.fake().copy(productID: 6, quantity: 3)
+        let existingParentOrderItem = OrderItem.fake().copy(productID: 1, quantity: 3)
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: existingParentOrderItem,
+                                                        existingOrderItem: existingOrderItem)
+
+        // Then
+        XCTAssertEqual(viewModel.quantity, 1)
+    }
+
     func test_init_with_existing_order_item_with_full_attributes_sets_selectedVariation_and_empty_selectableVariationAttributeViewModels() throws {
         // Given
         let existingOrderItem = OrderItem.fake().copy(variationID: 6,
@@ -37,6 +118,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
                                                         product: variableProduct,
                                                         variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: existingOrderItem)
 
         // Then
@@ -58,6 +140,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
                                                         product: variableProduct,
                                                         variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil)
 
         // Then
@@ -79,6 +162,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
                                                         product: variableProduct,
                                                         variableProductSettings: .init(allowedVariations: [], defaultAttributes: []),
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil)
         viewModel.createVariationSelectorViewModel()
         viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(
@@ -114,6 +198,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                                                         variableProductSettings: .init(allowedVariations: [], defaultAttributes: [
                                                             .init(id: 0, name: "Flavor", option: "Blackberry")
                                                         ]),
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil)
         viewModel.createVariationSelectorViewModel()
         viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(
@@ -140,6 +225,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
                                                         product: variableProduct,
                                                         variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil,
                                                         analytics: analytics)
         viewModel.createVariationSelectorViewModel()
@@ -157,6 +243,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
                                                         product: .fake(),
                                                         variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil,
                                                         analytics: analytics)
 

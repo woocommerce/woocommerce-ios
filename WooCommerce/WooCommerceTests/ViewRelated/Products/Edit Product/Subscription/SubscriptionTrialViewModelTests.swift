@@ -14,7 +14,7 @@ final class SubscriptionTrialViewModelTests: XCTestCase {
         let viewModel = SubscriptionTrialViewModel(subscription: subscription) { _, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.trialPeriodDescription, "month")
+        XCTAssertEqual(viewModel.trialPeriodDescription, samplePeriod.descriptionSingular)
     }
 
     func test_trialPeriodDescription_returns_expected_description_for_plural_trialPeriod_interval() {
@@ -23,7 +23,7 @@ final class SubscriptionTrialViewModelTests: XCTestCase {
         let viewModel = SubscriptionTrialViewModel(subscription: subscription) { _, _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.trialPeriodDescription, "months")
+        XCTAssertEqual(viewModel.trialPeriodDescription, samplePeriod.descriptionPlural)
     }
 
     // MARK: Completion block

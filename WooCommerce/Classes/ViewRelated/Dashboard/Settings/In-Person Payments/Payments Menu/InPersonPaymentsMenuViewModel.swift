@@ -65,6 +65,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         Task { @MainActor in
             await updateOutputProperties()
         }
+
+        InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor

@@ -15,7 +15,7 @@ final class RefundFeesDetailsViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundFeesDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
+        let viewModel = RefundCustomAmountsDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.feesSubtotal, "$104.19")
@@ -30,7 +30,7 @@ final class RefundFeesDetailsViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundFeesDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
+        let viewModel = RefundCustomAmountsDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.feesTaxes, "$11.19")
@@ -45,7 +45,7 @@ final class RefundFeesDetailsViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundFeesDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
+        let viewModel = RefundCustomAmountsDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.feesTotal, "$46.84")
@@ -61,7 +61,7 @@ final class RefundFeesDetailsViewModelTests: XCTestCase {
         let currencySettings = CurrencySettings()
 
         // When
-        let viewModel = RefundFeesDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
+        let viewModel = RefundCustomAmountsDetailsViewModel(fees: feeLines, currency: "USD", currencySettings: currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.feesTaxes, "$11.20")

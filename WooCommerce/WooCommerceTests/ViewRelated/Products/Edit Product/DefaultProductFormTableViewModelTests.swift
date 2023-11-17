@@ -296,7 +296,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
-        XCTAssertEqual(viewModel.details, "1 month")
+        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionSingular)")
     }
 
     func test_subscription_free_trial_row_returns_expected_details_with_plural_format() throws {
@@ -360,7 +360,39 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
-        XCTAssertEqual(viewModel.details, "No trial period")
+        XCTAssertEqual(viewModel.details, Localization.noTrialPeriod)
+    }
+
+    func test_subscription_free_trial_row_returns_expected_details_for_empty_trial_length() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(trialLength: "", trialPeriod: .week)
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "",
+                                                              currencyFormatter: currencyFormatter,
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        guard case let .settings(rows) = tableViewModel.sections[1] else {
+            XCTFail("Unexpected section at index 1: \(tableViewModel.sections)")
+            return
+        }
+        var subscriptionFreeTrialViewModel: ProductFormSection.SettingsRow.ViewModel?
+        for row in rows {
+            if case let .subscriptionFreeTrial(viewModel, _) = row {
+                subscriptionFreeTrialViewModel = viewModel
+                break
+            }
+        }
+
+        let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
+        XCTAssertEqual(viewModel.details, Localization.noTrialPeriod)
     }
 
     // MARK: Quantity
@@ -669,5 +701,8 @@ private extension DefaultProductFormTableViewModelTests {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
+        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModelTests.noFreeTrial",
+                                                   value: "No trial period",
+                                                   comment: "Display label when a subscription has no trial period.")
     }
 }

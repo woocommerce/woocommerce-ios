@@ -622,12 +622,10 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.subscriptionFreeTrialTitle
 
         let details: String = {
-            guard let subscription = product.subscription else {
-                return ""
-            }
-
-            return Localization.subscriptionFreeTrialDescription(trialLength: subscription.trialLength,
-                                                                 trialPeriod: subscription.trialPeriod)
+            let trialLength = product.subscription?.trialLength ?? ""
+            let trialPeriod = product.subscription?.trialPeriod ?? .month
+            return Localization.subscriptionFreeTrialDescription(trialLength: trialLength,
+                                                                 trialPeriod: trialPeriod)
         }()
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,

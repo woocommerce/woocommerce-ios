@@ -184,6 +184,8 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let purchasableItemsOnly: Bool
 
+    private let shouldDeleteStoredProductsOnFirstPage: Bool
+
     /// Closure to be invoked when "Clear Selection" is called.
     ///
     private let onAllSelectionsCleared: (() -> Void)?
@@ -199,6 +201,7 @@ final class ProductSelectorViewModel: ObservableObject {
     init(siteID: Int64,
          selectedItemIDs: [Int64] = [],
          purchasableItemsOnly: Bool = false,
+         shouldDeleteStoredProductsOnFirstPage: Bool = true,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -223,6 +226,7 @@ final class ProductSelectorViewModel: ObservableObject {
         self.onMultipleSelectionCompleted = onMultipleSelectionCompleted
         self.selectedItemsIDs = selectedItemIDs
         self.purchasableItemsOnly = purchasableItemsOnly
+        self.shouldDeleteStoredProductsOnFirstPage = shouldDeleteStoredProductsOnFirstPage
         self.onAllSelectionsCleared = onAllSelectionsCleared
         self.onSelectedVariationsCleared = onSelectedVariationsCleared
         self.onCloseButtonTapped = onCloseButtonTapped
@@ -374,7 +378,7 @@ extension ProductSelectorViewModel: SyncingCoordinatorDelegate {
                                                        productType: filtersSubject.value.promotableProductType?.productType,
                                                        productCategory: filtersSubject.value.productCategory,
                                                        sortOrder: .nameAscending,
-                                                       shouldDeleteStoredProductsOnFirstPage: true) { [weak self] result in
+                                                       shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage) { [weak self] result in
             guard let self = self else { return }
 
             switch result {

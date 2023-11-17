@@ -32,7 +32,7 @@ final class IssueRefundViewModel {
 
         /// Bool indicating if custom amounts will be refunded
         ///
-        var shouldRefundCustomAmounts: Bool = true
+        var shouldRefundCustomAmounts: Bool
 
         ///  Holds the quantity of items to refund
         ///
@@ -147,7 +147,13 @@ final class IssueRefundViewModel {
         self.stores = stores
         self.storage = storage
         let items = refundableOrderItemsDeterminer.determineRefundableOrderItems(from: order, with: refunds)
-        state = State(order: order, refunds: refunds, itemsToRefund: items, currencySettings: currencySettings, charge: nil)
+        let thereIsOnlyCustomAmountsToRefund = items.isEmpty && order.fees.isNotEmpty
+        state = State(order: order,
+                      refunds: refunds,
+                      itemsToRefund: items,
+                      currencySettings: currencySettings,
+                      shouldRefundCustomAmounts: thereIsOnlyCustomAmountsToRefund,
+                      charge: nil)
         sections = createSections()
         title = calculateTitle()
         isNextButtonEnabled = calculateNextButtonEnableState()

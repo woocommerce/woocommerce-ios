@@ -166,7 +166,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(rows.isEmpty)
 
         let unsupportedFeesTooltipRow = rows.compactMap { $0 as? ImageAndTitleAndTextTableViewCell.ViewModel }
-            .first { $0.title == IssueRefundViewModel.Localization.unsupportedFeesRefund }
+            .first { $0.title == IssueRefundViewModel.Localization.unsupportedCustomAmountsRefund }
         XCTAssertNil(unsupportedFeesTooltipRow)
     }
 
@@ -450,13 +450,13 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.title, "$12.49")
     }
 
-    func test_viewModel_starts_with_next_button_disabled() {
+    func test_isNextButtonEnabled_when_there_are_no_custom_amounts_at_start_then_return_false() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items)
+        let order = MockOrders().makeOrder(items: items, fees: [])
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
@@ -465,13 +465,40 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
+    func test_isNextButtonEnabled_when_there_are_custom_amounts_and_items_at_start_then_return_false() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+        ]
+        let order = MockOrders().makeOrder(items: items, fees: [OrderFeeLine.fake()])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertFalse(viewModel.isNextButtonEnabled)
+    }
+
+    func test_isNextButtonEnabled_when_there_are_custom_amounts_but_no_items_at_start_then_return_true() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = MockOrders().makeOrder(items: [], fees: [OrderFeeLine.fake()])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertTrue(viewModel.isNextButtonEnabled)
+    }
+
     func test_viewModel_next_button_gets_enabled_after_selecting_items() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items)
+        let order = MockOrders().makeOrder(items: items, fees: [])
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // When
@@ -487,7 +514,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items)
+        let order = MockOrders().makeOrder(items: items, fees: [])
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
         viewModel.selectAllOrderItems()
 
@@ -498,19 +525,31 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
-    func test_viewModel_starts_with_no_unsaved_changes() {
+    func test_hasUnsavedChanges_when_there_are_custom_amounts_and_items_at_start_then_return_false() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items)
+        let order = MockOrders().makeOrder(items: items, fees: [OrderFeeLine.fake()])
 
         // When
         let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
 
         // Then
         XCTAssertFalse(viewModel.hasUnsavedChanges)
+    }
+
+    func test_hasUnsavedChanges_when_there_are_custom_amounts_but_no_items_at_start_then_return_true() {
+        // Given
+        let currencySettings = CurrencySettings()
+        let order = MockOrders().makeOrder(items: [], fees: [OrderFeeLine.fake()])
+
+        // When
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges)
     }
 
     func test_viewModel_unsaved_changes_states_becomes_true_after_selecting_items() {

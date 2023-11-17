@@ -332,8 +332,9 @@ private extension IssueRefundViewModel {
 extension IssueRefundViewModel {
     enum Localization {
         static let refundShippingTitle = NSLocalizedString("Refund Shipping", comment: "Title of the switch in the IssueRefund screen to refund shipping")
-        static let refundCustomAmountsTitle = NSLocalizedString(
-            "Refund Custom Amounts", comment: "Title of the switch in the IssueRefund screen to refund customAmounts")
+        static let refundCustomAmountsTitle = NSLocalizedString("refundIssue.customAmounts.title",
+                                                                value: "Refund Custom Amounts",
+                                                                comment: "Title of the switch in the IssueRefund screen to refund customAmounts")
         static let itemSingular = NSLocalizedString("1 item selected", comment: "Title of the label indicating that there is 1 item to refund.")
         static let itemsPlural = NSLocalizedString("%d items selected", comment: "Title of the label indicating that there are multiple items to refund.")
     }
@@ -522,7 +523,7 @@ extension IssueRefundViewModel {
     }
 
     private func isAnyCustomAmountAvailableForRefund() -> Bool {
-        // Return false if there are no customAmounts left to be refunded.
+        // Return false if there are no custom amounts left to be refunded.
         return state.order.fees.isNotEmpty
     }
 }

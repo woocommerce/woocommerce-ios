@@ -713,6 +713,22 @@ final class ProductFormViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.productModel.downloadable)
     }
+
+    // MARK: Subscription Free trial
+
+    func test_updateSubscriptionFreeTrialSettings_sets_subscription_free_trial_info() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(trialLength: "4", trialPeriod: .month))
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        viewModel.updateSubscriptionFreeTrialSettings(trialLength: "5", trialPeriod: .week)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.trialLength, "5")
+        XCTAssertEqual(subscription.trialPeriod, .week)
+    }
 }
 
 private extension ProductFormViewModelTests {

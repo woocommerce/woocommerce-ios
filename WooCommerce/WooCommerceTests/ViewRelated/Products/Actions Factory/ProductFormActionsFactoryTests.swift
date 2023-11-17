@@ -1,5 +1,6 @@
 import XCTest
 import Fakes
+import Experiments
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -590,6 +591,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
+    // MARK: Subscription product
+
     func test_view_model_for_subscription_product_when_subscription_editing_is_enabled() {
         // Arrange
         let product = Fixtures.subscriptionProduct.copy(stockQuantity: 200)
@@ -603,6 +606,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
                                                                        .reviews,
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),

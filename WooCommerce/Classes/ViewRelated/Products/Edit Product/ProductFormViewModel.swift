@@ -490,6 +490,12 @@ extension ProductFormViewModel {
         let action = ProductAction.replaceProductLocally(product: newProduct, onCompletion: {})
         stores.dispatch(action)
     }
+
+    func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
+        let subscription = product.subscription?.copy(trialLength: trialLength,
+                                                      trialPeriod: trialPeriod)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
 }
 
 // MARK: Remote actions

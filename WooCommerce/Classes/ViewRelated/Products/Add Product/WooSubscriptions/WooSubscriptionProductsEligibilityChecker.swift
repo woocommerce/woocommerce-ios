@@ -48,7 +48,6 @@ final class WooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEl
 
 private extension WooSubscriptionProductsEligibilityChecker {
     func isWooSubscriptionsPluginActive() -> Bool {
-        try? resultsController.performFetch()
         let activePluginNames = resultsController.fetchedObjects
             .map { $0.name }
         return Set(activePluginNames).intersection(SitePlugin.SupportedPlugin.WCSubscriptions).count > 0

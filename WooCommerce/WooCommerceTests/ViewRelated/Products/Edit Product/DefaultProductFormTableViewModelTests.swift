@@ -328,7 +328,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionFreeTrialViewModel)
-        XCTAssertEqual(viewModel.details, "2 weeks")
+        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionPlural)")
     }
 
     func test_subscription_free_trial_row_returns_expected_details_for_no_free_trial() throws {

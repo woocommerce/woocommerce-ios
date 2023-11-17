@@ -34,13 +34,8 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
         viewModel.showReviewDetails(using: parcel)
     }
 
-    func showPaymentsMenu(onCompletion: ((LegacyInPersonPaymentsMenuViewController) -> Void)? = nil) -> LegacyInPersonPaymentsMenuViewController {
-        let inPersonPaymentsMenuViewController = LegacyInPersonPaymentsMenuViewController(
-            tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
-            viewDidLoadAction: onCompletion)
-        show(inPersonPaymentsMenuViewController, sender: self)
-
-        return inPersonPaymentsMenuViewController
+    func showPaymentsMenu() {
+        viewModel.showingPayments = true
     }
 
     func showCoupons() {
@@ -78,6 +73,30 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         if #available(iOS 16.0, *) {
             self.navigationController?.setNavigationBarHidden(false, animated: animated)
+        }
+    }
+}
+
+extension HubMenuViewController: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        switch destination {
+        case is PaymentsMenuDestination:
+            showPaymentsMenu()
+            viewModel.inPersonPaymentsMenuViewModel.navigate(to: destination)
+        case is HubMenuDestination:
+            handleHubMenuDeepLink(to: destination)
+        default:
+            break
+        }
+    }
+
+    private func handleHubMenuDeepLink(to destination: any DeepLinkDestinationProtocol) {
+        guard let hubMenuDestination = destination as? HubMenuDestination else {
+            return
+        }
+        switch hubMenuDestination {
+        case .paymentsMenu:
+            showPaymentsMenu()
         }
     }
 }

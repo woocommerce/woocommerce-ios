@@ -145,7 +145,7 @@ private extension FancyAlertViewController {
     }
 
     enum Strings {
-        static let instructionsURLString = "https://docs.woocommerce.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
+        static let instructionsURLString = "https://woo.com/document/jetpack-setup-instructions-for-the-woocommerce-mobile-app/"
 
         static let whatsJetpackURLString = "https://jetpack.com/about/"
     }

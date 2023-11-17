@@ -459,6 +459,7 @@ public enum WooAnalyticsStat: String {
     // MARK: Custom amounts
     case addCustomAmountDoneButtonTapped = "add_custom_amount_done_tapped"
     case addCustomAmountNameAdded = "add_custom_amount_name_added"
+    case addCustomAmountPercentageAdded = "add_custom_amount_percentage_added"
 
     // MARK: Order Tax Educational Dialog
     //

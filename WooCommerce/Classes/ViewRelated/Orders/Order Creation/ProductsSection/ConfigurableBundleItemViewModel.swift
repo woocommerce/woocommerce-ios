@@ -51,6 +51,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     init(bundleItem: ProductBundleItem,
          product: Product,
          variableProductSettings: VariableProductSettings?,
+         existingParentOrderItem: OrderItem?,
          existingOrderItem: OrderItem?,
          analytics: Analytics = ServiceLocator.analytics) {
         bundledItemID = bundleItem.bundledItemID
@@ -59,7 +60,20 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         isOptional = bundleItem.isOptional
         let isOptionalAndSelected = existingOrderItem != nil
         self.isOptionalAndSelected = isOptionalAndSelected
-        let quantity = existingOrderItem?.quantity ?? bundleItem.defaultQuantity
+        let quantity: Decimal = {
+            guard let orderItemQuantity = existingOrderItem?.quantity else {
+                return bundleItem.defaultQuantity
+            }
+            let parentOrderItemQuantity = max(existingParentOrderItem?.quantity ?? 1, 1)
+
+            // When the parent order item quantity is incremented without configuring the bundle, the quantity of the child items
+            // are not multiplied. Thus, we want to return the child item quantity when its quantity is smaller than the parent order
+            // item quantity.
+            guard orderItemQuantity >= parentOrderItemQuantity else {
+                return orderItemQuantity
+            }
+            return orderItemQuantity * 1.0 / parentOrderItemQuantity
+        }()
         self.quantity = quantity
         self.variableProductSettings = variableProductSettings
         self.analytics = analytics

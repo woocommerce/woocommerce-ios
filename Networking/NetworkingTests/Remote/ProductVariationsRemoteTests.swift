@@ -485,12 +485,14 @@ private extension ProductVariationsRemoteTests {
     }
 
     func sampleCreateProductVariation(siteID: Int64,
-                                      productID: Int64) -> CreateProductVariation {
+                                      productID: Int64,
+                                      subscription: ProductSubscription? = nil) -> CreateProductVariation {
         let createVariation = CreateProductVariation(regularPrice: "5.0",
                                                      salePrice: "4.5",
                                                      attributes: sampleProductVariationAttributes(),
                                                      description: "",
-                                                     image: .fake())
+                                                     image: .fake(),
+                                                     subscription: subscription)
         return createVariation
     }
 }

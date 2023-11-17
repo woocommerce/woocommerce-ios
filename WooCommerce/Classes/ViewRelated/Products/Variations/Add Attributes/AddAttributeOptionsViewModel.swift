@@ -158,6 +158,10 @@ final class AddAttributeOptionsViewModel {
     ///
     private let analytics: Analytics
 
+    /// Keeps a strong reference to the use case to wait for callback closures.
+    ///
+    private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
+
     init(product: Product,
          attribute: Attribute,
          allowsEditing: Bool = false,
@@ -288,10 +292,9 @@ extension AddAttributeOptionsViewModel {
         analytics.track(event: WooAnalyticsEvent.Variations.updateAttribute(productID: product.productID))
 
         let productViewModel = EditableProductModel(product: newProduct.copy(statusKey: ProductStatus.draft.rawValue))
-        let useCase = ProductFormRemoteActionUseCase(stores: stores)
 
         state.isUpdating = true
-        useCase.addProduct(product: productViewModel, password: nil) { [weak self] result in
+        remoteActionUseCase.addProduct(product: productViewModel, password: nil) { [weak self] result in
             guard let self = self else { return }
             let productResult = result.map { $0.product.product }
             self.handleProductUpdate(requestStartDate: startDate, result: productResult, onCompletion: onCompletion)

@@ -1,7 +1,16 @@
 import Foundation
+import UIKit
+
+/// This is only kept for Spotlight search conformance, as the SwiftUI code for InPersonPaymentsMenu to be searchable is never called.
+/// (Error: Cannot use Scene methods for URL, NSUserActivity, and other External Events without using SwiftUI Lifecycle.
+/// Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.)
+/// Instead, we call `registerUserActivity` on this empty VC from the new View Model.
+class InPersonPaymentsMenuViewController: UIViewController {
+
+}
 
 // MARK: - SearchableActivity Conformance
-extension LegacyInPersonPaymentsMenuViewController: SearchableActivityConvertible {
+extension InPersonPaymentsMenuViewController: SearchableActivityConvertible {
     var activityType: String {
         return WooActivityType.payments.rawValue
     }

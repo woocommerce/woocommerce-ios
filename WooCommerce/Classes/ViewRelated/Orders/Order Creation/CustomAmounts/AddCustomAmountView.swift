@@ -19,6 +19,28 @@ struct AddCustomAmountView: View {
 
                         FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
 
+                        VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
+                            Text(String.localizedStringWithFormat(Localization.percentageInputTitle, viewModel.baseAmountForPercentageString))
+                                .font(.subheadline)
+                                .foregroundColor(Color(.textSubtle))
+
+                            HStack(spacing: Layout.inputFieldVerticalSpacing) {
+                                InputField(placeholder: Localization.percentageInputPlaceholder,
+                                           text: $viewModel.percentage)
+
+                                Text("%")
+                                    .font(.title3)
+                                    .foregroundColor(Color(.textSubtle))
+                            }
+                        }
+                        .padding(.bottom, Layout.mainVerticalSpacing)
+                        .renderedIf(viewModel.shouldShowPercentageInput)
+
+                        Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
+                            .font(.title3)
+                            .foregroundColor(Color(.textSubtle))
+                            .padding(.bottom, Layout.mainVerticalSpacing)
+
                         Text(Localization.nameTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
@@ -56,8 +78,35 @@ struct AddCustomAmountView: View {
 }
 
 private extension AddCustomAmountView {
+    struct InputField: View {
+        let placeholder: String
+        @Binding var text: String
+
+        var body: some View {
+            TextField(placeholder, text: $text)
+            .keyboardType(.decimalPad)
+            .padding(EdgeInsets(top: 0, leading: Layout.inputFieldInnerVerticalPadding, bottom: 0, trailing: Layout.inputFieldInnerVerticalPadding))
+            .frame(maxWidth: .infinity, minHeight: Layout.inputFieldHeight, maxHeight: Layout.inputFieldHeight)
+            .overlay {
+                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                    .inset(by: Layout.inputFieldOverlayInset)
+                    .stroke(Color(uiColor: .wooCommercePurple(.shade50)), lineWidth: Layout.borderLineWidth)
+            }
+            .cornerRadius(Layout.frameCornerRadius)
+        }
+    }
+}
+
+private extension AddCustomAmountView {
     enum Layout {
         static let mainVerticalSpacing: CGFloat = 8
+        static let rowHeight: CGFloat = 44
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 1
+        static let inputFieldOverlayInset: CGFloat = 0.25
+        static let inputFieldHeight: CGFloat = 44
+        static let inputFieldInnerVerticalPadding: CGFloat = 8
+        static let inputFieldVerticalSpacing: CGFloat = 8
     }
 }
 
@@ -68,6 +117,15 @@ private extension AddCustomAmountView {
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
+        static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
+                                                             value: "Or enter percentage of the order total (%1$@)",
+                                                             comment: "Title for entering an custom amount through a percentage")
+        static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
+                                                             value: "Enter percentage",
+                                                             comment: "Placeholder for entering an custom amount through a percentage")
+        static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
+                                                             value: "Charge Taxes",
+                                                             comment: "Title for the charge taxes toggle in the custom amounts screen.")
     }
 
     enum AccessibilityIdentifiers {

@@ -484,7 +484,8 @@ final class ProductVariationStoreTests: XCTestCase {
                                                              salePrice: "8",
                                                              attributes: sampleProductVariationAttributes(),
                                                              description: "Sample description",
-                                                             image: .fake())
+                                                             image: .fake(),
+                                                             subscription: nil)
 
         // When
         let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in
@@ -521,7 +522,8 @@ final class ProductVariationStoreTests: XCTestCase {
                                                              salePrice: "",
                                                              attributes: sampleProductVariationAttributes(),
                                                              description: "",
-                                                             image: .fake())
+                                                             image: .fake(),
+                                                             subscription: nil)
 
         // When
         let result = waitFor { promise in
@@ -555,7 +557,8 @@ final class ProductVariationStoreTests: XCTestCase {
                                                              salePrice: "8",
                                                              attributes: sampleProductVariationAttributes(),
                                                              description: "",
-                                                             image: .fake())
+                                                             image: .fake(),
+                                                             subscription: nil)
 
         // When
         let result: Result<Yosemite.ProductVariation, Error> = waitFor { promise in

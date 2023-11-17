@@ -217,6 +217,10 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     var onProductCreated: (Product) -> Void = { _ in }
 
+    /// Keeps a strong reference to the use case to wait for callback closures.
+    ///
+    private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
+
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -505,7 +509,7 @@ extension ProductFormViewModel {
             let productWithStatusUpdated = product.product.copy(statusKey: status.rawValue)
             return EditableProductModel(product: productWithStatusUpdated)
         }()
-        let remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
+
         switch formType {
         case .add:
             let productIDBeforeSave = productModel.productID
@@ -549,7 +553,7 @@ extension ProductFormViewModel {
     }
 
     func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+
         remoteActionUseCase.duplicateProduct(originalProduct: product,
                                              password: password) { [weak self] result in
             guard let self = self else { return }
@@ -565,7 +569,7 @@ extension ProductFormViewModel {
     }
 
     func deleteProductRemotely(onCompletion: @escaping (Result<Void, ProductUpdateError>) -> Void) {
-        let remoteActionUseCase = ProductFormRemoteActionUseCase()
+
         remoteActionUseCase.deleteProduct(product: product) { result in
             switch result {
             case .success:

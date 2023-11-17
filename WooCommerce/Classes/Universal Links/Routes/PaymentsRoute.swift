@@ -3,29 +3,29 @@ import Foundation
 /// Links supported URLs with a /payments root path to various destinations in the Payments Hub Menu
 /// 
 struct PaymentsRoute: Route {
-    private let deepLinkForwarder: DeepLinkForwarder
+    private let deepLinkNavigator: DeepLinkNavigator
 
-    init(deepLinkForwarder: DeepLinkForwarder) {
-        self.deepLinkForwarder = deepLinkForwarder
+    init(deepLinkNavigator: DeepLinkNavigator) {
+        self.deepLinkNavigator = deepLinkNavigator
     }
 
     func canHandle(subPath: String) -> Bool {
-        return HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) != nil
+        return deepLinkDestination(for: subPath) != nil
     }
 
     func perform(for subPath: String, with parameters: [String: String]) -> Bool {
-        guard let destination = HubMenuCoordinator.DeepLinkDestination(paymentsDeepLinkSubPath: subPath) else {
+        guard let destination = deepLinkDestination(for: subPath) else {
             return false
         }
 
-        deepLinkForwarder.forwardHubMenuDeepLink(to: destination)
+        deepLinkNavigator.navigate(to: destination)
 
         return true
     }
 }
 
-private extension HubMenuCoordinator.DeepLinkDestination {
-    init?(paymentsDeepLinkSubPath: String) {
+private extension PaymentsRoute {
+    func deepLinkDestination(for paymentsDeepLinkSubPath: String) -> (any DeepLinkDestinationProtocol)? {
         guard paymentsDeepLinkSubPath.hasPrefix(Constants.paymentsRoot) else {
             return nil
         }
@@ -36,11 +36,11 @@ private extension HubMenuCoordinator.DeepLinkDestination {
 
         switch destinationSubPath {
         case "":
-            self = .paymentsMenu
+            return HubMenuDestination.paymentsMenu
         case "collect-payment":
-            self = .simplePayments
+            return PaymentsMenuDestination.collectPayment
         case "tap-to-pay":
-            self = .tapToPayOnIPhone
+            return PaymentsMenuDestination.tapToPay
         default:
             return nil
         }

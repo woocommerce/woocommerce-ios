@@ -328,24 +328,53 @@ private extension ProductFormActionsFactory {
     }
 
     func allSettingsSectionActionsForVariableSubscriptionProduct() -> [ProductFormEditAction] {
-        let shouldShowNoVariationsWarning = product.product.variations.isEmpty
-        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowReviewsRow = product.reviewsAllowed
+        let shouldShowAttributesRow = product.product.attributesForVariations.isNotEmpty
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
-        let actions: [ProductFormEditAction?] = [
-            shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
-            shouldShowAttributesRow ? .attributes(editable: editable) : nil,
-            shouldShowReviewsRow ? .reviews: nil,
-            .inventorySettings(editable: false),
-            shouldShowQuantityRulesRow ? .quantityRules : nil,
-            .categories(editable: editable),
-            .addOns(editable: editable),
-            .tags(editable: editable),
-            .shortDescription(editable: editable),
-            .linkedProducts(editable: editable),
-            .productType(editable: false)
-        ]
+        let actions: [ProductFormEditAction?] = {
+            guard editingSubscriptionEnabled else {
+                let shouldShowNoVariationsWarning = product.product.variations.isEmpty
+                return [
+                    shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
+                    shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                    shouldShowReviewsRow ? .reviews: nil,
+                    .inventorySettings(editable: false),
+                    shouldShowQuantityRulesRow ? .quantityRules : nil,
+                    .categories(editable: editable),
+                    .addOns(editable: editable),
+                    .tags(editable: editable),
+                    .shortDescription(editable: editable),
+                    .linkedProducts(editable: editable),
+                    .productType(editable: false)
+                ]
+            }
+
+            let canEditProductType = editable
+            let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+            let shouldShowNoPriceWarningRow: Bool = {
+                let variationsHaveNoPriceSet = variationsPrice == .notSet
+                let productHasNoPriceSet = variationsPrice == .unknown && product.product.variations.isNotEmpty && product.product.price.isEmpty
+                return canEditProductType && (variationsHaveNoPriceSet || productHasNoPriceSet)
+            }()
+
+            return [
+                .variations(hideSeparator: shouldShowNoPriceWarningRow),
+                shouldShowNoPriceWarningRow ? .noPriceWarning : nil,
+                shouldShowAttributesRow ? .attributes(editable: editable) : nil,
+                shouldShowReviewsRow ? .reviews: nil,
+                .shippingSettings(editable: editable),
+                .inventorySettings(editable: canEditInventorySettingsRow),
+                shouldShowQuantityRulesRow ? .quantityRules : nil,
+                .addOns(editable: editable),
+                .categories(editable: editable),
+                .tags(editable: editable),
+                .shortDescription(editable: editable),
+                .linkedProducts(editable: editable),
+                .productType(editable: canEditProductType)
+            ]
+        }()
+
         return actions.compactMap { $0 }
     }
 

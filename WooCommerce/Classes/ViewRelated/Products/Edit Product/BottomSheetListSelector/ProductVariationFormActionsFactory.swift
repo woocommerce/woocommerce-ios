@@ -6,13 +6,16 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let editable: Bool
 
     private let isMinMaxQuantitiesEnabled: Bool
+    private let editingSubscriptionEnabled: Bool
 
     init(productVariation: EditableProductVariationModel,
          editable: Bool,
-         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities)) {
+         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
+         editingSubscriptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)) {
         self.productVariation = productVariation
         self.editable = editable
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
+        self.editingSubscriptionEnabled = editingSubscriptionEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -45,7 +48,7 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
-        let shouldShowSubscriptionRow = productVariation.subscription != nil
+        let shouldShowSubscriptionRow = !editingSubscriptionEnabled && productVariation.subscription != nil
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()

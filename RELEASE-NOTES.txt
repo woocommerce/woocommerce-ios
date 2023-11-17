@@ -2,7 +2,10 @@
 
 16.3
 -----
-
+- [internal] Payments Menu: rewritten in SwiftUI [https://github.com/woocommerce/woocommerce-ios/pull/11169]
+- [*] Orders: users can now calculate a custom amount based on the order total percentage. [https://github.com/woocommerce/woocommerce-ios/pull/11154]
+- [*] Orders: users can now decide whether their custom amounts are taxable or not. [https://github.com/woocommerce/woocommerce-ios/pull/11156]
+- [internal] Updated all `woocommerce.com` URLs to use `woo.com` domain [https://github.com/woocommerce/woocommerce-ios/pull/11182]
 
 16.2
 -----

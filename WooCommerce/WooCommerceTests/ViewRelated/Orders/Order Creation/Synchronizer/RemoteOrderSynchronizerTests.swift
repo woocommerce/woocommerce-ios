@@ -702,6 +702,33 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    func test_state_is_set_to_syncing_and_blocking_upon_order_update_with_new_item_that_includes_bundle_configuration() {
+        // Given
+        let product = Product.fake().copy(productID: sampleProductID)
+        let order = Order.fake().copy(orderID: sampleOrderID)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores)
+
+        let states: [OrderSyncState] = waitFor { promise in
+            synchronizer.statePublisher
+                .dropFirst()
+                .collect(1)
+                .sink { states in
+                    promise(states)
+                }
+                .store(in: &self.subscriptions)
+
+            // Trigger order update
+            let input = OrderSyncProductInput(id: self.sampleInputID, product: .product(product), quantity: 1, discount: 0, bundleConfiguration: [
+                .init(bundledItemID: 0, productOrVariation: .product(id: 1), quantity: 2, isOptionalAndSelected: nil)
+            ])
+            synchronizer.setProduct.send(input)
+        }
+
+        // Then
+        XCTAssertEqual(states, [.syncing(blocking: true)])
+    }
+
     func test_states_are_properly_set_upon_success_order_update_with_no_new_items() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

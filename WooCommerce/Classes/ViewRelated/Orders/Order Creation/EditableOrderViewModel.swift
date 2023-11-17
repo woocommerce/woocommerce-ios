@@ -437,6 +437,8 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
 
+    private let quantityDebounceDuration: Double
+
     init(siteID: Int64,
          flow: Flow = .creation,
          stores: StoresManager = ServiceLocator.stores,
@@ -446,7 +448,8 @@ final class EditableOrderViewModel: ObservableObject {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
-         initialItem: OrderBaseItem? = nil) {
+         initialItem: OrderBaseItem? = nil,
+         quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
@@ -459,6 +462,7 @@ final class EditableOrderViewModel: ObservableObject {
         self.permissionChecker = permissionChecker
         self.initialItem = initialItem
         self.barcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder(stores: stores)
+        self.quantityDebounceDuration = quantityDebounceDuration
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -1662,6 +1666,7 @@ private extension EditableOrderViewModel {
     /// If the referenced product can't be found, `nil` is returned.
     ///
     private func createUpdateProductInput(item: OrderItem,
+                                          childItems: [OrderItem] = [],
                                           quantity: Decimal,
                                           discount: Decimal? = nil,
                                           bundleConfiguration: [BundledProductConfiguration] = []) -> OrderSyncProductInput? {
@@ -1681,6 +1686,40 @@ private extension EditableOrderViewModel {
         guard let product = product else {
             DDLogError("⛔️ Product with ID: \(item.productID) not found.")
             return nil
+        }
+
+        // When updating a bundle product's quantity while there are no bundle configuration updates from the configuration form,
+        // the bundle configuration needs to be populated in order for the quantity of child order items to be updated.
+        // The bundle configuration is deduced from the product's bundle items, existing child order items, and the bundle order item itself.
+        if case let .product(productValue) = product,
+           productValue.productType == .bundle && item.quantity != quantity && bundleConfiguration.isEmpty && childItems.isNotEmpty {
+            let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
+                .compactMap { bundleItem -> BundledProductConfiguration? in
+                    guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
+                        return nil
+                    }
+                    let attributes = existingOrderItem.attributes
+                        .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
+                    let productOrVariation: BundledProductConfiguration.ProductOrVariation = existingOrderItem.variationID == 0 ?
+                        .product(id: existingOrderItem.productID): .variation(productID: existingOrderItem.productID,
+                                                                              variationID: existingOrderItem.variationID,
+                                                                              attributes: attributes)
+                    // The quantity per bundle: as a buggy behavior in Pe5pgL-3Vd-p2#quantity-of-bundle-child-order-items, the child item quantity
+                    // can either by multiplied by the bundle quantity or not. To encounter for the edge case, the quantity is only divided by
+                    // the bundle quantity if the child item has at least the same quantity as the bundle.
+                    let quantity = existingOrderItem.quantity >= item.quantity ?
+                    existingOrderItem.quantity * 1.0 / item.quantity: existingOrderItem.quantity
+                    return .init(bundledItemID: bundleItem.bundledItemID,
+                                 productOrVariation: productOrVariation,
+                                 quantity: quantity,
+                                 isOptionalAndSelected: bundleItem.isOptional ? true: nil)
+                }
+            return OrderSyncProductInput(id: item.itemID,
+                                         product: product,
+                                         quantity: quantity,
+                                         discount: discount ?? currentDiscount(on: item),
+                                         baseSubtotal: baseSubtotal(on: item),
+                                         bundleConfiguration: bundleConfiguration)
         }
 
         // Return a new input with the new quantity but with the same item id to properly reference the update.
@@ -1773,8 +1812,14 @@ private extension EditableOrderViewModel {
             // Observe changes to the product quantity
             productRowViewModel.$quantity
                 .dropFirst() // Omit the default/initial quantity to prevent a double trigger.
+                // The quantity can be incremented/decremented quickly, and the order sync can be blocking (e.g. with bundle configuration).
+                // To avoid the UI being blocked for each quantity update, a debounce is added to wait for the final quantity
+                // within a 0.5s time frame.
+                .debounce(for: .seconds(quantityDebounceDuration), scheduler: DispatchQueue.main)
                 .sink { [weak self] newQuantity in
-                    guard let self = self, let newInput = self.createUpdateProductInput(item: item, quantity: newQuantity) else {
+                    guard let self else { return }
+                    let childItems = items.filter { $0.parent == item.itemID }
+                    guard let newInput = self.createUpdateProductInput(item: item, childItems: childItems, quantity: newQuantity) else {
                         return
                     }
                     self.orderSynchronizer.setProduct.send(newInput)
@@ -2156,6 +2201,10 @@ private extension EditableOrderViewModel {
 
     enum SystemPluginPaths {
         static let giftCards = "woocommerce-gift-cards/woocommerce-gift-cards.php"
+    }
+
+    enum Constants {
+        static let quantityDebounceDuration = 0.5
     }
 }
 

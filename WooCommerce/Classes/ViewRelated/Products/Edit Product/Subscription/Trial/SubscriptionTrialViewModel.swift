@@ -13,7 +13,7 @@ final class SubscriptionTrialViewModel: ObservableObject {
 
     var errorMessage: String {
         String.localizedStringWithFormat(Localization.validationError,
-                                         trialPeriod.limit,
+                                         trialPeriod.freeTrialLimit,
                                          trialPeriod.descriptionPlural)
     }
 
@@ -51,7 +51,7 @@ final class SubscriptionTrialViewModel: ObservableObject {
                 return false
             }
 
-            return length <= trialPeriod.limit
+            return length <= trialPeriod.freeTrialLimit
         }
         .assign(to: &$isInputValid)
     }

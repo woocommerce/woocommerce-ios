@@ -1,9 +1,9 @@
 import enum Yosemite.SubscriptionPeriod
 
 extension SubscriptionPeriod {
-    /// Returns the max allowed limit for the period
+    /// Returns the max allowed free trial limit for the period
     ///
-    var limit: Int {
+    var freeTrialLimit: Int {
         switch self {
         case .day:
             return 90

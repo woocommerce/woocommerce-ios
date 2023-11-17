@@ -63,7 +63,8 @@ struct SubscriptionTrialView: View {
                     .foregroundColor(Color(.textSubtle))
                     .subheadlineStyle()
                     .padding(Layout.margin)
-
+                    .renderedIf(viewModel.isInputValid)
+                
                 Divider()
                     .padding(.leading, Layout.margin)
             }

@@ -32,13 +32,35 @@ struct SubscriptionExpiryView: View {
     ///
     @ScaledMetric private var scale: CGFloat = 1.0
 
+    @State private var showPicker = false
+
     var body: some View {
         Form {
-            // Picker to select expiry
-            Picker(Localization.expireAfter, selection: $viewModel.selectedLength) {
-                ForEach(viewModel.lengthOptions, id: \.self) {
-                    Text($0.title)
+            Button(action: {
+                showPicker.toggle()
+            }, label: {
+                AdaptiveStack(horizontalAlignment: .leading) {
+                    Text(Localization.expireAfter)
+                        .bodyStyle()
+                        .multilineTextAlignment(.leading)
+
+                    Spacer()
+
+                    Text(viewModel.selectedLength.title)
+                        .foregroundColor(Color(.accent))
+                        .bodyStyle()
+                        .multilineTextAlignment(.trailing)
                 }
+            })
+
+            if showPicker {
+                // Picker to select expiry
+                Picker(Localization.expireAfter, selection: $viewModel.selectedLength) {
+                    ForEach(viewModel.lengthOptions, id: \.self) {
+                        Text($0.title)
+                    }
+                }
+                .pickerStyle(.wheel)
             }
 
             // Subtitle
@@ -53,6 +75,7 @@ struct SubscriptionExpiryView: View {
                 }
             }
         }
+        .animation(.easeInOut, value: showPicker)
     }
 }
 

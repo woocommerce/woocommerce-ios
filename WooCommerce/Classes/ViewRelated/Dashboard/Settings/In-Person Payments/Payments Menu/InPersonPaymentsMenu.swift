@@ -11,6 +11,7 @@ struct InPersonPaymentsMenu: View {
                 Section(Localization.paymentActionsSectionTitle) {
                     PaymentsRow(image: Image(uiImage: .moneyIcon),
                                 title: Localization.collectPayment)
+                    .accessibilityIdentifier(AccessibilityIdentifiers.collectPaymentRow)
                     .onTapGesture {
                         viewModel.collectPaymentTapped()
                     }
@@ -99,6 +100,7 @@ struct InPersonPaymentsMenu: View {
                     } label: {
                         PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
                                     title: Localization.cardReaderManuals)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     }
                 } header: {
                     Text(Localization.cardReaderSectionTitle)
@@ -264,6 +266,11 @@ private extension InPersonPaymentsMenu {
                      This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
         )
+    }
+
+    enum AccessibilityIdentifiers {
+        static let collectPaymentRow = "collect-payment"
+        static let cardReaderManualRow = "card-reader-manuals"
     }
 }
 

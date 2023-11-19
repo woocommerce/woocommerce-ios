@@ -1,1 +1,6 @@
-We've made a few updates to improve your WooCommerce app experience! Now, you'll see custom amounts in their own section on order details for a cleaner look. We've added support for Universal Links in the woo.com domain, making it easier to navigate. Additionally, when adding a product/variation by scanning a barcode on the order form, only the exact SKU will be added for precision. Enjoy!
+- [internal] Payments Menu: rewritten in SwiftUI [https://github.com/woocommerce/woocommerce-ios/pull/11169]
+- [*] Orders: users can now calculate a custom amount based on the order total percentage. [https://github.com/woocommerce/woocommerce-ios/pull/11154]
+- [*] Orders: users can now decide whether their custom amounts are taxable or not. [https://github.com/woocommerce/woocommerce-ios/pull/11156]
+- [*] Order form: the merchant can now configure a bundle product (quantity and variation attributes of the bundled products). Testing plan: pe5pgL-3Ze-p2 [https://github.com/woocommerce/woocommerce-ios/pull/11186]
+- [internal] Updated all `woocommerce.com` URLs to use `woo.com` domain [https://github.com/woocommerce/woocommerce-ios/pull/11182]
+

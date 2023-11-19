@@ -62,15 +62,20 @@ private extension Hardware.PaymentIntentParameters {
             return try builder.build()
     }
 
+    /// Updates the existing PaymentIntentParameters metadata with our CardReader metadata, if any.
+    ///
     func prepareMetadataForStripe(with meta: CardReaderMetadata? = nil) -> [String: String]? {
-        let cardReaderMetadata: [String: String]? = [
-            "reader_ID": "\(meta?.readerIDMetadataKey ?? "")",
-            "reader_model": "\(meta?.readerModelMetadataKey ?? "")",
-            "platform": "\(meta?.platformMetadataKey ?? "")"
+        guard let meta = meta else {
+            return metadata
+        }
+
+        let cardReaderMetadata: [String: String] = [
+            "reader_ID": "\(meta.readerIDMetadataKey)",
+            "reader_model": "\(meta.readerModelMetadataKey)",
+            "platform": "\(meta.platformMetadataKey)"
         ]
 
-        // Updates the existing PaymentIntentParameters metadata with our cardReaderMetaData when there's a key collision in the dictionary
-        let updatedMetadata = (metadata ?? [:]).merging(cardReaderMetadata ?? [:]) { (_, new) in new }
+        let updatedMetadata = metadata?.merging(cardReaderMetadata) { (_, new) in new }
 
         return updatedMetadata
     }

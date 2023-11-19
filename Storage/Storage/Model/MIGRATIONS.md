@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 103 (Release 16.3.0.0)
+- @ecarrion 2023-11-20
+    - Added `storeID` attribute to `Site` entity.
+
 ## Model 102 (Release 16.2.0.0)
 - @jaclync 2023-11-15
     - Added `bundleMinSize` and `bundleMaxSize` attributes to `Product` entity.

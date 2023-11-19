@@ -2,7 +2,7 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 103 (Release 16.3.0.0)
+## Model 103 (Release 16.4.0.0)
 - @ecarrion 2023-11-20
     - Added `storeID` attribute to `Site` entity.
 

@@ -2378,6 +2378,33 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, 2)
         XCTAssertEqual(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, 6)
     }
+
+    func test_migrating_from_102_to_103_adds_storeID_to_Site() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let site = insertSite(to: sourceContext)
+
+        try sourceContext.save()
+
+        XCTAssertNil(site.entity.attributesByName["storeID"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProduct = try XCTUnwrap(targetContext.first(entityName: "Site"))
+
+        // The new properties are nil by default.
+        XCTAssertNil(migratedProduct.value(forKey: "storeID") as? String, "Confirm expected property exists and is nil by default.")
+
+        migratedProduct.setValue("uuid", forKey: "storeID")
+        try targetContext.save()
+
+        XCTAssertEqual(migratedProduct.value(forKey: "storeID") as? String, "uuid")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

@@ -42,6 +42,20 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
         self.trialPeriod = trialPeriod
     }
 
+    /// Custom decoding to use default value when JSON doesn't have a key present
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        length = try container.decodeIfPresent(String.self, forKey: .length) ?? "0"
+        period = try container.decodeIfPresent(SubscriptionPeriod.self, forKey: .period) ?? .month
+        periodInterval = try container.decodeIfPresent(String.self, forKey: .periodInterval) ?? "0"
+        price = try container.decodeIfPresent(String.self, forKey: .price) ?? "0"
+        signUpFee = try container.decodeIfPresent(String.self, forKey: .signUpFee) ?? "0"
+        trialLength = try container.decodeIfPresent(String.self, forKey: .trialLength) ?? "0"
+        trialPeriod = try container.decodeIfPresent(SubscriptionPeriod.self, forKey: .trialPeriod) ?? .day
+    }
+
     func toKeyValuePairs() -> [KeyValuePair] {
         [
             .init(key: CodingKeys.length.rawValue, value: length),

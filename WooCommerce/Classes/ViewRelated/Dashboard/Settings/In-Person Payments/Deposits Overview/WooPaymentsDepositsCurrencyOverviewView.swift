@@ -5,8 +5,12 @@ import Yosemite
 struct WooPaymentsDepositsCurrencyOverviewView: View {
     @ObservedObject var viewModel: WooPaymentsDepositsCurrencyOverviewViewModel
 
-    init(viewModel: WooPaymentsDepositsCurrencyOverviewViewModel) {
+    @Binding var isExpanded: Bool
+
+    init(viewModel: WooPaymentsDepositsCurrencyOverviewViewModel,
+         isExpanded: Binding<Bool>) {
         self.viewModel = viewModel
+        self._isExpanded = isExpanded
     }
 
     var body: some View {
@@ -19,51 +23,76 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     AccountSummaryItem(title: Localization.pendingFunds,
                                        amount: viewModel.pendingBalance,
                                        footer: viewModel.pendingFundsDepositsSummary)
+                    Button {
+                        withAnimation {
+                            isExpanded.toggle()
+                        }
+                    } label: {
+                        isExpanded ? Image(systemName: "chevron.up") : Image(systemName: "chevron.down")
+                    }
+                }
+
+                if isExpanded {
+                    Divider()
+
+                    HStack(alignment: .top) {
+                        Image(systemName: "calendar")
+                        Text(viewModel.balanceTypeHint)
+                            .font(.footnote)
+                    }
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 8)
+                }
+            }
+
+            if isExpanded {
+                Text(Localization.depositsHeader.localizedUppercase)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                LazyVGrid(columns: [GridItem(.flexible(maximum: 70), alignment: .leading),
+                                    GridItem(alignment: .leading),
+                                    GridItem(alignment: .trailing)],
+                          spacing: 16) {
+                    Text(Localization.nextDepositRowTitle)
+                    Text(viewModel.nextDepositDate)
+                    Text(viewModel.nextDepositAmount)
+
+                    Text(Localization.paidDepositRowTitle)
+                        .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
+                    Text(viewModel.lastDepositDate)
+                        .foregroundColor(.secondary)
+                    Text(viewModel.lastDepositAmount)
+                        .foregroundColor(.secondary)
                 }
                 Divider()
 
                 HStack(alignment: .top) {
-                    Image(systemName: "calendar")
-                    Text(viewModel.balanceTypeHint)
+                    Image(systemName: "building.columns")
+                    Text(viewModel.depositScheduleHint)
                         .font(.footnote)
                 }
                 .foregroundColor(.secondary)
                 .padding(.vertical, 8)
-            }
-            .padding(.vertical)
-
-            Text(Localization.depositsHeader.localizedUppercase)
-                .font(.subheadline)
-                .foregroundColor(.secondary)
                 .frame(maxWidth: .infinity, alignment: .leading)
-            LazyVGrid(columns: [GridItem(.flexible(maximum: 70), alignment: .leading),
-                                GridItem(alignment: .leading),
-                                GridItem(alignment: .trailing)],
-                      spacing: 16) {
-                Text(Localization.nextDepositRowTitle)
-                Text(viewModel.nextDepositDate)
-                Text(viewModel.nextDepositAmount)
 
-                Text(Localization.paidDepositRowTitle)
-                    .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
-                Text(viewModel.lastDepositDate)
-                    .foregroundColor(.secondary)
-                Text(viewModel.lastDepositAmount)
-                    .foregroundColor(.secondary)
+                Button {
+                    // TODO: Open a webview here: https://woo.com/document/woopayments/deposits/deposit-schedule/
+                } label: {
+                    HStack {
+                        Image(systemName: "info.circle")
+                        Text(Localization.learnMoreButtonText)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .font(.footnote)
+                            .multilineTextAlignment(.leading)
+                    }
+                }
+                .padding(.bottom)
             }
-            Divider()
-
-            HStack(alignment: .top) {
-                Image(systemName: "building.columns")
-                Text(viewModel.depositScheduleHint)
-                    .font(.footnote)
-            }
-            .foregroundColor(.secondary)
-            .padding(.vertical, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .animation(.easeOut, value: isExpanded)
         .fixedSize(horizontal: false, vertical: true)
-        .padding()
+        .padding(.horizontal)
     }
 }
 
@@ -110,6 +139,9 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
         static let paidDepositRowTitle = NSLocalizedString(
             "Paid",
             comment: "Row title for the last paid deposit in the WooPayments Deposits overview")
+        static let learnMoreButtonText = NSLocalizedString(
+            "Learn more about when you'll receive your funds",
+            comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
     }
 }
 
@@ -137,7 +169,8 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
 
         let viewModel = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overviewData)
 
-        return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel)
-            .previewLayout(.sizeThatFits)
+        return WooPaymentsDepositsCurrencyOverviewView(viewModel: viewModel,
+                                                       isExpanded: .constant(true))
+        .previewLayout(.sizeThatFits)
     }
 }

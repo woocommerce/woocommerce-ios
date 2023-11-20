@@ -18,6 +18,15 @@ final class AddCustomAmountViewModel: ObservableObject {
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
     private let currencyFormatter: CurrencyFormatter
+    private let priceFieldFormatter: PriceFieldFormatter
+
+    @Published var percentageCalculatedAmount: String = "" {
+        didSet {
+            guard percentageCalculatedAmount != oldValue else { return }
+
+            percentageCalculatedAmount = priceFieldFormatter.formatAmount(percentageCalculatedAmount)
+        }
+    }
 
     var shouldShowPercentageInput: Bool {
         guard case .orderTotalPercentage = inputType else {
@@ -50,15 +59,14 @@ final class AddCustomAmountViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
+        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.inputType = inputType
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.analytics = analytics
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
 
-        formattableAmountTextFieldViewModel.onWillResetAmountWithNewValue = { [weak self] in
-            self?.percentage = ""
-        }
+        percentageCalculatedAmount = "0"
     }
 
     /// Variable that holds the name of the custom amount.
@@ -67,8 +75,6 @@ final class AddCustomAmountViewModel: ObservableObject {
     @Published var percentage = "" {
         didSet {
             guard oldValue != percentage else { return }
-
-            guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
 
             presetAmountBasedOnPercentage(percentage)
         }
@@ -125,7 +131,7 @@ private extension AddCustomAmountViewModel {
         guard case let .orderTotalPercentage(baseAmountForPercentage) = inputType,
               let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
 
-        formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
+        percentageCalculatedAmount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
     }
 }
 

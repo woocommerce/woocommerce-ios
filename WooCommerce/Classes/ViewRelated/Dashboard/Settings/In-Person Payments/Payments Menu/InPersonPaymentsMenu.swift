@@ -1,4 +1,5 @@
 import SwiftUI
+import Yosemite
 import ScrollViewSectionKit
 
 struct InPersonPaymentsMenu: View {
@@ -10,6 +11,12 @@ struct InPersonPaymentsMenu: View {
         VStack {
             ScrollView {
                 VStack(spacing: 0) {
+                    depositSummary
+                        .background {
+                            Color(UIColor.systemBackground)
+                                .ignoresSafeArea()
+                        }
+
                     ScrollViewSection {
                         PaymentsRow(image: Image(uiImage: .moneyIcon),
                                     title: Localization.collectPayment)
@@ -167,6 +174,16 @@ struct InPersonPaymentsMenu: View {
             }
         }
     }
+
+    @ViewBuilder
+    var depositSummary: some View {
+        if #available(iOS 16.0, *),
+           viewModel.shouldShowDepositSummary {
+            WooPaymentsDepositsOverviewView(viewModels: viewModel.depositCurrencyViewModels)
+        } else {
+            EmptyView()
+        }
+    }
 }
 
 private extension InPersonPaymentsMenu {
@@ -293,7 +310,8 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
         dependencies: .init(
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
-            cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0)))
+            cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
+            wooPaymentsDepositsService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
         InPersonPaymentsMenu(viewModel: viewModel)
     }

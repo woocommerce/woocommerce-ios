@@ -8,6 +8,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
+    @Published private(set) var shouldShowDepositSummary: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
@@ -22,6 +23,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentTapToPayFeedback: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
+    @Published var depositCurrencyViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -36,6 +38,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
+        let wooPaymentsDepositsService: WooPaymentsDepositService
     }
 
     let dependencies: Dependencies
@@ -74,6 +77,19 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
+        await refreshDepositSummary()
+    }
+
+    @MainActor
+    private func refreshDepositSummary() async {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
+            shouldShowDepositSummary = false
+            return
+        }
+        depositCurrencyViewModels = await dependencies.wooPaymentsDepositsService.fetchDepositsOverview().map({
+            WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+        })
+        shouldShowDepositSummary = depositCurrencyViewModels.count > 0
     }
 
     @MainActor

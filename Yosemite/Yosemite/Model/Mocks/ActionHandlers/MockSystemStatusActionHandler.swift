@@ -10,7 +10,7 @@ struct MockSystemStatusActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .synchronizeSystemPlugins(let siteID, let onCompletion):
+        case .synchronizeSystemInformation(let siteID, let onCompletion):
             synchronizeSystemPlugins(siteID: siteID, onCompletion: onCompletion)
         default:
             break

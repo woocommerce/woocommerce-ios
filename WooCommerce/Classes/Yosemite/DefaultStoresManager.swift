@@ -501,7 +501,7 @@ private extension DefaultStoresManager {
     @MainActor
     func synchronizeSystemPlugins(siteID: Int64) async -> [SystemPlugin]? {
         await withCheckedContinuation { continuation in
-            dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                     case let .success(plugins):
                         continuation.resume(returning: plugins)

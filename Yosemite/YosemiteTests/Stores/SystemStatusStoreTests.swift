@@ -42,7 +42,7 @@ final class SystemStatusStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
                 promise(result)
             })
         }
@@ -65,7 +65,7 @@ final class SystemStatusStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
                 promise(result)
             })
         }

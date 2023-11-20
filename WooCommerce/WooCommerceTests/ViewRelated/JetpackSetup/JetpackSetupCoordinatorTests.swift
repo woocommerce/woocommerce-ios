@@ -208,7 +208,7 @@ private extension MockStoresManager {
                           isJetpackActive: Bool = false) {
         whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
-            case let .synchronizeSystemPlugins(_, onCompletion):
+            case let .synchronizeSystemInformation(_, onCompletion):
                 onCompletion(.success([.fake().copy(name: isJetpackInstalled ? "Jetpack" : "Plugin", active: isJetpackActive)]))
             default:
                 break

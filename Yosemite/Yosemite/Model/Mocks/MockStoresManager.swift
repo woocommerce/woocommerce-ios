@@ -229,7 +229,7 @@ private extension MockStoresManager {
 
     func synchronizeSystemPlugins(siteID: Int64) async {
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in
+            let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { _ in
                 continuation.resume(returning: ())
             }
             dispatch(action)

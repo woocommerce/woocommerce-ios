@@ -86,9 +86,11 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .noPriceWarning, .status, .attributes, .subscription, .subscriptionFreeTrial, .subscriptionExpiry, .quantityRules:
+        case .priceSettings, .noPriceWarning, .status, .attributes, .subscription, .quantityRules:
             // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
+        case .subscriptionFreeTrial, .subscriptionExpiry:
+            return productVariation.subscription != nil
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true
             return productVariation.sku != nil || hasStockData

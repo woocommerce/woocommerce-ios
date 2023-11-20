@@ -173,6 +173,7 @@ private struct ProductStepper: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(height: Layout.stepperButtonSize * scale)
             }
+            .disabled(viewModel.shouldDisableQuantityIncrementer)
         }
         .padding(Layout.stepperPadding * scale)
         .frame(width: Layout.stepperWidth * scale)

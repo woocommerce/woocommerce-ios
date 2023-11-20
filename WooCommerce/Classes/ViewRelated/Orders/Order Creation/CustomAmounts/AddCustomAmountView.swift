@@ -10,9 +10,7 @@ struct AddCustomAmountView: View {
         NavigationView {
             GeometryReader { geometry in
                 ScrollView {
-                    VStack(alignment: .center, spacing: Layout.mainVerticalSpacing) {
-                        Spacer()
-
+                    VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
                         Text(Localization.amountTitle)
                             .font(.title3)
                             .foregroundColor(Color(.textSubtle))
@@ -37,9 +35,11 @@ struct AddCustomAmountView: View {
                         .padding(.bottom, Layout.mainVerticalSpacing)
                         .renderedIf(viewModel.shouldShowPercentageInput)
 
+                        Divider()
+                            .padding(.bottom, Layout.mainVerticalSpacing)
+
                         Toggle(Localization.chargeTaxesToggleTitle, isOn: $viewModel.isTaxable)
                             .font(.title3)
-                            .foregroundColor(Color(.textSubtle))
                             .padding(.bottom, Layout.mainVerticalSpacing)
 
                         Text(Localization.nameTitle)
@@ -49,7 +49,6 @@ struct AddCustomAmountView: View {
                         TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                             .secondaryTitleStyle()
                             .foregroundColor(Color(.textSubtle))
-                            .multilineTextAlignment(.center)
 
                         Spacer()
 

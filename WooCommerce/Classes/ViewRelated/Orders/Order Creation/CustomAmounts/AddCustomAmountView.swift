@@ -18,6 +18,7 @@ struct AddCustomAmountView: View {
                             .foregroundColor(Color(.textSubtle))
 
                         FormattableAmountTextField(viewModel: viewModel.formattableAmountTextFieldViewModel)
+                            .renderedIf(viewModel.shouldShowFixedAmountInput)
 
                         VStack(alignment: .leading, spacing: Layout.mainVerticalSpacing) {
                             Text(String.localizedStringWithFormat(Localization.percentageInputTitle, viewModel.baseAmountForPercentageString))

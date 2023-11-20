@@ -1,6 +1,11 @@
 import SwiftUI
 
 struct OrderCustomAmountsSection: View {
+    enum ConfirmationOption {
+        case fixedAmount
+        case orderTotalPercentage
+    }
+
     /// View model to drive the view content
     @ObservedObject var viewModel: EditableOrderViewModel
 
@@ -8,12 +13,16 @@ struct OrderCustomAmountsSection: View {
     ///
     @State private var showAddCustomAmount: Bool = false
 
+    @State private var showAddCustomAmountConfirmationDialog: Bool = false
+
+    @State private var addCustomAmountOption: ConfirmationOption = .fixedAmount
+
     var body: some View {
         VStack {
             HStack {
                 Button(Localization.addCustomAmount) {
                     viewModel.onAddCustomAmountButtonTapped()
-                    showAddCustomAmount.toggle()
+                    showAddCustomAmountConfirmationDialog.toggle()
                 }
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
                 .buttonStyle(PlusButtonStyle())
@@ -50,11 +59,22 @@ struct OrderCustomAmountsSection: View {
         }
         .padding()
         .background(Color(.listForeground(modal: true)))
+        .confirmationDialog("How do you want to add your custom amount?", isPresented: $showAddCustomAmountConfirmationDialog, titleVisibility: .visible) {
+            Button("Enter as fixed amount $") {
+                addCustomAmountOption = .fixedAmount
+                showAddCustomAmount = true
+            }
+
+            Button("Percentage of order total %") {
+                addCustomAmountOption = .orderTotalPercentage
+                showAddCustomAmount = true
+            }
+        }
         .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
         .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel)
+            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
     }
 }

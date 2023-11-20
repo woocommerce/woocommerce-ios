@@ -7,29 +7,52 @@ import Yosemite
 typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int64?, _ isTaxable: Bool) -> Void
 
 final class AddCustomAmountViewModel: ObservableObject {
+    enum InputType {
+        case fixedAmount
+        case orderTotalPercentage(baseAmount: Decimal)
+    }
+
     let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
-    private var baseAmountForPercentage: Decimal
+
+    private let inputType: InputType
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
     private let currencyFormatter: CurrencyFormatter
 
-    var baseAmountForPercentageString: String {
-        currencyFormatter.formatAmount(baseAmountForPercentage) ?? ""
-    }
-
     var shouldShowPercentageInput: Bool {
-        baseAmountForPercentage > 0
+        guard case .orderTotalPercentage = inputType else {
+            return false
+        }
+
+        return true
     }
 
-    init(baseAmountForPercentage: Decimal = 0,
+    var shouldShowFixedAmountInput: Bool {
+        guard case .fixedAmount = inputType else {
+            return false
+        }
+
+        return true
+    }
+
+    var baseAmountForPercentageString: String {
+        guard case let .orderTotalPercentage(baseAmountForPercentage) = inputType,
+              let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
+            return ""
+        }
+
+        return formattedAmount
+    }
+
+    init(inputType: InputType,
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
+        self.inputType = inputType
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.analytics = analytics
-        self.baseAmountForPercentage = baseAmountForPercentage
         self.onCustomAmountEntered = onCustomAmountEntered
         listenToAmountChanges()
 
@@ -99,7 +122,8 @@ private extension AddCustomAmountViewModel {
     }
 
     func presetAmountBasedOnPercentage(_ percentage: String) {
-        guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
+        guard case let .orderTotalPercentage(baseAmountForPercentage) = inputType,
+              let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
 
         formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
     }

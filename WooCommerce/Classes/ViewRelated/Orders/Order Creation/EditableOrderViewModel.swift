@@ -194,27 +194,6 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var editingFee: OrderFeeLine? = nil
-    var addCustomAmountViewModel: AddCustomAmountViewModel {
-        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
-
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.orderTotal as Decimal,
-                                        onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
-            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
-            if let feeID = feeID {
-                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
-            } else {
-                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
-            }
-        })
-
-        if let editingFee {
-            viewModel.preset(with: editingFee)
-            self.editingFee = nil
-        }
-
-        return viewModel
-    }
-
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -829,6 +808,28 @@ final class EditableOrderViewModel: ObservableObject {
     func onAddCustomAmountButtonTapped() {
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
+
+    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel {
+
+        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
+
+        let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option),
+                                                 onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
+            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
+            if let feeID = feeID {
+                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
+            } else {
+                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
+            }
+        })
+
+        if let editingFee {
+            viewModel.preset(with: editingFee)
+            self.editingFee = nil
+        }
+
+        return viewModel
+    }
 }
 
 // MARK: - Types
@@ -1064,6 +1065,17 @@ extension EditableOrderViewModel {
 
 // MARK: - Helpers
 private extension EditableOrderViewModel {
+    /// Converts the add custom amount UI input type to view models
+    /// 
+    func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
+        switch option {
+        case .fixedAmount:
+            return .fixedAmount
+        case .orderTotalPercentage:
+            let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
+            return .orderTotalPercentage(baseAmount: orderTotals.orderTotal as Decimal)
+        }
+    }
 
     /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
     ///

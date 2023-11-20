@@ -21,7 +21,8 @@ extension SessionManager {
                                isWPCom: Bool = true,
                                defaultRoles: [User.Role] = [.administrator],
                                displayName: String? = nil,
-                               defaultSite: Site? = nil) -> SessionManager {
+                               defaultSite: Site? = nil,
+                               defaultStoreUUID: String? = nil) -> SessionManager {
         let manager = SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
         // Force setting to `nil` if `authenticated` is `false` so that any auto-loaded credentials
         // will be removed.
@@ -43,6 +44,11 @@ extension SessionManager {
             manager.defaultSite = defaultSite
             manager.defaultStoreID = defaultSite.siteID
         }
+
+        if let defaultStoreUUID {
+            manager.defaultStoreUUID = defaultStoreUUID
+        }
+
         return manager
     }
 

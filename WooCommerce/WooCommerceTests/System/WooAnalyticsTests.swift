@@ -167,7 +167,8 @@ class WooAnalyticsTests: XCTestCase {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
                                                                    defaultSite: Site.fake().copy(
                                                                     siteID: sampleSiteID,
-                                                                    url: sampleSiteURL)))
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
         analytics = WooAnalytics(analyticsProvider: testingProvider)
 
@@ -185,7 +186,8 @@ class WooAnalyticsTests: XCTestCase {
             "was_ecommerce_trial": false,
             "plan": "",
             "site_url": sampleSiteURL,
-            "prop-key1": "prop-value1"
+            "prop-key1": "prop-value1",
+            "store_id": "sample_store_uuid"
         ]
 
         for property in expectedProperties {
@@ -219,7 +221,8 @@ class WooAnalyticsTests: XCTestCase {
             "is_wpcom_store",
             "was_ecommerce_trial",
             "plan",
-            "site_url"
+            "site_url",
+            "store_id"
         ]
 
         for property in expectedToBeAbsentProperties {

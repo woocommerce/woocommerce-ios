@@ -160,6 +160,7 @@ final class SessionManager: SessionManagerProtocol {
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
+        defaultStoreUUID = nil
         defaultSite = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil

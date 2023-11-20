@@ -504,6 +504,7 @@ private extension DefaultStoresManager {
             dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
                     case let .success(systemInformation):
+                        print("🚨 Store ID: \(systemInformation.storeID)") // TODO: This will be deleted in a later PR, when tracks get updated with this value
                         continuation.resume(returning: systemInformation.systemPlugins)
                     case let .failure(error):
                         DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")

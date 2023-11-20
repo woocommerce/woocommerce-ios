@@ -100,6 +100,10 @@ final class EditableOrderViewModel: ObservableObject {
         featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
     }
 
+    var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
+        orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
+    }
+
     var title: String {
         switch flow {
         case .creation:
@@ -809,11 +813,8 @@ final class EditableOrderViewModel: ObservableObject {
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
 
-    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel {
-
-        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
-
-        let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option),
+    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+        let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {

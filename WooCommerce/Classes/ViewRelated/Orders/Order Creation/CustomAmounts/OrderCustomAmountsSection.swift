@@ -15,14 +15,14 @@ struct OrderCustomAmountsSection: View {
 
     @State private var showAddCustomAmountConfirmationDialog: Bool = false
 
-    @State private var addCustomAmountOption: ConfirmationOption = .fixedAmount
+    @State private var addCustomAmountOption: ConfirmationOption?
 
     var body: some View {
         VStack {
             HStack {
                 Button(Localization.addCustomAmount) {
-                    viewModel.onAddCustomAmountButtonTapped()
-                    showAddCustomAmountConfirmationDialog.toggle()
+
+                    onAddCustomAmountRequested()
                 }
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
                 .buttonStyle(PlusButtonStyle())
@@ -42,8 +42,7 @@ struct OrderCustomAmountsSection: View {
                         .renderedIf(viewModel.shouldShowNonEditableIndicators)
 
                     Button(action: {
-                        viewModel.onAddCustomAmountButtonTapped()
-                        showAddCustomAmount.toggle()
+                        onAddCustomAmountRequested()
                     }) {
                         Image(uiImage: .plusImage)
                     }
@@ -76,6 +75,12 @@ struct OrderCustomAmountsSection: View {
         .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
+    }
+}
+private extension OrderCustomAmountsSection {
+    func onAddCustomAmountRequested() {
+        viewModel.onAddCustomAmountButtonTapped()
+        viewModel.enableAddingCustomAmountViaOrderTotalPercentage ? showAddCustomAmountConfirmationDialog.toggle() : showAddCustomAmount.toggle()
     }
 }
 

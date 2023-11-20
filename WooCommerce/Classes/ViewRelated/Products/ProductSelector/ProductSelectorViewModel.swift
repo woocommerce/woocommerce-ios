@@ -263,7 +263,13 @@ final class ProductSelectorViewModel: ObservableObject {
         }
     }
 
-    func toggleSelection(id: Int64) {
+    /// Adds a product or variation ID to the product selector from an external source (e.g. bundle configuration form for bundle products).
+    /// - Parameter id: Product or variation ID to add to the product selector.
+    func addSelection(id: Int64) {
+        selectedItemsIDs.append(id)
+    }
+
+    private func toggleSelection(id: Int64) {
         if selectedItemsIDs.contains(id) {
             selectedItemsIDs = selectedItemsIDs.filter { $0 != id }
         } else {

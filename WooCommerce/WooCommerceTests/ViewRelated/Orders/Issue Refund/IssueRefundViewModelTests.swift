@@ -433,43 +433,33 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.title, "$12.49")
     }
 
-    func test_isNextButtonEnabled_when_there_are_no_custom_amounts_at_start_then_return_false() {
+    func test_isNextButtonEnabled_when_shouldRefundCustomAmountsByDefault_is_false_then_returns_false() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
         let order = MockOrders().makeOrder(items: items, fees: [])
+        let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
-    func test_isNextButtonEnabled_when_there_are_custom_amounts_and_items_at_start_then_return_false() {
+    func test_isNextButtonEnabled_when_shouldRefundCustomAmountsByDefault_is_true_then_returns_true() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items, fees: [OrderFeeLine.fake()])
+        let order = MockOrders().makeOrder(items: items, fees: [])
+        let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
-
-        // Then
-        XCTAssertFalse(viewModel.isNextButtonEnabled)
-    }
-
-    func test_isNextButtonEnabled_when_there_are_custom_amounts_but_no_items_at_start_then_return_true() {
-        // Given
-        let currencySettings = CurrencySettings()
-        let order = MockOrders().makeOrder(items: [], fees: [OrderFeeLine.fake()])
-
-        // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertTrue(viewModel.isNextButtonEnabled)
@@ -508,28 +498,33 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonEnabled)
     }
 
-    func test_hasUnsavedChanges_when_there_are_custom_amounts_and_items_at_start_then_return_false() {
+    func test_hasUnsavedChanges_when_shouldRefundCustomAmountsByDefault_is_false_then_returns_false() {
         // Given
         let currencySettings = CurrencySettings()
         let items = [
             MockOrderItem.sampleItem(itemID: 1, quantity: 3),
         ]
-        let order = MockOrders().makeOrder(items: items, fees: [OrderFeeLine.fake()])
+        let order = MockOrders().makeOrder(items: items, fees: [])
+        let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertFalse(viewModel.hasUnsavedChanges)
     }
 
-    func test_hasUnsavedChanges_when_there_are_custom_amounts_but_no_items_at_start_then_return_true() {
+    func test_hasUnsavedChanges_when_shouldRefundCustomAmountsByDefault_is_true_then_returns_true() {
         // Given
         let currencySettings = CurrencySettings()
-        let order = MockOrders().makeOrder(items: [], fees: [OrderFeeLine.fake()])
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+        ]
+        let order = MockOrders().makeOrder(items: items, fees: [])
+        let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings)
+        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges)

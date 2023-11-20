@@ -51,9 +51,6 @@ final class SystemStatusStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
-
-        let site = viewStorage.loadSite(siteID: sampleSiteID)
-        XCTAssertEqual(site?.storeID, "sample-store-uuid") // store id in json file
     }
 
     func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {

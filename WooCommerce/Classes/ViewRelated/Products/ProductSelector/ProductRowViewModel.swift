@@ -508,11 +508,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func decrementQuantity() {
         guard quantity > minimumQuantity else {
-            if let removeProductIntent {
-                return removeProductIntent()
-            } else {
-                return
-            }
+            removeProductIntent?()
+            return
         }
         quantity -= 1
 

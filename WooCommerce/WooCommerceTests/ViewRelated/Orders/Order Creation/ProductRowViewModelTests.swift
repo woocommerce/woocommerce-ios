@@ -343,7 +343,7 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 6)
     }
 
-    func quantity_decrementer_disabled_at_minimum_quantity_when_removeProductIntent_is_nil() {
+    func test_quantity_decrementer_disabled_at_minimum_quantity_when_removeProductIntent_is_nil() {
         // Given
         let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
@@ -365,7 +365,7 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableQuantityDecrementer)
     }
 
-    func quantity_decrementer_not_disabled_at_minimum_quantity_when_removeProductIntent_is_not_nil() {
+    func test_quantity_decrementer_not_disabled_at_minimum_quantity_when_removeProductIntent_is_not_nil() {
         // Given
         let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
@@ -388,7 +388,7 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableQuantityDecrementer)
     }
 
-    func quantity_incrementer_disabled_at_maximum_quantity() {
+    func test_quantity_incrementer_disabled_at_maximum_quantity() {
         // Given
         let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,

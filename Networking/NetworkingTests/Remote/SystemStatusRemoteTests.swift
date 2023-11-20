@@ -22,45 +22,47 @@ final class SystemStatusRemoteTests: XCTestCase {
 
     // MARK: - Load system plugins tests
 
-    /// Verifies that loadSystemPlugins properly parses the sample response.
+    /// Verifies that loadSystemInformation properly parses the sample response.
     ///
-    func test_loadSystemPlugins_properly_returns_systemPlugins() {
+    func test_loadSystemInformation_properly_returns_site_information() {
         let remote = SystemStatusRemote(network: network)
 
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
 
         // When
-        let result: Result<[SystemPlugin], Error> = waitFor { promise in
-            remote.loadSystemPlugins(for: self.sampleSiteID) { result in
+        let result: Result<SystemStatus, Error> = waitFor { promise in
+            remote.loadSystemInformation(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }
 
         // Then
         switch result {
-        case .success(let plugins):
-            XCTAssertEqual(plugins.count, 6)
+        case .success(let systemInfo):
+            XCTAssertEqual(systemInfo.activePlugins.count, 4)
+            XCTAssertEqual(systemInfo.inactivePlugins.count, 2)
+            XCTAssertEqual(systemInfo.environment?.storeID, "sample-store-uuid")
         case .failure(let error):
             XCTAssertNil(error)
         }
     }
 
-    /// Verifies that loadSystemPlugins properly relays Networking Layer errors.
+    /// Verifies that loadSystemInformation properly relays Networking Layer errors.
     ///
-    func test_loadSystemPlugins_properly_relays_netwoking_errors() {
+    func test_loadSystemInformation_properly_relays_netwoking_errors() {
         let remote = SystemStatusRemote(network: network)
 
         // When
-        let result: Result<[SystemPlugin], Error> = waitFor { promise in
-            remote.loadSystemPlugins(for: self.sampleSiteID) { result in
+        let result: Result<SystemStatus, Error> = waitFor { promise in
+            remote.loadSystemInformation(for: self.sampleSiteID) { result in
                 promise(result)
             }
         }
 
         // Then
         switch result {
-        case .success(let plugins):
-            XCTAssertNil(plugins)
+        case .success(let systemInformation):
+            XCTAssertNil(systemInformation)
         case .failure(let error):
             XCTAssertNotNil(error)
         }

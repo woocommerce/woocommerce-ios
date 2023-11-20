@@ -503,8 +503,8 @@ private extension DefaultStoresManager {
         await withCheckedContinuation { continuation in
             dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
-                    case let .success(plugins):
-                        continuation.resume(returning: plugins)
+                    case let .success(systemInformation):
+                        continuation.resume(returning: systemInformation.systemPlugins)
                     case let .failure(error):
                         DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
                         continuation.resume(returning: nil)

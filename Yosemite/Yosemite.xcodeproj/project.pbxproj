@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -179,6 +179,7 @@
 		263E37DC2641AD6B00260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E37DB2641AD6B00260D3B /* Codegen */; };
 		263E38422641FF2300260D3B /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; };
 		263E38442641FF2300260D3B /* Codegen in Embed Frameworks */ = {isa = PBXBuildFile; productRef = 263E38412641FF2300260D3B /* Codegen */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		264D2C832B0B19F200FD2C05 /* SystemInformation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 264D2C822B0B19F200FD2C05 /* SystemInformation.swift */; };
 		26577517243D5E42003168A5 /* ProductCategoryUpdated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 26577516243D5E42003168A5 /* ProductCategoryUpdated.swift */; };
 		265BCA0024301ACD004E53EE /* ProductCategoryStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */; };
 		2665034D2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2665034C2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift */; };
@@ -640,6 +641,7 @@
 		261CF2C6255C445A0090D8D3 /* PaymentGatewayStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentGatewayStoreTests.swift; sourceTree = "<group>"; };
 		261F94E3242EFA6D00762B58 /* ProductCategoryAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryAction.swift; sourceTree = "<group>"; };
 		261F94E5242EFF8700762B58 /* ProductCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryStore.swift; sourceTree = "<group>"; };
+		264D2C822B0B19F200FD2C05 /* SystemInformation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemInformation.swift; sourceTree = "<group>"; };
 		26577516243D5E42003168A5 /* ProductCategoryUpdated.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryUpdated.swift; sourceTree = "<group>"; };
 		265BC9FF24301ACD004E53EE /* ProductCategoryStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategoryStoreTests.swift; sourceTree = "<group>"; };
 		2665034C2620E0A90079A159 /* ProductAddOnOption+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductAddOnOption+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -1443,6 +1445,7 @@
 				0232372722F7DA5500715FAB /* Enums */,
 				B52E0036211A44FE00700FDE /* ReadOnly */,
 				B52E0035211A44F800700FDE /* Storage */,
+				264D2C822B0B19F200FD2C05 /* SystemInformation.swift */,
 				03EB998F2907B97800F06A39 /* JustInTimeMessage.swift */,
 				209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */,
 				B53D89E420E6C22B00F90866 /* Model.swift */,
@@ -2127,6 +2130,7 @@
 				B5BC736520D1A98500B5B6FA /* AccountStore.swift in Sources */,
 				247CE8562583269900F9D9D1 /* MockProductActionHandler.swift in Sources */,
 				D4CBAE6226D4460900BBE6D1 /* AnnouncementsStore.swift in Sources */,
+				264D2C832B0B19F200FD2C05 /* SystemInformation.swift in Sources */,
 				312A3D6E266AEA6900D28BC9 /* PaymentGatewayAccount+ReadOnlyConvertible.swift in Sources */,
 				DE3C5B23286C03F90049E6AA /* MockCardPresentPaymentActionHandler.swift in Sources */,
 				2685C111263C97A800D9EE97 /* AddOnGroupAction.swift in Sources */,

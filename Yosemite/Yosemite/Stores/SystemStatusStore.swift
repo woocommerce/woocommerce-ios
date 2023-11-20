@@ -46,14 +46,15 @@ public final class SystemStatusStore: Store {
 // MARK: - Network request
 //
 private extension SystemStatusStore {
-    func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping (Result<[SystemPlugin], Error>) -> Void) {
+    func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping (Result<SystemInformation, Error>) -> Void) {
         remote.loadSystemInformation(for: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let systemInformation):
                 self.upsertSystemInformationInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] _ in
                     guard let self else { return }
-                    completionHandler(.success(self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }))
+                    let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
+                    completionHandler(.success(.init(storeID: systemInformation.environment?.storeID, systemPlugins: systemPlugins)))
                 }
             case .failure(let error):
                 completionHandler(.failure(error))
@@ -73,10 +74,11 @@ private extension SystemStatusStore {
     /// Updates or inserts Readonly system information in background.
     /// Triggers `completionHandler` on main thread.
     ///
-    func upsertSystemInformationInBackground(siteID: Int64, readonlySystemInformation: SystemStatus, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func upsertSystemInformationInBackground(siteID: Int64, 
+                                             readonlySystemInformation: SystemStatus,
+                                             completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let writerStorage = storageManager.writerDerivedStorage
         writerStorage.perform {
-            self.updateStoreID(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: writerStorage)
             self.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: writerStorage)
         }
 
@@ -122,13 +124,6 @@ private extension SystemStatusStore {
         // remove stale system plugins
         let currentSystemPlugins = readonlySystemPlugins.map(\.name)
         storage.deleteStaleSystemPlugins(siteID: siteID, currentSystemPlugins: currentSystemPlugins)
-    }
-
-    /// Update the stored site with the system information store id.
-    ///
-    func updateStoreID(siteID: Int64, readonlySystemInformation: SystemStatus, in storage: StorageType) {
-        let storageSite = storageManager.viewStorage.loadSite(siteID: siteID)
-        storageSite?.storeID = readonlySystemInformation.environment?.storeID
     }
 
     /// Retrieve a `SystemPlugin` entity from storage whose name matches any name from the provided name list.

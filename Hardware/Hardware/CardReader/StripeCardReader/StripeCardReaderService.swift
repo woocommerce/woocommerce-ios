@@ -3,9 +3,47 @@ import Combine
 import StripeTerminal
 import CoreBluetooth
 
+protocol DiscoveryConfigurationBuilder {
+    func setSimulated(_ simulated: Bool) -> DiscoveryConfigurationBuilder
+    func build() throws -> DiscoveryConfiguration
+}
+
+final class BluetoothScanDiscoveryConfigurationBuilderWrapper: DiscoveryConfigurationBuilder {
+    private var builder: BluetoothScanDiscoveryConfigurationBuilder
+
+    init(_ builder: BluetoothScanDiscoveryConfigurationBuilder) {
+        self.builder = builder
+    }
+
+    func setSimulated(_ simulated: Bool) -> DiscoveryConfigurationBuilder {
+        builder.setSimulated(simulated)
+        return self
+    }
+
+    func build() throws -> DiscoveryConfiguration {
+        return try builder.build()
+    }
+}
+
+final class LocalMobileDiscoveryConfigurationBuilderWrapper: DiscoveryConfigurationBuilder {
+    private var builder: LocalMobileDiscoveryConfigurationBuilder
+
+    init(_ builder: LocalMobileDiscoveryConfigurationBuilder) {
+        self.builder = builder
+    }
+
+    func setSimulated(_ simulated: Bool) -> DiscoveryConfigurationBuilder {
+        builder.setSimulated(simulated)
+        return self
+    }
+
+    func build() throws -> DiscoveryConfiguration {
+        return try builder.build()
+    }
+}
+
 /// The adapter wrapping the Stripe Terminal SDK
 public final class StripeCardReaderService: NSObject {
-
     private var discoveryCancellable: StripeTerminal.Cancelable?
     private var paymentCancellable: StripeTerminal.Cancelable?
     private var refundCancellable: StripeTerminal.Cancelable?
@@ -121,33 +159,19 @@ extension StripeCardReaderService: CardReaderService {
             Terminal.shared.simulatorConfiguration.simulatedCard = .init(type: .amex)
         }
 
-        let config: DiscoveryConfiguration
+        let discoveryConfiguration: DiscoveryConfiguration
         switch discoveryMethod {
         case .bluetoothScan:
             let blueToothConfig = BluetoothScanDiscoveryConfigurationBuilder()
-            do {
-                config = try blueToothConfig.setSimulated(shouldUseSimulatedCardReader).build()
-            } catch let error as UnderlyingError {
-                DDLogError("Failed to start BluetoothScanDiscovery. Error:\(String(describing: error.failureReason))")
-                throw error
-            } catch {
-                DDLogError("\(error)")
-                throw error
-            }
+            let wrapper = BluetoothScanDiscoveryConfigurationBuilderWrapper(blueToothConfig)
+            discoveryConfiguration = try configureDiscoveryBuilder(with: wrapper, usingSimulated: shouldUseSimulatedCardReader)
         case .localMobile:
             let localMobileConfig = LocalMobileDiscoveryConfigurationBuilder()
-            do {
-                config = try localMobileConfig.setSimulated(shouldUseSimulatedCardReader).build()
-            } catch let error as UnderlyingError {
-                DDLogError("Failed to start LocalMobileDiscovery. Error:\(String(describing: error.failureReason))")
-                throw error
-            } catch {
-                DDLogError("\(error)")
-                throw error
-            }
+            let wrapper = LocalMobileDiscoveryConfigurationBuilderWrapper(localMobileConfig)
+            discoveryConfiguration = try configureDiscoveryBuilder(with: wrapper, usingSimulated: shouldUseSimulatedCardReader)
         }
 
-        guard shouldSkipBluetoothCheck(discoveryConfiguration: config) ||
+        guard shouldSkipBluetoothCheck(discoveryConfiguration: discoveryConfiguration) ||
                 CBCentralManager.authorization != .denied else {
             throw CardReaderServiceError.bluetoothDenied
         }
@@ -170,7 +194,7 @@ extension StripeCardReaderService: CardReaderService {
          *
          *Note that if discoverReaders is canceled, the completion block will be called with nil (rather than an SCPErrorCanceled error).
          */
-        discoveryCancellable = Terminal.shared.discoverReaders(config, delegate: self, completion: { [weak self] error in
+        discoveryCancellable = Terminal.shared.discoverReaders(discoveryConfiguration, delegate: self, completion: { [weak self] error in
             guard let error = error else {
                 self?.switchStatusToIdle()
                 return
@@ -180,6 +204,18 @@ extension StripeCardReaderService: CardReaderService {
         })
     }
 
+    func configureDiscoveryBuilder(with builder: DiscoveryConfigurationBuilder,
+                                   usingSimulated shouldUseSimulatedCardReader: Bool) throws -> DiscoveryConfiguration {
+        do {
+            return try builder.setSimulated(shouldUseSimulatedCardReader).build()
+        } catch let error as UnderlyingError {
+            DDLogError("Failed to start BluetoothScanDiscovery. Error:\(String(describing: error.failureReason))")
+            throw error
+        } catch {
+            DDLogError("\(error)")
+            throw error
+        }
+    }
 
     // If we're using the simulated reader, we don't want to check for Bluetooth permissions
     // as the simulator won't have Bluetooth available.

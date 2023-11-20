@@ -1559,47 +1559,43 @@ private extension EditableOrderViewModel {
         $isProductSelectorPresented
             .removeDuplicates()
             .map { [weak self] isPresented in
-                guard let self else { return nil }
-                if isPresented {
-                    return ProductSelectorViewModel(
-                        siteID: siteID,
-                        selectedItemIDs: selectedProductsAndVariationsIDs,
-                        purchasableItemsOnly: true,
-                        storageManager: storageManager,
-                        stores: stores,
-                        toggleAllVariationsOnSelection: false,
-                        topProductsProvider: TopProductsFromCachedOrdersProvider(),
-                        onProductSelectionStateChanged: { [weak self] product in
-                            guard let self = self else { return }
-                            self.changeSelectionStateForProduct(product)
-                        },
-                        onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                            guard let self = self else { return }
-                            self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
-                        }, onMultipleSelectionCompleted: { [weak self] _ in
-                            guard let self = self else { return }
-                            self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-                        }, onAllSelectionsCleared: { [weak self] in
-                            guard let self = self else { return }
-                            self.clearAllSelectedItems()
-                            self.trackClearAllSelectedItemsTapped()
-                        }, onSelectedVariationsCleared: { [weak self] in
-                            guard let self = self else { return }
-                            self.clearSelectedVariations()
-                        }, onCloseButtonTapped: { [weak self] in
-                            guard let self = self else { return }
-                            self.syncOrderItemSelectionStateOnDismiss()
-                        }, onConfigureProductRow: { [weak self] product in
+                guard let self, isPresented else { return nil }
+                return ProductSelectorViewModel(
+                    siteID: siteID,
+                    selectedItemIDs: selectedProductsAndVariationsIDs,
+                    purchasableItemsOnly: true,
+                    storageManager: storageManager,
+                    stores: stores,
+                    toggleAllVariationsOnSelection: false,
+                    topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    onProductSelectionStateChanged: { [weak self] product in
+                        guard let self = self else { return }
+                        self.changeSelectionStateForProduct(product)
+                    },
+                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                        guard let self = self else { return }
+                        self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                    }, onMultipleSelectionCompleted: { [weak self] _ in
+                        guard let self = self else { return }
+                        self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                    }, onAllSelectionsCleared: { [weak self] in
+                        guard let self = self else { return }
+                        self.clearAllSelectedItems()
+                        self.trackClearAllSelectedItemsTapped()
+                    }, onSelectedVariationsCleared: { [weak self] in
+                        guard let self = self else { return }
+                        self.clearSelectedVariations()
+                    }, onCloseButtonTapped: { [weak self] in
+                        guard let self = self else { return }
+                        self.syncOrderItemSelectionStateOnDismiss()
+                    }, onConfigureProductRow: { [weak self] product in
+                        guard let self else { return }
+                        productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
                             guard let self else { return }
-                            productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
-                                guard let self else { return }
-                                self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                                self.productToConfigureViewModel = nil
-                            })
+                            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                            self.productToConfigureViewModel = nil
                         })
-                } else {
-                    return nil
-                }
+                    })
             }
             .assign(to: &$productSelectorViewModel)
     }

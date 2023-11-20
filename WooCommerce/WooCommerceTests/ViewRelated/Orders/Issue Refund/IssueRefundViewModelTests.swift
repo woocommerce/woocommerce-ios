@@ -443,7 +443,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, 
+        let viewModel = IssueRefundViewModel(order: order,
                                              refunds: [],
                                              currencySettings: currencySettings,
                                              refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
@@ -462,7 +462,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, 
+        let viewModel = IssueRefundViewModel(order: order,
                                              refunds: [],
                                              currencySettings: currencySettings,
                                              refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
@@ -514,7 +514,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, 
+        let viewModel = IssueRefundViewModel(order: order,
                                              refunds: [],
                                              currencySettings: currencySettings,
                                              refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
@@ -533,7 +533,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, 
+        let viewModel = IssueRefundViewModel(order: order,
                                              refunds: [],
                                              currencySettings: currencySettings,
                                              refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
@@ -755,8 +755,8 @@ final class IssueRefundViewModelTests: XCTestCase {
 
 private extension MockOrderItem {
     static func sampleItemWithCalculatedTotal(itemID: Int64,
-                                    quantity: Decimal,
-                                    price: NSDecimalNumber) -> OrderItem {
+                                              quantity: Decimal,
+                                              price: NSDecimalNumber) -> OrderItem {
         let currencySettings = CurrencySettings()
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 

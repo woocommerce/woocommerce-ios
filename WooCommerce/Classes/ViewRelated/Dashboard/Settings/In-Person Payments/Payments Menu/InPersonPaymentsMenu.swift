@@ -8,7 +8,7 @@ struct InPersonPaymentsMenu: View {
     var body: some View {
         VStack {
             List {
-                Section(Localization.paymentActionsSectionTitle) {
+                Section {
                     PaymentsRow(image: Image(uiImage: .moneyIcon),
                                 title: Localization.collectPayment)
                     .onTapGesture {
@@ -27,17 +27,21 @@ struct InPersonPaymentsMenu: View {
                             .navigationBarTitleDisplayMode(.inline)
                         }
                     }
+                } header: {
+                    Text(Localization.paymentActionsSectionTitle)
                 }
 
-                Section(Localization.paymentSettingsSectionTitle) {
+                Section {
                     PaymentsToggleRow(
                         image: Image(uiImage: .creditCardIcon),
                         title: Localization.toggleEnableCashOnDelivery,
                         toggleRowViewModel: viewModel.payInPersonToggleViewModel)
                     .customOpenURL(binding: $viewModel.safariSheetURL)
+                } header: {
+                    Text(Localization.paymentSettingsSectionTitle)
                 }
 
-                Section(Localization.tapToPaySectionTitle) {
+                Section {
                     PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
                                 title: viewModel.setUpTryOutTapToPayRowTitle,
                                 shouldBadgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
@@ -74,6 +78,8 @@ struct InPersonPaymentsMenu: View {
                         Survey(source: .tapToPayFirstPayment)
                     }
                     .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
+                } header: {
+                    Text(Localization.tapToPaySectionTitle)
                 }
                 .renderedIf(viewModel.shouldShowTapToPaySection)
 

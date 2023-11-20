@@ -169,6 +169,8 @@ private extension DefaultProductFormTableViewModel {
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
             case .subscriptionFreeTrial(let editable):
                 return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: productVariation, isEditable: editable), isEditable: editable)
+            case .subscriptionExpiry(let editable):
+                return .subscriptionExpiry(viewModel: subscriptionExpiryRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             case .quantityRules:

@@ -35,8 +35,9 @@ final class SystemStatusStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
-    func test_synchronizeSystemPlugins_stores_systemPlugins_correctly() {
+    func test_synchronizeSystemInformation_stores_systemInformation_correctly() {
         // Given
+        storageManager.insertSampleSite(readOnlySite: .fake().copy(siteID: sampleSiteID))
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -50,9 +51,12 @@ final class SystemStatusStoreTests: XCTestCase {
         // Then
         XCTAssertTrue(result.isSuccess)
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
+
+        let site = viewStorage.loadSite(siteID: sampleSiteID)
+        XCTAssertEqual(site?.storeID, "sample-store-uuid") // store id in json file
     }
 
-    func test_synchronizeSystemPlugins_removes_stale_systemPlugins_correctly() {
+    func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {
         // Given
         let staleSystemPluginName = "Stale System Plugin"
         let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, name: staleSystemPluginName)

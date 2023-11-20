@@ -443,7 +443,10 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
+        let viewModel = IssueRefundViewModel(order: order, 
+                                             refunds: [],
+                                             currencySettings: currencySettings,
+                                             refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertFalse(viewModel.isNextButtonEnabled)
@@ -459,7 +462,10 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
+        let viewModel = IssueRefundViewModel(order: order, 
+                                             refunds: [],
+                                             currencySettings: currencySettings,
+                                             refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertTrue(viewModel.isNextButtonEnabled)
@@ -508,7 +514,10 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: false)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
+        let viewModel = IssueRefundViewModel(order: order, 
+                                             refunds: [],
+                                             currencySettings: currencySettings,
+                                             refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertFalse(viewModel.hasUnsavedChanges)
@@ -524,7 +533,10 @@ final class IssueRefundViewModelTests: XCTestCase {
         let refundableOrderItemsDeterminer = MockOrderRefundsOptionsDeterminer(shouldRefundCustomAmountsByDefault: true)
 
         // When
-        let viewModel = IssueRefundViewModel(order: order, refunds: [], currencySettings: currencySettings, refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
+        let viewModel = IssueRefundViewModel(order: order, 
+                                             refunds: [],
+                                             currencySettings: currencySettings,
+                                             refundableOrderItemsDeterminer: refundableOrderItemsDeterminer)
 
         // Then
         XCTAssertTrue(viewModel.hasUnsavedChanges)

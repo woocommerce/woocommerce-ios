@@ -990,7 +990,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "photo"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                       keyword: keyword,
                                                       pageNumber: self.defaultPageNumber,
@@ -1018,7 +1018,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "hiii"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                       keyword: keyword,
                                                       pageNumber: self.defaultPageNumber,
@@ -1151,7 +1151,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "hiii"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let nestedAction = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                             keyword: keyword,
                                                             pageNumber: self.defaultPageNumber,

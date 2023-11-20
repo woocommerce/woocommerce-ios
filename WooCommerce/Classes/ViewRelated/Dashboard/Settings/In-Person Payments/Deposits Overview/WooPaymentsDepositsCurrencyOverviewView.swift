@@ -23,12 +23,18 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     AccountSummaryItem(title: Localization.pendingFunds,
                                        amount: viewModel.pendingBalance,
                                        footer: viewModel.pendingFundsDepositsSummary)
-                    Button {
-                        withAnimation {
-                            isExpanded.toggle()
-                        }
-                    } label: {
-                        isExpanded ? Image(systemName: "chevron.up") : Image(systemName: "chevron.down")
+                    isExpanded ? Image(systemName: "chevron.up")
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityLabel(Text(Localization.hideDepositDetailAccessibilityLabel)) :
+                    Image(systemName: "chevron.down")
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityLabel(Text(Localization.showDepositDetailAccessibilityLabel))
+
+                }
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    withAnimation {
+                        isExpanded.toggle()
                     }
                 }
 
@@ -37,6 +43,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                     HStack(alignment: .top) {
                         Image(systemName: "calendar")
+                            .accessibilityHidden(true)
                         Text(viewModel.balanceTypeHint)
                             .font(.footnote)
                     }
@@ -69,6 +76,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                 HStack(alignment: .top) {
                     Image(systemName: "building.columns")
+                        .accessibilityHidden(true)
                     Text(viewModel.depositScheduleHint)
                         .font(.footnote)
                 }
@@ -81,6 +89,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")
+                            .accessibilityHidden(true)
                         Text(Localization.learnMoreButtonText)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .font(.footnote)
@@ -116,6 +125,7 @@ struct AccountSummaryItem: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.vertical)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -142,6 +152,14 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
         static let learnMoreButtonText = NSLocalizedString(
             "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
+        static let showDepositDetailAccessibilityLabel = NSLocalizedString(
+            "deposits.currency.overview.accessibility.show",
+            value: "Show deposit details",
+            comment: "Accessibility label for the expand chevron on the Deposit summary")
+        static let hideDepositDetailAccessibilityLabel = NSLocalizedString(
+            "deposits.currency.overview.accessibility.hide",
+            value: "Hide deposit details",
+            comment: "Accessibility label for the collapse chevron on the Deposit summary")
     }
 }
 

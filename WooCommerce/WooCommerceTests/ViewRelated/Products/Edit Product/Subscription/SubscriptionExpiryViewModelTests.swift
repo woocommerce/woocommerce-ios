@@ -67,6 +67,26 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.lengthOptions.count, 6)
     }
 
+    // MARK: Done button
+
+    func test_done_button_is_enabled_only_when_selection_changes() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(length: "1",
+                                                           period: .month,
+                                                           periodInterval: "1")
+        let viewModel = SubscriptionExpiryViewModel(subscription: subscription) { _, _ in }
+
+        // Then
+        XCTAssertFalse(viewModel.shouldEnableDoneButton)
+
+        // When
+        let newSelection = try XCTUnwrap(viewModel.lengthOptions.randomElement())
+        viewModel.selectedLength = newSelection
+
+        // Then
+        XCTAssertTrue(viewModel.shouldEnableDoneButton)
+    }
+
     // MARK: Completion block
 
     func test_didTapDone_calls_completion_block_with_expected_values_when_no_changes_made() throws {

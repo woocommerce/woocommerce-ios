@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import Combine
 
 /// ViewModel for `SubscriptionExpiryView`
 ///
@@ -18,6 +19,12 @@ final class SubscriptionExpiryViewModel: ObservableObject {
     /// Selected length
     ///
     @Published var selectedLength: LengthOption
+
+    /// Prevents the `Done` button from being enabled before changing the length
+    ///
+    var shouldEnableDoneButton: Bool {
+        subscription.length != selectedLength.stringValue
+    }
 
     /// Length options to select from
     ///

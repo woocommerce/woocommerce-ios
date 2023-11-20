@@ -73,6 +73,7 @@ struct SubscriptionExpiryView: View {
                 Button(Localization.done) {
                     viewModel.didTapDone()
                 }
+                .disabled(!viewModel.shouldEnableDoneButton)
             }
         }
         .animation(.easeInOut, value: showPicker)

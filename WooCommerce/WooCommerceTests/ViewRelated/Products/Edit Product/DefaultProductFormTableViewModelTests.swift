@@ -426,7 +426,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
-        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionSingular)")
+        XCTAssertEqual(viewModel.details, "\(subscription.length) \(subscription.period.descriptionSingular)")
     }
 
     func test_subscription_expire_after_row_returns_expected_details_with_plural_format() throws {
@@ -458,7 +458,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         }
 
         let viewModel = try XCTUnwrap(subscriptionExpiryViewModel)
-        XCTAssertEqual(viewModel.details, "\(subscription.trialLength) \(subscription.trialPeriod.descriptionPlural)")
+        XCTAssertEqual(viewModel.details, "\(subscription.length) \(subscription.period.descriptionPlural)")
     }
 
     func test_subscription_expire_after_row_returns_expected_details_when_no_expiry() throws {

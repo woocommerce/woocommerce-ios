@@ -51,7 +51,8 @@ private extension SystemStatusStore {
             guard let self else { return }
             switch result {
             case .success(let systemInformation):
-                self.upsertSystemInformationInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] _ in
+                self.updateStoreID(siteID: siteID, readonlySystemInformation: systemInformation)
+                self.upsertSystemPluginsInBackground(siteID: siteID, readonlySystemInformation: systemInformation) { [weak self] _ in
                     guard let self else { return }
                     let systemPlugins = self.storageManager.viewStorage.loadSystemPlugins(siteID: siteID).map { $0.toReadOnly() }
                     completionHandler(.success(.init(storeID: systemInformation.environment?.storeID, systemPlugins: systemPlugins)))
@@ -74,9 +75,9 @@ private extension SystemStatusStore {
     /// Updates or inserts Readonly system information in background.
     /// Triggers `completionHandler` on main thread.
     ///
-    func upsertSystemInformationInBackground(siteID: Int64, 
-                                             readonlySystemInformation: SystemStatus,
-                                             completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func upsertSystemPluginsInBackground(siteID: Int64,
+                                         readonlySystemInformation: SystemStatus,
+                                         completionHandler: @escaping (Result<Void, Error>) -> Void) {
         let writerStorage = storageManager.writerDerivedStorage
         writerStorage.perform {
             self.upsertSystemPlugins(siteID: siteID, readonlySystemInformation: readonlySystemInformation, in: writerStorage)
@@ -87,6 +88,13 @@ private extension SystemStatusStore {
                 completionHandler(.success(()))
             }
         }
+    }
+
+    /// Updates the store id from the system information.
+    ///
+    func updateStoreID(siteID: Int64, readonlySystemInformation: SystemStatus) {
+        let action = AppSettingsAction.setStoreID(siteID: siteID, id: readonlySystemInformation.environment?.storeID)
+        dispatcher.dispatch(action)
     }
 
     /// Updates or inserts Readonly sistem plugins from the read only system information in specified storage.

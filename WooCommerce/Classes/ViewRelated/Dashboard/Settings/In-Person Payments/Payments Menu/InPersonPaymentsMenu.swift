@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
@@ -41,7 +40,7 @@ struct InPersonPaymentsMenu: View {
                 Section(Localization.tapToPaySectionTitle) {
                     PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
                                 title: viewModel.setUpTryOutTapToPayRowTitle,
-                                badgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
+                                shouldBadgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
                     .onTapGesture {
                         viewModel.setUpTryOutTapToPayTapped()
                     }
@@ -136,6 +135,10 @@ struct InPersonPaymentsMenu: View {
 
             if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
+                LazyNavigationLink(destination: HostedSupportForm(viewModel: .init()),
+                                   isActive: $viewModel.presentSupport) {
+                    EmptyView()
+                }
             }
         }
         .task {

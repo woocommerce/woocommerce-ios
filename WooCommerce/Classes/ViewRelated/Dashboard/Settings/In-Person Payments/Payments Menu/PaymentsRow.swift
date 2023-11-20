@@ -4,13 +4,16 @@ struct PaymentsRow: View {
     private let image: Image
     private let title: String
     private let subtitle: String?
-    private let badgeImage: Bool
+    private let shouldBadgeImage: Bool
 
-    init(image: Image, title: String, subtitle: String? = nil, badgeImage: Bool = false) {
+    init(image: Image,
+         title: String,
+         subtitle: String? = nil,
+         shouldBadgeImage: Bool = false) {
         self.image = image
         self.title = title
         self.subtitle = subtitle
-        self.badgeImage = badgeImage
+        self.shouldBadgeImage = shouldBadgeImage
     }
 
     var body: some View {
@@ -23,7 +26,7 @@ struct PaymentsRow: View {
                     Circle()
                         .fill(Color.withColorStudio(name: .wooCommercePurple, shade: .shade50))
                         .frame(width: Layout.dotSize, height: Layout.dotSize)
-                        .renderedIf(badgeImage)
+                        .renderedIf(shouldBadgeImage)
                 })
                 .accessibilityHidden(true)
 
@@ -56,7 +59,7 @@ struct PaymentsRow_Previews: PreviewProvider {
         PaymentsRow(image: Image(uiImage: .creditCardIcon),
                     title: "Payments Row",
                     subtitle: "More details",
-                    badgeImage: true)
+                    shouldBadgeImage: true)
         .previewLayout(.sizeThatFits)
     }
 }

@@ -298,6 +298,33 @@ extension Networking.CouponReport {
     }
 }
 
+extension Networking.CreateProductVariation {
+    public func copy(
+        regularPrice: CopiableProp<String> = .copy,
+        salePrice: CopiableProp<String> = .copy,
+        attributes: CopiableProp<[ProductVariationAttribute]> = .copy,
+        description: CopiableProp<String> = .copy,
+        image: NullableCopiableProp<ProductImage> = .copy,
+        subscription: NullableCopiableProp<ProductSubscription> = .copy
+    ) -> Networking.CreateProductVariation {
+        let regularPrice = regularPrice ?? self.regularPrice
+        let salePrice = salePrice ?? self.salePrice
+        let attributes = attributes ?? self.attributes
+        let description = description ?? self.description
+        let image = image ?? self.image
+        let subscription = subscription ?? self.subscription
+
+        return Networking.CreateProductVariation(
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            attributes: attributes,
+            description: description,
+            image: image,
+            subscription: subscription
+        )
+    }
+}
+
 extension Networking.Customer {
     public func copy(
         siteID: CopiableProp<Int64> = .copy,

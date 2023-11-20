@@ -4,12 +4,12 @@ import XCTest
 
 final class PaymentsRouteTests: XCTestCase {
 
-    private var deepLinkForwarder: MockDeepLinkForwarder!
+    private var deepLinkNavigator: MockDeepLinkNavigator!
     private var sut: PaymentsRoute!
 
     override func setUp() {
-        deepLinkForwarder = MockDeepLinkForwarder()
-        sut = PaymentsRoute(deepLinkForwarder: deepLinkForwarder)
+        deepLinkNavigator = MockDeepLinkNavigator()
+        sut = PaymentsRoute(deepLinkNavigator: deepLinkNavigator)
     }
 
     func test_canHandle_returns_true_for_set_up_tap_to_pay_deep_link_path() {
@@ -24,7 +24,7 @@ final class PaymentsRouteTests: XCTestCase {
         XCTAssertTrue(sut.canHandle(subPath: "payments/collect-payment"))
     }
 
-    func test_performAction_forwards_payments_deep_link_to_hub_menu() {
+    func test_performAction_forwards_payments_deep_link_to_hub_menu() throws {
         // Given
         let path = "payments"
 
@@ -33,10 +33,11 @@ final class PaymentsRouteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(reportedHandled)
-        assertEqual(HubMenuCoordinator.DeepLinkDestination.paymentsMenu, deepLinkForwarder.spyForwardedHubMenuDeepLink)
+        let navigatedDestination = try XCTUnwrap(deepLinkNavigator.spyNavigatedDestination as? HubMenuDestination)
+        assertEqual(HubMenuDestination.paymentsMenu, navigatedDestination)
     }
 
-    func test_performAction_forwards_tap_to_pay_deep_link_to_hub_menu() {
+    func test_performAction_forwards_tap_to_pay_deep_link_to_hub_menu() throws {
         // Given
         let path = "payments/tap-to-pay"
 
@@ -45,10 +46,11 @@ final class PaymentsRouteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(reportedHandled)
-        assertEqual(HubMenuCoordinator.DeepLinkDestination.tapToPayOnIPhone, deepLinkForwarder.spyForwardedHubMenuDeepLink)
+        let navigatedDestination = try XCTUnwrap(deepLinkNavigator.spyNavigatedDestination as? PaymentsMenuDestination)
+        assertEqual(PaymentsMenuDestination.tapToPay, navigatedDestination)
     }
 
-    func test_performAction_forwards_collect_payment_deep_link_to_hub_menu() {
+    func test_performAction_forwards_collect_payment_deep_link_to_hub_menu() throws {
         // Given
         let path = "payments/collect-payment"
 
@@ -57,7 +59,8 @@ final class PaymentsRouteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(reportedHandled)
-        assertEqual(HubMenuCoordinator.DeepLinkDestination.simplePayments, deepLinkForwarder.spyForwardedHubMenuDeepLink)
+        let navigatedDestination = try XCTUnwrap(deepLinkNavigator.spyNavigatedDestination as? PaymentsMenuDestination)
+        assertEqual(PaymentsMenuDestination.collectPayment, navigatedDestination)
     }
 
     func test_performAction_does_not_forward_unrecognised_deep_link_to_hub_menu() {
@@ -69,7 +72,7 @@ final class PaymentsRouteTests: XCTestCase {
 
         // Then
         XCTAssertFalse(reportedHandled)
-        XCTAssertFalse(deepLinkForwarder.spyDidForwardHubMenuDeepLink)
+        XCTAssertFalse(deepLinkNavigator.spyDidNavigate)
     }
 
 }

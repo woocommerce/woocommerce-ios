@@ -223,10 +223,9 @@ private extension WooPaymentsSetupInstructionsView {
     }
 
     enum URLs {
-        static let wpcomAccount = URL(string: "https://woocommerce.com/document/woopayments/startup-guide/"
-                                      + "#:~:text=Enter%20your%20email%20address%20to%20connect%20to%20your%20WordPress.com%20account")!
+        static let wpcomAccount = WooConstants.URLs.wooPaymentsStartupGuideConnectWordPressComAccount.asURL()
 
-        static let learnMore: URL = URL(string: "https://woocommerce.com/document/woopayments/our-policies/know-your-customer/")!
+        static let learnMore = WooConstants.URLs.wooPaymentsKnowYourCustomer.asURL()
     }
 }
 

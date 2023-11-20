@@ -34,12 +34,6 @@ final class OrderTotalsCalculator {
             .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
     }
 
-    /// Base amount used to calculate percentage-based fees for an order.
-    ///
-    var feesBaseAmountForPercentage: NSDecimalNumber {
-        itemsTotal.adding(shippingTotal).adding(taxesTotal)
-    }
-
     /// Total value of all fee lines on an order.
     ///
     var feesTotal: NSDecimalNumber {
@@ -60,6 +54,12 @@ final class OrderTotalsCalculator {
         return itemsTotal.subtracting(itemsDiscountedTotal)
     }
 
+    /// Order total
+    /// 
+    var orderTotal: NSDecimalNumber {
+        itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(discountTotal)
+    }
+
     init(for order: Order, using currencyFormatter: CurrencyFormatter) {
         self.order = order
         self.currencyFormatter = currencyFormatter
@@ -68,7 +68,6 @@ final class OrderTotalsCalculator {
     /// Returns a copy of the order with a new, locally calculated order total.
     ///
     func updateOrderTotal() -> Order {
-        let orderTotal = itemsTotal.adding(shippingTotal).adding(feesTotal).adding(taxesTotal).subtracting(discountTotal)
         return order.copy(total: orderTotal.stringValue)
     }
 }

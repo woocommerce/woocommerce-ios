@@ -534,6 +534,7 @@ extension WooAnalyticsEvent {
             static let couponsCount = "coupons_count"
             static let type = "type"
             static let usesGiftCard = "use_gift_card"
+            static let taxStatus = "tax_status"
         }
 
         static func orderOpen(order: Order) -> WooAnalyticsEvent {
@@ -653,12 +654,12 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func orderFeeAdd(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue])
+        static func orderFeeAdd(flow: Flow, taxStatus: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeAdd, properties: [Keys.flow: flow.rawValue, Keys.taxStatus: taxStatus])
         }
 
-        static func orderFeeUpdate(flow: Flow) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderFeeUpdate, properties: [Keys.flow: flow.rawValue])
+        static func orderFeeUpdate(flow: Flow, taxStatus: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderFeeUpdate, properties: [Keys.flow: flow.rawValue, Keys.taxStatus: taxStatus])
         }
 
         static func orderFeeRemove(flow: Flow) -> WooAnalyticsEvent {

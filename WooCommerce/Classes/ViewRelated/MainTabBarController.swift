@@ -194,12 +194,12 @@ final class MainTabBarController: UITabBarController {
     ///   - animated: Whether the tab switch is animated.
     ///   - completion: Invoked when switching to the tab's root screen is complete.
     func navigateToTabWithNavigationController(_ tab: WooTab, animated: Bool = false, completion: ((UINavigationController) -> Void)? = nil) {
-        dismiss(animated: true, completion: nil)
-
-        selectedIndex = tab.visibleIndex()
-        if let navController = selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: animated) {
-                completion?(navController)
+        dismiss(animated: animated) { [weak self] in
+            self?.selectedIndex = tab.visibleIndex()
+            if let navController = self?.selectedViewController as? UINavigationController {
+                navController.popToRootViewController(animated: animated) {
+                    completion?(navController)
+                }
             }
         }
     }
@@ -211,6 +211,12 @@ final class MainTabBarController: UITabBarController {
             navigationController.viewControllers = []
         }
         hubMenuTabCoordinator = nil
+    }
+
+    func presentCollectPayment() {
+        navigateTo(.hubMenu) { [weak self] in
+            self?.hubMenuTabCoordinator?.navigate(to: PaymentsMenuDestination.collectPayment)
+        }
     }
 }
 
@@ -436,31 +442,23 @@ extension MainTabBarController {
         }
     }
 
-    @discardableResult
-    static func presentPayments() -> LegacyInPersonPaymentsMenuViewController? {
+    static func presentPayments() {
         switchToHubMenuTab()
 
-        guard let hubMenuViewController: HubMenuViewController = childViewController() else {
-            return nil
-        }
-
-        return hubMenuViewController.showPaymentsMenu()
-    }
-
-    static func presentCoupons() {
-        switchToHubMenuTab()
         guard let hubMenuViewController: HubMenuViewController = childViewController() else {
             return
         }
 
-        hubMenuViewController.showCoupons()
+        hubMenuViewController.showPaymentsMenu()
     }
 
-    static func presentCollectPayment() {
-        let viewController = presentPayments()
+    static func presentCoupons() {
+        switchToHubMenuTab() {
+            guard let hubMenuViewController: HubMenuViewController = childViewController() else {
+                return
+            }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + Constants.screenTransitionsDelay) {
-            viewController?.openSimplePaymentsAmountFlow()
+            hubMenuViewController.showCoupons()
         }
     }
 
@@ -478,10 +476,11 @@ extension MainTabBarController {
 
 // MARK: - DeeplinkForwarder
 //
-extension MainTabBarController: DeepLinkForwarder {
-    func forwardHubMenuDeepLink(to destination: HubMenuCoordinator.DeepLinkDestination) {
-        Self.switchToHubMenuTab()
-        hubMenuTabCoordinator?.navigate(to: destination)
+extension MainTabBarController: DeepLinkNavigator {
+    func navigate(to destination: any DeepLinkDestinationProtocol) {
+        navigateTo(.hubMenu) { [weak self] in
+            self?.hubMenuTabCoordinator?.navigate(to: destination)
+        }
     }
 }
 

@@ -102,10 +102,12 @@ struct ConfigurableBundleItemView_Previews: PreviewProvider {
             ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: false),
                                                         product: .swiftUIPreviewSample(),
                                                         variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil))
             ConfigurableBundleItemView(viewModel: .init(bundleItem: .swiftUIPreviewSample().copy(isOptional: true),
                                                         product: .swiftUIPreviewSample(),
                                                         variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
                                                         existingOrderItem: nil))
         }
     }

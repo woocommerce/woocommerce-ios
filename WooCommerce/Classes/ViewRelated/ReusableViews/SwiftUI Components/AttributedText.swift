@@ -229,22 +229,22 @@ private extension EnvironmentValues {
 struct AttributedText_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            Link("Default Link", destination: URL(string: "https://woocommerce.com/")!)
+            Link("Default Link", destination: URL(string: "https://woo.com/")!)
             Text("Default Text")
-            AttributedText("AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
-            AttributedText("Custom AttributedText <a href=\"https://woocommerce.com/\">with a link</a>".htmlToAttributedString)
+            AttributedText("AttributedText <a href=\"https://woo.com/\">with a link</a>".htmlToAttributedString)
+            AttributedText("Custom AttributedText <a href=\"https://woo.com/\">with a link</a>".htmlToAttributedString)
                 .font(.footnote)
                 .attributedTextForegroundColor(.gray)
                 .attributedTextLinkColor(.pink)
             AttributedText(.init(string: "Link with underline", attributes: [
                 .font: UIFont.body,
-                .link: "woocommerce.com",
+                .link: "woo.com",
                 .underlineStyle: NSUnderlineStyle.single.rawValue
             ]), enablesLinkUnderline: true)
             .attributedTextLinkColor(.init(UIColor.accent))
             AttributedText(.init(string: "Link without underline", attributes: [
                 .font: UIFont.body,
-                .link: "woocommerce.com",
+                .link: "woo.com",
                 .underlineStyle: 0 // No `NSUnderlineStyle` is available.
             ]), enablesLinkUnderline: true)
         }

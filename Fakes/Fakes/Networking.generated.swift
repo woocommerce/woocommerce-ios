@@ -250,7 +250,8 @@ extension Networking.CreateProductVariation {
             salePrice: .fake(),
             attributes: .fake(),
             description: .fake(),
-            image: .fake()
+            image: .fake(),
+            subscription: .fake()
         )
     }
 }

@@ -10,7 +10,6 @@ struct HubMenu: View {
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    @State private var showingPayments = false
     @State private var showingWooCommerceAdmin = false
     @State private var showingViewStore = false
     @State private var showingInbox = false
@@ -104,9 +103,9 @@ struct HubMenu: View {
         NavigationLink(destination: SettingsView(), isActive: $showSettings) {
             EmptyView()
         }.hidden()
-        NavigationLink(destination: inPersonPaymentsMenu()
+        NavigationLink(destination: InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
             .navigationTitle(InPersonPaymentsView.Localization.title),
-                       isActive: $showingPayments) {
+                       isActive: $viewModel.showingPayments) {
             EmptyView()
         }.hidden()
         NavigationLink(destination:
@@ -142,7 +141,7 @@ struct HubMenu: View {
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
             showSettings = true
         case HubMenuViewModel.Payments.id:
-            showingPayments = true
+            viewModel.showingPayments = true
         case HubMenuViewModel.Blaze.id:
             viewModel.showBlaze()
         case HubMenuViewModel.WoocommerceAdmin.id:
@@ -161,15 +160,6 @@ struct HubMenu: View {
             viewModel.presentSubscriptions()
         default:
             break
-        }
-    }
-
-    @ViewBuilder
-    private func inPersonPaymentsMenu() -> some View {
-        if viewModel.swiftUIPaymentsMenuEnabled {
-            InPersonPaymentsMenu(viewModel: viewModel.inPersonPaymentsMenuViewModel)
-        } else {
-            LegacyInPersonPaymentsMenu(tapToPayBadgePromotionChecker: viewModel.tapToPayBadgePromotionChecker)
         }
     }
 }

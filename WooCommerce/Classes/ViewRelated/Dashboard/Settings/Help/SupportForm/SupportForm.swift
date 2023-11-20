@@ -20,8 +20,8 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         hidesBottomBarWhenPushed = true
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         createZendeskIdentity()
     }
 
@@ -268,4 +268,16 @@ struct SupportFormProvider: PreviewProvider {
             ]))
         }
     }
+}
+
+struct HostedSupportForm: UIViewControllerRepresentable {
+    typealias UIViewControllerType = SupportFormHostingController
+
+    let viewModel: SupportFormViewModel
+
+    func makeUIViewController(context: Context) -> SupportFormHostingController {
+        SupportFormHostingController(viewModel: viewModel)
+    }
+
+    func updateUIViewController(_ uiViewController: SupportFormHostingController, context: Context) { }
 }

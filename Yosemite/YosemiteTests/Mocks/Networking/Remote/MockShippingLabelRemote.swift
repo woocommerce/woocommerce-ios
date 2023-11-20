@@ -6,6 +6,10 @@ import XCTest
 /// Mock for `ShippingLabelRemote`.
 ///
 final class MockShippingLabelRemote {
+
+    private(set) var purchaseShippingLabelCalled = false
+    private(set) var checkLabelStatusCallsCount = 0
+
     private struct LoadAllResultKey: Hashable {
         let siteID: Int64
         let orderID: Int64
@@ -356,6 +360,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = PurchaseShippingLabelResultKey(siteID: siteID)
             if let result = self.purchaseShippingLabelResults[key] {
+                self.purchaseShippingLabelCalled = true
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")
@@ -372,6 +377,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
             let key = CheckLabelStatusResultKey(siteID: siteID)
             if let result = self.checkLabelStatusResults[key] {
+                self.checkLabelStatusCallsCount += 1
                 completion(result)
             } else {
                 XCTFail("\(String(describing: self)) Could not find Result for \(key)")

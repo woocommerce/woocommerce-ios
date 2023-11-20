@@ -112,7 +112,7 @@ struct PluginDetailsRowView_Previews: PreviewProvider {
                                             authorUrl: "",
                                             networkActivated: false,
                                             active: true)
-            viewModel.updateURL = URL(string: "https://woocommerce.com")!
+            viewModel.updateURL = URL(string: "https://woo.com")!
             return viewModel
     }
 

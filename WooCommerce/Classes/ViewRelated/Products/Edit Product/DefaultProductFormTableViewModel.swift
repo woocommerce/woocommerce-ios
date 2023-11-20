@@ -134,6 +134,8 @@ private extension DefaultProductFormTableViewModel {
                 return .bundledProducts(viewModel: bundledProductsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .components(let actionable):
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
+            case .subscriptionFreeTrial(let editable):
+                return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: product, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             case .noVariationsWarning:
@@ -163,6 +165,8 @@ private extension DefaultProductFormTableViewModel {
                 return .status(viewModel: variationStatusRow(productVariation: productVariation, isEditable: editable), isEditable: editable)
             case .noPriceWarning:
                 return .noPriceWarning(viewModel: noPriceWarningRow(isActionable: false))
+            case .subscriptionFreeTrial(let editable):
+                return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             case .quantityRules:
@@ -613,6 +617,22 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isActionable)
     }
 
+    func subscriptionFreeTrialRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.hourglass
+        let title = Localization.subscriptionFreeTrialTitle
+
+        let details: String = {
+            let trialLength = product.subscription?.trialLength ?? ""
+            let trialPeriod = product.subscription?.trialPeriod ?? .month
+            return Localization.subscriptionFreeTrialDescription(trialLength: trialLength,
+                                                                 trialPeriod: trialPeriod)
+        }()
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isEditable)
+    }
+
     // MARK: Variable Subscription products only
 
     func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
@@ -651,8 +671,31 @@ private extension DefaultProductFormTableViewModel {
     }
 }
 
-private extension DefaultProductFormTableViewModel {
+extension DefaultProductFormTableViewModel {
     enum Localization {
+        // Subscription Free Trial
+        static let subscriptionFreeTrialTitle = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+                                                                  value: "Free Trial",
+                                                                  comment: "Title for Subscription Free Trial row in the product form screen.")
+
+        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+                                                     value: "No trial period",
+                                                     comment: "Display label when a subscription has no trial period.")
+
+        static func subscriptionFreeTrialDescription(trialLength: String, trialPeriod: SubscriptionPeriod) -> String {
+            switch trialLength {
+            case "", "0":
+                return noTrialPeriod
+            case "1":
+                return "1 \(trialPeriod.descriptionSingular)"
+            default:
+                return "\(trialLength) \(trialPeriod.descriptionPlural)"
+            }
+        }
+    }
+}
+
+private extension DefaultProductFormTableViewModel.Localization {
         static let addPriceSettingsTitle = NSLocalizedString("Add Price",
                                                              comment: "Title for adding the price settings row on Product main screen")
         static let priceSettingsTitle = NSLocalizedString("Price",
@@ -924,5 +967,4 @@ private extension DefaultProductFormTableViewModel {
                                                        comment: "Format of the Maximum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let groupOfFormat = NSLocalizedString("Group of: %@",
                                                        comment: "Format of the Group Of setting (with a numeric quantity) on the Quantity Rules row")
-    }
 }

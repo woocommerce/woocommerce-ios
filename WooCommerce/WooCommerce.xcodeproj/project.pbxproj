@@ -6664,6 +6664,16 @@
 			path = "Bulk Update";
 			sourceTree = "<group>";
 		};
+		202496682B0BC07E00EE527D /* Deposits Overview */ = {
+			isa = PBXGroup;
+			children = (
+				209AD3CF2AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift */,
+				209AD3D12AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift */,
+				203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */,
+			);
+			path = "Deposits Overview";
+			sourceTree = "<group>";
+		};
 		20AE33C32B0510AD00527B60 /* Destinations */ = {
 			isa = PBXGroup;
 			children = (
@@ -11127,15 +11137,13 @@
 		E138D4F2269ED99A006EA5C6 /* In-Person Payments */ = {
 			isa = PBXGroup;
 			children = (
+				202496682B0BC07E00EE527D /* Deposits Overview */,
 				20D5CB4F2AFCF82D009A39C3 /* Payments Menu */,
 				E107FCDD26C1295600BAF51B /* Onboarding Errors */,
 				20E188832AD059A50053E945 /* AboutTapToPayView.swift */,
 				201F5AC42AD4061800EF6C55 /* AboutTapToPayViewModel.swift */,
 				E12AF69826BA8ADC00C371C1 /* CardPresentPaymentsOnboardingUseCase.swift */,
 				E138D4F3269ED9C3006EA5C6 /* InPersonPaymentsViewController.swift */,
-				209AD3CF2AC1EDDA00825D76 /* WooPaymentsDepositsCurrencyOverviewViewModel.swift */,
-				209AD3D12AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift */,
-				203A5C302AC5ADD700BF29A1 /* WooPaymentsDepositsOverviewView.swift */,
 				03EF250528C75838006A033E /* PurchaseCardReaderWebViewViewModel.swift */,
 				03EF24F928BF5D21006A033E /* InPersonPaymentsCashOnDeliveryToggleRowViewModel.swift */,
 				E120F63726C26B550005A029 /* InPersonPaymentsLoadingView.swift */,

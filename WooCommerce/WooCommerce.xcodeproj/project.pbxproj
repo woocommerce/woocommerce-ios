@@ -5382,7 +5382,6 @@
 				0212276024498A270042161F /* ProductFormBottomSheetListSelectorCommand.swift */,
 				0212276224498CDC0042161F /* ProductFormBottomSheetAction.swift */,
 				02CEBB7F24C9869E002EDF35 /* ProductFormActionsFactoryProtocol.swift */,
-				02BAB02624D13A6400F8B06E /* ProductVariationFormActionsFactory.swift */,
 				4574745C24EA84D800CF49BC /* ProductTypeBottomSheetListSelectorCommand.swift */,
 				2676F4CB2908284800C7A15B /* ProductCreationTypeCommand.swift */,
 			);
@@ -5392,6 +5391,7 @@
 		021627232379637E000208D2 /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
+				02BAB02624D13A6400F8B06E /* ProductVariationFormActionsFactory.swift */,
 				26F94E1A267A3B3C00DB6CCF /* Addons */,
 				452FE64825657E5F00EB54A0 /* Linked Products */,
 				022F7A0024A05F3700012601 /* Linked Products List Selector */,

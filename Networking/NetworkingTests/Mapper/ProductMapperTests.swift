@@ -384,6 +384,18 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
     }
 
+    /// Test that `subscription` is nil when parsing non-subscription product response
+    ///
+    func test_subscription_is_nil_when_parsing_non_subscription_product_response() throws {
+        // Given
+        let productsToTest = try XCTUnwrap(mapLoadProductResponse())
+
+        // Then
+        for product in productsToTest {
+            XCTAssertNil(product.subscription)
+        }
+    }
+
     /// Test that products with properties from the Min/Max Quantities extension are properly parsed.
     ///
     func test_min_max_quantities_are_properly_parsed() throws {

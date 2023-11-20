@@ -1660,9 +1660,9 @@
 		B6C838DE28793B3A003AB786 /* OrderCustomFieldsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6C838DD28793B3A003AB786 /* OrderCustomFieldsViewModel.swift */; };
 		B6D2468C2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6D2468B2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift */; };
 		B6E7DB64293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E7DB63293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift */; };
-		B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */; };
-		B6E851F5276330200041D1BA /* RefundFeesDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */; };
-		B6E851F7276331110041D1BA /* RefundFeesDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */; };
+		B6E851F3276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F2276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift */; };
+		B6E851F5276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E851F4276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift */; };
+		B6E851F7276331110041D1BA /* RefundCustomAmountsDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E851F6276331110041D1BA /* RefundCustomAmountsDetailsTableViewCell.xib */; };
 		B6F379682937836700718561 /* AnalyticsHubTimeRange.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */; };
 		B6F3796A29378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796929378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift */; };
 		B6F3796C293794A000718561 /* AnalyticsHubYearToDateRangeData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */; };
@@ -4230,9 +4230,9 @@
 		B6C838DD28793B3A003AB786 /* OrderCustomFieldsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomFieldsViewModel.swift; sourceTree = "<group>"; };
 		B6D2468B2A0ED4C400B79B9C /* EUCustomsScenarioValidatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EUCustomsScenarioValidatorTests.swift; sourceTree = "<group>"; };
 		B6E7DB63293A7C390049B001 /* AnalyticsHubYesterdayRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYesterdayRangeData.swift; sourceTree = "<group>"; };
-		B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesDetailsViewModel.swift; sourceTree = "<group>"; };
-		B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundFeesDetailsTableViewCell.swift; sourceTree = "<group>"; };
-		B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundFeesDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		B6E851F2276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCustomAmountsDetailsViewModel.swift; sourceTree = "<group>"; };
+		B6E851F4276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundCustomAmountsDetailsTableViewCell.swift; sourceTree = "<group>"; };
+		B6E851F6276331110041D1BA /* RefundCustomAmountsDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundCustomAmountsDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		B6F379672937836700718561 /* AnalyticsHubTimeRange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubTimeRange.swift; sourceTree = "<group>"; };
 		B6F3796929378B3900718561 /* AnalyticsHubMonthToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubMonthToDateRangeData.swift; sourceTree = "<group>"; };
 		B6F3796B293794A000718561 /* AnalyticsHubYearToDateRangeData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsHubYearToDateRangeData.swift; sourceTree = "<group>"; };
@@ -7130,9 +7130,9 @@
 				260C315D2523CC4000157BC2 /* RefundProductsTotalViewModel.swift */,
 				26CCBE0A2523B3650073F94D /* RefundProductsTotalTableViewCell.swift */,
 				26CCBE0C2523C2560073F94D /* RefundProductsTotalTableViewCell.xib */,
-				B6E851F2276320C70041D1BA /* RefundFeesDetailsViewModel.swift */,
-				B6E851F4276330200041D1BA /* RefundFeesDetailsTableViewCell.swift */,
-				B6E851F6276331110041D1BA /* RefundFeesDetailsTableViewCell.xib */,
+				B6E851F2276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift */,
+				B6E851F4276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift */,
+				B6E851F6276331110041D1BA /* RefundCustomAmountsDetailsTableViewCell.xib */,
 				0379C51827BFE23400A7E284 /* RefundConfirmationCardDetailsCell.xib */,
 				0379C51A27BFE23F00A7E284 /* RefundConfirmationCardDetailsCell.swift */,
 			);
@@ -11944,7 +11944,7 @@
 				3F587021281B9494004F7556 /* LaunchScreen.storyboard in Resources */,
 				027D4A8E2526FD1800108626 /* SettingsViewController.xib in Resources */,
 				0373A12B2A1D1E4D00731236 /* BadgedLeftImageTableViewCell.xib in Resources */,
-				B6E851F7276331110041D1BA /* RefundFeesDetailsTableViewCell.xib in Resources */,
+				B6E851F7276331110041D1BA /* RefundCustomAmountsDetailsTableViewCell.xib in Resources */,
 				7441EBCA226A71AA008BF83D /* TitleBodyTableViewCell.xib in Resources */,
 				740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */,
 				57CFCD2A2488496F003F51EC /* PrimarySectionHeaderView.xib in Resources */,
@@ -12659,7 +12659,7 @@
 				CC078531266E706300BA9AC1 /* ErrorTopBannerFactory.swift in Sources */,
 				DE8C94662646990000C94823 /* PluginListViewController.swift in Sources */,
 				683421642ACE9391009021D7 /* ProductDiscountView.swift in Sources */,
-				B6E851F3276320C70041D1BA /* RefundFeesDetailsViewModel.swift in Sources */,
+				B6E851F3276320C70041D1BA /* RefundCustomAmountsDetailsViewModel.swift in Sources */,
 				024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */,
 				AE7C957B27C3D5DA007E8E12 /* FeeOrDiscountLineDetails.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
@@ -13124,7 +13124,7 @@
 				3142663F2645E2AB00500598 /* PaymentSettingsFlowViewModelPresenter.swift in Sources */,
 				DEDB886B26E8531E00981595 /* ShippingLabelPackageAttributes.swift in Sources */,
 				AEC95D412774C5AE001571F5 /* AddressFormViewModelProtocol.swift in Sources */,
-				B6E851F5276330200041D1BA /* RefundFeesDetailsTableViewCell.swift in Sources */,
+				B6E851F5276330200041D1BA /* RefundCustomAmountsDetailsTableViewCell.swift in Sources */,
 				028E1F702833DD0A001F8829 /* DashboardViewModel.swift in Sources */,
 				2602A63D27BD3C8C00B347F1 /* RemoteOrderSynchronizer.swift in Sources */,
 				CCFBBCFA29C4C85F0081B595 /* ComponentSettingsViewModel.swift in Sources */,

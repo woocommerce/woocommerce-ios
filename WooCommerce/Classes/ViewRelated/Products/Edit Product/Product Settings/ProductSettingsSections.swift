@@ -24,10 +24,10 @@ enum ProductSettingsSections {
             let shouldShowVirtualProductSetting = settings.productType == .simple
             let shouldShowDownloadableProductSetting = settings.productType == .simple || settings.productType == .subscription
             let rows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
-                    ProductSettingsRows.Visibility(settings),
-                    ProductSettingsRows.CatalogVisibility(settings),
-                    shouldShowVirtualProductSetting ? ProductSettingsRows.VirtualProduct(settings) : nil,
-                                                      shouldShowDownloadableProductSetting ? ProductSettingsRows.DownloadableProduct(settings) : nil]
+                                                       ProductSettingsRows.Visibility(settings),
+                                                       ProductSettingsRows.CatalogVisibility(settings),
+                                                       shouldShowVirtualProductSetting ? ProductSettingsRows.VirtualProduct(settings) : nil,
+                                                       shouldShowDownloadableProductSetting ? ProductSettingsRows.DownloadableProduct(settings) : nil]
             self.rows = rows.compactMap { $0 }
         }
     }

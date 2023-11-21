@@ -116,7 +116,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
 
         // When
-        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, 
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
                                                  analytics: WooAnalytics(analyticsProvider: analytics),
                                                  onCustomAmountEntered: {_, _, _, _ in })
         viewModel.name = ""
@@ -132,7 +132,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
 
         // When
-        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, 
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
                                                  analytics: WooAnalytics(analyticsProvider: analytics),
                                                  onCustomAmountEntered: {_, _, _, _ in })
         viewModel.name = "test"

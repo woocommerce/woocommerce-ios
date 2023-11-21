@@ -7,14 +7,7 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
     let currencyFormatter: CurrencyFormatter
     let baseAmountForPercentage: Decimal
 
-    @Published var percentageCalculatedAmount: String = "" {
-        didSet {
-            guard percentageCalculatedAmount != oldValue else { return }
-
-            percentageCalculatedAmount = currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
-        }
-    }
-
+    @Published var percentageCalculatedAmount: String = ""
     var baseAmountForPercentageString: String {
         guard let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
             return ""
@@ -43,8 +36,9 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
             percentageCalculatedAmount = "0"
             return
         }
-
-        percentageCalculatedAmount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
+        
+        let amountString = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
+        percentageCalculatedAmount = currencyFormatter.formatAmount(amountString) ?? ""
     }
 
     func preset(with fee: OrderFeeLine) {

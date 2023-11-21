@@ -607,6 +607,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
                                                                        .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
                                                                        .reviews,
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),

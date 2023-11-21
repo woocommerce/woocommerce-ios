@@ -518,6 +518,12 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 // TODO: 11090 - Analytics
                 showSubscriptionFreeTrialSettings()
+            case .subscriptionExpiry(_, let isEditable):
+                guard isEditable else {
+                    return
+                }
+                // TODO: 11090 - Analytics
+                showSubscriptionExpirySettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
             case .quantityRules:
@@ -1926,6 +1932,34 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Action - Show Subscription expiry settings
+//
+private extension ProductFormViewController {
+    func showSubscriptionExpirySettings() {
+        guard let subscription = product.subscription else {
+            return
+        }
+        let viewModel = SubscriptionExpiryViewModel(subscription: subscription) { [weak self] length, hasUnsavedChanges in
+            self?.onEditSubscriptionExpirySettings(length: length,
+                                                   hasUnsavedChanges: hasUnsavedChanges)
+        }
+        let viewController = SubscriptionExpiryViewController(viewModel: viewModel)
+        show(viewController, sender: self)
+    }
+
+    func onEditSubscriptionExpirySettings(length: String,
+                                          hasUnsavedChanges: Bool) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        // TODO: 11090 - Analytics
+
+        guard hasUnsavedChanges else {
+            return
+        }
+        viewModel.updateSubscriptionExpirySettings(length: length)
+    }
+}
 
 // MARK: Action - Show Quantity Rules
 //

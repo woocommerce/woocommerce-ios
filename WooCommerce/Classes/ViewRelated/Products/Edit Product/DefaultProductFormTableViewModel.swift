@@ -136,6 +136,8 @@ private extension DefaultProductFormTableViewModel {
                 return .components(viewModel: componentsRow(product: product, isActionable: actionable), isActionable: actionable)
             case .subscriptionFreeTrial(let editable):
                 return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: product, isEditable: editable), isEditable: editable)
+            case .subscriptionExpiry(let editable):
+                return .subscriptionExpiry(viewModel: subscriptionExpiryRow(product: product, isEditable: editable), isEditable: editable)
             case .subscription(let actionable):
                 return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             case .noVariationsWarning:
@@ -633,6 +635,22 @@ private extension DefaultProductFormTableViewModel {
                                                         isActionable: isEditable)
     }
 
+    func subscriptionExpiryRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
+        let icon = UIImage.calendarClock
+        let title = Localization.subscriptionExpiryTitle
+
+        let details: String = {
+            let length = product.subscription?.length ?? ""
+            let period = product.subscription?.period ?? .month
+
+            return Localization.expiryDescription(length: length, period: period)
+        }()
+        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
+                                                        title: title,
+                                                        details: details,
+                                                        isActionable: isEditable)
+    }
+
     // MARK: Variable Subscription products only
 
     func noVariationsWarningRow() -> ProductFormSection.SettingsRow.WarningViewModel {
@@ -690,6 +708,29 @@ extension DefaultProductFormTableViewModel {
                 return "1 \(trialPeriod.descriptionSingular)"
             default:
                 return "\(trialLength) \(trialPeriod.descriptionPlural)"
+            }
+        }
+
+        // Subscription Expire After
+        static let subscriptionExpiryTitle = NSLocalizedString("defaultProductFormTableViewModel.expireAfter",
+                                                               value: "Expire after",
+                                                               comment: "Title for Subscription expiry row in the product form screen.")
+        static let neverExpire = NSLocalizedString("defaultProductFormTableViewModel.neverExpire",
+                                                   value: "Never expires",
+                                                   comment: "Display label when a subscription never expires.")
+
+        /// Localized string describing when the subscription expires.
+        ///
+        /// Example: "Never expires" or "6 months" or "1 year"
+        ///
+        static func expiryDescription(length: String, period: SubscriptionPeriod) -> String {
+            switch length {
+            case "", "0":
+                return neverExpire
+            case "1":
+                return "1 \(period.descriptionSingular)"
+            default:
+                return "\(length) \(period.descriptionPlural)"
             }
         }
     }

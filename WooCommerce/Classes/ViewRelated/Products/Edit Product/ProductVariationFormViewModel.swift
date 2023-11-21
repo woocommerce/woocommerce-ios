@@ -345,7 +345,6 @@ extension ProductVariationFormViewModel {
     }
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
-        // TODO: 11090 - Check this while implementing variation form
         let subscription = productVariation.subscription?.copy(trialLength: trialLength,
                                                                trialPeriod: trialPeriod)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
@@ -355,7 +354,6 @@ extension ProductVariationFormViewModel {
     }
 
     func updateSubscriptionExpirySettings(length: String) {
-        // TODO: 11090 - Check this while implementing variation form
         let subscription = productVariation.subscription?.copy(length: length)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
                                                          allAttributes: allAttributes,

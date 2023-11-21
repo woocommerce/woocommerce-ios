@@ -175,7 +175,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(length: "1", period: .month, periodInterval: "1", price: "5")
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
@@ -207,7 +207,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(length: "4", period: .month, periodInterval: "2", price: "5")
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When
@@ -239,7 +239,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let subscription = ProductSubscription.fake().copy(length: "0", period: .month, periodInterval: "2", price: "")
         let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue, subscription: subscription)
         let model = EditableProductModel(product: product)
-        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
 
         // When

@@ -59,24 +59,30 @@ struct OrderCustomAmountsSection: View {
         .padding()
         .background(Color(.listForeground(modal: true)))
         .confirmationDialog("How do you want to add your custom amount?", isPresented: $showAddCustomAmountConfirmationDialog, titleVisibility: .visible) {
-            Button("Enter as fixed amount $") {
-                addCustomAmountOption = .fixedAmount
-                showAddCustomAmount = true
-            }
-
-            Button("Percentage of order total %") {
-                addCustomAmountOption = .orderTotalPercentage
-                showAddCustomAmount = true
-            }
+            confirmationDialogActions
+        }
+        .confirmationDialog("How do you want to edit your custom amount?", isPresented: $viewModel.showEditCustomAmount, titleVisibility: .visible) {
+            confirmationDialogActions
         }
         .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
-        .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
-            AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
-        })
+    }
+
+    @ViewBuilder
+    private var confirmationDialogActions: some View {
+        Button("Enter as fixed amount $") {
+            addCustomAmountOption = .fixedAmount
+            showAddCustomAmount = true
+        }
+
+        Button("Percentage of order total %") {
+            addCustomAmountOption = .orderTotalPercentage
+            showAddCustomAmount = true
+        }
     }
 }
+
 private extension OrderCustomAmountsSection {
     func onAddCustomAmountRequested() {
         viewModel.onAddCustomAmountButtonTapped()

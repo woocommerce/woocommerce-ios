@@ -18,13 +18,12 @@ final class AddCustomAmountViewModel: ObservableObject {
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
     private let currencyFormatter: CurrencyFormatter
-    private let priceFieldFormatter: PriceFieldFormatter
 
     @Published var percentageCalculatedAmount: String = "" {
         didSet {
             guard percentageCalculatedAmount != oldValue else { return }
 
-            percentageCalculatedAmount = priceFieldFormatter.formatAmount(percentageCalculatedAmount)
+            return currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
         }
     }
 
@@ -59,7 +58,6 @@ final class AddCustomAmountViewModel: ObservableObject {
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        self.priceFieldFormatter = .init(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.inputType = inputType
         self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
         self.analytics = analytics
@@ -103,7 +101,17 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
-        formattableAmountTextFieldViewModel.presetAmount(fee.total)
+        switch inputType {
+        case .fixedAmount:
+            formattableAmountTextFieldViewModel.presetAmount(fee.total)
+        case let .orderTotalPercentage(baseAmount):
+            if let totalDecimal = currencyFormatter.convertToDecimal(fee.total) {
+                percentage = currencyFormatter.localize(((totalDecimal as Decimal / baseAmount) * 100)) ?? "0"
+                percentageCalculatedAmount = fee.total
+
+            }
+        }
+
         feeID = fee.feeID
     }
 }
@@ -112,6 +120,10 @@ private extension AddCustomAmountViewModel {
     func listenToAmountChanges() {
         formattableAmountTextFieldViewModel.$amount.map { _ in
             !self.formattableAmountTextFieldViewModel.amountIsValid
+        }.assign(to: &$shouldDisableDoneButton)
+
+        $percentageCalculatedAmount.map { amount in
+            amount.isNotEmpty
         }.assign(to: &$shouldDisableDoneButton)
     }
 

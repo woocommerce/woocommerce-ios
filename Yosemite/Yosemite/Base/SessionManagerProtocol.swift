@@ -20,8 +20,14 @@ public protocol SessionManagerProtocol {
     var defaultSitePublisher: AnyPublisher<Site?, Never> { get }
 
     /// Default StoreID.
+    /// This is in fact the WPCom `siteID`.
     ///
     var defaultStoreID: Int64? { get set }
+
+    /// Unique WooCommerce Store UUID.
+    /// Do not conduse with `defaultStoreID` which is in fact the WPCom `siteID`.
+    ///
+    var defaultStoreUUID: String? { get set }
 
     /// Roles for the default Store Site.
     ///

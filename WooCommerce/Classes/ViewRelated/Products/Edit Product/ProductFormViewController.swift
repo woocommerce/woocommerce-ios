@@ -522,7 +522,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                // TODO: 11090 - Analytics
+
+                if product is EditableProductVariationModel {
+                    ServiceLocator.analytics.track(.productVariationViewSubscriptionExpirationDateTapped)
+                } else if product is EditableProductModel {
+                    ServiceLocator.analytics.track(.productDetailsViewSubscriptionExpirationDateTapped)
+                }
+
                 showSubscriptionExpirySettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.

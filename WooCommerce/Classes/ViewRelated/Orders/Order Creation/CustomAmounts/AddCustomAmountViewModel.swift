@@ -4,18 +4,26 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-final class AddCustomAmountInputTypeViewModelProxyProvider {
-    func provideAddCustomAmountInputTypeViewModelProxy(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelProxy {
+/// Provides a adapter depending on the input type
+///
+final class AddCustomAmountInputTypeViewModelAdapterProvider {
+    func provideAddCustomAmountInputTypeViewModelAdapter(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelAdapter {
         switch type {
         case .fixedAmount:
-            return FixedAddCustomAmountInputTypeViewModelProxy()
+            return FixedAmountAddCustomAmountInputTypeViewModelAdapter()
         case .orderTotalPercentage(let baseAmount):
-            return PercentageAddCustomAmountInputTypeViewModelProxy(baseAmount: baseAmount)
+            return PercentageAddCustomAmountInputTypeViewModelAdapter(baseAmount: baseAmount)
         }
     }
 }
 
-protocol AddCustomAmountInputTypeViewModelProxy {
+/// Classes implementing this protocol will act as a adapter between `AddCustomAmountViewModel` and the input type view models.
+/// This way, the former can be agnostic of what type of view model we have before the scenes,
+/// and doesn't have to type check to access their concrete implementation.
+/// Having a adapter keeps the classes loosely coupled, as the type view model doesn't have to adapt for `AddCustomAmountViewModel`,
+/// the adapter implements this adaptation.
+///
+protocol AddCustomAmountInputTypeViewModelAdapter {
     var amount: String? { get }
     var amountPublisher: Published<String>.Publisher? { get }
     var viewModel: AddCustomAmountViewModel? { get set }
@@ -23,7 +31,7 @@ protocol AddCustomAmountInputTypeViewModelProxy {
     func preset(with fee: OrderFeeLine)
 }
 
-struct FixedAddCustomAmountInputTypeViewModelProxy: AddCustomAmountInputTypeViewModelProxy {
+struct FixedAmountAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter {
     weak var viewModel: AddCustomAmountViewModel?
 
     var amount: String? {
@@ -39,7 +47,7 @@ struct FixedAddCustomAmountInputTypeViewModelProxy: AddCustomAmountInputTypeView
     }
 }
 
-struct PercentageAddCustomAmountInputTypeViewModelProxy: AddCustomAmountInputTypeViewModelProxy {
+struct PercentageAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter {
     weak var viewModel: AddCustomAmountViewModel?
     let baseAmount: Decimal
 
@@ -65,7 +73,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     }
 
     private let inputType: InputType
-    private var inputTypeVieModelProxy: AddCustomAmountInputTypeViewModelProxy
+    private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
     let currencyFormatter: CurrencyFormatter
@@ -93,21 +101,20 @@ final class AddCustomAmountViewModel: ObservableObject {
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
-        self.inputTypeVieModelProxy = AddCustomAmountInputTypeViewModelProxyProvider().provideAddCustomAmountInputTypeViewModelProxy(with: inputType)
+        self.inputTypeViewModelAdapter = AddCustomAmountInputTypeViewModelAdapterProvider().provideAddCustomAmountInputTypeViewModelAdapter(with: inputType)
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         self.inputType = inputType
         self.analytics = analytics
         self.onCustomAmountEntered = onCustomAmountEntered
 
         setupViewModels(from: inputType, locale: locale, storeCurrencySettings: storeCurrencySettings)
-        inputTypeVieModelProxy.viewModel = self
-
+        inputTypeViewModelAdapter.viewModel = self
 
         listenToAmountChanges()
     }
 
     func doneButtonPressed() {
-        guard let amount = inputTypeVieModelProxy.amount else { return }
+        guard let amount = inputTypeViewModelAdapter.amount else { return }
         trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
@@ -117,7 +124,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
-        inputTypeVieModelProxy.preset(with: fee)
+        inputTypeViewModelAdapter.preset(with: fee)
         feeID = fee.feeID
     }
 }
@@ -133,7 +140,7 @@ private extension AddCustomAmountViewModel {
     }
 
     func listenToAmountChanges() {
-        inputTypeVieModelProxy.amountPublisher?.map { [weak self] value in
+        inputTypeViewModelAdapter.amountPublisher?.map { [weak self] value in
             !(self?.amountIsValid(amount: value) ?? true)
         }.assign(to: &$shouldDisableDoneButton)
     }

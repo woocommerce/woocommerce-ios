@@ -376,8 +376,13 @@ private extension CardReaderConnectionController {
             onError: { [weak self] error in
                 guard let self = self else { return }
 
-                self.analyticsTracker.discoveryFailed(error: error)
-                self.state = .discoveryFailed(error)
+                if case .cancel = self.state {
+                    self.analyticsTracker.connectionFailed(error: error, cardReaderModel: self.candidateReader?.readerType.model)
+                    self.state = .cancel(.connectionError)
+                } else {
+                    self.analyticsTracker.discoveryFailed(error: error)
+                    self.state = .discoveryFailed(error)
+                }
             })
 
         stores.dispatch(action)

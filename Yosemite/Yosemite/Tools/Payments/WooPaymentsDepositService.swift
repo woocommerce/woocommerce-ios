@@ -2,7 +2,11 @@ import Foundation
 import Networking
 import WooFoundation
 
-public class WooPaymentsDepositService {
+public protocol WooPaymentsDepositServiceProtocol {
+    func fetchDepositsOverview() async -> [WooPaymentsDepositsOverviewByCurrency]
+}
+
+public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote

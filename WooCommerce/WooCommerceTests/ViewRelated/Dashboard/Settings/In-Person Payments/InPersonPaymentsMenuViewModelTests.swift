@@ -5,6 +5,42 @@ import TestKit
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
 class InPersonPaymentsMenuViewModelTests: XCTestCase {
+
+    private var sut: InPersonPaymentsMenuViewModel!
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    private var mockDepositService: MockWooPaymentsDepositService!
+
+    private let sampleStoreID: Int64 = 12345
+
+    override func setUp() {
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        mockDepositService = MockWooPaymentsDepositService()
+        let mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: .init(
+                                                cardPresentPaymentsConfiguration: .init(country: .US),
+                                                onboardingUseCase: mockOnboardingUseCase,
+                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                wooPaymentsDepositService: mockDepositService,
+                                                analytics: analytics))
+    }
+
+    func test_onAppear_when_no_deposit_summaries_are_returned_depositSummaryShown_is_not_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewThenReturn = []
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(where: { eventName in
+            eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
+        }))
+    }
 //     private var stores: MockStoresManager!
 
 //     private var analyticsProvider: MockAnalyticsProvider!

@@ -2155,6 +2155,21 @@ extension WooAnalyticsEvent {
     }
 }
 
+// MARK: - Deposit Summary
+//
+extension WooAnalyticsEvent {
+    enum DepositSummary {
+        enum Keys {
+            static let numberOfCurrencies = "number_of_currencies"
+        }
+
+        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent{
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryShown,
+                              properties: [Keys.numberOfCurrencies: numberOfCurrencies])
+        }
+    }
+}
+
 // MARK: - Close Account
 //
 extension WooAnalyticsEvent {

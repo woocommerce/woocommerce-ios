@@ -501,10 +501,11 @@ private extension DefaultStoresManager {
     @MainActor
     func synchronizeSystemPlugins(siteID: Int64) async -> [SystemPlugin]? {
         await withCheckedContinuation { continuation in
-            dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 switch result {
-                    case let .success(plugins):
-                        continuation.resume(returning: plugins)
+                    case let .success(systemInformation):
+                        print("🚨 Store ID: \(systemInformation.storeID)") // TODO: This will be deleted in a later PR, when tracks get updated with this value
+                        continuation.resume(returning: systemInformation.systemPlugins)
                     case let .failure(error):
                         DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
                         continuation.resume(returning: nil)

@@ -580,6 +580,42 @@ final class AppSettingsStoreTests: XCTestCase {
 
     // MARK: - General Store Settings
 
+    func test_setStoreID_stores_the_store_id_correctly() throws {
+        // Given
+        let siteID: Int64 = 1234
+
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings()])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let action = AppSettingsAction.setStoreID(siteID: siteID, id: "sample-store-uuid")
+        subject?.onAction(action)
+
+        // Then
+        let savedSettings: GeneralStoreSettingsBySite = try XCTUnwrap(fileStorage?.data(for: expectedGeneralStoreSettingsFileURL))
+        let settingsForSite = savedSettings.storeSettingsBySite[siteID]
+
+        XCTAssertEqual(settingsForSite?.storeID, "sample-store-uuid")
+    }
+
+    func test_getStoreID_retrieves_the_saved_store_id() throws {
+        // Given
+        let siteID: Int64 = 1234
+        let existingSettings = GeneralStoreSettingsBySite(storeSettingsBySite: [siteID: GeneralStoreSettings(storeID: "sample-store-uuid")])
+        try fileStorage?.write(existingSettings, to: expectedGeneralStoreSettingsFileURL)
+
+        // When
+        let storeID: String? = waitFor { promise in
+            let action = AppSettingsAction.getStoreID(siteID: siteID) { id in
+                promise(id)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(storeID, "sample-store-uuid")
+    }
+
     func test_saving_isTelemetryAvailable_works_correctly() throws {
         // Given
         let siteID: Int64 = 1234

@@ -3,6 +3,7 @@
         "environment": {
             "home_url": "https://additional-beetle.jurassic.ninja",
             "site_url": "https://additional-beetle.jurassic.ninja",
+            "store_id": "sample-store-uuid",
             "version": "5.9.0",
             "log_directory": "/srv/users/user9fe179e8/apps/user9fe179e8/public/wp-content/uploads/wc-logs/",
             "log_directory_writable": true,

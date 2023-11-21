@@ -254,7 +254,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         stores.dispatch(settingsAction)
 
         // We need to sync plugins to see which CPP-supporting plugins are installed, up to date, and active
-        let systemPluginsAction = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { result in
+        let systemPluginsAction = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
                 errors.append(error)

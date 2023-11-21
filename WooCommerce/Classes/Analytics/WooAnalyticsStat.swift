@@ -1009,6 +1009,7 @@ public enum WooAnalyticsStat: String {
     case setUpTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
     case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
+    case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

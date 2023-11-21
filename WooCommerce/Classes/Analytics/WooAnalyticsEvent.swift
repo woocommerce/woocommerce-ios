@@ -2163,9 +2163,13 @@ extension WooAnalyticsEvent {
             static let numberOfCurrencies = "number_of_currencies"
         }
 
-        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent{
+        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryShown,
                               properties: [Keys.numberOfCurrencies: numberOfCurrencies])
+        }
+
+        static func depositSummaryError(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryError, properties: [:], error: error)
         }
     }
 }

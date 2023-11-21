@@ -101,15 +101,20 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             shouldShowDepositSummary = false
             return
         }
-        depositCurrencyViewModels = await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
-            WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
-        })
-        shouldShowDepositSummary = depositCurrencyViewModels.count > 0
-
-        guard shouldShowDepositSummary else {
-            return
+        do {
+            depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            })
+            shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+            
+            guard shouldShowDepositSummary else {
+                return
+            }
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
+        } catch {
+            shouldShowDepositSummary = false
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryError(error: error))
         }
-        dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
     }
 
     @MainActor

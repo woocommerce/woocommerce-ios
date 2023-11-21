@@ -64,6 +64,17 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         assertEqual(properties["number_of_currencies"], 2)
     }
 
+    func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewShouldThrow = WooPaymentsDepositServiceError.unknown
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
+    }
+
 //     private var stores: MockStoresManager!
 
 //     private var analyticsProvider: MockAnalyticsProvider!

@@ -3,7 +3,7 @@ import Networking
 import WooFoundation
 
 public protocol WooPaymentsDepositServiceProtocol {
-    func fetchDepositsOverview() async -> [WooPaymentsDepositsOverviewByCurrency]
+    func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency]
 }
 
 public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol {
@@ -21,13 +21,14 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
 
     // MARK: - Public Methods
 
-    public func fetchDepositsOverview() async -> [WooPaymentsDepositsOverviewByCurrency] {
+    public func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency] {
         do {
             let overview = try await wooPaymentsRemote.loadDepositsOverview(for: siteID)
             return depositsOverviewForViews(overview)
+        } catch let error as DotcomError {
+            throw WooPaymentsDepositServiceError.network(underlying: error)
         } catch {
-            DDLogError("💰 Error fetching deposits summary \(error)")
-            return []
+            throw WooPaymentsDepositServiceError.unknown
         }
     }
 
@@ -115,4 +116,9 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
                                          type: lastDeposit.type),
             date: lastDeposit.date)
     }
+}
+
+public enum WooPaymentsDepositServiceError: Error {
+    case network(underlying: DotcomError)
+    case unknown
 }

@@ -66,13 +66,27 @@ public final class ShippingLabelStore: Store {
             synchronizeShippingLabelAccountSettings(siteID: siteID, completion: completion)
         case .updateShippingLabelAccountSettings(let siteID, let settings, let completion):
             updateShippingLabelAccountSettings(siteID: siteID, settings: settings, completion: completion)
-        case .purchaseShippingLabel(let siteID, let orderID, let originAddress, let destinationAddress, let packages, let emailCustomerReceipt, let completion):
+        case .purchaseShippingLabel(
+            let siteID,
+            let orderID,
+            let originAddress,
+            let destinationAddress,
+            let packages,
+            let emailCustomerReceipt,
+            let completion,
+            let backendProcessingDelay,
+            let pollingDelay,
+            let pollingMaximumRetries
+        ):
             purchaseShippingLabel(siteID: siteID,
                                   orderID: orderID,
                                   originAddress: originAddress,
                                   destinationAddress: destinationAddress,
                                   packages: packages,
                                   emailCustomerReceipt: emailCustomerReceipt,
+                                  backendProcessingDelay: backendProcessingDelay,
+                                  pollingDelay: pollingDelay,
+                                  pollingMaximumRetries: pollingMaximumRetries,
                                   completion: completion)
         }
     }
@@ -230,6 +244,9 @@ private extension ShippingLabelStore {
                                destinationAddress: ShippingLabelAddress,
                                packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
+                               backendProcessingDelay: TimeInterval,
+                               pollingDelay: TimeInterval,
+                               pollingMaximumRetries: Int64,
                                completion: @escaping (Result<[ShippingLabel], Error>) -> Void) {
         var labelPurchaseIDs: [Int64] = []
 
@@ -247,14 +264,13 @@ private extension ShippingLabelStore {
                     labelPurchaseIDs.append(label.shippingLabelID)
                 }
 
-                // Wait for 2 seconds (give the backend time to process the purchase)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
+                // Wait to give the backend time to process the purchase
+                DispatchQueue.main.asyncAfter(deadline: .now() + backendProcessingDelay) { [weak self] in
                     guard let self = self else { return }
 
                     // Poll the status of the label purchases from the response above
-                    // with a delay of 1 second each time, with a maximum of 3 retries for failed requests.
-                    self.pollLabelStatus(withDelayInSeconds: 1.0,
-                                         maxErrorRetries: 3,
+                    self.pollLabelStatus(withDelayInSeconds: pollingDelay,
+                                         maxErrorRetries: pollingMaximumRetries,
                                          siteID: siteID,
                                          orderID: orderID,
                                          labelIDs: labelPurchaseIDs,

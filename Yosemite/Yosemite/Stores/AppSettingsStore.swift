@@ -152,6 +152,10 @@ public class AppSettingsStore: Store {
             setJetpackBenefitsBannerLastDismissedTime(time: time)
         case .loadJetpackBenefitsBannerVisibility(currentTime: let currentTime, calendar: let calendar, onCompletion: let onCompletion):
             loadJetpackBenefitsBannerVisibility(currentTime: currentTime, calendar: calendar, onCompletion: onCompletion)
+        case .setStoreID(let siteID, let id):
+            setStoreID(siteID: siteID, id: id)
+        case .getStoreID(let siteID, let onCompletion):
+            getStoreID(siteID: siteID, onCompletion: onCompletion)
         case .setTelemetryAvailability(siteID: let siteID, isAvailable: let isAvailable):
             setTelemetryAvailability(siteID: siteID, isAvailable: isAvailable)
         case .setTelemetryLastReportedTime(siteID: let siteID, time: let time):
@@ -764,6 +768,19 @@ private extension AppSettingsStore {
             onCompletion?(.failure(error))
             DDLogError("⛔️ Saving store settings to file failed. Error: \(error)")
         }
+    }
+
+    // Store unique identifier
+
+    func setStoreID(siteID: Int64, id: String?) {
+        let storeSettings = getStoreSettings(for: siteID)
+        let updatedSettings = storeSettings.copy(storeID: id)
+        setStoreSettings(settings: updatedSettings, for: siteID)
+    }
+
+    func getStoreID(siteID: Int64, onCompletion: (String?) -> Void) {
+        let storeSettings = getStoreSettings(for: siteID)
+        onCompletion(storeSettings.storeID)
     }
 
     // Telemetry data

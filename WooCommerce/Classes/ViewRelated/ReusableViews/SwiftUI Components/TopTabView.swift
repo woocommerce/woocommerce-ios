@@ -10,16 +10,20 @@ struct TopTabView: View {
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
 
+    @Binding var isExpanded: Bool
+
     let tabs: [TopTabItem]
 
-    init(tabs: [TopTabItem]) {
+    init(tabs: [TopTabItem],
+         isExpanded: Binding<Bool> = .constant(true)) {
         self.tabs = tabs
+        self._isExpanded = isExpanded
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            if tabs.count > 1 {
+            if tabs.count > 1 && isExpanded {
                 ScrollView(.horizontal, showsIndicators: false) {
                     ScrollViewReader { scrollViewProxy in
                         HStack(spacing: Layout.tabPadding * 2) {

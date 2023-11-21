@@ -6,6 +6,7 @@ public extension SystemStatus {
     struct Environment: Decodable {
         public let homeURL: String
         public let siteURL: String
+        public let storeID: String?
         public let version: String
         public let logDirectoryWritable: Bool
         public let wpVersion: String
@@ -39,6 +40,7 @@ private extension SystemStatus.Environment {
     enum CodingKeys: String, CodingKey {
         case homeURL = "home_url"
         case siteURL = "site_url"
+        case storeID = "store_id"
         case version
         case logDirectoryWritable = "log_directory_writable"
         case wpVersion = "wp_version"

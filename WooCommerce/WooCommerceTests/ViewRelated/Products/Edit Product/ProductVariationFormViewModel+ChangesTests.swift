@@ -196,6 +196,92 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
         // Then
         XCTAssertEqual(actionButtons, [.more])
     }
+
+    // MARK: Expire after
+
+    func test_updatePriceSettings_sets_length_to_zero_when_subscription_period_changes() throws {
+        // Given
+        let productVariation = ProductVariation.fake().copy(subscription: .fake().copy(period: .week,
+                                                                                       periodInterval: "1",
+                                                                                       trialLength: "4",
+                                                                                       trialPeriod: .month))
+        let model = EditableProductVariationModel(productVariation: productVariation)
+
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      productImagesUploader: mockProductImageUploader)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "1",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "0")
+    }
+
+    func test_updatePriceSettings_sets_length_to_zero_when_subscription_periodInterval_changes() throws {
+        // Given
+        let productVariation = ProductVariation.fake().copy(subscription: .fake().copy(period: .day,
+                                                                                       periodInterval: "1",
+                                                                                       trialLength: "4",
+                                                                                       trialPeriod: .month))
+        let model = EditableProductVariationModel(productVariation: productVariation)
+
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      productImagesUploader: mockProductImageUploader)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "2",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "0")
+    }
+
+    func test_updatePriceSettings_does_not_change_length_when_subscription_period_and_periodInterval_changes() throws {
+        // Given
+        let productVariation = ProductVariation.fake().copy(subscription: .fake().copy(length: "5",
+                                                                                       period: .day,
+                                                                                       periodInterval: "1",
+                                                                                       trialLength: "4",
+                                                                                       trialPeriod: .month))
+        let model = EditableProductVariationModel(productVariation: productVariation)
+        let viewModel = ProductVariationFormViewModel(productVariation: model,
+                                                      productImageActionHandler: productImageActionHandler,
+                                                      productImagesUploader: mockProductImageUploader)
+
+        // When
+        viewModel.updatePriceSettings(regularPrice: "999999",
+                                      subscriptionPeriod: .day,
+                                      subscriptionPeriodInterval: "1",
+                                      subscriptionSignupFee: nil,
+                                      salePrice: "888888",
+                                      dateOnSaleStart: nil,
+                                      dateOnSaleEnd: nil,
+                                      taxStatus: .none,
+                                      taxClass: nil)
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "5")
+    }
 }
 
 // Helper in unit tests

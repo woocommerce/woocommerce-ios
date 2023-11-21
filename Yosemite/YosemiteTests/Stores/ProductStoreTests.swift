@@ -990,7 +990,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "photo"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                       keyword: keyword,
                                                       pageNumber: self.defaultPageNumber,
@@ -1018,7 +1018,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "hiii"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let action = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                       keyword: keyword,
                                                       pageNumber: self.defaultPageNumber,
@@ -1151,7 +1151,7 @@ final class ProductStoreTests: XCTestCase {
 
         // When
         let keyword = "hiii"
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = waitFor { promise in
             let nestedAction = ProductAction.searchProducts(siteID: self.sampleSiteID,
                                                             keyword: keyword,
                                                             pageNumber: self.defaultPageNumber,
@@ -1213,6 +1213,63 @@ final class ProductStoreTests: XCTestCase {
         assertEqual(filteredProductType, remote.searchProductWithProductType)
         assertEqual(filteredProductStatus, remote.searchProductWithProductStatus)
         assertEqual(filteredProductCategory, remote.searchProductWithProductCategory)
+    }
+
+    func test_searchProducts_sets_hasNextPage_to_true_if_product_count_is_the_same_as_pageSize() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let keyword = "woo"
+        let pageSize = 5
+        remote.whenSearchingProducts(query: keyword, thenReturn: .success(Array(repeating: Product.fake(), count: pageSize)))
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                            keyword: keyword,
+                                                            pageNumber: self.defaultPageNumber,
+                                                            pageSize: pageSize,
+                                                            onCompletion: { result in
+                                                                promise(result)
+                                                            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let hasNextPage = try XCTUnwrap(result.get())
+        XCTAssertTrue(hasNextPage)
+    }
+
+    func test_searchProducts_sets_hasNextPage_to_false_if_product_count_is_smaller_than_pageSize() throws {
+        // Given
+        let remote = MockProductsRemote()
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        let keyword = "woo"
+        let pageSize = 5
+        remote.whenSearchingProducts(query: keyword, thenReturn: .success(Array(repeating: Product.fake(), count: pageSize - 1)))
+
+        // When
+
+        let result = waitFor { promise in
+            store.onAction(ProductAction.searchProducts(siteID: self.sampleSiteID,
+                                                            keyword: keyword,
+                                                            pageNumber: self.defaultPageNumber,
+                                                            pageSize: pageSize,
+                                                            onCompletion: { result in
+                                                                promise(result)
+                                                            }))
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+
+        let hasNextPage = try XCTUnwrap(result.get())
+        XCTAssertFalse(hasNextPage)
     }
 
     // MARK: - ProductAction.updateProduct

@@ -27,6 +27,8 @@ public struct MockSessionManager: SessionManagerProtocol {
 
     public var defaultStoreID: Int64?
 
+    public var defaultStoreUUID: String?
+
     public var defaultStoreURL: String?
 
     public var defaultRoles: [User.Role] = []

@@ -1,5 +1,6 @@
 import XCTest
 import Fakes
+import Experiments
 
 @testable import WooCommerce
 @testable import Yosemite
@@ -590,6 +591,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
+    // MARK: Subscription product
+
     func test_view_model_for_subscription_product_when_subscription_editing_is_enabled() {
         // Arrange
         let product = Fixtures.subscriptionProduct.copy(stockQuantity: 200)
@@ -603,6 +606,8 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
                                                                        .reviews,
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
@@ -735,6 +740,59 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
+
+    func test_view_model_for_subscription_product_when_product_is_downloadable() {
+        // Arrange
+        let product = Fixtures.subscriptionProduct.copy(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .downloadableFiles(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_view_model_for_subscription_product_when_product_is_not_downloadable() {
+        // Arrange
+        let product = Fixtures.subscriptionProduct.copy(downloadable: false)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    // MARK: Quantity rules
 
     func test_viewModel_for_product_with_min_max_quantities_shows_quantity_rules_row_in_settings_section() {
         // Arrange

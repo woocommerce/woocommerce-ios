@@ -86,6 +86,12 @@ extension UIImage {
         .init(named: "sparkles")!
     }
 
+    /// Calendar clock Image
+    ///
+    static var calendarClock: UIImage {
+        .init(systemName: "calendar.badge.clock")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -442,6 +448,13 @@ extension UIImage {
     ///
     static var houseImage: UIImage {
         UIImage.gridicon(.house)
+    }
+
+    /// Hourglass Image
+    ///
+    static var hourglass: UIImage {
+        let config = UIImage.SymbolConfiguration(pointSize: 24, weight: .regular, scale: .medium)
+        return UIImage(systemName: "hourglass", withConfiguration: config)!
     }
 
     /// House Outlined Image

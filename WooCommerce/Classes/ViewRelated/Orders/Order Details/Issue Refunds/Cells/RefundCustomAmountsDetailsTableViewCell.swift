@@ -1,6 +1,6 @@
 import UIKit
 
-final class RefundFeesDetailsTableViewCell: UITableViewCell {
+final class RefundCustomAmountsDetailsTableViewCell: UITableViewCell {
     /// Displays `Subtotal` title
     ///
     @IBOutlet private var subtotalTitleLabel: UILabel!
@@ -33,7 +33,7 @@ final class RefundFeesDetailsTableViewCell: UITableViewCell {
 
 // MARK: View Styles Configuration
 
-private extension RefundFeesDetailsTableViewCell {
+private extension RefundCustomAmountsDetailsTableViewCell {
     func applyCellStyles() {
         applyDefaultBackgroundStyle()
         applyLabelsStyles()
@@ -55,11 +55,11 @@ private extension RefundFeesDetailsTableViewCell {
 
 // MARK: ViewModel Rendering
 
-extension RefundFeesDetailsTableViewCell {
+extension RefundCustomAmountsDetailsTableViewCell {
 
     /// Configure cell with the provided view model
     ///
-    func configure(with viewModel: RefundFeesDetailsViewModel) {
+    func configure(with viewModel: RefundCustomAmountsDetailsViewModel) {
         taxPriceLabel.text = viewModel.feesTaxes
         subtotalPriceLabel.text = viewModel.feesSubtotal
         totalPriceLabel.text = viewModel.feesTotal
@@ -68,13 +68,14 @@ extension RefundFeesDetailsTableViewCell {
 
 // MARK: Constants
 
-private extension RefundFeesDetailsTableViewCell {
+private extension RefundCustomAmountsDetailsTableViewCell {
     enum Localization {
         static let taxTitle = NSLocalizedString(
             "Tax", comment: "Title on the refunds screen that lists the fees tax cost")
         static let subtotalTitle = NSLocalizedString(
             "Subtotal", comment: "Title on the refund screen that lists the fees subtotal cost")
-        static let totalTitle = NSLocalizedString(
-            "Fees Refund", comment: "Title on the refund screen that lists the fees total cost")
+        static let totalTitle = NSLocalizedString("refundCustomAmountsDetails.totalTitle",
+                                                  value: "Custom Amounts Refund",
+                                                  comment: "Title on the refund screen that lists the custom amounts total cost")
     }
 }

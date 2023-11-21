@@ -64,6 +64,33 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
     }
 
+    /// Test that the fields for variations of a subscription product are properly parsed when missing fields.
+    ///
+    func test_subscription_variations_are_properly_parsed_when_response_has_missing_fields() throws {
+        // Given
+        let productVariation = try XCTUnwrap(mapLoadSubscriptionVariationIncompleteResponse())
+        let subscriptionSettings = try XCTUnwrap(productVariation.subscription)
+
+        // Then
+        XCTAssertEqual(subscriptionSettings.length, "0")
+        XCTAssertEqual(subscriptionSettings.period, .week)
+        XCTAssertEqual(subscriptionSettings.periodInterval, "1")
+        XCTAssertEqual(subscriptionSettings.price, "0")
+        XCTAssertEqual(subscriptionSettings.signUpFee, "0")
+        XCTAssertEqual(subscriptionSettings.trialLength, "0")
+        XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
+    }
+
+    /// Test that subscription is nil when parsing non-subscription product response
+    ///
+    func test_subscription_is_nil_when_parsing_non_subscription_product_response() throws {
+        // Given
+        let productVariation = try XCTUnwrap(mapLoadProductVariationResponse())
+
+        // Then
+        XCTAssertNil(productVariation.subscription)
+    }
+
     /// Test that product variations with properties from the Min/Max Quantities extension are properly parsed.
     ///
     func test_min_max_quantities_are_properly_parsed() throws {
@@ -113,6 +140,12 @@ private extension ProductVariationMapperTests {
     ///
     func mapLoadSubscriptionVariationResponse() -> ProductVariation? {
         return mapProductVariation(from: "product-variation-subscription")
+    }
+
+    /// Returns the ProductVariationMapper output upon receiving `product-variation-subscription-incomplete`
+    ///
+    func mapLoadSubscriptionVariationIncompleteResponse() -> ProductVariation? {
+        return mapProductVariation(from: "product-variation-subscription-incomplete")
     }
 
     /// Returns the ProductVariationMapper output upon receiving `product-variation-min-max-quantities`

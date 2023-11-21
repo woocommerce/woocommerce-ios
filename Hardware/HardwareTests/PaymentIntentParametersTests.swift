@@ -137,4 +137,48 @@ final class PaymentIntentParametersTests: XCTestCase {
 
         XCTAssertNil(stripeParameters?.statementDescriptor)
     }
+
+    func test_cardReaderMetadata_is_passed_to_paymentIntent_when_sent_toStripe_then_stripeParameters_contains_cardReaderMetadata() {
+        // Given
+        let expectedMetaKeys = ["reader_ID": "", "reader_model": "", "platform": ""]
+        let readerID = "somereaderID"
+        let readerModel = "someModel"
+        let platform = "somePlatform"
+
+        let sut = createPaymentIntentParameters(withMetaKeys: expectedMetaKeys)
+        let cardReaderMeta = CardReaderMetadata(readerIDMetadataKey: readerID, readerModelMetadataKey: readerModel, platformMetadataKey: platform)
+
+        // When
+        let stripeParameters = sut.toStripe(with: cardReaderMeta)
+
+        // Then
+        XCTAssertEqual(stripeParameters?.metadata?["reader_ID"], readerID)
+        XCTAssertEqual(stripeParameters?.metadata?["reader_model"], readerModel)
+        XCTAssertEqual(stripeParameters?.metadata?["platform"], platform)
+    }
+
+    func test_cardReaderMetadata_is_nil_when_sent_toStripe_then_stripeParameters_does_not_contain_cardReaderMetadata() {
+        // Given
+        let sut = createPaymentIntentParameters()
+
+        // When
+        let stripeParameters = sut.toStripe()
+
+        // Then
+        XCTAssertNil(stripeParameters?.metadata?["reader_ID"])
+        XCTAssertNil(stripeParameters?.metadata?["reader_model"])
+        XCTAssertNil(stripeParameters?.metadata?["platform"])
+    }
+}
+
+/// Test helpers
+///
+private extension PaymentIntentParametersTests {
+    func createPaymentIntentParameters(withMetaKeys: [String: String]? = nil) -> PaymentIntentParameters {
+        PaymentIntentParameters(amount: 100,
+                                currency: "usd",
+                                stripeSmallestCurrencyUnitMultiplier: 100,
+                                paymentMethodTypes: ["card_present"],
+                                metadata: withMetaKeys)
+    }
 }

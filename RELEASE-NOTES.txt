@@ -2,7 +2,7 @@
 
 16.4
 -----
-
+- [Internal] Payments: Updated StripeTerminal pod to 3.1.0 [https://github.com/woocommerce/woocommerce-ios/pull/11080]
 
 16.3
 -----

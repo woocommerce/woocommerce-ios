@@ -1,9 +1,6 @@
 /// Underlying error. Models the specific error that made a given
 /// interaction with the SDK fail.
 public enum UnderlyingError: Error, Equatable {
-    /// The service is busy executing another command. The service can only execute a single command at a time.
-    case busy
-
     /// No reader is connected. Connect to a reader before trying again.
     case notConnectedToReader
 
@@ -11,10 +8,7 @@ public enum UnderlyingError: Error, Equatable {
     case alreadyConnectedToReader
 
     /// Attempted to process a nil or invalid payment intent
-    case processInvalidPaymentIntent
-
-    /// Attempted to connect to a reader that has not been discovered yet
-    case connectingToUndiscoveredReader
+    case confirmInvalidPaymentIntent
 
     /// Attempted to connect from an unsupported version of the SDK.
     /// In order to fix this you will need to update your app
@@ -276,21 +270,15 @@ extension UnderlyingError {
 extension UnderlyingError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .busy:
-            return NSLocalizedString("The system is busy executing another command - please try again",
-                                     comment: "Error message when the card reader service is busy executing another command.")
         case .notConnectedToReader:
             return NSLocalizedString("No card reader is connected - connect a reader and try again",
                                      comment: "Error message when a card reader was expected to already have been connected.")
         case .alreadyConnectedToReader:
             return NSLocalizedString("Unable to connect to reader - another reader is already connected",
                                      comment: "Error message when a card reader is already connected and we were not expecting one.")
-        case .processInvalidPaymentIntent:
+        case .confirmInvalidPaymentIntent:
             return NSLocalizedString("Unable to process payment due to invalid data - please try again",
                                      comment: "Error message when the payment intent is invalid.")
-        case .connectingToUndiscoveredReader:
-            return NSLocalizedString("Unable to connect to card reader - card reader was not correctly discovered - please try again",
-                                     comment: "Error message when the card reader service attempts to connect to a reader without discovering it first.")
         case .unsupportedSDK:
             return NSLocalizedString("Unable to perform software request - please update this application and try again",
                                      comment: "Error message when the application is so out of date that the backend refuses to work with it.")

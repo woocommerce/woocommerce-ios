@@ -6,10 +6,10 @@ import Networking
 import Hardware
 import WooFoundation
 
-extension CurrencyCode {
+extension WooFoundation.CurrencyCode {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> CurrencyCode {
+    public static func fake() -> WooFoundation.CurrencyCode {
         .AED
     }
 }

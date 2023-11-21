@@ -26,10 +26,10 @@ extension Yosemite.JustInTimeMessage {
         )
     }
 }
-extension JustInTimeMessageTemplate {
+extension Yosemite.JustInTimeMessageTemplate {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> JustInTimeMessageTemplate {
+    public static func fake() -> Yosemite.JustInTimeMessageTemplate {
         .banner
     }
 }

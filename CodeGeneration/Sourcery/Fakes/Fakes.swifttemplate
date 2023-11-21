@@ -53,7 +53,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 
     /// If we are generating for an `Enum`, return with `.value` for content 
     if let enumType = type as? Enum, let firstEnumCase = enumType.cases.first {
-        return FakeableSpec(name: enumType.name, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
+        return FakeableSpec(name: enumType.globalName, accessLevelWithSpacePostfix: accessLevel, content: .value(firstEnumCase.name))
     }
 
     /// Make sure we have at least one non throwable-initializer to work with.

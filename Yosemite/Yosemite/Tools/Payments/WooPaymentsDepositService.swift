@@ -25,10 +25,6 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
         do {
             let overview = try await wooPaymentsRemote.loadDepositsOverview(for: siteID)
             return depositsOverviewForViews(overview)
-        } catch let error as DotcomError {
-            throw WooPaymentsDepositServiceError.network(underlying: error)
-        } catch {
-            throw WooPaymentsDepositServiceError.unknown
         }
     }
 
@@ -116,9 +112,4 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
                                          type: lastDeposit.type),
             date: lastDeposit.date)
     }
-}
-
-public enum WooPaymentsDepositServiceError: Error {
-    case network(underlying: DotcomError)
-    case unknown
 }

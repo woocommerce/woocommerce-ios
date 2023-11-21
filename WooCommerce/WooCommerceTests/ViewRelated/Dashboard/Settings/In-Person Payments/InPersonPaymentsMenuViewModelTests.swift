@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 @testable import Yosemite
 @testable import WooCommerce
+import Networking
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
 class InPersonPaymentsMenuViewModelTests: XCTestCase {
@@ -66,7 +67,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
         // Given
-        mockDepositService.onFetchDepositsOverviewShouldThrow = WooPaymentsDepositServiceError.unknown
+        mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
 
         // When
         await sut.onAppear()

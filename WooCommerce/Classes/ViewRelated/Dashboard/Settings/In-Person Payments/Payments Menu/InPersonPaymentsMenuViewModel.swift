@@ -81,22 +81,22 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             .assign(to: &$shouldBadgeTapToPayOnIPhone)
 
         Task { @MainActor in
-            await updateOutputProperties()
+            await updateOutputProperties(trackAnalytics: false)
         }
 
         InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor
-    private func updateOutputProperties() async {
+    private func updateOutputProperties(trackAnalytics: Bool = true) async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
-        await refreshDepositSummary()
+        await refreshDepositSummary(trackAnalytics: trackAnalytics)
     }
 
     @MainActor
-    private func refreshDepositSummary() async {
+    private func refreshDepositSummary(trackAnalytics: Bool) async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
             shouldShowDepositSummary = false
             return
@@ -107,7 +107,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             })
             shouldShowDepositSummary = depositCurrencyViewModels.count > 0
 
-            guard shouldShowDepositSummary else {
+            guard shouldShowDepositSummary, trackAnalytics else {
                 return
             }
             dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))

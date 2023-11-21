@@ -440,11 +440,20 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
         }
 
-        /// For Woo Subscriptions products, tracks when the the subscription expiration details screen is closed.
+        /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.
         ///
         static func expirationDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(
-                statName: .productSubcriptionExpirationDoneButtonTapped,
+                statName: .productSubscriptionExpirationDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial screen is closed.
+        ///
+        static func freeTrialDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubscriptionFreeTrialDoneButtonTapped,
                 properties: [Keys.hasChangedData: hasChangedData]
             )
         }

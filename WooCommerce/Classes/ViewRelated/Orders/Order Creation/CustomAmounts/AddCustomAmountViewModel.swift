@@ -23,7 +23,7 @@ final class AddCustomAmountViewModel: ObservableObject {
         didSet {
             guard percentageCalculatedAmount != oldValue else { return }
 
-            return currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
+            percentageCalculatedAmount = currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
         }
     }
 

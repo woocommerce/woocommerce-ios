@@ -106,7 +106,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
             shouldShowDepositSummary = depositCurrencyViewModels.count > 0
-            
+
             guard shouldShowDepositSummary else {
                 return
             }

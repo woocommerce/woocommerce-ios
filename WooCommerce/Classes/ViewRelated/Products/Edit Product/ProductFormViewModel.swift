@@ -338,7 +338,18 @@ extension ProductFormViewModel {
                              dateOnSaleEnd: Date?,
                              taxStatus: ProductTaxStatus,
                              taxClass: TaxClass?) {
-        let subscription = product.subscription?.copy(period: subscriptionPeriod,
+        // Sets "Expire after" to "0" (i.e. Never expire)
+        // if the subscription period or interval is changed
+        let subscriptionLength: String? = {
+            if product.subscription?.period != subscriptionPeriod || product.subscription?.periodInterval != subscriptionPeriodInterval {
+                return "0"
+            } else {
+                return product.subscription?.length
+            }
+        }()
+
+        let subscription = product.subscription?.copy(length: subscriptionLength,
+                                                      period: subscriptionPeriod,
                                                       periodInterval: subscriptionPeriodInterval,
                                                       price: regularPrice,
                                                       signUpFee: subscriptionSignupFee)
@@ -494,6 +505,11 @@ extension ProductFormViewModel {
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
         let subscription = product.subscription?.copy(trialLength: trialLength,
                                                       trialPeriod: trialPeriod)
+        product = EditableProductModel(product: product.product.copy(subscription: subscription))
+    }
+
+    func updateSubscriptionExpirySettings(length: String) {
+        let subscription = product.subscription?.copy(length: length)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 }

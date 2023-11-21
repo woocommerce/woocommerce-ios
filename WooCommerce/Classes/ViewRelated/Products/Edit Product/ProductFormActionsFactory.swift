@@ -38,6 +38,7 @@ enum ProductFormEditAction: Equatable {
     case components(actionable: Bool)
     // Subscription products only
     case subscriptionFreeTrial(editable: Bool)
+    case subscriptionExpiry(editable: Bool)
     case subscription(actionable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
@@ -310,16 +311,19 @@ private extension ProductFormActionsFactory {
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
         let canEditInventorySettingsRow = editingSubscriptionEnabled && editable && product.hasIntegerStockQuantity
         let canEditProductType = editingSubscriptionEnabled && editable
+        let shouldShowDownloadableProduct = product.downloadable
 
         let actions: [ProductFormEditAction?] = [
             editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
             editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
+            editingSubscriptionEnabled ? .subscriptionExpiry(editable: editable) : nil,
             shouldShowReviewsRow ? .reviews: nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
+            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)
@@ -411,6 +415,9 @@ private extension ProductFormActionsFactory {
             return true
         case .subscriptionFreeTrial:
             // The Free trial row is always visible in the settings section for a subscription product.
+            return true
+        case .subscriptionExpiry:
+            // The expiry is always visible in the settings section for a subscription product.
             return true
         case .reviews:
             // The reviews action is always visible in the settings section.

@@ -40,13 +40,6 @@ final class CardPresentDetailsTests: XCTestCase {
         XCTAssertEqual(details.brand, hardwareCardBrand)
     }
 
-    func test_card_present_details_maps_fingerprint() {
-        let mockDetails = MockStripeCardPresentDetails.mock()
-        let details = CardPresentTransactionDetails(details: mockDetails)
-
-        XCTAssertEqual(details.fingerprint, mockDetails.fingerprint)
-    }
-
     func test_card_present_details_maps_generated_card() {
         let mockDetails = MockStripeCardPresentDetails.mock()
         let details = CardPresentTransactionDetails(details: mockDetails)

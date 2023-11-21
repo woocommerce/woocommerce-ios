@@ -81,11 +81,11 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionProducts:
-            return false
+            return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true
         }

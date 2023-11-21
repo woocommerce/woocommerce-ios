@@ -228,7 +228,20 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether the quantity can be decremented.
     ///
     var shouldDisableQuantityDecrementer: Bool {
-        quantity < minimumQuantity
+        if removeProductIntent != nil { // Allow decrementing below minimum quantity to remove product
+            return quantity < minimumQuantity
+        } else {
+            return quantity <= minimumQuantity
+        }
+    }
+
+    /// Whether the quantity can be incremented.
+    ///
+    var shouldDisableQuantityIncrementer: Bool {
+        guard let maximumQuantity else {
+            return false
+        }
+        return quantity >= maximumQuantity
     }
 
     /// Closure to run when the quantity is changed.
@@ -237,7 +250,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Closure to run when the quantity is decremented below the minimum quantity.
     ///
-    var removeProductIntent: () -> Void
+    var removeProductIntent: (() -> Void)?
 
     /// Closure to configure a product if it is configurable.
     let configure: (() -> Void)?
@@ -276,7 +289,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
          quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
-         removeProductIntent: @escaping (() -> Void) = {},
+         removeProductIntent: (() -> Void)? = nil,
          configure: (() -> Void)? = nil) {
         self.id = id ?? Int64(UUID().uuidString.hashValue)
         self.selectedState = selectedState
@@ -495,7 +508,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     func decrementQuantity() {
         guard quantity > minimumQuantity else {
-            return removeProductIntent()
+            removeProductIntent?()
+            return
         }
         quantity -= 1
 

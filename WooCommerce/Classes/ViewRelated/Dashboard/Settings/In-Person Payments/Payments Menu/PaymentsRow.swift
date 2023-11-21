@@ -42,6 +42,7 @@ struct PaymentsRow: View {
 
             Spacer()
         }
+        .foregroundColor(.primary)
         .contentShape(Rectangle())
     }
 }

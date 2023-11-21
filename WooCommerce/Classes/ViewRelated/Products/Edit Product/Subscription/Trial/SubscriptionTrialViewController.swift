@@ -33,41 +33,32 @@ struct SubscriptionTrialView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 0) {
-                // Duration
-                Group {
-                    TitleAndTextFieldRow(title: Localization.duration,
-                                         placeholder: "0",
-                                         text: $viewModel.trialLength,
-                                         keyboardType: .asciiCapableNumberPad,
-                                         inputFormatter: IntegerInputFormatter())
+        Form {
+            TitleAndTextFieldRow(title: Localization.duration,
+                                 placeholder: "0",
+                                 text: $viewModel.trialLength,
+                                 keyboardType: .asciiCapableNumberPad,
+                                 inputFormatter: IntegerInputFormatter(),
+                                 minHeight: 0,
+                                 horizontalPadding: 0)
 
-                    Divider()
-                        .padding(.leading, Layout.margin)
+            Picker(Localization.period, selection: $viewModel.trialPeriod) {
+                ForEach(SubscriptionPeriod.allCases, id: \.self) {
+                    Text($0.descriptionSingular)
                 }
+            }
 
-                period
-
-                // Validation error
-                Group {
-                    ValidationErrorRow(errorMessage: viewModel.errorMessage)
-
-                    Divider()
-                        .padding(.leading, Layout.margin)
-                }
+            // Validation error
+            ValidationErrorRow(errorMessage: viewModel.errorMessage,
+                               minHeight: 0,
+                               horizontalPadding: 0)
                 .renderedIf(!viewModel.isInputValid)
 
-                // Subtitle
-                Text(Localization.freeTrialSubtitle)
-                    .foregroundColor(Color(.textSubtle))
-                    .subheadlineStyle()
-                    .padding(Layout.margin)
-                    .renderedIf(viewModel.isInputValid)
-
-                Divider()
-                    .padding(.leading, Layout.margin)
-            }
+            // Subtitle
+            Text(Localization.freeTrialSubtitle)
+                .foregroundColor(Color(.textSubtle))
+                .subheadlineStyle()
+                .renderedIf(viewModel.isInputValid)
         }
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
@@ -81,57 +72,6 @@ struct SubscriptionTrialView: View {
 }
 
 private extension SubscriptionTrialView {
-    var period: some View {
-        Group {
-            AdaptiveStack(horizontalAlignment: .leading, spacing: Layout.AdaptiveStack.spacing) {
-                Text(Localization.period)
-                    .bodyStyle()
-                    .multilineTextAlignment(.leading)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                Menu {
-                    ForEach(SubscriptionPeriod.allCases, id: \.self) { period in
-                        Button {
-                            viewModel.trialPeriod = period
-                        } label: {
-                            HStack {
-                                Text(period.descriptionSingular)
-
-                                Image(uiImage: .checkmarkStyledImage)
-                                    .resizable()
-                                    .frame(width: Layout.imageSize * scale, height: Layout.imageSize * scale)
-                                    .renderedIf(period == viewModel.trialPeriod)
-                            }
-                        }
-                    }
-                } label: {
-                    Text(viewModel.trialPeriodDescription)
-                        .bodyStyle()
-                        .multilineTextAlignment(.trailing)
-                        .frame(maxWidth: .infinity, alignment: .trailing)
-                }
-            }
-            .frame(minHeight: Layout.AdaptiveStack.height)
-            .padding(.horizontal, Layout.margin)
-
-            Divider()
-                .padding(.leading, Layout.margin)
-        }
-    }
-}
-
-private extension SubscriptionTrialView {
-    enum Layout {
-        static let margin: CGFloat = 16
-        static let verticalSpacing: CGFloat = 8
-        static let imageSize: CGFloat = 40
-
-        enum AdaptiveStack {
-            static let spacing: CGFloat = 20
-            static let height: CGFloat = 44
-        }
-    }
-
     enum Localization {
         static let duration = NSLocalizedString("subscriptionTrialView.duration",
                                                        value: "Duration",

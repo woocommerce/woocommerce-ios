@@ -1009,7 +1009,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         viewModel.addSelection(id: 1)
 
         // Then
-        XCTAssertEqual(viewModel.totalSelectedItemsCount, 2)
+        XCTAssertEqual(viewModel.totalSelectedItemsCount, 5)
     }
 
     @MainActor

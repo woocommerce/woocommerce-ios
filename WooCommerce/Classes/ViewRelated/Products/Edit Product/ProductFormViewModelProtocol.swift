@@ -145,6 +145,8 @@ protocol ProductFormViewModelProtocol {
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod)
 
+    func updateSubscriptionExpirySettings(length: String)
+
     // Remote action
 
     /// Creates/updates a product remotely given an optional product status to override.

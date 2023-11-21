@@ -143,4 +143,43 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         // Then
         XCTAssertEqual(result, expectedResult)
     }
+
+    func shouldRefundCustomAmountsByDefault_when_the_order_has_only_items_return_false() {
+        // Given
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+        ]
+        let order = MockOrders().makeOrder(items: items, fees: [])
+
+        // When
+        let result = sut.shouldRefundCustomAmountsByDefault(from: order)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func shouldRefundCustomAmountsByDefault_when_the_order_has_items_and_custom_amounts_return_false() {
+        // Given
+        let items = [
+            MockOrderItem.sampleItem(itemID: 1, quantity: 3),
+        ]
+        let order = MockOrders().makeOrder(items: items, fees: [OrderFeeLine.fake()])
+
+        // When
+        let result = sut.shouldRefundCustomAmountsByDefault(from: order)
+
+        // Then
+        XCTAssertFalse(result)
+    }
+
+    func shouldRefundCustomAmountsByDefault_when_the_order_has_only_custom_amounts_return_false() {
+        // Given
+        let order = MockOrders().makeOrder(items: [], fees: [OrderFeeLine.fake()])
+
+        // When
+        let result = sut.shouldRefundCustomAmountsByDefault(from: order)
+
+        // Then
+        XCTAssertTrue(result)
+    }
 }

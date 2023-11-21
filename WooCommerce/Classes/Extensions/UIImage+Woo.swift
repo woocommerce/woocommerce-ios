@@ -86,6 +86,12 @@ extension UIImage {
         .init(named: "sparkles")!
     }
 
+    /// Calendar clock Image
+    ///
+    static var calendarClock: UIImage {
+        .init(systemName: "calendar.badge.clock")!
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {

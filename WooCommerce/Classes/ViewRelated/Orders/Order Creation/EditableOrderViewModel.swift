@@ -530,6 +530,7 @@ final class EditableOrderViewModel: ObservableObject {
             siteID: siteID,
             selectedItemIDs: selectedProductsAndVariationsIDs,
             purchasableItemsOnly: true,
+            shouldDeleteStoredProductsOnFirstPage: false,
             storageManager: storageManager,
             stores: stores,
             toggleAllVariationsOnSelection: false,

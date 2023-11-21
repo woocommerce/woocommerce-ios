@@ -87,7 +87,6 @@
                 "emv_auth_data": "8A023030",
                 "exp_month": 12,
                 "exp_year": 2022,
-                "fingerprint": "rRszUUzMmNu5Onxg",
                 "funding": "debit",
                 "generated_card": null,
                 "last4": "1933",

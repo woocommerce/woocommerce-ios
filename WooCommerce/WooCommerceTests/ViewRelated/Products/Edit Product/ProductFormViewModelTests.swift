@@ -729,6 +729,21 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(subscription.trialLength, "5")
         XCTAssertEqual(subscription.trialPeriod, .week)
     }
+
+    // MARK: Subscription Expire after
+
+    func test_updateSubscriptionExpirySettings_sets_subscription_length_info() throws {
+        // Given
+        let product = Product.fake().copy(subscription: .fake().copy(length: "4"))
+        let viewModel = createViewModel(product: product, formType: .edit)
+
+        // When
+        viewModel.updateSubscriptionExpirySettings(length: "5")
+
+        // Then
+        let subscription = try XCTUnwrap(viewModel.productModel.subscription)
+        XCTAssertEqual(subscription.length, "5")
+    }
 }
 
 private extension ProductFormViewModelTests {

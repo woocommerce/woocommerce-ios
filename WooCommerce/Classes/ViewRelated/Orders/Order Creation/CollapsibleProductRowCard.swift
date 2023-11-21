@@ -123,7 +123,9 @@ struct CollapsibleProductRowCard: View {
 
 
             Button(Localization.removeProductLabel) {
-                viewModel.removeProductIntent()
+                if let removeProductIntent = viewModel.removeProductIntent {
+                    removeProductIntent()
+                }
             }
             .padding()
             .frame(maxWidth: .infinity, alignment: .center)

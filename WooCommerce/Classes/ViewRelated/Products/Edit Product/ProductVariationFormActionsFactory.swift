@@ -67,6 +67,8 @@ private extension ProductVariationFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
+            editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
+            editingSubscriptionEnabled ? .subscriptionExpiry(editable: editable) : nil,
             .attributes(editable: editable),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .status(editable: editable),
@@ -87,6 +89,8 @@ private extension ProductVariationFormActionsFactory {
         case .priceSettings, .noPriceWarning, .status, .attributes, .subscription, .quantityRules:
             // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
+        case .subscriptionFreeTrial, .subscriptionExpiry:
+            return productVariation.subscription != nil
         case .inventorySettings:
             let hasStockData = productVariation.manageStock ? productVariation.stockQuantity != nil: true
             return productVariation.sku != nil || hasStockData

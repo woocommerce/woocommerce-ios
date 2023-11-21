@@ -86,14 +86,14 @@ private extension SubscriptionExpiryViewModel {
 }
 
 // MARK: Constants
-private extension SubscriptionExpiryViewModel {
+extension SubscriptionExpiryViewModel {
     enum Localization {
         static let title = NSLocalizedString("subscriptionExpiryView.expireAfter",
                                              value: "Subscription expiration",
                                              comment: "Title for the Subscription expire after screen of the subscription product.")
 
         static let neverExpire = NSLocalizedString("subscriptionExpiryView.neverExpire",
-                                                   value: "Never expire",
+                                                   value: "Never expires",
                                                    comment: "Title for the Expire after screen of the subscription product.")
     }
 }

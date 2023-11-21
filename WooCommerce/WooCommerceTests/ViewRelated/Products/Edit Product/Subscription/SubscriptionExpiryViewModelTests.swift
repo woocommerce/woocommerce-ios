@@ -10,7 +10,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
         let viewModel = SubscriptionExpiryViewModel(subscription: subscription) { _, _ in }
 
         // Then
-        XCTAssertEqual(viewModel.selectedLength.title, "Never expire")
+        XCTAssertEqual(viewModel.selectedLength.title, SubscriptionExpiryViewModel.Localization.neverExpire)
         XCTAssertEqual(viewModel.selectedLength.value, 0)
         XCTAssertEqual(viewModel.selectedLength.stringValue, "0")
     }
@@ -24,7 +24,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
 
         // Then
         let lengthOption = try XCTUnwrap(viewModel.lengthOptions.first)
-        XCTAssertEqual(lengthOption.title, "Never expire")
+        XCTAssertEqual(lengthOption.title, SubscriptionExpiryViewModel.Localization.neverExpire)
         XCTAssertEqual(viewModel.lengthOptions.count, 91)
     }
 
@@ -37,7 +37,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
 
         // Then
         let lengthOption = try XCTUnwrap(viewModel.lengthOptions.first)
-        XCTAssertEqual(lengthOption.title, "Never expire")
+        XCTAssertEqual(lengthOption.title, SubscriptionExpiryViewModel.Localization.neverExpire)
         XCTAssertEqual(viewModel.lengthOptions.count, 7)
     }
 
@@ -50,7 +50,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
 
         // Then
         let lengthOption = try XCTUnwrap(viewModel.lengthOptions.first)
-        XCTAssertEqual(lengthOption.title, "Never expire")
+        XCTAssertEqual(lengthOption.title, SubscriptionExpiryViewModel.Localization.neverExpire)
         XCTAssertEqual(viewModel.lengthOptions.count, 13)
     }
 
@@ -63,7 +63,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
 
         // Then
         let lengthOption = try XCTUnwrap(viewModel.lengthOptions.first)
-        XCTAssertEqual(lengthOption.title, "Never expire")
+        XCTAssertEqual(lengthOption.title, SubscriptionExpiryViewModel.Localization.neverExpire)
         XCTAssertEqual(viewModel.lengthOptions.count, 6)
     }
 
@@ -121,7 +121,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
             }
 
             // When
-            viewModel.selectedLength = .init(title: "5 days",
+            viewModel.selectedLength = .init(title: "5 \(SubscriptionPeriod.day.descriptionPlural)",
                                              value: 5)
             viewModel.didTapDone()
         }

@@ -716,12 +716,12 @@ extension DefaultProductFormTableViewModel {
                                                                value: "Expire after",
                                                                comment: "Title for Subscription expiry row in the product form screen.")
         static let neverExpire = NSLocalizedString("defaultProductFormTableViewModel.neverExpire",
-                                                   value: "Never expire",
+                                                   value: "Never expires",
                                                    comment: "Display label when a subscription never expires.")
 
         /// Localized string describing when the subscription expires.
         ///
-        /// Example: "Never expire" or "6 months" or "1 year"
+        /// Example: "Never expires" or "6 months" or "1 year"
         ///
         static func expiryDescription(length: String, period: SubscriptionPeriod) -> String {
             switch length {

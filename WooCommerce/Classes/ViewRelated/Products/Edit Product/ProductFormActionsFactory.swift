@@ -311,6 +311,7 @@ private extension ProductFormActionsFactory {
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
         let canEditInventorySettingsRow = editingSubscriptionEnabled && editable && product.hasIntegerStockQuantity
         let canEditProductType = editingSubscriptionEnabled && editable
+        let shouldShowDownloadableProduct = product.downloadable
 
         let actions: [ProductFormEditAction?] = [
             editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
@@ -322,6 +323,7 @@ private extension ProductFormActionsFactory {
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
+            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)

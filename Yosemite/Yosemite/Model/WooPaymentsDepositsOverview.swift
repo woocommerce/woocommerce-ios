@@ -1,8 +1,9 @@
 import Foundation
 import WooFoundation
 import Networking
+import Codegen
 
-public struct WooPaymentsDepositsOverviewByCurrency {
+public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, GeneratedFakeable {
     public let currency: CurrencyCode
     public let automaticDeposits: Bool
     public let depositInterval: WooPaymentsDepositInterval

@@ -80,6 +80,7 @@ let specsToGenerate: [FakeableSpec] = matchingTypes.map { type in
 import Yosemite
 import Networking
 import Hardware
+import WooFoundation
 
 <% for spec in specsToGenerate { -%>
 extension <%= spec.name -%> {

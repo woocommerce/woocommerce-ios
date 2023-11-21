@@ -4,6 +4,7 @@
 import Yosemite
 import Networking
 import Hardware
+import WooFoundation
 
 extension CardBrand {
     /// Returns a "ready to use" type filled with fake values.

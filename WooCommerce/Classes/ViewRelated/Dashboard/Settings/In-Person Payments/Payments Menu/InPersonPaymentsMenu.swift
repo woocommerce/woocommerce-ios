@@ -18,6 +18,8 @@ struct InPersonPaymentsMenu: View {
                     ScrollViewSection {
                         PaymentsRow(image: Image(uiImage: .moneyIcon),
                                     title: Localization.collectPayment)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.collectPaymentRow)
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
@@ -28,9 +30,7 @@ struct InPersonPaymentsMenu: View {
                             }
                         }) {
                             NavigationView {
-                                SimplePaymentsAmountHosted(
-                                    viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
-                                    presentNoticePublisher: viewModel.simplePaymentsNoticePublisher)
+                                SimplePaymentsAmountHosted(viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
                                 .navigationBarTitleDisplayMode(.inline)
                             }
                         }
@@ -113,6 +113,7 @@ struct InPersonPaymentsMenu: View {
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
                                         title: Localization.cardReaderManuals)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                         }
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -296,6 +297,11 @@ private extension InPersonPaymentsMenu {
                      This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
         )
+    }
+
+    enum AccessibilityIdentifiers {
+        static let collectPaymentRow = "collect-payment"
+        static let cardReaderManualRow = "card-reader-manuals"
     }
 }
 

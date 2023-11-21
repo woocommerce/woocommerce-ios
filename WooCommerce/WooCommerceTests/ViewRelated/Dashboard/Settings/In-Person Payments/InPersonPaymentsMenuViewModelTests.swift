@@ -41,6 +41,19 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
             eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
         }))
     }
+
+    func test_onAppear_when_deposit_summaries_are_returned_depositSummaryShown_is_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewThenReturn = [.fake().copy(currency: .USD), .fake().copy(currency: .GBP)]
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { eventName in
+            eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
+        }))
+    }
 //     private var stores: MockStoresManager!
 
 //     private var analyticsProvider: MockAnalyticsProvider!

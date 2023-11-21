@@ -4,49 +4,6 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-final class AddCustomAmountPercentageViewModel: ObservableObject {
-    let currencyFormatter: CurrencyFormatter
-    let baseAmountForPercentage: Decimal
-
-    init(baseAmountForPercentage: Decimal, currencyFormatter: CurrencyFormatter) {
-        self.baseAmountForPercentage = baseAmountForPercentage
-        self.currencyFormatter = currencyFormatter
-    }
-    @Published var percentageCalculatedAmount: String = "" {
-        didSet {
-            guard percentageCalculatedAmount != oldValue else { return }
-
-            percentageCalculatedAmount = currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
-        }
-    }
-
-    var baseAmountForPercentageString: String {
-        guard let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
-            return ""
-        }
-
-        return formattedAmount
-    }
-
-    @Published var percentage = "" {
-        didSet {
-            guard oldValue != percentage else { return }
-
-            updateAmountBasedOnPercentage(percentage)
-        }
-    }
-
-    func updateAmountBasedOnPercentage(_ percentage: String) {
-        guard percentage.isNotEmpty,
-              let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
-            percentageCalculatedAmount = "0"
-            return
-        }
-
-        percentageCalculatedAmount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
-    }
-}
-
 final class AddCustomAmountInputTypeViewModelProxyProvider {
     func provideAddCustomAmountInputTypeViewModelProxy(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelProxy {
         switch type {
@@ -87,21 +44,15 @@ struct PercentageAddCustomAmountInputTypeViewModelProxy: AddCustomAmountInputTyp
     let baseAmount: Decimal
 
     var amountPublisher: Published<String>.Publisher? {
-        viewModel?.$percentageCalculatedAmount
+        viewModel?.percentageViewModel?.$percentageCalculatedAmount
     }
 
     var amount: String? {
-        viewModel?.percentageCalculatedAmount
+        viewModel?.percentageViewModel?.percentageCalculatedAmount
     }
 
     func preset(with fee: OrderFeeLine) {
-        guard let viewModel = viewModel,
-              let totalDecimal = viewModel.currencyFormatter.convertToDecimal(fee.total) else {
-            return
-        }
-
-        viewModel.percentage = viewModel.currencyFormatter.localize(((totalDecimal as Decimal / baseAmount) * 100)) ?? "0"
-        viewModel.percentageCalculatedAmount = fee.total
+        viewModel?.percentageViewModel?.preset(with: fee)
     }
 }
 
@@ -124,32 +75,6 @@ final class AddCustomAmountViewModel: ObservableObject {
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
-    @Published var percentageCalculatedAmount: String = "" {
-        didSet {
-            guard percentageCalculatedAmount != oldValue else { return }
-
-            percentageCalculatedAmount = currencyFormatter.formatAmount(percentageCalculatedAmount) ?? ""
-        }
-    }
-
-    var baseAmountForPercentageString: String {
-        guard case let .orderTotalPercentage(baseAmountForPercentage) = inputType,
-              let formattedAmount = currencyFormatter.formatAmount(baseAmountForPercentage) else {
-            return ""
-        }
-
-        return formattedAmount
-    }
-
-
-    @Published var percentage = "" {
-        didSet {
-            guard oldValue != percentage else { return }
-
-            updateAmountBasedOnPercentage(percentage)
-        }
-    }
-
     @Published private(set) var shouldDisableDoneButton: Bool = true
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
@@ -176,7 +101,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
         setupViewModels(from: inputType, locale: locale, storeCurrencySettings: storeCurrencySettings)
         inputTypeVieModelProxy.viewModel = self
-        percentageCalculatedAmount = "0"
+
 
         listenToAmountChanges()
     }
@@ -224,22 +149,11 @@ private extension AddCustomAmountViewModel {
             analytics.track(.addCustomAmountNameAdded)
         }
 
-        if percentage.isNotEmpty {
+        if percentageViewModel?.percentage.isNotEmpty ?? false {
             analytics.track(.addCustomAmountPercentageAdded)
         }
 
         analytics.track(.addCustomAmountDoneButtonTapped)
-    }
-
-    func updateAmountBasedOnPercentage(_ percentage: String) {
-        guard percentage.isNotEmpty,
-              case let .orderTotalPercentage(baseAmountForPercentage) = inputType,
-              let decimalInput = currencyFormatter.convertToDecimal(percentage) else {
-            percentageCalculatedAmount = "0"
-            return
-        }
-
-        percentageCalculatedAmount = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
     }
 }
 

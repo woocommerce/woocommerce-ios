@@ -36,7 +36,6 @@ final class AddCustomAmountPercentageViewModel: ObservableObject {
             percentageCalculatedAmount = "0"
             return
         }
-
         let amountString = "\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)"
         percentageCalculatedAmount = currencyFormatter.formatAmount(amountString) ?? ""
     }

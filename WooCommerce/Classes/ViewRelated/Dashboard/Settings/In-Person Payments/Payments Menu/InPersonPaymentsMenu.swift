@@ -5,8 +5,6 @@ import ScrollViewSectionKit
 struct InPersonPaymentsMenu: View {
     @ObservedObject private(set) var viewModel: InPersonPaymentsMenuViewModel
 
-    @State private var showingManagePaymentGateways: Bool = false
-
     var body: some View {
         VStack {
             ScrollView {
@@ -126,12 +124,9 @@ struct InPersonPaymentsMenu: View {
                     .renderedIf(viewModel.shouldShowCardReaderSection)
 
                     ScrollViewSection {
-                        NavigationLink(isActive: $showingManagePaymentGateways) {
-                            InPersonPaymentsSelectPluginView(selectedPlugin: nil) { plugin in
-                                viewModel.dependencies.onboardingUseCase.clearPluginSelection()
-                                viewModel.dependencies.onboardingUseCase.selectPlugin(plugin)
-                                showingManagePaymentGateways = false
-                            }
+                        NavigationLink(isActive: $viewModel.presentManagePaymentGateways) {
+                            InPersonPaymentsSelectPluginView(selectedPlugin: nil,
+                                                             onPluginSelected: viewModel.preferredPluginSelected)
                         } label: {
                             PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
                                         title: Localization.managePaymentGateways,

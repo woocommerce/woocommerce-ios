@@ -17,6 +17,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var cardPresentPaymentsOnboardingNotice: PermanentNotice?
     @Published var shouldShowOnboarding: Bool = false
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
+    @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
@@ -110,6 +111,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func tapToPayFeedbackTapped() {
         presentTapToPayFeedback = true
+    }
+
+    func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
+        dependencies.onboardingUseCase.clearPluginSelection()
+        dependencies.onboardingUseCase.selectPlugin(plugin)
+        presentManagePaymentGateways = false
     }
 
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {

@@ -72,7 +72,6 @@ final class AddCustomAmountViewModel: ObservableObject {
         case orderTotalPercentage(baseAmount: Decimal)
     }
 
-    private let inputType: InputType
     private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
@@ -103,7 +102,6 @@ final class AddCustomAmountViewModel: ObservableObject {
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.inputTypeViewModelAdapter = AddCustomAmountInputTypeViewModelAdapterProvider().provideAddCustomAmountInputTypeViewModelAdapter(with: inputType)
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        self.inputType = inputType
         self.analytics = analytics
         self.onCustomAmountEntered = onCustomAmountEntered
 

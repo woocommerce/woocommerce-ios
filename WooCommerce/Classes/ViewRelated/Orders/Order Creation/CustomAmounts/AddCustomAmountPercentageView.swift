@@ -40,6 +40,7 @@ struct AddCustomAmountPercentageView: View {
 private extension AddCustomAmountPercentageView {
     enum Layout {
         static let mainVerticalSpacing: CGFloat = 8
+        static let textFieldMaxWidth: CGFloat = 200
         static func percentageFontSize(scale: CGFloat) -> CGFloat {
             56 * scale
         }
@@ -74,7 +75,7 @@ private extension AddCustomAmountPercentageView {
                 .focused($focused, equals: true)
                 .font(.system(size: Layout.percentageFontSize(scale: scale), weight: .bold))
                 .keyboardType(.decimalPad)
-                .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: Layout.textFieldMaxWidth)
                 .fixedSize()
                 .onAppear {
                   DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(500)) {

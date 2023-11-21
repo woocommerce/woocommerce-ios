@@ -30,7 +30,7 @@ final class PaymentsTests: XCTestCase {
         try PaymentsScreen().tapCollectPayment()
             .enterPaymentAmount("5")
             .takeCashPayment()
-//            .verifyOrderCompletedToastDisplayed()
+            .verifyOrderCompletedToastDisplayed()
             .verifyPaymentsScreenLoaded()
     }
 }

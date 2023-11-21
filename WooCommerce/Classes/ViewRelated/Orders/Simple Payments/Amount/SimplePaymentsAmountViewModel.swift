@@ -61,6 +61,10 @@ final class SimplePaymentsAmountViewModel: ObservableObject {
     ///
     private let presentNoticeSubject: PassthroughSubject<SimplePaymentsNotice, Never>
 
+    lazy var presentNoticePublisher: AnyPublisher<SimplePaymentsNotice, Never> = {
+        presentNoticeSubject.eraseToAnyPublisher()
+    }()
+
     /// Defines the status for a new simple payments order. `auto-draft` for new stores. `pending` for old stores.
     ///
     private var initialOrderStatus: OrderStatusEnum = .pending

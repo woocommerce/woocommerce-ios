@@ -29,9 +29,7 @@ struct InPersonPaymentsMenu: View {
                             }
                         }) {
                             NavigationView {
-                                SimplePaymentsAmountHosted(
-                                    viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
-                                    presentNoticePublisher: viewModel.simplePaymentsNoticePublisher)
+                                SimplePaymentsAmountHosted(viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
                                 .navigationBarTitleDisplayMode(.inline)
                             }
                         }

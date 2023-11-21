@@ -65,6 +65,15 @@
         }
       },
       {
+        "package": "ScrollViewSectionKit",
+        "repositoryURL": "https://github.com/pavolkmet/ScrollViewSectionKit",
+        "state": {
+          "branch": null,
+          "revision": "44a0db25e86206bdb96fb7b93507417cfc36f016",
+          "version": "1.2.0"
+        }
+      },
+      {
         "package": "swift-algorithms",
         "repositoryURL": "https://github.com/apple/swift-algorithms",
         "state": {

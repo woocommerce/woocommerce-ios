@@ -96,7 +96,7 @@ final class SessionManager: SessionManagerProtocol {
     }
 
     /// Unique WooCommerce Store UUID.
-    /// Do not conduse with `defaultStoreID` which is in fact the WPCom `siteID`.
+    /// Do not confuse with `defaultStoreID` which is in fact the WPCom `siteID`.
     ///
     var defaultStoreUUID: String?
 

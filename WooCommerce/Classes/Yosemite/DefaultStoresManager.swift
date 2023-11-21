@@ -537,7 +537,7 @@ private extension DefaultStoresManager {
     func loadStoreUUID(siteID: Int64) {
         let action = AppSettingsAction.getStoreID(siteID: siteID) { [weak self] storeUUID in
             self?.sessionManager.defaultStoreUUID = storeUUID
-            print("🟢 Loaded Store UUID: " + (String(describing: storeUUID)))
+            DDLogInfo("🟢 Loaded Store UUID: " + (String(describing: storeUUID)))
         }
         dispatch(action)
     }

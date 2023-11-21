@@ -105,6 +105,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
         })
         shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+
+        guard shouldShowDepositSummary else {
+            return
+        }
         dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
     }
 

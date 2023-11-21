@@ -42,7 +42,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         }))
     }
 
-    func test_onAppear_when_deposit_summaries_are_returned_depositSummaryShown_is_tracked() async {
+    func test_onAppear_when_deposit_summaries_are_returned_depositSummaryShown_is_tracked() async throws {
         // Given
         mockDepositService.onFetchDepositsOverviewThenReturn = [.fake().copy(currency: .USD), .fake().copy(currency: .GBP)]
 
@@ -50,10 +50,20 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         await sut.onAppear()
 
         // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { eventName in
-            eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
-        }))
+        let eventIndex = try? XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue))
+
+        XCTAssertNotNil(eventIndex)
+
+        guard let eventIndex else {
+            return XCTFail("Expected event not found")
+        }
+
+        guard let properties = try XCTUnwrap(analyticsProvider.receivedProperties[safe: eventIndex]) as? [String: Int] else {
+            return XCTFail("Expected properties not tracked")
+        }
+        assertEqual(properties["number_of_currencies"], 2)
     }
+
 //     private var stores: MockStoresManager!
 
 //     private var analyticsProvider: MockAnalyticsProvider!

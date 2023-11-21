@@ -21,6 +21,9 @@ final class EditableOrderViewModel: ObservableObject {
 
     // MARK: - Product selector states
     @Published var productSelectorViewModel: ProductSelectorViewModel?
+
+    /// The source of truth of whether the product selector is presented.
+    /// This can be triggered by different CTAs like in the order form and close CTA in the product selector.
     @Published var isProductSelectorPresented: Bool = false
 
     private var cancellables: Set<AnyCancellable> = []

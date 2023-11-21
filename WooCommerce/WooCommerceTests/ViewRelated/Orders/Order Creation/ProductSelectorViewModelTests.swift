@@ -1000,6 +1000,18 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(onAllSelectionsClearedCalled)
     }
 
+    func test_addSelection_allows_multiple_same_ids() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20])
+
+        // When
+        viewModel.addSelection(id: 1)
+        viewModel.addSelection(id: 1)
+
+        // Then
+        XCTAssertEqual(viewModel.totalSelectedItemsCount, 2)
+    }
+
     @MainActor
     func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given

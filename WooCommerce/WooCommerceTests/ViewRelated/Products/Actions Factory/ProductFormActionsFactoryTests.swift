@@ -741,7 +741,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_view_model_for_subscription_product_when_downloadable() {
+    func test_view_model_for_subscription_product_when_product_is_downloadable() {
         // Arrange
         let product = Fixtures.subscriptionProduct.copy(downloadable: true)
         let model = EditableProductModel(product: product)
@@ -767,7 +767,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_subscription_product_when_not_downloadable() {
+    func test_view_model_for_subscription_product_when_product_is_not_downloadable() {
         // Arrange
         let product = Fixtures.subscriptionProduct.copy(downloadable: false)
         let model = EditableProductModel(product: product)

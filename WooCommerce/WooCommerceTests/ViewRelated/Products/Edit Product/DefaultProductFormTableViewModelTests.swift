@@ -824,7 +824,7 @@ private extension DefaultProductFormTableViewModelTests {
                                                    "Reads like: 'Regular price: $60.00 every 2 months'.")
         static let expiryFormat = NSLocalizedString("Expire after: %@",
                                                     comment: "Format of the expiry details on the Subscription row. Reads like: 'Expire after: 1 year'.")
-        static let neverExpire = NSLocalizedString("Never expires", comment: "Display label when a subscription never expires.")
+        static let neverExpire = NSLocalizedString("Never expire", comment: "Display label when a subscription never expires.")
         static let minQuantityFormat = NSLocalizedString("Minimum quantity: %@",
                                                           comment: "Format of the Minimum Quantity setting (with a numeric quantity) on the Quantity Rules row")
         static let maxQuantityFormat = NSLocalizedString("Maximum quantity: %@",

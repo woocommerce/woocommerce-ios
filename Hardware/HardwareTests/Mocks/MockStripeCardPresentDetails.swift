@@ -9,7 +9,6 @@ struct MockStripeCardPresentDetails {
     public let expYear: Int
     public let cardholderName: String?
     public let brand: StripeTerminal.CardBrand
-    public let fingerprint: String
     public let generatedCard: String?
     public let receipt: StripeTerminal.ReceiptDetails?
     public let emvAuthData: String?
@@ -24,7 +23,6 @@ extension MockStripeCardPresentDetails {
                                      expYear: 2021,
                                      cardholderName: "Name",
                                      brand: .JCB,
-                                     fingerprint: "fingerprint",
                                      generatedCard: "generatedCard",
                                      receipt: nil,
                                      emvAuthData: "authdata")

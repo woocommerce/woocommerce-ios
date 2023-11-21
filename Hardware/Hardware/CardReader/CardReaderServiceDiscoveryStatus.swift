@@ -6,6 +6,6 @@ public enum CardReaderServiceDiscoveryStatus {
     // The service is attempting to discover readers
     case discovering
 
-    // The servide is at fault
+    // The service is at fault
     case fault
 }

@@ -37,7 +37,6 @@ extension Hardware.CardPresentTransactionDetails {
             expYear: .fake(),
             cardholderName: .fake(),
             brand: .fake(),
-            fingerprint: .fake(),
             generatedCard: .fake(),
             receipt: .fake(),
             emvAuthData: .fake()

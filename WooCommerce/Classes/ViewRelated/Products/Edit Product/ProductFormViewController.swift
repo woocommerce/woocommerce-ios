@@ -1964,7 +1964,8 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO: 11090 - Analytics
+
+        ServiceLocator.analytics.track(event: .ProductDetail.expirationDetailsScreenClosed(hasChangedData: hasUnsavedChanges))
 
         guard hasUnsavedChanges else {
             return

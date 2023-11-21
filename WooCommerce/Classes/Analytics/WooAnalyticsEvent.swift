@@ -393,6 +393,12 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let hasChangedData = "has_changed_data"
+        }
+
         static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
                                                                            "has_minmax_quantity_rules": hasMinMaxQuantityRules])
@@ -432,6 +438,15 @@ extension WooAnalyticsEvent {
         ///
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the the subscription expiration details screen is closed.
+        ///
+        static func expirationDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubcriptionExpirationDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
         }
     }
 }

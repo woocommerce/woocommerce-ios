@@ -681,8 +681,6 @@ public enum WooAnalyticsStat: String {
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
     case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
     case productDetailViewQuantityRulesTapped = "product_detail_view_quantity_rules_tapped"
-    case productDetailsViewSubscriptionExpirationDateTapped = "product_details_view_subscription_expiration_date_tapped"
-    case productDetailsViewSubscriptionFreeTrialTapped = "product_details_view_subscription_free_trial_tapped"
 
     // MARK: Edit Product Variation Events
     //
@@ -703,8 +701,13 @@ public enum WooAnalyticsStat: String {
     case productVariationBulkUpdateFieldSuccess = "product_variation_bulk_update_field_success"
     case productVariationBulkUpdateFieldFail = "product_variation_bulk_update_field_fail"
 
+    // MARK: Woo Subscriptions product Events
+    //
+    case productDetailsViewSubscriptionExpirationDateTapped = "product_details_view_subscription_expiration_date_tapped"
+    case productDetailsViewSubscriptionFreeTrialTapped = "product_details_view_subscription_free_trial_tapped"
     case productVariationViewSubscriptionExpirationDateTapped = "product_variation_view_subscription_expiration_date_tapped"
     case productVariationViewSubscriptionFreeTrialTapped = "product_variation_view_subscription_free_trial_tapped"
+    case productSubcriptionExpirationDoneButtonTapped = "product_subscription_expiration_done_button_tapped"
 
 
     // MARK: Product Images Events

@@ -84,12 +84,6 @@ private extension AddCustomAmountView {
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
-        static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
-                                                             value: "Enter percentage of order total",
-                                                             comment: "Title for entering an custom amount through a percentage")
-        static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
-                                                             value: "Enter percentage",
-                                                             comment: "Placeholder for entering an custom amount through a percentage")
         static let chargeTaxesToggleTitle = NSLocalizedString("addCustomAmountView.chargeTaxesToggle.title",
                                                              value: "Charge Taxes",
                                                              comment: "Title for the charge taxes toggle in the custom amounts screen.")

@@ -49,14 +49,13 @@ private extension AddCustomAmountPercentageView {
 
 private extension AddCustomAmountPercentageView {
     enum Localization {
-        static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
+        static let amountTitle = NSLocalizedString("addCustomAmountPercentageView.amount.title",
+                                                   value: "Amount",
+                                                   comment: "Title above the amount field on the add custom amount view in orders.")
 
-        static let percentageInputTitle = NSLocalizedString("addCustomAmountView.percentageTextField.title",
+        static let percentageInputTitle = NSLocalizedString("addCustomAmountPercentageView.percentageTextField.title",
                                                             value: "Enter percentage of order total",
                                                             comment: "Title for entering an custom amount through a percentage")
-        static let percentageInputPlaceholder = NSLocalizedString("addCustomAmountView.percentageTextField.placeholder",
-                                                                  value: "Enter percentage",
-                                                                  comment: "Placeholder for entering an custom amount through a percentage")
     }
 }
 

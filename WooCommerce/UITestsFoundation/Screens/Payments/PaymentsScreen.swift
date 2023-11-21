@@ -3,7 +3,7 @@ import XCTest
 
 public final class PaymentsScreen: ScreenObject {
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.images["collect-payment"]
+        $0.buttons["collect-payment"]
     }
 
     private let cardReaderManualsButtonGetter: (XCUIApplication) -> XCUIElement = {

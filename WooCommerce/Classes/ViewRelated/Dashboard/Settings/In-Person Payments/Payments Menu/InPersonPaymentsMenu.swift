@@ -18,6 +18,7 @@ struct InPersonPaymentsMenu: View {
                     ScrollViewSection {
                         PaymentsRow(image: Image(uiImage: .moneyIcon),
                                     title: Localization.collectPayment)
+                        .accessibilityAddTraits(.isButton)
                         .accessibilityIdentifier(AccessibilityIdentifiers.collectPaymentRow)
                         .onTapGesture {
                             viewModel.collectPaymentTapped()

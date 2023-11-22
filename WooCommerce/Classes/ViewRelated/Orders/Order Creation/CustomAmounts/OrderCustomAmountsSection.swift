@@ -24,7 +24,6 @@ struct OrderCustomAmountsSection: View {
         VStack {
             HStack {
                 Button(Localization.addCustomAmount) {
-
                     onAddCustomAmountRequested()
                 }
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
@@ -101,9 +100,7 @@ struct OrderCustomAmountsSection: View {
 
                 Button(Localization.optionsDialogFixedAmountButtonTitle) {
                     addCustomAmountOption = .fixedAmount
-                    showAddCustomAmountAfterOptionsDialog = true
-                    showAddCustomAmountOptionsDialog = false
-                    viewModel.showEditCustomAmount = false
+                    showAddCustomAmountsAfterOptionsDialog()
 
                 }
                 .bodyStyle()
@@ -117,9 +114,7 @@ struct OrderCustomAmountsSection: View {
 
                 Button(Localization.optionsDialogPercentageButtonTitle) {
                     addCustomAmountOption = .orderTotalPercentage
-                    showAddCustomAmountAfterOptionsDialog = true
-                    showAddCustomAmountOptionsDialog = false
-                    viewModel.showEditCustomAmount = false
+                    showAddCustomAmountsAfterOptionsDialog()
                 }
                 .bodyStyle()
             }
@@ -142,6 +137,12 @@ private extension OrderCustomAmountsSection {
             showAddCustomAmountAfterOptionsDialog = false
             showAddCustomAmount = true
         }
+    }
+
+    func showAddCustomAmountsAfterOptionsDialog() {
+        showAddCustomAmountAfterOptionsDialog = true
+        showAddCustomAmountOptionsDialog = false
+        viewModel.showEditCustomAmount = false
     }
 }
 

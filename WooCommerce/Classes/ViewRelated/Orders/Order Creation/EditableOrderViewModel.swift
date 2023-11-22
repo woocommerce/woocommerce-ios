@@ -810,6 +810,7 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onAddCustomAmountButtonTapped() {
+        editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
     }
 

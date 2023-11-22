@@ -56,6 +56,7 @@ struct CollapsibleBundleProductRowCard: View {
                                           shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                           shouldDisallowDiscounts: shouldDisallowDiscounts,
                                           onAddDiscount: onAddDiscount) // TODO: #11250 Update design of child items in product bundle
+                Divider().padding(.horizontal)
             }
         }
         .overlay {

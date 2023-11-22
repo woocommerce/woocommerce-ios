@@ -524,12 +524,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
 
-                if product is EditableProductVariationModel {
-                    ServiceLocator.analytics.track(.productVariationViewSubscriptionExpirationDateTapped)
-                } else if product is EditableProductModel {
-                    ServiceLocator.analytics.track(.productDetailsViewSubscriptionExpirationDateTapped)
-                }
-
+                eventLogger.logSubscriptionsExpirationDateTapped()
                 showSubscriptionExpirySettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.

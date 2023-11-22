@@ -35,4 +35,8 @@ struct ProductVariationFormEventLogger: ProductFormEventLoggerProtocol {
     func logSubscriptionsFreeTrialTapped() {
         ServiceLocator.analytics.track(.productVariationViewSubscriptionFreeTrialTapped)
     }
+
+    func logSubscriptionsExpirationDateTapped() {
+        ServiceLocator.analytics.track(.productVariationViewSubscriptionExpirationDateTapped)
+    }
 }

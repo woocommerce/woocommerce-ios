@@ -392,7 +392,7 @@ extension UIImage {
     /// Subscription Product
     ///
     static var subscriptionProductImage: UIImage {
-        return UIImage(named: "icon-subscription-product")!
+        return UIImage(systemName: "repeat")!
     }
 
     /// Filter Icon

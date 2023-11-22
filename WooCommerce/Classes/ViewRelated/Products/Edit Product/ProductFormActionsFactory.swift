@@ -39,7 +39,6 @@ enum ProductFormEditAction: Equatable {
     // Subscription products only
     case subscriptionFreeTrial(editable: Bool)
     case subscriptionExpiry(editable: Bool)
-    case subscription(actionable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
     case quantityRules

@@ -2,7 +2,6 @@ import XCTest
 import TestKit
 @testable import Yosemite
 @testable import WooCommerce
-import Networking
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
 class InPersonPaymentsMenuViewModelTests: XCTestCase {

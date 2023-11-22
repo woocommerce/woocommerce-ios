@@ -593,13 +593,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
     // MARK: Subscription product
 
-    func test_view_model_for_subscription_product_when_subscription_editing_is_enabled() {
+    func test_view_model_for_subscription_product() {
         // Arrange
         let product = Fixtures.subscriptionProduct.copy(stockQuantity: 200)
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -618,83 +618,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
-    func test_view_model_for_subscription_product_when_subscription_editing_is_not_enabled() {
-        // Arrange
-        let product = Fixtures.subscriptionProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
-        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.subscription(actionable: true),
-                                                                       .reviews,
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: false)]
-        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
-        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
-    }
-
-    func test_view_model_for_variable_subscription_product_with_no_variations_when_editing_susbscription_is_not_enabled() {
-        // Arrange
-        let product = Fixtures.variableSubscriptionProduct
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
-        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.noVariationsWarning,
-                                                                       .reviews,
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: false)]
-        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
-        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
-    }
-
-    func test_view_model_for_variable_subscription_product_with_variations_when_editing_susbscription_is_not_enabled() {
-        // Arrange
-        let product = Fixtures.variableSubscriptionProduct.copy(attributes: [.fake().copy(variation: true)], variations: [123])
-        let model = EditableProductModel(product: product)
-
-        // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: false)
-
-        // Assert
-        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
-        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
-
-        let expectedSettingsSectionActions: [ProductFormEditAction] = [.variations(hideSeparator: false),
-                                                                       .attributes(editable: true),
-                                                                       .reviews,
-                                                                       .inventorySettings(editable: false),
-                                                                       .linkedProducts(editable: true),
-                                                                       .productType(editable: false)]
-        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
-
-        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
-        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
-    }
-
-    func test_viewModel_for_variable_subscription_product_without_variations_when_editing_subscription_is_enabled() {
+    func test_viewModel_for_variable_subscription_product_without_variations() {
         // Arrange
         let product = Fixtures.variableSubscriptionProductWithoutVariations
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -714,13 +644,13 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
 
-    func test_viewModel_for_variable_subscription_product_with_variations_when_editing_subscription_is_enabled() {
+    func test_viewModel_for_variable_subscription_product_with_variations() {
         // Arrange
         let product = Fixtures.variableSubscriptionProductWithVariations
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -747,7 +677,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -773,7 +703,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // Action
-        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
 
         // Assert
         let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
@@ -903,8 +833,7 @@ private extension ProductFormActionsFactoryTests {
                                    isBundledProductsEnabled: Bool = false,
                                    isCompositeProductsEnabled: Bool = false,
                                    isMinMaxQuantitiesEnabled: Bool = false,
-                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown,
-                                   editingSubscriptionEnabled: Bool = false) -> ProductFormActionsFactory {
+                                   variationsPrice: ProductFormActionsFactory.VariationsPrice = .unknown) -> ProductFormActionsFactory {
             ProductFormActionsFactory(product: product,
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
@@ -912,8 +841,7 @@ private extension ProductFormActionsFactoryTests {
                                       isBundledProductsEnabled: isBundledProductsEnabled,
                                       isCompositeProductsEnabled: isCompositeProductsEnabled,
                                       isMinMaxQuantitiesEnabled: isMinMaxQuantitiesEnabled,
-                                      variationsPrice: variationsPrice,
-                                      editingSubscriptionEnabled: editingSubscriptionEnabled)
+                                      variationsPrice: variationsPrice)
         }
     }
 }

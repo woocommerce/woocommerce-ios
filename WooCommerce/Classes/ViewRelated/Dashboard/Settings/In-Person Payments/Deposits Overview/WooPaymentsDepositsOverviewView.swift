@@ -17,7 +17,7 @@ struct WooPaymentsDepositsOverviewView: View {
     var body: some View {
         VStack {
             TopTabView(tabs: tabs,
-                       isExpanded: $isExpanded)
+                       showTabs: $isExpanded)
         }
     }
 }

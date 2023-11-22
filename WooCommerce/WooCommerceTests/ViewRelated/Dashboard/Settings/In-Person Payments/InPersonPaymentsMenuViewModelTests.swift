@@ -24,7 +24,9 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         mockDepositService = MockWooPaymentsDepositService()
         mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
         systemStatusService = MockSystemStatusService()
-        systemStatusService.onFetchSystemPluginWithPathThenReturn = .fake().copy()
+        systemStatusService.onFetchSystemPluginWithPath = { _ in
+            return .fake()
+        }
         sut = makeSut()
     }
 
@@ -42,7 +44,9 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
     func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
         // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
-        systemStatusService.onFetchSystemPluginWithPathThenReturn = nil
+        systemStatusService.onFetchSystemPluginWithPath = { _ in
+            return nil
+        }
 
         // When
         await sut.onAppear()
@@ -54,7 +58,12 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
     func test_fetchDepositsOverview_is_called_for_stores_which_support_the_route() async {
         // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
-        systemStatusService.onFetchSystemPluginWithPathThenReturn = .fake().copy()
+        systemStatusService.onFetchSystemPluginWithPath = { path in
+            guard path == "woocommerce-payments/woocommerce-payments.php" else {
+                return nil
+            }
+            return .fake().copy(siteID: self.sampleStoreID, plugin: "woocommerce-payments/woocommerce-payments.php")
+        }
 
         // When
         await sut.onAppear()

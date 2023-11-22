@@ -20,10 +20,12 @@ public final class MockSystemStatusService: SystemStatusServiceProtocol {
 
     public var didCallFetchSystemPluginWithPath = false
     public var spyFetchSystemPluginWithPathSiteID: Int64? = nil
-    public var onFetchSystemPluginWithPathThenReturn: SystemPlugin? = nil
+    public var onFetchSystemPluginWithPath: ((String) -> SystemPlugin?) = { _ in
+        return nil
+    }
     public func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String) async -> SystemPlugin? {
         didCallFetchSystemPluginWithPath = true
         spyFetchSystemPluginWithPathSiteID = siteID
-        return onFetchSystemPluginWithPathThenReturn
+        return onFetchSystemPluginWithPath(pluginPath)
     }
 }

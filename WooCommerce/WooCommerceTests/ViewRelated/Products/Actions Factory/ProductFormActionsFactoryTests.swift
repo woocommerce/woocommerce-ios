@@ -609,6 +609,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
+                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -632,6 +633,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedSettingsSectionActions: [ProductFormEditAction] = [.subscription(actionable: true),
                                                                        .reviews,
+                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: false),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: false)]
@@ -783,6 +785,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
+                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -791,6 +794,32 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
+
+    func test_view_model_for_subscription_product_when_product_is_virtual() {
+        // Arrange
+        let product = Fixtures.subscriptionProduct.copy(virtual: true)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit, editingSubscriptionEnabled: true)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
 
     // MARK: Quantity rules
 

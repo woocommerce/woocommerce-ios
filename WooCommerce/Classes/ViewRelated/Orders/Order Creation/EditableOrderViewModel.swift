@@ -176,6 +176,11 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     @Published var showEditCustomAmount: Bool = false
 
+    /// Whether the Custom Amount edit option is presented. Used either to edit, or delete a custom amount
+    /// Defaults to `false`
+    ///
+    @Published var presentCustomAmountEditOptionsActionSheet: Bool = false
+
     /// Defines if the toggle to store the tax rate in the selector should be enabled by default
     ///
     var shouldStoreTaxRateInSelectorByDefault: Bool {
@@ -1312,7 +1317,9 @@ private extension EditableOrderViewModel {
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
-                        self.showEditCustomAmount = true
+                        // TODO: We cannot show the edit screen directly, as there is an intermediate step now:
+                        //self.showEditCustomAmount = true
+                        self.presentCustomAmountEditOptionsActionSheet = true
                     })
                 }
             }

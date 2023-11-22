@@ -38,8 +38,23 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
-        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
-        let wooPaymentsDepositsService: WooPaymentsDepositService
+        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
+        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
+        let analytics: Analytics
+
+        init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+             onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
+             cardReaderSupportDeterminer: CardReaderSupportDetermining,
+             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
+             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
+            self.onboardingUseCase = onboardingUseCase
+            self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
+            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
+            self.wooPaymentsDepositService = wooPaymentsDepositService
+            self.analytics = analytics
+        }
     }
 
     let dependencies: Dependencies
@@ -67,30 +82,40 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             .assign(to: &$shouldBadgeTapToPayOnIPhone)
 
         Task { @MainActor in
-            await updateOutputProperties()
+            await updateOutputProperties(trackAnalytics: false)
         }
 
         InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor
-    private func updateOutputProperties() async {
+    private func updateOutputProperties(trackAnalytics: Bool = true) async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
-        await refreshDepositSummary()
+        await refreshDepositSummary(trackAnalytics: trackAnalytics)
     }
 
     @MainActor
-    private func refreshDepositSummary() async {
+    private func refreshDepositSummary(trackAnalytics: Bool) async {
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
             shouldShowDepositSummary = false
             return
         }
-        depositCurrencyViewModels = await dependencies.wooPaymentsDepositsService.fetchDepositsOverview().map({
-            WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
-        })
-        shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+        do {
+            depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            })
+            shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+
+            guard shouldShowDepositSummary, trackAnalytics else {
+                return
+            }
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
+        } catch {
+            shouldShowDepositSummary = false
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryError(error: error))
+        }
     }
 
     @MainActor
@@ -102,7 +127,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     func collectPaymentTapped() {
         presentCollectPayment = true
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        dependencies.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
     func setUpTryOutTapToPayTapped() {
@@ -233,7 +258,7 @@ private extension InPersonPaymentsMenuViewModel {
             message: Localization.inPersonPaymentsSetupNotFinishedNotice,
             callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
             callToActionHandler: { [weak self] in
-                ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
+                self?.dependencies.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
     }

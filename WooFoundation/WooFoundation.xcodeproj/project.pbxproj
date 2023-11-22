@@ -18,6 +18,7 @@
 		036563D728F93F8D00D84BFD /* TestKit in Frameworks */ = {isa = PBXBuildFile; productRef = 036563D628F93F8D00D84BFD /* TestKit */; };
 		03B8C3892914083F002235B1 /* Bundle+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03B8C3882914083F002235B1 /* Bundle+Woo.swift */; };
 		203758752AD55670000E4281 /* CountryCode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 203758742AD55670000E4281 /* CountryCode.swift */; };
+		20AD34D32B0CDB8900F38F44 /* Codegen in Frameworks */ = {isa = PBXBuildFile; productRef = 20AD34D22B0CDB8900F38F44 /* Codegen */; };
 		265C99D828B93F04005E6117 /* ColorPalette.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 265C99D728B93F04005E6117 /* ColorPalette.xcassets */; };
 		265C99DD28B941D5005E6117 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DC28B941D5005E6117 /* UIColor+Muriel-Tests.swift */; };
 		265C99DF28B94271005E6117 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 265C99DE28B94271005E6117 /* MurielColorTests.swift */; };
@@ -59,6 +60,19 @@
 			remoteInfo = Tools;
 		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		20AD34D42B0CDB8900F38F44 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0331A7502A39DECC001D2C2C /* Color+RGBStringDecoding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGBStringDecoding.swift"; sourceTree = "<group>"; };
@@ -118,6 +132,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				20AD34D32B0CDB8900F38F44 /* Codegen in Frameworks */,
 				9FA5113235035AC9A6079B0D /* Pods_WooFoundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -352,12 +367,16 @@
 				B9C9C631283E703C001B879F /* Sources */,
 				B9C9C632283E703C001B879F /* Frameworks */,
 				B9C9C633283E703C001B879F /* Resources */,
+				20AD34D42B0CDB8900F38F44 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = WooFoundation;
+			packageProductDependencies = (
+				20AD34D22B0CDB8900F38F44 /* Codegen */,
+			);
 			productName = Tools;
 			productReference = B9C9C635283E703C001B879F /* WooFoundation.framework */;
 			productType = "com.apple.product-type.framework";
@@ -941,6 +960,10 @@
 		036563D628F93F8D00D84BFD /* TestKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = TestKit;
+		};
+		20AD34D22B0CDB8900F38F44 /* Codegen */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Codegen;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -7,7 +7,7 @@ import Fakes
 final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
     func test_product_type_is_editable_for_core_product_types() {
         // Product types supported in core.
-        let coreProductTypes: [ProductType] = [.simple, .variable, .affiliate, .grouped]
+        let coreProductTypes: [ProductType] = [.simple, .variable, .affiliate, .grouped, .subscription, .variableSubscription]
 
         coreProductTypes.forEach { coreProductType in
             // Given
@@ -24,7 +24,7 @@ final class ProductFormActionsFactory_ProductCreationTests: XCTestCase {
 
     func test_product_type_is_not_editable_for_non_core_product_types() {
         // Product types supported in Woo extensions.
-        let nonCoreProductTypes: [ProductType] = [.bundle, .composite, .subscription, .variableSubscription, .custom("sub")]
+        let nonCoreProductTypes: [ProductType] = [.bundle, .composite, .custom("sub")]
 
         nonCoreProductTypes.forEach { nonCoreProductType in
             // Given

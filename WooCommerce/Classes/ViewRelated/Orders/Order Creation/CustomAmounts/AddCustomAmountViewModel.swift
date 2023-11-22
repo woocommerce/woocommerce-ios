@@ -17,7 +17,7 @@ final class AddCustomAmountInputTypeViewModelAdapterProvider {
     }
 }
 
-/// Classes implementing this protocol will act as a adapter between `AddCustomAmountViewModel` and the input type view models.
+/// Classes implementing this protocol will act as an adapter between `AddCustomAmountViewModel` and the input type view models.
 /// This way, the former can be agnostic of what type of view model we have before the scenes,
 /// and doesn't have to type check to access their concrete implementation.
 /// Having a adapter keeps the classes loosely coupled, as the type view model doesn't have to adapt for `AddCustomAmountViewModel`,

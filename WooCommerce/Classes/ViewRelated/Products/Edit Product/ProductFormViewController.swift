@@ -517,12 +517,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                     return
                 }
 
-                if product is EditableProductVariationModel {
-                    ServiceLocator.analytics.track(.productVariationViewSubscriptionFreeTrialTapped)
-                } else if product is EditableProductModel {
-                    ServiceLocator.analytics.track(.productDetailsViewSubscriptionFreeTrialTapped)
-                }
-
+                eventLogger.logSubscriptionsFreeTrialTapped()
                 showSubscriptionFreeTrialSettings()
             case .subscriptionExpiry(_, let isEditable):
                 guard isEditable else {

@@ -516,7 +516,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 guard isEditable else {
                     return
                 }
-                
+
                 if product is EditableProductVariationModel {
                     ServiceLocator.analytics.track(.productVariationViewSubscriptionFreeTrialTapped)
                 } else if product is EditableProductModel {

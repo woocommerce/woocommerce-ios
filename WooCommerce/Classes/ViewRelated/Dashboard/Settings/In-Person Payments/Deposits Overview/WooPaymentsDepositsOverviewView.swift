@@ -3,18 +3,17 @@ import Yosemite
 
 @available(iOS 16.0, *)
 struct WooPaymentsDepositsOverviewView: View {
-    let viewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]
+    @ObservedObject var viewModel: WooPaymentsDepositsOverviewViewModel
 
     @State var isExpanded: Bool = false
 
     var tabs: [TopTabItem] {
-        viewModels.map { tabViewModel in
-            TopTabItem(name: tabViewModel.tabTitle,
-                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel,
+        viewModel.currencyViewModels.map { currencyViewModel in
+            TopTabItem(name: currencyViewModel.tabTitle,
+                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: currencyViewModel,
                                                                              isExpanded: $isExpanded)),
                        onSelected: {
-                ServiceLocator.analytics.track(
-                    event: .DepositSummary.depositSummaryCurrencySelected(currency: tabViewModel.currency))
+                viewModel.currencySelected(currencyViewModel: currencyViewModel)
             })
         }
     }
@@ -72,6 +71,6 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
 
         let viewModel2 = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overviewData2)
 
-        WooPaymentsDepositsOverviewView(viewModels: [viewModel1, viewModel2])
+        WooPaymentsDepositsOverviewView(viewModel: .init(currencyViewModels: [viewModel1, viewModel2]))
     }
 }

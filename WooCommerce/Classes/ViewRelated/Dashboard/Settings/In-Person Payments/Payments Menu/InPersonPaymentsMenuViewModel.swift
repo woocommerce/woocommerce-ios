@@ -24,7 +24,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentTapToPayFeedback: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
-    @Published var depositCurrencyViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
+    @Published var depositViewModel: WooPaymentsDepositsOverviewViewModel? = nil
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -103,12 +103,16 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             return
         }
         do {
-            depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+            let depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
             shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+            guard shouldShowDepositSummary else {
+                return
+            }
+            depositViewModel = WooPaymentsDepositsOverviewViewModel(currencyViewModels: depositCurrencyViewModels)
 
-            guard shouldShowDepositSummary, trackAnalytics else {
+            guard trackAnalytics else {
                 return
             }
             dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))

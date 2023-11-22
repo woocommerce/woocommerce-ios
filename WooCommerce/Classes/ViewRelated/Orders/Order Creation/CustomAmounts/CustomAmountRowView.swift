@@ -31,6 +31,9 @@ struct CustomAmountRowView: View {
                 .foregroundColor(Color(.wooCommercePurple(.shade60)))
         }
         .padding(Layout.contentPadding)
+        .onTapGesture {
+            viewModel.onEditCustomAmount()
+        }
         .background(
             RoundedRectangle(cornerRadius: Layout.cornerRadius)
                 .fill(Color(uiColor: .init(light: UIColor.clear,

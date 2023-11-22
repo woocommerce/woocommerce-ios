@@ -18,6 +18,8 @@ struct OrderCustomAmountsSection: View {
 
     @State private var addCustomAmountOption: ConfirmationOption?
 
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         VStack {
             HStack {
@@ -57,6 +59,7 @@ struct OrderCustomAmountsSection: View {
             }
             .renderedIf(viewModel.customAmountRows.isNotEmpty)
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .padding()
         .background(Color(.listForeground(modal: true)))
         .sheet(isPresented: $showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {

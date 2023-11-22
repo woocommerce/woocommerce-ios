@@ -3,9 +3,12 @@ import Yosemite
 
 class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     let overview: WooPaymentsDepositsOverviewByCurrency
+    private let analytics: Analytics
 
-    init(overview: WooPaymentsDepositsOverviewByCurrency) {
+    init(overview: WooPaymentsDepositsOverviewByCurrency,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.overview = overview
+        self.analytics = analytics
         setupProperties()
     }
 
@@ -77,6 +80,12 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         formatter.currencyCode = overview.currency.rawValue
         return formatter
     }()
+
+    func expandTapped(expanded: Bool) {
+        if expanded {
+            analytics.track(.paymentsMenuDepositSummaryExpanded)
+        }
+    }
 }
 
 private extension WooPaymentsDepositInterval {

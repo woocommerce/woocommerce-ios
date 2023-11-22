@@ -38,6 +38,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     withAnimation {
                         isExpanded.toggle()
                     }
+                    viewModel.expandTapped(expanded: isExpanded)
                 }
 
                 if isExpanded {

@@ -1695,6 +1695,8 @@
 		B93E03262A94EE63009CA9C1 /* TaxLineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */; };
 		B943E7252AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B943E7242AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift */; };
 		B94403C9289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift in Sources */ = {isa = PBXBuildFile; fileRef = B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */; };
+		B945F8862B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B945F8852B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift */; };
+		B945F8882B0CE74800B8281C /* AddCustomAmountPercentageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B945F8872B0CE74800B8281C /* AddCustomAmountPercentageView.swift */; };
 		B946880C29B626A1000646B0 /* SpotlightManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880B29B626A1000646B0 /* SpotlightManager.swift */; };
 		B946880E29B627EB000646B0 /* SearchableActivityConvertable.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */; };
 		B946881029B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */; };
@@ -4267,6 +4269,8 @@
 		B93E03252A94EE63009CA9C1 /* TaxLineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxLineViewModel.swift; sourceTree = "<group>"; };
 		B943E7242AFA41CF009CBA20 /* OrderDetailsCustomAmountCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsCustomAmountCellViewModel.swift; sourceTree = "<group>"; };
 		B94403C8289ABB4D00323FC2 /* SimplePaymentsAmountFlowOpener.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimplePaymentsAmountFlowOpener.swift; sourceTree = "<group>"; };
+		B945F8852B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountPercentageViewModel.swift; sourceTree = "<group>"; };
+		B945F8872B0CE74800B8281C /* AddCustomAmountPercentageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCustomAmountPercentageView.swift; sourceTree = "<group>"; };
 		B946880B29B626A1000646B0 /* SpotlightManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpotlightManager.swift; sourceTree = "<group>"; };
 		B946880D29B627EB000646B0 /* SearchableActivityConvertable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchableActivityConvertable.swift; sourceTree = "<group>"; };
 		B946880F29B8DD01000646B0 /* InPersonPaymentsMenuViewController+Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InPersonPaymentsMenuViewController+Activity.swift"; sourceTree = "<group>"; };
@@ -9348,6 +9352,8 @@
 				B9D19A412AE7B4AD00D944D8 /* CustomAmountRowViewModel.swift */,
 				B9D19A432AE7B66B00D944D8 /* CustomAmountRowView.swift */,
 				B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */,
+				B945F8852B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift */,
+				B945F8872B0CE74800B8281C /* AddCustomAmountPercentageView.swift */,
 			);
 			path = CustomAmounts;
 			sourceTree = "<group>";
@@ -13032,6 +13038,7 @@
 				B9CB14DC2A41FACD005912C2 /* BarcodeSKUScannerErrorNoticeFactory.swift in Sources */,
 				0225C42C2477D0D500C5B4F0 /* ProductFormViewModel.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
+				B945F8882B0CE74800B8281C /* AddCustomAmountPercentageView.swift in Sources */,
 				039D948D27610C6F0044EF38 /* UIView+SafeAreaConstraints.swift in Sources */,
 				7E7C5F792719A8F900315B61 /* EditProductCategoryListViewModel.swift in Sources */,
 				DE69C55527C5E317000BB888 /* ShippingLabelSampleData.swift in Sources */,
@@ -13179,6 +13186,7 @@
 				02C37B79296694A900F0CF9E /* StoreCreationCategoryQuestionOptions.swift in Sources */,
 				451750B224470CD5004FDA65 /* EnhancedTextView.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
+				B945F8862B0CE51A00B8281C /* AddCustomAmountPercentageViewModel.swift in Sources */,
 				E1E125B226EB8EE80068A9B0 /* UpdateProgressImage.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				03E471D829424CF9001A58AD /* CardPresentModalBuiltInReaderProcessing.swift in Sources */,

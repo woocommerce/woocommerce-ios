@@ -395,6 +395,13 @@ extension UIImage {
         return UIImage(systemName: "repeat")!
     }
 
+    /// Subscription Product
+    ///
+    static var variableSubscriptionProductImage: UIImage {
+        return UIImage(systemName: "square.3.layers.3d")!
+    }
+
+
     /// Filter Icon
     ///
     static var filterImage: UIImage {

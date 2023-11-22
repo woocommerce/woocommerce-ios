@@ -34,6 +34,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
 
+    /// Whether a product is the parent of child order items
+    let hasChildProducts: Bool
+
     /// Whether a product in an order item is configurable
     ///
     let isConfigurable: Bool
@@ -285,6 +288,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         hasChildProducts: Bool = false,
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -307,6 +311,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.hasChildProducts = hasChildProducts
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -326,6 +331,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     hasChildProducts: Bool = false,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -392,6 +398,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  hasChildProducts: hasChildProducts,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

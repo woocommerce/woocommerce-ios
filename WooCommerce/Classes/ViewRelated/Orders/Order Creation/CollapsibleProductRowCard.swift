@@ -141,14 +141,24 @@ struct CollapsibleProductRowCard: View {
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
         .background(Color(.listForeground(modal: false)))
-        .overlay {
-            RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                .inset(by: 0.25)
-                .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black),
-                        lineWidth: Layout.borderLineWidth)
-                .renderedIf(!viewModel.hasParentProduct)
-        }
-        .cornerRadius(Layout.frameCornerRadius)
+        .if(!viewModel.hasParentProduct, transform: {
+            $0.overlay {
+                if viewModel.hasChildProducts, #available(iOS 16.0, *) {
+                    UnevenRoundedRectangle(topLeadingRadius: Layout.frameCornerRadius,
+                                           bottomLeadingRadius: 0,
+                                           bottomTrailingRadius: 0,
+                                           topTrailingRadius: Layout.frameCornerRadius,
+                                           style: .circular)
+                    .inset(by: 0.25)
+                    .stroke(Color(uiColor: .black), lineWidth: Layout.borderLineWidth)
+                    .renderedIf(!isCollapsed)
+                } else {
+                    RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+                        .inset(by: 0.25)
+                        .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black), lineWidth: Layout.borderLineWidth)
+                }
+            }
+        })
     }
 
 
@@ -275,6 +285,11 @@ struct CollapsibleProductRowCard_Previews: PreviewProvider {
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
         VStack {
             CollapsibleProductRowCard(viewModel: viewModel,
+                                      flow: .creation,
+                                      shouldDisableDiscountEditing: false,
+                                      shouldDisallowDiscounts: false,
+                                      onAddDiscount: {})
+            CollapsibleProductRowCard(viewModel: ProductRowViewModel(product: product, canChangeQuantity: true, hasChildProducts: true),
                                       flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,

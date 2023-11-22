@@ -45,6 +45,9 @@ struct CollapsibleBundleProductRowCard: View {
                                       shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                       shouldDisallowDiscounts: shouldDisallowDiscounts,
                                       onAddDiscount: onAddDiscount)
+            Divider()
+                .frame(height: Layout.borderLineWidth)
+                .overlay(Color(.separator))
 
             // Child products
             ForEach(childViewModels) { viewModel in
@@ -72,7 +75,7 @@ private extension CollapsibleBundleProductRowCard {
 #if DEBUG
 #Preview {
     let product = Product.swiftUIPreviewSample()
-    let parentViewModel = ProductRowViewModel(id: 1, product: product, canChangeQuantity: true)
+    let parentViewModel = ProductRowViewModel(id: 1, product: product, canChangeQuantity: true, hasChildProducts: true)
     let childViewModels = [ProductRowViewModel(id: 2, product: product, canChangeQuantity: true, hasParentProduct: true),
                            ProductRowViewModel(id: 3, product: product, canChangeQuantity: true, hasParentProduct: true)]
     return CollapsibleBundleProductRowCard(parentViewModel: parentViewModel,

@@ -138,7 +138,7 @@ public enum BottomSheetProductType: Hashable {
         case .custom:
             return UIImage.productImage
         case .subscription, .variableSubscription:
-            return UIImage.priceImage
+            return UIImage.subscriptionProductImage
         case .blank:
             return UIImage.blankProductImage
         }

@@ -389,6 +389,12 @@ extension UIImage {
         return UIImage(named: "icon-external-product")!.withRenderingMode(.alwaysTemplate)
     }
 
+    /// Subscription Product
+    ///
+    static var subscriptionProductImage: UIImage {
+        return UIImage(named: "icon-subscription-product")!
+    }
+
     /// Filter Icon
     ///
     static var filterImage: UIImage {

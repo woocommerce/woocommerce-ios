@@ -43,4 +43,15 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryLearnMoreTapped.rawValue))
     }
+
+    func test_when_learn_more_is_tapped_deposit_schedule_info_webview_is_shown() {
+        // Given
+
+        // When
+        sut.learnMoreTapped()
+
+        // Then
+        assertEqual(WooConstants.URLs.wooPaymentsDepositSchedule.asURL(), sut.showWebviewURL)
+    }
+
 }

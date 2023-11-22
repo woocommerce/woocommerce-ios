@@ -88,7 +88,6 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button {
-                    showDepositSummaryInfo = true
                     viewModel.learnMoreTapped()
                 } label: {
                     HStack {
@@ -103,7 +102,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 .padding(.bottom)
             }
         }
-        .safariSheet(isPresented: $showDepositSummaryInfo, url: WooConstants.URLs.wooPaymentsDepositSchedule.asURL())
+        .safariSheet(url: $viewModel.showWebviewURL)
         .animation(.easeOut, value: isExpanded)
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal)

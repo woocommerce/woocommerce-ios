@@ -33,6 +33,7 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var depositScheduleHint: String = ""
     @Published var balanceTypeHint: String = ""
     @Published var pendingFundsDepositsSummary: String = ""
+    @Published var showWebviewURL: URL? = nil
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
         return numberFormatter.string(from: amount) ?? ""
@@ -88,6 +89,7 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     }
 
     func learnMoreTapped() {
+        showWebviewURL = WooConstants.URLs.wooPaymentsDepositSchedule.asURL()
         analytics.track(.paymentsMenuDepositSummaryLearnMoreTapped)
     }
 }

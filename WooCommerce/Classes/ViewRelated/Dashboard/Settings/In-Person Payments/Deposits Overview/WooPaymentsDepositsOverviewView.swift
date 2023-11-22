@@ -9,8 +9,13 @@ struct WooPaymentsDepositsOverviewView: View {
 
     var tabs: [TopTabItem] {
         viewModels.map { tabViewModel in
-            TopTabItem(name: tabViewModel.overview.currency.rawValue,
-                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel, isExpanded: $isExpanded)))
+            TopTabItem(name: tabViewModel.tabTitle,
+                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel,
+                                                                             isExpanded: $isExpanded)),
+                       onSelected: {
+                ServiceLocator.analytics.track(
+                    event: .DepositSummary.depositSummaryCurrencySelected(currency: tabViewModel.currency))
+            })
         }
     }
 

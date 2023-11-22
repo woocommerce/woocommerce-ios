@@ -1,14 +1,17 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
-    let overview: WooPaymentsDepositsOverviewByCurrency
+    private let overview: WooPaymentsDepositsOverviewByCurrency
     private let analytics: Analytics
 
     init(overview: WooPaymentsDepositsOverviewByCurrency,
          analytics: Analytics = ServiceLocator.analytics) {
         self.overview = overview
         self.analytics = analytics
+        self.currency = overview.currency
+        self.tabTitle = overview.currency.rawValue.uppercased()
         setupProperties()
     }
 
@@ -34,6 +37,8 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var balanceTypeHint: String = ""
     @Published var pendingFundsDepositsSummary: String = ""
     @Published var showWebviewURL: URL? = nil
+    @Published var currency: CurrencyCode
+    @Published var tabTitle: String
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
         return numberFormatter.string(from: amount) ?? ""

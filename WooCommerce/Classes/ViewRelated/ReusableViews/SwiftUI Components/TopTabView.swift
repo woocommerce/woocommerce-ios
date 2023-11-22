@@ -3,6 +3,15 @@ import SwiftUI
 struct TopTabItem {
     let name: String
     let view: AnyView
+    let onSelected: (() -> Void)?
+
+    init(name: String,
+         view: AnyView,
+         onSelected: (() -> Void)? = nil) {
+        self.name = name
+        self.view = view
+        self.onSelected = onSelected
+    }
 }
 
 struct TopTabView: View {
@@ -36,6 +45,7 @@ struct TopTabView: View {
                                         .onTapGesture {
                                             withAnimation {
                                                 selectedTab = index
+                                                tabs[selectedTab].onSelected?()
                                                 underlineOffset = calculateOffset(index: index)
                                                 scrollViewProxy.scrollTo(index, anchor: .center)
                                             }

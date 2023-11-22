@@ -1012,6 +1012,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
     case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
     case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

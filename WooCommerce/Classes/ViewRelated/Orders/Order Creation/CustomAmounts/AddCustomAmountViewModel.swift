@@ -4,7 +4,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-/// Provides a adapter depending on the input type
+/// Provides an adapter depending on the input type
 ///
 final class AddCustomAmountInputTypeViewModelAdapterProvider {
     func provideAddCustomAmountInputTypeViewModelAdapter(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelAdapter {

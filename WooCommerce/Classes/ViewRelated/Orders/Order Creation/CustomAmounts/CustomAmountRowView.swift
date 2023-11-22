@@ -24,9 +24,11 @@ struct CustomAmountRowView: View {
                 .foregroundColor(.init(UIColor.text))
                 .subheadlineStyle()
 
-            Image(uiImage: .pencilImage)
+            Image(systemName: "pencil")
                 .resizable()
-                .flipsForRightToLeftLayoutDirection(true)
+                .frame(width: Layout.editIconImageSize * scale,
+                       height: Layout.editIconImageSize * scale)
+                .foregroundColor(Color(.wooCommercePurple(.shade60)))
         }
         .padding(Layout.contentPadding)
         .background(
@@ -47,5 +49,6 @@ extension CustomAmountRowView {
         static let contentPadding: CGFloat = 16
         static let cornerRadius: CGFloat = 8
         static let borderLineWidth: CGFloat = 0.5
+        static let editIconImageSize: CGFloat = 16
     }
 }

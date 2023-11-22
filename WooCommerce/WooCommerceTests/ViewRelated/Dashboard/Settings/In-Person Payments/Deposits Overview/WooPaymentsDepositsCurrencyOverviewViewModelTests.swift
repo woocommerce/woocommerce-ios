@@ -34,4 +34,13 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryExpanded.rawValue))
     }
 
+    func test_when_learn_more_is_tapped_analytic_event_is_tracked() {
+        // Given
+
+        // When
+        sut.learnMoreTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryLearnMoreTapped.rawValue))
+    }
 }

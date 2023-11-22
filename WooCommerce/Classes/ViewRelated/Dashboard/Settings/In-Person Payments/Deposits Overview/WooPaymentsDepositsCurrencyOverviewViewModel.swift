@@ -86,6 +86,10 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
             analytics.track(.paymentsMenuDepositSummaryExpanded)
         }
     }
+
+    func learnMoreTapped() {
+        analytics.track(.paymentsMenuDepositSummaryLearnMoreTapped)
+    }
 }
 
 private extension WooPaymentsDepositInterval {

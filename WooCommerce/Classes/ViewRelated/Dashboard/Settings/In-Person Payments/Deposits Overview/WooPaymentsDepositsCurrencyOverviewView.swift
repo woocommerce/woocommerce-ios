@@ -89,6 +89,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
                 Button {
                     showDepositSummaryInfo = true
+                    viewModel.learnMoreTapped()
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")

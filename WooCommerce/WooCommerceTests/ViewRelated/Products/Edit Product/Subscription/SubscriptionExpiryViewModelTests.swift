@@ -80,8 +80,7 @@ final class SubscriptionExpiryViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldEnableDoneButton)
 
         // When
-        let newSelection = try XCTUnwrap(viewModel.lengthOptions.randomElement())
-        viewModel.selectedLength = newSelection
+        viewModel.selectedLength = .init(title: "2", value: 2)
 
         // Then
         XCTAssertTrue(viewModel.shouldEnableDoneButton)

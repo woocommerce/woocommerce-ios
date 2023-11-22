@@ -820,6 +820,57 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
     }
 
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_virtual() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(virtual: true)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertFalse(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_virtual() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(virtual: false)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertTrue(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_downloadable() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertFalse(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_downloadable() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(downloadable: false)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertTrue(containsShippingSettingsAction)
+    }
 
     // MARK: Quantity rules
 

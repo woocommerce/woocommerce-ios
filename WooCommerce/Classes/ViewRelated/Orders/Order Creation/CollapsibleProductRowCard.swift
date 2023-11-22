@@ -57,7 +57,6 @@ struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: shouldShowDividers,
-                        backgroundColor: viewModel.backgroundColor,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -141,7 +140,7 @@ struct CollapsibleProductRowCard: View {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(viewModel.backgroundColor))
+        .background(Color(.listForeground(modal: false)))
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
@@ -266,13 +265,6 @@ private extension CollapsibleProductRowCard {
         static let configureBundleProduct = NSLocalizedString(
             "Configure",
             comment: "Text in the product row card to configure a bundle product")
-    }
-}
-
-private extension ProductRowViewModel {
-    var backgroundColor: UIColor {
-        hasParentProduct ?
-        .tertiarySystemGroupedBackground: .listForeground(modal: false)
     }
 }
 

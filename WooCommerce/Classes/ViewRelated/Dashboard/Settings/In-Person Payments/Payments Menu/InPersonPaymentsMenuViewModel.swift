@@ -41,18 +41,21 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
         let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
         let analytics: Analytics
+        let systemStatusService: SystemStatusServiceProtocol
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
              wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
             self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
             self.wooPaymentsDepositService = wooPaymentsDepositService
+            self.systemStatusService = systemStatusService
             self.analytics = analytics
         }
     }
@@ -82,6 +85,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             .assign(to: &$shouldBadgeTapToPayOnIPhone)
 
         Task { @MainActor in
+            _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
         }
 
@@ -98,7 +102,9 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     @MainActor
     private func refreshDepositSummary() async {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+        await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
+                                                                         pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
             shouldShowDepositSummary = false
             return
         }

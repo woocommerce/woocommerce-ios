@@ -12,21 +12,55 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var analytics: Analytics!
 
     private var mockDepositService: MockWooPaymentsDepositService!
+    private var mockOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
 
     private let sampleStoreID: Int64 = 12345
+
+    private var systemStatusService: MockSystemStatusService!
 
     override func setUp() {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         mockDepositService = MockWooPaymentsDepositService()
-        let mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+        mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        systemStatusService = MockSystemStatusService()
+        systemStatusService.onFetchSystemPluginWithPathThenReturn = .fake().copy()
+        sut = makeSut()
+    }
+
+    func makeSut() -> InPersonPaymentsMenuViewModel {
+        InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: .init(
                                                 cardPresentPaymentsConfiguration: .init(country: .US),
                                                 onboardingUseCase: mockOnboardingUseCase,
                                                 cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                 wooPaymentsDepositService: mockDepositService,
+                                                systemStatusService: systemStatusService,
                                                 analytics: analytics))
+    }
+
+    func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
+        // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
+        // Given
+        systemStatusService.onFetchSystemPluginWithPathThenReturn = nil
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertFalse(mockDepositService.spyDidCallFetchDepositsOverview)
+    }
+
+    func test_fetchDepositsOverview_is_called_for_stores_which_support_the_route() async {
+        // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
+        // Given
+        systemStatusService.onFetchSystemPluginWithPathThenReturn = .fake().copy()
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
     func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {

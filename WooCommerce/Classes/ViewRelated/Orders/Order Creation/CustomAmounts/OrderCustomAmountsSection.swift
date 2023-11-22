@@ -159,15 +159,15 @@ private extension OrderCustomAmountsSection {
                                                      value: "Custom Amounts",
                                                      comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")
         static let optionsDialogAddCustomAmountTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogTitle",
-                                                                         value: "How do you want to add your custom amount?",
-                                                                         comment: "Title text of the confirmation dialog that shows the add custom amounts options.")
+                                                        value: "How do you want to add your custom amount?",
+                                                        comment: "Title text of the confirmation dialog that shows the add custom amounts options.")
         static let optionsDialogFixedAmountButtonTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle",
-                                                                           value: "A fixed amount",
-                                                                           comment: "Button title for the fixed amount option in the custom amounts option sheet.")
+                                                        value: "A fixed amount",
+                                                        comment: "Button title for the fixed amount option in the custom amounts option sheet.")
         static let optionsDialogPercentageButtonTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogPercentageButtonTitle",
-                                                                          value: "A percentage of the order total",
-                                                                          comment: "Button title for the percentage option in the custom amounts option sheet.")
-        
+                                                        value: "A percentage of the order total",
+                                                        comment: "Button title for the percentage option in the custom amounts option sheet.")
+
     }
 
     enum Accessibility {

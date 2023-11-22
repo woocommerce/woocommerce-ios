@@ -82,7 +82,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
-    @Published private(set) var shouldDisableDoneButton: Bool = true
+    @Published private(set) var shouldEnableDoneButton: Bool = false
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
@@ -139,8 +139,10 @@ private extension AddCustomAmountViewModel {
 
     func listenToAmountChanges() {
         inputTypeViewModelAdapter.amountPublisher?.map { [weak self] value in
-            !(self?.amountIsValid(amount: value) ?? true)
-        }.assign(to: &$shouldDisableDoneButton)
+            guard let self = self else { return false }
+
+            return self.amountIsValid(amount: value)
+        }.assign(to: &$shouldEnableDoneButton)
     }
 
     func amountIsValid(amount: String) -> Bool {

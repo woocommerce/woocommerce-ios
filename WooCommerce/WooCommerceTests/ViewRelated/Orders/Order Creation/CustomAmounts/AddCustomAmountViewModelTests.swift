@@ -5,7 +5,7 @@ import Fakes
 import WooFoundation
 
 final class AddCustomAmountViewModelTests: XCTestCase {
-    func test_shouldDisableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
+    func test_shouldEnableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
@@ -13,10 +13,10 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         viewModel.formattableAmountTextFieldViewModel?.amount = "$0"
 
         // Then
-        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+        XCTAssertFalse(viewModel.shouldEnableDoneButton)
     }
 
-    func test_shouldDisableDoneButton_when_there_is_no_amount_then_disables_done_button() {
+    func test_shouldEnableDoneButton_when_there_is_no_amount_then_disables_done_button() {
         // Given
         let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
@@ -24,7 +24,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         viewModel.formattableAmountTextFieldViewModel?.amount = ""
 
         // Then
-        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+        XCTAssertFalse(viewModel.shouldEnableDoneButton)
     }
 
     func test_doneButtonPressed_when_there_is_no_name_then_passes_placeholder() {

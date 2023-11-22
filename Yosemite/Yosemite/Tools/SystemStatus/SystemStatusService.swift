@@ -22,7 +22,7 @@ public struct SystemStatusService: SystemStatusServiceProtocol {
         }
     }
 
-    @MainActor  
+    @MainActor
     public func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String) async -> SystemPlugin? {
         await withCheckedContinuation({ continuation in
             let action = SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID,

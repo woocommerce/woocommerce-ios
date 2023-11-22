@@ -3,7 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// View model for `ProductRow`.
+/// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter

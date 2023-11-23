@@ -609,7 +609,6 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
-                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -714,7 +713,6 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
-                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -762,7 +760,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertFalse(containsShippingSettingsAction)
     }
 
-    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_virtual() {
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_not_virtual() {
         // Given
         let product = Fixtures.subscriptionProduct.copy(virtual: false)
         let model = EditableProductModel(product: product)
@@ -772,7 +770,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
-        XCTAssertTrue(containsShippingSettingsAction)
+        XCTAssertFalse(containsShippingSettingsAction)
     }
 
     func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_downloadable() {
@@ -788,7 +786,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         XCTAssertFalse(containsShippingSettingsAction)
     }
 
-    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_downloadable() {
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_not_downloadable() {
         // Given
         let product = Fixtures.subscriptionProduct.copy(downloadable: false)
         let model = EditableProductModel(product: product)
@@ -798,7 +796,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
-        XCTAssertTrue(containsShippingSettingsAction)
+        XCTAssertFalse(containsShippingSettingsAction)
     }
 
     // MARK: Quantity rules

@@ -212,7 +212,11 @@ extension EditableProductModel: ProductFormDataModel, TaxClassRequestable {
     }
 
     func isShippingEnabled() -> Bool {
-        product.downloadable == false && product.virtual == false
+        // TODO 11178 remove this check to re-enable Shipping for Subscriptions.
+        if product.subscription != nil {
+            return false
+        }
+        return product.downloadable == false && product.virtual == false
     }
 
     var existsRemotely: Bool {

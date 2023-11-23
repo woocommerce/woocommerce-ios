@@ -307,11 +307,12 @@ private extension InPersonPaymentsMenuViewModel {
 // MARK: - Card Reader visibility
 
 private extension InPersonPaymentsMenuViewModel {
-    private func updateCardReadersSection() {
+    func updateCardReadersSection() {
         shouldShowCardReaderSection = isEligibleForCardPresentPayments
     }
 
-    var isEligibleForCardPresentPayments: Bool { cardPresentPaymentsConfiguration.isSupportedCountry
+    var isEligibleForCardPresentPayments: Bool {
+        cardPresentPaymentsConfiguration.isSupportedCountry
     }
 }
 
@@ -319,7 +320,7 @@ private extension InPersonPaymentsMenuViewModel {
 
 private extension InPersonPaymentsMenuViewModel {
     @MainActor
-    private func updateTapToPaySection() async {
+    func updateTapToPaySection() async {
         let deviceSupportsTapToPay = await dependencies.cardReaderSupportDeterminer.deviceSupportsLocalMobileReader()
 
         shouldShowTapToPaySection = isEligibleForCardPresentPayments &&
@@ -335,7 +336,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     @MainActor
-    private func updateSetUpTryTapToPay() async {
+    func updateSetUpTryTapToPay() async {
         let tapToPayWasPreviouslyUsed = await dependencies.cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
         setUpTryOutTapToPayRowTitle = tapToPayWasPreviouslyUsed ? Localization.tryOutTapToPayOnIPhoneRowTitle : Localization.setUpTapToPayOnIPhoneRowTitle
@@ -343,7 +344,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     @MainActor
-    private func updateTapToPayFeedbackRowVisibility() async {
+    func updateTapToPayFeedbackRowVisibility() async {
         guard let firstTapToPayTransactionDate = await dependencies.cardReaderSupportDeterminer.firstTapToPayTransactionDate(),
               let thirtyDaysAgo = Calendar.current.date(byAdding: DateComponents(day: -30), to: Date()) else {
             return self.shouldShowTapToPayFeedbackRow = false

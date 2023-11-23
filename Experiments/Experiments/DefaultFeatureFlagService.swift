@@ -85,7 +85,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .subscriptionProducts:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

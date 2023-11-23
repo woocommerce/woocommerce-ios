@@ -11,13 +11,14 @@ struct ConfigurableBundleItemView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            HStack(spacing: Layout.defaultPadding) {
                 Button {
                     viewModel.isOptionalAndSelected.toggle()
                 } label: {
                     Image(uiImage: viewModel.isOptionalAndSelected || !viewModel.isOptional ?
                         .checkCircleImage.withRenderingMode(.alwaysTemplate):
                             .checkEmptyCircleImage)
+                    .frame(width: Layout.checkmarkDimension, height: Layout.checkmarkDimension)
                     .foregroundColor(.init(viewModel.isOptional ? .accent: .placeholderImage))
                 }
                 .disabled(!viewModel.isOptional)
@@ -30,38 +31,59 @@ struct ConfigurableBundleItemView: View {
                     .errorStyle()
             }
 
-            Button {
-                viewModel.createVariationSelectorViewModel()
-                showsVariationSelector = true
-            } label: {
-                Text(viewModel.selectedVariation == nil ?
-                     Localization.selectVariation: Localization.updateVariation)
-            }
-            .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle && viewModel.quantity > 0)
-
-            if let selectedVariation = viewModel.selectedVariation {
+            HStack(spacing: 0) {
+                // Indentation from the checkmark image.
                 Spacer()
-                    .frame(height: Layout.defaultPadding)
+                    .frame(width: Layout.checkmarkDimension + Layout.defaultPadding)
 
-                ForEach(selectedVariation.attributes, id: \.name) { attribute in
-                    HStack {
-                        Text(attribute.name)
+                VStack(alignment: .leading, spacing: Layout.defaultPadding) {
+                    Divider()
+                        .dividerStyle()
+
+                    if let selectedVariation = viewModel.selectedVariation {
+                        ForEach(selectedVariation.attributes, id: \.name) { attribute in
+                            HStack {
+                                Text(attribute.name)
+                                    .bold()
+                                    .foregroundColor(Color(.text))
+                                    .subheadlineStyle()
+                                Text(attribute.option)
+                                    .foregroundColor(Color(.text))
+                                    .subheadlineStyle()
+                            }
+                        }
+
+                        ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
+                            ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
+                        }
+                    }
+
+                    Button {
+                        viewModel.createVariationSelectorViewModel()
+                        showsVariationSelector = true
+                    } label: {
+                        HStack {
+                            Text(viewModel.selectedVariation == nil ?
+                                 Localization.selectVariation: Localization.updateVariation)
                             .bold()
-                        Text(attribute.option)
+                            .foregroundColor(Color(.accent))
+                            .subheadlineStyle()
+
+                            Spacer()
+
+                            DisclosureIndicator()
+                        }
                     }
                 }
-
-                ForEach(viewModel.selectableVariationAttributeViewModels) { viewModel in
-                    ConfigurableVariableBundleAttributePicker(viewModel: viewModel)
-                }
             }
+            .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle && viewModel.quantity > 0)
 
             if let variationSelectorViewModel = viewModel.variationSelectorViewModel {
                 LazyNavigationLink(destination: ProductVariationSelector(
                     isPresented: $showsVariationSelector,
                     viewModel: variationSelectorViewModel,
                     onMultipleSelections: { _ in }),
-                    isActive: $showsVariationSelector) {
+                                   isActive: $showsVariationSelector) {
                     EmptyView()
                 }
             }
@@ -73,6 +95,7 @@ struct ConfigurableBundleItemView: View {
 private extension ConfigurableBundleItemView {
     enum Layout {
         static let defaultPadding: CGFloat = 16
+        static let checkmarkDimension: CGFloat = 24
     }
 
     enum Localization {

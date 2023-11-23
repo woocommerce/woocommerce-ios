@@ -72,17 +72,6 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
-    func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
-        // Given
-        mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
-
-        // When
-        await sut.onAppear()
-
-        // Then
-        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
-    }
-
 //     func test_viewDidLoad_synchronizes_payment_gateways() throws {
 //         // Given
 //         assertEmpty(stores.receivedActions)
@@ -101,6 +90,17 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 //     }
 
     // MARK: - Analytics tests
+    func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
+    }
+
     func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
         // Given
 

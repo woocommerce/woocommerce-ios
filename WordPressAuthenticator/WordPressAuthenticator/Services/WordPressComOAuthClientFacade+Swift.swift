@@ -1,6 +1,14 @@
 import Foundation
 import WordPressKit
 
+extension WordPressComOAuthClientFacade {
+
+    var client: WordPressComOAuthClient {
+        fatalError("To Be Replaced")
+    }
+
+}
+
 // MARK: - This extension is needed because WordPressComOAuthClientFacade cannot access the WordPressAuthenticatorConfiguration struct.
 //
 extension WordPressComOAuthClientFacade {

@@ -1733,7 +1733,10 @@ private extension EditableOrderViewModel {
             let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
                 .compactMap { bundleItem -> BundledProductConfiguration? in
                     guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
-                        return nil
+                        return .init(bundledItemID: bundleItem.bundledItemID,
+                                     productOrVariation: .product(id: bundleItem.productID),
+                                     quantity: 0,
+                                     isOptionalAndSelected: false)
                     }
                     let attributes = existingOrderItem.attributes
                         .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }

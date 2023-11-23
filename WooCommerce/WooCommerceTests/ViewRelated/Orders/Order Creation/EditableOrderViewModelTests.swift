@@ -331,25 +331,33 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
-    func test_bundle_order_item_with_child_items_includes_bundle_configuration_when_quantity_is_incremented() throws {
+    func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
         // Given
         let bundledProduct = Product.fake().copy(siteID: sampleSiteID, productID: 665, productTypeKey: ProductType.simple.rawValue)
         let bundleItem = ProductBundleItem.fake().copy(bundledItemID: 1, productID: bundledProduct.productID)
+
+        let bundledVariableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 668, productTypeKey: ProductType.variable.rawValue, attributes: [
+            .fake().copy(name: "Fabric", options: ["Cotton", "Organic cotton"])
+        ], variations: [17])
+        let variableBundleItem = ProductBundleItem.fake().copy(bundledItemID: 2, productID: bundledVariableProduct.productID, isOptional: true)
+
         let bundleProduct = Product.fake().copy(siteID: sampleSiteID,
                                                 productID: 600,
                                                 productTypeKey: ProductType.bundle.rawValue,
                                                 bundledItems: [
-                                                    bundleItem
+                                                    bundleItem, variableBundleItem
                                                 ])
         // Inserts necessary objects to storage.
         storageManager.insertSampleProduct(readOnlyProduct: bundledProduct)
+        storageManager.insertSampleProduct(readOnlyProduct: bundledVariableProduct)
         let storageBundleProduct = storageManager.insertSampleProduct(readOnlyProduct: bundleProduct)
         storageManager.insert(bundleItem, for: storageBundleProduct)
+        storageManager.insert(variableBundleItem, for: storageBundleProduct)
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, items: [
             // Bundle order item
             .fake().copy(itemID: 1, productID: bundleProduct.productID, quantity: 2),
-            // Bundled child order item
+            // Bundled child order item for the simple product
             .fake().copy(itemID: 2, productID: bundledProduct.productID, quantity: 6, parent: 1),
         ])
         viewModel = .init(siteID: sampleSiteID,
@@ -379,9 +387,11 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         let bundleOrderItemToUpdate = try XCTUnwrap(orderToUpdate.items.first)
-        XCTAssertEqual(bundleOrderItemToUpdate.bundleConfiguration, [
-            .init(bundledItemID: 1, productID: 665, quantity: 3, isOptionalAndSelected: nil, variationID: nil, variationAttributes: nil)
-        ])
+        assertEqual([
+            .init(bundledItemID: 1, productID: 665, quantity: 3, isOptionalAndSelected: nil, variationID: nil, variationAttributes: nil),
+            // Even though the variable bundle item is not selected, it still needs to be included in the bundle configuration
+            .init(bundledItemID: 2, productID: 668, quantity: 0, isOptionalAndSelected: false, variationID: nil, variationAttributes: nil),
+        ], bundleOrderItemToUpdate.bundleConfiguration)
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {

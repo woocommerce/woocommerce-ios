@@ -161,6 +161,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     func purchaseCardReaderTapped() {
         presentPurchaseCardReader = true
         analytics.track(.paymentsMenuOrderCardReaderTapped)
+        presentPurchaseCardReader = true
     }
 
     func manageCardReadersTapped() {

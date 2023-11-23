@@ -198,23 +198,24 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPaymentProviderTapped.rawValue))
     }
 
-//     func test_orderCardReaderPressed_presents_card_reader_purchase_web_view() throws {
-//         // Given
-//         XCTAssertNil(sut.showWebView)
+     func test_purchaseCardReaderTapped_presents_card_reader_purchase_web_view() throws {
+         // Given
+         XCTAssertNil(sut.safariSheetURL)
 
-//         // When
-//         sut.orderCardReaderPressed()
+         // When
+         sut.purchaseCardReaderTapped()
 
-//         // Then
-//         let cardReaderPurchaseURL = try XCTUnwrap(sut.showWebView?.initialURL)
-//         assertEqual("https", cardReaderPurchaseURL.scheme)
-//         assertEqual("woo.com", cardReaderPurchaseURL.host)
-//         assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
-//         let query = try XCTUnwrap(cardReaderPurchaseURL.query)
-//         XCTAssert(query.contains("utm_medium=woo_ios"))
-//         XCTAssert(query.contains("utm_campaign=payments_menu_item"))
-//         XCTAssert(query.contains("utm_source=payments_menu"))
-//     }
+         // Then
+         XCTAssertTrue(sut.presentPurchaseCardReader)
+         let cardReaderPurchaseURL = try XCTUnwrap(sut.purchaseCardReaderWebViewModel.initialURL)
+         assertEqual("https", cardReaderPurchaseURL.scheme)
+         assertEqual("woo.com", cardReaderPurchaseURL.host)
+         assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
+         let query = try XCTUnwrap(cardReaderPurchaseURL.query)
+         XCTAssert(query.contains("utm_medium=woo_ios"))
+         XCTAssert(query.contains("utm_campaign=payments_menu_item"))
+         XCTAssert(query.contains("utm_source=payments_menu"))
+     }
 
 //     func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_isnt_in_configuration() {
 //         // Given

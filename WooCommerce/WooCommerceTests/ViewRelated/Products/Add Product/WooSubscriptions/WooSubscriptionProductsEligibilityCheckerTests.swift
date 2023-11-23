@@ -35,8 +35,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
         insert(activePlugin)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
-                                                                storage: storageManager,
-                                                                featureFlagService: MockFeatureFlagService(subscriptionProducts: true))
+                                                                storage: storageManager)
 
         // When
         let isEligible = checker.isSiteEligible()
@@ -53,8 +52,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
         insert(activePlugin)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
-                                                                storage: storageManager,
-                                                                featureFlagService: MockFeatureFlagService(subscriptionProducts: true))
+                                                                storage: storageManager)
 
         // When
         let isEligible = checker.isSiteEligible()
@@ -66,26 +64,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
     func test_isSiteEligible_is_false_when_woo_subscriptions_is_not_installed() throws {
         // Given
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
-                                                                storage: storageManager,
-                                                                featureFlagService: MockFeatureFlagService(subscriptionProducts: true))
-
-        // When
-        let isEligible = checker.isSiteEligible()
-
-        // Then
-        XCTAssertFalse(isEligible)
-    }
-
-    func test_isSiteEligible_is_false_when_feature_flag_is_off() throws {
-        // Given
-        let activePlugin = SystemPlugin.fake().copy(siteID: sampleSiteID,
-                                                    name: "Woo Subscriptions",
-                                                    active: true)
-        insert(activePlugin)
-
-        let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
-                                                                storage: storageManager,
-                                                                featureFlagService: MockFeatureFlagService(subscriptionProducts: false))
+                                                                storage: storageManager)
 
         // When
         let isEligible = checker.isSiteEligible()
@@ -102,8 +81,7 @@ final class WooSubscriptionProductsEligibilityCheckerTests: XCTestCase {
         insert(activePlugin)
 
         let checker = WooSubscriptionProductsEligibilityChecker(siteID: sampleSiteID,
-                                                                storage: storageManager,
-                                                                featureFlagService: MockFeatureFlagService(subscriptionProducts: true))
+                                                                storage: storageManager)
 
         // When
         let isEligible = checker.isSiteEligible()

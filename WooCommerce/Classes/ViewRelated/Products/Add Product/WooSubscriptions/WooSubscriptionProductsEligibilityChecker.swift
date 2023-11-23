@@ -1,6 +1,5 @@
 import Foundation
 import protocol Storage.StorageManagerType
-import Experiments
 import Yosemite
 import WooFoundation
 
@@ -13,7 +12,6 @@ protocol WooSubscriptionProductsEligibilityCheckerProtocol {
 final class WooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol {
     private let siteID: Int64
     private let storage: StorageManagerType
-    private let featureFlagService: FeatureFlagService
 
     private lazy var resultsController: ResultsController<StorageSystemPlugin> = {
         let predicate = \StorageSystemPlugin.siteID == siteID && \StorageSystemPlugin.active == true
@@ -28,20 +26,14 @@ final class WooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEl
     }()
 
     init(siteID: Int64,
-         storage: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         storage: StorageManagerType = ServiceLocator.storageManager) {
         self.siteID = siteID
         self.storage = storage
-        self.featureFlagService = featureFlagService
     }
 
     /// Checks if the site is eligible for adding Woo Subscription products.
     ///
     func isSiteEligible() -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.subscriptionProducts) else {
-            return false
-        }
-
         return isWooSubscriptionsPluginActive()
     }
 }

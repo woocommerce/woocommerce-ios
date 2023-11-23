@@ -1,18 +1,18 @@
 import Foundation
 import WordPressKit
 
-@objc class WordPressComOAuthClientFacade: NSObject {
+@objc public class WordPressComOAuthClientFacade: NSObject, WordPressComOAuthClientFacadeProtocol {
 
     private let client: WordPressComOAuthClient
 
-    @objc init(client: String, secret: String) {
+    @objc required public init(client: String, secret: String) {
         self.client = WordPressComOAuthClient(clientID: client,
                                          secret: secret,
                                          wordPressComBaseUrl: WordPressAuthenticator.shared.configuration.wpcomBaseURL,
                                          wordPressComApiBaseUrl: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL)
     }
 
-    func authenticate(
+    public func authenticate(
         username: String,
         password: String,
         multifactorCode: String?,
@@ -29,7 +29,7 @@ import WordPressKit
         })
     }
 
-    func requestOneTimeCode(
+    public func requestOneTimeCode(
         username: String,
         password: String,
         success: @escaping () -> Void,
@@ -38,7 +38,7 @@ import WordPressKit
         self.client.requestOneTimeCodeWithUsername(username, password: password, success: success, failure: failure)
     }
 
-    func requestSocial2FACode(
+    public func requestSocial2FACode(
         userID: Int,
         nonce: String,
         success: @escaping (_ newNonce: String) -> Void,
@@ -47,7 +47,7 @@ import WordPressKit
         self.client.requestSocial2FACodeWithUserID(userID, nonce: nonce, success: success, failure: failure)
     }
 
-    func authenticate(
+    public func authenticate(
         socialIDToken: String,
         service: String,
         success: @escaping (_ authToken: String?) -> Void,
@@ -65,7 +65,7 @@ import WordPressKit
         )
     }
 
-    func authenticate(
+    public func authenticate(
         socialLoginUser userID: Int,
         authType: String,
         twoStepCode: String,
@@ -83,7 +83,7 @@ import WordPressKit
         )
     }
 
-    func requestWebauthnChallenge(
+    public func requestWebauthnChallenge(
         userID: Int64,
         twoStepNonce: String,
         success: @escaping (_ challengeData: WebauthnChallengeInfo) -> Void,
@@ -92,7 +92,7 @@ import WordPressKit
         self.client.requestWebauthnChallenge(userID: userID, twoStepNonce: twoStepNonce, success: success, failure: failure)
     }
 
-    func authenticateWebauthnSignature(
+    public func authenticateWebauthnSignature(
         userID: Int64,
         twoStepNonce: String,
         credentialID: Data,

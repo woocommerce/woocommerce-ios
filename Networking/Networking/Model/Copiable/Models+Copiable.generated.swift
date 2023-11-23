@@ -2900,18 +2900,15 @@ extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
         currency: CopiableProp<String> = .copy,
-        sourceTypes: CopiableProp<WooPaymentsSourceTypes> = .copy,
         depositsCount: NullableCopiableProp<Int> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let sourceTypes = sourceTypes ?? self.sourceTypes
         let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
             currency: currency,
-            sourceTypes: sourceTypes,
             depositsCount: depositsCount
         )
     }
@@ -3039,18 +3036,6 @@ extension Networking.WooPaymentsManualDeposit {
         return Networking.WooPaymentsManualDeposit(
             currency: currency,
             date: date
-        )
-    }
-}
-
-extension Networking.WooPaymentsSourceTypes {
-    public func copy(
-        card: CopiableProp<Int> = .copy
-    ) -> Networking.WooPaymentsSourceTypes {
-        let card = card ?? self.card
-
-        return Networking.WooPaymentsSourceTypes(
-            card: card
         )
     }
 }

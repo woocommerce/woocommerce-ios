@@ -154,30 +154,18 @@ public struct WooPaymentsCurrencyBalances: Codable, GeneratedFakeable, Generated
 public struct WooPaymentsBalance: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
     public let amount: Int
     public let currency: String
-    public let sourceTypes: WooPaymentsSourceTypes
     public let depositsCount: Int?
 
-    public init(amount: Int, currency: String, sourceTypes: WooPaymentsSourceTypes, depositsCount: Int?) {
+    public init(amount: Int, currency: String, depositsCount: Int?) {
         self.amount = amount
         self.currency = currency
-        self.sourceTypes = sourceTypes
         self.depositsCount = depositsCount
     }
 
     public enum CodingKeys: String, CodingKey {
         case amount
         case currency
-        case sourceTypes = "source_types"
         case depositsCount = "deposits_count"
-    }
-}
-
-public struct WooPaymentsSourceTypes: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    public let card: Int
-    // TODO: find out other possible source types, or remove
-
-    public init(card: Int) {
-        self.card = card
     }
 }
 

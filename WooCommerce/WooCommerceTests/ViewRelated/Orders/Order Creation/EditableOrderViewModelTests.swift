@@ -500,7 +500,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let customAmountName = "Test"
 
         // When
-        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
         addCustomAmountViewModel.name = customAmountName
         addCustomAmountViewModel.doneButtonPressed()
 
@@ -526,7 +526,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // When
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        viewModel.addCustomAmountViewModel(with: .fixedAmount).doneButtonPressed()
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderFeeAdd.rawValue)
@@ -534,8 +534,9 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_view_model_is_updated_when_custom_amount_is_removed_from_order() {
         // When
-        viewModel.addCustomAmountViewModel.name = "Test"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
@@ -551,7 +552,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
 
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        viewModel.addCustomAmountViewModel(with: .fixedAmount).doneButtonPressed()
 
         // When
         viewModel.customAmountRows.first?.onRemoveCustomAmount()
@@ -566,7 +567,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let newFeeName = "Test 2"
 
         // When
-        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
         addCustomAmountViewModel.name = "Test"
         addCustomAmountViewModel.doneButtonPressed()
 
@@ -588,15 +589,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.addCustomAmountViewModel.name = "Test"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.name = "Test"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
 
-        viewModel.addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
+        addCustomAmountViewModel.preset(with: OrderFeeLine.fake().copy(feeID: viewModel.customAmountRows.first?.id ?? 0))
         viewModel.customAmountRows.first?.onEditCustomAmount()
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderFeeUpdate.rawValue }))
@@ -791,8 +793,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.shouldShowProductsTotal)
 
         // When
-        viewModel.addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Pre-check
         XCTAssertFalse(viewModel.paymentDataViewModel.orderIsEmpty)
@@ -889,8 +892,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
-        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel
-        addCustomAmountViewModel.formattableAmountTextFieldViewModel.amount = "10"
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.formattableAmountTextFieldViewModel?.amount = "10"
         addCustomAmountViewModel.doneButtonPressed()
 
         // Then
@@ -1624,7 +1627,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         waitUntil {
@@ -1655,7 +1659,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
 
         // When
-        viewModel.addCustomAmountViewModel.doneButtonPressed()
+        let addCustomAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+        addCustomAmountViewModel.doneButtonPressed()
 
         // Then
         waitUntil {

@@ -5,6 +5,76 @@ import TestKit
 
 /// Temporarily removed pending a rewrite for the new InPersonPaymentsMenuViewModel #11168
 class InPersonPaymentsMenuViewModelTests: XCTestCase {
+
+    private var sut: InPersonPaymentsMenuViewModel!
+
+    private var analyticsProvider: MockAnalyticsProvider!
+    private var analytics: Analytics!
+
+    private var mockDepositService: MockWooPaymentsDepositService!
+
+    private let sampleStoreID: Int64 = 12345
+
+    override func setUp() {
+        analyticsProvider = MockAnalyticsProvider()
+        analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        mockDepositService = MockWooPaymentsDepositService()
+        let mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: .init(
+                                                cardPresentPaymentsConfiguration: .init(country: .US),
+                                                onboardingUseCase: mockOnboardingUseCase,
+                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                wooPaymentsDepositService: mockDepositService,
+                                                analytics: analytics))
+    }
+
+    func test_onAppear_when_no_deposit_summaries_are_returned_depositSummaryShown_is_not_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewThenReturn = []
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(where: { eventName in
+            eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
+        }))
+    }
+
+    func test_onAppear_when_deposit_summaries_are_returned_depositSummaryShown_is_tracked() async throws {
+        // Given
+        mockDepositService.onFetchDepositsOverviewThenReturn = [.fake().copy(currency: .USD), .fake().copy(currency: .GBP)]
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        let eventIndex = try? XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue))
+
+        XCTAssertNotNil(eventIndex)
+
+        guard let eventIndex else {
+            return XCTFail("Expected event not found")
+        }
+
+        guard let properties = try XCTUnwrap(analyticsProvider.receivedProperties[safe: eventIndex]) as? [String: Int] else {
+            return XCTFail("Expected properties not tracked")
+        }
+        assertEqual(properties["number_of_currencies"], 2)
+    }
+
+    func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
+        // Given
+        mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
+
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
+    }
+
 //     private var stores: MockStoresManager!
 
 //     private var analyticsProvider: MockAnalyticsProvider!

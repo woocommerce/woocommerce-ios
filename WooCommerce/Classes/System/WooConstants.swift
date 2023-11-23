@@ -347,6 +347,8 @@ extension WooConstants {
 
         case wooCorePaymentOptions = "https://woo.com/documentation/woocommerce/getting-started/sell-products/core-payment-options"
 
+        case wooPaymentsDepositSchedule = "https://woo.com/document/woopayments/deposits/deposit-schedule/"
+
         /// Returns the URL version of the receiver
         ///
         func asURL() -> URL {

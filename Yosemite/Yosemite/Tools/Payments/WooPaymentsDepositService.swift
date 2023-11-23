@@ -2,7 +2,11 @@ import Foundation
 import Networking
 import WooFoundation
 
-public class WooPaymentsDepositService {
+public protocol WooPaymentsDepositServiceProtocol {
+    func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency]
+}
+
+public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol {
     // MARK: - Properties
 
     private let wooPaymentsRemote: WCPayRemote
@@ -17,13 +21,10 @@ public class WooPaymentsDepositService {
 
     // MARK: - Public Methods
 
-    public func fetchDepositsOverview() async -> [WooPaymentsDepositsOverviewByCurrency] {
+    public func fetchDepositsOverview() async throws -> [WooPaymentsDepositsOverviewByCurrency] {
         do {
             let overview = try await wooPaymentsRemote.loadDepositsOverview(for: siteID)
             return depositsOverviewForViews(overview)
-        } catch {
-            DDLogError("💰 Error fetching deposits summary \(error)")
-            return []
         }
     }
 

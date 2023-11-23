@@ -308,12 +308,14 @@ private extension ProductFormActionsFactory {
         let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
         let canEditProductType = editable
         let shouldShowDownloadableProduct = product.downloadable
+        let shouldShowShippingSettingsRow = product.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
             .priceSettings(editable: editable, hideSeparator: false),
             .subscriptionFreeTrial(editable: editable),
             .subscriptionExpiry(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
+            shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),

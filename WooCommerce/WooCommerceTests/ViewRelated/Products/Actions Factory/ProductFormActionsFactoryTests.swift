@@ -609,6 +609,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
+                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -713,6 +714,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
                                                                        .subscriptionFreeTrial(editable: true),
                                                                        .subscriptionExpiry(editable: true),
                                                                        .reviews,
+                                                                       .shippingSettings(editable: true),
                                                                        .inventorySettings(editable: true),
                                                                        .linkedProducts(editable: true),
                                                                        .productType(editable: true)]
@@ -720,6 +722,83 @@ final class ProductFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
         assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_view_model_for_subscription_product_when_product_is_virtual() {
+        // Arrange
+        let product = Fixtures.subscriptionProduct.copy(virtual: true)
+        let model = EditableProductModel(product: product)
+
+        // Action
+        let factory = Fixtures.actionsFactory(product: model, formType: .edit)
+
+        // Assert
+        let expectedPrimarySectionActions: [ProductFormEditAction] = [.images(editable: true), .name(editable: true), .description(editable: true)]
+        assertEqual(expectedPrimarySectionActions, factory.primarySectionActions())
+
+        let expectedSettingsSectionActions: [ProductFormEditAction] = [.priceSettings(editable: true, hideSeparator: false),
+                                                                       .subscriptionFreeTrial(editable: true),
+                                                                       .subscriptionExpiry(editable: true),
+                                                                       .reviews,
+                                                                       .inventorySettings(editable: true),
+                                                                       .linkedProducts(editable: true),
+                                                                       .productType(editable: true)]
+        assertEqual(expectedSettingsSectionActions, factory.settingsSectionActions())
+
+        let expectedBottomSheetActions: [ProductFormBottomSheetAction] = [.editCategories, .editTags, .editShortDescription]
+        assertEqual(expectedBottomSheetActions, factory.bottomSheetActions())
+    }
+
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_virtual() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(virtual: true)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertFalse(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_virtual() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(virtual: false)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertTrue(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_does_not_contain_shippingSettings_action_when_product_is_downloadable() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(downloadable: true)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertFalse(containsShippingSettingsAction)
+    }
+
+    func test_actions_for_subscription_product_contains_shippingSettings_action_when_product_is_not_downloadable() {
+        // Given
+        let product = Fixtures.subscriptionProduct.copy(downloadable: false)
+        let model = EditableProductModel(product: product)
+
+        // When
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+
+        // Then
+        let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
+        XCTAssertTrue(containsShippingSettingsAction)
     }
 
     // MARK: Quantity rules

@@ -23,7 +23,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Whether the bundle item is a variable product and has variations.
     let isVariable: Bool
 
-    /// Whether the bundle item is included in the bundle. For non-optional item, it's always included. For optional item, it's based on the `isOptionalAndSelected` state.
+    /// Whether the bundle item is included in the bundle. For non-optional item, it's always included.
+    /// For optional item, it's based on the `isOptionalAndSelected` state.
     var isIncludedInBundle: Bool {
         isOptional ? isOptionalAndSelected: true
     }

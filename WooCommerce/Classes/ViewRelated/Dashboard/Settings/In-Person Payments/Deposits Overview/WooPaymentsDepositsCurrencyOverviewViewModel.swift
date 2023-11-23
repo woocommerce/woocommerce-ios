@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
+final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     private let overview: WooPaymentsDepositsOverviewByCurrency
     private let analytics: Analytics
 

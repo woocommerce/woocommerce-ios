@@ -53,7 +53,3 @@
                                          failure:(void (^)(NSError *error))failure;
 
 @end
-
-@interface WordPressComOAuthClientFacade : NSObject <WordPressComOAuthClientFacadeProtocol>
-
-@end

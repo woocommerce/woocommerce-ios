@@ -239,6 +239,60 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.skuLabel, expectedSKULabel)
     }
 
+    func test_secondaryProductDetailsLabel_is_formatted_correctly_for_non_configurable_product_with_sku() {
+        // Given
+        let sku = "123456"
+        let product = Product.fake().copy(sku: sku)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+        let expectedSKULabel = String.localizedStringWithFormat(format, sku)
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, expectedSKULabel)
+    }
+
+    func test_secondaryProductDetailsLabel_is_empty_for_non_configurable_product_without_sku() {
+        // Given
+        let sku = ""
+        let product = Product.fake().copy(sku: sku)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let expectedSKULabel = ""
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, expectedSKULabel)
+    }
+
+    func test_secondaryProductDetailsLabel_contains_product_type_and_formatted_correctly_for_configurable_bundle_product_with_sku() {
+        // Given
+        let sku = "123456"
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, configure: {})
+
+        // Then
+        let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+        let expectedSKULabel = String.localizedStringWithFormat(format, sku)
+        XCTAssertTrue(viewModel.secondaryProductDetailsLabel.contains(ProductType.bundle.description))
+        XCTAssertTrue(viewModel.secondaryProductDetailsLabel.contains(expectedSKULabel))
+    }
+
+    func test_secondaryProductDetailsLabel_is_product_type_for_configurable_bundle_product_without_sku() {
+        // Given
+        let sku = ""
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, configure: {})
+
+        // Then
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
+    }
+
     func test_increment_and_decrement_quantity_have_step_value_of_one() {
         // Given
         let product = Product.fake()

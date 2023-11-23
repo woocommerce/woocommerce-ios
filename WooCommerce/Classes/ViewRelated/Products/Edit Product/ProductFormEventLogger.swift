@@ -27,4 +27,12 @@ struct ProductFormEventLogger: ProductFormEventLoggerProtocol {
     func logQuantityRulesTapped() {
         ServiceLocator.analytics.track(event: .ProductDetail.quantityRulesTapped())
     }
+
+    func logSubscriptionsFreeTrialTapped() {
+        ServiceLocator.analytics.track(event: .ProductDetail.freeTrialSettingsTapped())
+    }
+
+    func logSubscriptionsExpirationDateTapped() {
+        ServiceLocator.analytics.track(event: .ProductDetail.expirationDateSettingsTapped())
+    }
 }

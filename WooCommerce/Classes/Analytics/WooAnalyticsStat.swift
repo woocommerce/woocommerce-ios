@@ -699,6 +699,16 @@ public enum WooAnalyticsStat: String {
     case productVariationBulkUpdateFieldSuccess = "product_variation_bulk_update_field_success"
     case productVariationBulkUpdateFieldFail = "product_variation_bulk_update_field_fail"
 
+    // MARK: Woo Subscriptions product Events
+    //
+    case productDetailsViewSubscriptionExpirationDateTapped = "product_details_view_subscription_expiration_date_tapped"
+    case productDetailsViewSubscriptionFreeTrialTapped = "product_details_view_subscription_free_trial_tapped"
+    case productVariationViewSubscriptionExpirationDateTapped = "product_variation_view_subscription_expiration_date_tapped"
+    case productVariationViewSubscriptionFreeTrialTapped = "product_variation_view_subscription_free_trial_tapped"
+    case productSubscriptionExpirationDoneButtonTapped = "product_subscription_expiration_done_button_tapped"
+    case productSubscriptionFreeTrialDoneButtonTapped = "product_subscription_free_trial_done_button_tapped"
+
+
     // MARK: Product Images Events
     //
     case productImageSettingsDoneButtonTapped = "product_image_settings_done_button_tapped"

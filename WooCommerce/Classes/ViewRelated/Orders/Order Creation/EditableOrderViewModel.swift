@@ -600,12 +600,23 @@ final class EditableOrderViewModel: ObservableObject {
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
+            let childProductRows = childItems.compactMap { childItem in
+                // If the parent product is a bundle product, quantity cannot be changed.
+                let canChangeQuantity: Bool = {
+                    guard let parentProduct = allProducts.first(where: { $0.productID == item.productID }) else {
+                        return true
+                    }
+                    return parentProduct.productType != .bundle
+                }()
+                return createProductRowViewModel(for: childItem, canChangeQuantity: canChangeQuantity)
+            }
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
                                        discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        hasParentProduct: item.parent != nil,
+                                       childProductRows: childProductRows,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -1828,16 +1839,12 @@ private extension EditableOrderViewModel {
     ///
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
+            guard item.parent == nil else { // Don't create a separate product row for child items
+                return nil
+            }
+
             let childItems = items.filter { $0.parent == item.itemID }
-            // If the parent product is a bundle product, quantity cannot be changed.
-            let canChangeQuantity: Bool = {
-                guard let parentItem = items.first(where: { $0.itemID == item.parent }),
-                      let parentProduct = allProducts.first(where: { $0.productID == parentItem.productID }) else {
-                    return true
-                }
-                return parentProduct.productType != .bundle
-            }()
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: canChangeQuantity) else {
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
                 return nil
             }
 

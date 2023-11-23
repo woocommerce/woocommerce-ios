@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct PaymentsRow<Destination> : View where Destination : View {
+struct PaymentsRow<Destination>: View where Destination : View {
     private let image: Image
     private let title: String
     private let subtitle: String?

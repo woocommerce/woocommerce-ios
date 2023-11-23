@@ -21,7 +21,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var activePaymentGatewayName: String?
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
+    @Published var presentAboutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
+    @Published var presentPurchaseCardReader: Bool = false
+    @Published var presentManageCardReaders: Bool = false
+    @Published var presentCardReaderManuals: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
     @Published var depositViewModel: WooPaymentsDepositsOverviewViewModel? = nil
@@ -146,6 +150,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func aboutTapToPayTapped() {
+        presentAboutTapToPay = true
         analytics.track(.aboutTapToPayOnIPhoneTapped)
     }
 
@@ -154,14 +159,17 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func purchaseCardReaderTapped() {
+        presentPurchaseCardReader = true
         analytics.track(.paymentsMenuOrderCardReaderTapped)
     }
 
     func manageCardReadersTapped() {
+        presentManageCardReaders = true
         analytics.track(.paymentsMenuManageCardReadersTapped)
     }
 
     func cardReaderManualsTapped() {
+        presentCardReaderManuals = true
         analytics.track(.paymentsMenuCardReadersManualsTapped)
     }
 

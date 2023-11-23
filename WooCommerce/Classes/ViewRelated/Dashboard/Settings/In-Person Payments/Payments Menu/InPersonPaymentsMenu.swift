@@ -72,11 +72,12 @@ struct InPersonPaymentsMenu: View {
                         Button {
                             viewModel.aboutTapToPayTapped()
                         } label: {
-                            NavigationLink {
+                            PaymentsRow(image: Image(uiImage: .infoOutlineImage),
+                                        title: Localization.aboutTapToPayOnIPhone)
+                            NavigationLink(isActive: $viewModel.presentAboutTapToPay) {
                                 AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
                             } label: {
-                                PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                            title: Localization.aboutTapToPayOnIPhone)
+                                EmptyView()
                             }
                         }
 
@@ -99,23 +100,25 @@ struct InPersonPaymentsMenu: View {
                         Button {
                             viewModel.purchaseCardReaderTapped()
                         } label: {
-                            NavigationLink {
+                            PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
+                                        title: Localization.purchaseCardReader)
+                            NavigationLink(isActive: $viewModel.presentPurchaseCardReader) {
                                 AuthenticatedWebView(isPresented: .constant(true),
                                                      viewModel: viewModel.purchaseCardReaderWebViewModel)
                             } label: {
-                                PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                            title: Localization.purchaseCardReader)
+                                EmptyView()
                             }
                         }
 
                         Button {
                             viewModel.manageCardReadersTapped()
                         } label: {
-                            NavigationLink {
+                            PaymentsRow(image: Image(uiImage: .creditCardIcon),
+                                        title: Localization.manageCardReader)
+                            NavigationLink(isActive: $viewModel.presentManageCardReaders) {
                                 PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
                             } label: {
-                                PaymentsRow(image: Image(uiImage: .creditCardIcon),
-                                            title: Localization.manageCardReader)
+                                EmptyView()
                             }
                         }
                         .disabled(viewModel.shouldDisableManageCardReaders)
@@ -123,12 +126,13 @@ struct InPersonPaymentsMenu: View {
                         Button {
                             viewModel.cardReaderManualsTapped()
                         } label: {
-                            NavigationLink {
+                            PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
+                                        title: Localization.cardReaderManuals)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
+                            NavigationLink(isActive: $viewModel.presentCardReaderManuals) {
                                 CardReaderManualsView()
                             } label: {
-                                PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                            title: Localization.cardReaderManuals)
-                                .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
+                                EmptyView()
                             }
                         }
                     } header: {
@@ -144,14 +148,15 @@ struct InPersonPaymentsMenu: View {
                         Button {
                             viewModel.managePaymentGatewaysTapped()
                         } label: {
+                            PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
+                                        title: Localization.managePaymentGateways,
+                                        subtitle: viewModel.activePaymentGatewayName)
+                            .padding(.vertical, Layout.cellVerticalPadding)
                             NavigationLink(isActive: $viewModel.presentManagePaymentGateways) {
                                 InPersonPaymentsSelectPluginView(selectedPlugin: nil,
                                                                  onPluginSelected: viewModel.preferredPluginSelected)
                             } label: {
-                                PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
-                                            title: Localization.managePaymentGateways,
-                                            subtitle: viewModel.activePaymentGatewayName)
-                                .padding(.vertical, Layout.cellVerticalPadding)
+                                EmptyView()
                             }
                         }
                         .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)

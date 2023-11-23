@@ -29,26 +29,6 @@
     return nil;
 }
 
-- (void)authenticateWithUsername:(NSString *)username
-                        password:(NSString *)password
-                 multifactorCode:(NSString *)multifactorCode
-                         success:(void (^)(NSString *authToken))success
-                needsMultiFactor:(void (^)(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo))needsMultifactor
-                         failure:(void (^)(NSError *error))failure
-{
-    [self.client authenticateWithUsername:username password:password multifactorCode:multifactorCode needsMultifactor:needsMultifactor success:success failure:^(NSError * error) {
-        if (error.code == WordPressComOAuthErrorNeedsMultifactorCode) {
-            if (needsMultifactor != nil) {
-                needsMultifactor(0, nil);
-            }
-        } else {
-            if (failure != nil) {
-                failure(error);
-            }
-        }
-    }];
-}
-
 - (void)requestOneTimeCodeWithUsername:(NSString *)username
                               password:(NSString *)password
                                success:(void (^)(void))success

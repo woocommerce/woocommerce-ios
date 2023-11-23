@@ -19,14 +19,14 @@ import WordPressKit
         username: String,
         password: String,
         success: @escaping () -> Void,
-        failure: @escaping (_ error: NSError) -> Void
+        failure: @escaping (_ error: Error) -> Void
     )
 
     func requestSocial2FACode(
         userID: Int,
         nonce: String,
         success: @escaping (_ newNonce: String) -> Void,
-        failure: @escaping (_ error: NSError, _ newNonce: String?) -> Void
+        failure: @escaping (_ error: Error, _ newNonce: String?) -> Void
     )
 
     func authenticate(
@@ -35,7 +35,7 @@ import WordPressKit
         success: @escaping (_ authToken: String?) -> Void,
         needsMultifactor: @escaping (_ userID: Int, _ nonceInfo: SocialLogin2FANonceInfo) -> Void,
         existingUserNeedsConnection: @escaping (_ email: String) -> Void,
-        failure: @escaping (_ error: NSError) -> Void
+        failure: @escaping (_ error: Error) -> Void
     )
 
     func authenticate(
@@ -44,14 +44,14 @@ import WordPressKit
         twoStepCode: String,
         twoStepNonce: String,
         success: @escaping (_ authToken: String?) -> Void,
-        failure: @escaping (_ error: NSError) -> Void
+        failure: @escaping (_ error: Error) -> Void
     )
 
     func requestWebauthnChallenge(
         userID: Int64,
         twoStepNonce: String,
         success: @escaping (_ challengeData: WebauthnChallengeInfo) -> Void,
-        failure: @escaping (_ error: NSError) -> Void
+        failure: @escaping (_ error: Error) -> Void
     )
 
     func authenticateWebauthnSignature(
@@ -63,7 +63,7 @@ import WordPressKit
         signature: Data,
         userHandle: Data,
         success: @escaping (_ authToken: String) -> Void,
-        failure: @escaping (_ error: NSError) -> Void
+        failure: @escaping (_ error: Error) -> Void
     )
 
 }

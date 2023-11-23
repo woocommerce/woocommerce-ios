@@ -196,6 +196,17 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
+    /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
+    ///
+    var secondaryProductDetailsLabel: String {
+        [productTypeLabel, skuLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
+    private let productTypeLabel: String?
+
     /// Label showing product SKU
     ///
     lazy var skuLabel: String = {
@@ -271,6 +282,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          productOrVariationID: Int64,
          name: String,
          sku: String?,
+         productTypeLabel: String? = nil,
          price: String?,
          discount: Decimal? = nil,
          stockStatusKey: String,
@@ -296,6 +308,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
+        self.productTypeLabel = productTypeLabel
         self.price = price
         self.discount = discount
         self.stockStatus = .init(rawValue: stockStatusKey)
@@ -377,10 +390,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         && product.bundledItems.isNotEmpty
         && configure != nil
 
+        let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
+                  productTypeLabel: productTypeLabel,
                   price: price,
                   discount: discount,
                   stockStatusKey: stockStatusKey,

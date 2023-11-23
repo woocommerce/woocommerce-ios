@@ -29,24 +29,4 @@
     return nil;
 }
 
-- (void) authenticateWebauthnSignatureWithUserID:(NSInteger)userID
-                                    twoStepNonce:(NSString *)twoStepNonce
-                                    credentialID:(NSData *)credentialID
-                                  clientDataJson:(NSData *)clientDataJson
-                               authenticatorData:(NSData *)authenticatorData
-                                       signature:(NSData *)signature
-                                      userHandle:(NSData *)userHandle
-                                         success:(void (^)(NSString *authToken))success
-                                         failure:(void (^)(NSError *error))failure {
-    [self.client authenticateWebauthnSignatureWithUserID:userID
-                                            twoStepNonce:twoStepNonce
-                                            credentialID:credentialID
-                                          clientDataJson:clientDataJson
-                                       authenticatorData:authenticatorData
-                                               signature:signature
-                                              userHandle:userHandle
-                                                 success:success
-                                                 failure:failure];
-}
-
 @end

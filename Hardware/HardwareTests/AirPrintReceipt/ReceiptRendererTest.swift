@@ -62,7 +62,6 @@ private extension ReceiptRendererTest {
                     expYear: 26,
                     cardholderName: "John Smith",
                     brand: .masterCard,
-                    fingerprint: "fpr*****",
                     generatedCard: "pm_******",
                     receipt: .init(
                         applicationPreferredName: "Stripe Credit\(stringToAppend)",

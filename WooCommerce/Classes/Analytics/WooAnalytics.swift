@@ -246,6 +246,7 @@ private extension WooAnalytics {
         updatedProperties[PropertyKeys.ecommerceTrialKey] = site?.wasEcommerceTrial
         updatedProperties[PropertyKeys.planKey] = site?.plan
         updatedProperties[PropertyKeys.siteURL] = site?.url
+        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
         return updatedProperties
     }
 
@@ -291,5 +292,6 @@ private extension WooAnalytics {
         static let ecommerceTrialKey    = "was_ecommerce_trial"
         static let planKey              = "plan"
         static let siteURL              = "site_url"
+        static let storeID              = "store_id"
     }
 }

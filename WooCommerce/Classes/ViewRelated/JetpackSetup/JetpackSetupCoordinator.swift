@@ -320,10 +320,10 @@ private extension JetpackSetupCoordinator {
     @MainActor
     func isJetpackInstalledAndActive() async throws -> Bool {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(SystemStatusAction.synchronizeSystemPlugins(siteID: 0) { result in
+            stores.dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: 0) { result in
                 switch result {
-                case let .success(plugins):
-                    if let plugin = plugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
+                case let .success(systemInformation):
+                    if let plugin = systemInformation.systemPlugins.first(where: { $0.name.lowercased() == Constants.jetpackPluginName.lowercased() }),
                        plugin.active {
                         continuation.resume(returning: true)
                     } else {

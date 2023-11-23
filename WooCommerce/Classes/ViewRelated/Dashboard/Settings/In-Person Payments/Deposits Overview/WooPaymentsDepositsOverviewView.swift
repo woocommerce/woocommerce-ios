@@ -5,41 +5,20 @@ import Yosemite
 struct WooPaymentsDepositsOverviewView: View {
     let viewModels: [WooPaymentsDepositsCurrencyOverviewViewModel]
 
+    @State var isExpanded: Bool = false
+
     var tabs: [TopTabItem] {
         viewModels.map { tabViewModel in
             TopTabItem(name: tabViewModel.overview.currency.rawValue,
-                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel)))
+                       view: AnyView(WooPaymentsDepositsCurrencyOverviewView(viewModel: tabViewModel, isExpanded: $isExpanded)))
         }
     }
 
     var body: some View {
         VStack {
-            TopTabView(tabs: tabs)
-
-            Button {
-                // TODO: Open a webview here: https://woo.com/document/woopayments/deposits/deposit-schedule/
-            } label: {
-                HStack {
-                    Image(systemName: "info.circle")
-                    Text(Localization.learnMoreButtonText)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .font(.footnote)
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            .padding()
-
-            Spacer()
+            TopTabView(tabs: tabs,
+                       isExpanded: $isExpanded)
         }
-    }
-}
-
-@available(iOS 16.0, *)
-private extension WooPaymentsDepositsOverviewView {
-    enum Localization {
-        static let learnMoreButtonText = NSLocalizedString(
-            "Learn more about when you'll receive your funds",
-            comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
     }
 }
 

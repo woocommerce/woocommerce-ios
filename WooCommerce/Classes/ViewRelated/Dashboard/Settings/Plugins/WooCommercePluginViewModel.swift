@@ -94,7 +94,7 @@ final class PluginDetailsViewModel: ObservableObject {
     /// Used to refresh the store after the webview is used to perform an update
     ///
     func refreshPlugin() {
-        let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID) { _ in }
+        let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { _ in }
         storesManager.dispatch(action)
     }
 }

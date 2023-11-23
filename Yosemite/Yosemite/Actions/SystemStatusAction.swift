@@ -4,9 +4,9 @@ import Foundation
 ///
 public enum SystemStatusAction: Action {
 
-    /// Synchronize all system plugins for a site given its ID
+    /// Synchronize store information from the system status for a site given its ID.
     ///
-    case synchronizeSystemPlugins(siteID: Int64, onCompletion: (Result<[SystemPlugin], Error>) -> Void)
+    case synchronizeSystemInformation(siteID: Int64, onCompletion: (Result<SystemInformation, Error>) -> Void)
 
     /// Fetch an specific systemPlugin by siteID and name
     ///

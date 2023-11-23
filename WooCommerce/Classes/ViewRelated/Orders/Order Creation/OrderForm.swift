@@ -390,10 +390,6 @@ private struct ProductsSection: View {
     /// Fix for breaking navbar button
     @Binding var navigationButtonID: UUID
 
-    /// Defines whether `AddProduct` modal is presented.
-    ///
-    @State private var showAddProduct: Bool = false
-
     /// Defines whether `AddProductViaSKUScanner` modal is presented.
     ///
     @State private var showAddProductViaSKUScanner: Bool = false
@@ -439,7 +435,7 @@ private struct ProductsSection: View {
                         .renderedIf(viewModel.isAddProductToOrderViaSKUScannerEnabled)
 
                         Button(action: {
-                            showAddProduct.toggle()
+                            viewModel.toggleProductSelectorVisibility()
                         }) {
                             Image(uiImage: .plusImage)
                         }
@@ -474,7 +470,7 @@ private struct ProductsSection: View {
 
                 HStack {
                     Button(OrderForm.Localization.addProducts) {
-                        showAddProduct.toggle()
+                        viewModel.toggleProductSelectorVisibility()
                     }
                     .id(addProductButton)
                     .accessibilityIdentifier(OrderForm.Accessibility.addProductButtonIdentifier)
@@ -488,19 +484,21 @@ private struct ProductsSection: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .padding()
             .background(Color(.listForeground(modal: true)))
-            .sheet(isPresented: $showAddProduct, onDismiss: {
+            .sheet(isPresented: $viewModel.isProductSelectorPresented, onDismiss: {
                 scroll.scrollTo(addProductButton)
             }, content: {
-                ProductSelectorNavigationView(
-                    configuration: ProductSelectorView.Configuration.addProductToOrder(),
-                    source: .orderForm(flow: flow),
-                    isPresented: $showAddProduct,
-                    viewModel: viewModel.createProductSelectorViewModelWithOrderItemsSelected())
-                .onDisappear {
-                    navigationButtonID = UUID()
-                }
-                .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
-                    ConfigurableBundleProductView(viewModel: viewModel)
+                if let productSelectorViewModel = viewModel.productSelectorViewModel {
+                    ProductSelectorNavigationView(
+                        configuration: ProductSelectorView.Configuration.addProductToOrder(),
+                        source: .orderForm(flow: flow),
+                        isPresented: $viewModel.isProductSelectorPresented,
+                        viewModel: productSelectorViewModel)
+                    .onDisappear {
+                        navigationButtonID = UUID()
+                    }
+                    .sheet(item: $viewModel.productToConfigureViewModel) { viewModel in
+                        ConfigurableBundleProductView(viewModel: viewModel)
+                    }
                 }
             })
             .actionSheet(isPresented: $showPermissionsSheet, content: {

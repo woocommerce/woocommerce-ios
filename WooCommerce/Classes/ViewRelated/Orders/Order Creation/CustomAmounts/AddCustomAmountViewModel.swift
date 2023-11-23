@@ -4,7 +4,7 @@ import UIKit
 import SwiftUI
 import Yosemite
 
-/// Provides a adapter depending on the input type
+/// Provides an adapter depending on the input type
 ///
 final class AddCustomAmountInputTypeViewModelAdapterProvider {
     func provideAddCustomAmountInputTypeViewModelAdapter(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelAdapter {
@@ -17,7 +17,7 @@ final class AddCustomAmountInputTypeViewModelAdapterProvider {
     }
 }
 
-/// Classes implementing this protocol will act as a adapter between `AddCustomAmountViewModel` and the input type view models.
+/// Classes implementing this protocol will act as an adapter between `AddCustomAmountViewModel` and the input type view models.
 /// This way, the former can be agnostic of what type of view model we have before the scenes,
 /// and doesn't have to type check to access their concrete implementation.
 /// Having a adapter keeps the classes loosely coupled, as the type view model doesn't have to adapt for `AddCustomAmountViewModel`,
@@ -83,7 +83,7 @@ final class AddCustomAmountViewModel: ObservableObject {
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
-    @Published private(set) var shouldDisableDoneButton: Bool = true
+    @Published private(set) var shouldEnableDoneButton: Bool = false
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
@@ -153,8 +153,10 @@ private extension AddCustomAmountViewModel {
 
     func listenToAmountChanges() {
         inputTypeViewModelAdapter.amountPublisher?.map { [weak self] value in
-            !(self?.amountIsValid(amount: value) ?? true)
-        }.assign(to: &$shouldDisableDoneButton)
+            guard let self = self else { return false }
+
+            return self.amountIsValid(amount: value)
+        }.assign(to: &$shouldEnableDoneButton)
     }
 
     func amountIsValid(amount: String) -> Bool {

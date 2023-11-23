@@ -59,7 +59,7 @@ struct AddCustomAmountView: View {
                             dismiss()
                         }
                         .buttonStyle(PrimaryButtonStyle())
-                        .disabled(viewModel.shouldDisableDoneButton)
+                        .disabled(!viewModel.shouldEnableDoneButton)
                         .accessibilityIdentifier(AccessibilityIdentifiers.addCustomAmountButton)
                     }
                     .padding()

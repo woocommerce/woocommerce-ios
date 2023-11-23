@@ -35,14 +35,14 @@ final class SystemStatusStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
-    func test_synchronizeSystemPlugins_stores_systemPlugins_correctly() {
+    func test_synchronizeSystemInformation_stores_systemPlugins_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
         let result = waitFor { promise in
-            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
                 promise(result)
             })
         }
@@ -52,7 +52,32 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
     }
 
-    func test_synchronizeSystemPlugins_removes_stale_systemPlugins_correctly() {
+    func test_synchronizeSystemInformation_stores_storeID_correctly() throws {
+        // Given
+        let mockProcessor = MockActionsProcessor()
+        dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
+
+        network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
+        let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let action = try XCTUnwrap(mockProcessor.receivedActions.first as? AppSettingsAction)
+        switch action {
+        case AppSettingsAction.setStoreID(_, let id):
+            XCTAssertEqual(id, "sample-store-uuid") // store id in json file
+        default:
+            XCTFail("Unexpected action: \(mockProcessor.receivedActions), expecting AppSettingsAction.setStoreID")
+        }
+    }
+
+    func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {
         // Given
         let staleSystemPluginName = "Stale System Plugin"
         let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, name: staleSystemPluginName)
@@ -65,7 +90,7 @@ final class SystemStatusStoreTests: XCTestCase {
 
         // When
         let result = waitFor { promise in
-            store.onAction(SystemStatusAction.synchronizeSystemPlugins(siteID: self.sampleSiteID) { result in
+            store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
                 promise(result)
             })
         }

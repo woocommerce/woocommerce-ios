@@ -38,7 +38,7 @@ enum ProductFormEditAction: Equatable {
     case components(actionable: Bool)
     // Subscription products only
     case subscriptionFreeTrial(editable: Bool)
-    case subscription(actionable: Bool)
+    case subscriptionExpiry(editable: Bool)
     // Variable Subscription products only
     case noVariationsWarning
     case quantityRules
@@ -71,7 +71,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let isBundledProductsEnabled: Bool
     private let isCompositeProductsEnabled: Bool
     private let isMinMaxQuantitiesEnabled: Bool
-    private let editingSubscriptionEnabled: Bool
 
     // TODO: Remove default parameter
     init(product: EditableProductModel,
@@ -82,8 +81,7 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
          isBundledProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productBundles),
          isCompositeProductsEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.compositeProducts),
          isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
-         variationsPrice: VariationsPrice = .unknown,
-         editingSubscriptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)) {
+         variationsPrice: VariationsPrice = .unknown) {
         self.product = product
         self.formType = formType
         self.canPromoteWithBlaze = canPromoteWithBlaze
@@ -94,7 +92,6 @@ struct ProductFormActionsFactory: ProductFormActionsFactoryProtocol {
         self.isBundledProductsEnabled = isBundledProductsEnabled
         self.isCompositeProductsEnabled = isCompositeProductsEnabled
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
-        self.editingSubscriptionEnabled = editingSubscriptionEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -308,18 +305,23 @@ private extension ProductFormActionsFactory {
     func allSettingsSectionActionsForSubscriptionProduct() -> [ProductFormEditAction] {
         let shouldShowReviewsRow = product.reviewsAllowed
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
-        let canEditInventorySettingsRow = editingSubscriptionEnabled && editable && product.hasIntegerStockQuantity
-        let canEditProductType = editingSubscriptionEnabled && editable
+        let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
+        let canEditProductType = editable
+        let shouldShowDownloadableProduct = product.downloadable
+        let shouldShowShippingSettingsRow = product.isShippingEnabled()
 
         let actions: [ProductFormEditAction?] = [
-            editingSubscriptionEnabled ? .priceSettings(editable: editable, hideSeparator: false) : .subscription(actionable: true),
-            editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
+            .priceSettings(editable: editable, hideSeparator: false),
+            .subscriptionFreeTrial(editable: editable),
+            .subscriptionExpiry(editable: editable),
             shouldShowReviewsRow ? .reviews: nil,
+            shouldShowShippingSettingsRow ? .shippingSettings(editable: editable): nil,
             .inventorySettings(editable: canEditInventorySettingsRow),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .categories(editable: editable),
             .addOns(editable: editable),
             .tags(editable: editable),
+            shouldShowDownloadableProduct ? .downloadableFiles(editable: editable): nil,
             .shortDescription(editable: editable),
             .linkedProducts(editable: editable),
             .productType(editable: canEditProductType)
@@ -333,23 +335,6 @@ private extension ProductFormActionsFactory {
         let shouldShowQuantityRulesRow = isMinMaxQuantitiesEnabled && product.hasQuantityRules
 
         let actions: [ProductFormEditAction?] = {
-            guard editingSubscriptionEnabled else {
-                let shouldShowNoVariationsWarning = product.product.variations.isEmpty
-                return [
-                    shouldShowNoVariationsWarning ? .noVariationsWarning : .variations(hideSeparator: false),
-                    shouldShowAttributesRow ? .attributes(editable: editable) : nil,
-                    shouldShowReviewsRow ? .reviews: nil,
-                    .inventorySettings(editable: false),
-                    shouldShowQuantityRulesRow ? .quantityRules : nil,
-                    .categories(editable: editable),
-                    .addOns(editable: editable),
-                    .tags(editable: editable),
-                    .shortDescription(editable: editable),
-                    .linkedProducts(editable: editable),
-                    .productType(editable: false)
-                ]
-            }
-
             let canEditProductType = editable
             let canEditInventorySettingsRow = editable && product.hasIntegerStockQuantity
             let shouldShowNoPriceWarningRow: Bool = {
@@ -412,6 +397,9 @@ private extension ProductFormActionsFactory {
         case .subscriptionFreeTrial:
             // The Free trial row is always visible in the settings section for a subscription product.
             return true
+        case .subscriptionExpiry:
+            // The expiry is always visible in the settings section for a subscription product.
+            return true
         case .reviews:
             // The reviews action is always visible in the settings section.
             return true
@@ -466,9 +454,6 @@ private extension ProductFormActionsFactory {
             return true
         case .components:
             // The components row is always visible in the settings section for a composite product.
-            return true
-        case .subscription:
-            // The subscription row is always visible in the settings section for a subscription product.
             return true
         case .noVariationsWarning:
             // Always visible when available

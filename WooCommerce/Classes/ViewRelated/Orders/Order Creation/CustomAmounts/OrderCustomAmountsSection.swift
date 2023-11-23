@@ -18,11 +18,12 @@ struct OrderCustomAmountsSection: View {
 
     @State private var addCustomAmountOption: ConfirmationOption?
 
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+
     var body: some View {
         VStack {
             HStack {
                 Button(Localization.addCustomAmount) {
-
                     onAddCustomAmountRequested()
                 }
                 .accessibilityIdentifier(Accessibility.addCustomAmountIdentifier)
@@ -57,6 +58,7 @@ struct OrderCustomAmountsSection: View {
             }
             .renderedIf(viewModel.customAmountRows.isNotEmpty)
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .padding()
         .background(Color(.listForeground(modal: true)))
         .sheet(isPresented: $showAddCustomAmountOptionsDialog, onDismiss: onDismissOptionsDialog) {
@@ -65,7 +67,11 @@ struct OrderCustomAmountsSection: View {
         .sheet(isPresented: $viewModel.showEditCustomAmount, onDismiss: onDismissOptionsDialog) {
             optionsWithDetentsBottomSheetContent
         }
-        .sheet(isPresented: $showAddCustomAmount, onDismiss: viewModel.onDismissAddCustomAmountView, content: {
+        .sheet(isPresented: $showAddCustomAmount,
+               onDismiss: {
+            viewModel.onDismissAddCustomAmountView()
+            addCustomAmountOption = nil
+        }, content: {
             AddCustomAmountView(viewModel: viewModel.addCustomAmountViewModel(with: addCustomAmountOption))
         })
     }
@@ -94,9 +100,7 @@ struct OrderCustomAmountsSection: View {
 
                 Button(Localization.optionsDialogFixedAmountButtonTitle) {
                     addCustomAmountOption = .fixedAmount
-                    showAddCustomAmountAfterOptionsDialog = true
-                    showAddCustomAmountOptionsDialog = false
-                    viewModel.showEditCustomAmount = false
+                    showAddCustomAmountsAfterOptionsDialog()
 
                 }
                 .bodyStyle()
@@ -110,9 +114,7 @@ struct OrderCustomAmountsSection: View {
 
                 Button(Localization.optionsDialogPercentageButtonTitle) {
                     addCustomAmountOption = .orderTotalPercentage
-                    showAddCustomAmountAfterOptionsDialog = true
-                    showAddCustomAmountOptionsDialog = false
-                    viewModel.showEditCustomAmount = false
+                    showAddCustomAmountsAfterOptionsDialog()
                 }
                 .bodyStyle()
             }
@@ -136,6 +138,12 @@ private extension OrderCustomAmountsSection {
             showAddCustomAmount = true
         }
     }
+
+    func showAddCustomAmountsAfterOptionsDialog() {
+        showAddCustomAmountAfterOptionsDialog = true
+        showAddCustomAmountOptionsDialog = false
+        viewModel.showEditCustomAmount = false
+    }
 }
 
 private extension OrderCustomAmountsSection {
@@ -150,19 +158,19 @@ private extension OrderCustomAmountsSection {
     }
     enum Localization {
         static let addCustomAmount = NSLocalizedString("Add Custom Amount",
-                                                   comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
+                                                       comment: "Title text of the button that allows to add a custom amount when creating or editing an order")
         static let customAmounts = NSLocalizedString("orderForm.customAmounts",
                                                      value: "Custom Amounts",
                                                      comment: "Title text of the section that shows the Custom Amounts when creating or editing an order")
         static let optionsDialogAddCustomAmountTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogTitle",
-                                                     value: "How do you want to add your custom amount?",
-                                                     comment: "Title text of the confirmation dialog that shows the add custom amounts options.")
+                                                        value: "How do you want to add your custom amount?",
+                                                        comment: "Title text of the confirmation dialog that shows the add custom amounts options.")
         static let optionsDialogFixedAmountButtonTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogFixedAmountButtonTitle",
-                                                     value: "A fixed amount",
-                                                     comment: "Button title for the fixed amount option in the custom amounts option sheet.")
+                                                        value: "A fixed amount",
+                                                        comment: "Button title for the fixed amount option in the custom amounts option sheet.")
         static let optionsDialogPercentageButtonTitle = NSLocalizedString("orderForm.customAmounts.addOptionsDialogPercentageButtonTitle",
-                                                     value: "A percentage of the order total",
-                                                     comment: "Button title for the percentage option in the custom amounts option sheet.")
+                                                        value: "A percentage of the order total",
+                                                        comment: "Button title for the percentage option in the custom amounts option sheet.")
 
     }
 

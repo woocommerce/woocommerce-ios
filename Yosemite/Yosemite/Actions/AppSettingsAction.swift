@@ -143,6 +143,14 @@ public enum AppSettingsAction: Action {
 
     // MARK: - General Store Settings
 
+    /// Sets the store uuid.
+    ///
+    case setStoreID(siteID: Int64, id: String?)
+
+    /// Gets the store uuid.
+    ///
+    case getStoreID(siteID: Int64, onCompletion: (String?) -> Void)
+
     /// Sets telemetry availability status information.
     ///
     case setTelemetryAvailability(siteID: Int64, isAvailable: Bool)

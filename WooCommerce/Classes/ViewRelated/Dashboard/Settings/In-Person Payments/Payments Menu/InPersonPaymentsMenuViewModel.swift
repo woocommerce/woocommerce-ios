@@ -8,6 +8,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var shouldShowTapToPaySection: Bool = true
     @Published private(set) var shouldShowCardReaderSection: Bool = true
     @Published private(set) var shouldShowPaymentOptionsSection: Bool = false
+    @Published private(set) var shouldShowDepositSummary: Bool = false
     @Published private(set) var setUpTryOutTapToPayRowTitle: String = Localization.setUpTapToPayOnIPhoneRowTitle
     @Published private(set) var shouldShowTapToPayFeedbackRow: Bool = true
     @Published private(set) var shouldBadgeTapToPayOnIPhone: Bool = false
@@ -16,12 +17,14 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published private(set) var cardPresentPaymentsOnboardingNotice: PermanentNotice?
     @Published var shouldShowOnboarding: Bool = false
     @Published private(set) var shouldShowManagePaymentGatewaysRow: Bool = false
+    @Published var presentManagePaymentGateways: Bool = false
     @Published private(set) var activePaymentGatewayName: String?
     @Published var presentCollectPayment: Bool = false
     @Published var presentSetUpTryOutTapToPay: Bool = false
     @Published var presentTapToPayFeedback: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
+    @Published var depositCurrencyViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -35,7 +38,23 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
         let onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol
         let cardReaderSupportDeterminer: CardReaderSupportDetermining
-        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker()
+        let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
+        let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
+        let analytics: Analytics
+
+        init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+             onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
+             cardReaderSupportDeterminer: CardReaderSupportDetermining,
+             tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
+             wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             analytics: Analytics = ServiceLocator.analytics) {
+            self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
+            self.onboardingUseCase = onboardingUseCase
+            self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
+            self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
+            self.wooPaymentsDepositService = wooPaymentsDepositService
+            self.analytics = analytics
+        }
     }
 
     let dependencies: Dependencies
@@ -63,17 +82,40 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             .assign(to: &$shouldBadgeTapToPayOnIPhone)
 
         Task { @MainActor in
-            await updateOutputProperties()
+            await updateOutputProperties(trackAnalytics: false)
         }
 
         InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor
-    private func updateOutputProperties() async {
+    private func updateOutputProperties(trackAnalytics: Bool = true) async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
+        await refreshDepositSummary(trackAnalytics: trackAnalytics)
+    }
+
+    @MainActor
+    private func refreshDepositSummary(trackAnalytics: Bool) async {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
+            shouldShowDepositSummary = false
+            return
+        }
+        do {
+            depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+                WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
+            })
+            shouldShowDepositSummary = depositCurrencyViewModels.count > 0
+
+            guard shouldShowDepositSummary, trackAnalytics else {
+                return
+            }
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
+        } catch {
+            shouldShowDepositSummary = false
+            dependencies.analytics.track(event: .DepositSummary.depositSummaryError(error: error))
+        }
     }
 
     @MainActor
@@ -85,7 +127,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     func collectPaymentTapped() {
         presentCollectPayment = true
 
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        dependencies.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
     }
 
     func setUpTryOutTapToPayTapped() {
@@ -94,6 +136,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     func tapToPayFeedbackTapped() {
         presentTapToPayFeedback = true
+    }
+
+    func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
+        dependencies.onboardingUseCase.clearPluginSelection()
+        dependencies.onboardingUseCase.selectPlugin(plugin)
+        presentManagePaymentGateways = false
     }
 
     lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
@@ -210,7 +258,7 @@ private extension InPersonPaymentsMenuViewModel {
             message: Localization.inPersonPaymentsSetupNotFinishedNotice,
             callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
             callToActionHandler: { [weak self] in
-                ServiceLocator.analytics.track(.paymentsMenuOnboardingErrorTapped)
+                self?.dependencies.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
     }

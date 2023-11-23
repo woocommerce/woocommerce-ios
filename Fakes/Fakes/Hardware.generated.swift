@@ -4,11 +4,12 @@
 import Yosemite
 import Networking
 import Hardware
+import WooFoundation
 
-extension CardBrand {
+extension Hardware.CardBrand {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> CardBrand {
+    public static func fake() -> Hardware.CardBrand {
         .visa
     }
 }
@@ -37,7 +38,6 @@ extension Hardware.CardPresentTransactionDetails {
             expYear: .fake(),
             cardholderName: .fake(),
             brand: .fake(),
-            fingerprint: .fake(),
             generatedCard: .fake(),
             receipt: .fake(),
             emvAuthData: .fake()
@@ -59,10 +59,10 @@ extension Hardware.Charge {
         )
     }
 }
-extension ChargeStatus {
+extension Hardware.ChargeStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> ChargeStatus {
+    public static func fake() -> Hardware.ChargeStatus {
         .succeeded
     }
 }
@@ -81,17 +81,17 @@ extension Hardware.PaymentIntent {
         )
     }
 }
-extension PaymentIntentStatus {
+extension Hardware.PaymentIntentStatus {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> PaymentIntentStatus {
+    public static func fake() -> Hardware.PaymentIntentStatus {
         .requiresPaymentMethod
     }
 }
-extension PaymentMethod {
+extension Hardware.PaymentMethod {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> PaymentMethod {
+    public static func fake() -> Hardware.PaymentMethod {
         .card
     }
 }

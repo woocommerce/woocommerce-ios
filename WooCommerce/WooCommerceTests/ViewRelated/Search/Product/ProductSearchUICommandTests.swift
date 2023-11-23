@@ -98,7 +98,7 @@ final class ProductSearchUICommandTests: XCTestCase {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1
-            onCompletion(.success(()))
+            onCompletion(.success(false))
         }
 
         // When
@@ -138,7 +138,7 @@ final class ProductSearchUICommandTests: XCTestCase {
                 return XCTFail("Unexpected action: \(action)")
             }
             invocationCount += 1
-            onCompletion(.success(()))
+            onCompletion(.success(false))
         }
 
         // When
@@ -162,7 +162,7 @@ final class ProductSearchUICommandTests: XCTestCase {
             guard case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
                 return XCTFail("Unexpected action: \(action)")
             }
-            onCompletion(.success(()))
+            onCompletion(.success(false))
         }
 
         // When

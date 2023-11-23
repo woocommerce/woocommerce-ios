@@ -24,6 +24,8 @@ public enum ProductAction: Action {
 
     /// Searches products that contain a given keyword.
     ///
+    /// - Parameter onCompletion: called when sync completes, returns an error or a boolean that indicates whether there might be more products from search.
+    ///
     case searchProducts(siteID: Int64,
                         keyword: String,
                         filter: ProductSearchFilter = .all,
@@ -34,7 +36,7 @@ public enum ProductAction: Action {
                         productType: ProductType? = nil,
                         productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
-                        onCompletion: (Result<Void, Error>) -> Void)
+                        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///

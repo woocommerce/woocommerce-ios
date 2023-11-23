@@ -4,6 +4,7 @@
 import Yosemite
 import Networking
 import Hardware
+import WooFoundation
 
 extension Yosemite.JustInTimeMessage {
     /// Returns a "ready to use" type filled with fake values.
@@ -25,10 +26,10 @@ extension Yosemite.JustInTimeMessage {
         )
     }
 }
-extension JustInTimeMessageTemplate {
+extension Yosemite.JustInTimeMessageTemplate {
     /// Returns a "ready to use" type filled with fake values.
     ///
-    public static func fake() -> JustInTimeMessageTemplate {
+    public static func fake() -> Yosemite.JustInTimeMessageTemplate {
         .banner
     }
 }
@@ -40,6 +41,23 @@ extension Yosemite.ProductReviewFromNoteParcel {
             note: .fake(),
             review: .fake(),
             product: .fake()
+        )
+    }
+}
+extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Yosemite.WooPaymentsDepositsOverviewByCurrency {
+        .init(
+            currency: .fake(),
+            automaticDeposits: .fake(),
+            depositInterval: .fake(),
+            pendingBalanceAmount: .fake(),
+            pendingDepositsCount: .fake(),
+            pendingDepositDays: .fake(),
+            nextDeposit: .fake(),
+            lastDeposit: .fake(),
+            availableBalance: .fake()
         )
     }
 }

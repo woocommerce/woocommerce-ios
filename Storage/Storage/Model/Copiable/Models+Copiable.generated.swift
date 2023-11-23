@@ -63,6 +63,7 @@ extension Storage.GeneralAppSettings {
 
 extension Storage.GeneralStoreSettings {
     public func copy(
+        storeID: NullableCopiableProp<String> = .copy,
         isTelemetryAvailable: CopiableProp<Bool> = .copy,
         telemetryLastReportedTime: NullableCopiableProp<Date> = .copy,
         areSimplePaymentTaxesEnabled: CopiableProp<Bool> = .copy,
@@ -72,6 +73,7 @@ extension Storage.GeneralStoreSettings {
         firstInPersonPaymentsTransactionsByReaderType: CopiableProp<[CardReaderType: Date]> = .copy,
         selectedTaxRateID: NullableCopiableProp<Int64> = .copy
     ) -> Storage.GeneralStoreSettings {
+        let storeID = storeID ?? self.storeID
         let isTelemetryAvailable = isTelemetryAvailable ?? self.isTelemetryAvailable
         let telemetryLastReportedTime = telemetryLastReportedTime ?? self.telemetryLastReportedTime
         let areSimplePaymentTaxesEnabled = areSimplePaymentTaxesEnabled ?? self.areSimplePaymentTaxesEnabled
@@ -82,6 +84,7 @@ extension Storage.GeneralStoreSettings {
         let selectedTaxRateID = selectedTaxRateID ?? self.selectedTaxRateID
 
         return Storage.GeneralStoreSettings(
+            storeID: storeID,
             isTelemetryAvailable: isTelemetryAvailable,
             telemetryLastReportedTime: telemetryLastReportedTime,
             areSimplePaymentTaxesEnabled: areSimplePaymentTaxesEnabled,

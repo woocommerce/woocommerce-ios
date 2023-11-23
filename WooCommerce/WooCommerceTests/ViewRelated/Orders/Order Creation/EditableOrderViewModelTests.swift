@@ -33,9 +33,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
-    func test_createProductSelectorViewModelWithOrderItemsSelected_returns_instance_initialized_with_expected_values() {
+    func test_createProductSelectorViewModelWithOrderItemsSelected_returns_instance_initialized_with_expected_values() throws {
+        // When
+        viewModel.toggleProductSelectorVisibility()
+
         // Then
-        XCTAssertFalse(viewModel.createProductSelectorViewModelWithOrderItemsSelected().toggleAllVariationsOnSelection)
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
+        XCTAssertFalse(productSelectorViewModel.toggleAllVariationsOnSelection)
     }
 
     func test_edition_view_model_inits_with_expected_values() {
@@ -269,11 +273,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.statusBadgeViewModel.title, "Processing")
     }
 
-    func test_view_model_is_updated_when_product_is_added_to_order() {
+    func test_view_model_is_updated_when_product_is_added_to_order() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -283,7 +288,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains(where: { $0.productOrVariationID == sampleProductID }), "Product rows do not contain expected product")
     }
 
-    func test_order_details_are_updated_when_product_quantity_changes() {
+    func test_order_details_are_updated_when_product_quantity_changes() throws {
         // Given
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -292,7 +297,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         storageManager.insertSampleProduct(readOnlyProduct: anotherProduct)
 
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -306,11 +312,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[safe: 1]?.quantity, 1)
     }
 
-    func test_product_is_removed_when_quantity_is_decremented_below_1() {
+    func test_product_is_removed_when_quantity_is_decremented_below_1() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Product quantity is 1
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -381,7 +388,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
         productSelectorViewModel.completeMultipleSelection()
 
@@ -394,12 +402,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedProductViewModel?.productRowViewModel.id, expectedRow.id)
     }
 
-    func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() {
+    func test_view_model_is_updated_when_product_is_removed_from_order_using_order_item() throws {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         storageManager.insertProducts([product0, product1])
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
         productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
@@ -416,12 +425,13 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map { $0.id }, [expectedRemainingRow].map { $0.id })
     }
 
-    func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() {
+    func test_view_model_is_updated_when_product_is_removed_from_order_using_product_row_ID() throws {
         // Given
         let product0 = Product.fake().copy(siteID: sampleSiteID, productID: 0, purchasable: true)
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
         storageManager.insertProducts([product0, product1])
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
         productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
@@ -769,13 +779,14 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // MARK: - Payment Section Tests
 
-    func test_payment_section_when_products_and_custom_amounts_are_added_then_paymentDataViewModel_is_updated() {
+    func test_payment_section_when_products_and_custom_amounts_are_added_then_paymentDataViewModel_is_updated() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Pre-check
         XCTAssertTrue(viewModel.paymentDataViewModel.orderIsEmpty)
@@ -799,7 +810,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowProductsTotal)
     }
 
-    func test_payment_section_is_updated_when_products_update() {
+    func test_payment_section_is_updated_when_products_update() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
@@ -808,7 +819,8 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager,
                                                currencySettings: currencySettings,
                                                quantityDebounceDuration: 0)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When & Then
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -827,7 +839,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£17.00")
     }
 
-    func test_payment_section_is_updated_when_shipping_line_updated() {
+    func test_payment_section_is_updated_when_shipping_line_updated() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
@@ -836,7 +848,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                currencySettings: currencySettings)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -865,7 +878,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.orderTotal, "£8.50")
     }
 
-    func test_payment_when_custom_amount_is_added_then_section_is_updated() {
+    func test_payment_when_custom_amount_is_added_then_section_is_updated() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
@@ -873,7 +886,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                currencySettings: currencySettings)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -897,7 +911,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                currencySettings: currencySettings)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -918,7 +933,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.couponLineViewModels.isEmpty)
     }
 
-    func test_payment_section_values_correct_when_shipping_line_is_negative() {
+    func test_payment_section_values_correct_when_shipping_line_is_negative() throws {
         // Given
         let currencySettings = CurrencySettings(currencyCode: .GBP, currencyPosition: .left, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 2)
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8.50", purchasable: true)
@@ -926,7 +941,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                currencySettings: currencySettings)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1035,11 +1051,12 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
     }
 
-    func test_hasChanges_returns_true_when_product_quantity_changes() {
+    func test_hasChanges_returns_true_when_product_quantity_changes() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1105,7 +1122,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                analytics: WooAnalytics(analyticsProvider: analytics))
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1134,7 +1152,8 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                flow: .editing(initialOrder: .fake()),
                                                storageManager: storageManager,
                                                analytics: WooAnalytics(analyticsProvider: analytics))
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1160,7 +1179,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                analytics: WooAnalytics(analyticsProvider: analytics))
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // Given products are added to order
         productSelectorViewModel.changeSelectionStateForProduct(with: product0.productID)
@@ -1181,15 +1201,17 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(properties, "creation")
     }
 
-    func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() {
+    func test_product_selector_source_is_tracked_when_product_selector_clear_selection_button_is_tapped() throws {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
                                                storageManager: storageManager,
                                                analytics: WooAnalytics(analyticsProvider: analytics))
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
-        viewModel.createProductSelectorViewModelWithOrderItemsSelected().clearSelection()
+        productSelectorViewModel.clearSelection()
 
         // Then
         XCTAssertTrue(analytics.receivedEvents.contains(where: {
@@ -1508,7 +1530,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_items_then_returns_true() {
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_items_then_returns_true() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1532,7 +1554,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1544,7 +1567,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_items_then_returns_true() {
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_items_then_returns_true() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1568,7 +1591,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -1644,7 +1668,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
-    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_and_there_are_items_then_returns_false() {
+    func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_and_there_are_items_then_returns_false() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
             switch action {
@@ -1659,7 +1683,8 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
         storageManager.insertSampleProduct(readOnlyProduct: product)
-        let productSelectorViewModel = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelectorViewModel = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // When
         productSelectorViewModel.changeSelectionStateForProduct(with: product.productID)
@@ -2837,7 +2862,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
 
         // When entering the product selector
-        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // The child bundled item is not counted as a product in the product selector
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 2)
@@ -2903,7 +2929,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
 
         // When entering the product selector
-        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // The child bundled item is not counted as a product in the product selector
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 1)
@@ -2959,7 +2986,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
 
         // When entering the product selector
-        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // The child bundled item is not counted as a product in the product selector
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 0)
@@ -3024,7 +3052,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, flow: .editing(initialOrder: order), stores: stores, storageManager: storageManager)
 
         // When entering the product selector
-        let productSelector = viewModel.createProductSelectorViewModelWithOrderItemsSelected()
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
 
         // The child bundled item is not counted as a product in the product selector
         XCTAssertEqual(productSelector.totalSelectedItemsCount, 0)

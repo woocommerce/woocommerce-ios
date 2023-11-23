@@ -195,7 +195,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -226,7 +226,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 remoteRequestSearchFilter = filter
                 self.insert(skuFilterProduct, withSearchTerm: "shirt", filterKey: "sku")
                 self.insert(allFilterProduct, withSearchTerm: "shirt", filterKey: "all")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -256,7 +256,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(skuFilterVariation, withSearchTerm: "shirt", filterKey: "sku")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -339,7 +339,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(shirt, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -391,7 +391,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             switch action {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 self.insert(product.copy(name: "T-shirt"), withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
             case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 onCompletion(.success(true))
                 expectation.fulfill()
@@ -1000,6 +1000,18 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(onAllSelectionsClearedCalled)
     }
 
+    func test_addSelection_allows_multiple_same_ids() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, selectedItemIDs: [1, 12, 20])
+
+        // When
+        viewModel.addSelection(id: 1)
+        viewModel.addSelection(id: 1)
+
+        // Then
+        XCTAssertEqual(viewModel.totalSelectedItemsCount, 5)
+    }
+
     @MainActor
     func test_synchronizeProducts_are_triggered_with_correct_filters() async throws {
         // Given
@@ -1069,7 +1081,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
                 filteredProductType = productType
                 filteredProductStatus = productStatus
                 filteredProductCategory = category
-                onCompletion(.success(Void()))
+                onCompletion(.success(false))
             default:
                 XCTFail("Received unsupported action: \(action)")
             }
@@ -1255,7 +1267,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
             case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion):
                 let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
                 self.insert(product, withSearchTerm: "shirt")
-                onCompletion(.success(()))
+                onCompletion(.success(false))
                 expectation.fulfill()
             case .searchProductsInCache:
                 break
@@ -1356,6 +1368,64 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         assertEqual(bundleProduct, productToConfigure)
+    }
+
+    // MARK: - Pagination
+
+    func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {
+        // Given
+        var searchProductsPages = [Int]()
+        var synchronizeProductsPages = [Int]()
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+                case let .searchProducts(_, _, _, pageNumber, _, _, _, _, _, _, onCompletion):
+                    searchProductsPages.append(pageNumber)
+                    let product = Product.fake().copy(siteID: self.sampleSiteID, productID: 3, purchasable: true)
+                    self.insert(product, withSearchTerm: "shirt")
+                    // No next page from the search.
+                    onCompletion(.success(false))
+                case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, onCompletion):
+                    synchronizeProductsPages.append(pageNumber)
+                    let hasNextPage = pageNumber < 2
+                    onCompletion(.success(hasNextPage))
+                case .searchProductsInCache:
+                    break
+                default:
+                    XCTFail("Unsupported Action")
+            }
+        }
+
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, storageManager: storageManager, stores: stores)
+        viewModel.onLoadTrigger.send(())
+
+        XCTAssertEqual(synchronizeProductsPages, [1])
+        XCTAssertEqual(searchProductsPages, [])
+
+        // When
+        viewModel.searchTerm = "shirt"
+
+        waitUntil {
+            searchProductsPages.isNotEmpty
+        }
+
+        viewModel.changeSelectionStateForProduct(with: 3)
+
+        XCTAssertEqual(synchronizeProductsPages, [1])
+        XCTAssertEqual(searchProductsPages, [1])
+
+        viewModel.searchTerm = ""
+
+        waitUntil {
+            synchronizeProductsPages == [1, 1]
+        }
+
+        XCTAssertEqual(searchProductsPages, [1])
+
+        viewModel.syncNextPage()
+
+        // Then
+        XCTAssertEqual(synchronizeProductsPages, [1, 1, 2])
+        XCTAssertEqual(searchProductsPages, [1])
     }
 }
 

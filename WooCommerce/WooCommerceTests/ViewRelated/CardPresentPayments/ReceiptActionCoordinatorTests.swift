@@ -160,7 +160,6 @@ extension CardPresentTransactionDetails {
                             expYear: Int = 31,
                             cardholderName: String? = nil,
                             brand: CardBrand = .unknown,
-                            fingerprint: String = "y29834",
                             generatedCard: String? = "1230",
                             receipt: ReceiptDetails? = nil,
                             emvAuthData: String? = nil) -> CardPresentTransactionDetails {
@@ -169,7 +168,6 @@ extension CardPresentTransactionDetails {
                                       expYear: expYear,
                                       cardholderName: cardholderName,
                                       brand: brand,
-                                      fingerprint: fingerprint,
                                       generatedCard: generatedCard,
                                       receipt: receipt,
                                       emvAuthData: emvAuthData)

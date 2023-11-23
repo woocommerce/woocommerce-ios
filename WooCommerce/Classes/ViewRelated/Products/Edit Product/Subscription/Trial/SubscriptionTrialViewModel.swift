@@ -84,6 +84,5 @@ private extension SubscriptionTrialViewModel {
                                              value: "The trial period cannot exceed %1$d %2$@",
                                              comment: "Validation error message in the Free trial info screen of the subscription product. " +
                                                        "Reads like: The trial period cannot exceed 90 days.")
-
     }
 }

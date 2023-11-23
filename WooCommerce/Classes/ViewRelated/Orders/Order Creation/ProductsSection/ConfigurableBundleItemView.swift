@@ -37,7 +37,7 @@ struct ConfigurableBundleItemView: View {
                 Text(viewModel.selectedVariation == nil ?
                      Localization.selectVariation: Localization.updateVariation)
             }
-            .renderedIf(viewModel.isVariable)
+            .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle)
 
             if let selectedVariation = viewModel.selectedVariation {
                 Spacer()
@@ -82,8 +82,8 @@ private extension ConfigurableBundleItemView {
             comment: "Action to toggle whether a bundle item is included when it is optional."
         )
         static let selectVariation = NSLocalizedString(
-            "configureBundleItem.selectVariation",
-            value: "Select variation",
+            "configureBundleItem.chooseVariation",
+            value: "Choose variation",
             comment: "Action to select a variation for a bundle item when it is variable."
         )
         static let updateVariation = NSLocalizedString(

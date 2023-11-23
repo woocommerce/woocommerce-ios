@@ -23,6 +23,11 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     /// Whether the bundle item is a variable product and has variations.
     let isVariable: Bool
 
+    /// Whether the bundle item is included in the bundle. For non-optional item, it's always included. For optional item, it's based on the `isOptionalAndSelected` state.
+    var isIncludedInBundle: Bool {
+        isOptional ? isOptionalAndSelected: true
+    }
+
     /// For rendering the product row with the quantity setting UI.
     @Published private(set) var productRowViewModel: ProductRowViewModel
     @Published var quantity: Decimal
@@ -133,7 +138,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         errorMessage = nil
 
          // The bundle configuration is always considered valid if not selected.
-        guard !(isOptional && isOptionalAndSelected == false) else {
+        guard isIncludedInBundle else {
             return true
         }
 

@@ -284,6 +284,45 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
                                                         isOptionalAndSelected: true))
     }
 
+    // MARK: - `isIncludedInBundle`
+
+    func test_isIncludedInBundle_is_true_when_item_is_not_optional() throws {
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: false),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // Then
+        XCTAssertTrue(viewModel.isIncludedInBundle)
+    }
+
+    func test_isIncludedInBundle_is_false_when_item_is_optional_and_not_selected() throws {
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // Then
+        XCTAssertFalse(viewModel.isIncludedInBundle)
+    }
+
+    func test_isIncludedInBundle_is_true_when_item_is_optional_and_selected() throws {
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake().copy(isOptional: true),
+                                                        product: .fake(),
+                                                        variableProductSettings: nil,
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+        viewModel.isOptionalAndSelected = true
+
+        // Then
+        XCTAssertTrue(viewModel.isIncludedInBundle)
+    }
+
     // MARK: - Analytics
 
     func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {

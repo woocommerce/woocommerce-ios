@@ -90,6 +90,10 @@ final class AddCustomAmountViewModel: ObservableObject {
         Localization.customAmountPlaceholder
     }
 
+    var isInEditMode: Bool {
+        feeID != nil
+    }
+
     var doneButtonTitle: String {
         let isInEditMode = feeID != nil
         return isInEditMode ? Localization.editButtonTitle : Localization.addButtonTitle
@@ -119,6 +123,9 @@ final class AddCustomAmountViewModel: ObservableObject {
         onCustomAmountEntered(amount, customAmountName, feeID, isTaxable)
     }
 
+    func deleteButtonPressed() {
+        debugPrint("To be implemented")
+    }
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder

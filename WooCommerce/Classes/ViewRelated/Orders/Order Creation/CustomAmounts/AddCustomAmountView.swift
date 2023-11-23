@@ -41,6 +41,16 @@ struct AddCustomAmountView: View {
                         TextField(viewModel.customAmountPlaceholder, text: $viewModel.name)
                             .secondaryTitleStyle()
                             .foregroundColor(Color(.textSubtle))
+                            .padding(.bottom, Layout.mainVerticalSpacing)
+
+                        Button(Localization.deleteButtonTitle) {
+                            viewModel.deleteButtonPressed()
+                            dismiss()
+                        }
+                        .foregroundColor(.init(uiColor: .error))
+                        .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
+                        .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
+                        .renderedIf(viewModel.isInEditMode)
 
                         Spacer()
 
@@ -81,6 +91,9 @@ private extension AddCustomAmountView {
     enum Localization {
         static let amountTitle = NSLocalizedString("Amount", comment: "Title above the amount field on the add custom amount view in orders.")
         static let nameTitle = NSLocalizedString("Name", comment: "Title above the name field on the add custom amount view in orders.")
+        static let deleteButtonTitle = NSLocalizedString("addCustomAmount.deleteButton",
+                                                         value: "Delete Custom Amount",
+                                                         comment: "Button title to delete the custom amount on the edit custom amount view in orders.")
         static let navigationTitle = NSLocalizedString("Custom Amount", comment: "Navigation title on the add custom amount view in orders.")
         static let navigationCancelButtonTitle = NSLocalizedString("Cancel",
                                                                 comment: "Cancel button title on the navigation bar on the add custom amount view in orders.")
@@ -91,5 +104,6 @@ private extension AddCustomAmountView {
 
     enum AccessibilityIdentifiers {
         static let addCustomAmountButton = "order-add-custom-amount-view-add-custom-amount-button"
+        static let deleteCustomAmountButton = "order-add-custom-amount-view-delete-custom-amount-button"
     }
 }

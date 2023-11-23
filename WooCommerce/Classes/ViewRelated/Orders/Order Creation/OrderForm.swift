@@ -515,16 +515,6 @@ private struct ProductsSection: View {
                      ]
                  )
             })
-            .actionSheet(isPresented: $viewModel.presentCustomAmountEditOptionsActionSheet, content: {
-                ActionSheet(
-                    title: Text(""),
-                    message: nil,
-                    buttons: [
-                        .default(Text("Edit custom amount")),
-                        .destructive(Text("Delete")),
-                        .cancel(Text("Cancel")) ]
-                 )
-            })
         }
     }
 }

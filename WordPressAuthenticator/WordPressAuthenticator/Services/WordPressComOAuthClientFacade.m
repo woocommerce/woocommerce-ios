@@ -29,13 +29,6 @@
     return nil;
 }
 
-- (void) requestWebauthnChallengeWithUserID: (NSInteger)userID
-                               twoStepNonce:(NSString *)twoStepNonce
-                                    success:(void (^)(WebauthnChallengeInfo *challengeData))success
-                                    failure:(void (^)(NSError *error))failure {
-    [self.client requestWebauthnChallengeWithUserID:userID twoStepNonce:twoStepNonce success:success failure:failure];
-}
-
 - (void) authenticateWebauthnSignatureWithUserID:(NSInteger)userID
                                     twoStepNonce:(NSString *)twoStepNonce
                                     credentialID:(NSData *)credentialID

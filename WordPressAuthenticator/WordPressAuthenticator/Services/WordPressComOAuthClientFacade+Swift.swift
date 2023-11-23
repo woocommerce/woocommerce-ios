@@ -78,6 +78,15 @@ extension WordPressComOAuthClientFacade {
         )
     }
 
+    func requestWebauthnChallenge(
+        userID: Int64,
+        twoStepNonce: String,
+        success: @escaping (_ challengeData: WebauthnChallengeInfo) -> Void,
+        failure: @escaping (_ error: NSError) -> Void
+    ) {
+        self.client.requestWebauthnChallenge(userID: userID, twoStepNonce: twoStepNonce, success: success, failure: failure)
+    }
+
 }
 
 // MARK: - This extension is needed because WordPressComOAuthClientFacade cannot access the WordPressAuthenticatorConfiguration struct.

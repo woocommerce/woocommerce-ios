@@ -24,6 +24,15 @@ extension WordPressComOAuthClientFacade {
         })
     }
 
+    func requestOneTimeCode(
+        username: String,
+        password: String,
+        success: @escaping () -> Void,
+        failure: @escaping (_ error: NSError) -> Void
+    ) {
+        self.client.requestOneTimeCodeWithUsername(username, password: password, success: success, failure: failure)
+    }
+
 }
 
 // MARK: - This extension is needed because WordPressComOAuthClientFacade cannot access the WordPressAuthenticatorConfiguration struct.

@@ -29,14 +29,6 @@
     return nil;
 }
 
-- (void)requestOneTimeCodeWithUsername:(NSString *)username
-                              password:(NSString *)password
-                               success:(void (^)(void))success
-                               failure:(void (^)(NSError *error))failure
-{
-    [self.client requestOneTimeCodeWithUsername:username password:password success:success failure:failure];
-}
-
 - (void)requestSocial2FACodeWithUserID:(NSInteger)userID
                                  nonce:(NSString *)nonce
                                success:(void (^)(NSString *newNonce))success

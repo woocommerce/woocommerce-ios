@@ -1909,6 +1909,24 @@ extension Networking.ProductVariation {
     }
 }
 
+extension Networking.ProductVariationAttribute {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        option: CopiableProp<String> = .copy
+    ) -> Networking.ProductVariationAttribute {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let option = option ?? self.option
+
+        return Networking.ProductVariationAttribute(
+            id: id,
+            name: name,
+            option: option
+        )
+    }
+}
+
 extension Networking.Refund {
     public func copy(
         refundID: CopiableProp<Int64> = .copy,

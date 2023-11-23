@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 53;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -73,6 +73,7 @@
 		028CB71B290224D700331C09 /* create-account-error-username.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71A290224D700331C09 /* create-account-error-username.json */; };
 		028CB71E2902589E00331C09 /* create-account-error-email-exists.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71C2902589E00331C09 /* create-account-error-email-exists.json */; };
 		028CB71F2902589E00331C09 /* create-account-error-invalid-email.json in Resources */ = {isa = PBXBuildFile; fileRef = 028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */; };
+		028F3F942B0DF9A800F8E227 /* OrderEncoderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */; };
 		028FA473257E110700F88A48 /* shipping-label-refund-error.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA471257E110700F88A48 /* shipping-label-refund-error.json */; };
 		028FA474257E110700F88A48 /* shipping-label-refund-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 028FA472257E110700F88A48 /* shipping-label-refund-success.json */; };
 		02935AEE29DFFA74001B793E /* site-enable-trial-success.json in Resources */ = {isa = PBXBuildFile; fileRef = 02935AEC29DFFA74001B793E /* site-enable-trial-success.json */; };
@@ -1079,6 +1080,7 @@
 		028CB71A290224D700331C09 /* create-account-error-username.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-username.json"; sourceTree = "<group>"; };
 		028CB71C2902589E00331C09 /* create-account-error-email-exists.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-email-exists.json"; sourceTree = "<group>"; };
 		028CB71D2902589E00331C09 /* create-account-error-invalid-email.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "create-account-error-invalid-email.json"; sourceTree = "<group>"; };
+		028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderEncoderTests.swift; sourceTree = "<group>"; };
 		028FA471257E110700F88A48 /* shipping-label-refund-error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-error.json"; sourceTree = "<group>"; };
 		028FA472257E110700F88A48 /* shipping-label-refund-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "shipping-label-refund-success.json"; sourceTree = "<group>"; };
 		02935AEC29DFFA74001B793E /* site-enable-trial-success.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "site-enable-trial-success.json"; sourceTree = "<group>"; };
@@ -3302,6 +3304,7 @@
 				EEC312C42AFE01BC004369F7 /* ProductEncoderTests.swift */,
 				DEDA8D9A2B05BEF80076BF0F /* CreateProductVariationTests.swift */,
 				EE1217DB2AFE04A500E6CAB1 /* ProductVariationEncoderTests.swift */,
+				028F3F932B0DF9A800F8E227 /* OrderEncoderTests.swift */,
 			);
 			path = Encoder;
 			sourceTree = "<group>";
@@ -4518,6 +4521,7 @@
 				D8FBFF1E22D51F39006E3336 /* OrderStatsMapperV4Tests.swift in Sources */,
 				02E7FFCB256218F600C53030 /* ShippingLabelRemoteTests.swift in Sources */,
 				DE50296528C60A8000551736 /* JetpackUserMapperTests.swift in Sources */,
+				028F3F942B0DF9A800F8E227 /* OrderEncoderTests.swift in Sources */,
 				9387A6F0226E3F15001B53D7 /* AccountSettingsMapperTests.swift in Sources */,
 				2685C102263B6A1000D9EE97 /* AddOnGroupRemoteTests.swift in Sources */,
 				02616F8C292132800095BC00 /* SiteRemoteTests.swift in Sources */,

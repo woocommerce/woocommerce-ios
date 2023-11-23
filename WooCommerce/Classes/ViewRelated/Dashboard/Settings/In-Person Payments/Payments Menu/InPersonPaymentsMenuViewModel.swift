@@ -29,6 +29,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
     @Published var depositViewModel: WooPaymentsDepositsOverviewViewModel? = nil
+    @Published var isLoadingDepositSummary: Bool = false
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -117,17 +118,21 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             shouldShowDepositSummary = false
             return
         }
+
+        shouldShowDepositSummary = true
+
         do {
+            if depositViewModel == nil {
+                isLoadingDepositSummary = true
+            }
             let depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
-            shouldShowDepositSummary = depositCurrencyViewModels.count > 0
-            guard shouldShowDepositSummary else {
-                return
-            }
+            isLoadingDepositSummary = false
             depositViewModel = WooPaymentsDepositsOverviewViewModel(currencyViewModels: depositCurrencyViewModels)
         } catch {
             shouldShowDepositSummary = false
+            isLoadingDepositSummary = false
             analytics.track(event: .DepositSummary.depositSummaryError(error: error))
         }
     }

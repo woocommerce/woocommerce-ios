@@ -191,12 +191,30 @@ struct InPersonPaymentsMenu: View {
     @ViewBuilder
     var depositSummary: some View {
         if #available(iOS 16.0, *),
-           viewModel.shouldShowDepositSummary,
-           let depositViewModel = viewModel.depositViewModel {
-            WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
+           viewModel.shouldShowDepositSummary {
+            if viewModel.isLoadingDepositSummary {
+                WooPaymentsDepositsOverviewView(viewModel: depositSummaryLoadingViewModel)
+                    .redacted(reason: .placeholder)
+                    .shimmering()
+            } else if let depositViewModel = viewModel.depositViewModel {
+                WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
+            }
         } else {
             EmptyView()
         }
+    }
+
+    private var depositSummaryLoadingViewModel: WooPaymentsDepositsOverviewViewModel {
+        .init(currencyViewModels: [.init(overview: .init(
+            currency: .AED,
+            automaticDeposits: false,
+            depositInterval: .daily,
+            pendingBalanceAmount: .zero,
+            pendingDepositsCount: 0,
+            pendingDepositDays: 0,
+            nextDeposit: nil,
+            lastDeposit: nil,
+            availableBalance: .zero))])
     }
 }
 

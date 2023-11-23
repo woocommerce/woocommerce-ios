@@ -3,7 +3,6 @@
 #import <Expecta/Expecta.h>
 #import <OCMock/OCMock.h>
 #import "LoginFacade.h"
-#import "WordPressComOAuthClientFacade.h"
 #import "WordPressXMLRPCAPIFacade.h"
 #import "WPAuthenticator-Swift.h"
 #import "WordPressAuthenticatorTests-Swift.h"
@@ -24,7 +23,7 @@ beforeAll(^{
 });
 
 beforeEach(^{
-    mockOAuthFacade = [OCMockObject niceMockForProtocol:@protocol(WordPressComOAuthClientFacade)];
+    mockOAuthFacade = [OCMockObject niceMockForProtocol:@protocol(WordPressComOAuthClientFacadeProtocol)];
     mockXMLRPCAPIFacade = [OCMockObject niceMockForProtocol:@protocol(WordPressXMLRPCAPIFacade)];
     mockLoginFacadeDelegate = [OCMockObject niceMockForProtocol:@protocol(LoginFacadeDelegate)];
 
@@ -61,8 +60,8 @@ describe(@"signInWithLoginFields", ^{
         });
         
         it(@"should authenticate the user's credentials", ^{
-            [[mockOAuthFacade expect] authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY];
-            
+            [[mockOAuthFacade expect] authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY];
+
             [loginFacade signInWithLoginFields:loginFields];
             
             [mockOAuthFacade verify];
@@ -71,7 +70,7 @@ describe(@"signInWithLoginFields", ^{
         it(@"should call LoginFacadeDelegate's finishedLoginWithUsername:authToken:shouldDisplayMultifactor: when authentication was successful", ^{
             // Intercept success callback and execute it when appropriate
             NSString *authToken = @"auth-token";
-            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
+            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
                 void (^ __unsafe_unretained successStub)(NSString *);
                 [invocation getArgument:&successStub atIndex:5];
                 
@@ -86,7 +85,7 @@ describe(@"signInWithLoginFields", ^{
         
         it(@"should call LoginServceDelegate's needsMultifactorCode when authentication requires it", ^{
             // Intercept success callback and execute it when appropriate
-            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
+            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
                 void (^ __unsafe_unretained needsMultifactorStub)(NSInteger, SocialLogin2FANonceInfo *);
                 [invocation getArgument:&needsMultifactorStub atIndex:6];
                 
@@ -105,7 +104,7 @@ describe(@"signInWithLoginFields", ^{
             SocialLogin2FANonceInfo * info = [SocialLogin2FANonceInfo new];
 
             // Intercept success callback and execute it when appropriate
-            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
+            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
                 void (^ __unsafe_unretained needsMultifactorStub)(NSInteger, SocialLogin2FANonceInfo *);
                 [invocation getArgument:&needsMultifactorStub atIndex:6];
 
@@ -121,7 +120,7 @@ describe(@"signInWithLoginFields", ^{
         it(@"should call LoginFacadeDelegate's displayRemoteError when there has been an error", ^{
             NSError *error = [NSError errorWithDomain:@"org.wordpress" code:-1 userInfo:@{ NSLocalizedDescriptionKey : @"Error" }];
             // Intercept success callback and execute it when appropriate
-            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
+            [OCMStub([mockOAuthFacade authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY]) andDo:^(NSInvocation *invocation) {
                 void (^ __unsafe_unretained failureStub)(NSError *);
                 [invocation getArgument:&failureStub atIndex:7];
                 
@@ -208,7 +207,7 @@ describe(@"signInWithLoginFields", ^{
                     
                     it(@"should attempt to authenticate for WordPress.com when it detects the site is a WordPress.com site", ^{
                         options[@"wordpress.com"] = @YES;
-                        [[mockOAuthFacade expect] authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultiFactor:OCMOCK_ANY failure:OCMOCK_ANY];
+                        [[mockOAuthFacade expect] authenticateWithUsername:loginFields.username password:loginFields.password multifactorCode:loginFields.multifactorCode success:OCMOCK_ANY needsMultifactor:OCMOCK_ANY failure:OCMOCK_ANY];
                         
                         [loginFacade signInWithLoginFields:loginFields];
                        

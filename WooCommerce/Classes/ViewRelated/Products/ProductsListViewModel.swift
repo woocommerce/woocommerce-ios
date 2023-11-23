@@ -12,22 +12,16 @@ class ProductListViewModel {
 
     let siteID: Int64
     private let stores: StoresManager
-    private let storage: StorageManagerType
 
     private(set) var selectedProducts: Set<Product> = .init()
 
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores,
-         storage: StorageManagerType = ServiceLocator.storageManager) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.stores = stores
-        self.storage = storage
-        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(
-            siteID: siteID,
-            storage: storage
-        )
+        self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
     }
 
     var selectedProductsCount: Int {

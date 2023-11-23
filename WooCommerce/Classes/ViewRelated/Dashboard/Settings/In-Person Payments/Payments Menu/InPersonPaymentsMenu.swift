@@ -196,6 +196,8 @@ struct InPersonPaymentsMenu: View {
                 WooPaymentsDepositsOverviewView(viewModel: depositSummaryLoadingViewModel)
                     .redacted(reason: .placeholder)
                     .shimmering()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Localization.loadingDepositSummaryAccessibilityLabel)
             } else if let depositViewModel = viewModel.depositViewModel {
                 WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
             }
@@ -332,6 +334,12 @@ private extension InPersonPaymentsMenu {
                      A label prompting users to learn more about card readers.
                      This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
+        )
+
+        static let loadingDepositSummaryAccessibilityLabel = NSLocalizedString(
+            "menu.payments.depositSummary.loading.accessibilityLabel",
+            value: "Loading balances...",
+            comment: "An accessibility label used when the balances are loading on the payments menu"
         )
     }
 

@@ -29,21 +29,6 @@
     return nil;
 }
 
-- (void)authenticateWithSocialIDToken:(NSString *)token
-                              service:(NSString *)service
-                              success:(void (^)(NSString *authToken))success
-                     needsMultiFactor:(void (^)(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo))needsMultifactor
-          existingUserNeedsConnection:(void (^)(NSString *email))existingUserNeedsConnection
-                              failure:(void (^)(NSError *error))failure
-{
-    [self.client authenticateWithIDToken:token
-                                 service:service
-                                 success:success
-                        needsMultifactor:needsMultifactor
-             existingUserNeedsConnection:existingUserNeedsConnection
-                                 failure:failure];
-}
-
 - (void)authenticateSocialLoginUser:(NSInteger)userID
                            authType:(NSString *)authType
                         twoStepCode:(NSString *)twoStepCode

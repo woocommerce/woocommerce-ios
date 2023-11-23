@@ -60,7 +60,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         }
     }
 
-    let dependencies: Dependencies
+    private let dependencies: Dependencies
 
     private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         dependencies.cardPresentPaymentsConfiguration
@@ -68,6 +68,10 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
         dependencies.onboardingUseCase
+    }
+
+    private var analytics: Analytics {
+        dependencies.analytics
     }
 
     private var cancellables: Set<AnyCancellable> = []
@@ -119,7 +123,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             depositViewModel = WooPaymentsDepositsOverviewViewModel(currencyViewModels: depositCurrencyViewModels)
         } catch {
             shouldShowDepositSummary = false
-            dependencies.analytics.track(event: .DepositSummary.depositSummaryError(error: error))
+            analytics.track(event: .DepositSummary.depositSummaryError(error: error))
         }
     }
 
@@ -132,15 +136,37 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     func collectPaymentTapped() {
         presentCollectPayment = true
 
-        dependencies.analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        analytics.track(event: WooAnalyticsEvent.SimplePayments.simplePaymentsFlowStarted())
+        analytics.track(.paymentsMenuCollectPaymentTapped)
     }
 
     func setUpTryOutTapToPayTapped() {
         presentSetUpTryOutTapToPay = true
+        analytics.track(.setUpTryOutTapToPayOnIPhoneTapped)
+    }
+
+    func aboutTapToPayTapped() {
+        analytics.track(.aboutTapToPayOnIPhoneTapped)
     }
 
     func tapToPayFeedbackTapped() {
         presentTapToPayFeedback = true
+    }
+
+    func purchaseCardReaderTapped() {
+        analytics.track(.paymentsMenuOrderCardReaderTapped)
+    }
+
+    func manageCardReadersTapped() {
+        analytics.track(.paymentsMenuManageCardReadersTapped)
+    }
+
+    func cardReaderManualsTapped() {
+        analytics.track(.paymentsMenuCardReadersManualsTapped)
+    }
+
+    func managePaymentGatewaysTapped() {
+        analytics.track(.paymentsMenuPaymentProviderTapped)
     }
 
     func preferredPluginSelected(plugin: CardPresentPaymentsPlugin) {
@@ -263,7 +289,7 @@ private extension InPersonPaymentsMenuViewModel {
             message: Localization.inPersonPaymentsSetupNotFinishedNotice,
             callToActionTitle: Localization.inPersonPaymentsSetupNotFinishedNoticeButtonTitle,
             callToActionHandler: { [weak self] in
-                self?.dependencies.analytics.track(.paymentsMenuOnboardingErrorTapped)
+                self?.analytics.track(.paymentsMenuOnboardingErrorTapped)
                 self?.shouldShowOnboarding = true
             })
     }

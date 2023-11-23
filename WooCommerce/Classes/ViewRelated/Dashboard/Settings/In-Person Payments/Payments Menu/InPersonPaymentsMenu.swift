@@ -69,11 +69,15 @@ struct InPersonPaymentsMenu: View {
                             }
                         }
 
-                        NavigationLink {
-                            AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                        Button {
+                            viewModel.aboutTapToPayTapped()
                         } label: {
-                            PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                        title: Localization.aboutTapToPayOnIPhone)
+                            NavigationLink {
+                                AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                            } label: {
+                                PaymentsRow(image: Image(uiImage: .infoOutlineImage),
+                                            title: Localization.aboutTapToPayOnIPhone)
+                            }
                         }
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
@@ -92,28 +96,40 @@ struct InPersonPaymentsMenu: View {
                     .renderedIf(viewModel.shouldShowTapToPaySection)
 
                     ScrollViewSection {
-                        NavigationLink {
-                            AuthenticatedWebView(isPresented: .constant(true),
-                                                 viewModel: viewModel.purchaseCardReaderWebViewModel)
+                        Button {
+                            viewModel.purchaseCardReaderTapped()
                         } label: {
-                            PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                        title: Localization.purchaseCardReader)
+                            NavigationLink {
+                                AuthenticatedWebView(isPresented: .constant(true),
+                                                     viewModel: viewModel.purchaseCardReaderWebViewModel)
+                            } label: {
+                                PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
+                                            title: Localization.purchaseCardReader)
+                            }
                         }
 
-                        NavigationLink {
-                            PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
+                        Button {
+                            viewModel.manageCardReadersTapped()
                         } label: {
-                            PaymentsRow(image: Image(uiImage: .creditCardIcon),
-                                        title: Localization.manageCardReader)
+                            NavigationLink {
+                                PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
+                            } label: {
+                                PaymentsRow(image: Image(uiImage: .creditCardIcon),
+                                            title: Localization.manageCardReader)
+                            }
                         }
                         .disabled(viewModel.shouldDisableManageCardReaders)
 
-                        NavigationLink {
-                            CardReaderManualsView()
+                        Button {
+                            viewModel.cardReaderManualsTapped()
                         } label: {
-                            PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                        title: Localization.cardReaderManuals)
-                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
+                            NavigationLink {
+                                CardReaderManualsView()
+                            } label: {
+                                PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
+                                            title: Localization.cardReaderManuals)
+                                .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
+                            }
                         }
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -125,14 +141,18 @@ struct InPersonPaymentsMenu: View {
                     .renderedIf(viewModel.shouldShowCardReaderSection)
 
                     ScrollViewSection {
-                        NavigationLink(isActive: $viewModel.presentManagePaymentGateways) {
-                            InPersonPaymentsSelectPluginView(selectedPlugin: nil,
-                                                             onPluginSelected: viewModel.preferredPluginSelected)
+                        Button {
+                            viewModel.managePaymentGatewaysTapped()
                         } label: {
-                            PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
-                                        title: Localization.managePaymentGateways,
-                                        subtitle: viewModel.activePaymentGatewayName)
-                            .padding(.vertical, Layout.cellVerticalPadding)
+                            NavigationLink(isActive: $viewModel.presentManagePaymentGateways) {
+                                InPersonPaymentsSelectPluginView(selectedPlugin: nil,
+                                                                 onPluginSelected: viewModel.preferredPluginSelected)
+                            } label: {
+                                PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
+                                            title: Localization.managePaymentGateways,
+                                            subtitle: viewModel.activePaymentGatewayName)
+                                .padding(.vertical, Layout.cellVerticalPadding)
+                            }
                         }
                         .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
                     }

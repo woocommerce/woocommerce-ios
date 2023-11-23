@@ -127,15 +127,76 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 //         }
 //     }
 
-//     func test_orderCardReaderPressed_tracks_paymentsMenuOrderCardReaderTapped() {
-//         // Given
+    // MARK: - Analytics tests
+    func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
+        // Given
 
-//         // When
-//         sut.orderCardReaderPressed()
+        // When
+        sut.collectPaymentTapped()
 
-//         // Then
-//         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "payments_hub_order_card_reader_tapped" }))
-//     }
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCollectPaymentTapped.rawValue))
+    }
+
+    func test_setUpTryOutTapToPayTapped_tracks_setUpTryOutTapToPayOnIPhoneTapped() {
+        // Given
+
+        // When
+        sut.setUpTryOutTapToPayTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.setUpTryOutTapToPayOnIPhoneTapped.rawValue))
+    }
+
+    func test_aboutTapToPayTapped_tracks_aboutTapToPayOnIPhoneTapped() {
+        // Given
+
+        // When
+        sut.aboutTapToPayTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.aboutTapToPayOnIPhoneTapped.rawValue))
+    }
+
+    func test_cardReaderManualsTapped_tracks_paymentsMenuCardReadersManualsTapped() {
+        // Given
+
+        // When
+        sut.cardReaderManualsTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCardReadersManualsTapped.rawValue))
+    }
+
+    func test_manageCardReadersTapped_tracks_paymentsMenuManageCardReadersTapped() {
+        // Given
+
+        // When
+        sut.manageCardReadersTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuManageCardReadersTapped.rawValue))
+    }
+
+     func test_purchaseCardReaderTapped_tracks_paymentsMenuOrderCardReaderTapped() {
+         // Given
+
+         // When
+         sut.purchaseCardReaderTapped()
+
+         // Then
+         XCTAssertTrue(analyticsProvider.receivedEvents.contains("payments_hub_order_card_reader_tapped"))
+     }
+
+    func test_managePaymentGatewaysTapped_tracks_paymentsMenuPaymentProviderTapped() {
+        // Given
+
+        // When
+        sut.managePaymentGatewaysTapped()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPaymentProviderTapped.rawValue))
+    }
 
 //     func test_orderCardReaderPressed_presents_card_reader_purchase_web_view() throws {
 //         // Given

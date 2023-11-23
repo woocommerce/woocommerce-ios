@@ -29,16 +29,6 @@
     return nil;
 }
 
-- (void)authenticateSocialLoginUser:(NSInteger)userID
-                           authType:(NSString *)authType
-                        twoStepCode:(NSString *)twoStepCode
-                       twoStepNonce:(NSString *)twoStepNonce
-                            success:(void (^)(NSString *authToken))success
-                            failure:(void (^)(NSError *error))failure
-{
-    [self.client authenticateSocialLoginUser:userID authType:authType twoStepCode:twoStepCode twoStepNonce:twoStepNonce success:success failure:failure];
-}
-
 - (void) requestWebauthnChallengeWithUserID: (NSInteger)userID
                                twoStepNonce:(NSString *)twoStepNonce
                                     success:(void (^)(WebauthnChallengeInfo *challengeData))success

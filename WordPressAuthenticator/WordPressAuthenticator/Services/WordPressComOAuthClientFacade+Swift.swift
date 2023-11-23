@@ -60,6 +60,24 @@ extension WordPressComOAuthClientFacade {
         )
     }
 
+    func authenticate(
+        socialLoginUser userID: Int,
+        authType: String,
+        twoStepCode: String,
+        twoStepNonce: String,
+        success: @escaping (_ authToken: String?) -> Void,
+        failure: @escaping (_ error: NSError) -> Void
+    ) {
+        self.client.authenticateSocialLoginUser(
+            userID,
+            authType: authType,
+            twoStepCode: twoStepCode,
+            twoStepNonce: twoStepNonce,
+            success: success,
+            failure: failure
+        )
+    }
+
 }
 
 // MARK: - This extension is needed because WordPressComOAuthClientFacade cannot access the WordPressAuthenticatorConfiguration struct.

@@ -50,7 +50,7 @@ struct AddCustomAmountView: View {
                         .foregroundColor(.init(uiColor: .error))
                         .buttonStyle(RoundedBorderedStyle(borderColor: .init(uiColor: .error)))
                         .accessibilityIdentifier(AccessibilityIdentifiers.deleteCustomAmountButton)
-                        .renderedIf(viewModel.isInEditMode)
+                        .renderedIf(viewModel.shouldShowDeleteButton)
 
                         Spacer()
 

@@ -91,12 +91,15 @@ final class AddCustomAmountViewModel: ObservableObject {
         Localization.customAmountPlaceholder
     }
 
-    var isInEditMode: Bool {
+    var shouldShowDeleteButton: Bool {
+        isInEditMode
+    }
+
+    private var isInEditMode: Bool {
         feeID != nil
     }
 
     var doneButtonTitle: String {
-        let isInEditMode = feeID != nil
         return isInEditMode ? Localization.editButtonTitle : Localization.addButtonTitle
     }
 

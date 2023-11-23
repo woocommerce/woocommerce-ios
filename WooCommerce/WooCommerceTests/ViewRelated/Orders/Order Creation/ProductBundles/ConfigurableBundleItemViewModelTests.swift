@@ -217,6 +217,69 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         ])
     }
 
+    // MARK: - `toConfiguration`
+
+    func test_toConfiguration_sets_quantity_to_0_when_selectedVariation_is_nil() {
+        // Given
+        let variableProduct = createVariableProduct()
+            .copy(attributes: [
+                .fake().copy(attributeID: 5, name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"])
+            ], variations: [965])
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings: .init(allowedVariations: [], defaultAttributes: [
+                                                            .init(id: 0, name: "Flavor", option: "Blackberry")
+                                                        ]),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+
+        // Then
+        XCTAssertNil(viewModel.selectedVariation)
+        XCTAssertEqual(viewModel.toConfiguration, .init(bundledItemID: 0,
+                                                        productOrVariation: .product(id: variableProduct.productID),
+                                                        quantity: 0,
+                                                        isOptionalAndSelected: false))
+    }
+
+    func test_toConfiguration_sets_variationID_and_attributes_when_selectedVariation_is_not_nil() {
+        // Given
+        let variableProduct = createVariableProduct()
+            .copy(attributes: [
+                .fake().copy(attributeID: 5, name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"])
+            ])
+
+        // When
+        let viewModel = ConfigurableBundleItemViewModel(bundleItem: .fake(),
+                                                        product: variableProduct,
+                                                        variableProductSettings: .init(allowedVariations: [], defaultAttributes: [
+                                                            .init(id: 0, name: "Flavor", option: "Blackberry")
+                                                        ]),
+                                                        existingParentOrderItem: nil,
+                                                        existingOrderItem: nil)
+        viewModel.createVariationSelectorViewModel()
+        viewModel.variationSelectorViewModel?.onVariationSelectionStateChanged?(
+            // Selected variation.
+            .fake().copy(productVariationID: 7,
+                         attributes: []),
+            // Selected product.
+            variableProduct
+        )
+        viewModel.isOptionalAndSelected = true
+
+        // Then
+        XCTAssertNotNil(viewModel.selectedVariation)
+        XCTAssertEqual(viewModel.toConfiguration, .init(bundledItemID: 0,
+                                                        productOrVariation: .variation(productID: variableProduct.productID,
+                                                                                       variationID: 7,
+                                                                                       attributes: [
+                                                                                        .init(id: 5, name: "Flavor", option: "Blackberry")
+                                                                                       ]),
+                                                        quantity: 0,
+                                                        isOptionalAndSelected: true))
+    }
+
     // MARK: - Analytics
 
     func test_selecting_variation_tracks_orderFormBundleProductConfigurationChanged_event() throws {

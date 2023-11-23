@@ -217,7 +217,12 @@ extension ConfigurableBundleItemViewModel {
         switch product.productType {
             case .variable:
                 guard let variation = selectedVariation else {
-                    return nil
+                    // When no variation is selected when the variable bundle item is not selected, a configuration
+                    // is still required in the API.
+                    return .init(bundledItemID: bundledItemID,
+                                 productOrVariation: .product(id: product.productID),
+                                 quantity: 0,
+                                 isOptionalAndSelected: isOptionalAndSelected)
                 }
                 return .init(bundledItemID: bundledItemID,
                              productOrVariation: .variation(productID: product.productID,

@@ -36,7 +36,8 @@ final class OrdersTests: XCTestCase {
             .addProduct(byName: "Black Coral shades")
             .addCustomerDetails(name: order.billing.first_name)
             .addShipping(amount: order.shipping_lines[0].total, name: order.shipping_lines[0].method_title)
-            .addCustomAmount(amount: order.fee_lines[1].amount)
+            // Disabled temporarily until we add support for the custom amounts options dialog
+            //.addCustomAmount(amount: order.fee_lines[1].amount)
             .addCustomerNote(order.customer_note)
             .createOrder()
             .verifySingleOrderScreenLoaded()

@@ -348,7 +348,6 @@ private extension ProductFormTableViewDataSource {
              .attributes(let viewModel, _),
              .bundledProducts(let viewModel, _),
              .components(let viewModel, _),
-             .subscription(let viewModel, _),
              .subscriptionFreeTrial(let viewModel, _),
              .subscriptionExpiry(let viewModel, _),
              .quantityRules(let viewModel):

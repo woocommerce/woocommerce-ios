@@ -36,7 +36,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     let siteID: Int64
 
-    let payInPersonToggleViewModel = InPersonPaymentsCashOnDeliveryToggleRowViewModel()
+    var payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol
 
     struct Dependencies {
         let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
@@ -81,9 +81,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
 
     init(siteID: Int64,
-         dependencies: Dependencies) {
+         dependencies: Dependencies,
+         payInPersonToggleViewModel: InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol = InPersonPaymentsCashOnDeliveryToggleRowViewModel()) {
         self.siteID = siteID
         self.dependencies = dependencies
+        self.payInPersonToggleViewModel = payInPersonToggleViewModel
         self.simplePaymentsNoticePublisher = PassthroughSubject<SimplePaymentsNotice, Never>().eraseToAnyPublisher()
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
@@ -95,9 +97,8 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         Task { @MainActor in
             _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
             await updateOutputProperties()
+            InPersonPaymentsMenuViewController().registerUserActivity()
         }
-
-        InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor

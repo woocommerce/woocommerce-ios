@@ -38,15 +38,17 @@ struct InPersonPaymentsMenu: View {
                         Text(Localization.paymentActionsSectionTitle.uppercased())
                     }
 
-                    ScrollViewSection {
-                        PaymentsToggleRow(
-                            image: Image(uiImage: .creditCardIcon),
-                            title: Localization.toggleEnableCashOnDelivery,
-                            toggleRowViewModel: viewModel.payInPersonToggleViewModel)
-                        .customOpenURL(binding: $viewModel.safariSheetURL)
-                        .padding(.vertical, Layout.cellVerticalPadding)
-                    } header: {
-                        Text(Localization.paymentSettingsSectionTitle.uppercased())
+                    if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
+                        ScrollViewSection {
+                            PaymentsToggleRow(
+                                image: Image(uiImage: .creditCardIcon),
+                                title: Localization.toggleEnableCashOnDelivery,
+                                toggleRowViewModel: payInPersonToggleViewModel)
+                            .customOpenURL(binding: $viewModel.safariSheetURL)
+                            .padding(.vertical, Layout.cellVerticalPadding)
+                        } header: {
+                            Text(Localization.paymentSettingsSectionTitle.uppercased())
+                        }
                     }
 
                     ScrollViewSection {

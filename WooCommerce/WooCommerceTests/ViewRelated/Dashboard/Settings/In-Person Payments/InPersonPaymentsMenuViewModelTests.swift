@@ -13,6 +13,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var mockDepositService: MockWooPaymentsDepositService!
     private var mockOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
+    private var mockPayInPersonToggleViewModel: MockInPersonPaymentsCashOnDeliveryToggleRowViewModel!
 
     private let sampleStoreID: Int64 = 12345
 
@@ -23,6 +24,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         mockDepositService = MockWooPaymentsDepositService()
         mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        mockPayInPersonToggleViewModel = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
         systemStatusService = MockSystemStatusService()
         systemStatusService.onFetchSystemPluginWithPath = { _ in
             return .fake()
@@ -32,13 +34,14 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func makeSut() -> InPersonPaymentsMenuViewModel {
         InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: .init(
-                                                cardPresentPaymentsConfiguration: .init(country: .US),
-                                                onboardingUseCase: mockOnboardingUseCase,
-                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                wooPaymentsDepositService: mockDepositService,
-                                                systemStatusService: systemStatusService,
-                                                analytics: analytics))
+                                      dependencies: .init(
+                                        cardPresentPaymentsConfiguration: .init(country: .US),
+                                        onboardingUseCase: mockOnboardingUseCase,
+                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                        wooPaymentsDepositService: mockDepositService,
+                                        systemStatusService: systemStatusService,
+                                        analytics: analytics),
+                                      payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
     func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
@@ -72,22 +75,16 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
-//     func test_viewDidLoad_synchronizes_payment_gateways() throws {
-//         // Given
-//         assertEmpty(stores.receivedActions)
+     func test_onAppear_refreshesPayInPersonToggle() async {
+         // Given
+         mockPayInPersonToggleViewModel.spyDidCallRefreshState = false
 
-//         // When
-//         sut.viewDidLoad()
+         // When
+         await sut.onAppear()
 
-//         // Then
-//         let action = try XCTUnwrap(stores.receivedActions.first(where: { $0 is PaymentGatewayAction }) as? PaymentGatewayAction)
-//         switch action {
-//         case .synchronizePaymentGateways(let siteID, _):
-//             assertEqual(siteID, sampleStoreID)
-//         default:
-//             XCTFail("viewDidLoad failed to dispatch .synchronizePaymentGateways action")
-//         }
-//     }
+         // Then
+         XCTAssertTrue(mockPayInPersonToggleViewModel.spyDidCallRefreshState)
+    }
 
     // MARK: - Analytics tests
     func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {

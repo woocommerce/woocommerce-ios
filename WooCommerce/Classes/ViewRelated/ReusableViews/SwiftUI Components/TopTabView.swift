@@ -3,6 +3,15 @@ import SwiftUI
 struct TopTabItem {
     let name: String
     let view: AnyView
+    let onSelected: (() -> Void)?
+
+    init(name: String,
+         view: AnyView,
+         onSelected: (() -> Void)? = nil) {
+        self.name = name
+        self.view = view
+        self.onSelected = onSelected
+    }
 }
 
 struct TopTabView: View {
@@ -10,20 +19,20 @@ struct TopTabView: View {
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
 
-    @Binding var isExpanded: Bool
+    @Binding var showTabs: Bool
 
     let tabs: [TopTabItem]
 
     init(tabs: [TopTabItem],
-         isExpanded: Binding<Bool> = .constant(true)) {
+         showTabs: Binding<Bool> = .constant(true)) {
         self.tabs = tabs
-        self._isExpanded = isExpanded
+        self._showTabs = showTabs
         _tabWidths = State(initialValue: [CGFloat](repeating: 0, count: tabs.count))
     }
 
     var body: some View {
         VStack(spacing: 0) {
-            if tabs.count > 1 && isExpanded {
+            if tabs.count > 1 && showTabs {
                 ScrollView(.horizontal, showsIndicators: false) {
                     ScrollViewReader { scrollViewProxy in
                         HStack(spacing: Layout.tabPadding * 2) {
@@ -36,6 +45,7 @@ struct TopTabView: View {
                                         .onTapGesture {
                                             withAnimation {
                                                 selectedTab = index
+                                                tabs[selectedTab].onSelected?()
                                                 underlineOffset = calculateOffset(index: index)
                                                 scrollViewProxy.scrollTo(index, anchor: .center)
                                             }

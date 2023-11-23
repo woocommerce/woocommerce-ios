@@ -2,34 +2,35 @@
 @testable import Yosemite
 import XCTest
 import Fakes
+import WooFoundation
 
 final class AddCustomAmountViewModelTests: XCTestCase {
-    func test_shouldDisableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
+    func test_shouldEnableDoneButton_when_amount_is_not_greater_than_zero_then_disables_done_button() {
         // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _, _ in })
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
         // When
-        viewModel.formattableAmountTextFieldViewModel.amount = "$0"
+        viewModel.formattableAmountTextFieldViewModel?.amount = "$0"
 
         // Then
-        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+        XCTAssertFalse(viewModel.shouldEnableDoneButton)
     }
 
-    func test_shouldDisableDoneButton_when_there_is_no_amount_then_disables_done_button() {
+    func test_shouldEnableDoneButton_when_there_is_no_amount_then_disables_done_button() {
         // Given
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: {_, _, _, _ in })
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: {_, _, _, _ in })
 
         // When
-        viewModel.formattableAmountTextFieldViewModel.amount = ""
+        viewModel.formattableAmountTextFieldViewModel?.amount = ""
 
         // Then
-        XCTAssertTrue(viewModel.shouldDisableDoneButton)
+        XCTAssertFalse(viewModel.shouldEnableDoneButton)
     }
 
     func test_doneButtonPressed_when_there_is_no_name_then_passes_placeholder() {
         // Given
         var passedName: String?
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, _, _ in
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { amount, name, _, _ in
             passedName = name
         })
 
@@ -43,7 +44,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
     func test_doneButtonPressed_then_isTaxable_is_true_by_default() {
         // Given
         var passedIsTaxable: Bool?
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { _, _, _, isTaxable in
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { _, _, _, isTaxable in
             passedIsTaxable = isTaxable
         })
 
@@ -64,13 +65,13 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         var passedAmount: String?
         var passedIsTaxable: Bool?
 
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, _, isTaxable in
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { amount, name, _, isTaxable in
             passedAmount = amount
             passedName = name
             passedIsTaxable = isTaxable
         })
 
-        viewModel.formattableAmountTextFieldViewModel.amount = amount
+        viewModel.formattableAmountTextFieldViewModel?.amount = amount
         viewModel.name = name
         viewModel.isTaxable = isTaxable
 
@@ -93,7 +94,7 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         var passedAmount: String?
         var passedFeeID: Int64?
 
-        let viewModel = AddCustomAmountViewModel(onCustomAmountEntered: { amount, name, feeID, _ in
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount, onCustomAmountEntered: { amount, name, feeID, _ in
             passedAmount = amount
             passedName = name
             passedFeeID = feeID
@@ -115,7 +116,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
 
         // When
-        let viewModel = AddCustomAmountViewModel(analytics: WooAnalytics(analyticsProvider: analytics), onCustomAmountEntered: {_, _, _, _ in })
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 analytics: WooAnalytics(analyticsProvider: analytics),
+                                                 onCustomAmountEntered: {_, _, _, _ in })
         viewModel.name = ""
         viewModel.doneButtonPressed()
 
@@ -129,7 +132,9 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         let analytics = MockAnalyticsProvider()
 
         // When
-        let viewModel = AddCustomAmountViewModel(analytics: WooAnalytics(analyticsProvider: analytics), onCustomAmountEntered: {_, _, _, _ in })
+        let viewModel = AddCustomAmountViewModel(inputType: .fixedAmount,
+                                                 analytics: WooAnalytics(analyticsProvider: analytics),
+                                                 onCustomAmountEntered: {_, _, _, _ in })
         viewModel.name = "test"
         viewModel.doneButtonPressed()
 
@@ -137,41 +142,21 @@ final class AddCustomAmountViewModelTests: XCTestCase {
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.addCustomAmountNameAdded.rawValue }))
     }
 
-    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_zero_then_returns_false() {
-        // When
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 0, onCustomAmountEntered: {_, _, _, _ in })
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowPercentageInput)
-    }
-
-    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_bigger_than_zero_then_returns_true() {
-        // When
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: 1, onCustomAmountEntered: {_, _, _, _ in })
-
-        // Then
-        XCTAssertTrue(viewModel.shouldShowPercentageInput)
-    }
-
-    func test_shouldShowPercentageInput_when_baseAmountForPercentage_is_negative_then_returns_false() {
-        // When
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: -1, onCustomAmountEntered: {_, _, _, _  in })
-
-        // Then
-        XCTAssertFalse(viewModel.shouldShowPercentageInput)
-    }
-
     func test_percentage_then_updates_amount() {
         // Given
         let baseAmountForPercentage = 200
         let percentage = 25
+        let amountString = "\(baseAmountForPercentage / 100 * percentage)"
+        let usStoreSettings = CurrencySettings()
+        let currencyFormatter = CurrencyFormatter(currencySettings: usStoreSettings)
 
         // When
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: Decimal(baseAmountForPercentage),
+        let viewModel = AddCustomAmountViewModel(inputType: .orderTotalPercentage(baseAmount: Decimal(baseAmountForPercentage)),
+                                                 storeCurrencySettings: usStoreSettings,
                                                  onCustomAmountEntered: {_, _, _, _ in })
-        viewModel.percentage = "\(percentage)"
+        viewModel.percentageViewModel?.percentage = "\(percentage)"
 
         // Then
-        XCTAssertEqual(viewModel.formattableAmountTextFieldViewModel.amount, "\(baseAmountForPercentage / 100 * percentage)")
+        XCTAssertEqual(viewModel.percentageViewModel?.percentageCalculatedAmount, currencyFormatter.formatAmount(amountString))
     }
 }

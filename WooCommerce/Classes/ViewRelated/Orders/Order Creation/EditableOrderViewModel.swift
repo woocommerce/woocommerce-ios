@@ -19,6 +19,13 @@ final class EditableOrderViewModel: ObservableObject {
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
 
+    // MARK: - Product selector states
+    @Published var productSelectorViewModel: ProductSelectorViewModel?
+
+    /// The source of truth of whether the product selector is presented.
+    /// This can be triggered by different CTAs like in the order form and close CTA in the product selector.
+    @Published var isProductSelectorPresented: Bool = false
+
     private var cancellables: Set<AnyCancellable> = []
 
     enum Flow: Equatable {
@@ -98,6 +105,10 @@ final class EditableOrderViewModel: ObservableObject {
     ///
     var isAddProductToOrderViaSKUScannerEnabled: Bool {
         featureFlagService.isFeatureFlagEnabled(.addProductToOrderViaSKUScanner)
+    }
+
+    var enableAddingCustomAmountViaOrderTotalPercentage: Bool {
+        orderSynchronizer.order.items.isNotEmpty || orderSynchronizer.order.fees.isNotEmpty
     }
 
     var title: String {
@@ -194,27 +205,6 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     var editingFee: OrderFeeLine? = nil
-    var addCustomAmountViewModel: AddCustomAmountViewModel {
-        let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
-
-        let viewModel = AddCustomAmountViewModel(baseAmountForPercentage: orderTotals.orderTotal as Decimal,
-                                        onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
-            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
-            if let feeID = feeID {
-                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
-            } else {
-                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
-            }
-        })
-
-        if let editingFee {
-            viewModel.preset(with: editingFee)
-            self.editingFee = nil
-        }
-
-        return viewModel
-    }
-
     private var orderHasCoupons: Bool {
         orderSynchronizer.order.coupons.isNotEmpty
     }
@@ -484,6 +474,7 @@ final class EditableOrderViewModel: ObservableObject {
         configureTaxRates()
         configureGiftCardSupport()
         observeGiftCardStatesForAnalytics()
+        observeProductSelectorPresentationStateForViewModel()
     }
 
     /// Checks the latest Order sync, and returns the current items that are in the Order
@@ -523,46 +514,10 @@ final class EditableOrderViewModel: ObservableObject {
         selectedProductVariations.removeAll()
     }
 
-    /// View model for the product list, initialized with the selected order items
+    /// Toggles whether the product selector is shown or not.
     ///
-    func createProductSelectorViewModelWithOrderItemsSelected() -> ProductSelectorViewModel {
-        ProductSelectorViewModel(
-            siteID: siteID,
-            selectedItemIDs: selectedProductsAndVariationsIDs,
-            purchasableItemsOnly: true,
-            shouldDeleteStoredProductsOnFirstPage: false,
-            storageManager: storageManager,
-            stores: stores,
-            toggleAllVariationsOnSelection: false,
-            topProductsProvider: TopProductsFromCachedOrdersProvider(),
-            onProductSelectionStateChanged: { [weak self] product in
-                guard let self = self else { return }
-                self.changeSelectionStateForProduct(product)
-            },
-            onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
-                guard let self = self else { return }
-                self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
-            }, onMultipleSelectionCompleted: { [weak self] _ in
-                guard let self = self else { return }
-                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-            }, onAllSelectionsCleared: { [weak self] in
-                guard let self = self else { return }
-                self.clearAllSelectedItems()
-                self.trackClearAllSelectedItemsTapped()
-            }, onSelectedVariationsCleared: { [weak self] in
-                guard let self = self else { return }
-                self.clearSelectedVariations()
-            }, onCloseButtonTapped: { [weak self] in
-                guard let self = self else { return }
-                self.syncOrderItemSelectionStateOnDismiss()
-            }, onConfigureProductRow: { [weak self] product in
-                guard let self else { return }
-                productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
-                    guard let self else { return }
-                    self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                    self.productToConfigureViewModel = nil
-                })
-            })
+    func toggleProductSelectorVisibility() {
+        isProductSelectorPresented.toggle()
     }
 
     /// Synchronizes the item selection state by clearing all items, then retrieving the latest saved state
@@ -828,7 +783,27 @@ final class EditableOrderViewModel: ObservableObject {
     }
 
     func onAddCustomAmountButtonTapped() {
+        editingFee = nil
         analytics.track(.orderCreationAddCustomAmountTapped)
+    }
+
+    func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
+        let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
+            let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
+            if let feeID = feeID {
+                self?.updateFee(with: feeID, total: amount, name: name, taxStatus: taxStatus)
+            } else {
+                self?.addFee(with: amount, name: name, taxStatus: taxStatus)
+            }
+        })
+
+        if let editingFee {
+            viewModel.preset(with: editingFee)
+            self.editingFee = nil
+        }
+
+        return viewModel
     }
 }
 
@@ -1065,6 +1040,17 @@ extension EditableOrderViewModel {
 
 // MARK: - Helpers
 private extension EditableOrderViewModel {
+    /// Converts the add custom amount UI input type to view models
+    /// 
+    func addCustomAmountInputType(from option: OrderCustomAmountsSection.ConfirmationOption) -> AddCustomAmountViewModel.InputType {
+        switch option {
+        case .fixedAmount:
+            return .fixedAmount
+        case .orderTotalPercentage:
+            let orderTotals = OrderTotalsCalculator(for: orderSynchronizer.order, using: self.currencyFormatter)
+            return .orderTotalPercentage(baseAmount: orderTotals.orderTotal as Decimal)
+        }
+    }
 
     /// Sets the view to be `disabled` when `performingNetworkRequest` or when `statePublisher` is `.syncing(blocking: true)`
     ///
@@ -1586,6 +1572,51 @@ private extension EditableOrderViewModel {
             .store(in: &cancellables)
     }
 
+    func observeProductSelectorPresentationStateForViewModel() {
+        $isProductSelectorPresented
+            .removeDuplicates()
+            .map { [weak self] isPresented in
+                guard let self, isPresented else { return nil }
+                return ProductSelectorViewModel(
+                    siteID: siteID,
+                    selectedItemIDs: selectedProductsAndVariationsIDs,
+                    purchasableItemsOnly: true,
+                    storageManager: storageManager,
+                    stores: stores,
+                    toggleAllVariationsOnSelection: false,
+                    topProductsProvider: TopProductsFromCachedOrdersProvider(),
+                    onProductSelectionStateChanged: { [weak self] product in
+                        guard let self = self else { return }
+                        self.changeSelectionStateForProduct(product)
+                    },
+                    onVariationSelectionStateChanged: { [weak self] variation, parentProduct in
+                        guard let self = self else { return }
+                        self.changeSelectionStateForProductVariation(variation, parent: parentProduct)
+                    }, onMultipleSelectionCompleted: { [weak self] _ in
+                        guard let self = self else { return }
+                        self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+                    }, onAllSelectionsCleared: { [weak self] in
+                        guard let self = self else { return }
+                        self.clearAllSelectedItems()
+                        self.trackClearAllSelectedItemsTapped()
+                    }, onSelectedVariationsCleared: { [weak self] in
+                        guard let self = self else { return }
+                        self.clearSelectedVariations()
+                    }, onCloseButtonTapped: { [weak self] in
+                        guard let self = self else { return }
+                        self.syncOrderItemSelectionStateOnDismiss()
+                    }, onConfigureProductRow: { [weak self] product in
+                        guard let self else { return }
+                        productToConfigureViewModel = .init(product: product, orderItem: nil, childItems: [], onConfigure: { [weak self] configuration in
+                            guard let self else { return }
+                            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+                            self.productToConfigureViewModel = nil
+                        })
+                    })
+            }
+            .assign(to: &$productSelectorViewModel)
+    }
+
     /// Tracks when customer details have been added
     ///
     func trackCustomerDetailsAdded() {
@@ -1835,6 +1866,7 @@ private extension EditableOrderViewModel {
         productSelectorBundleConfigurationsByProductID[product.productID] = (productSelectorBundleConfigurationsByProductID[product.productID] ?? [])
         + [bundleConfiguration]
         selectedProducts.append(product)
+        productSelectorViewModel?.addSelection(id: product.productID)
     }
 
     func addBundleConfigurationToOrderItem(item: OrderItem, bundleConfiguration: [BundledProductConfiguration]) {

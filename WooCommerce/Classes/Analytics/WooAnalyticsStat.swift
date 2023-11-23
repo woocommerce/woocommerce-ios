@@ -679,7 +679,6 @@ public enum WooAnalyticsStat: String {
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
-    case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
     case productDetailViewQuantityRulesTapped = "product_detail_view_quantity_rules_tapped"
 
     // MARK: Edit Product Variation Events
@@ -694,7 +693,6 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
     case productVariationDetailViewQuantityRulesTapped = "product_variation_view_quantity_rules_tapped"
-    case productVariationViewSubscriptionsTapped = "product_variation_view_subscriptions_tapped"
 
     case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
     case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"
@@ -1018,6 +1016,11 @@ public enum WooAnalyticsStat: String {
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
     case setUpTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
+    case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
+    case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
+    case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
+    case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

@@ -152,7 +152,7 @@ final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActions
         /// Synchronize system plugins for the WooCommerce plugin version row
         ///
         if let siteID = stores.sessionManager.defaultSite?.siteID {
-            let action = SystemStatusAction.synchronizeSystemPlugins(siteID: siteID, onCompletion: { _ in })
+            let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID, onCompletion: { _ in })
             stores.dispatch(action)
         }
     }

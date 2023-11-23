@@ -4,54 +4,85 @@ import UIKit
 import SwiftUI
 import Yosemite
 
+/// Provides an adapter depending on the input type
+///
+final class AddCustomAmountInputTypeViewModelAdapterProvider {
+    func provideAddCustomAmountInputTypeViewModelAdapter(with type: AddCustomAmountViewModel.InputType) -> AddCustomAmountInputTypeViewModelAdapter {
+        switch type {
+        case .fixedAmount:
+            return FixedAmountAddCustomAmountInputTypeViewModelAdapter()
+        case .orderTotalPercentage(let baseAmount):
+            return PercentageAddCustomAmountInputTypeViewModelAdapter(baseAmount: baseAmount)
+        }
+    }
+}
+
+/// Classes implementing this protocol will act as an adapter between `AddCustomAmountViewModel` and the input type view models.
+/// This way, the former can be agnostic of what type of view model we have before the scenes,
+/// and doesn't have to type check to access their concrete implementation.
+/// Having a adapter keeps the classes loosely coupled, as the type view model doesn't have to adapt for `AddCustomAmountViewModel`,
+/// the adapter implements this adaptation.
+///
+protocol AddCustomAmountInputTypeViewModelAdapter {
+    var amount: String? { get }
+    var amountPublisher: Published<String>.Publisher? { get }
+    var viewModel: AddCustomAmountViewModel? { get set }
+
+    func preset(with fee: OrderFeeLine)
+}
+
+struct FixedAmountAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter {
+    weak var viewModel: AddCustomAmountViewModel?
+
+    var amount: String? {
+        viewModel?.formattableAmountTextFieldViewModel?.amount
+    }
+
+    var amountPublisher: Published<String>.Publisher? {
+        viewModel?.formattableAmountTextFieldViewModel?.$amount
+    }
+
+    func preset(with fee: OrderFeeLine) {
+        viewModel?.formattableAmountTextFieldViewModel?.presetAmount(fee.total)
+    }
+}
+
+struct PercentageAddCustomAmountInputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter {
+    weak var viewModel: AddCustomAmountViewModel?
+    let baseAmount: Decimal
+
+    var amountPublisher: Published<String>.Publisher? {
+        viewModel?.percentageViewModel?.$percentageCalculatedAmount
+    }
+
+    var amount: String? {
+        viewModel?.percentageViewModel?.percentageCalculatedAmount
+    }
+
+    func preset(with fee: OrderFeeLine) {
+        viewModel?.percentageViewModel?.preset(with: fee)
+    }
+}
+
 typealias CustomAmountEntered = (_ amount: String, _ name: String, _ feeID: Int64?, _ isTaxable: Bool) -> Void
 
 final class AddCustomAmountViewModel: ObservableObject {
-    let formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel
-    private var baseAmountForPercentage: Decimal
+    enum InputType {
+        case fixedAmount
+        case orderTotalPercentage(baseAmount: Decimal)
+    }
+
+    private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
     private let analytics: Analytics
-    private let currencyFormatter: CurrencyFormatter
-
-    var baseAmountForPercentageString: String {
-        currencyFormatter.formatAmount(baseAmountForPercentage) ?? ""
-    }
-
-    var shouldShowPercentageInput: Bool {
-        baseAmountForPercentage > 0
-    }
-
-    init(baseAmountForPercentage: Decimal = 0,
-         locale: Locale = Locale.autoupdatingCurrent,
-         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         analytics: Analytics = ServiceLocator.analytics,
-         onCustomAmountEntered: @escaping CustomAmountEntered) {
-        self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
-        self.formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
-        self.analytics = analytics
-        self.baseAmountForPercentage = baseAmountForPercentage
-        self.onCustomAmountEntered = onCustomAmountEntered
-        listenToAmountChanges()
-
-        formattableAmountTextFieldViewModel.onWillResetAmountWithNewValue = { [weak self] in
-            self?.percentage = ""
-        }
-    }
+    let currencyFormatter: CurrencyFormatter
+    var formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel?
+    var percentageViewModel: AddCustomAmountPercentageViewModel?
 
     /// Variable that holds the name of the custom amount.
     ///
     @Published var name = ""
-    @Published var percentage = "" {
-        didSet {
-            guard oldValue != percentage else { return }
-
-            guard percentage.isNotEmpty else { return formattableAmountTextFieldViewModel.reset() }
-
-            presetAmountBasedOnPercentage(percentage)
-        }
-    }
-
-    @Published private(set) var shouldDisableDoneButton: Bool = true
+    @Published private(set) var shouldEnableDoneButton: Bool = false
     @Published var isTaxable: Bool = true
     private var feeID: Int64? = nil
 
@@ -64,26 +95,60 @@ final class AddCustomAmountViewModel: ObservableObject {
         return isInEditMode ? Localization.editButtonTitle : Localization.addButtonTitle
     }
 
+    init(inputType: InputType,
+         locale: Locale = Locale.autoupdatingCurrent,
+         storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         analytics: Analytics = ServiceLocator.analytics,
+         onCustomAmountEntered: @escaping CustomAmountEntered) {
+        self.inputTypeViewModelAdapter = AddCustomAmountInputTypeViewModelAdapterProvider().provideAddCustomAmountInputTypeViewModelAdapter(with: inputType)
+        self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
+        self.analytics = analytics
+        self.onCustomAmountEntered = onCustomAmountEntered
+
+        setupViewModels(from: inputType, locale: locale, storeCurrencySettings: storeCurrencySettings)
+        inputTypeViewModelAdapter.viewModel = self
+
+        listenToAmountChanges()
+    }
+
     func doneButtonPressed() {
+        guard let amount = inputTypeViewModelAdapter.amount else { return }
         trackEventsOnDoneButtonPressed()
 
         let customAmountName = name.isNotEmpty ? name : customAmountPlaceholder
-        onCustomAmountEntered(formattableAmountTextFieldViewModel.amount, customAmountName, feeID, isTaxable)
+        onCustomAmountEntered(amount, customAmountName, feeID, isTaxable)
     }
 
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder
-        formattableAmountTextFieldViewModel.presetAmount(fee.total)
+        inputTypeViewModelAdapter.preset(with: fee)
         feeID = fee.feeID
     }
 }
 
 private extension AddCustomAmountViewModel {
+    func setupViewModels(from type: InputType, locale: Locale, storeCurrencySettings: CurrencySettings) {
+        switch type {
+        case .fixedAmount:
+            formattableAmountTextFieldViewModel = FormattableAmountTextFieldViewModel(locale: locale, storeCurrencySettings: storeCurrencySettings)
+        case .orderTotalPercentage(let baseAmount):
+            percentageViewModel = AddCustomAmountPercentageViewModel(baseAmountForPercentage: baseAmount, currencyFormatter: currencyFormatter)
+        }
+    }
+
     func listenToAmountChanges() {
-        formattableAmountTextFieldViewModel.$amount.map { _ in
-            !self.formattableAmountTextFieldViewModel.amountIsValid
-        }.assign(to: &$shouldDisableDoneButton)
+        inputTypeViewModelAdapter.amountPublisher?.map { [weak self] value in
+            guard let self = self else { return false }
+
+            return self.amountIsValid(amount: value)
+        }.assign(to: &$shouldEnableDoneButton)
+    }
+
+    func amountIsValid(amount: String) -> Bool {
+        guard let decimalAmount = currencyFormatter.convertToDecimal(amount) as? Decimal else { return false }
+
+        return decimalAmount > .zero
     }
 
     func trackEventsOnDoneButtonPressed() {
@@ -91,17 +156,11 @@ private extension AddCustomAmountViewModel {
             analytics.track(.addCustomAmountNameAdded)
         }
 
-        if percentage.isNotEmpty {
+        if percentageViewModel?.percentage.isNotEmpty ?? false {
             analytics.track(.addCustomAmountPercentageAdded)
         }
 
         analytics.track(.addCustomAmountDoneButtonTapped)
-    }
-
-    func presetAmountBasedOnPercentage(_ percentage: String) {
-        guard let decimalInput = currencyFormatter.convertToDecimal(percentage) else { return }
-
-        formattableAmountTextFieldViewModel.presetAmount("\(baseAmountForPercentage * (decimalInput as Decimal) * 0.01)")
     }
 }
 

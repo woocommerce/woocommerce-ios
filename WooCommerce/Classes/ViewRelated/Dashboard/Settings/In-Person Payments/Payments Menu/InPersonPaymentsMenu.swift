@@ -18,6 +18,8 @@ struct InPersonPaymentsMenu: View {
                     ScrollViewSection {
                         PaymentsRow(image: Image(uiImage: .moneyIcon),
                                     title: Localization.collectPayment)
+                        .accessibilityAddTraits(.isButton)
+                        .accessibilityIdentifier(AccessibilityIdentifiers.collectPaymentRow)
                         .onTapGesture {
                             viewModel.collectPaymentTapped()
                         }
@@ -28,9 +30,7 @@ struct InPersonPaymentsMenu: View {
                             }
                         }) {
                             NavigationView {
-                                SimplePaymentsAmountHosted(
-                                    viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID),
-                                    presentNoticePublisher: viewModel.simplePaymentsNoticePublisher)
+                                SimplePaymentsAmountHosted(viewModel: SimplePaymentsAmountViewModel(siteID: viewModel.siteID))
                                 .navigationBarTitleDisplayMode(.inline)
                             }
                         }
@@ -113,6 +113,7 @@ struct InPersonPaymentsMenu: View {
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
                                         title: Localization.cardReaderManuals)
+                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                         }
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -173,8 +174,9 @@ struct InPersonPaymentsMenu: View {
     @ViewBuilder
     var depositSummary: some View {
         if #available(iOS 16.0, *),
-           viewModel.shouldShowDepositSummary {
-            WooPaymentsDepositsOverviewView(viewModels: viewModel.depositCurrencyViewModels)
+           viewModel.shouldShowDepositSummary,
+           let depositViewModel = viewModel.depositViewModel {
+            WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
         } else {
             EmptyView()
         }
@@ -297,6 +299,11 @@ private extension InPersonPaymentsMenu {
                      """
         )
     }
+
+    enum AccessibilityIdentifiers {
+        static let collectPaymentRow = "collect-payment"
+        static let cardReaderManualRow = "card-reader-manuals"
+    }
 }
 
 struct InPersonPaymentsMenu_Previews: PreviewProvider {
@@ -306,7 +313,7 @@ struct InPersonPaymentsMenu_Previews: PreviewProvider {
             cardPresentPaymentsConfiguration: .init(country: .US),
             onboardingUseCase: CardPresentPaymentsOnboardingUseCase(),
             cardReaderSupportDeterminer: CardReaderSupportDeterminer(siteID: 0),
-            wooPaymentsDepositsService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
+            wooPaymentsDepositService: WooPaymentsDepositService(siteID: 0, credentials: .init(authToken: ""))))
     static var previews: some View {
         InPersonPaymentsMenu(viewModel: viewModel)
     }

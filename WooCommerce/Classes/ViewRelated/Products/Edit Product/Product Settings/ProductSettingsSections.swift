@@ -21,7 +21,7 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ settings: ProductSettings) {
-            let shouldShowVirtualProductSetting = settings.productType == .simple
+            let shouldShowVirtualProductSetting = settings.productType == .simple || settings.productType == .subscription
             let shouldShowDownloadableProductSetting = settings.productType == .simple || settings.productType == .subscription
             let rows: [ProductSettingsRowMediator?] = [ProductSettingsRows.Status(settings),
                                                        ProductSettingsRows.Visibility(settings),

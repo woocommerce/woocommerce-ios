@@ -440,12 +440,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewComponentsTapped, properties: [:])
         }
 
-        /// Tracks when the merchant taps the Subscriptions row (applicable for subscription-type products only).
-        ///
-        static func subscriptionsTapped() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionsTapped, properties: [:])
-        }
-
         /// Tracks when the merchant taps the Quantity Rules row.
         ///
         static func quantityRulesTapped() -> WooAnalyticsEvent {
@@ -2199,6 +2193,31 @@ extension WooAnalyticsEvent {
 
         static func learnMoreTapped(source: LearnMoreLinkSource) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .inPersonPaymentsLearnMoreTapped, properties: ["source": source.trackingValue])
+        }
+    }
+}
+
+// MARK: - Deposit Summary
+//
+extension WooAnalyticsEvent {
+    enum DepositSummary {
+        enum Keys {
+            static let numberOfCurrencies = "number_of_currencies"
+            static let currency = "currency"
+        }
+
+        static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryShown,
+                              properties: [Keys.numberOfCurrencies: numberOfCurrencies])
+        }
+
+        static func depositSummaryError(error: Error) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryError, properties: [:], error: error)
+        }
+
+        static func depositSummaryCurrencySelected(currency: CurrencyCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryCurrencySelected,
+                              properties: [Keys.currency: currency.rawValue])
         }
     }
 }

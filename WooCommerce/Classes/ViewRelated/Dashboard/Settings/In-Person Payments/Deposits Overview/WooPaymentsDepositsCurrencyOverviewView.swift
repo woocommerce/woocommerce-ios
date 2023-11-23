@@ -7,6 +7,8 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
 
     @Binding var isExpanded: Bool
 
+    @State private var showDepositSummaryInfo: Bool = false
+
     init(viewModel: WooPaymentsDepositsCurrencyOverviewViewModel,
          isExpanded: Binding<Bool>) {
         self.viewModel = viewModel
@@ -36,6 +38,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     withAnimation {
                         isExpanded.toggle()
                     }
+                    viewModel.expandTapped(expanded: isExpanded)
                 }
 
                 if isExpanded {
@@ -85,7 +88,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
 
                 Button {
-                    // TODO: Open a webview here: https://woo.com/document/woopayments/deposits/deposit-schedule/
+                    viewModel.learnMoreTapped()
                 } label: {
                     HStack {
                         Image(systemName: "info.circle")
@@ -99,6 +102,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                 .padding(.bottom)
             }
         }
+        .safariSheet(url: $viewModel.showWebviewURL)
         .animation(.easeOut, value: isExpanded)
         .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal)

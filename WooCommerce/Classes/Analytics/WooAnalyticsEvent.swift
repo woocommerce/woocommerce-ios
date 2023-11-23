@@ -2149,6 +2149,7 @@ extension WooAnalyticsEvent {
     enum DepositSummary {
         enum Keys {
             static let numberOfCurrencies = "number_of_currencies"
+            static let currency = "currency"
         }
 
         static func depositSummaryShown(numberOfCurrencies: Int) -> WooAnalyticsEvent {
@@ -2158,6 +2159,11 @@ extension WooAnalyticsEvent {
 
         static func depositSummaryError(error: Error) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryError, properties: [:], error: error)
+        }
+
+        static func depositSummaryCurrencySelected(currency: CurrencyCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .paymentsMenuDepositSummaryCurrencySelected,
+                              properties: [Keys.currency: currency.rawValue])
         }
     }
 }

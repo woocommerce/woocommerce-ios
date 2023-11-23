@@ -24,7 +24,7 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
     @Published var presentTapToPayFeedback: Bool = false
     @Published var safariSheetURL: URL? = nil
     @Published var presentSupport: Bool = false
-    @Published var depositCurrencyViewModels: [WooPaymentsDepositsCurrencyOverviewViewModel] = []
+    @Published var depositViewModel: WooPaymentsDepositsOverviewViewModel? = nil
 
     var shouldAlwaysHideSetUpButtonOnAboutTapToPay: Bool = false
 
@@ -41,18 +41,21 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         let tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker
         let wooPaymentsDepositService: WooPaymentsDepositServiceProtocol
         let analytics: Analytics
+        let systemStatusService: SystemStatusServiceProtocol
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
              cardReaderSupportDeterminer: CardReaderSupportDetermining,
              tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker = TapToPayBadgePromotionChecker(),
              wooPaymentsDepositService: WooPaymentsDepositServiceProtocol,
+             systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
             self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
             self.wooPaymentsDepositService = wooPaymentsDepositService
+            self.systemStatusService = systemStatusService
             self.analytics = analytics
         }
     }
@@ -82,36 +85,38 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
             .assign(to: &$shouldBadgeTapToPayOnIPhone)
 
         Task { @MainActor in
-            await updateOutputProperties(trackAnalytics: false)
+            _ = try? await dependencies.systemStatusService.synchronizeSystemInformation(siteID: siteID)
+            await updateOutputProperties()
         }
 
         InPersonPaymentsMenuViewController().registerUserActivity()
     }
 
     @MainActor
-    private func updateOutputProperties(trackAnalytics: Bool = true) async {
+    private func updateOutputProperties() async {
         payInPersonToggleViewModel.refreshState()
         updateCardReadersSection()
         await updateTapToPaySection()
-        await refreshDepositSummary(trackAnalytics: trackAnalytics)
+        await refreshDepositSummary()
     }
 
     @MainActor
-    private func refreshDepositSummary(trackAnalytics: Bool) async {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu) else {
+    private func refreshDepositSummary() async {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.wooPaymentsDepositsOverviewInPaymentsMenu),
+        await dependencies.systemStatusService.fetchSystemPluginWithPath(siteID: siteID,
+                                                                         pluginPath: WooConstants.wooPaymentsPluginPath) != nil else {
             shouldShowDepositSummary = false
             return
         }
         do {
-            depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
+            let depositCurrencyViewModels = try await dependencies.wooPaymentsDepositService.fetchDepositsOverview().map({
                 WooPaymentsDepositsCurrencyOverviewViewModel(overview: $0)
             })
             shouldShowDepositSummary = depositCurrencyViewModels.count > 0
-
-            guard shouldShowDepositSummary, trackAnalytics else {
+            guard shouldShowDepositSummary else {
                 return
             }
-            dependencies.analytics.track(event: .DepositSummary.depositSummaryShown(numberOfCurrencies: depositCurrencyViewModels.count))
+            depositViewModel = WooPaymentsDepositsOverviewViewModel(currencyViewModels: depositCurrencyViewModels)
         } catch {
             shouldShowDepositSummary = false
             dependencies.analytics.track(event: .DepositSummary.depositSummaryError(error: error))

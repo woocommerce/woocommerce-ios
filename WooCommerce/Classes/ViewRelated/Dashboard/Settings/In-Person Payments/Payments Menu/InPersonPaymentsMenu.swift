@@ -174,8 +174,9 @@ struct InPersonPaymentsMenu: View {
     @ViewBuilder
     var depositSummary: some View {
         if #available(iOS 16.0, *),
-           viewModel.shouldShowDepositSummary {
-            WooPaymentsDepositsOverviewView(viewModels: viewModel.depositCurrencyViewModels)
+           viewModel.shouldShowDepositSummary,
+           let depositViewModel = viewModel.depositViewModel {
+            WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
         } else {
             EmptyView()
         }

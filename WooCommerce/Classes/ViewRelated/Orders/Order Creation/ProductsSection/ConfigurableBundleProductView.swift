@@ -5,6 +5,7 @@ struct ConfigurableBundleProductView: View {
     @ObservedObject private var viewModel: ConfigurableBundleProductViewModel
     @Environment(\.presentationMode) private var presentation
     @Environment(\.presentationMode) private var presentationMode
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     init(viewModel: ConfigurableBundleProductViewModel) {
         self.viewModel = viewModel
@@ -52,6 +53,7 @@ struct ConfigurableBundleProductView: View {
                     .shimmering()
                     .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
                 }
+                .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground(modal: false)))
             }
             .background(Color(.listBackground))

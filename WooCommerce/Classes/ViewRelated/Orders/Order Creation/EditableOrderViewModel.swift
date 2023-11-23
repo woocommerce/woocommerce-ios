@@ -815,7 +815,14 @@ final class EditableOrderViewModel: ObservableObject {
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
-                                                 onCustomAmountDeleted: {
+                                                 onCustomAmountDeleted: { [weak self] feeID in
+            self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
+
+            guard let match = self?.orderSynchronizer.order.fees.first(where: { $0.feeID == feeID}) else {
+                DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
+                return
+            }
+            self?.removeFee(match)
         },
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none

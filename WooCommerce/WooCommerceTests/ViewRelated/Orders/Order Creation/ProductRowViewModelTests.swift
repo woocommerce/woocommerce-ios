@@ -270,9 +270,10 @@ final class ProductRowViewModelTests: XCTestCase {
         // Given
         let sku = "123456"
         let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, configure: {})
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
 
         // Then
         let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
@@ -285,9 +286,10 @@ final class ProductRowViewModelTests: XCTestCase {
         // Given
         let sku = ""
         let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, configure: {})
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
 
         // Then
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)

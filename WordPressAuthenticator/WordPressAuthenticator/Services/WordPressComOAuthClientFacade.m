@@ -29,14 +29,6 @@
     return nil;
 }
 
-- (void)requestSocial2FACodeWithUserID:(NSInteger)userID
-                                 nonce:(NSString *)nonce
-                               success:(void (^)(NSString *newNonce))success
-                               failure:(void (^)(NSError *error, NSString *newNonce))failure
-{
-    [self.client requestSocial2FACodeWithUserID:userID nonce:nonce success:success failure:failure];
-}
-
 - (void)authenticateWithSocialIDToken:(NSString *)token
                               service:(NSString *)service
                               success:(void (^)(NSString *authToken))success

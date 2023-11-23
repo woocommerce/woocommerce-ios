@@ -33,6 +33,15 @@ extension WordPressComOAuthClientFacade {
         self.client.requestOneTimeCodeWithUsername(username, password: password, success: success, failure: failure)
     }
 
+    func requestSocial2FACode(
+        userID: Int,
+        nonce: String,
+        success: @escaping (_ newNonce: String) -> Void,
+        failure: @escaping (_ error: NSError, _ newNonce: String?) -> Void
+    ) {
+        self.client.requestSocial2FACodeWithUserID(userID, nonce: nonce, success: success, failure: failure)
+    }
+
 }
 
 // MARK: - This extension is needed because WordPressComOAuthClientFacade cannot access the WordPressAuthenticatorConfiguration struct.

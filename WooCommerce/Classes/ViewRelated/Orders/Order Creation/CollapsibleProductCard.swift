@@ -8,6 +8,7 @@ struct CollapsibleProductCard: View {
     /// Used for tracking order form events.
     let flow: WooAnalyticsEvent.Orders.Flow
 
+    /// Handles when a discount is added to the row with the provided `ProductRowViewModel` ID
     var onAddDiscount: (Int64) -> Void
 
     /// Tracks if discount editing should be enabled or disabled. False by default

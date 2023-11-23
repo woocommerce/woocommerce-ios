@@ -1288,10 +1288,6 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                                     name: fee.name ?? Localization.customAmountDefaultName,
                                                     total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                                    onRemoveCustomAmount: {
-                        self.analytics.track(.orderCreationRemoveCustomAmountTapped)
-                        self.removeFee(fee)
-                    },
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee

@@ -56,26 +56,26 @@ struct ConfigurableBundleProductView: View {
                 .padding(.horizontal, insets: safeAreaInsets)
                 .background(Color(.listForeground(modal: false)))
             }
-            .background(Color(.listBackground))
             .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
             .navigationTitle(Localization.title)
             .navigationBarTitleDisplayMode(.inline)
+            .safeAreaInset(edge: .bottom) {
+                Button(Localization.save) {
+                    guard viewModel.validate() else {
+                        return
+                    }
+                    viewModel.configure()
+                    presentation.wrappedValue.dismiss()
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(!viewModel.isConfigureEnabled)
+                .padding(Layout.defaultPadding)
+            }
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.close) {
                         presentation.wrappedValue.dismiss()
                     }
-                }
-
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(Localization.done) {
-                        guard viewModel.validate() else {
-                            return
-                        }
-                        viewModel.configure()
-                        presentation.wrappedValue.dismiss()
-                    }
-                    .disabled(!viewModel.isConfigureEnabled)
                 }
             }
         }
@@ -100,10 +100,10 @@ private extension ConfigurableBundleProductView {
             value: "Close",
             comment: "Text for the close button in the bundle product configuration screen in the order form."
         )
-        static let done = NSLocalizedString(
-            "configureBundleProduct.done",
-            value: "Done",
-            comment: "Text for the done button in the bundle product configuration screen in the order form."
+        static let save = NSLocalizedString(
+            "configureBundleProduct.save",
+            value: "Save Configuration",
+            comment: "Text for the save button in the bundle product configuration screen in the order form."
         )
         static let retry = NSLocalizedString(
             "configureBundleProduct.retry",

@@ -88,9 +88,9 @@ struct ProductRow: View {
                         Text(viewModel.productDetailsLabel)
                             .subheadlineStyle()
                             .renderedIf(viewModel.productDetailsLabel.isNotEmpty)
-                        Text(viewModel.skuLabel)
+                        Text(viewModel.secondaryProductDetailsLabel)
                             .subheadlineStyle()
-                            .renderedIf(viewModel.skuLabel.isNotEmpty)
+                            .renderedIf(viewModel.secondaryProductDetailsLabel.isNotEmpty)
                     }
                     .multilineTextAlignment(.leading)
                 }

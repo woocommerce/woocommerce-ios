@@ -217,23 +217,7 @@ extension ConfigurableBundleItemViewModel {
         switch product.productType {
             case .variable:
                 guard let variation = selectedVariation else {
-                    // Even if a variation is optional and not selected, the product bundles API still expects a
-                    // variation ID and full array of attributes.
-                    // As a workaround, we have to come up with a placeholder variation ID and attributes from the
-                    // variation settings and variable product.
-                    guard let placeholderVariationID = variableProductSettings?.allowedVariations.first ?? product.variations.first else {
-                        return nil
-                    }
-                    let placeholderAttributes = product.attributesForVariations.map {
-                        ProductVariationAttribute(id: $0.attributeID, name: $0.name, option: $0.options.first ?? "")
-                    }
-
-                    return .init(bundledItemID: bundledItemID,
-                                 productOrVariation: .variation(productID: product.productID,
-                                                                variationID: placeholderVariationID,
-                                                                attributes: placeholderAttributes),
-                                 quantity: quantity,
-                                 isOptionalAndSelected: isOptionalAndSelected)
+                    return nil
                 }
                 return .init(bundledItemID: bundledItemID,
                              productOrVariation: .variation(productID: product.productID,

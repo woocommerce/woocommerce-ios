@@ -190,6 +190,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
          XCTAssert(query.contains("utm_source=payments_menu"))
      }
 
+    // MARK: - Tap to Pay tests
      func test_shouldShowTapToPaySection_false_when_built_in_reader_isnt_in_configuration() async {
          // Given
          let configuration = CardPresentPaymentsConfiguration(

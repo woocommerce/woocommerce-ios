@@ -506,23 +506,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 }
                 ServiceLocator.analytics.track(event: .ProductDetail.componentsTapped())
                 showCompositeComponents()
-            case .subscription(_, let isActionable):
-                guard isActionable else {
-                    return
-                }
-                eventLogger.logSubscriptionsTapped()
-                showSubscriptionSettings()
             case .subscriptionFreeTrial(_, let isEditable):
                 guard isEditable else {
                     return
                 }
-                // TODO: 11090 - Analytics
+
+                eventLogger.logSubscriptionsFreeTrialTapped()
                 showSubscriptionFreeTrialSettings()
             case .subscriptionExpiry(_, let isEditable):
                 guard isEditable else {
                     return
                 }
-                // TODO: 11090 - Analytics
+
+                eventLogger.logSubscriptionsExpirationDateTapped()
                 showSubscriptionExpirySettings()
             case .noVariationsWarning:
                 return // This warning is not actionable.
@@ -1887,19 +1883,6 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Show Subscription Settings
-//
-private extension ProductFormViewController {
-    func showSubscriptionSettings() {
-        guard let subscription = product.subscription else {
-            return
-        }
-        let viewModel = SubscriptionSettingsViewModel(subscription: subscription)
-        let viewController = SubscriptionSettingsViewController(viewModel: viewModel)
-        show(viewController, sender: self)
-    }
-}
-
 // MARK: Action - Show Subscription Free trial Settings
 //
 private extension ProductFormViewController {
@@ -1922,7 +1905,8 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO: 11090 - Analytics
+
+        ServiceLocator.analytics.track(event: .ProductDetail.freeTrialDetailsScreenClosed(hasChangedData: hasUnsavedChanges))
 
         guard hasUnsavedChanges else {
             return
@@ -1952,7 +1936,8 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        // TODO: 11090 - Analytics
+
+        ServiceLocator.analytics.track(event: .ProductDetail.expirationDetailsScreenClosed(hasChangedData: hasUnsavedChanges))
 
         guard hasUnsavedChanges else {
             return

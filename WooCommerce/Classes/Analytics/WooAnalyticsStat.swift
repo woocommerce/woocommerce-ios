@@ -679,7 +679,6 @@ public enum WooAnalyticsStat: String {
     case productDetailPreviewFailed = "product_detail_preview_failed"
     case productDetailViewBundledProductsTapped = "product_detail_view_bundled_products_tapped"
     case productDetailViewComponentsTapped = "product_details_view_components_tapped"
-    case productDetailsViewSubscriptionsTapped = "product_details_view_subscriptions_tapped"
     case productDetailViewQuantityRulesTapped = "product_detail_view_quantity_rules_tapped"
 
     // MARK: Edit Product Variation Events
@@ -694,12 +693,21 @@ public enum WooAnalyticsStat: String {
     case productVariationDetailUpdateSuccess = "product_variation_update_success"
     case productVariationDetailUpdateError = "product_variation_update_error"
     case productVariationDetailViewQuantityRulesTapped = "product_variation_view_quantity_rules_tapped"
-    case productVariationViewSubscriptionsTapped = "product_variation_view_subscriptions_tapped"
 
     case productVariationBulkUpdateSectionTapped = "product_variation_bulk_update_section_tapped"
     case productVariationBulkUpdateFieldTapped = "product_variation_bulk_update_field_tapped"
     case productVariationBulkUpdateFieldSuccess = "product_variation_bulk_update_field_success"
     case productVariationBulkUpdateFieldFail = "product_variation_bulk_update_field_fail"
+
+    // MARK: Woo Subscriptions product Events
+    //
+    case productDetailsViewSubscriptionExpirationDateTapped = "product_details_view_subscription_expiration_date_tapped"
+    case productDetailsViewSubscriptionFreeTrialTapped = "product_details_view_subscription_free_trial_tapped"
+    case productVariationViewSubscriptionExpirationDateTapped = "product_variation_view_subscription_expiration_date_tapped"
+    case productVariationViewSubscriptionFreeTrialTapped = "product_variation_view_subscription_free_trial_tapped"
+    case productSubscriptionExpirationDoneButtonTapped = "product_subscription_expiration_done_button_tapped"
+    case productSubscriptionFreeTrialDoneButtonTapped = "product_subscription_free_trial_done_button_tapped"
+
 
     // MARK: Product Images Events
     //
@@ -1010,6 +1018,9 @@ public enum WooAnalyticsStat: String {
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
     case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
     case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"
+    case paymentsMenuDepositSummaryExpanded = "payments_hub_deposit_summary_expanded"
+    case paymentsMenuDepositSummaryLearnMoreTapped = "payments_hub_deposit_summary_learn_more_clicked"
+    case paymentsMenuDepositSummaryCurrencySelected = "payments_hub_deposit_summary_currency_selected"
 
     // MARK: Payments Menu
     case pluginsNotSyncedYet = "plugins_not_synced_yet"

@@ -12,56 +12,64 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
     private var analytics: Analytics!
 
     private var mockDepositService: MockWooPaymentsDepositService!
+    private var mockOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
 
     private let sampleStoreID: Int64 = 12345
+
+    private var systemStatusService: MockSystemStatusService!
 
     override func setUp() {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         mockDepositService = MockWooPaymentsDepositService()
-        let mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
-        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+        mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        systemStatusService = MockSystemStatusService()
+        systemStatusService.onFetchSystemPluginWithPath = { _ in
+            return .fake()
+        }
+        sut = makeSut()
+    }
+
+    func makeSut() -> InPersonPaymentsMenuViewModel {
+        InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                             dependencies: .init(
                                                 cardPresentPaymentsConfiguration: .init(country: .US),
                                                 onboardingUseCase: mockOnboardingUseCase,
                                                 cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
                                                 wooPaymentsDepositService: mockDepositService,
+                                                systemStatusService: systemStatusService,
                                                 analytics: analytics))
     }
 
-    func test_onAppear_when_no_deposit_summaries_are_returned_depositSummaryShown_is_not_tracked() async {
+    func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
+        // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
-        mockDepositService.onFetchDepositsOverviewThenReturn = []
+        systemStatusService.onFetchSystemPluginWithPath = { _ in
+            return nil
+        }
 
         // When
         await sut.onAppear()
 
         // Then
-        XCTAssertFalse(analyticsProvider.receivedEvents.contains(where: { eventName in
-            eventName == WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue
-        }))
+        XCTAssertFalse(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
-    func test_onAppear_when_deposit_summaries_are_returned_depositSummaryShown_is_tracked() async throws {
+    func test_fetchDepositsOverview_is_called_for_stores_which_support_the_route() async {
+        // Currently, assume this is only WooPayments stores, but it would be better to check the /wc/v3 base endpoint.
         // Given
-        mockDepositService.onFetchDepositsOverviewThenReturn = [.fake().copy(currency: .USD), .fake().copy(currency: .GBP)]
+        systemStatusService.onFetchSystemPluginWithPath = { path in
+            guard path == "woocommerce-payments/woocommerce-payments.php" else {
+                return nil
+            }
+            return .fake().copy(siteID: self.sampleStoreID, plugin: "woocommerce-payments/woocommerce-payments.php")
+        }
 
         // When
         await sut.onAppear()
 
         // Then
-        let eventIndex = try? XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: WooAnalyticsStat.paymentsMenuDepositSummaryShown.rawValue))
-
-        XCTAssertNotNil(eventIndex)
-
-        guard let eventIndex else {
-            return XCTFail("Expected event not found")
-        }
-
-        guard let properties = try XCTUnwrap(analyticsProvider.receivedProperties[safe: eventIndex]) as? [String: Int] else {
-            return XCTFail("Expected properties not tracked")
-        }
-        assertEqual(properties["number_of_currencies"], 2)
+        XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
     func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {

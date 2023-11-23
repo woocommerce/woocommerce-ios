@@ -69,6 +69,21 @@ extension Yosemite.ProductReviewFromNoteParcel {
     }
 }
 
+extension Yosemite.SystemInformation {
+    public func copy(
+        storeID: NullableCopiableProp<String> = .copy,
+        systemPlugins: CopiableProp<[Networking.SystemPlugin]> = .copy
+    ) -> Yosemite.SystemInformation {
+        let storeID = storeID ?? self.storeID
+        let systemPlugins = systemPlugins ?? self.systemPlugins
+
+        return Yosemite.SystemInformation(
+            storeID: storeID,
+            systemPlugins: systemPlugins
+        )
+    }
+}
+
 extension Yosemite.WooPaymentsDepositsOverviewByCurrency {
     public func copy(
         currency: CopiableProp<CurrencyCode> = .copy,

@@ -345,7 +345,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_decrementer_disabled_at_minimum_quantity_when_removeProductIntent_is_nil() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,
@@ -367,7 +366,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_decrementer_not_disabled_at_minimum_quantity_when_removeProductIntent_is_not_nil() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,
@@ -390,7 +388,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_incrementer_disabled_at_maximum_quantity() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,

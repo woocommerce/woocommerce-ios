@@ -74,6 +74,7 @@ final class AddCustomAmountViewModel: ObservableObject {
 
     private var inputTypeViewModelAdapter: AddCustomAmountInputTypeViewModelAdapter
     private let onCustomAmountEntered: CustomAmountEntered
+    private let onCustomAmountDeleted: ((_ fee: Int64) -> Void)?
     private let analytics: Analytics
     let currencyFormatter: CurrencyFormatter
     var formattableAmountTextFieldViewModel: FormattableAmountTextFieldViewModel?
@@ -90,8 +91,15 @@ final class AddCustomAmountViewModel: ObservableObject {
         Localization.customAmountPlaceholder
     }
 
+    var shouldShowDeleteButton: Bool {
+        isInEditMode
+    }
+
+    private var isInEditMode: Bool {
+        feeID != nil
+    }
+
     var doneButtonTitle: String {
-        let isInEditMode = feeID != nil
         return isInEditMode ? Localization.editButtonTitle : Localization.addButtonTitle
     }
 
@@ -99,10 +107,12 @@ final class AddCustomAmountViewModel: ObservableObject {
          locale: Locale = Locale.autoupdatingCurrent,
          storeCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
          analytics: Analytics = ServiceLocator.analytics,
+         onCustomAmountDeleted: ((_ fee: Int64) -> Void)? = nil,
          onCustomAmountEntered: @escaping CustomAmountEntered) {
         self.inputTypeViewModelAdapter = AddCustomAmountInputTypeViewModelAdapterProvider().provideAddCustomAmountInputTypeViewModelAdapter(with: inputType)
         self.currencyFormatter = .init(currencySettings: storeCurrencySettings)
         self.analytics = analytics
+        self.onCustomAmountDeleted = onCustomAmountDeleted
         self.onCustomAmountEntered = onCustomAmountEntered
 
         setupViewModels(from: inputType, locale: locale, storeCurrencySettings: storeCurrencySettings)
@@ -119,6 +129,13 @@ final class AddCustomAmountViewModel: ObservableObject {
         onCustomAmountEntered(amount, customAmountName, feeID, isTaxable)
     }
 
+    func deleteButtonPressed() {
+        guard let feeID = feeID else {
+            DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
+            return
+        }
+        onCustomAmountDeleted?(feeID)
+    }
 
     func preset(with fee: OrderFeeLine) {
         name = fee.name ?? Localization.customAmountPlaceholder

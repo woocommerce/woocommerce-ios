@@ -551,7 +551,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
 
-        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+        viewModel.customAmountRows.first?.onEditCustomAmount()
+        viewModel.addCustomAmountViewModel(with: nil).deleteButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.customAmountRows.isEmpty)
@@ -565,7 +566,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addCustomAmountViewModel(with: .fixedAmount).doneButtonPressed()
 
         // When
-        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+        viewModel.customAmountRows.first?.onEditCustomAmount()
+        viewModel.addCustomAmountViewModel(with: nil).deleteButtonPressed()
 
         // Then
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderFeeRemove.rawValue }))

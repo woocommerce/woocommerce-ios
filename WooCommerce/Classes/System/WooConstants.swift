@@ -77,6 +77,8 @@ enum WooConstants {
     /// App login deep link prefix
     ///
     static let appLoginURLPrefix = "woocommerce://app-login"
+
+    static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
 }
 
 // MARK: URLs

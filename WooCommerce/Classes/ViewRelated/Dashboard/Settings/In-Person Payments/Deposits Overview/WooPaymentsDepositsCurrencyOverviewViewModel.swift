@@ -1,11 +1,17 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
-class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
-    let overview: WooPaymentsDepositsOverviewByCurrency
+final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
+    private let overview: WooPaymentsDepositsOverviewByCurrency
+    private let analytics: Analytics
 
-    init(overview: WooPaymentsDepositsOverviewByCurrency) {
+    init(overview: WooPaymentsDepositsOverviewByCurrency,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.overview = overview
+        self.analytics = analytics
+        self.currency = overview.currency
+        self.tabTitle = overview.currency.rawValue.uppercased()
         setupProperties()
     }
 
@@ -30,6 +36,9 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var depositScheduleHint: String = ""
     @Published var balanceTypeHint: String = ""
     @Published var pendingFundsDepositsSummary: String = ""
+    @Published var showWebviewURL: URL? = nil
+    @Published var currency: CurrencyCode
+    @Published var tabTitle: String
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
         return numberFormatter.string(from: amount) ?? ""
@@ -77,6 +86,17 @@ class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         formatter.currencyCode = overview.currency.rawValue
         return formatter
     }()
+
+    func expandTapped(expanded: Bool) {
+        if expanded {
+            analytics.track(.paymentsMenuDepositSummaryExpanded)
+        }
+    }
+
+    func learnMoreTapped() {
+        showWebviewURL = WooConstants.URLs.wooPaymentsDepositSchedule.asURL()
+        analytics.track(.paymentsMenuDepositSummaryLearnMoreTapped)
+    }
 }
 
 private extension WooPaymentsDepositInterval {

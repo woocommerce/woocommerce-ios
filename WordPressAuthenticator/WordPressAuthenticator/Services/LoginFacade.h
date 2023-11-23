@@ -6,7 +6,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class LoginFields;
 @class SocialLogin2FANonceInfo;
-@protocol WordPressComOAuthClientFacade;
+@protocol WordPressComOAuthClientFacadeProtocol;
 @protocol WordPressXMLRPCAPIFacade;
 @protocol LoginFacadeDelegate;
 
@@ -73,7 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  A class that handles the login to sites requiring oauth(primarily .com sites)
  */
-@property (nonatomic, strong) id<WordPressComOAuthClientFacade> wordpressComOAuthClientFacade;
+@property (nonatomic, strong) id<WordPressComOAuthClientFacadeProtocol> wordpressComOAuthClientFacade;
 
 /**
  *  A class that handles the login to self hosted sites

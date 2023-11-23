@@ -363,6 +363,18 @@ extension WooAnalyticsEvent {
         static func subscriptionsTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationViewSubscriptionsTapped, properties: [:])
         }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionExpirationDateTapped, properties: [:])
+        }
     }
 }
 
@@ -438,6 +450,18 @@ extension WooAnalyticsEvent {
         ///
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionExpirationDateTapped, properties: [:])
         }
 
         /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.

@@ -127,8 +127,8 @@ struct InPersonPaymentsMenu: View {
                                         isActive: $viewModel.presentCardReaderManuals) {
                                 CardReaderManualsView()
                             }
-                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                         }
+                        .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
                     } footer: {

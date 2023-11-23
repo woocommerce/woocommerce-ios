@@ -37,7 +37,7 @@ struct ConfigurableBundleItemView: View {
                 Text(viewModel.selectedVariation == nil ?
                      Localization.selectVariation: Localization.updateVariation)
             }
-            .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle)
+            .renderedIf(viewModel.isVariable && viewModel.isIncludedInBundle && viewModel.quantity > 0)
 
             if let selectedVariation = viewModel.selectedVariation {
                 Spacer()

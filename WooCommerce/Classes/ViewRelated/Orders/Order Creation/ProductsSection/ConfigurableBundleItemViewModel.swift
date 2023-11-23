@@ -139,7 +139,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         errorMessage = nil
 
          // The bundle configuration is always considered valid if not selected.
-        guard isIncludedInBundle else {
+        guard isIncludedInBundle && quantity > 0 else {
             return true
         }
 

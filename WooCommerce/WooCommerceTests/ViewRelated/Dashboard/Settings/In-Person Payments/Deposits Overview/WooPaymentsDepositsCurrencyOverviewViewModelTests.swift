@@ -1,5 +1,7 @@
 import XCTest
 @testable import WooCommerce
+import WooFoundation
+import Yosemite
 
 final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
 
@@ -52,6 +54,38 @@ final class WooPaymentsDepositsCurrencyOverviewViewModelTests: XCTestCase {
 
         // Then
         assertEqual(WooConstants.URLs.wooPaymentsDepositSchedule.asURL(), sut.showWebviewURL)
+    }
+
+    func test_when_currency_matches_site_settings_amounts_formatted_using_woo_currency_formatter() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let overview = WooPaymentsDepositsOverviewByCurrency.fake().copy(currency: .USD, availableBalance: .init(string: "12.35"))
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-ca"))
+
+        // Then
+        assertEqual(sut.availableBalance, "$12.35")
+    }
+
+    func test_when_currency_doesnt_match_site_settings_amounts_formatted_using_system_locale_currency_formatter() {
+        // Given
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let overview = WooPaymentsDepositsOverviewByCurrency.fake().copy(currency: .CAD, availableBalance: .init(string: "12.35"))
+
+        // When
+        sut = WooPaymentsDepositsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-us"))
+
+        // Then
+        assertEqual(sut.availableBalance, "CA$12.35")
     }
 
 }

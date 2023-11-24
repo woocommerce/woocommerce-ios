@@ -41,6 +41,14 @@ public final class UnifiedOrderScreen: ScreenObject {
         $0.buttons["add-customer-note-button"]
     }
 
+    private let fixedAmountButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["custom-amount-fixed-button"]
+    }
+
+    private let percentageOfTotalButtonGetter: (XCUIApplication) -> XCUIElement = {
+        $0.buttons["custom-amount-percentage-button"]
+    }
+
     private var createButton: XCUIElement { createButtonGetter(app) }
 
     /// Cancel button in the Navigation bar.
@@ -74,6 +82,14 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// Add Note button in the Customer Note section.
     ///
     private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
+
+    /// Fixed Amount in Custom Amount sheet.
+    ///
+    private var fixedAmountButton: XCUIElement { fixedAmountButtonGetter(app) }
+
+    /// Percentage of Order Total Button in Custom Amount ssheet.
+    ///
+    private var percentageOfTotalButton: XCUIElement { percentageOfTotalButtonGetter(app) }
 
     public enum Flow {
         case creation
@@ -136,7 +152,12 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Add Custom Amount screen object.
     public func openAddCustomAmountScreen() throws -> AddCustomAmountScreen {
         addCustomAmountButton.tap()
+        selectFixedAmount()
         return try AddCustomAmountScreen()
+    }
+
+    private func selectFixedAmount() {
+        fixedAmountButton.waitAndTap()
     }
 
     /// Opens the Customer Note screen.

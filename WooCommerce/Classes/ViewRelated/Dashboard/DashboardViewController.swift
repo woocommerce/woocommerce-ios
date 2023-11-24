@@ -360,15 +360,15 @@ private extension DashboardViewController {
         containerStackView.insertArrangedSubview(contentView, at: indexAfterHeader)
     }
 
-    func addViewBelowOnboardingCard(_ contentView: UIView) {
+    func addViewBelowStats(_ contentView: UIView) {
         let indexOfHeader = containerStackView.arrangedSubviews.firstIndex(of: headerStackView) ?? -1
-        let indexAfterOnboardingCard: Int = {
-            if let onboardingView {
-                return (containerStackView.arrangedSubviews.firstIndex(of: onboardingView) ?? indexOfHeader) + 1
+        let indexAfterStats: Int = {
+            if let storeStatsAndTopPerformersViewControllerView = self.storeStatsAndTopPerformersViewController.view {
+                return (containerStackView.arrangedSubviews.firstIndex(of: storeStatsAndTopPerformersViewControllerView) ?? indexOfHeader) + 1
             }
             return indexOfHeader + 1
         }()
-        containerStackView.insertArrangedSubview(contentView, at: indexAfterOnboardingCard)
+        containerStackView.insertArrangedSubview(contentView, at: indexAfterStats)
     }
 
     func configureStackView() {
@@ -814,7 +814,7 @@ extension DashboardViewController {
             return
         }
         campaignView.translatesAutoresizingMaskIntoConstraints = false
-        addViewBelowOnboardingCard(campaignView)
+        addViewBelowStats(campaignView)
         addChild(hostingController)
         hostingController.didMove(toParent: self)
         blazeCampaignHostingController = hostingController

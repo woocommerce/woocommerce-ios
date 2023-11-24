@@ -60,6 +60,7 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .accessibilityAddTraits(.isHeader)
                 LazyVGrid(columns: [GridItem(.flexible(maximum: 70), alignment: .leading),
                                     GridItem(alignment: .leading),
                                     GridItem(alignment: .trailing)],
@@ -118,6 +119,7 @@ struct AccountSummaryItem: View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
                 .font(.subheadline)
+                .accessibilityAddTraits(.isHeader)
 
             Text(amount)
                 .font(.title2)

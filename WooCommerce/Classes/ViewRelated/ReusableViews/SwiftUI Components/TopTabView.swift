@@ -50,6 +50,8 @@ struct TopTabView: View {
                                                 scrollViewProxy.scrollTo(index, anchor: .center)
                                             }
                                         }
+                                        .accessibilityAddTraits(.isButton)
+                                        .accessibilityAddTraits(selectedTab == index ? [.isSelected, .isHeader] : [])
                                 }
                                 .padding()
                                 .background(GeometryReader { geometry in

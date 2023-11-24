@@ -23,10 +23,18 @@ struct BundledProductConfiguration: Equatable {
 
 /// View model for `ConfigurableBundleProductView`.
 final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
-    @Published private(set) var bundleItemViewModels: [ConfigurableBundleItemViewModel] = []
+    @Published private(set) var bundleItemViewModels: [ConfigurableBundleItemViewModel] = [] {
+        didSet {
+            observeBundleItemsForValidation()
+        }
+    }
 
-    // TODO: 10428 - only enable configure CTA when all bundle items are configured
-    @Published private(set) var isConfigureEnabled: Bool = true
+    // MARK: - Validation
+
+    @Published private var bundleItemErrorMessagesByItemID: [Int64: String?] = [:]
+    @Published private var bundleItemQuantitiesByItemID: [Int64: Decimal] = [:]
+
+    @Published private(set) var isConfigureEnabled: Bool = false
 
     @Published private(set) var validationErrorMessage: String?
     @Published private(set) var loadProductsErrorMessage: String?
@@ -41,6 +49,8 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
     /// Used to check if there are any outstanding changes to the configuration when submitting the form.
     /// This is set when the `bundleItemViewModels` are set.
     private var initialConfigurations: [BundledProductConfiguration] = []
+
+    private var bundleItemSubscriptions = [AnyCancellable]()
 
     private let product: Product
     private let orderItem: OrderItem?
@@ -88,22 +98,9 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         }
 
         loadProductsAndCreateItemViewModels()
-    }
-
-    /// Validates the bundle configuration of all bundled items.
-    /// - Returns: A boolean that indicates whether the configuration is valid.
-    func validate() -> Bool {
-        validationErrorMessage = nil
-
-        guard validateBundleSize() else {
-            return false
-        }
-
-        guard !bundleItemViewModels.map({ $0.validate() }).contains(false) else {
-            return false
-        }
-
-        return true
+        observeBundleItemQuantitiesForValidationErrorMessage()
+        observeBundleItemsForValidation()
+        observeBundleItemStatesForConfigureEnabledState()
     }
 
     /// Completes the bundle configuration and triggers the configuration callback.
@@ -206,17 +203,56 @@ private extension ConfigurableBundleProductViewModel {
 }
 
 private extension ConfigurableBundleProductViewModel {
-    func validateBundleSize() -> Bool {
-        let bundleItemCount = bundleItemViewModels.map { !$0.isOptional || $0.isOptionalAndSelected ? $0.quantity: 0 }.sum()
+    func observeBundleItemQuantitiesForValidationErrorMessage() {
+        $bundleItemQuantitiesByItemID
+            .map { $0.values.sum() }
+            .map { [weak self] in
+                self?.validateBundleSize(bundleItemCount: $0)
+            }
+            .assign(to: &$validationErrorMessage)
+    }
+
+
+    func observeBundleItemStatesForConfigureEnabledState() {
+        let hasValidationErrorForBundleItems = $bundleItemErrorMessagesByItemID
+            .map { $0.values.map { $0 != nil }.contains(true) }
+        let hasValidationErrorOnBundle = $validationErrorMessage.map { $0 != nil }
+        Publishers.CombineLatest(hasValidationErrorForBundleItems, hasValidationErrorOnBundle)
+            .map { hasValidationErrorForBundleItems, hasValidationErrorOnBundle in
+                hasValidationErrorForBundleItems == false && hasValidationErrorOnBundle == false
+            }
+            .assign(to: &$isConfigureEnabled)
+    }
+
+    func observeBundleItemsForValidation() {
+        bundleItemViewModels.forEach { itemViewModel in
+            bundleItemErrorMessagesByItemID.removeAll()
+            itemViewModel.$errorMessage.sink { [weak self] errorMessage in
+                self?.bundleItemErrorMessagesByItemID[itemViewModel.bundledItemID] = errorMessage
+            }
+            .store(in: &bundleItemSubscriptions)
+
+            bundleItemQuantitiesByItemID.removeAll()
+            itemViewModel.$quantityInBundle.sink { [weak self] quantity in
+                self?.bundleItemQuantitiesByItemID[itemViewModel.bundledItemID] = quantity
+            }
+            .store(in: &bundleItemSubscriptions)
+        }
+    }
+}
+
+private extension ConfigurableBundleProductViewModel {
+    /// Validates bundle size based on the given total number of items, and returns an error message if the size is invalid.
+    /// - Parameter bundleItemCount: Total number of items in the bundle, excluding non-selected items.
+    /// - Returns: An error message if the bundle size is invalid. Otherwise, `nil` is returned.
+    func validateBundleSize(bundleItemCount: Decimal) -> String? {
         if let bundleMinSize = product.bundleMinSize, bundleItemCount < bundleMinSize {
-            validationErrorMessage = createBundleSizeValidationErrorMessage()
-            return false
+            return createBundleSizeValidationErrorMessage()
         }
         if let bundleMaxSize = product.bundleMaxSize, bundleItemCount > bundleMaxSize {
-            validationErrorMessage = createBundleSizeValidationErrorMessage()
-            return false
+            return createBundleSizeValidationErrorMessage()
         }
-        return true
+        return nil
     }
 
     func createBundleSizeValidationErrorMessage() -> String? {

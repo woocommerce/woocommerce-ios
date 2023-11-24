@@ -57,9 +57,6 @@ struct ConfigurableBundleProductView: View {
                 }
 
                 Button(Localization.save) {
-                    guard viewModel.validate() else {
-                        return
-                    }
                     viewModel.configure()
                     presentation.wrappedValue.dismiss()
                 }

@@ -5,13 +5,25 @@ import WooFoundation
 final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     private let overview: WooPaymentsDepositsOverviewByCurrency
     private let analytics: Analytics
+    private let currencySettings: CurrencySettings?
+    private let locale: Locale
 
     init(overview: WooPaymentsDepositsOverviewByCurrency,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         siteCurrencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         locale: Locale = Locale.current) {
         self.overview = overview
         self.analytics = analytics
         self.currency = overview.currency
         self.tabTitle = overview.currency.rawValue.uppercased()
+        self.locale = locale
+
+        if overview.currency == siteCurrencySettings.currencyCode {
+            currencySettings = siteCurrencySettings
+        } else {
+            currencySettings = nil
+        }
+
         setupProperties()
     }
 
@@ -41,7 +53,11 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
     @Published var tabTitle: String
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
-        return numberFormatter.string(from: amount) ?? ""
+        if let wooCurrencyFormatter {
+            return wooCurrencyFormatter.formatAmount(amount) ?? ""
+        } else {
+            return systemCurrencyFormatter.string(from: amount) ?? ""
+        }
     }
 
     private func nextDepositDateText() -> String {
@@ -80,8 +96,16 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
         return dateFormatter.string(from: date)
     }
 
-    private lazy var numberFormatter: NumberFormatter = {
+    private lazy var wooCurrencyFormatter: CurrencyFormatter? = {
+        guard let currencySettings else {
+            return nil
+        }
+        return CurrencyFormatter(currencySettings: currencySettings)
+    }()
+
+    private lazy var systemCurrencyFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
+        formatter.locale = locale
         formatter.numberStyle = .currency
         formatter.currencyCode = overview.currency.rawValue
         return formatter

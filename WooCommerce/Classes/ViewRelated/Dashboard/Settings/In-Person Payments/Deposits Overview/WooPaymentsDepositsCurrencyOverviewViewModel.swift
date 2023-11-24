@@ -54,7 +54,7 @@ final class WooPaymentsDepositsCurrencyOverviewViewModel: ObservableObject {
 
     private func formatAmount(_ amount: NSDecimalNumber) -> String {
         if let wooCurrencyFormatter {
-            return wooCurrencyFormatter.formatAmount(amount, numberOfDecimals: 2) ?? ""
+            return wooCurrencyFormatter.formatAmount(amount) ?? ""
         } else {
             return systemCurrencyFormatter.string(from: amount) ?? ""
         }

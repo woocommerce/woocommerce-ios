@@ -22,6 +22,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let name = EditableProductVariationModel(productVariation: variation,
+                                                 parentProductType: .variable,
                                                  allAttributes: allAttributes,
                                                  parentProductSKU: nil,
                                                  parentProductDisablesQuantityRules: nil).name
@@ -49,6 +50,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let name = EditableProductVariationModel(productVariation: variation,
+                                                 parentProductType: .variable,
                                                  allAttributes: allAttributes,
                                                  parentProductSKU: nil,
                                                  parentProductDisablesQuantityRules: nil).name
@@ -137,6 +139,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: sku,
                                                   parentProductDisablesQuantityRules: nil)
@@ -153,6 +156,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: "",
                                                   parentProductDisablesQuantityRules: nil)
@@ -181,6 +185,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -195,6 +200,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -209,6 +215,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -223,6 +230,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: true)

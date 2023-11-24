@@ -114,11 +114,21 @@ struct InPersonPaymentsMenu: View {
                             viewModel.manageCardReadersTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .creditCardIcon),
-                                        title: Localization.manageCardReader,
-                                        isActive: $viewModel.presentManageCardReaders) {
+                                        title: Localization.manageCardReader)
+                        }
+                        .sheet(isPresented: $viewModel.presentManageCardReaders,
+                               onDismiss: {
+                            Task { @MainActor in
+                                await viewModel.onAppear()
+                            }
+                        }) {
+                            NavigationView {
                                 CardReaderSettingsFlowPresentingView(
                                     configuration: viewModel.cardPresentPaymentsConfiguration,
                                     siteID: viewModel.siteID)
+                                .navigationBarItems(leading: Button(Localization.done, action: {
+                                    viewModel.presentManageCardReaders = false
+                                }))
                             }
                         }
                         .disabled(viewModel.shouldDisableManageCardReaders)

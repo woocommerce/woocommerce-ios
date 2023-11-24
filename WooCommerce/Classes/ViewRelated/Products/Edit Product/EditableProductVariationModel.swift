@@ -22,7 +22,7 @@ final class EditableProductVariationModel {
 
         /// Assigning default subscription value for a variable subscription type product if `nil`
         ///
-        /// The API sometimes doesn't send any value for variation's subscription even thought the parent product type is `variableSubscription`.
+        /// The API sometimes doesn't send any value for variation's subscription even though the parent product type is `variableSubscription`.
         ///
         /// https://github.com/woocommerce/woocommerce-ios/issues/11258
         ///

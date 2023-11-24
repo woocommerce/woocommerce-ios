@@ -39,9 +39,7 @@ struct CollapsibleProductCard: View {
                                       shouldDisallowDiscounts: shouldDisallowDiscounts,
                                       onAddDiscount: onAddDiscount)
             .overlay {
-                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                    .inset(by: 0.25)
-                    .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
+                cardBorder
             }
         } else {
             VStack(spacing: 0) {
@@ -66,9 +64,7 @@ struct CollapsibleProductCard: View {
                 }
             }
             .overlay {
-                RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
-                    .inset(by: 0.25)
-                    .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
+                cardBorder
             }
         }
     }
@@ -78,6 +74,12 @@ private extension CollapsibleProductCard {
     enum Layout {
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
+    }
+
+    var cardBorder: some View {
+        RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+            .inset(by: 0.25)
+            .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
     }
 }
 

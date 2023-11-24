@@ -77,7 +77,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .giftCardInOrderForm:
             return true
         case .wooPaymentsDepositsOverviewInPaymentsMenu:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         case .tapToPayOnIPhoneInUK:
             return true
         case .productBundlesInOrderForm:

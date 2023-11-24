@@ -600,15 +600,10 @@ final class EditableOrderViewModel: ObservableObject {
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
+            // If the parent product is a bundle product, quantity cannot be changed.
+            let canChildItemsChangeQuantity = product.productType != .bundle
             let childProductRows = childItems.compactMap { childItem in
-                // If the parent product is a bundle product, quantity cannot be changed.
-                let canChangeQuantity: Bool = {
-                    guard let parentProduct = allProducts.first(where: { $0.productID == item.productID }) else {
-                        return true
-                    }
-                    return parentProduct.productType != .bundle
-                }()
-                return createProductRowViewModel(for: childItem, canChangeQuantity: canChangeQuantity)
+                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity)
             }
             return ProductRowViewModel(id: item.itemID,
                                        product: product,

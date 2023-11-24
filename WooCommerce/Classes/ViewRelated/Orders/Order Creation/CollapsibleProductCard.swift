@@ -150,13 +150,17 @@ private struct CollapsibleProductRowCard: View {
                     .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
+                            .font(viewModel.hasParentProduct ? .subheadline : .none)
+                            .foregroundColor(.black)
                         Text(viewModel.stockQuantityLabel)
-                            .foregroundColor(.secondary)
+                            .subheadlineStyle()
                             .renderedIf(isCollapsed)
                         Text(viewModel.skuLabel)
-                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                            .foregroundColor(.black)
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                            .subheadlineStyle()
                     }
                 }
             }

@@ -83,7 +83,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     ///
     private var addNoteButton: XCUIElement { addNoteButtonGetter(app) }
 
-    /// Fixed Amount in Custom Amount ssheet.
+    /// Fixed Amount in Custom Amount sheet.
     ///
     private var fixedAmountButton: XCUIElement { fixedAmountButtonGetter(app) }
 

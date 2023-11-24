@@ -6,10 +6,10 @@ struct CollapsibleProductCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
 
     /// Used for tracking order form events.
-    let flow: WooAnalyticsEvent.Orders.Flow
+    private let flow: WooAnalyticsEvent.Orders.Flow
 
     /// Handles when "Add Discount" is tapped on the row with the provided `ProductRowViewModel.id`
-    var onAddDiscount: (Int64) -> Void
+    private let onAddDiscount: (Int64) -> Void
 
     /// Tracks if discount editing should be enabled or disabled. False by default
     var shouldDisableDiscountEditing: Bool = false
@@ -87,7 +87,7 @@ private struct CollapsibleProductRowCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
 
     /// Used for tracking order form events.
-    let flow: WooAnalyticsEvent.Orders.Flow
+    private let flow: WooAnalyticsEvent.Orders.Flow
 
     @State private var isCollapsed: Bool = true
 
@@ -97,7 +97,7 @@ private struct CollapsibleProductRowCard: View {
 
     @ScaledMetric private var scale: CGFloat = 1
 
-    var onAddDiscount: (Int64) -> Void
+    private let onAddDiscount: (Int64) -> Void
 
     // Tracks if discount editing should be enabled or disabled. False by default
     //

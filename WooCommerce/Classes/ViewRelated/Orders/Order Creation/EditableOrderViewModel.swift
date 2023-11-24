@@ -789,6 +789,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 onCustomAmountDeleted: { [weak self] feeID in
+            self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
+
+            guard let match = self?.orderSynchronizer.order.fees.first(where: { $0.feeID == feeID}) else {
+                DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
+                return
+            }
+            self?.removeFee(match)
+        },
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {
@@ -1279,10 +1288,6 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                                     name: fee.name ?? Localization.customAmountDefaultName,
                                                     total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                                    onRemoveCustomAmount: {
-                        self.analytics.track(.orderCreationRemoveCustomAmountTapped)
-                        self.removeFee(fee)
-                    },
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
@@ -1728,7 +1733,10 @@ private extension EditableOrderViewModel {
             let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
                 .compactMap { bundleItem -> BundledProductConfiguration? in
                     guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
-                        return nil
+                        return .init(bundledItemID: bundleItem.bundledItemID,
+                                     productOrVariation: .product(id: bundleItem.productID),
+                                     quantity: 0,
+                                     isOptionalAndSelected: false)
                     }
                     let attributes = existingOrderItem.attributes
                         .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }

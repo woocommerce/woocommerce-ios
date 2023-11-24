@@ -43,8 +43,15 @@ public struct OrderItemBundleItem: Encodable, Equatable, Hashable, GeneratedFake
         try container.encode(productID, forKey: .productID)
         try container.encode(quantity, forKey: .quantity)
 
-        if let isOptionalAndSelected, isOptionalAndSelected {
-            try container.encode(isOptionalAndSelected, forKey: .isOptionalAndSelected)
+        if let isOptionalAndSelected {
+            if isOptionalAndSelected {
+                try container.encode(true, forKey: .isOptionalAndSelected)
+            } else {
+                // This is a workaround to an API issue: Pe5pgL-3Vd-p2#api-issues
+                // where a `false` boolean value needs to be encoded to a value so that
+                // PHP `empty` should return `false`.
+                try container.encode("no", forKey: .isOptionalAndSelected)
+            }
         }
 
         if let variationID, let variationAttributes {

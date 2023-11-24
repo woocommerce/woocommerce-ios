@@ -357,6 +357,18 @@ extension WooAnalyticsEvent {
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productVariationDetailViewQuantityRulesTapped, properties: [:])
         }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productVariationViewSubscriptionExpirationDateTapped, properties: [:])
+        }
     }
 }
 
@@ -387,6 +399,12 @@ extension WooAnalyticsEvent {
 extension WooAnalyticsEvent {
     /// Namespace
     enum ProductDetail {
+        /// Common event keys
+        ///
+        private enum Keys {
+            static let hasChangedData = "has_changed_data"
+        }
+
         static func loaded(hasLinkedProducts: Bool, hasMinMaxQuantityRules: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailLoaded, properties: ["has_linked_products": hasLinkedProducts,
                                                                            "has_minmax_quantity_rules": hasMinMaxQuantityRules])
@@ -420,6 +438,36 @@ extension WooAnalyticsEvent {
         ///
         static func quantityRulesTapped() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .productDetailViewQuantityRulesTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func freeTrialSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionFreeTrialTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial setting is tapped.
+        ///
+        static func expirationDateSettingsTapped() -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productDetailsViewSubscriptionExpirationDateTapped, properties: [:])
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription expiration details screen is closed.
+        ///
+        static func expirationDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubscriptionExpirationDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
+        }
+
+        /// For Woo Subscriptions products, tracks when the subscription free trial screen is closed.
+        ///
+        static func freeTrialDetailsScreenClosed(hasChangedData: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(
+                statName: .productSubscriptionFreeTrialDoneButtonTapped,
+                properties: [Keys.hasChangedData: hasChangedData]
+            )
         }
     }
 }
@@ -2447,11 +2495,18 @@ extension WooAnalyticsEvent {
         enum Keys: String {
             case property
             case selectedProductsCount = "selected_products_count"
+            case isEligibleForSubscriptions = "is_eligible_for_subscriptions"
         }
 
         enum BulkUpdateField: String {
             case price
             case status
+        }
+
+        static func productListLoaded(isEligibleForSubscriptions: Bool) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .productListLoaded,
+                              properties: [Keys.isEligibleForSubscriptions.rawValue: isEligibleForSubscriptions]
+            )
         }
 
         static func bulkUpdateRequested(field: BulkUpdateField, selectedProductsCount: Int) -> WooAnalyticsEvent {

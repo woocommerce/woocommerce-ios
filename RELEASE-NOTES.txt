@@ -6,7 +6,7 @@
 - [Internal] Payments: Updated StripeTerminal pod to 3.1.0 [https://github.com/woocommerce/woocommerce-ios/pull/11080]
 - [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
 - [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
-- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
+- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. Before, it was on top of the view. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
 
 16.3
 -----

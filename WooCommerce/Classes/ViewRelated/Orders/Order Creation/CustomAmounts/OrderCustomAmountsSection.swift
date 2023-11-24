@@ -104,6 +104,7 @@ struct OrderCustomAmountsSection: View {
 
                 }
                 .bodyStyle()
+                .accessibilityIdentifier(Accessibility.fixedAmountIdentifier)
             }
             .padding(.bottom, Layout.optionsBottomSheetContentVerticalSpacing)
 
@@ -117,6 +118,7 @@ struct OrderCustomAmountsSection: View {
                     showAddCustomAmountsAfterOptionsDialog()
                 }
                 .bodyStyle()
+                .accessibilityIdentifier(Accessibility.percentageAmountIdentifier)
             }
 
             Spacer()
@@ -176,5 +178,7 @@ private extension OrderCustomAmountsSection {
 
     enum Accessibility {
         static let addCustomAmountIdentifier = "new-order-add-custom-amount-button"
+        static let fixedAmountIdentifier = "custom-amount-fixed-button"
+        static let percentageAmountIdentifier = "custom-amount-percentage-button"
     }
 }

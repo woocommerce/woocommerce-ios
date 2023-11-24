@@ -210,7 +210,7 @@ public struct WooPaymentsDepositsSchedule: Codable, GeneratedFakeable, Generated
     }
 
     public init(from decoder: Decoder) throws {
-        var container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
         delayDays = try container.decode(Int.self, forKey: .delayDays)
         let weeklyAnchor = try container.decodeIfPresent(WooPaymentsDepositInterval.Weekday.self, forKey: .weeklyAnchor)
         let monthlyAnchor = try container.decodeIfPresent(Int.self, forKey: .monthlyAnchor)

@@ -115,6 +115,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         }
         observeSelectedStateForProductRowViewModelIfOptional()
         observeSelectedVariationForSelectableAttributes()
+        observeStatesForValidationErrorMessage()
     }
 
     func createVariationSelectorViewModel() {
@@ -131,6 +132,42 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
         })
     }
 
+    private func observeStatesForValidationErrorMessage() {
+        Publishers.CombineLatest3($isOptionalAndSelected, $quantity, $selectedVariation)
+            .map { [weak self] isOptionalAndSelected, quantity, selectedVariation -> String? in
+                guard let self else { return nil }
+
+                // The bundle configuration is always considered valid if not selected.
+                guard isIncludedInBundle && quantity > 0 else {
+                    return nil
+                }
+
+                guard quantity >= bundleItem.minQuantity else {
+                    return createInvalidQuantityErrorMessage()
+                }
+
+                if let maxQuantity = bundleItem.maxQuantity, quantity > maxQuantity {
+                    return createInvalidQuantityErrorMessage()
+                }
+
+                // If this is not a variable product, it's considered valid after the quantity check.
+                guard variableProductSettings != nil else {
+                    return nil
+                }
+
+                guard selectedVariation != nil else {
+                    return Localization.ErrorMessage.missingVariation
+                }
+
+                guard variationAttributes.count == product.attributesForVariations.count else {
+                    return Localization.ErrorMessage.variationMissingAttributes
+                }
+
+                return nil
+            }
+            .assign(to: &$errorMessage)
+    }
+
     /// Validates the configuration of the bundle item based on the quantity and variation requirements.
     /// The validation error is set to the `errorMessage` Published variable so the view can display the message.
     /// Ref: Pe5pgL-3Vd-p2#validation-of-bundle-configuration
@@ -138,7 +175,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
     func validate() -> Bool {
         errorMessage = nil
 
-         // The bundle configuration is always considered valid if not selected.
+        // The bundle configuration is always considered valid if not selected.
         guard isIncludedInBundle && quantity > 0 else {
             return true
         }

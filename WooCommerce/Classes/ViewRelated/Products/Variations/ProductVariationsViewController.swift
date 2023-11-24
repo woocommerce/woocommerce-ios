@@ -100,6 +100,10 @@ final class ProductVariationsViewController: UIViewController, GhostableViewCont
         product.sku
     }
 
+    private var parentProductType: ProductType {
+        product.productType
+    }
+
     private var parentProductDisablesQuantityRules: Bool? {
         product.combineVariationQuantities
     }
@@ -399,6 +403,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
 
         let productVariation = resultsController.object(at: indexPath)
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: parentProductType,
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU,
                                                   parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -529,6 +534,7 @@ private extension ProductVariationsViewController {
 
     private func navigateToVariationDetail(for productVariation: ProductVariation) {
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: parentProductType,
                                                   allAttributes: allAttributes,
                                                   parentProductSKU: parentProductSKU,
                                                   parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)

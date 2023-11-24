@@ -65,8 +65,10 @@ struct InPersonPaymentsMenu: View {
                             }
                         }) {
                             NavigationView {
-                                PaymentSettingsFlowPresentingView(
-                                    viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                                TapToPaySettingsFlowPresentingView(
+                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                    siteID: viewModel.siteID,
+                                    onboardingUseCase: viewModel.onboardingUseCase)
                                 .navigationBarHidden(true)
                             }
                         }
@@ -114,7 +116,9 @@ struct InPersonPaymentsMenu: View {
                             PaymentsRow(image: Image(uiImage: .creditCardIcon),
                                         title: Localization.manageCardReader,
                                         isActive: $viewModel.presentManageCardReaders) {
-                                PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
+                                CardReaderSettingsFlowPresentingView(
+                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                    siteID: viewModel.siteID)
                             }
                         }
                         .disabled(viewModel.shouldDisableManageCardReaders)

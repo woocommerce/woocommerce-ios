@@ -143,10 +143,11 @@ private struct CollapsibleProductRowCard: View {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
                     ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: Layout.productImageSize,
+                                          productImageSize: viewModel.hasParentProduct ? Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
                                           productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
+                    .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                         Text(viewModel.stockQuantityLabel)
@@ -311,9 +312,11 @@ struct CollapsibleProductCardPriceSummary: View {
 private extension CollapsibleProductRowCard {
     enum Layout {
         static let padding: CGFloat = 16
+        static let childLeadingPadding: CGFloat = 16.0
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
-        static let productImageSize: CGFloat = 56.0
+        static let parentProductImageSize: CGFloat = 56.0
+        static let childProductImageSize: CGFloat = 40.0
         static let productImageCornerRadius: CGFloat = 4.0
         static let iconSize: CGFloat = 16
     }

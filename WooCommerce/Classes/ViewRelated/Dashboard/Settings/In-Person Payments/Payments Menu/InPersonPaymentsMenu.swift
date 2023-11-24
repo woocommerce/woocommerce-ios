@@ -36,6 +36,7 @@ struct InPersonPaymentsMenu: View {
                         }
                     } header: {
                         Text(Localization.paymentActionsSectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     }
 
                     if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
@@ -48,6 +49,7 @@ struct InPersonPaymentsMenu: View {
                             .padding(.vertical, Layout.cellVerticalPadding)
                         } header: {
                             Text(Localization.paymentSettingsSectionTitle.uppercased())
+                                .accessibilityAddTraits(.isHeader)
                         }
                     }
 
@@ -93,6 +95,7 @@ struct InPersonPaymentsMenu: View {
                         .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
                     } header: {
                         Text(Localization.tapToPaySectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     }
                     .renderedIf(viewModel.shouldShowTapToPaySection)
 
@@ -131,6 +134,7 @@ struct InPersonPaymentsMenu: View {
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     } footer: {
                         InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
                                                   showInfoIcon: false)

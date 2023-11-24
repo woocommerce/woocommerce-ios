@@ -367,7 +367,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                           quantityDebounceDuration: 0)
 
         waitUntil {
-            self.viewModel.productRows.count == 2
+            self.viewModel.productRows.count == 1
         }
 
         let orderToUpdate: Order = waitFor { promise in
@@ -2792,6 +2792,35 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
     }
 
+    // MARK: Parent/child order items
+
+    func test_bundle_child_order_items_excluded_from_productRows_and_added_to_parent_childProductRows() throws {
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Bundle product order item.
+            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
+            // Child bundled item with `parent` equal to the bundle parent item ID.
+            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+
+        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
+        XCTAssertEqual(parentOrderItemRow.quantity, 2)
+
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
+        XCTAssertEqual(childOrderItemRow.quantity, 1)
+    }
+
     func test_bundle_child_order_item_has_canChangeQuantity_false() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -2811,14 +2840,10 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 2)
-
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertEqual(parentOrderItemRow.quantity, 2)
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
-        XCTAssertEqual(childOrderItemRow.quantity, 1)
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertFalse(childOrderItemRow.canChangeQuantity)
     }
 
@@ -2842,13 +2867,13 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 2)
+        XCTAssertEqual(viewModel.productRows.count, 1)
 
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
         XCTAssertEqual(parentOrderItemRow.quantity, 2)
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertEqual(childOrderItemRow.quantity, 1)
         XCTAssertTrue(childOrderItemRow.canChangeQuantity)
     }

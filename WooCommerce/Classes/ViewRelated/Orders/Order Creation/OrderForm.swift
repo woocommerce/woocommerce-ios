@@ -448,13 +448,11 @@ private struct ProductsSection: View {
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow,
-                                              flow: flow,
-                                              shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
-                                              shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
-                                              onAddDiscount: {
-                        viewModel.selectOrderItem(productRow.id)
-                    })
+                    CollapsibleProductCard(viewModel: productRow,
+                                           flow: flow,
+                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
+                                           onAddDiscount: viewModel.selectOrderItem)
                     .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
                         ProductDiscountView(imageURL: productRow.imageURL,
                                             name: productRow.name,

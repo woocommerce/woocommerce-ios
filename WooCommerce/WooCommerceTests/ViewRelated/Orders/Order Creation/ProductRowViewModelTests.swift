@@ -66,6 +66,21 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 1)
     }
 
+    func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
+        // Given
+        let product = Product.fake()
+        let childProductRows = [ProductRowViewModel(product: .fake(), canChangeQuantity: false),
+                                ProductRowViewModel(product: .fake(), canChangeQuantity: false)]
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, childProductRows: childProductRows)
+
+        // Then
+        XCTAssertTrue(viewModel.canChangeQuantity)
+        XCTAssertEqual(viewModel.childProductRows.count, 2)
+        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
+    }
+
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {
         // Given
         let stockQuantity: Decimal = 7

@@ -1,11 +1,93 @@
 import Yosemite
 import SwiftUI
 
-struct CollapsibleProductRowCard: View {
+/// Displays a single collapsible product row or grouped parent and child product rows
+struct CollapsibleProductCard: View {
     @ObservedObject var viewModel: ProductRowViewModel
 
     /// Used for tracking order form events.
-    let flow: WooAnalyticsEvent.Orders.Flow
+    private let flow: WooAnalyticsEvent.Orders.Flow
+
+    /// Handles when "Add Discount" is tapped on the row with the provided `ProductRowViewModel.id`
+    private let onAddDiscount: (Int64) -> Void
+
+    /// Tracks if discount editing should be enabled or disabled. False by default
+    var shouldDisableDiscountEditing: Bool = false
+
+    /// Tracks if discount should be allowed or disallowed.
+    var shouldDisallowDiscounts: Bool = false
+
+    @ScaledMetric private var scale: CGFloat = 1
+
+    init(viewModel: ProductRowViewModel,
+         flow: WooAnalyticsEvent.Orders.Flow,
+         shouldDisableDiscountEditing: Bool,
+         shouldDisallowDiscounts: Bool,
+         onAddDiscount: @escaping (_ productRowID: Int64) -> Void) {
+        self.viewModel = viewModel
+        self.flow = flow
+        self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
+        self.shouldDisallowDiscounts = shouldDisallowDiscounts
+        self.onAddDiscount = onAddDiscount
+    }
+
+    var body: some View {
+        if viewModel.childProductRows.isEmpty {
+            CollapsibleProductRowCard(viewModel: viewModel,
+                                      flow: flow,
+                                      shouldDisableDiscountEditing: shouldDisableDiscountEditing,
+                                      shouldDisallowDiscounts: shouldDisallowDiscounts,
+                                      onAddDiscount: onAddDiscount)
+            .overlay {
+                cardBorder
+            }
+        } else {
+            VStack(spacing: 0) {
+                // Parent product
+                CollapsibleProductRowCard(viewModel: viewModel,
+                                          flow: flow,
+                                          shouldDisableDiscountEditing: shouldDisableDiscountEditing,
+                                          shouldDisallowDiscounts: shouldDisallowDiscounts,
+                                          onAddDiscount: onAddDiscount)
+                Divider()
+                    .frame(height: Layout.borderLineWidth)
+                    .overlay(Color(.separator))
+
+                // Child products
+                ForEach(viewModel.childProductRows) { childRow in
+                    CollapsibleProductRowCard(viewModel: childRow,
+                                              flow: flow,
+                                              shouldDisableDiscountEditing: shouldDisableDiscountEditing,
+                                              shouldDisallowDiscounts: shouldDisallowDiscounts,
+                                              onAddDiscount: onAddDiscount) // TODO: #11250 Update design of child items in product bundle
+                    Divider().padding(.horizontal)
+                }
+            }
+            .overlay {
+                cardBorder
+            }
+        }
+    }
+}
+
+private extension CollapsibleProductCard {
+    enum Layout {
+        static let frameCornerRadius: CGFloat = 4
+        static let borderLineWidth: CGFloat = 1
+    }
+
+    var cardBorder: some View {
+        RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
+            .inset(by: 0.25)
+            .stroke(Color(uiColor: .separator), lineWidth: Layout.borderLineWidth)
+    }
+}
+
+private struct CollapsibleProductRowCard: View {
+    @ObservedObject var viewModel: ProductRowViewModel
+
+    /// Used for tracking order form events.
+    private let flow: WooAnalyticsEvent.Orders.Flow
 
     @State private var isCollapsed: Bool = true
 
@@ -15,7 +97,7 @@ struct CollapsibleProductRowCard: View {
 
     @ScaledMetric private var scale: CGFloat = 1
 
-    var onAddDiscount: () -> Void
+    private let onAddDiscount: (Int64) -> Void
 
     // Tracks if discount editing should be enabled or disabled. False by default
     //
@@ -44,7 +126,7 @@ struct CollapsibleProductRowCard: View {
          flow: WooAnalyticsEvent.Orders.Flow,
          shouldDisableDiscountEditing: Bool,
          shouldDisallowDiscounts: Bool,
-         onAddDiscount: @escaping () -> Void) {
+         onAddDiscount: @escaping (_ productRowID: Int64) -> Void) {
         self.viewModel = viewModel
         self.flow = flow
         self.shouldDisableDiscountEditing = shouldDisableDiscountEditing
@@ -57,7 +139,6 @@ struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: shouldShowDividers,
-                        backgroundColor: viewModel.backgroundColor,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -141,18 +222,14 @@ struct CollapsibleProductRowCard: View {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity, alignment: .center)
-        .background(Color(viewModel.backgroundColor))
+        .background(Color(.listForeground(modal: false)))
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(isCollapsed ? Color(uiColor: .separator) : Color(uiColor: .black),
-                        lineWidth: Layout.borderLineWidth)
-                .renderedIf(!viewModel.hasParentProduct)
+                .stroke(Color(uiColor: .black), lineWidth: Layout.borderLineWidth)
+                .renderedIf(!isCollapsed)
         }
-        .cornerRadius(Layout.frameCornerRadius)
     }
-
-
 }
 
 private extension CollapsibleProductRowCard {
@@ -170,7 +247,7 @@ private extension CollapsibleProductRowCard {
         if !viewModel.hasDiscount || shouldDisallowDiscounts {
             Button(Localization.addDiscountLabel) {
                 trackAddDiscountTapped()
-                onAddDiscount()
+                onAddDiscount(viewModel.id)
             }
             .buttonStyle(PlusButtonStyle())
             .disabled(shouldDisallowDiscounts)
@@ -178,7 +255,7 @@ private extension CollapsibleProductRowCard {
             HStack {
                 Button(action: {
                     trackEditDiscountTapped()
-                    onAddDiscount()
+                    onAddDiscount(viewModel.id)
                 }, label: {
                     HStack {
                         Text(Localization.discountLabel)
@@ -269,29 +346,25 @@ private extension CollapsibleProductRowCard {
     }
 }
 
-private extension ProductRowViewModel {
-    var backgroundColor: UIColor {
-        hasParentProduct ?
-        .tertiarySystemGroupedBackground: .listForeground(modal: false)
-    }
-}
-
 #if DEBUG
-struct CollapsibleProductRowCard_Previews: PreviewProvider {
+struct CollapsibleProductCard_Previews: PreviewProvider {
     static var previews: some View {
         let product = Product.swiftUIPreviewSample()
         let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+        let childViewModels = [ProductRowViewModel(id: 2, product: product, canChangeQuantity: true, hasParentProduct: true),
+                               ProductRowViewModel(id: 3, product: product, canChangeQuantity: true, hasParentProduct: true)]
+        let parentViewModel = ProductRowViewModel(id: 1, product: product, canChangeQuantity: true, childProductRows: childViewModels)
         VStack {
-            CollapsibleProductRowCard(viewModel: viewModel,
+            CollapsibleProductCard(viewModel: viewModel,
                                       flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,
-                                      onAddDiscount: {})
-            CollapsibleProductRowCard(viewModel: ProductRowViewModel(product: product, canChangeQuantity: true, hasParentProduct: true),
+                                      onAddDiscount: { _ in })
+            CollapsibleProductCard(viewModel: parentViewModel,
                                       flow: .creation,
                                       shouldDisableDiscountEditing: false,
                                       shouldDisallowDiscounts: false,
-                                      onAddDiscount: {})
+                                      onAddDiscount: { _ in })
         }
         .padding()
     }

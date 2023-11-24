@@ -3,7 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// View model for `ProductRow`.
+/// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
@@ -33,6 +33,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
+
+    /// Child product rows, if the product is the parent of child order items
+    @Published private(set) var childProductRows: [ProductRowViewModel]
 
     /// Whether a product in an order item is configurable
     ///
@@ -297,6 +300,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -320,6 +324,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -339,6 +344,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -408,6 +414,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

@@ -83,6 +83,7 @@ struct InPersonPaymentsMenu: View {
                                 AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
                                     title: Localization.tapToPayOnIPhoneFeedback)
@@ -112,6 +113,7 @@ struct InPersonPaymentsMenu: View {
                                                      viewModel: viewModel.purchaseCardReaderWebViewModel)
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
 
                         Button {
                             viewModel.manageCardReadersTapped()
@@ -122,6 +124,7 @@ struct InPersonPaymentsMenu: View {
                                 PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
                         .disabled(viewModel.shouldDisableManageCardReaders)
 
                         Button {
@@ -133,6 +136,7 @@ struct InPersonPaymentsMenu: View {
                                 CardReaderManualsView()
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
@@ -157,6 +161,7 @@ struct InPersonPaymentsMenu: View {
                             }
                             .padding(.vertical, Layout.cellVerticalPadding)
                         }
+                        .buttonStyle(.scrollViewRow)
                         .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
                     }
                     .renderedIf(viewModel.shouldShowPaymentOptionsSection)

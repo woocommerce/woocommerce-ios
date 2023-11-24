@@ -57,6 +57,7 @@ struct InPersonPaymentsMenu: View {
                         PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
                                     title: viewModel.setUpTryOutTapToPayRowTitle,
                                     shouldBadgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
+                        .accessibilityAddTraits(.isButton)
                         .onTapGesture {
                             viewModel.setUpTryOutTapToPayTapped()
                         }
@@ -85,6 +86,7 @@ struct InPersonPaymentsMenu: View {
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
                                     title: Localization.tapToPayOnIPhoneFeedback)
+                        .accessibility(addTraits: .isButton)
                         .foregroundColor(Color(uiColor: .textLink))
                         .onTapGesture {
                             viewModel.tapToPayFeedbackTapped()

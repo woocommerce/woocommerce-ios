@@ -2177,7 +2177,6 @@ extension Networking.WooPaymentsBalance {
         .init(
             amount: .fake(),
             currency: .fake(),
-            sourceTypes: .fake(),
             depositsCount: .fake()
         )
     }
@@ -2272,15 +2271,6 @@ extension Networking.WooPaymentsManualDeposit {
         .init(
             currency: .fake(),
             date: .fake()
-        )
-    }
-}
-extension Networking.WooPaymentsSourceTypes {
-    /// Returns a "ready to use" type filled with fake values.
-    ///
-    public static func fake() -> Networking.WooPaymentsSourceTypes {
-        .init(
-            card: .fake()
         )
     }
 }

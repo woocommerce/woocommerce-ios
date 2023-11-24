@@ -160,10 +160,6 @@ public final class UnifiedOrderScreen: ScreenObject {
         fixedAmountButton.waitAndTap()
     }
 
-    private func selectPercentageOrderTotal() {
-        percentageOfTotalButton.waitAndTap()
-    }
-
     /// Opens the Customer Note screen.
     /// - Returns: Customer Note screen object.
     public func openCustomerNoteScreen() throws -> CustomerNoteScreen {

@@ -1,19 +1,25 @@
 import SwiftUI
 
-struct PaymentsRow: View {
+struct PaymentsRow<Destination>: View where Destination: View {
     private let image: Image
     private let title: String
     private let subtitle: String?
     private let shouldBadgeImage: Bool
+    private var isActive: Binding<Bool>?
+    @ViewBuilder private let destination: (() -> Destination)?
 
     init(image: Image,
          title: String,
          subtitle: String? = nil,
-         shouldBadgeImage: Bool = false) {
+         shouldBadgeImage: Bool = false,
+         isActive: Binding<Bool>,
+         @ViewBuilder destination: @escaping () -> Destination) {
         self.image = image
         self.title = title
         self.subtitle = subtitle
         self.shouldBadgeImage = shouldBadgeImage
+        self.destination = destination
+        self.isActive = isActive
     }
 
     var body: some View {
@@ -21,17 +27,17 @@ struct PaymentsRow: View {
             image
                 .resizable()
                 .aspectRatio(contentMode: .fit)
-                .frame(maxWidth: Layout.imageSize, maxHeight: Layout.imageSize)
+                .frame(maxWidth: PaymentsRowLayout.imageSize, maxHeight: PaymentsRowLayout.imageSize)
                 .overlay(alignment: .topTrailing, content: {
                     Circle()
                         .fill(Color.withColorStudio(name: .wooCommercePurple, shade: .shade50))
-                        .frame(width: Layout.dotSize, height: Layout.dotSize)
+                        .frame(width: PaymentsRowLayout.dotSize, height: PaymentsRowLayout.dotSize)
                         .renderedIf(shouldBadgeImage)
                 })
                 .accessibilityHidden(true)
 
             if let subtitle {
-                VStack(alignment: .leading, spacing: Layout.subtitleSpacing) {
+                VStack(alignment: .leading, spacing: PaymentsRowLayout.subtitleSpacing) {
                     Text(title)
                     Text(subtitle)
                         .footnoteStyle()
@@ -44,15 +50,43 @@ struct PaymentsRow: View {
         }
         .foregroundColor(.primary)
         .contentShape(Rectangle())
+
+        navigationLink
+    }
+
+    @ViewBuilder
+    private var navigationLink: some View {
+        if let isActive,
+           let destination {
+            NavigationLink(isActive: isActive) {
+                destination()
+            } label: {
+                EmptyView()
+            }
+        } else {
+            EmptyView()
+        }
     }
 }
 
-private extension PaymentsRow {
-    enum Layout {
-        static let subtitleSpacing: CGFloat = 4.0
-        static let imageSize: CGFloat = 24.0
-        static let dotSize: CGFloat = 7.0
+extension PaymentsRow where Destination == Never {
+    init(image: Image,
+         title: String,
+         subtitle: String? = nil,
+         shouldBadgeImage: Bool = false) {
+        self.image = image
+        self.title = title
+        self.subtitle = subtitle
+        self.shouldBadgeImage = shouldBadgeImage
+        self.destination = nil
+        self.isActive = nil
     }
+}
+
+private enum PaymentsRowLayout {
+    static let subtitleSpacing: CGFloat = 4.0
+    static let imageSize: CGFloat = 24.0
+    static let dotSize: CGFloat = 7.0
 }
 
 struct PaymentsRow_Previews: PreviewProvider {

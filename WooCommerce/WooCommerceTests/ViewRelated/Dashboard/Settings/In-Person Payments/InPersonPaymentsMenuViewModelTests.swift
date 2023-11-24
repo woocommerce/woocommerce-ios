@@ -13,6 +13,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     private var mockDepositService: MockWooPaymentsDepositService!
     private var mockOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
+    private var mockPayInPersonToggleViewModel: MockInPersonPaymentsCashOnDeliveryToggleRowViewModel!
 
     private let sampleStoreID: Int64 = 12345
 
@@ -23,6 +24,7 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         mockDepositService = MockWooPaymentsDepositService()
         mockOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .completed(plugin: .wcPayOnly))
+        mockPayInPersonToggleViewModel = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
         systemStatusService = MockSystemStatusService()
         systemStatusService.onFetchSystemPluginWithPath = { _ in
             return .fake()
@@ -32,13 +34,14 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
 
     func makeSut() -> InPersonPaymentsMenuViewModel {
         InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: .init(
-                                                cardPresentPaymentsConfiguration: .init(country: .US),
-                                                onboardingUseCase: mockOnboardingUseCase,
-                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                wooPaymentsDepositService: mockDepositService,
-                                                systemStatusService: systemStatusService,
-                                                analytics: analytics))
+                                      dependencies: .init(
+                                        cardPresentPaymentsConfiguration: .init(country: .US),
+                                        onboardingUseCase: mockOnboardingUseCase,
+                                        cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                        wooPaymentsDepositService: mockDepositService,
+                                        systemStatusService: systemStatusService,
+                                        analytics: analytics),
+                                      payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
     }
 
     func test_fetchDepositsOverview_is_not_called_for_stores_which_do_not_support_the_route() async {
@@ -72,6 +75,18 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssert(mockDepositService.spyDidCallFetchDepositsOverview)
     }
 
+     func test_onAppear_refreshesPayInPersonToggle() async {
+         // Given
+         mockPayInPersonToggleViewModel.spyDidCallRefreshState = false
+
+         // When
+         await sut.onAppear()
+
+         // Then
+         XCTAssertTrue(mockPayInPersonToggleViewModel.spyDidCallRefreshState)
+    }
+
+    // MARK: - Analytics tests
     func test_onAppear_when_deposit_service_gets_an_error_depositSummaryError_is_tracked() async {
         // Given
         mockDepositService.onFetchDepositsOverviewShouldThrow = DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "description"))
@@ -83,144 +98,149 @@ class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuDepositSummaryError.rawValue))
     }
 
-//     private var stores: MockStoresManager!
+    func test_collectPaymentTapped_tracks_paymentsMenuCollectPaymentTapped() {
+        // Given
 
-//     private var analyticsProvider: MockAnalyticsProvider!
-//     private var analytics: Analytics!
+        // When
+        sut.collectPaymentTapped()
 
-//     private var sut: LegacyInPersonPaymentsMenuViewModel!
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCollectPaymentTapped.rawValue))
+    }
 
-//     private let sampleStoreID: Int64 = 12345
+    func test_setUpTryOutTapToPayTapped_tracks_setUpTryOutTapToPayOnIPhoneTapped() {
+        // Given
 
-//     private var configuration: CardPresentPaymentsConfiguration!
+        // When
+        sut.setUpTryOutTapToPayTapped()
 
-//     override func setUp() {
-//         stores = MockStoresManager(sessionManager: .makeForTesting())
-//         stores.sessionManager.setStoreId(sampleStoreID)
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.setUpTryOutTapToPayOnIPhoneTapped.rawValue))
+    }
 
-//         analyticsProvider = MockAnalyticsProvider()
-//         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+    func test_aboutTapToPayTapped_tracks_aboutTapToPayOnIPhoneTapped() {
+        // Given
 
-//         let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
-//                                                                       analytics: analytics)
+        // When
+        sut.aboutTapToPayTapped()
 
-//         configuration = CardPresentPaymentsConfiguration(country: .US)
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.aboutTapToPayOnIPhoneTapped.rawValue))
+    }
 
-//         sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
-//                                             cardPresentPaymentsConfiguration: configuration)
-//     }
+    func test_cardReaderManualsTapped_tracks_paymentsMenuCardReadersManualsTapped() {
+        // Given
 
-//     func test_viewDidLoad_synchronizes_payment_gateways() throws {
-//         // Given
-//         assertEmpty(stores.receivedActions)
+        // When
+        sut.cardReaderManualsTapped()
 
-//         // When
-//         sut.viewDidLoad()
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuCardReadersManualsTapped.rawValue))
+    }
 
-//         // Then
-//         let action = try XCTUnwrap(stores.receivedActions.first(where: { $0 is PaymentGatewayAction }) as? PaymentGatewayAction)
-//         switch action {
-//         case .synchronizePaymentGateways(let siteID, _):
-//             assertEqual(siteID, sampleStoreID)
-//         default:
-//             XCTFail("viewDidLoad failed to dispatch .synchronizePaymentGateways action")
-//         }
-//     }
+    func test_manageCardReadersTapped_tracks_paymentsMenuManageCardReadersTapped() {
+        // Given
 
-//     func test_orderCardReaderPressed_tracks_paymentsMenuOrderCardReaderTapped() {
-//         // Given
+        // When
+        sut.manageCardReadersTapped()
 
-//         // When
-//         sut.orderCardReaderPressed()
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuManageCardReadersTapped.rawValue))
+    }
 
-//         // Then
-//         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "payments_hub_order_card_reader_tapped" }))
-//     }
+     func test_purchaseCardReaderTapped_tracks_paymentsMenuOrderCardReaderTapped() {
+         // Given
 
-//     func test_orderCardReaderPressed_presents_card_reader_purchase_web_view() throws {
-//         // Given
-//         XCTAssertNil(sut.showWebView)
+         // When
+         sut.purchaseCardReaderTapped()
 
-//         // When
-//         sut.orderCardReaderPressed()
+         // Then
+         XCTAssertTrue(analyticsProvider.receivedEvents.contains("payments_hub_order_card_reader_tapped"))
+     }
 
-//         // Then
-//         let cardReaderPurchaseURL = try XCTUnwrap(sut.showWebView?.initialURL)
-//         assertEqual("https", cardReaderPurchaseURL.scheme)
-//         assertEqual("woo.com", cardReaderPurchaseURL.host)
-//         assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
-//         let query = try XCTUnwrap(cardReaderPurchaseURL.query)
-//         XCTAssert(query.contains("utm_medium=woo_ios"))
-//         XCTAssert(query.contains("utm_campaign=payments_menu_item"))
-//         XCTAssert(query.contains("utm_source=payments_menu"))
-//     }
+    func test_managePaymentGatewaysTapped_tracks_paymentsMenuPaymentProviderTapped() {
+        // Given
 
-//     func test_isEligibleForTapToPayOnIPhone_false_when_built_in_reader_isnt_in_configuration() {
-//         // Given
-//         let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
-//                                                                       analytics: analytics)
+        // When
+        sut.managePaymentGatewaysTapped()
 
-//         let configuration = CardPresentPaymentsConfiguration(
-//             countryCode: .IN,
-//             paymentMethods: [.cardPresent],
-//             currencies: [.INR],
-//             paymentGateways: [WCPayAccount.gatewayID],
-//             supportedReaders: [.wisepad3],
-//             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-//             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-//             stripeSmallestCurrencyUnitMultiplier: 100,
-//             contactlessLimitAmount: nil,
-//             minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.paymentsMenuPaymentProviderTapped.rawValue))
+    }
 
-//         sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
-//                                             cardPresentPaymentsConfiguration: configuration)
+     func test_purchaseCardReaderTapped_presents_card_reader_purchase_web_view() throws {
+         // Given
+         XCTAssertNil(sut.safariSheetURL)
 
-//         // When
-//         sut.viewDidLoad()
-//         let eligiblity = sut.isEligibleForTapToPayOnIPhone
+         // When
+         sut.purchaseCardReaderTapped()
 
-//         // Then
-//         XCTAssertFalse(eligiblity)
-//     }
+         // Then
+         XCTAssertTrue(sut.presentPurchaseCardReader)
+         let cardReaderPurchaseURL = try XCTUnwrap(sut.purchaseCardReaderWebViewModel.initialURL)
+         assertEqual("https", cardReaderPurchaseURL.scheme)
+         assertEqual("woo.com", cardReaderPurchaseURL.host)
+         assertEqual("/products/hardware/US", cardReaderPurchaseURL.path)
+         let query = try XCTUnwrap(cardReaderPurchaseURL.query)
+         XCTAssert(query.contains("utm_medium=woo_ios"))
+         XCTAssert(query.contains("utm_campaign=payments_menu_item"))
+         XCTAssert(query.contains("utm_source=payments_menu"))
+     }
 
-//     func test_isEligibleForTapToPayOnIPhone_true_when_built_in_reader_is_in_configuration() {
-//         // Given
-//         let dependencies = LegacyInPersonPaymentsMenuViewModel.Dependencies(stores: stores,
-//                                                                       analytics: analytics)
+    // MARK: - Tap to Pay tests
+     func test_shouldShowTapToPaySection_false_when_built_in_reader_isnt_in_configuration() async {
+         // Given
+         let configuration = CardPresentPaymentsConfiguration(
+             countryCode: .IN,
+             paymentMethods: [.cardPresent],
+             currencies: [.INR],
+             paymentGateways: [WCPayAccount.gatewayID],
+             supportedReaders: [.wisepad3],
+             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+             stripeSmallestCurrencyUnitMultiplier: 100,
+             contactlessLimitAmount: nil,
+             minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
-//         let configuration = CardPresentPaymentsConfiguration(
-//             countryCode: .IN,
-//             paymentMethods: [.cardPresent],
-//             currencies: [.INR],
-//             paymentGateways: [WCPayAccount.gatewayID],
-//             supportedReaders: [.appleBuiltIn],
-//             supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
-//             minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
-//             stripeSmallestCurrencyUnitMultiplier: 100,
-//             contactlessLimitAmount: nil,
-//             minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
+         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
+                                                                       onboardingUseCase: mockOnboardingUseCase,
+                                                                       cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                       wooPaymentsDepositService: mockDepositService)
+         sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                             dependencies: dependencies)
 
-//         sut = LegacyInPersonPaymentsMenuViewModel(dependencies: dependencies,
-//                                             cardPresentPaymentsConfiguration: configuration)
+         // When
+         await sut.onAppear()
 
-//         waitFor { promise in
-//             self.stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
-//                 switch action {
-//                 case .checkDeviceSupport(_, _, _, _, let completion):
-//                     completion(true)
-//                     promise(())
-//                 default:
-//                     XCTFail("Unexpected CardPresentPaymentAction recieved")
-//                 }
-//             }
+         // Then
+         XCTAssertFalse(sut.shouldShowTapToPaySection)
+     }
 
-//             // When
-//             self.sut.viewDidLoad()
-//         }
+    func test_shouldShowTapToPaySection_true_when_built_in_reader_in_configuration() async {
+        // Given
+        let configuration = CardPresentPaymentsConfiguration(
+            countryCode: .IN,
+            paymentMethods: [.cardPresent],
+            currencies: [.INR],
+            paymentGateways: [WCPayAccount.gatewayID],
+            supportedReaders: [.appleBuiltIn],
+            supportedPluginVersions: [.init(plugin: .wcPay, minimumVersion: "4.0.0")],
+            minimumAllowedChargeAmount: NSDecimalNumber(string: "0.5"),
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            contactlessLimitAmount: nil,
+            minimumOperatingSystemVersionForTapToPay: .init(majorVersion: 16, minorVersion: 0, patchVersion: 0))
 
-//         let eligiblity = sut.isEligibleForTapToPayOnIPhone
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(cardPresentPaymentsConfiguration: configuration,
+                                                                      onboardingUseCase: mockOnboardingUseCase,
+                                                                      cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                      wooPaymentsDepositService: mockDepositService)
+        sut = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: dependencies)
 
-//         // Then
-//         XCTAssertTrue(eligiblity)
-//     }
+        // When
+        await sut.onAppear()
+
+        // Then
+        XCTAssertFalse(sut.shouldShowTapToPaySection)
+    }
 }

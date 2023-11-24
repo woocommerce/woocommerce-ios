@@ -1014,7 +1014,7 @@ public enum WooAnalyticsStat: String {
     case paymentsMenuManageCardReadersTapped = "payments_hub_manage_card_readers_tapped"
     case paymentsMenuPaymentProviderTapped = "settings_card_present_select_payment_gateway_tapped"
     case inPersonPaymentsLearnMoreTapped = "in_person_payments_learn_more_tapped"
-    case setUpTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
+    case setUpTryOutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_tapped"
     case aboutTapToPayOnIPhoneTapped = "payments_hub_tap_to_pay_about_tapped"
     case paymentsMenuDepositSummaryShown = "payments_hub_deposit_summary_shown"
     case paymentsMenuDepositSummaryError = "payments_hub_deposit_summary_error"

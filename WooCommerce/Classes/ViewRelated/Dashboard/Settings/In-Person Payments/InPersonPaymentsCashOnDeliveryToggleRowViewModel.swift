@@ -2,7 +2,12 @@ import Foundation
 import Yosemite
 import protocol Storage.StorageManagerType
 
-final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject {
+protocol InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol {
+    func refreshState()
+    var selectedPlugin: CardPresentPaymentsPlugin? { get set }
+}
+
+final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, InPersonPaymentsCashOnDeliveryToggleRowViewModelProtocol {
 
     // MARK: - Dependencies
     struct Dependencies {

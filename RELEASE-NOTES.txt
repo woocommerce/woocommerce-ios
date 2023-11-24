@@ -4,6 +4,7 @@
 -----
 - [internal] Adds `store_id` to track events. [https://github.com/woocommerce/woocommerce-ios/pull/11227]
 - [Internal] Payments: Updated StripeTerminal pod to 3.1.0 [https://github.com/woocommerce/woocommerce-ios/pull/11080]
+- [internal] Payments: Restored analytics for Payments Menu after SwiftUI rewrite [https://github.com/woocommerce/woocommerce-ios/pull/11262]
 - [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
 - [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
 

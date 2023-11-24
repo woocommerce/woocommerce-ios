@@ -1,6 +1,10 @@
 import SwiftUI
 import Yosemite
 
+
+/// This wrapper exists to ensure that the `SetUpTapToPayViewModelsOrderedList` has the same lifecycle as the
+/// view which presents it. If it doesn't, it's likely that the view model will cause unwanted disconnections
+/// from Bluetooth readers which are connected in other parts of the app.
 struct TapToPaySettingsFlowPresentingView: View {
     let configuration: CardPresentPaymentsConfiguration
     let siteID: Int64

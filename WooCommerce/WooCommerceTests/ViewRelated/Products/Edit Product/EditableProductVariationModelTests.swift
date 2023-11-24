@@ -22,6 +22,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let name = EditableProductVariationModel(productVariation: variation,
+                                                 parentProductType: .variable,
                                                  allAttributes: allAttributes,
                                                  parentProductSKU: nil,
                                                  parentProductDisablesQuantityRules: nil).name
@@ -49,6 +50,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let name = EditableProductVariationModel(productVariation: variation,
+                                                 parentProductType: .variable,
                                                  allAttributes: allAttributes,
                                                  parentProductSKU: nil,
                                                  parentProductDisablesQuantityRules: nil).name
@@ -137,6 +139,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: sku,
                                                   parentProductDisablesQuantityRules: nil)
@@ -153,6 +156,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: "",
                                                   parentProductDisablesQuantityRules: nil)
@@ -160,6 +164,55 @@ final class EditableProductVariationModelTests: XCTestCase {
         // Assert
         XCTAssertEqual(model.sku, sku)
         XCTAssertEqual(model.productVariation.sku, sku)
+    }
+
+    // MARK: - `subscription`
+
+    func test_it_sets_default_values_for_subscription_when_given_variation_has_nil_subscription_and_parentProductType_is_variableSubscription() {
+        // Given
+        let variation = MockProductVariation().productVariation().copy(subscription: nil)
+
+        // When
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variableSubscription,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
+
+        // Then
+        XCTAssertEqual(model.productVariation.subscription, .empty)
+    }
+
+    func test_it_does_not_alter_subscription_value_when_parentProductType_is_not_variableSubscription() {
+        // Given
+        let mockSubscription = ProductSubscription.fake().copy(price: "10")
+        let variation = MockProductVariation().productVariation().copy(subscription: mockSubscription)
+
+        // When
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
+
+        // Then
+        XCTAssertEqual(model.productVariation.subscription, mockSubscription)
+    }
+
+    func test_it_does_not_alter_subscription_value_when_given_variation_has_non_nil_subscription() {
+        // Given
+        let mockSubscription = ProductSubscription.fake().copy(price: "10")
+        let variation = MockProductVariation().productVariation().copy(subscription: mockSubscription)
+
+        // When
+        let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variableSubscription,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
+
+        // Then
+        XCTAssertEqual(model.productVariation.subscription, mockSubscription)
     }
 
     // MARK: - `hasQuantityRules`
@@ -181,6 +234,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -195,6 +249,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -209,6 +264,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)
@@ -223,6 +279,7 @@ final class EditableProductVariationModelTests: XCTestCase {
 
         // Action
         let model = EditableProductVariationModel(productVariation: variation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: true)

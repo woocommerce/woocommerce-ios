@@ -7,6 +7,7 @@
 - [internal] Payments: Restored analytics for Payments Menu after SwiftUI rewrite [https://github.com/woocommerce/woocommerce-ios/pull/11262]
 - [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
 - [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
+- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. Before, it was on top of the view. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
 
 16.3
 -----

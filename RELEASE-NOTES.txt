@@ -1,5 +1,9 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.5
+-----
+
+
 16.4
 -----
 - [internal] Adds `store_id` to track events. [https://github.com/woocommerce/woocommerce-ios/pull/11227]

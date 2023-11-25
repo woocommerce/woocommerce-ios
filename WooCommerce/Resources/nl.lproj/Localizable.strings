@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-22 15:54:05+0000 */
+/* Translation-Revision-Date: 2023-11-25 09:08:13+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -4945,13 +4945,13 @@ This part is the link to the website, and forms part of a longer sentence which 
 "NetworkError.invalidURL" = "Sorry, the URL is not valid. Probeer het opnieuw.";
 
 /* Error message when we receive not found error */
-"NetworkError.notFound" = "Kun je niet vinden wat je zoekt? Probeer het opnieuw. Antwoord";
+"NetworkError.notFound" = "Kun je niet vinden wat je zoekt? Probeer het opnieuw. Antwoord: %1$@";
 
 /* Error message when a request times out. */
-"NetworkError.timeout" = "Sorry, the request took too long to process. Probeer later opnieuw. Antwoord";
+"NetworkError.timeout" = "Sorry, the request took too long to process. Probeer later opnieuw. Antwoord: %1$@";
 
 /* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
-"NetworkError.unacceptableStatusCode" = "Sorry, there was an issue with the server. Probeer later opnieuw. Foutcode%1$d Antwoord";
+"NetworkError.unacceptableStatusCode" = "Sorry, er was een probleem met de server. Probeer later opnieuw. (Foutcode: %1$d) Antwoord: %2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Verlopen nooit";
@@ -9932,7 +9932,7 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleProductValidationError.bundleSizeNotExact" = "Please choose %1$@ %2$@.";
 
 /* Error message when the product bundle size is not within a min/max range if both rules are specified.%1$@ is the minimum bundle size. %2$@ is the minimum bundle size. */
-"configureBundleProductValidationError.bundleSizeNotWithinRange" = "kies  artikelen";
+"configureBundleProductValidationError.bundleSizeNotWithinRange" = "Kies %1$@-%2$@ artikelen.";
 
 /* Used in configureBundleProductValidationError strings for the plural form of item. */
 "configureBundleProductValidationError.itemPlural" = "artikelen";
@@ -9954,7 +9954,7 @@ which should be translated separately and considered part of this sentence. */
 "defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Reguliere prijs: %1$@ elke %2$@";
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
-"defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Aanmeldkosten";
+"defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Aanmeldkosten: %1$@";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10173,7 +10173,7 @@ which should be translated separately and considered part of this sentence. */
 "productPriceSettingsViewModel.salePriceAccessibilityHint" = "De aanbiedingsprijs van dit product. Bewerkbaar. Bewerkbaar.";
 
 /* Title of the cell in Product Price Settings > Sale price */
-"productPriceSettingsViewModel.salePriceTitle" = "Prijs tijdens de sale: %@";
+"productPriceSettingsViewModel.salePriceTitle" = "Prijs tijdens de sale";
 
 /* Section header title for product sale price */
 "productPriceSettingsViewModel.saleSectionTitle" = "Verkoop";
@@ -10270,7 +10270,7 @@ which should be translated separately and considered part of this sentence. */
 "subscriptionTrialView.period" = "Periode";
 
 /* Validation error message in the Free trial info screen of the subscription product. Reads like: The trial period cannot exceed 90 days. */
-"subscriptionTrialViewModel.errorMessage" = "De proefperiode mag niet worden overschreden %1$d.";
+"subscriptionTrialViewModel.errorMessage" = "De proefperiode mag niet worden overschreden %1$d %2$@";
 
 /* Title for the Free trial info screen of the subscription product. */
 "subscriptionTrialViewModel.title" = "Gratis proefabonnement";

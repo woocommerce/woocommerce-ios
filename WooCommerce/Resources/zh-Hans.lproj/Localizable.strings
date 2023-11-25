@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-21 16:54:24+0000 */
+/* Translation-Revision-Date: 2023-11-25 09:00:51+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -9923,13 +9923,13 @@ which should be translated separately and considered part of this sentence. */
 "configureBundleProductError.cannotLoadProducts" = "无法加载捆绑产品。 请重试。";
 
 /* Error message when the product bundle size is greater than the maximum if a maximum rule is specified.%1$@ is the maximum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
-"configureBundleProductValidationError.bundleSizeGreaterThanMaximum" = "请选择最多 %1$@ 个项目。";
+"configureBundleProductValidationError.bundleSizeGreaterThanMaximum" = "请选择最多 %1$@ %2$@ 个项目。";
 
 /* Error message when the product bundle size is less than the minimum if a minimum rule is specified.%1$@ is the minimum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
-"configureBundleProductValidationError.bundleSizeLessThanMinimum" = "请选择至少 %1$@ 个项目。";
+"configureBundleProductValidationError.bundleSizeLessThanMinimum" = "请选择至少 %1$@ %2$@ 个项目。";
 
 /* Error message when the product bundle size is not matching the exact size if both rules are specified and the min/max are the same.%1$@ is the expected bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
-"configureBundleProductValidationError.bundleSizeNotExact" = "请选择 %1$@ 个项目。";
+"configureBundleProductValidationError.bundleSizeNotExact" = "请选择 %1$@ %2$@ 个项目。";
 
 /* Error message when the product bundle size is not within a min/max range if both rules are specified.%1$@ is the minimum bundle size. %2$@ is the minimum bundle size. */
 "configureBundleProductValidationError.bundleSizeNotWithinRange" = "请选择 %1$@ 至 %2$@ 个项目。";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-22 13:54:04+0000 */
+/* Translation-Revision-Date: 2023-11-25 08:58:16+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -9951,7 +9951,7 @@ which should be translated separately and considered part of this sentence. */
 "defaultProductFormTableViewModel.noFreeTrial" = "無料お試し";
 
 /* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
-"defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "標準価格: %1$ \/ %2$@";
+"defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "標準価格: %1$@ \/ %2$@";
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "登録費用: %1$@";

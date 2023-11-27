@@ -48,8 +48,8 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
 
     // MARK: - Validation
     /// The actual quantity when being counted for the bundle. When the item is optional and not selected, the quantity is considered 0.
-    @Published var quantityInBundle: Decimal = 0
-    @Published var errorMessage: String?
+    @Published private(set) var quantityInBundle: Decimal = 0
+    @Published private(set) var errorMessage: String?
 
     private let product: Product
     private let bundleItem: ProductBundleItem

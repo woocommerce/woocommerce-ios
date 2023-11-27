@@ -21,7 +21,44 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - `validationErrorMessage`
+    // MARK: - Validation
+
+    func test_isConfigureEnabled_is_false_when_bundle_item_is_invalid() throws {
+        // Given
+        // The bundle size has to be 5.
+        let product = Product.fake().copy(productID: 1, bundleMinSize: nil, bundleMaxSize: 5, bundledItems: [
+            // One optional item
+            .fake().copy(bundledItemID: 1, productID: 2, isOptional: false)
+        ])
+        let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
+        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: self.stores,
+                                                           onConfigure: { _ in })
+
+        // The products are loaded async before the bundle item view models are set.
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        XCTAssertTrue(viewModel.isConfigureEnabled)
+
+        // When
+        // Simulates a validation error when quantity exceeds the max size (`bundleMaxSize`).
+        let item = try XCTUnwrap(viewModel.bundleItemViewModels[0])
+        item.quantity = 6
+
+        // Then
+        XCTAssertFalse(viewModel.isConfigureEnabled)
+
+        // When the item becomes valid
+        item.quantity = 5
+
+        // Then
+        XCTAssertTrue(viewModel.isConfigureEnabled)
+    }
 
     func test_validationErrorMessage_is_nil_when_bundle_size_matches() throws {
         // Given

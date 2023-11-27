@@ -18,6 +18,7 @@ struct TopTabView: View {
     @State private var selectedTab = 0
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
+    @GestureState private var dragState: DragState = .inactive
 
     @Binding var showTabs: Bool
 
@@ -81,34 +82,26 @@ struct TopTabView: View {
             }
 
             // Display Content for selected tab
-            ZStack {
-                ForEach(0..<tabs.count, id: \.self) { index in
-                    Group {
-                        if selectedTab == index {
+            GeometryReader { geometry in
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 0) {
+                        ForEach(0..<tabs.count, id: \.self) { index in
                             tabs[index].view
-                                .gesture(
-                                    DragGesture().onEnded { gesture in
-                                        let horizontalAmount = gesture.translation.width as CGFloat
-                                        let shouldChangeTab = abs(horizontalAmount) > 50 // Threshold to avoid accidental swipes
-
-                                        if shouldChangeTab {
-                                            if horizontalAmount > 0 {
-                                                // swipe right, go to previous tab if possible
-                                                let previousTab = max(selectedTab - 1, 0)
-                                                changeToTab(index: previousTab)
-                                            } else {
-                                                // swipe left, go to next tab if possible
-                                                let nextTab = min(selectedTab + 1, tabs.count - 1)
-                                                changeToTab(index: nextTab)
-                                            }
-                                        }
-                                    }
-                                )
+                                .frame(width: geometry.size.width)
                         }
                     }
-                    .frame(width: UIScreen.main.bounds.width)
+                    .offset(x: self.dragOffset(width: geometry.size.width))
+                    .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
+                    .gesture(
+                        DragGesture()
+                            .updating($dragState) { drag, state, transaction in
+                                state = .dragging(translation: drag.translation)
+                            }
+                            .onEnded(onDragEnded)
+                    )
                 }
             }
+            .frame(height: 300)
         }
     }
 
@@ -125,13 +118,46 @@ struct TopTabView: View {
         return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (Layout.tabPadding * 2)
     }
 
-    private func changeToTab(index: Int) {
-        withAnimation {
-            selectedTab = index
-            tabs[selectedTab].onSelected?()
-            underlineOffset = calculateOffset(index: index)
+    private func onDragEnded(drag: DragGesture.Value) {
+            let thresholdPercentage: CGFloat = 0.5 // Threshold to swipe to next tab
+            let dragThreshold = thresholdPercentage * UIScreen.main.bounds.width
+            if drag.predictedEndTranslation.width > dragThreshold {
+                selectedTab = max(selectedTab - 1, 0)
+            } else if drag.predictedEndTranslation.width < -dragThreshold {
+                selectedTab = min(selectedTab + 1, tabs.count - 1)
+            }
         }
-    }
+
+        private func dragOffset(width: CGFloat) -> CGFloat {
+            if dragState.isActive {
+                return -CGFloat(selectedTab) * width + dragState.translation.width
+            } else {
+                return -CGFloat(selectedTab) * width
+            }
+        }
+
+        enum DragState {
+            case inactive
+            case dragging(translation: CGSize)
+
+            var translation: CGSize {
+                switch self {
+                case .inactive:
+                    return .zero
+                case .dragging(let translation):
+                    return translation
+                }
+            }
+
+            var isActive: Bool {
+                switch self {
+                case .inactive:
+                    return false
+                case .dragging:
+                    return true
+                }
+            }
+        }
 
     private enum Layout {
         static let tabPadding: CGFloat = 10

@@ -107,10 +107,6 @@ private struct CollapsibleProductRowCard: View {
     //
     var shouldDisallowDiscounts: Bool = false
 
-    private var shouldShowDividers: Bool {
-        !isCollapsed
-    }
-
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
@@ -138,7 +134,7 @@ private struct CollapsibleProductRowCard: View {
         CollapsibleView(isCollapsible: true,
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: shouldShowDividers,
+                        shouldShowDividers: false,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -169,6 +165,8 @@ private struct CollapsibleProductRowCard: View {
                 dismissTooltip()
             }
         }, content: {
+            Divider()
+            
             SimplifiedProductRow(viewModel: viewModel)
             HStack {
                 Text(Localization.priceLabel)

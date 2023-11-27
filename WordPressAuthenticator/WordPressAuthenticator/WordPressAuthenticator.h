@@ -10,7 +10,6 @@ FOUNDATION_EXPORT const unsigned char WordPressAuthenticatorVersionString[];
 
 
 #import <WordPressAuthenticator/LoginFacade.h>
-#import <WordPressAuthenticator/WordPressComOAuthClientFacade.h>
 #import <WordPressAuthenticator/WordPressXMLRPCAPIFacade.h>
 
 #import <WordPressAuthenticator/WPAuthenticatorLogging.h>

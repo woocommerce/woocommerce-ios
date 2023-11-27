@@ -12,6 +12,7 @@ extension ProductSubscription {
               signUpFee: "",
               trialLength: "",
               trialPeriod: .day,
-              oneTimeShipping: false)
+              oneTimeShipping: false,
+              paymentSyncDate: "")
     }()
 }

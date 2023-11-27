@@ -2,6 +2,7 @@
 
 16.5
 -----
+- [**] Shipping Labels: Fixed issue presenting the printing view for customs forms.
 
 
 16.4

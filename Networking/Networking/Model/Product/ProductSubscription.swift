@@ -71,7 +71,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
 
             return stringValue == Constants.yes
         }()
-        paymentSyncDate = try container.decodeIfPresent(String.self, forKey: .trialLength) ?? "0"
+        paymentSyncDate = try container.decodeIfPresent(String.self, forKey: .paymentSyncDate) ?? "0"
     }
 
     func toKeyValuePairs() -> [KeyValuePair] {

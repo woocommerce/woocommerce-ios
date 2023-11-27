@@ -81,7 +81,34 @@ struct TopTabView: View {
             }
 
             // Display Content for selected tab
-            tabs[safe: selectedTab]?.view
+            ZStack {
+                ForEach(0..<tabs.count, id: \.self) { index in
+                    Group {
+                        if selectedTab == index {
+                            tabs[index].view
+                                .gesture(
+                                    DragGesture().onEnded { gesture in
+                                        let horizontalAmount = gesture.translation.width as CGFloat
+                                        let shouldChangeTab = abs(horizontalAmount) > 50 // Threshold to avoid accidental swipes
+
+                                        if shouldChangeTab {
+                                            if horizontalAmount > 0 {
+                                                // swipe right, go to previous tab if possible
+                                                let previousTab = max(selectedTab - 1, 0)
+                                                changeToTab(index: previousTab)
+                                            } else {
+                                                // swipe left, go to next tab if possible
+                                                let nextTab = min(selectedTab + 1, tabs.count - 1)
+                                                changeToTab(index: nextTab)
+                                            }
+                                        }
+                                    }
+                                )
+                        }
+                    }
+                    .frame(width: UIScreen.main.bounds.width)
+                }
+            }
         }
     }
 
@@ -96,6 +123,14 @@ struct TopTabView: View {
     private func calculateOffset(index: Int) -> CGFloat {
         // Takes all preceeding tab widths, and adds appropriate spacing to each side to get the overall offset
         return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (Layout.tabPadding * 2)
+    }
+
+    private func changeToTab(index: Int) {
+        withAnimation {
+            selectedTab = index
+            tabs[selectedTab].onSelected?()
+            underlineOffset = calculateOffset(index: index)
+        }
     }
 
     private enum Layout {

@@ -296,7 +296,8 @@ private extension ProductsViewController {
             }
 
         }, onPermissionsDenied: {
-            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList, reason: .cameraAccessNotPermitted))
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
+                                                                                                           reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()

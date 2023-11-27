@@ -70,7 +70,7 @@ extension SignupGoogleViewController: GoogleAuthenticatorSignupDelegate {
         self.loginFields = loginFields
         titleLabel?.textColor = WPStyleGuide.errorRed()
         titleLabel?.text = LocalizedText.signupFailed
-        displayError(error as NSError, sourceTag: .wpComSignup)
+        displayError(error, sourceTag: .wpComSignup)
     }
 
     func googleSignupCancelled() {

@@ -228,7 +228,7 @@ extension LoginUsernamePasswordViewController {
         if err.code == 403 {
             displayError(message: NSLocalizedString("It looks like this username/password isn't associated with this site.", comment: "An error message shown during log in when the username or password is incorrect."))
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 }

@@ -476,7 +476,7 @@ private extension SiteCredentialsViewController {
                                             comment: "An error message shown during log in when the username or password is incorrect.")
             displayError(message: message, moveVoiceOverFocus: true)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 
@@ -583,7 +583,7 @@ extension SiteCredentialsViewController {
                                             comment: "An error message shown during log in when the username or password is incorrect.")
             displayError(message: message, moveVoiceOverFocus: true)
         } else {
-            displayError(error as NSError, sourceTag: sourceTag)
+            displayError(error, sourceTag: sourceTag)
         }
     }
 }

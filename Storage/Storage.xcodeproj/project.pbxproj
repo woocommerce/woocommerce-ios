@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -603,6 +603,7 @@
 		E16D3742284F1E76005676BC /* MockInMemoryStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockInMemoryStorage.swift; sourceTree = "<group>"; };
 		E1BCBE832844D35E00087C33 /* GeneralStoreSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralStoreSettingsTests.swift; sourceTree = "<group>"; };
 		E1E632BF2846245D00878082 /* GeneralAppSettingsStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralAppSettingsStorage.swift; sourceTree = "<group>"; };
+		EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 103.xcdatamodel"; sourceTree = "<group>"; };
 		EE5B5BAF2AB30251009BCBD6 /* Model 98.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 98.xcdatamodel"; sourceTree = "<group>"; };
 		EE94345329F038DF002B1900 /* Model 84.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 84.xcdatamodel"; sourceTree = "<group>"; };
 		F0439F2ADB3B211DF5C44D83 /* Pods-StorageTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-StorageTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-StorageTests/Pods-StorageTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -1922,6 +1923,7 @@
 		DEC51AA4275B41BE009F3DF4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				EE319C522B14DCEE001AC211 /* Model 103.xcdatamodel */,
 				023BBD812B049277005C91BD /* Model 102.xcdatamodel */,
 				86C265CF2AF34FE900F28E0A /* Model 101.xcdatamodel */,
 				DED91DE82AD66AA600CDCC53 /* Model 100.xcdatamodel */,

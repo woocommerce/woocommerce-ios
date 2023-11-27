@@ -161,6 +161,7 @@ private struct CollapsibleProductRowCard: View {
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                             .subheadlineStyle()
+                            .renderedIf(isCollapsed)
                     }
                 }
             }

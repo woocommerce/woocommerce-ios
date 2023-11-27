@@ -20,6 +20,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet weak var tableView: UITableView!
 
+    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
                                                                                                 cellClass: ProductsTabProductTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
@@ -276,7 +278,28 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        // TODO-2407: scan barcodes for products
+        //analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            //self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+
+            self?.navigationItem.configureLeftBarButtonItemAsLoader()
+
+            Task {
+                await self?.viewModel.handleScannedBarcode(scannedBarcode)
+                self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+            }
+
+        }, onPermissionsDenied: { [weak self] in
+            //self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+        })
+        barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
+        productSKUBarcodeScannerCoordinator.start()
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
@@ -505,27 +528,7 @@ private extension ProductsViewController {
     }
 
     func configureNavigationBarLeftButtonItems() {
-        navigationItem.leftBarButtonItem = nil
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory) && UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let buttonItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .scanImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(scanProducts))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
-                button.accessibilityHint = NSLocalizedString(
-                    "Scans barcodes that are associated with a product SKU for stock management.",
-                    comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
-                )
-                button.accessibilityIdentifier = "product-scan-button"
-
-                return button
-            }()
-
-            navigationItem.leftBarButtonItem = buttonItem
-        }
+        configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
     }
 
     func configureNavigationBarRightButtonItems() {
@@ -1141,6 +1144,32 @@ private extension ProductsViewController {
         emptyStateViewController.view.removeFromSuperview()
         emptyStateViewController.removeFromParent()
         self.emptyStateViewController = nil
+    }
+
+    func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+              UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            navigationItem.leftBarButtonItem = nil
+            return
+        }
+
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+    }
+
+    func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .scanImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(scanProducts))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+        button.accessibilityHint = NSLocalizedString(
+            "Scans barcodes that are associated with a product SKU for stock management.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+        )
+        button.accessibilityIdentifier = "product-scan-button"
+
+        return button
     }
 }
 

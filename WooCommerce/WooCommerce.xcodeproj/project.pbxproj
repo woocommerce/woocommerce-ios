@@ -1733,6 +1733,7 @@
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
 		B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */; };
 		B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */; };
+		B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */; };
 		B98D425B2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98D425A2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift */; };
 		B98D425D2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B98D425C2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib */; };
 		B98FF4402AAA096200326D16 /* AddressWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98FF43F2AAA096200326D16 /* AddressWooTests.swift */; };
@@ -4312,6 +4313,7 @@
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
 		B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModelTests.swift; sourceTree = "<group>"; };
 		B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSection.swift; sourceTree = "<group>"; };
+		B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+Configuration.swift"; sourceTree = "<group>"; };
 		B98D425A2AF9374400973C76 /* LargeHeightLeftImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeHeightLeftImageTableViewCell.swift; sourceTree = "<group>"; };
 		B98D425C2AF9400900973C76 /* LargeHeightLeftImageTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LargeHeightLeftImageTableViewCell.xib; sourceTree = "<group>"; };
 		B98FF43F2AAA096200326D16 /* AddressWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressWooTests.swift; sourceTree = "<group>"; };
@@ -10044,6 +10046,7 @@
 				864213012AE77C730036E5A6 /* UIImage+Resizing.swift */,
 				DE157E142B01F26500542A9B /* ProductFormDataModel+SubscriptionDescription.swift */,
 				DEDA8D982B04643E0076BF0F /* ProductSubscription+Empty.swift */,
+				B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -13699,6 +13702,7 @@
 				DE74F2A327E41D650002FE59 /* EnableAnalyticsViewModel.swift in Sources */,
 				AE77EA5027A47C99006A21BD /* View+AddingDividers.swift in Sources */,
 				EE5B5BB32AB30C0A009BCBD6 /* ProductCreationAIEligibilityChecker.swift in Sources */,
+				B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */,
 				0298430C259351F100979CAE /* ShippingLabelsTopBannerFactory.swift in Sources */,
 				262EB5AE298C70EF009DCC36 /* SupportFormViewModel.swift in Sources */,
 				45B4F0262860BD0A00F3B16E /* WCShipCTAView.swift in Sources */,

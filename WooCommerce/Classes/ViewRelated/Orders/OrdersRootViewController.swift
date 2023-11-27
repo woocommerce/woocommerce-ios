@@ -213,7 +213,7 @@ final class OrdersRootViewController: UIViewController {
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
             self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
 
-            self?.configureLeftButtonItemAsLoader()
+            self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 self.configureLeftButtonItemAsProductScanningButton()
@@ -348,13 +348,6 @@ private extension OrdersRootViewController {
 
     func configureLeftButtonItemAsProductScanningButton() {
         navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
-    }
-
-    func configureLeftButtonItemAsLoader() {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .navigationBarLoadingIndicator
-        indicator.startAnimating()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: indicator)
     }
 
     func configureFiltersBar() {

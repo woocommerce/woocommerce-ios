@@ -44,7 +44,8 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
-                date: Date()
+                date: Date(),
+                status: .inTransit
             ),
             availableBalance: 1500.0
         )
@@ -65,7 +66,8 @@ struct WooPaymentsDepositsOverviewView_Previews: PreviewProvider {
             ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 600.0,
-                date: Date()
+                date: Date(),
+                status: .canceled
             ),
             availableBalance: 1900.0
         )

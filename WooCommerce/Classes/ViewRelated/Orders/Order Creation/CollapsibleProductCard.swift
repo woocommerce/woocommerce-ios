@@ -135,6 +135,7 @@ private struct CollapsibleProductRowCard: View {
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
                         shouldShowDividers: false,
+                        hasSubtleChevron: viewModel.hasParentProduct,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
@@ -166,7 +167,7 @@ private struct CollapsibleProductRowCard: View {
             }
         }, content: {
             Divider()
-            
+
             SimplifiedProductRow(viewModel: viewModel)
             HStack {
                 Text(Localization.priceLabel)

@@ -382,6 +382,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.signUpFee, "")
         XCTAssertEqual(subscriptionSettings.trialLength, "1")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
+        XCTAssertTrue(subscriptionSettings.oneTimeShipping)
     }
 
     /// Test that `subscription` is nil when parsing non-subscription product response

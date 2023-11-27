@@ -10,7 +10,8 @@ final class ProductVariationEncoderTests: XCTestCase {
                                                price: "99",
                                                signUpFee: "25",
                                                trialLength: "1",
-                                               trialPeriod: .month)
+                                               trialPeriod: .month,
+                                               oneTimeShipping: true)
         let variation = ProductVariation.fake().copy(subscription: subscription)
 
         // When

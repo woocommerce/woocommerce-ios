@@ -211,7 +211,7 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderList))
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
@@ -229,7 +229,7 @@ final class OrdersRootViewController: UIViewController {
                 }
             }
         }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()

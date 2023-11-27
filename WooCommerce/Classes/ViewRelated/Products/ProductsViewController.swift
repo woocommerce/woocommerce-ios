@@ -278,7 +278,7 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        //analytics.track(event: WooAnalyticsEvent.Orders.orderAddNewFromBarcodeScanningTapped())
+        ServiceLocator.analytics.track(.productListProductBarcodeScanningTapped)
 
         guard let navigationController = navigationController else {
             return
@@ -286,7 +286,7 @@ private extension ProductsViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            //self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
             self?.navigationItem.configureLeftBarButtonItemAsLoader()
 
@@ -295,8 +295,8 @@ private extension ProductsViewController {
                 self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
 
-        }, onPermissionsDenied: { [weak self] in
-            //self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+        }, onPermissionsDenied: {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList, reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()

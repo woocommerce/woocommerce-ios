@@ -509,15 +509,6 @@ extension WooAnalyticsEvent {
             case variation
         }
 
-        enum BarcodeScanningSource: String {
-            case orderCreation = "order_creation"
-            case orderList = "order_list"
-        }
-
-        enum BarcodeScanningFailureReason: String {
-            case cameraAccessNotPermitted = "camera_access_not_permitted"
-        }
-
         enum OrderProductAdditionVia: String {
             case scanning
             case manually
@@ -565,8 +556,6 @@ extension WooAnalyticsEvent {
             static let addedVia = "added_via"
             static let isFilterActive = "is_filter_active"
             static let searchFilter = "search_filter"
-            static let barcodeFormat = "barcode_format"
-            static let reason = "reason"
             static let couponsCount = "coupons_count"
             static let type = "type"
             static let usesGiftCard = "use_gift_card"
@@ -627,33 +616,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderCreationProductBarcodeScanningTapped, properties: [:])
         }
 
-        static func barcodeScanningSuccess(from source: BarcodeScanningSource) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
-        }
-
-        static func barcodeScanningFailure(from source: BarcodeScanningSource, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
-                                                                              Keys.reason: reason.rawValue])
-        }
-
-        static func orderProductSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
-        }
-
-        static func orderProductSearchViaSKUFailure(from source: String,
-                                                    symbology: BarcodeSymbology? = nil,
-                                                    reason: String) -> WooAnalyticsEvent {
-
-            var properties = [Keys.source: source,
-                              Keys.reason: reason]
-
-            if let symbology = symbology {
-                properties[Keys.barcodeFormat] = symbology.rawValue
-            }
-
-            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
-        }
-
         static func orderEditButtonTapped(hasMultipleShippingLines: Bool, hasMultipleFeeLines: Bool) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .orderEditButtonTapped, properties: [
                 Keys.hasMultipleShippingLines: hasMultipleShippingLines,
@@ -662,7 +624,7 @@ extension WooAnalyticsEvent {
         }
 
         static func orderProductAdd(flow: Flow,
-                                    source: BarcodeScanningSource,
+                                    source: BarcodeScanning.Source,
                                     addedVia: OrderProductAdditionVia,
                                     productCount: Int = 1,
                                     includesBundleProductConfiguration: Bool) -> WooAnalyticsEvent {
@@ -2834,6 +2796,56 @@ extension WooAnalyticsEvent {
                                 Keys.entityName.rawValue: entityName
                               ].compactMapValues { $0 },
                               error: error)
+        }
+    }
+}
+
+// MARK: - Barcode Scanning
+//
+extension WooAnalyticsEvent {
+    enum BarcodeScanning {
+        private enum Keys {
+            static let barcodeFormat = "barcode_format"
+            static let reason = "reason"
+            static let source = "source"
+        }
+
+        enum Source: String {
+            case orderCreation = "order_creation"
+            case orderList = "order_list"
+            case productList = "product_list"
+        }
+
+        enum BarcodeScanningFailureReason: String {
+            case cameraAccessNotPermitted = "camera_access_not_permitted"
+        }
+
+
+        static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
+        }
+
+        static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
+                                                                              Keys.reason: reason.rawValue])
+        }
+
+        static func productSearchViaSKUSuccess(from source: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .orderProductSearchViaSKUSuccess, properties: [Keys.source: source])
+        }
+
+        static func productSearchViaSKUFailure(from source: String,
+                                                    symbology: BarcodeSymbology? = nil,
+                                                    reason: String) -> WooAnalyticsEvent {
+
+            var properties = [Keys.source: source,
+                              Keys.reason: reason]
+
+            if let symbology = symbology {
+                properties[Keys.barcodeFormat] = symbology.rawValue
+            }
+
+            return WooAnalyticsEvent(statName: .orderProductSearchViaSKUFailure, properties: properties)
         }
     }
 }

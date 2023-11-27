@@ -1909,6 +1909,24 @@ extension Networking.ProductVariation {
     }
 }
 
+extension Networking.ProductVariationAttribute {
+    public func copy(
+        id: CopiableProp<Int64> = .copy,
+        name: CopiableProp<String> = .copy,
+        option: CopiableProp<String> = .copy
+    ) -> Networking.ProductVariationAttribute {
+        let id = id ?? self.id
+        let name = name ?? self.name
+        let option = option ?? self.option
+
+        return Networking.ProductVariationAttribute(
+            id: id,
+            name: name,
+            option: option
+        )
+    }
+}
+
 extension Networking.Refund {
     public func copy(
         refundID: CopiableProp<Int64> = .copy,
@@ -2900,18 +2918,15 @@ extension Networking.WooPaymentsBalance {
     public func copy(
         amount: CopiableProp<Int> = .copy,
         currency: CopiableProp<String> = .copy,
-        sourceTypes: CopiableProp<WooPaymentsSourceTypes> = .copy,
         depositsCount: NullableCopiableProp<Int> = .copy
     ) -> Networking.WooPaymentsBalance {
         let amount = amount ?? self.amount
         let currency = currency ?? self.currency
-        let sourceTypes = sourceTypes ?? self.sourceTypes
         let depositsCount = depositsCount ?? self.depositsCount
 
         return Networking.WooPaymentsBalance(
             amount: amount,
             currency: currency,
-            sourceTypes: sourceTypes,
             depositsCount: depositsCount
         )
     }
@@ -3039,18 +3054,6 @@ extension Networking.WooPaymentsManualDeposit {
         return Networking.WooPaymentsManualDeposit(
             currency: currency,
             date: date
-        )
-    }
-}
-
-extension Networking.WooPaymentsSourceTypes {
-    public func copy(
-        card: CopiableProp<Int> = .copy
-    ) -> Networking.WooPaymentsSourceTypes {
-        let card = card ?? self.card
-
-        return Networking.WooPaymentsSourceTypes(
-            card: card
         )
     }
 }

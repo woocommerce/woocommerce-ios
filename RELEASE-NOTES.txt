@@ -1,10 +1,18 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 
+16.5
+-----
+
+
 16.4
 -----
 - [internal] Adds `store_id` to track events. [https://github.com/woocommerce/woocommerce-ios/pull/11227]
 - [Internal] Payments: Updated StripeTerminal pod to 3.1.0 [https://github.com/woocommerce/woocommerce-ios/pull/11080]
+- [internal] Payments: Restored analytics for Payments Menu after SwiftUI rewrite [https://github.com/woocommerce/woocommerce-ios/pull/11262]
 - [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
+- [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
+- [internal] Order form: Fix a bug where the wrong product details appeared when adding a discount to a product in an order. [https://github.com/woocommerce/woocommerce-ios/pull/11280]
+- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. Before, it was on top of the view. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
 
 16.3
 -----

@@ -287,7 +287,11 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 // Helper in unit tests
 extension EditableProductVariationModel {
     convenience init(productVariation: ProductVariation) {
-        self.init(productVariation: productVariation, allAttributes: [], parentProductSKU: nil, parentProductDisablesQuantityRules: nil)
+        self.init(productVariation: productVariation,
+                  parentProductType: .variable,
+                  allAttributes: [],
+                  parentProductSKU: nil,
+                  parentProductDisablesQuantityRules: nil)
     }
 }
 

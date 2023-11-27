@@ -138,8 +138,6 @@ private extension DefaultProductFormTableViewModel {
                 return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: product, isEditable: editable), isEditable: editable)
             case .subscriptionExpiry(let editable):
                 return .subscriptionExpiry(viewModel: subscriptionExpiryRow(product: product, isEditable: editable), isEditable: editable)
-            case .subscription(let actionable):
-                return .subscription(viewModel: subscriptionRow(product: product, isActionable: actionable), isActionable: actionable)
             case .noVariationsWarning:
                 return .noVariationsWarning(viewModel: noVariationsWarningRow())
             case .quantityRules:
@@ -171,8 +169,6 @@ private extension DefaultProductFormTableViewModel {
                 return .subscriptionFreeTrial(viewModel: subscriptionFreeTrialRow(product: productVariation, isEditable: editable), isEditable: editable)
             case .subscriptionExpiry(let editable):
                 return .subscriptionExpiry(viewModel: subscriptionExpiryRow(product: productVariation, isEditable: editable), isEditable: editable)
-            case .subscription(let actionable):
-                return .subscription(viewModel: subscriptionRow(product: productVariation, isActionable: actionable), isActionable: actionable)
             case .quantityRules:
                 return .quantityRules(viewModel: quantityRulesRow(product: productVariation))
             default:
@@ -596,31 +592,6 @@ private extension DefaultProductFormTableViewModel {
 
     // MARK: Subscription products and variations only
 
-    func subscriptionRow(product: ProductFormDataModel, isActionable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.priceImage
-        let title = Localization.subscriptionTitle
-
-        var subscriptionDetails = [String?]()
-
-        if let subscription = product.subscription {
-            let priceDescription = Localization.subscriptionPriceDescription(price: subscription.price,
-                                                                             period: subscription.period,
-                                                                             periodInterval: subscription.periodInterval,
-                                                                             currencyFormatter: currencyFormatter)
-            subscriptionDetails.append(priceDescription)
-
-            let expiryDescription = Localization.subscriptionExpiryDescription(length: subscription.length, period: subscription.period)
-            subscriptionDetails.append(expiryDescription)
-        }
-
-        let details = subscriptionDetails.isEmpty ? nil : subscriptionDetails.compacted().joined(separator: "\n")
-
-        return ProductFormSection.SettingsRow.ViewModel(icon: icon,
-                                                        title: title,
-                                                        details: details,
-                                                        isActionable: isActionable)
-    }
-
     func subscriptionFreeTrialRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.hourglass
         let title = Localization.subscriptionFreeTrialTitle
@@ -955,7 +926,6 @@ private extension DefaultProductFormTableViewModel.Localization {
                                                               comment: "Format of the number of components in plural form")
 
         // Subscription
-        static let subscriptionTitle = NSLocalizedString("Subscription", comment: "Title for Subscription row in the product form screen.")
         static func subscriptionPriceDescription(price: String,
                                                  period: SubscriptionPeriod,
                                                  periodInterval: String,

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2023-11-15 08:54:24+0000 */
+/* Translation-Revision-Date: 2023-11-22 09:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -398,8 +398,7 @@ which should be translated separately and considered part of this sentence. */
 /* Feature option in the store creation features question. */
 "Ability to scale as my business grows" = "Capacità di ridimensionamento man mano che l'attività cresce";
 
-/* Navigates to the About Tap to Pay on iPhone screen, which explains the capabilities and limits of Tap to Pay on iPhone, relevant to the store territory.
-   Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
+/* Title for the webview used by merchants to view more details about Tap to Pay on iPhone */
 "About Tap to Pay" = "Informazioni su Tocca per pagare";
 
 /* Navigation title for the About Tap to Pay on iPhone Screen. */
@@ -443,9 +442,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title when a payments account is successfully connected for Card Present Payments */
 "Account connected" = "Account connesso";
-
-/* Title for the section related to actions inside In-Person Payments settings */
-"Actions" = "Azioni";
 
 /* Title for the error screen when a Card Present Payments extension is installed but not activated */
 "Activate %1$@" = "Attiva %1$@";
@@ -1564,17 +1560,11 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the card reader support area option */
 "Card Reader \/ In-Person Payments" = "Lettore carte\/Pagamenti di persona";
 
-/* Navigates to Card Reader Manuals screen */
-"Card Reader Manuals" = "Manuali del lettore di schede";
-
 /* Title for the webview used by merchants to place an order for a card reader, for use with In-Person Payments. */
 "Card Readers" = "Lettori di carte";
 
 /* Navigation title at the top of the Card reader manuals screen */
 "Card reader manuals" = "Manuali del lettore di schede";
-
-/* Title for the section related to card readers inside In-Person Payments settings */
-"Card readers" = "Lettori di schede";
 
 /* Error message when a card is left in the reader and another transaction started. */
 "Card was left in reader - please remove and reinsert card" = "La carta è stata lasciata nel lettore: rimuovere e reinserire la carta";
@@ -1807,8 +1797,7 @@ which should be translated separately and considered part of this sentence. */
 /* Accessibility value when a banner is collapsed */
 "Collapsed" = "Ridotto";
 
-/* Navigates to Collect a payment via the Simple Payment screen
-   Text on the button that starts collecting a card present payment. */
+/* Text on the button that starts collecting a card present payment. */
 "Collect Payment" = "Ricevi pagamenti";
 
 /* Alert title when starting the collect payment flow without a user name.
@@ -2033,9 +2022,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continua a leggere";
-
-/* Call to Action to finish the setup of In-Person Payments in the Menu */
-"Continue setup" = "Continua con la configurazione";
 
 /* Title of the button on the store creation summary view to continue to payment. */
 "Continue to Payment" = "Vai al pagamento";
@@ -2666,7 +2652,6 @@ which should be translated separately and considered part of this sentence. */
    Text for the done button in the Fee/Discounts Details screen
    Text for the done button in the Shipping Line Details screen
    The button title to indicate that the user has finished updating their store's address and isready to close the webview. This also tries to connect to the reader again.
-   Title for a done button in the navigation bar
    Title for the Done button on a WebView modal sheet
    Title of the button to finish the domain purchase success screen. */
 "Done" = "Fatto";
@@ -3723,7 +3708,7 @@ which should be translated separately and considered part of this sentence. */
 "Haiti" = "Haiti";
 
 /* Title of features on the Free Trial Summary screen */
-"Hassel-free store ownership" = "Proprietà del negozio senza problemi";
+"Hassle-free store ownership" = "Proprietà del negozio senza problemi";
 
 /* Subtitle of the store onboarding task to customize the store domain. */
 "Have a custom URL to host your store." = "Un URL personalizzato per ospitare il tuo negozio";
@@ -3961,9 +3946,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the error screen when the merchant's payment account has been rejected. */
 "In-Person Payments isn't available for this store" = "Pagamenti di persona non è disponibile per questo negozio";
-
-/* Shows a notice pointing out that the user didn't finish the In-Person Payments setup, so some functionalities are disabled. */
-"In-Person Payments setup is incomplete." = "La configurazione di Pagamenti di persona non è completa.";
 
 /* Cell title on beta features screen to enable in-app purchases */
 "In-app purchases" = "Acquisti in-app";
@@ -4342,7 +4324,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Label for the banner Learn more button
    Tappable text at the bottom of store onboarding payments setup screen that opens a webview.
    Tappable text at the bottom of the domain settings screen that opens a webview.
-   The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. 
    Title for the link to open the legal URL for AI-generated content in the product detail screen
    Title of button shown in the Orders → All Orders tab if the list is empty.
    Title of button shown in the Reviews tab if the list is empty
@@ -4661,9 +4642,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Caption displayed in promotional screens shown during the login flow. */
 "Manage and edit orders on the go" = "Gestisci e modifica gli ordini in movimento";
 
-/* Navigates to Card Reader management screen */
-"Manage card reader" = "Gestisci lettore di carte";
-
 /* Description of one of the hub menu options */
 "Manage more on admin" = "Gestisci di più in Admin";
 
@@ -4851,7 +4829,7 @@ This part is the link to the website, and forms part of a longer sentence which 
 "More options" = "Altre opzioni";
 
 /* More Privacy toggle section in the privacy screen. */
-"More privacy options available for woocommerce.com users. Check here to learn more." = "Ulteriori opzioni per la privacy disponibili per gli utenti di woocommerce.com. Controlla qui per saperne di più.";
+"More privacy options available for woo.com users. Check here to learn more." = "Per gli utenti di woo.com sono disponibili ulteriori opzioni per la privacy. Controlla qui per saperne di più.";
 
 /* Country option for a site address. */
 "Morocco" = "Marocco";
@@ -4959,6 +4937,21 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Title for table view section of network active plugins */
 "Network Active Plugins" = "Plugin di rete attivi";
+
+/* Error message when session cookie has expired. */
+"NetworkError.invalidCookieNonce" = "Spiacenti, la tua sessione è scaduta. Accedi nuovamente.";
+
+/* Error message when the URL is invalid. */
+"NetworkError.invalidURL" = "Spiacenti, l'URL non è valido. Riprova.";
+
+/* Error message when we receive not found error */
+"NetworkError.notFound" = "Spiacenti, non abbiamo trovato ciò che stavi cercando. Riprova. Risposta: %1$@";
+
+/* Error message when a request times out. */
+"NetworkError.timeout" = "Spiacenti, l'elaborazione della richiesta è stata troppo lunga. Riprova più tardi. Risposta: %1$@";
+
+/* Error message when the a network call fails with unacceptable status code.%1$d is the status code like 500. %2$@ is the response string. */
+"NetworkError.unacceptableStatusCode" = "Spiacenti, si è verificato un problema con il server. Riprova più tardi. (Codice di errore: %1$d). Risposta: %2$@";
 
 /* Display label when a subscription never expires. */
 "Never expire" = "Non scade mai";
@@ -5389,9 +5382,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Accessibility label for button triggering more actions menu sheet. */
 "Order actions" = "Azioni dell'ordine";
 
-/* Navigates to Card Reader ordering screen */
-"Order card reader" = "Ordina lettore di carte";
-
 /* Order status update success notice */
 "Order status updated" = "Stato dell'ordine aggiornato";
 
@@ -5532,8 +5522,7 @@ This part is the link to the website, and forms part of a longer sentence which 
    Customer-facing instructions shown on Order Thank-you pages and confirmation emails, showing more details about the Pay in Person option added to the store checkout when the merchant enables Pay in Person */
 "Pay by card or another accepted payment method" = "Paga con carta o un altro metodo di pagamento accettato";
 
-/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person
-   Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
+/* Customer-facing title for the payment option added to the store checkout when the merchant enables Pay in Person */
 "Pay in Person" = "Paga di persona";
 
 /* Title text of the row that shows the payment headline when creating a simple payment */
@@ -5550,9 +5539,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Highlighted header text on the store onboarding payments setup screen. */
 "Payment Methods" = "Metodi di pagamento";
 
-/* Navigates to Payment Gateway management screen */
-"Payment Provider" = "Fornitore dei pagamenti";
-
 /* Payment section title */
 "Payment Totals" = "Totali pagamenti";
 
@@ -5568,9 +5554,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Notice that will be displayed after adding a new Shipping Label payment method */
 "Payment method added" = "Metodo di pagamento aggiunto";
-
-/* Title for the section related to payments inside In-Person Payments settings */
-"Payment options" = "Opzioni di pagamento";
 
 /* Label informing users that the payment succeeded. Presented to users when a payment is collected */
 "Payment successful" = "Pagamento avvenuto correttamente";
@@ -5938,7 +5921,6 @@ This part is the link to the website, and forms part of a longer sentence which 
    Text in the product row card that indicating the price of the product
    The title for the price settings section in the product variation bulk updatescreen
    Title for editing the price settings row on Product main screen
-   Title of the cell in Product Price Settings > Price
    Title of the price field on the add product with AI Preview screen. */
 "Price" = "Prezzo";
 
@@ -6641,9 +6623,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Format of the sale period on the Price Settings row until a certain date */
 "Sale dates: Until %@" = "Date di vendita: fino al giorno %@";
 
-/* Title of the cell in Product Price Settings > Sale price */
-"Sale price" = "Prezzo di vendita";
-
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Prezzo di vendita: %@";
 
@@ -6979,7 +6958,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Settings button in the hub menu
    Settings navigation title
-   Title for the section related to changing payment settings inside the In-Person Payments menu
    Title of the hub menu settings button */
 "Settings" = "Impostazioni";
 
@@ -7007,9 +6985,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Action title for sharing coupon from the Coupon Details screen
    Button to share coupon from the Coupon Creation Success screen. */
 "Share Coupon" = "Condividi codice promozionale";
-
-/* Navigates to a screen to share feedback about Tap to Pay on iPhone. */
-"Share Feedback" = "Condividi il feedback";
 
 /* Payment Link method title on the select payment method screen */
 "Share Payment Link" = "Condividi il link di pagamento";
@@ -7710,9 +7685,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* First instruction on the test order screen */
 "Tap the button below to be redirected to your online store via a web browser." = "Tocca il pulsante sottostante per essere reindirizzato al tuo negozio online tramite un browser web.";
 
-/* Title for the Tap to Pay section in the In-Person payments settings */
-"Tap to Pay" = "Tocca per pagare";
-
 /* Tap to Pay on iPhone method title on the select payment method screen
    The button title on the reader type alert, for the user to choose Tap to Pay on iPhone. */
 "Tap to Pay on iPhone" = "Tocca per pagare su iPhone";
@@ -7919,9 +7891,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "L'ordine non è stato registrato!";
 
-/* A label prompting users to learn more about adding Pay in Person to their checkout. %1$@ is a placeholder that always replaced with \"Learn more\" string, which should be translated separately and considered part of this sentence. */
-"The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@" = "L'opzione di pagamento Paga di persona ti consente di accettare pagamenti per ordini sul sito Web, al ritiro o alla consegna. %1$@";
-
 /* Error message describing a problem with a URL. */
 "The URL is missing a valid host." = "L'host dell'URL non è valido.";
 
@@ -8063,9 +8032,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for bulk updating all variations */
 "The price for bulk updating all variations. Editable." = "Il prezzo per l'aggiornamento in blocco di tutte le varianti. Modificabile.";
 
-/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
-"The price for this product. Editable." = "Prezzo per questo prodotto. Modificabile.";
-
 /* Message in the footer of bulk price setting screen (singular). */
 "The price will be updated for %d product." = "Il prezzo verrà apprezzato per %d prodotto.";
 
@@ -8093,9 +8059,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Bulk price update error message, when the sale price is added but the regular price is not
    Product price error notice message, when the sale price is added but the regular price is not */
 "The sale price can't be added without the regular price." = "Il prezzo di vendita non può essere aggiunto senza un prezzo standard.";
-
-/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
-"The sale price for this product. Editable." = "Prezzo di vendita per questo prodotto. Modificabile.";
 
 /* Bulk price update error, when the sale price is higher than the regular price
    Product price error notice message, when the sale price is higher than the regular price */
@@ -9538,10 +9501,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Option in the store creation selling platforms question. */
 "Wix" = "Wix";
 
-/* Title for the row related to Woo Payments Deposits/Balances.
-   Title for the section related to Woo Payments Deposits/Balances. */
-"Woo Payments Balance" = "Saldo di Woo Payments";
-
 /* Text shown when a plan upgrade has been successfully purchased. */
 "Woo! You’re off to a great start!" = "Wow! È tutto pronto per il grande inizio!";
 
@@ -9887,17 +9846,20 @@ This part is the link to the website, and forms part of a longer sentence which 
 /* Button title to confirm the custom amount on the edit custom amount view in orders. */
 "addCustomAmount.editButton" = "Modifica importo personalizzato";
 
+/* Title for the charge taxes toggle in the custom amounts screen. */
+"addCustomAmountView.chargeTaxesToggle.title" = "Addebita imposte";
+
+/* Placeholder for entering an custom amount through a percentage */
+"addCustomAmountView.percentageTextField.placeholder" = "Inserisci percentuale";
+
+/* Title for entering an custom amount through a percentage */
+"addCustomAmountView.percentageTextField.title" = "Oppure immetti la percentuale del totale dell'ordine (%1$@)";
+
 /* Widget description, displayed when selecting which widget to add */
 "appLinkWidget.description" = "Avvio rapido WooCommerce";
 
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Icona";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.description" = "Prova la riscrittura SwiftUI del menu dei pagamenti mentre ci prepariamo al lancio.";
-
-/* Cell title on beta features screen to enable new payments menu */
-"betaFeature.swiftUIPaymentsMenu.switch.title" = "Nuovo menu Pagamenti";
 
 /* Label for a cancel button */
 "cardPresent.builtIn.modalCheckingDeviceSupport.cancelButton" = "Annulla";
@@ -9913,10 +9875,6 @@ This part is the link to the website, and forms part of a longer sentence which 
 
 /* Label within the modal dialog that appears when searching for a card reader */
 "cardPresent.modalScanningForReader.instruction" = "Per attivare il lettore di schede, premi velocemente il pulsante di accensione.";
-
-/* A label prompting users to learn more about In-Person Payments.
-This is the link to the website, and forms part of a longer sentence which it should be considered a part of. */
-"cardPresent.modalScanningForReader.learnMore.link" = "Scopri di più";
 
 /* A label prompting users to learn more about In-Person Payments.
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
@@ -9964,11 +9922,39 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when the products cannot be loaded in the bundle product configuration form. */
 "configureBundleProductError.cannotLoadProducts" = "Impossibile caricare i prodotti in pacchetto. Riprova.";
 
+/* Error message when the product bundle size is greater than the maximum if a maximum rule is specified.%1$@ is the maximum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeGreaterThanMaximum" = "Scegli fino a %1$@ %2$@.";
+
+/* Error message when the product bundle size is less than the minimum if a minimum rule is specified.%1$@ is the minimum bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeLessThanMinimum" = "Scegli almeno %1$@ %2$@.";
+
+/* Error message when the product bundle size is not matching the exact size if both rules are specified and the min/max are the same.%1$@ is the expected bundle size. %2$@ is either 'item' or 'items' based on whether the bundle size is 1 or more. */
+"configureBundleProductValidationError.bundleSizeNotExact" = "Scegli %1$@ %2$@.";
+
+/* Error message when the product bundle size is not within a min/max range if both rules are specified.%1$@ is the minimum bundle size. %2$@ is the minimum bundle size. */
+"configureBundleProductValidationError.bundleSizeNotWithinRange" = "Scegli %1$@-%2$@ articoli.";
+
+/* Used in configureBundleProductValidationError strings for the plural form of item. */
+"configureBundleProductValidationError.itemPlural" = "articoli";
+
+/* Used in configureBundleProductValidationError strings for the singular form of item. */
+"configureBundleProductValidationError.itemSingular" = "articolo";
+
 /* Display label for a product's subscription period when it is a single day. */
 "day" = "giorno";
 
 /* Display label for a product's subscription period, e.g. '7 days'. */
 "days" = "giorni";
+
+/* Display label when a subscription has no trial period.
+   Title for Subscription Free Trial row in the product form screen. */
+"defaultProductFormTableViewModel.noFreeTrial" = "Prova gratuita";
+
+/* Format of the regular price for a subscription product on the Price Settings row. Reads like: 'Regular price: $60.00 every 2 months'. */
+"defaultProductFormTableViewModel.regularSubscriptionPriceFormat" = "Prezzo standard: %1$@ ogni %2$@";
+
+/* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
+"defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Costo di iscrizione: %1$@";
 
 /* Title of the store creation plan on the plan screen. */
 "eCommerce" = "eCommerce";
@@ -10069,6 +10055,9 @@ which should be translated separately and considered part of this sentence. */
 /* The \"Learn more\" string replaces the placeholder in a label prompting users to learn more about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link" = "Scopri di più";
 
+/* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
+"menu.payments.payInPerson.learnMore.link.accessibilityAction" = "Scopri di più";
+
 /* Title for a switch on the In-Person Payments menu to enable Cash on Delivery */
 "menu.payments.payInPerson.toggle.row.title" = "Paga di persona";
 
@@ -10162,8 +10151,41 @@ which should be translated separately and considered part of this sentence. */
 /* Action sheet option when the user wants to change the Product type to Variable subscription product */
 "product.sheet.option.variableSubscription.title" = "Prodotto in abbonamento variabile";
 
+/* Description of the subscription period for a product. Reads like: 'every 2 months'. */
+"productFormDataModel.subscriptionPeriodFormat" = "ogni %1$@";
+
 /* Label for button on product form to open Blaze flow */
 "productFormTableViewDataSource.promoteWithBlazeButton" = "Promuovi con Blaze";
+
+/* Title of the billing interval row on the Product Price screen */
+"productPriceSettingsViewController.billingIntervalRowTitle" = "Intervallo di fatturazione";
+
+/* Button on the toolbar of the subscription period picker view on the Product Price screen */
+"productPriceSettingsViewController.subscriptionPeriodToolBarButton" = "Fatto";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the price information for this product. */
+"productPriceSettingsViewModel.regularPriceAccessibilityHint" = "Prezzo di questo prodotto. Modificabile.";
+
+/* Title of the cell in Product Price Settings > Price */
+"productPriceSettingsViewModel.regularPriceTitle" = "Prezzo";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the sale price information for this product. */
+"productPriceSettingsViewModel.salePriceAccessibilityHint" = "Prezzo di vendita per questo prodotto. Modificabile.";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"productPriceSettingsViewModel.salePriceTitle" = "Prezzo di vendita";
+
+/* Section header title for product sale price */
+"productPriceSettingsViewModel.saleSectionTitle" = "Offerta";
+
+/* VoiceOver accessibility hint, informing the user that the cell shows the subscription sign-up fee for this product. */
+"productPriceSettingsViewModel.signupFeeAccessibilityHint" = "Costo di iscrizione all'abbonamento per questo prodotto. Modificabile.";
+
+/* Subtitle of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeSubtitle" = "Come opzione facoltativa, puoi includere un importo da addebitare all'inizio dell'abbonamento. Il costo di iscrizione verrà addebitato immediatamente, anche se il prodotto ha una prova gratuita o le date di pagamento sono sincronizzate.";
+
+/* Title of the cell in Product Price Settings > Sign-up Fee */
+"productPriceSettingsViewModel.signupFeeTitle" = "Costo di iscrizione";
 
 /* Formatted price label based on a product's price and quantity. Reads as '8 x $10.00'. Please take care to use the multiplication symbol ×, not a letter x, where appropriate. */
 "productRowViewModel.priceQuantityLine" = "%1$@ x %2$@";
@@ -10234,6 +10256,24 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title label when the widget can't fetch data. */
 "storeWidgets.unableToFetchView.unableToFetch" = "Impossibile recuperare le statistiche di oggi";
+
+/* Title of the button to save subscription's free trial info. */
+"subscriptionTrialView.done" = "Fatto";
+
+/* Title for the free trial length row in add or edit subscription free trial screen. */
+"subscriptionTrialView.duration" = "Durata";
+
+/* Subtitle text to explain subscription free trial. */
+"subscriptionTrialView.freeTrialSubtitle" = "Una prova gratuita è un periodo di attesa opzionale prima dell'addebito del primo pagamento ricorrente. Eventuali commissioni di iscrizione saranno comunque addebitate all'inizio dell'abbonamento.";
+
+/* Title for the free trial period row in add or edit subscription free trial screen. */
+"subscriptionTrialView.period" = "Periodo";
+
+/* Validation error message in the Free trial info screen of the subscription product. Reads like: The trial period cannot exceed 90 days. */
+"subscriptionTrialViewModel.errorMessage" = "Il periodo di prova non può essere superiore a %1$d %2$@";
+
+/* Title for the Free trial info screen of the subscription product. */
+"subscriptionTrialViewModel.title" = "Prova gratuita";
 
 /* A label prompting users to learn more about Tap to Pay on iPhone.
 %1$@ is a placeholder that always replaced with \"Learn more\" string,

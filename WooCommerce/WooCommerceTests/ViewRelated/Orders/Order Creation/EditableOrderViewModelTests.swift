@@ -331,25 +331,33 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productRows.contains(where: { $0.productOrVariationID == product.productID }))
     }
 
-    func test_bundle_order_item_with_child_items_includes_bundle_configuration_when_quantity_is_incremented() throws {
+    func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
         // Given
         let bundledProduct = Product.fake().copy(siteID: sampleSiteID, productID: 665, productTypeKey: ProductType.simple.rawValue)
         let bundleItem = ProductBundleItem.fake().copy(bundledItemID: 1, productID: bundledProduct.productID)
+
+        let bundledVariableProduct = Product.fake().copy(siteID: sampleSiteID, productID: 668, productTypeKey: ProductType.variable.rawValue, attributes: [
+            .fake().copy(name: "Fabric", options: ["Cotton", "Organic cotton"])
+        ], variations: [17])
+        let variableBundleItem = ProductBundleItem.fake().copy(bundledItemID: 2, productID: bundledVariableProduct.productID, isOptional: true)
+
         let bundleProduct = Product.fake().copy(siteID: sampleSiteID,
                                                 productID: 600,
                                                 productTypeKey: ProductType.bundle.rawValue,
                                                 bundledItems: [
-                                                    bundleItem
+                                                    bundleItem, variableBundleItem
                                                 ])
         // Inserts necessary objects to storage.
         storageManager.insertSampleProduct(readOnlyProduct: bundledProduct)
+        storageManager.insertSampleProduct(readOnlyProduct: bundledVariableProduct)
         let storageBundleProduct = storageManager.insertSampleProduct(readOnlyProduct: bundleProduct)
         storageManager.insert(bundleItem, for: storageBundleProduct)
+        storageManager.insert(variableBundleItem, for: storageBundleProduct)
 
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, items: [
             // Bundle order item
             .fake().copy(itemID: 1, productID: bundleProduct.productID, quantity: 2),
-            // Bundled child order item
+            // Bundled child order item for the simple product
             .fake().copy(itemID: 2, productID: bundledProduct.productID, quantity: 6, parent: 1),
         ])
         viewModel = .init(siteID: sampleSiteID,
@@ -359,7 +367,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                           quantityDebounceDuration: 0)
 
         waitUntil {
-            self.viewModel.productRows.count == 2
+            self.viewModel.productRows.count == 1
         }
 
         let orderToUpdate: Order = waitFor { promise in
@@ -379,9 +387,11 @@ final class EditableOrderViewModelTests: XCTestCase {
 
         // Then
         let bundleOrderItemToUpdate = try XCTUnwrap(orderToUpdate.items.first)
-        XCTAssertEqual(bundleOrderItemToUpdate.bundleConfiguration, [
-            .init(bundledItemID: 1, productID: 665, quantity: 3, isOptionalAndSelected: nil, variationID: nil, variationAttributes: nil)
-        ])
+        assertEqual([
+            .init(bundledItemID: 1, productID: 665, quantity: 3, isOptionalAndSelected: nil, variationID: nil, variationAttributes: nil),
+            // Even though the variable bundle item is not selected, it still needs to be included in the bundle configuration
+            .init(bundledItemID: 2, productID: 668, quantity: 0, isOptionalAndSelected: false, variationID: nil, variationAttributes: nil),
+        ], bundleOrderItemToUpdate.bundleConfiguration)
     }
 
     func test_selectOrderItem_selects_expected_order_item() throws {
@@ -541,7 +551,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         // Check previous condition
         XCTAssertEqual(viewModel.customAmountRows.count, 1)
 
-        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+        viewModel.customAmountRows.first?.onEditCustomAmount()
+        viewModel.addCustomAmountViewModel(with: nil).deleteButtonPressed()
 
         // Then
         XCTAssertTrue(viewModel.customAmountRows.isEmpty)
@@ -555,7 +566,8 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.addCustomAmountViewModel(with: .fixedAmount).doneButtonPressed()
 
         // When
-        viewModel.customAmountRows.first?.onRemoveCustomAmount()
+        viewModel.customAmountRows.first?.onEditCustomAmount()
+        viewModel.addCustomAmountViewModel(with: nil).deleteButtonPressed()
 
         // Then
         XCTAssertNotNil(analytics.receivedEvents.first(where: { $0 == WooAnalyticsStat.orderFeeRemove.rawValue }))
@@ -2780,6 +2792,35 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(paymentDataViewModel.shouldRenderCouponsInfoTooltip)
     }
 
+    // MARK: Parent/child order items
+
+    func test_bundle_child_order_items_excluded_from_productRows_and_added_to_parent_childProductRows() throws {
+        let bundleItem = ProductBundleItem.fake().copy(productID: 5)
+        let bundleProduct = storageManager.createAndInsertBundleProduct(siteID: sampleSiteID, productID: 606, bundleItems: [bundleItem])
+        storageManager.insertProducts([.fake().copy(siteID: sampleSiteID, productID: bundleItem.productID, purchasable: true)])
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: 1, items: [
+            // Bundle product order item.
+            .fake().copy(itemID: 6, productID: bundleProduct.productID, quantity: 2),
+            // Child bundled item with `parent` equal to the bundle parent item ID.
+            .fake().copy(itemID: 2, productID: bundleItem.productID, quantity: 1, parent: 6),
+        ])
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.count, 1)
+
+        let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
+        XCTAssertEqual(parentOrderItemRow.quantity, 2)
+
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
+        XCTAssertEqual(childOrderItemRow.quantity, 1)
+    }
+
     func test_bundle_child_order_item_has_canChangeQuantity_false() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -2799,14 +2840,10 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 2)
-
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
-        XCTAssertEqual(parentOrderItemRow.quantity, 2)
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
-        XCTAssertEqual(childOrderItemRow.quantity, 1)
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertFalse(childOrderItemRow.canChangeQuantity)
     }
 
@@ -2830,13 +2867,13 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                storageManager: storageManager)
 
         // Then
-        XCTAssertEqual(viewModel.productRows.count, 2)
+        XCTAssertEqual(viewModel.productRows.count, 1)
 
         let parentOrderItemRow = try XCTUnwrap(viewModel.productRows[0])
         XCTAssertEqual(parentOrderItemRow.quantity, 2)
         XCTAssertTrue(parentOrderItemRow.canChangeQuantity)
 
-        let childOrderItemRow = try XCTUnwrap(viewModel.productRows[1])
+        let childOrderItemRow = try XCTUnwrap(parentOrderItemRow.childProductRows[0])
         XCTAssertEqual(childOrderItemRow.quantity, 1)
         XCTAssertTrue(childOrderItemRow.canChangeQuantity)
     }

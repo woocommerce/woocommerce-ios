@@ -6,16 +6,13 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
     private let editable: Bool
 
     private let isMinMaxQuantitiesEnabled: Bool
-    private let editingSubscriptionEnabled: Bool
 
     init(productVariation: EditableProductVariationModel,
          editable: Bool,
-         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities),
-         editingSubscriptionEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.subscriptionProducts)) {
+         isMinMaxQuantitiesEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readOnlyMinMaxQuantities)) {
         self.productVariation = productVariation
         self.editable = editable
         self.isMinMaxQuantitiesEnabled = isMinMaxQuantitiesEnabled
-        self.editingSubscriptionEnabled = editingSubscriptionEnabled
     }
 
     /// Returns an array of actions that are visible in the product form primary section.
@@ -48,15 +45,13 @@ struct ProductVariationFormActionsFactory: ProductFormActionsFactoryProtocol {
 private extension ProductVariationFormActionsFactory {
     /// All the editable actions in the settings section given the product variation.
     func allSettingsSectionActions() -> [ProductFormEditAction] {
-        let shouldShowSubscriptionRow = !editingSubscriptionEnabled && productVariation.subscription != nil
+        let shouldShowSubscriptionRow = productVariation.subscription != nil
         let shouldShowPriceSettingsRow = editable || productVariation.regularPrice?.isNotEmpty == true
         let shouldShowNoPriceWarningRow = productVariation.isEnabledAndMissingPrice
         let shouldShowShippingSettingsRow = productVariation.isShippingEnabled()
         let canEditInventorySettingsRow = editable && productVariation.hasIntegerStockQuantity
         let subscriptionOrPriceRow: ProductFormEditAction? = {
-            if shouldShowSubscriptionRow {
-                return .subscription(actionable: true)
-            } else if shouldShowPriceSettingsRow {
+            if shouldShowPriceSettingsRow {
                 return .priceSettings(editable: editable, hideSeparator: shouldShowNoPriceWarningRow)
             } else {
                 return nil
@@ -67,8 +62,8 @@ private extension ProductVariationFormActionsFactory {
         let actions: [ProductFormEditAction?] = [
             subscriptionOrPriceRow,
             shouldShowNoPriceWarningRow ? .noPriceWarning: nil,
-            editingSubscriptionEnabled ? .subscriptionFreeTrial(editable: editable) : nil,
-            editingSubscriptionEnabled ? .subscriptionExpiry(editable: editable) : nil,
+            shouldShowSubscriptionRow ? .subscriptionFreeTrial(editable: editable) : nil,
+            shouldShowSubscriptionRow ? .subscriptionExpiry(editable: editable) : nil,
             .attributes(editable: editable),
             shouldShowQuantityRulesRow ? .quantityRules : nil,
             .status(editable: editable),
@@ -86,7 +81,7 @@ private extension ProductVariationFormActionsFactory {
 
     func isVisibleInSettingsSection(action: ProductFormEditAction) -> Bool {
         switch action {
-        case .priceSettings, .noPriceWarning, .status, .attributes, .subscription, .quantityRules:
+        case .priceSettings, .noPriceWarning, .status, .attributes, .quantityRules:
             // The price settings, attributes, and visibility actions are always visible in the settings section.
             return true
         case .subscriptionFreeTrial, .subscriptionExpiry:

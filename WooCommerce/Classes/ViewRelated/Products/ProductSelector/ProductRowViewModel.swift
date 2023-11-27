@@ -3,7 +3,7 @@ import Foundation
 import Yosemite
 import WooFoundation
 
-/// View model for `ProductRow`.
+/// View model for product rows or cards, e.g. `ProductRow` or `CollapsibleProductCard`.
 ///
 final class ProductRowViewModel: ObservableObject, Identifiable {
     private let currencyFormatter: CurrencyFormatter
@@ -33,6 +33,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     /// Whether a product in an order item has a parent order item
     let hasParentProduct: Bool
+
+    /// Child product rows, if the product is the parent of child order items
+    @Published private(set) var childProductRows: [ProductRowViewModel]
 
     /// Whether a product in an order item is configurable
     ///
@@ -196,6 +199,17 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             .joined(separator: " • ")
     }
 
+    /// Label showing secondary product details. Can include product type (if the row is configurable), and SKU (if available).
+    ///
+    var secondaryProductDetailsLabel: String {
+        [productTypeLabel, skuLabel]
+            .compactMap({ $0 })
+            .filter { $0.isNotEmpty }
+            .joined(separator: " • ")
+    }
+
+    private let productTypeLabel: String?
+
     /// Label showing product SKU
     ///
     lazy var skuLabel: String = {
@@ -271,6 +285,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          productOrVariationID: Int64,
          name: String,
          sku: String?,
+         productTypeLabel: String? = nil,
          price: String?,
          discount: Decimal? = nil,
          stockStatusKey: String,
@@ -285,6 +300,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          analytics: Analytics = ServiceLocator.analytics,
@@ -296,6 +312,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.productOrVariationID = productOrVariationID
         self.name = name
         self.sku = sku
+        self.productTypeLabel = productTypeLabel
         self.price = price
         self.discount = discount
         self.stockStatus = .init(rawValue: stockStatusKey)
@@ -307,6 +324,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
         self.analytics = analytics
@@ -326,6 +344,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -377,10 +396,13 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         && product.bundledItems.isNotEmpty
         && configure != nil
 
+        let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
+
         self.init(id: id,
                   productOrVariationID: product.productID,
                   name: product.name,
                   sku: product.sku,
+                  productTypeLabel: productTypeLabel,
                   price: price,
                   discount: discount,
                   stockStatusKey: stockStatusKey,
@@ -392,6 +414,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

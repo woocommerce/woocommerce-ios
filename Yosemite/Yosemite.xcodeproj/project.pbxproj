@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 53;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -143,6 +143,8 @@
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		209AD3CC2AC1A68800825D76 /* WooPaymentsDepositService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CB2AC1A68800825D76 /* WooPaymentsDepositService.swift */; };
 		209AD3CE2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */; };
+		20BCF6F22B0E554500954840 /* SystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F12B0E554500954840 /* SystemStatusService.swift */; };
+		20BCF6F52B0E57AB00954840 /* MockSystemStatusService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */; };
 		24163B9E257F41A600F94EC3 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163B9D257F41A600F94EC3 /* StoresManager.swift */; };
 		24163BA8257F41C500F94EC3 /* SessionManagerProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */; };
 		247CE7AB2582DB9300F9D9D1 /* String+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */; };
@@ -608,6 +610,8 @@
 		077F39E426A5C98200ABEADC /* SystemStatusStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusStoreTests.swift; sourceTree = "<group>"; };
 		209AD3CB2AC1A68800825D76 /* WooPaymentsDepositService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositService.swift; sourceTree = "<group>"; };
 		209AD3CD2AC1A9C200825D76 /* WooPaymentsDepositsOverview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooPaymentsDepositsOverview.swift; sourceTree = "<group>"; };
+		20BCF6F12B0E554500954840 /* SystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemStatusService.swift; sourceTree = "<group>"; };
+		20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MockSystemStatusService.swift; path = ../../../WooCommerce/WooCommerceTests/Mocks/MockSystemStatusService.swift; sourceTree = "<group>"; };
 		24163B9D257F41A600F94EC3 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		24163BA7257F41C500F94EC3 /* SessionManagerProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionManagerProtocol.swift; sourceTree = "<group>"; };
 		247CE7AA2582DB9300F9D9D1 /* String+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Extensions.swift"; sourceTree = "<group>"; };
@@ -1127,6 +1131,14 @@
 			path = Payments;
 			sourceTree = "<group>";
 		};
+		20BCF6F32B0E558500954840 /* SystemStatus */ = {
+			isa = PBXGroup;
+			children = (
+				20BCF6F12B0E554500954840 /* SystemStatusService.swift */,
+			);
+			path = SystemStatus;
+			sourceTree = "<group>";
+		};
 		247CE7AF2582DBD000F9D9D1 /* Mocks */ = {
 			isa = PBXGroup;
 			children = (
@@ -1456,6 +1468,7 @@
 		B56C1EBC20EABD1C00D749F9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				20BCF6F32B0E558500954840 /* SystemStatus */,
 				B9C0C1062A3C665300DF84EA /* ProductVariations */,
 				E18FDAFC28F97E9C008519BA /* InAppPurchases */,
 				02FF054423D983C40058E6E7 /* Media */,
@@ -1734,6 +1747,7 @@
 				0248B36A2459127200A271A4 /* MockNetwork+Path.swift */,
 				022F9318257F24730011CD94 /* MockShippingLabel.swift */,
 				022F931C257F27B40011CD94 /* MockShippingLabelAddress.swift */,
+				20BCF6F42B0E57AB00954840 /* MockSystemStatusService.swift */,
 			);
 			path = Mocks;
 			sourceTree = "<group>";
@@ -2172,6 +2186,7 @@
 				D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */,
 				02031DF42AA6DDBF00D13669 /* MediaUIImageExporter.swift in Sources */,
 				E16C59BD28F9394F007D55BB /* InAppPurchaseAction.swift in Sources */,
+				20BCF6F22B0E554500954840 /* SystemStatusService.swift in Sources */,
 				744A321B216D57D40051439B /* SiteVisitStats+ReadOnlyType.swift in Sources */,
 				02124DAE2431C11600980D74 /* Media+ProductImage.swift in Sources */,
 				DEFD6D9526443CA100E51E0D /* SitePluginStore.swift in Sources */,
@@ -2383,6 +2398,7 @@
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				02DAE7F8291A9F11009342B7 /* DomainStoreTests.swift in Sources */,
 				DED91DF62AD67F8F00CDCC53 /* MockBlazeRemote.swift in Sources */,
+				20BCF6F52B0E57AB00954840 /* MockSystemStatusService.swift in Sources */,
 				D8652E322630741000350F37 /* PaymentIntent+ReceiptParametersTests.swift in Sources */,
 				029249E8274B8AEE002E9C34 /* MockMediaRemote.swift in Sources */,
 				022F00C72472963E008CD97F /* NotificationCountStoreTests.swift in Sources */,

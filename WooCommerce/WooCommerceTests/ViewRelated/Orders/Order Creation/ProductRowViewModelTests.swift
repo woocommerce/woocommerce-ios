@@ -66,6 +66,21 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.quantity, 1)
     }
 
+    func test_viewModel_is_created_with_correct_initial_values_from_product_with_child_product_rows() {
+        // Given
+        let product = Product.fake()
+        let childProductRows = [ProductRowViewModel(product: .fake(), canChangeQuantity: false),
+                                ProductRowViewModel(product: .fake(), canChangeQuantity: false)]
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true, childProductRows: childProductRows)
+
+        // Then
+        XCTAssertTrue(viewModel.canChangeQuantity)
+        XCTAssertEqual(viewModel.childProductRows.count, 2)
+        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).canChangeQuantity)
+    }
+
     func test_view_model_creates_expected_label_for_product_with_managed_stock() {
         // Given
         let stockQuantity: Decimal = 7
@@ -239,6 +254,62 @@ final class ProductRowViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.skuLabel, expectedSKULabel)
     }
 
+    func test_secondaryProductDetailsLabel_is_formatted_correctly_for_non_configurable_product_with_sku() {
+        // Given
+        let sku = "123456"
+        let product = Product.fake().copy(sku: sku)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+        let expectedSKULabel = String.localizedStringWithFormat(format, sku)
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, expectedSKULabel)
+    }
+
+    func test_secondaryProductDetailsLabel_is_empty_for_non_configurable_product_without_sku() {
+        // Given
+        let sku = ""
+        let product = Product.fake().copy(sku: sku)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false)
+
+        // Then
+        let expectedSKULabel = ""
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, expectedSKULabel)
+    }
+
+    func test_secondaryProductDetailsLabel_contains_product_type_and_formatted_correctly_for_configurable_bundle_product_with_sku() {
+        // Given
+        let sku = "123456"
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+
+        // Then
+        let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
+        let expectedSKULabel = String.localizedStringWithFormat(format, sku)
+        XCTAssertTrue(viewModel.secondaryProductDetailsLabel.contains(ProductType.bundle.description))
+        XCTAssertTrue(viewModel.secondaryProductDetailsLabel.contains(expectedSKULabel))
+    }
+
+    func test_secondaryProductDetailsLabel_is_product_type_for_configurable_bundle_product_without_sku() {
+        // Given
+        let sku = ""
+        let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
+        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, featureFlagService: featureFlagService, configure: {})
+
+        // Then
+        XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
+    }
+
     func test_increment_and_decrement_quantity_have_step_value_of_one() {
         // Given
         let product = Product.fake()
@@ -345,7 +416,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_decrementer_disabled_at_minimum_quantity_when_removeProductIntent_is_nil() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,
@@ -367,7 +437,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_decrementer_not_disabled_at_minimum_quantity_when_removeProductIntent_is_not_nil() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,
@@ -390,7 +459,6 @@ final class ProductRowViewModelTests: XCTestCase {
 
     func test_quantity_incrementer_disabled_at_maximum_quantity() {
         // Given
-        let product = Product.fake()
         let viewModel = ProductRowViewModel(productOrVariationID: 1,
                                             name: "",
                                             sku: nil,

@@ -219,7 +219,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
 
     // MARK: - `toConfiguration`
 
-    func test_toConfiguration_sets_placeholder_variationID_and_attributes_when_selectedVariation_is_nil() {
+    func test_toConfiguration_sets_quantity_to_0_when_selectedVariation_is_nil() {
         // Given
         let variableProduct = createVariableProduct()
             .copy(attributes: [
@@ -238,11 +238,7 @@ final class ConfigurableBundleItemViewModelTests: XCTestCase {
         // Then
         XCTAssertNil(viewModel.selectedVariation)
         XCTAssertEqual(viewModel.toConfiguration, .init(bundledItemID: 0,
-                                                        productOrVariation: .variation(productID: variableProduct.productID,
-                                                                                       variationID: 965,
-                                                                                       attributes: [
-                                                                                        .init(id: 5, name: "Flavor", option: "Pineapple")
-                                                                                       ]),
+                                                        productOrVariation: .product(id: variableProduct.productID),
                                                         quantity: 0,
                                                         isOptionalAndSelected: false))
     }

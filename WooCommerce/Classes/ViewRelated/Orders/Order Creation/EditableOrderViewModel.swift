@@ -600,12 +600,18 @@ final class EditableOrderViewModel: ObservableObject {
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
+            // If the parent product is a bundle product, quantity cannot be changed.
+            let canChildItemsChangeQuantity = product.productType != .bundle
+            let childProductRows = childItems.compactMap { childItem in
+                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity)
+            }
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
                                        discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        hasParentProduct: item.parent != nil,
+                                       childProductRows: childProductRows,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -789,6 +795,15 @@ final class EditableOrderViewModel: ObservableObject {
 
     func addCustomAmountViewModel(with option: OrderCustomAmountsSection.ConfirmationOption?) -> AddCustomAmountViewModel {
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 onCustomAmountDeleted: { [weak self] feeID in
+            self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
+
+            guard let match = self?.orderSynchronizer.order.fees.first(where: { $0.feeID == feeID}) else {
+                DDLogError("Failed attempt to delete feeID \(String(describing: feeID))")
+                return
+            }
+            self?.removeFee(match)
+        },
                                                  onCustomAmountEntered: { [weak self] amount, name, feeID, isTaxable in
             let taxStatus: OrderFeeTaxStatus = isTaxable ? .taxable : .none
             if let feeID = feeID {
@@ -1279,10 +1294,6 @@ private extension EditableOrderViewModel {
                     return CustomAmountRowViewModel(id: fee.feeID,
                                                     name: fee.name ?? Localization.customAmountDefaultName,
                                                     total: self.currencyFormatter.formatAmount(fee.total) ?? "",
-                                                    onRemoveCustomAmount: {
-                        self.analytics.track(.orderCreationRemoveCustomAmountTapped)
-                        self.removeFee(fee)
-                    },
                                                     onEditCustomAmount: {
                         self.analytics.track(.orderCreationEditCustomAmountTapped)
                         self.editingFee = fee
@@ -1728,7 +1739,10 @@ private extension EditableOrderViewModel {
             let bundleConfiguration: [BundledProductConfiguration] = productValue.bundledItems
                 .compactMap { bundleItem -> BundledProductConfiguration? in
                     guard let existingOrderItem = childItems.first(where: { $0.productID == bundleItem.productID }) else {
-                        return nil
+                        return .init(bundledItemID: bundleItem.bundledItemID,
+                                     productOrVariation: .product(id: bundleItem.productID),
+                                     quantity: 0,
+                                     isOptionalAndSelected: false)
                     }
                     let attributes = existingOrderItem.attributes
                         .map { ProductVariationAttribute(id: $0.metaID, name: $0.name, option: $0.value) }
@@ -1828,16 +1842,12 @@ private extension EditableOrderViewModel {
     ///
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
+            guard item.parent == nil else { // Don't create a separate product row for child items
+                return nil
+            }
+
             let childItems = items.filter { $0.parent == item.itemID }
-            // If the parent product is a bundle product, quantity cannot be changed.
-            let canChangeQuantity: Bool = {
-                guard let parentItem = items.first(where: { $0.itemID == item.parent }),
-                      let parentProduct = allProducts.first(where: { $0.productID == parentItem.productID }) else {
-                    return true
-                }
-                return parentProduct.productType != .bundle
-            }()
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: canChangeQuantity) else {
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
                 return nil
             }
 

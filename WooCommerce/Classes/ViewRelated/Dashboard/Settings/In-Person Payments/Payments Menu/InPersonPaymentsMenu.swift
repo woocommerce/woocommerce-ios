@@ -38,15 +38,17 @@ struct InPersonPaymentsMenu: View {
                         Text(Localization.paymentActionsSectionTitle.uppercased())
                     }
 
-                    ScrollViewSection {
-                        PaymentsToggleRow(
-                            image: Image(uiImage: .creditCardIcon),
-                            title: Localization.toggleEnableCashOnDelivery,
-                            toggleRowViewModel: viewModel.payInPersonToggleViewModel)
-                        .customOpenURL(binding: $viewModel.safariSheetURL)
-                        .padding(.vertical, Layout.cellVerticalPadding)
-                    } header: {
-                        Text(Localization.paymentSettingsSectionTitle.uppercased())
+                    if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
+                        ScrollViewSection {
+                            PaymentsToggleRow(
+                                image: Image(uiImage: .creditCardIcon),
+                                title: Localization.toggleEnableCashOnDelivery,
+                                toggleRowViewModel: payInPersonToggleViewModel)
+                            .customOpenURL(binding: $viewModel.safariSheetURL)
+                            .padding(.vertical, Layout.cellVerticalPadding)
+                        } header: {
+                            Text(Localization.paymentSettingsSectionTitle.uppercased())
+                        }
                     }
 
                     ScrollViewSection {
@@ -63,17 +65,22 @@ struct InPersonPaymentsMenu: View {
                             }
                         }) {
                             NavigationView {
-                                PaymentSettingsFlowPresentingView(
-                                    viewModelsAndViews: viewModel.setUpTapToPayViewModelsAndViews)
+                                TapToPaySettingsFlowPresentingView(
+                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                    siteID: viewModel.siteID,
+                                    onboardingUseCase: viewModel.onboardingUseCase)
                                 .navigationBarHidden(true)
                             }
                         }
 
-                        NavigationLink {
-                            AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                        Button {
+                            viewModel.aboutTapToPayTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .infoOutlineImage),
-                                        title: Localization.aboutTapToPayOnIPhone)
+                                        title: Localization.aboutTapToPayOnIPhone,
+                                        isActive: $viewModel.presentAboutTapToPay) {
+                                AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
+                            }
                         }
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
@@ -92,29 +99,50 @@ struct InPersonPaymentsMenu: View {
                     .renderedIf(viewModel.shouldShowTapToPaySection)
 
                     ScrollViewSection {
-                        NavigationLink {
-                            AuthenticatedWebView(isPresented: .constant(true),
-                                                 viewModel: viewModel.purchaseCardReaderWebViewModel)
+                        Button {
+                            viewModel.purchaseCardReaderTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .shoppingCartIcon),
-                                        title: Localization.purchaseCardReader)
+                                        title: Localization.purchaseCardReader,
+                                        isActive: $viewModel.presentPurchaseCardReader) {
+                                AuthenticatedWebView(isPresented: .constant(true),
+                                                     viewModel: viewModel.purchaseCardReaderWebViewModel)
+                            }
                         }
 
-                        NavigationLink {
-                            PaymentSettingsFlowPresentingView(viewModelsAndViews: viewModel.manageCardReadersViewModelsAndViews)
+                        Button {
+                            viewModel.manageCardReadersTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .creditCardIcon),
                                         title: Localization.manageCardReader)
                         }
+                        .sheet(isPresented: $viewModel.presentManageCardReaders,
+                               onDismiss: {
+                            Task { @MainActor in
+                                await viewModel.onAppear()
+                            }
+                        }) {
+                            NavigationView {
+                                CardReaderSettingsFlowPresentingView(
+                                    configuration: viewModel.cardPresentPaymentsConfiguration,
+                                    siteID: viewModel.siteID)
+                                .navigationBarItems(leading: Button(Localization.done, action: {
+                                    viewModel.presentManageCardReaders = false
+                                }))
+                            }
+                        }
                         .disabled(viewModel.shouldDisableManageCardReaders)
 
-                        NavigationLink {
-                            CardReaderManualsView()
+                        Button {
+                            viewModel.cardReaderManualsTapped()
                         } label: {
                             PaymentsRow(image: Image(uiImage: .cardReaderManualIcon),
-                                        title: Localization.cardReaderManuals)
-                            .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
+                                        title: Localization.cardReaderManuals,
+                                        isActive: $viewModel.presentCardReaderManuals) {
+                                CardReaderManualsView()
+                            }
                         }
+                        .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
                     } footer: {
@@ -125,13 +153,16 @@ struct InPersonPaymentsMenu: View {
                     .renderedIf(viewModel.shouldShowCardReaderSection)
 
                     ScrollViewSection {
-                        NavigationLink(isActive: $viewModel.presentManagePaymentGateways) {
-                            InPersonPaymentsSelectPluginView(selectedPlugin: nil,
-                                                             onPluginSelected: viewModel.preferredPluginSelected)
+                        Button {
+                            viewModel.managePaymentGatewaysTapped()
                         } label: {
                             PaymentsRow(image: Image(systemName: "rectangle.on.rectangle.angled"),
                                         title: Localization.managePaymentGateways,
-                                        subtitle: viewModel.activePaymentGatewayName)
+                                        subtitle: viewModel.activePaymentGatewayName,
+                                        isActive: $viewModel.presentManagePaymentGateways) {
+                                InPersonPaymentsSelectPluginView(selectedPlugin: nil,
+                                                                 onPluginSelected: viewModel.preferredPluginSelected)
+                            }
                             .padding(.vertical, Layout.cellVerticalPadding)
                         }
                         .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
@@ -175,10 +206,31 @@ struct InPersonPaymentsMenu: View {
     var depositSummary: some View {
         if #available(iOS 16.0, *),
            viewModel.shouldShowDepositSummary {
-            WooPaymentsDepositsOverviewView(viewModels: viewModel.depositCurrencyViewModels)
+            if viewModel.isLoadingDepositSummary {
+                WooPaymentsDepositsOverviewView(viewModel: depositSummaryLoadingViewModel)
+                    .redacted(reason: .placeholder)
+                    .shimmering()
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel(Localization.loadingDepositSummaryAccessibilityLabel)
+            } else if let depositViewModel = viewModel.depositViewModel {
+                WooPaymentsDepositsOverviewView(viewModel: depositViewModel)
+            }
         } else {
             EmptyView()
         }
+    }
+
+    private var depositSummaryLoadingViewModel: WooPaymentsDepositsOverviewViewModel {
+        .init(currencyViewModels: [.init(overview: .init(
+            currency: .AED,
+            automaticDeposits: false,
+            depositInterval: .daily,
+            pendingBalanceAmount: .zero,
+            pendingDepositsCount: 0,
+            pendingDepositDays: 0,
+            nextDeposit: nil,
+            lastDeposit: nil,
+            availableBalance: .zero))])
     }
 }
 
@@ -296,6 +348,12 @@ private extension InPersonPaymentsMenu {
                      A label prompting users to learn more about card readers.
                      This part is the link to the website, and forms part of a longer sentence which it should be considered a part of.
                      """
+        )
+
+        static let loadingDepositSummaryAccessibilityLabel = NSLocalizedString(
+            "menu.payments.depositSummary.loading.accessibilityLabel",
+            value: "Loading balances...",
+            comment: "An accessibility label used when the balances are loading on the payments menu"
         )
     }
 

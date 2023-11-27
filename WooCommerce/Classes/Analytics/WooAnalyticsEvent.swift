@@ -2820,7 +2820,6 @@ extension WooAnalyticsEvent {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
         }
 
-
         static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningSuccess, properties: [Keys.source: source.rawValue])
         }

@@ -500,14 +500,14 @@ private extension ProductsViewController {
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
 
+        configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
     }
 
-    func configureNavigationBarRightButtonItems() {
-        var rightBarButtonItems = [UIBarButtonItem]()
-        rightBarButtonItems.append(addProductButton)
+    func configureNavigationBarLeftButtonItems() {
+        navigationItem.leftBarButtonItem = nil
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory) && UIImagePickerController.isSourceTypeAvailable(.camera) {
             let buttonItem: UIBarButtonItem = {
                 let button = UIBarButtonItem(image: .scanImage,
                                              style: .plain,
@@ -523,8 +523,14 @@ private extension ProductsViewController {
 
                 return button
             }()
-            rightBarButtonItems.append(buttonItem)
+
+            navigationItem.leftBarButtonItem = buttonItem
         }
+    }
+
+    func configureNavigationBarRightButtonItems() {
+        var rightBarButtonItems = [UIBarButtonItem]()
+        rightBarButtonItems.append(addProductButton)
 
         let searchItem: UIBarButtonItem = {
             let button = UIBarButtonItem(image: .searchBarButtonItemImage,
@@ -556,7 +562,7 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(bulkEditItem)
 
-        navigationItem.leftBarButtonItem = nil
+
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 

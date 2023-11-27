@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let isUITesting = CommandLine.arguments.contains("-ui_testing")
 
         switch featureFlag {
-        case .barcodeScanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:

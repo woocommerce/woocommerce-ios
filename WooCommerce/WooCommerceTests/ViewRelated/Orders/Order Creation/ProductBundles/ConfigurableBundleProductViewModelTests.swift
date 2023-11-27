@@ -28,8 +28,8 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
             // One optional item
-            .fake().copy(productID: 2, isOptional: true),
-            .fake().copy(productID: 3, isOptional: false)
+            .fake().copy(bundledItemID: 1, productID: 2, isOptional: true),
+            .fake().copy(bundledItemID: 2, productID: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
@@ -53,7 +53,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         nonOptionalItem.quantity = 2
 
         // Then
-        XCTAssertTrue(viewModel.validate())
+        XCTAssertTrue(viewModel.isConfigureEnabled)
         XCTAssertNil(viewModel.validationErrorMessage)
     }
 
@@ -82,13 +82,13 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         optionalItem.quantity = 6
         optionalItem.isOptionalAndSelected = false
 
-        XCTAssertTrue(viewModel.validate())
+        XCTAssertTrue(viewModel.isConfigureEnabled)
 
         let nonOptionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[1])
         nonOptionalItem.quantity = 6
 
         // Then
-        XCTAssertFalse(viewModel.validate())
+        XCTAssertFalse(viewModel.isConfigureEnabled)
         XCTAssertNotNil(viewModel.validationErrorMessage)
     }
 
@@ -114,7 +114,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         item.quantity = 4
 
         // Then
-        XCTAssertFalse(viewModel.validate())
+        XCTAssertFalse(viewModel.isConfigureEnabled)
         XCTAssertNotNil(viewModel.validationErrorMessage)
     }
 

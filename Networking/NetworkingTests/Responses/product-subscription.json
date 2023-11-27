@@ -154,7 +154,7 @@
             {
                 "id": 4222,
                 "key": "_subscription_one_time_shipping",
-                "value": "no"
+                "value": "yes"
             }
         ],
         "stock_status": "outofstock",

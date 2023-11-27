@@ -42,6 +42,9 @@ final class ProductVariationEncoderTests: XCTestCase {
         let trialPeriod = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_trial_period"}))
         XCTAssertEqual(trialPeriod["value"] as? String, "month")
 
+        let oneTimeShipping = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_one_time_shipping"}))
+        XCTAssertEqual(oneTimeShipping["value"] as? String, "yes")
+
         let paymentSyncDate = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_payment_sync_date"}))
         XCTAssertEqual(paymentSyncDate["value"] as? String, "7")
     }

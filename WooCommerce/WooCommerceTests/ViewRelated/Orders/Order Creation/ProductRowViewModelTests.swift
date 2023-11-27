@@ -739,6 +739,49 @@ final class ProductRowViewModelTests: XCTestCase {
             XCTAssertFalse(viewModel.isConfigurable)
         }
     }
+
+    // MARK: - `isReadOnly`
+
+    func test_isReadOnly_is_false_for_products_by_default() {
+        // Given
+        let product = Product.fake()
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: true)
+
+        // Then
+        XCTAssertFalse(viewModel.isReadOnly, "Product should not be read only")
+    }
+
+    func test_isReadOnly_is_false_for_non_bundle_parent_and_child_items() throws {
+        // Given
+        let parent = Product.fake()
+        let children: [ProductRowViewModel] = [.init(product: .fake(), canChangeQuantity: true),
+                                               .init(productVariation: .fake(), name: "Variation", canChangeQuantity: true, displayMode: .stock)]
+
+        // When
+        let viewModel = ProductRowViewModel(product: parent, canChangeQuantity: true, childProductRows: children)
+
+        // Then
+        XCTAssertFalse(viewModel.isReadOnly, "Parent product should not be read only")
+        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[0]).isReadOnly, "Child product should not be read only")
+        XCTAssertFalse(try XCTUnwrap(viewModel.childProductRows[1]).isReadOnly, "Child product variation should not be read only")
+    }
+
+    func test_isReadOnly_is_false_for_bundle_parent_and_true_for_bundle_child_items() throws {
+        // Given
+        let parent = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue)
+        let children: [ProductRowViewModel] = [.init(product: .fake(), canChangeQuantity: false),
+                                               .init(productVariation: .fake(), name: "Variation", canChangeQuantity: false, displayMode: .stock)]
+
+        // When
+        let viewModel = ProductRowViewModel(product: parent, canChangeQuantity: true, childProductRows: children)
+
+        // Then
+        XCTAssertFalse(viewModel.isReadOnly, "Parent product should not be read only")
+        XCTAssertTrue(try XCTUnwrap(viewModel.childProductRows[0]).isReadOnly, "Child product should be read only")
+        XCTAssertTrue(try XCTUnwrap(viewModel.childProductRows[1]).isReadOnly, "Child product variation should be read only")
+    }
 }
 
 private extension ProductRowViewModelTests {

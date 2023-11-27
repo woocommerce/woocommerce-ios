@@ -170,6 +170,7 @@ private struct CollapsibleProductRowCard: View {
 
             Group {
                 SimplifiedProductRow(viewModel: viewModel)
+                    .renderedIf(!viewModel.isReadOnly)
                 HStack {
                     Text(Localization.priceLabel)
                     CollapsibleProductCardPriceSummary(viewModel: viewModel)
@@ -177,12 +178,13 @@ private struct CollapsibleProductRowCard: View {
                 HStack {
                     discountRow
                 }
+                .renderedIf(!viewModel.isReadOnly)
                 HStack {
                     Text(Localization.priceAfterDiscountLabel)
                     Spacer()
                     Text(viewModel.totalPriceAfterDiscountLabel ?? "")
                 }
-                .renderedIf(viewModel.hasDiscount)
+                .renderedIf(viewModel.hasDiscount && !viewModel.isReadOnly)
             }
             .padding(.top)
 
@@ -222,6 +224,7 @@ private struct CollapsibleProductRowCard: View {
                     .renderedIf(shouldShowInfoTooltip)
                 }
             }
+            .renderedIf(!viewModel.isReadOnly)
         })
         .onTapGesture {
             dismissTooltip()

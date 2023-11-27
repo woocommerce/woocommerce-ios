@@ -63,6 +63,7 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialLength, "0")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
         XCTAssertFalse(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "0")
     }
 
     /// Test that the fields for variations of a subscription product are properly parsed when missing fields.
@@ -81,6 +82,7 @@ final class ProductVariationMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialLength, "0")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .month)
         XCTAssertFalse(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "0")
     }
 
     /// Test that subscription is nil when parsing non-subscription product response

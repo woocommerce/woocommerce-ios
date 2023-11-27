@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="22225" systemVersion="22G90" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21754" systemVersion="22G91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -607,6 +607,7 @@
     </entity>
     <entity name="ProductSubscription" representedClassName="ProductSubscription" syncable="YES">
         <attribute name="length" attributeType="String" defaultValueString=""/>
+        <attribute name="oneTimeShipping" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="period" attributeType="String" defaultValueString=""/>
         <attribute name="periodInterval" attributeType="String" defaultValueString=""/>
         <attribute name="price" attributeType="String" defaultValueString=""/>

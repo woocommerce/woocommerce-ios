@@ -4,8 +4,7 @@ struct PrintCustomsFormsView: View {
     private let invoiceURLs: [String]
     private let showsSaveForLater: Bool
 
-    private let inProgressViewProperties = InProgressViewProperties(title: Localization.inProgressTitle, message: Localization.inProgressMessage)
-    @State private var showingInProgress = false
+    @State private var printingInvoicePath: String?
 
     init(invoiceURLs: [String], showsSaveForLater: Bool = false) {
         self.invoiceURLs = invoiceURLs
@@ -40,7 +39,7 @@ struct PrintCustomsFormsView: View {
                         }, label: {
                             Text(Localization.singlePrintButton)
                         })
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(PrimaryLoadingButtonStyle(isLoading: printingInvoicePath != nil))
 
                         saveForLaterButton
                     }
@@ -51,15 +50,19 @@ struct PrintCustomsFormsView: View {
                             HStack {
                                 Text(String(format: Localization.packageNumber, index + 1))
                                 Spacer()
-                                Button(action: {
-                                    showPrintingView(for: url)
-                                }, label: {
-                                    HStack {
-                                        Spacer()
-                                        Text(Localization.printButton)
-                                    }
-                                })
-                                .buttonStyle(LinkButtonStyle())
+                                if printingInvoicePath == url {
+                                    ActivityIndicator(isAnimating: .constant(true), style: .medium)
+                                } else {
+                                    Button(action: {
+                                        showPrintingView(for: url)
+                                    }, label: {
+                                        HStack {
+                                            Spacer()
+                                            Text(Localization.printButton)
+                                        }
+                                    })
+                                    .buttonStyle(LinkButtonStyle())
+                                }
                             }
                             .padding(.leading, Constants.horizontalPadding)
                             .frame(height: Constants.printRowHeight)
@@ -78,10 +81,6 @@ struct PrintCustomsFormsView: View {
             }
         }
         .navigationTitle(Localization.navigationTitle)
-        .fullScreenCover(isPresented: $showingInProgress) {
-            InProgressView(viewProperties: inProgressViewProperties)
-                .edgesIgnoringSafeArea(.all)
-        }
     }
 
     private var saveForLaterButton: some View {
@@ -98,20 +97,21 @@ struct PrintCustomsFormsView: View {
         guard let url = URL(string: path) else {
             return
         }
-        showingInProgress = true
+        printingInvoicePath = path
         DispatchQueue.global(qos: .userInitiated).async {
             do {
                 let data = try Data(contentsOf: url)
 
                 DispatchQueue.main.async {
-                    showingInProgress = false
                     let printController = UIPrintInteractionController()
                     printController.printingItem = data
-                    printController.present(animated: true, completionHandler: nil)
+                    printController.present(animated: true) { _, _, _ in
+                        printingInvoicePath = nil
+                    }
                 }
             } catch {
                 DispatchQueue.main.async {
-                    showingInProgress = false
+                    printingInvoicePath = nil
                 }
             }
         }

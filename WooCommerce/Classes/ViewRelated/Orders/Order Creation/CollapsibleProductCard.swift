@@ -157,7 +157,7 @@ private struct CollapsibleProductRowCard: View {
                             .foregroundColor(.black)
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
-                            .subheadlineStyle()
+                            .font(.subheadline)
                             .renderedIf(isCollapsed)
                     }
                 }

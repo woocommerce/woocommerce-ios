@@ -179,4 +179,8 @@ public enum FeatureFlag: Int {
     /// Enables creating Subscription products
     ///
     case subscriptionProducts
+
+    /// Enables the Scan to Update Inventory feature.
+    ///
+    case scanToUpdateInventory
 }

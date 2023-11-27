@@ -13,53 +13,49 @@ struct ConfigurableBundleProductView: View {
 
     var body: some View {
         NavigationView {
-            ScrollView {
-                VStack(spacing: Layout.noSpacing) {
-                    if let validationErrorMessage = viewModel.validationErrorMessage {
-                        Group {
-                            Text(validationErrorMessage)
-                                .errorStyle()
-                        }
-                        .padding()
-                    }
-
-                    if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
-                        Group {
-                            Text(loadProductsErrorMessage)
-                                .errorStyle()
-                            Button(Localization.retry) {
-                                viewModel.retry()
+            VStack {
+                ScrollView {
+                    VStack(spacing: Layout.noSpacing) {
+                        if let validationErrorMessage = viewModel.validationErrorMessage {
+                            Group {
+                                Text(validationErrorMessage)
+                                    .errorStyle()
                             }
-                            .buttonStyle(PrimaryButtonStyle())
+                            .padding()
                         }
-                        .padding()
-                    }
 
-                    ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
-                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                        Divider()
-                            .dividerStyle()
-                            .padding(.leading, Layout.defaultPadding)
-                    }
-                    .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
+                        if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
+                            Group {
+                                Text(loadProductsErrorMessage)
+                                    .errorStyle()
+                                Button(Localization.retry) {
+                                    viewModel.retry()
+                                }
+                                .buttonStyle(PrimaryButtonStyle())
+                            }
+                            .padding()
+                        }
 
-                    ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
-                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                        Divider()
-                            .dividerStyle()
-                            .padding(.leading, Layout.defaultPadding)
+                        ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
+                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                            Divider()
+                                .dividerStyle()
+                                .padding(.leading, Layout.defaultPadding)
+                        }
+                        .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
+
+                        ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
+                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                            Divider()
+                                .dividerStyle()
+                                .padding(.leading, Layout.defaultPadding)
+                        }
+                        .redacted(reason: .placeholder)
+                        .shimmering()
+                        .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
                     }
-                    .redacted(reason: .placeholder)
-                    .shimmering()
-                    .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
                 }
-                .padding(.horizontal, insets: safeAreaInsets)
-                .background(Color(.listForeground(modal: false)))
-            }
-            .ignoresSafeArea(.container, edges: [.horizontal, .bottom])
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .safeAreaInset(edge: .bottom) {
+
                 Button(Localization.save) {
                     guard viewModel.validate() else {
                         return
@@ -71,6 +67,11 @@ struct ConfigurableBundleProductView: View {
                 .disabled(!viewModel.isConfigureEnabled)
                 .padding(Layout.defaultPadding)
             }
+            .padding(.horizontal, insets: safeAreaInsets)
+            .background(Color(.listForeground(modal: false)))
+            .ignoresSafeArea(.container, edges: [.horizontal])
+            .navigationTitle(Localization.title)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button(Localization.close) {

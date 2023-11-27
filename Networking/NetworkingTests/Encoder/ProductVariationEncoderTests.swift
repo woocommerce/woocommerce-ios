@@ -40,6 +40,9 @@ final class ProductVariationEncoderTests: XCTestCase {
 
         let trialPeriod = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_trial_period"}))
         XCTAssertEqual(trialPeriod["value"] as? String, "month")
+
+        let oneTimeShipping = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_one_time_shipping"}))
+        XCTAssertEqual(oneTimeShipping["value"] as? String, "yes")
     }
 
     func test_it_does_not_encode_meta_data_without_subscription() throws {

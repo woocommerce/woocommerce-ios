@@ -53,18 +53,14 @@ struct PrintCustomsFormsView: View {
                                 if printingInvoicePath == url {
                                     ActivityIndicator(isAnimating: .constant(true), style: .medium)
                                 } else {
-                                    Button(action: {
+                                    Button(Localization.printButton) {
                                         showPrintingView(for: url)
-                                    }, label: {
-                                        HStack {
-                                            Spacer()
-                                            Text(Localization.printButton)
-                                        }
-                                    })
-                                    .buttonStyle(LinkButtonStyle())
+                                    }
+                                    .buttonStyle(.plain)
+                                    .foregroundColor(.accentColor)
                                 }
                             }
-                            .padding(.leading, Constants.horizontalPadding)
+                            .padding(.horizontal, Constants.horizontalPadding)
                             .frame(height: Constants.printRowHeight)
                             Divider()
                         }

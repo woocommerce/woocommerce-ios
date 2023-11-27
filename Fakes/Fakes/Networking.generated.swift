@@ -1194,7 +1194,8 @@ extension Networking.ProductSubscription {
             price: .fake(),
             signUpFee: .fake(),
             trialLength: .fake(),
-            trialPeriod: .fake()
+            trialPeriod: .fake(),
+            oneTimeShipping: .fake()
         )
     }
 }

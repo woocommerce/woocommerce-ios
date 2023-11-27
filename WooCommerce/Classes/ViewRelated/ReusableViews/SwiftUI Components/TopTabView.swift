@@ -83,23 +83,43 @@ struct TopTabView: View {
 
             // Display Content for selected tab
             GeometryReader { geometry in
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 0) {
-                        ForEach(0..<tabs.count, id: \.self) { index in
-                            tabs[index].view
-                                .frame(width: geometry.size.width)
-                        }
+                HStack(spacing: 0) {
+                    ForEach(0..<tabs.count, id: \.self) { index in
+                        tabs[index].view
+                            .frame(width: geometry.size.width)
                     }
-                    .offset(x: self.dragOffset(width: geometry.size.width))
-                    .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
-                    .gesture(
-                        DragGesture()
-                            .updating($dragState) { drag, state, transaction in
-                                state = .dragging(translation: drag.translation)
-                            }
-                            .onEnded(onDragEnded)
-                    )
                 }
+                .offset(x: self.dragOffset(width: geometry.size.width))
+                .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
+                .gesture(
+                    DragGesture()
+                        .updating($dragState) { drag, state, transaction in
+                            state = .dragging(translation: drag.translation)
+                        }
+                        .onEnded { drag in
+                            let horizontalAmount = drag.predictedEndTranslation.width as CGFloat
+                            let threshold: CGFloat = geometry.size.width / 2
+                            let newIndex: Int
+                            if horizontalAmount > threshold {
+                                newIndex = max(selectedTab - 1, 0)
+                            } else if horizontalAmount < -threshold {
+                                newIndex = min(selectedTab + 1, tabs.count - 1)
+                            } else {
+                                newIndex = selectedTab
+                            }
+
+                            // Update underlineOffset when the tab changes
+                            underlineOffset = calculateOffset(index: newIndex)
+
+                            // Call the onSelected closure if it exists for the new tab
+                            tabs[newIndex].onSelected?()
+
+                            // Update the selected tab to the new index
+                            withAnimation(.easeOut) {
+                                selectedTab = newIndex
+                            }
+                        }
+                )
             }
             .frame(height: 300)
         }
@@ -119,45 +139,46 @@ struct TopTabView: View {
     }
 
     private func onDragEnded(drag: DragGesture.Value) {
-            let thresholdPercentage: CGFloat = 0.5 // Threshold to swipe to next tab
-            let dragThreshold = thresholdPercentage * UIScreen.main.bounds.width
-            if drag.predictedEndTranslation.width > dragThreshold {
-                selectedTab = max(selectedTab - 1, 0)
-            } else if drag.predictedEndTranslation.width < -dragThreshold {
-                selectedTab = min(selectedTab + 1, tabs.count - 1)
+        let thresholdPercentage: CGFloat = 0.5 // Threshold to swipe to next tab
+        let dragThreshold = thresholdPercentage * UIScreen.main.bounds.width
+        if drag.predictedEndTranslation.width > dragThreshold {
+            selectedTab = max(selectedTab - 1, 0)
+        } else if drag.predictedEndTranslation.width < -dragThreshold {
+            selectedTab = min(selectedTab + 1, tabs.count - 1)
+        }
+    }
+
+    private func dragOffset(width: CGFloat) -> CGFloat {
+        if dragState.isActive {
+            let offset = -CGFloat(selectedTab) * width + dragState.translation.width
+            return offset
+        } else {
+            return -CGFloat(selectedTab) * width
+        }
+    }
+
+    enum DragState {
+        case inactive
+        case dragging(translation: CGSize)
+
+        var translation: CGSize {
+            switch self {
+            case .inactive:
+                return .zero
+            case .dragging(let translation):
+                return translation
             }
         }
 
-        private func dragOffset(width: CGFloat) -> CGFloat {
-            if dragState.isActive {
-                return -CGFloat(selectedTab) * width + dragState.translation.width
-            } else {
-                return -CGFloat(selectedTab) * width
+        var isActive: Bool {
+            switch self {
+            case .inactive:
+                return false
+            case .dragging:
+                return true
             }
         }
-
-        enum DragState {
-            case inactive
-            case dragging(translation: CGSize)
-
-            var translation: CGSize {
-                switch self {
-                case .inactive:
-                    return .zero
-                case .dragging(let translation):
-                    return translation
-                }
-            }
-
-            var isActive: Bool {
-                switch self {
-                case .inactive:
-                    return false
-                case .dragging:
-                    return true
-                }
-            }
-        }
+    }
 
     private enum Layout {
         static let tabPadding: CGFloat = 10

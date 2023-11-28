@@ -18,6 +18,8 @@ extension ProductSubscription {
     @NSManaged public var product: Product?
     @NSManaged public var productVariation: ProductVariation?
     @NSManaged public var oneTimeShipping: Bool
+    @NSManaged public var paymentSyncDate: String?
+
 }
 
 extension ProductSubscription: Identifiable {

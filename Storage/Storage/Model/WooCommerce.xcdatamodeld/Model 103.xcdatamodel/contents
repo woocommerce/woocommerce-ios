@@ -608,6 +608,7 @@
     <entity name="ProductSubscription" representedClassName="ProductSubscription" syncable="YES">
         <attribute name="length" attributeType="String" defaultValueString=""/>
         <attribute name="oneTimeShipping" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="paymentSyncDate" attributeType="String" defaultValueString=""/>
         <attribute name="period" attributeType="String" defaultValueString=""/>
         <attribute name="periodInterval" attributeType="String" defaultValueString=""/>
         <attribute name="price" attributeType="String" defaultValueString=""/>

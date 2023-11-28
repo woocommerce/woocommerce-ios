@@ -27,6 +27,8 @@ extension Storage.ProductSubscription: ReadOnlyConvertible {
                                    price: price ?? "",
                                    signUpFee: signUpFee ?? "",
                                    trialLength: trialLength ?? "0",
-                                   trialPeriod: SubscriptionPeriod(rawValue: trialPeriod ?? "day") ?? .day)
+                                   trialPeriod: SubscriptionPeriod(rawValue: trialPeriod ?? "day") ?? .day,
+                                   // TODO: 11178 - Read `oneTimeShipping` from storage
+                                   oneTimeShipping: false)
     }
 }

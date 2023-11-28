@@ -509,8 +509,21 @@ extension ProductFormViewModel {
     }
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
+        let oneTimeShipping: Bool? = {
+            guard let subscription = product.subscription else {
+                return nil
+            }
+
+            // One time shipping can be turned on only if there is no Free trial
+            guard trialLength.isEmpty || trialLength == "0" else {
+                return false
+            }
+
+            return subscription.oneTimeShipping
+        }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
-                                                      trialPeriod: trialPeriod)
+                                                      trialPeriod: trialPeriod,
+                                                      oneTimeShipping: oneTimeShipping ?? nil)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 

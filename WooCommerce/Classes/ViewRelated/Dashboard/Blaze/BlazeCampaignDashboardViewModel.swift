@@ -143,6 +143,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     func dismissBlazeSection() {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
+        update(state: .empty)
     }
 }
 

@@ -12,10 +12,11 @@ final class ProductShippingSettingsViewController: UIViewController {
     private var hasRetrievedShippingClassIfNeeded: Bool = false
 
     typealias Completion = (_ weight: String?,
-        _ dimensions: ProductDimensions,
-        _ shippingClassSlug: String?,
-        _ shippingClassID: Int64?,
-        _ hasUnsavedChanges: Bool) -> Void
+                            _ dimensions: ProductDimensions,
+                            _ oneTimeShipping: Bool?,
+                            _ shippingClassSlug: String?,
+                            _ shippingClassID: Int64?,
+                            _ hasUnsavedChanges: Bool) -> Void
     private let onCompletion: Completion
 
     private let viewModel: ProductShippingSettingsViewModelOutput & ProductShippingSettingsActionHandler

@@ -217,6 +217,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
                                            height: height ?? "")
         onCompletion(weight,
                      dimensions,
+                     oneTimeShipping,
                      shippingClassSlug,
                      shippingClassID,
                      hasUnsavedChanges())

@@ -48,7 +48,8 @@ public enum ProductFactory {
                             shippingClass: "standard",
                             shippingClassID: 123,
                             categories: [.fake()],
-                            tags: [.fake()])
+                            tags: [.fake()],
+                            subscription: .fake())
     }
 
     /// Returns a simple product that is ready to test the product form actions

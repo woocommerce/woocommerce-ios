@@ -265,6 +265,7 @@ extension ProductShippingSettingsViewController {
         case width
         case height
         case shippingClass
+        case oneTimeShipping
 
         fileprivate var type: UITableViewCell.Type {
             switch self {
@@ -272,6 +273,8 @@ extension ProductShippingSettingsViewController {
                 return UnitInputTableViewCell.self
             case .shippingClass:
                 return TitleAndValueTableViewCell.self
+            case .oneTimeShipping:
+                return SwitchTableViewCell.self
             }
         }
 

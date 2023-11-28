@@ -119,6 +119,9 @@ struct TopTabView: View {
                             }
                         }
                         .onEnded { drag in
+                            // We use `predictedEndTranslation` to account for velocity as the user ends the drag
+                            // For fast, short swipes, this will likely be higher than `translation`, and lead to a
+                            // more natural feeling animation.
                             let horizontalAmount = drag.predictedEndTranslation.width as CGFloat
                             let threshold: CGFloat = geometry.size.width / 2
                             let newIndex: Int

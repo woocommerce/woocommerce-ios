@@ -11,8 +11,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let isUITesting = CommandLine.arguments.contains("-ui_testing")
 
         switch featureFlag {
-        case .barcodeScanner:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
         case .inbox:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .splitViewInOrdersTab:
@@ -83,6 +81,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
+            return buildConfig == .localDeveloper || buildConfig == .alpha
+        case .scanToUpdateInventory:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         default:
             return true

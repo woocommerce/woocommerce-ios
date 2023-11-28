@@ -280,15 +280,17 @@ private extension SettingsViewModel {
         let storeSettingsSection: Section? = {
             var rows: [Row] = [.storeName]
 
-            let site = stores.sessionManager.defaultSite
-            if site?.isJetpackCPConnected == true ||
-                (site?.isNonJetpackSite == true &&
-                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
-                rows.append(.installJetpack)
-            }
+            if let site = stores.sessionManager.defaultSite {
+                if site.isJetpackCPConnected == true ||
+                    (site.isNonJetpackSite == true &&
+                     featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                    rows.append(.installJetpack)
+                }
 
-            if featureFlagService.isFeatureFlagEnabled(.lightweightStorefront) {
-                rows.append(.themes)
+                let themesUseCase = ThemeEligibilityUseCase(featureFlagService: featureFlagService)
+                if themesUseCase.isEligible(site: site) {
+                    rows.append(.themes)
+                }
             }
 
             if !defaults.completedAllStoreOnboardingTasks,

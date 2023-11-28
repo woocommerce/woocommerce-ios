@@ -29,10 +29,12 @@ public struct WooPaymentsDepositsOverviewByCurrency: GeneratedCopiable, Generate
     public struct LastDeposit {
         public let amount: NSDecimalNumber
         public let date: Date
+        public let status: WooPaymentsDepositStatus
 
-        public init(amount: NSDecimalNumber, date: Date) {
+        public init(amount: NSDecimalNumber, date: Date, status: WooPaymentsDepositStatus) {
             self.amount = amount
             self.date = date
+            self.status = status
         }
     }
 

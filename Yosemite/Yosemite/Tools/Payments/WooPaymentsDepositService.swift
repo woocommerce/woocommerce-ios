@@ -110,6 +110,7 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
             amount: depositAmountDecimal(from: lastDeposit.amount,
                                          currency: currency,
                                          type: lastDeposit.type),
-            date: lastDeposit.date)
+            date: lastDeposit.date,
+            status: lastDeposit.status)
     }
 }

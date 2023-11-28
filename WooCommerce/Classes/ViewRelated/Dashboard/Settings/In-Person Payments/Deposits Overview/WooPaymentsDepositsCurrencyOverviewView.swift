@@ -61,18 +61,21 @@ struct WooPaymentsDepositsCurrencyOverviewView: View {
                     .foregroundColor(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .accessibilityAddTraits(.isHeader)
-                LazyVGrid(columns: [GridItem(.flexible(maximum: 70), alignment: .leading),
+                LazyVGrid(columns: [GridItem(.flexible(maximum: 60), alignment: .leading),
                                     GridItem(alignment: .leading),
+                                    GridItem(.flexible(minimum: 100), alignment: .leading),
                                     GridItem(alignment: .trailing)],
                           spacing: 16) {
                     Text(Localization.nextDepositRowTitle)
                     Text(viewModel.nextDepositDate)
+                    WooPaymentsDepositsBadge(status: viewModel.nextDepositStatus)
                     Text(viewModel.nextDepositAmount)
 
-                    Text(Localization.paidDepositRowTitle)
-                        .foregroundColor(.withColorStudio(name: .green, shade: .shade50))
+                    Text(Localization.lastDepositRowTitle)
+                        .foregroundColor(.secondary)
                     Text(viewModel.lastDepositDate)
                         .foregroundColor(.secondary)
+                    WooPaymentsDepositsBadge(status: viewModel.lastDepositStatus)
                     Text(viewModel.lastDepositAmount)
                         .foregroundColor(.secondary)
                 }
@@ -135,6 +138,25 @@ struct AccountSummaryItem: View {
     }
 }
 
+struct WooPaymentsDepositsBadge: View {
+    let status: WooPaymentsDepositStatus
+
+    var body: some View {
+        Text(status.localizedName)
+            .foregroundColor(status.textColor)
+            .padding(Layout.padding)
+            .background(RoundedRectangle(cornerRadius: Layout.cornerRadius)
+                .fill(status.backgroundColor))
+    }
+}
+
+private extension WooPaymentsDepositsBadge {
+    enum Layout {
+        static let padding: CGFloat = 8.0
+        static let cornerRadius: CGFloat = 8.0
+    }
+}
+
 @available(iOS 16.0, *)
 private extension WooPaymentsDepositsCurrencyOverviewView {
     enum Localization {
@@ -152,9 +174,10 @@ private extension WooPaymentsDepositsCurrencyOverviewView {
         static let nextDepositRowTitle = NSLocalizedString(
             "Next",
             comment: "Row title for the next deposit in the WooPayments Deposits overview")
-        static let paidDepositRowTitle = NSLocalizedString(
-            "Paid",
-            comment: "Row title for the last paid deposit in the WooPayments Deposits overview")
+        static let lastDepositRowTitle = NSLocalizedString(
+            "deposits.currency.overview.depositTable.last.title",
+            value: "Last",
+            comment: "Row title for the last (previous) deposit in the WooPayments Deposits overview")
         static let learnMoreButtonText = NSLocalizedString(
             "Learn more about when you'll receive your funds",
             comment: "Button text to view more about payment schedules on the WooPayments Deposits View.")
@@ -186,7 +209,8 @@ struct WooPaymentsDepositsCurrencyOverviewView_Previews: PreviewProvider {
             ),
             lastDeposit: WooPaymentsDepositsOverviewByCurrency.LastDeposit(
                 amount: 500.0,
-                date: Date()
+                date: Date(),
+                status: .inTransit
             ),
             availableBalance: 1500.0
         )

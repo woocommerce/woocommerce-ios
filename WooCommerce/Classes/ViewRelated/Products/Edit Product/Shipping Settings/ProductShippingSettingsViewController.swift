@@ -280,3 +280,29 @@ extension ProductShippingSettingsViewController {
         }
     }
 }
+
+// MARK: Localization
+
+private extension ProductShippingSettingsViewController {
+    enum Localization {
+        enum OneTimeShipping {
+            static let title = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.title",
+                value: "One time shipping",
+                comment: "Title for the One time shipping product shipping setting."
+            )
+
+            static let subtitle = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.subtitle",
+                value: "Enable this to charge shipping once on the initial order.",
+                comment: "Subtitle for the One time shipping product shipping setting."
+            )
+
+            static let subtitleDisabled = NSLocalizedString(
+                "productShippingSettings.oneTimeShipping.subtitleDisabled",
+                value: "For this setting to be enabled the subscription must not have a free trial or a synced renewal date.",
+                comment: "Subtitle for the One time shipping product shipping setting when it is disabled."
+            )
+        }
+    }
+}

@@ -74,6 +74,7 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
                                           stockStatus: product.productStockStatus)
         viewModel.updateShippingSettings(weight: product.weight,
                                          dimensions: product.dimensions,
+                                         oneTimeShipping: product.subscription?.oneTimeShipping,
                                          shippingClass: product.shippingClass,
                                          shippingClassID: product.shippingClassID)
         viewModel.updateProductCategories(product.categories)
@@ -244,6 +245,19 @@ final class ProductFormViewModel_ChangesTests: XCTestCase {
         // When
         viewModel.updateShippingSettings(weight: "88888",
                                          dimensions: product.dimensions,
+                                         oneTimeShipping: product.subscription?.oneTimeShipping,
+                                         shippingClass: product.shippingClass,
+                                         shippingClassID: product.shippingClassID)
+
+        // Then
+        XCTAssertTrue(viewModel.hasUnsavedChanges())
+    }
+
+    func test_product_has_unsaved_changes_from_editing_oneTimeShipping() {
+        // When
+        viewModel.updateShippingSettings(weight: product.weight,
+                                         dimensions: product.dimensions,
+                                         oneTimeShipping: true,
                                          shippingClass: product.shippingClass,
                                          shippingClassID: product.shippingClassID)
 

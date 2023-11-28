@@ -43,7 +43,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingShippingSettings() {
         // Arrange
-        let product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        let product = Product.fake().copy(subscription: subscription)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,

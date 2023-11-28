@@ -23,7 +23,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     // MARK: - Validation
 
-    func test_isConfigureEnabled_is_false_when_bundle_item_is_invalid() throws {
+    func test_validation_is_failure_when_bundle_item_is_invalid() throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: nil, bundleMaxSize: 5, bundledItems: [
@@ -82,7 +82,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         }
 
         XCTAssertFalse(viewModel.isConfigureEnabled)
-        XCTAssertNotNil(viewModel.validationErrorMessage)
+        XCTAssertTrue(viewModel.validationState.isFailure)
 
         // Optional non-selected bundle item quantity is not counted for the bundle size.
         let optionalItem = try XCTUnwrap(viewModel.bundleItemViewModels[0])
@@ -97,7 +97,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.validationState.isSuccess)
     }
 
-    func test_validationErrorMessage_is_nil_when_default_bundle_size_matches() throws {
+    func test_validation_is_success_when_default_bundle_size_matches() throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
@@ -119,10 +119,10 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         }
 
         XCTAssertTrue(viewModel.isConfigureEnabled)
-        XCTAssertNil(viewModel.validationErrorMessage)
+        XCTAssertTrue(viewModel.validationState.isSuccess)
     }
 
-    func test_validationErrorMessage_is_set_when_bundle_size_exceeds_max() throws {
+    func test_validation_is_failure_when_bundle_size_exceeds_max() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundleMaxSize: 5, bundledItems: [
             // One optional item
@@ -157,7 +157,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.validationState.isFailure)
     }
 
-    func test_validationErrorMessage_is_set_when_bundle_size_smaller_than_min() throws {
+    func test_validation_is_failure_when_bundle_size_smaller_than_min() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundledItems: [
             .fake().copy(productID: 2)

@@ -153,16 +153,6 @@ struct TopTabView: View {
         return tabWidths.prefix(index).reduce(0, +) + CGFloat(index) * (Layout.tabPadding * 2)
     }
 
-    private func onDragEnded(drag: DragGesture.Value) {
-        let thresholdPercentage: CGFloat = 0.5 // Threshold to swipe to next tab
-        let dragThreshold = thresholdPercentage * UIScreen.main.bounds.width
-        if drag.predictedEndTranslation.width > dragThreshold {
-            selectedTab = max(selectedTab - 1, 0)
-        } else if drag.predictedEndTranslation.width < -dragThreshold {
-            selectedTab = min(selectedTab + 1, tabs.count - 1)
-        }
-    }
-
     private func dragOffset(width: CGFloat) -> CGFloat {
         if dragState.isActive {
             let offset = -CGFloat(selectedTab) * width + dragState.translation.width

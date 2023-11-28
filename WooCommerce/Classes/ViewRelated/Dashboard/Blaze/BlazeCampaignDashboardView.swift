@@ -42,7 +42,10 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation web view
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let webViewModel = BlazeWebViewModel(source: source, siteURL: viewModel.siteURL, productID: productID) { [weak self] in
+        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
+                                             source: source,
+                                             siteURL: viewModel.siteURL,
+                                             productID: productID) { [weak self] in
             self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -145,6 +148,7 @@ struct BlazeCampaignDashboardView: View {
         }
         .overlay {
             topRightMenu
+                .renderedIf(viewModel.shouldRedactView == false)
         }
     }
 }
@@ -161,7 +165,7 @@ private extension BlazeCampaignDashboardView {
                 }
                 .confirmationDialog("", isPresented: $showingOptions) {
                     Button(Localization.hideBlaze) {
-                        // TODO
+                        viewModel.dismissBlazeSection()
                     }
                 }
             }

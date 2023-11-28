@@ -36,7 +36,10 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
 
     @Published private(set) var isConfigureEnabled: Bool = false
 
-    @Published private(set) var validationErrorMessage: String?
+    typealias ValidationError = ConfigurableBundleNoticeView.ValidationError
+    @Published private(set) var showsValidationNotice: Bool = false
+    @Published private(set) var validationState: Result<Void, ValidationError> = .success(())
+    @Published private var validationErrorMessage: String?
     @Published private(set) var loadProductsErrorMessage: String?
 
     /// View models for placeholder rows.
@@ -98,9 +101,7 @@ final class ConfigurableBundleProductViewModel: ObservableObject, Identifiable {
         }
 
         loadProductsAndCreateItemViewModels()
-        observeBundleItemQuantitiesForValidationErrorMessage()
-        observeBundleItemsForValidation()
-        observeBundleItemStatesForConfigureEnabledState()
+        observeForValidation()
     }
 
     /// Completes the bundle configuration and triggers the configuration callback.
@@ -202,7 +203,17 @@ private extension ConfigurableBundleProductViewModel {
     }
 }
 
+// MARK: - Validation
+
 private extension ConfigurableBundleProductViewModel {
+    func observeForValidation() {
+        observeBundleItemQuantitiesForValidationErrorMessage()
+        observeBundleItemsForValidation()
+        observeBundleAndItemErrorMessagesForValidationState()
+        observeValidationStateForNoticeVisibility()
+        observeValidationStateForConfigureEnabledState()
+    }
+
     func observeBundleItemQuantitiesForValidationErrorMessage() {
         $bundleItemQuantitiesByItemID
             .map { $0.values.sum() }
@@ -212,15 +223,46 @@ private extension ConfigurableBundleProductViewModel {
             .assign(to: &$validationErrorMessage)
     }
 
+    func observeBundleAndItemErrorMessagesForValidationState() {
+        let itemErrorMessages = $bundleItemErrorMessagesByItemID
+            .map { $0.values }
+        Publishers.CombineLatest(itemErrorMessages, $validationErrorMessage)
+            .map { itemErrorMessages, validationErrorMessage in
+                let errorMessages = ([validationErrorMessage] + itemErrorMessages).compactMap { $0 }
 
-    func observeBundleItemStatesForConfigureEnabledState() {
-        let hasValidationErrorForBundleItems = $bundleItemErrorMessagesByItemID
-            .map { $0.values.map { $0 != nil }.contains(true) }
-        let hasValidationErrorOnBundle = $validationErrorMessage.map { $0 != nil }
-        Publishers.CombineLatest(hasValidationErrorForBundleItems, hasValidationErrorOnBundle)
-            .map { hasValidationErrorForBundleItems, hasValidationErrorOnBundle in
-                hasValidationErrorForBundleItems == false && hasValidationErrorOnBundle == false
+                guard let firstErrorMessage = errorMessages.first else {
+                    return .success(())
+                }
+                return .failure(.init(message: firstErrorMessage))
             }
+            .assign(to: &$validationState)
+    }
+
+    func observeValidationStateForNoticeVisibility() {
+        $validationState
+            .removeDuplicates(by: { lhs, rhs in
+                switch (lhs, rhs) {
+                    case (.failure(let lhsError), .failure(let rhsError)):
+                        return lhsError == rhsError
+                    case (.success, .success):
+                        return true
+                    default:
+                        return false
+                }
+            })
+            .withPrevious()
+            .map { previous, current in
+                guard current.isSuccess else {
+                    return true
+                }
+                return previous?.isFailure == true
+            }
+            .assign(to: &$showsValidationNotice)
+    }
+
+    func observeValidationStateForConfigureEnabledState() {
+        $validationState
+            .map { $0.isSuccess }
             .assign(to: &$isConfigureEnabled)
     }
 

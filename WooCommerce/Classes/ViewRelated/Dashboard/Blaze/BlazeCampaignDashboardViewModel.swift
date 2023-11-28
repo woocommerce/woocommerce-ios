@@ -31,6 +31,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
+    @Published private var hasBeenDismissed: Bool
+
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -50,6 +52,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
+    private let userDefaults: UserDefaults
 
     /// Blaze campaign ResultsController.
     private lazy var blazeCampaignResultsController: ResultsController<StorageBlazeCampaign> = {
@@ -82,7 +85,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker()) {
+         blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
+         userDefaults: UserDefaults = .standard) {
         self.siteID = siteID
         self.siteURL = siteURL
         self.stores = stores
@@ -90,6 +94,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.analytics = analytics
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
+        self.userDefaults = userDefaults
+        self.hasBeenDismissed = userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID)
 
         observeSectionVisibility()
         configureResultsController()
@@ -136,6 +142,11 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     func didSelectCreateCampaign(source: BlazeSource) {
         analytics.track(event: .Blaze.blazeEntryPointTapped(source: source))
+    }
+
+    func dismissBlazeSection() {
+        hasBeenDismissed = true
+        userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
     }
 }
 
@@ -233,8 +244,11 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func observeSectionVisibility() {
-        visibilitySubscription = $state
-            .map { state in
+        visibilitySubscription = $state.combineLatest($hasBeenDismissed)
+            .map { state, hasBeenDismissed in
+                guard !hasBeenDismissed else {
+                    return false
+                }
                 switch state {
                 case .showCampaign, .showProduct:
                     return true
@@ -253,5 +267,38 @@ private extension BlazeCampaignDashboardViewModel {
 private extension BlazeCampaignDashboardViewModel {
     enum Constants {
         static let campaignDetailsURLFormat = "https://wordpress.com/advertising/campaigns/%d/%@?source=%@"
+    }
+}
+
+extension UserDefaults {
+    /// Checks if the Blaze section on My Store has been dismissed for a site.
+    ///
+    func hasDismissedBlazeSectionOnMyStore(for siteID: Int64) -> Bool {
+        let hasDismissed = self[.hasDismissedBlazeSectionOnMyStore] as? [String: Bool]
+        let idAsString = "\(siteID)"
+        return hasDismissed?[idAsString] == true
+    }
+
+    /// Marks the Blaze section on My Store as **not** dismissed for a site.
+    ///
+    func restoreBlazeSectionOnMyStore(for siteID: Int64) {
+        let idAsString = "\(siteID)"
+        guard var hasDismissed = self[.hasDismissedBlazeSectionOnMyStore] as? [String: Bool] else {
+            return
+        }
+        hasDismissed[idAsString] = false
+        self[.hasDismissedBlazeSectionOnMyStore] = hasDismissed
+    }
+
+    /// Marks the Blaze section on My Store as dismissed for a site.
+    ///
+    func setDismissedBlazeSectionOnMyStore(for siteID: Int64) {
+        let idAsString = "\(siteID)"
+        if var hasDismissed = self[.hasDismissedBlazeSectionOnMyStore] as? [String: Bool] {
+            hasDismissed[idAsString] = true
+            self[.hasDismissedBlazeSectionOnMyStore] = hasDismissed
+        } else {
+            self[.hasDismissedBlazeSectionOnMyStore] = [idAsString: true]
+        }
     }
 }

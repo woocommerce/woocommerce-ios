@@ -16,6 +16,9 @@ protocol ProductShippingSettingsViewModelOutput {
     var localizedWidth: String? { get }
     var localizedHeight: String? { get }
 
+    var oneTimeShipping: Bool? { get }
+    var supportsOneTimeShipping: Bool { get }
+
     /// Only for UI display and list selector
     /// Nil and not editable until the shipping class is synced at a later point.
     var shippingClass: ProductShippingClass? { get }
@@ -29,6 +32,7 @@ protocol ProductShippingSettingsActionHandler {
     func handleLengthChange(_ length: String?)
     func handleWidthChange(_ width: String?)
     func handleHeightChange(_ height: String?)
+    func handleOneTimeShippingChange(_ oneTimeShipping: Bool)
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?)
 
     /// If the product has a shipping class (slug & ID), the shipping class is synced to get the name and for list selector.

@@ -1,4 +1,5 @@
 import Yosemite
+import protocol Storage.StorageManagerType
 
 /// Provides data needed for shipping settings.
 ///
@@ -49,6 +50,7 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     let sections: [Section]
     let product: ProductFormDataModel
 
+    private let storageManager: StorageManagerType
     // Localizes weight and package dimensions
     //
     private let shippingValueLocalizer: ShippingValueLocalizer
@@ -85,8 +87,10 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     private var originalShippingClass: ProductShippingClass?
 
     init(product: ProductFormDataModel,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer()) {
         self.product = product
+        self.storageManager = storageManager
         self.shippingValueLocalizer = shippingValueLocalizer
         weight = product.weight
         length = product.dimensions.length

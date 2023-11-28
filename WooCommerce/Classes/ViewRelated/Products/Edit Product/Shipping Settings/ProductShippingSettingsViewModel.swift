@@ -227,6 +227,7 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
             || length != product.dimensions.length
             || width != product.dimensions.width
             || height != product.dimensions.height
+            || oneTimeShipping != product.subscription?.oneTimeShipping
             || shippingClass != originalShippingClass
     }
 }

@@ -3,8 +3,7 @@ import Combine
 import WooFoundation
 
 struct UpdateProductInventoryView: View {
-    @State private var quantity: Int = 2000
-    @ObservedObject private(set) var viewModel = UpdateProductInventoryViewModel()
+    @ObservedObject private(set) var viewModel: UpdateProductInventoryViewModel
 
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -12,27 +11,28 @@ struct UpdateProductInventoryView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State private var isKeyboardVisible = false
+    @State private var buttonTitle: String = Localization.IncreaseStockOnceButtonTitle
 
     var body: some View {
         NavigationView {
             VStack(alignment: .center, spacing: 0) {
-                    AsyncImage(url: URL(string: "https://picsum.photos/160")) { image in
-                        image.resizable()
-                    } placeholder: {
-                        Rectangle()
-                            .foregroundColor(.gray)
-                    }
-                    .frame(width: Layout.imageDimensionsSize * scale, height: Layout.imageDimensionsSize * scale)
-                    .cornerRadius(Layout.imageCornerRadius)
-                    .padding(.bottom, Layout.largeVerticalSpacing)
-                    .renderedIf(!isKeyboardVisible)
+                AsyncImage(url: viewModel.imageURL) { image in
+                    image.resizable()
+                } placeholder: {
+                    Rectangle()
+                        .foregroundColor(.gray)
+                }
+                .frame(width: Layout.imageDimensionsSize * scale, height: Layout.imageDimensionsSize * scale)
+                .cornerRadius(Layout.imageCornerRadius)
+                .padding(.bottom, Layout.largeVerticalSpacing)
+                .renderedIf(!isKeyboardVisible)
 
-                Text(Localization.ProductNameTitle)
+                Text(viewModel.name)
                     .headlineStyle()
                     .padding(.bottom, Layout.smallVerticalSpacing)
 
 
-                Text("123-SKU-456")
+                Text(viewModel.sku)
                     .subheadlineStyle()
                     .padding(.bottom, Layout.largeVerticalSpacing)
 
@@ -41,9 +41,11 @@ struct UpdateProductInventoryView: View {
                 HStack {
                     Text(Localization.ProductQuantityTitle)
                     Spacer()
-                    TextField("", text: $viewModel.quantity)
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.trailing)
+                    TextField("", text: $viewModel.quantity, onEditingChanged: { _ in
+                        buttonTitle = Localization.UpdateQuantityButtonTitle
+                    })
+                    .keyboardType(.numberPad)
+                    .multilineTextAlignment(.trailing)
                 }
                 .padding([.top, .bottom], Layout.mediumVerticalSpacing)
 
@@ -51,7 +53,7 @@ struct UpdateProductInventoryView: View {
 
                 Spacer()
 
-                Button("Quantity + 1") {
+                Button(buttonTitle) {
 
                 }
                 .buttonStyle(PrimaryButtonStyle())
@@ -91,22 +93,22 @@ extension UpdateProductInventoryView {
                                                         value: "Product Name",
                                                         comment: "Product name label in the update product inventory view.")
         static let ProductQuantityTitle = NSLocalizedString("updateProductInventoryView.productQuantityTitle",
-                                                        value: "Product Name",
-                                                        comment: "Product quantity label in the update product inventory view.")
+                                                            value: "Quantity",
+                                                            comment: "Product quantity label in the update product inventory view.")
         static let ViewProductDetailsButtonTitle = NSLocalizedString("updateProductInventoryView.viewProductDetailsButtonTitle",
-                                                        value: "View Product Details",
-                                                        comment: "Product detailsl button title.")
+                                                                     value: "View Product Details",
+                                                                     comment: "Product detailsl button title.")
         static let NavigationBarTitle = NSLocalizedString("updateProductInventoryView.navigationBarTitle",
-                                                        value: "Product",
-                                                        comment: "Navigation bar title of the update product inventory view.")
+                                                          value: "Product",
+                                                          comment: "Navigation bar title of the update product inventory view.")
         static let CancelButtonTitle = NSLocalizedString("updateProductInventoryView.cancelButtonTitle",
-                                                        value: "Cancel",
-                                                        comment: "Cancel button title on the update product inventory view.")
-    }
-}
-
-struct UpdateProductInventoryView_Previews: PreviewProvider {
-    static var previews: some View {
-        UpdateProductInventoryView()
+                                                         value: "Cancel",
+                                                         comment: "Cancel button title on the update product inventory view.")
+        static let IncreaseStockOnceButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle",
+                                                                    value: "Quantity + 1",
+                                                                    comment: "Stock quantity button when a tap increases the stock once.")
+        static let UpdateQuantityButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.updateQuantityButtonTitle",
+                                                                 value: "Update quantity",
+                                                                 comment: "Stock quantity button when the user adds a custom quantity.")
     }
 }

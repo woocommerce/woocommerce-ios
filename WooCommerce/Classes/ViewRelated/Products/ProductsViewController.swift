@@ -287,14 +287,21 @@ private extension ProductsViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            guard let self = self else { return }
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
 
-            self?.navigationItem.configureLeftBarButtonItemAsLoader()
+            self.navigationItem.configureLeftBarButtonItemAsLoader()
 
             Task {
-                await self?.viewModel.handleScannedBarcode(scannedBarcode)
-                self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
-                self?.present(UIHostingController(rootView: UpdateProductInventoryView()), animated: true)
+                self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+
+                do {
+                    let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
+                    let viewModel = UpdateProductInventoryViewModel(inventoryItem: scannedItem.inventoryItem)
+                    self.present(UIHostingController(rootView: UpdateProductInventoryView(viewModel: viewModel)), animated: true)
+                } catch {
+                    // TODO: Show error notices
+                }
             }
 
         }, onPermissionsDenied: {

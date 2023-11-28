@@ -49,7 +49,7 @@ struct CollapsibleView<Label: View, Content: View>: View {
                     Spacer()
                     if isCollapsible {
                         Image(uiImage: isCollapsed ? .chevronDownImage : .chevronUpImage)
-                            .foregroundColor(hasSubtleChevron ? Color(.textSubtle) : .black)
+                            .foregroundColor(hasSubtleChevron ? Color(.textSubtle) : Color(.accent))
                     }
                 }
             })

@@ -107,10 +107,6 @@ private struct CollapsibleProductRowCard: View {
     //
     var shouldDisallowDiscounts: Bool = false
 
-    private var shouldShowDividers: Bool {
-        !isCollapsed
-    }
-
     /// Tracks whether the `orderFormBundleProductConfigureCTAShown` event has been tracked to prevent multiple events across view updates.
     @State private var hasTrackedBundleProductConfigureCTAShownEvent: Bool = false
 
@@ -138,24 +134,31 @@ private struct CollapsibleProductRowCard: View {
         CollapsibleView(isCollapsible: true,
                         isCollapsed: $isCollapsed,
                         safeAreaInsets: EdgeInsets(),
-                        shouldShowDividers: shouldShowDividers,
+                        shouldShowDividers: false,
+                        hasSubtleChevron: viewModel.hasParentProduct,
                         label: {
             VStack {
                 HStack(alignment: .center, spacing: Layout.padding) {
                     ProductImageThumbnail(productImageURL: viewModel.imageURL,
-                                          productImageSize: Layout.productImageSize,
+                                          productImageSize: viewModel.hasParentProduct ? Layout.childProductImageSize : Layout.parentProductImageSize,
                                           scale: scale,
                                           productImageCornerRadius: Layout.productImageCornerRadius,
                                           foregroundColor: Color(UIColor.listSmallIcon))
+                    .padding(.leading, viewModel.hasParentProduct ? Layout.childLeadingPadding : 0)
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
+                            .font(viewModel.hasParentProduct ? .subheadline : .none)
+                            .foregroundColor(Color(.text))
                         Text(viewModel.stockQuantityLabel)
-                            .foregroundColor(.secondary)
-                            .renderedIf(isCollapsed)
+                            .font(.subheadline)
+                            .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.skuLabel)
-                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                            .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                            .font(.subheadline)
+                            .renderedIf(isCollapsed)
                     }
                 }
             }
@@ -163,6 +166,8 @@ private struct CollapsibleProductRowCard: View {
                 dismissTooltip()
             }
         }, content: {
+            Divider()
+
             SimplifiedProductRow(viewModel: viewModel)
             HStack {
                 Text(Localization.priceLabel)
@@ -226,7 +231,7 @@ private struct CollapsibleProductRowCard: View {
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(Color(uiColor: .black), lineWidth: Layout.borderLineWidth)
+                .stroke(Color(uiColor: .text), lineWidth: Layout.borderLineWidth)
                 .renderedIf(!isCollapsed)
         }
     }
@@ -311,9 +316,11 @@ struct CollapsibleProductCardPriceSummary: View {
 private extension CollapsibleProductRowCard {
     enum Layout {
         static let padding: CGFloat = 16
+        static let childLeadingPadding: CGFloat = 16.0
         static let frameCornerRadius: CGFloat = 4
         static let borderLineWidth: CGFloat = 1
-        static let productImageSize: CGFloat = 56.0
+        static let parentProductImageSize: CGFloat = 56.0
+        static let childProductImageSize: CGFloat = 40.0
         static let productImageCornerRadius: CGFloat = 4.0
         static let iconSize: CGFloat = 16
     }

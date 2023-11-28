@@ -1,4 +1,5 @@
 import UIKit
+import SwiftUI
 import WordPressUI
 import Yosemite
 import Combine
@@ -293,6 +294,7 @@ private extension ProductsViewController {
             Task {
                 await self?.viewModel.handleScannedBarcode(scannedBarcode)
                 self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+                self?.present(UIHostingController(rootView: UpdateProductInventoryView()), animated: true)
             }
 
         }, onPermissionsDenied: {

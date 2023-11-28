@@ -1729,8 +1729,10 @@
 		B958B4DA2983E3F40010286B /* OrderDurationRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */; };
 		B95A45E92A77AE2C0073A91F /* CustomerSelectorViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */; };
 		B95A45EC2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */; };
+		B95B15C92B15EBA000A54044 /* UpdateProductInventoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */; };
 		B96B536B2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */; };
 		B96D6C0729081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */; };
+		B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */; };
 		B98968572A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */; };
 		B98BA12D2AE90023006F1E4A /* OrderCustomAmountsSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */; };
 		B98C6D502B149C3900A243E1 /* UINavigationItem+Configuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */; };
@@ -4309,8 +4311,10 @@
 		B958B4D92983E3F40010286B /* OrderDurationRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDurationRecorder.swift; sourceTree = "<group>"; };
 		B95A45E82A77AE2C0073A91F /* CustomerSelectorViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewModel.swift; sourceTree = "<group>"; };
 		B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerSelectorViewModelTests.swift; sourceTree = "<group>"; };
+		B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModel.swift; sourceTree = "<group>"; };
 		B96B536A2816ECFC00F753E6 /* CardPresentPluginsDataProviderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardPresentPluginsDataProviderTests.swift; sourceTree = "<group>"; };
 		B96D6C0629081AE5003D2DC0 /* InAppPurchasesForWPComPlansManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InAppPurchasesForWPComPlansManager.swift; sourceTree = "<group>"; };
+		B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryView.swift; sourceTree = "<group>"; };
 		B98968562A98F227007A2FBE /* TaxEducationalDialogViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModelTests.swift; sourceTree = "<group>"; };
 		B98BA12C2AE90023006F1E4A /* OrderCustomAmountsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCustomAmountsSection.swift; sourceTree = "<group>"; };
 		B98C6D4F2B149C3900A243E1 /* UINavigationItem+Configuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationItem+Configuration.swift"; sourceTree = "<group>"; };
@@ -8273,6 +8277,7 @@
 		74EC34A3225FE1F3004BBC2E /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				B97C6E542B15E4EE008A2BF2 /* UpdateInventory */,
 				EEBDF7D62A2EF65D00EFEF47 /* ShareProduct */,
 				02EAF5BC29FA04660058071C /* AI */,
 				DE4FB771280E758D003D20D6 /* ProductSelector */,
@@ -9322,6 +9327,15 @@
 				B95A45EB2A77D7A60073A91F /* CustomerSelectorViewModelTests.swift */,
 			);
 			path = CustomerSection;
+			sourceTree = "<group>";
+		};
+		B97C6E542B15E4EE008A2BF2 /* UpdateInventory */ = {
+			isa = PBXGroup;
+			children = (
+				B97C6E552B15E51A008A2BF2 /* UpdateProductInventoryView.swift */,
+				B95B15C82B15EBA000A54044 /* UpdateProductInventoryViewModel.swift */,
+			);
+			path = UpdateInventory;
 			sourceTree = "<group>";
 		};
 		B98968542A98F1DF007A2FBE /* PaymentSection */ = {
@@ -12587,6 +12601,7 @@
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				CCE4CD282669324300E09FD4 /* ShippingLabelPaymentMethodsTopBanner.swift in Sources */,
 				269B46622A16D68A00ADA872 /* UpdateAnalyticsSettingsUseCase.swift in Sources */,
+				B95B15C92B15EBA000A54044 /* UpdateProductInventoryViewModel.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				DE157E1A2B02406400542A9B /* ProductSubscriptionPeriodPickerUseCase.swift in Sources */,
 				31B19B67263B5E580099DAA6 /* CardReaderSettingsSearchingViewModel.swift in Sources */,
@@ -13264,6 +13279,7 @@
 				E107FCE126C12B2700BAF51B /* InPersonPaymentsCountryNotSupported.swift in Sources */,
 				26E7EE7229301EBC00793045 /* AnalyticsProductCardViewModel.swift in Sources */,
 				027A2E142513124E00DA6ACB /* Keychain+Entries.swift in Sources */,
+				B97C6E562B15E51A008A2BF2 /* UpdateProductInventoryView.swift in Sources */,
 				268EC45F26CEA50C00716F5C /* EditCustomerNote.swift in Sources */,
 				4535EE7E281BE04A004212B4 /* CouponAmountInputFormatter.swift in Sources */,
 				209AD3D22AC1EDF600825D76 /* WooPaymentsDepositsCurrencyOverviewView.swift in Sources */,

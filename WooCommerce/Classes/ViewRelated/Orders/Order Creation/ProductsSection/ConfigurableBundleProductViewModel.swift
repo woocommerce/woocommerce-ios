@@ -225,14 +225,14 @@ private extension ConfigurableBundleProductViewModel {
     }
 
     func observeBundleItemsForValidation() {
+        bundleItemErrorMessagesByItemID.removeAll()
+        bundleItemQuantitiesByItemID.removeAll()
         bundleItemViewModels.forEach { itemViewModel in
-            bundleItemErrorMessagesByItemID.removeAll()
             itemViewModel.$errorMessage.sink { [weak self] errorMessage in
                 self?.bundleItemErrorMessagesByItemID[itemViewModel.bundledItemID] = errorMessage
             }
             .store(in: &bundleItemSubscriptions)
 
-            bundleItemQuantitiesByItemID.removeAll()
             itemViewModel.$quantityInBundle.sink { [weak self] quantity in
                 self?.bundleItemQuantitiesByItemID[itemViewModel.bundledItemID] = quantity
             }

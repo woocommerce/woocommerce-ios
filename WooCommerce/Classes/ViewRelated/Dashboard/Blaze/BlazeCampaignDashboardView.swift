@@ -85,6 +85,7 @@ struct BlazeCampaignDashboardView: View {
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
     @State private var selectedProductID: Int64?
+    @State private var showingOptions: Bool = false
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -142,10 +143,33 @@ struct BlazeCampaignDashboardView: View {
                 viewModel.shouldShowIntroView = false
             })
         }
+        .overlay {
+            topRightMenu
+        }
     }
 }
 
 private extension BlazeCampaignDashboardView {
+    var topRightMenu: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    showingOptions = true
+                } label: {
+                    Image(uiImage: .ellipsisImage)
+                }
+                .confirmationDialog("", isPresented: $showingOptions) {
+                    Button(Localization.hideBlaze) {
+                        // TODO
+                    }
+                }
+            }
+            Spacer()
+        }
+        .padding(Layout.insets)
+    }
+
     var createCampaignButton: some View {
         Button {
             viewModel.checkIfIntroViewIsNeeded()
@@ -205,6 +229,7 @@ private extension BlazeCampaignDashboardView {
 
 private extension BlazeCampaignDashboardView {
     enum Layout {
+        static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 16
         enum HeadingBlock {
             static let verticalSpacing: CGFloat = 8
@@ -237,6 +262,12 @@ private extension BlazeCampaignDashboardView {
         static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
 
         static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+
+        static let hideBlaze = NSLocalizedString(
+            "blazeCampaignDashboardView.hideBlazeButton",
+            value: "Hide Blaze",
+            comment: "Button to dismiss the Blaze campaign section on the My Store screen."
+        )
     }
 }
 

@@ -148,13 +148,13 @@ private struct CollapsibleProductRowCard: View {
                     VStack(alignment: .leading) {
                         Text(viewModel.name)
                             .font(viewModel.hasParentProduct ? .subheadline : .none)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(.text))
                         Text(viewModel.stockQuantityLabel)
                             .font(.subheadline)
-                            .foregroundColor(isCollapsed ? Color(.textSubtle) : .black)
+                            .foregroundColor(isCollapsed ? Color(.textSubtle) : Color(.text))
                         Text(viewModel.skuLabel)
                             .font(.subheadline)
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
                         CollapsibleProductCardPriceSummary(viewModel: viewModel)
                             .font(.subheadline)
@@ -231,7 +231,7 @@ private struct CollapsibleProductRowCard: View {
         .overlay {
             RoundedRectangle(cornerRadius: Layout.frameCornerRadius)
                 .inset(by: 0.25)
-                .stroke(Color(uiColor: .black), lineWidth: Layout.borderLineWidth)
+                .stroke(Color(uiColor: .text), lineWidth: Layout.borderLineWidth)
                 .renderedIf(!isCollapsed)
         }
     }

@@ -64,6 +64,28 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     private var shippingClassSlug: String?
     private var shippingClassID: Int64
 
+    /// Subscription related
+    ///
+    private(set) var oneTimeShipping: Bool?
+
+    var supportsOneTimeShipping: Bool {
+        switch product.productType {
+        case .subscription:
+            guard let subscription = product.subscription else {
+                return false
+            }
+
+            return subscription.supportsOneTimeShipping
+        case .variableSubscription:
+            let variations = productVariationsResultsController.fetchedObjects
+            let allVariationsSupportOneTimeShipping = variations
+                .allSatisfy { $0.subscription?.supportsOneTimeShipping == true }
+            return allVariationsSupportOneTimeShipping
+        default:
+            return false
+        }
+    }
+
     // Localized values
     //
     var localizedWeight: String? {
@@ -106,6 +128,7 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
         height = product.dimensions.height
         shippingClassSlug = product.shippingClass
         shippingClassID = product.shippingClassID
+        oneTimeShipping = product.subscription?.oneTimeShipping
 
         // TODO-2580: re-enable shipping class for `ProductVariation` when the API issue is fixed.
         switch product {
@@ -170,6 +193,10 @@ extension ProductShippingSettingsViewModel: ProductShippingSettingsActionHandler
         }
 
         self.height = shippingValueLocalizer.unLocalized(shippingValue: height) ?? height
+    }
+
+    func handleOneTimeShippingChange(_ oneTimeShipping: Bool) {
+        self.oneTimeShipping = oneTimeShipping
     }
 
     func handleShippingClassChange(_ shippingClass: ProductShippingClass?) {

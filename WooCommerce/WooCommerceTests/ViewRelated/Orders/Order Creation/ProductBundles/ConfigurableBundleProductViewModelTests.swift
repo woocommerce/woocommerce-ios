@@ -60,7 +60,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isConfigureEnabled)
     }
 
-    func test_validationErrorMessage_is_nil_when_bundle_size_matches() throws {
+    func test_validation_is_success_when_bundle_size_matches() throws {
         // Given
         // The bundle size has to be 5.
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundleMaxSize: 5, bundledItems: [
@@ -91,7 +91,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(viewModel.isConfigureEnabled)
-        XCTAssertNil(viewModel.validationErrorMessage)
+        XCTAssertTrue(viewModel.validationState.isSuccess)
     }
 
     func test_validationErrorMessage_is_set_when_bundle_size_exceeds_max() throws {
@@ -126,7 +126,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isConfigureEnabled)
-        XCTAssertNotNil(viewModel.validationErrorMessage)
+        XCTAssertTrue(viewModel.validationState.isFailure)
     }
 
     func test_validationErrorMessage_is_set_when_bundle_size_smaller_than_min() throws {
@@ -152,7 +152,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.isConfigureEnabled)
-        XCTAssertNotNil(viewModel.validationErrorMessage)
+        XCTAssertTrue(viewModel.validationState.isFailure)
     }
 
     // MARK: - `loadProductsErrorMessage`

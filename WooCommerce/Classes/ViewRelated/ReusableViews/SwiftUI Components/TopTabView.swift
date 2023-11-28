@@ -135,8 +135,10 @@ struct TopTabView: View {
                             // Update the underlined tab when the tab changes
                             underlineOffset = calculateOffset(index: newIndex)
 
-                            // Notifiy the new tab that it's been selected
-                            tabs[newIndex].onSelected?()
+                            // Notifiy the new tab that it's been selected, but only if it's changed
+                            if newIndex != selectedTab {
+                                tabs[newIndex].onSelected?()
+                            }
 
                             // Update the selected tab to the new index
                             withAnimation(.easeOut) {

@@ -31,8 +31,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     @Published var selectedCampaignURL: URL?
 
-    @Published private var hasBeenDismissed: Bool
-
     private(set) var shouldRedactView: Bool = true
 
     var shouldShowShowAllCampaignsButton: Bool {
@@ -95,8 +93,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.state = .loading
         self.userDefaults = userDefaults
-        self.hasBeenDismissed = userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID)
-
         observeSectionVisibility()
         configureResultsController()
     }
@@ -104,7 +100,8 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     @MainActor
     func reload() async {
         update(state: .loading)
-        guard await blazeEligibilityChecker.isSiteEligible() else {
+        guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID),
+              await blazeEligibilityChecker.isSiteEligible() else {
             update(state: .empty)
             return
         }
@@ -145,7 +142,6 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
     }
 
     func dismissBlazeSection() {
-        hasBeenDismissed = true
         userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
     }
 }
@@ -209,6 +205,10 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func updateResults() {
+        guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID) else {
+            update(state: .empty)
+            return
+        }
         if let campaign = blazeCampaignResultsController.fetchedObjects.first {
             update(state: .showCampaign(campaign: campaign))
         } else if let product = latestPublishedProduct {
@@ -244,11 +244,8 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func observeSectionVisibility() {
-        visibilitySubscription = $state.combineLatest($hasBeenDismissed)
-            .map { state, hasBeenDismissed in
-                guard !hasBeenDismissed else {
-                    return false
-                }
+        visibilitySubscription = $state
+            .map { state in
                 switch state {
                 case .showCampaign, .showProduct:
                     return true

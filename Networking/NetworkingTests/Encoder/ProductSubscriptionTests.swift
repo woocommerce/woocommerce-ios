@@ -11,7 +11,8 @@ final class ProductSubscriptionTests: XCTestCase {
                                                signUpFee: "25",
                                                trialLength: "1",
                                                trialPeriod: .month,
-                                               oneTimeShipping: true)
+                                               oneTimeShipping: true,
+                                               paymentSyncDate: "7")
 
         // When
         let keyValuePairs = subscription.toKeyValuePairs()
@@ -25,5 +26,6 @@ final class ProductSubscriptionTests: XCTestCase {
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_trial_length", value: "1")))
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_trial_period", value: "month")))
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_one_time_shipping", value: "yes")))
+        XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_payment_sync_date", value: "7")))
     }
 }

@@ -19,6 +19,7 @@ struct TopTabView: View {
     @State private var underlineOffset: CGFloat = 0
     @State private var tabWidths: [CGFloat]
     @GestureState private var dragState: DragState = .inactive
+    @State private var contentSize: CGSize = .zero
 
     @Binding var showTabs: Bool
 
@@ -81,14 +82,26 @@ struct TopTabView: View {
                 Divider()
             }
 
-            // Display Content for selected tab
+            // Display all the tabs in an HStack, each tab the same width as the TopTabView
+            // This GeometryReader is used to set the width and drag offsets for swiping between views
             GeometryReader { geometry in
                 HStack(spacing: 0) {
                     ForEach(0..<tabs.count, id: \.self) { index in
+                        // Tab content as passed to the TopTabView at init
                         tabs[index].view
                             .frame(width: geometry.size.width)
                     }
                 }
+                .background(
+                    // Use a background GeometryReader to get the height of the tab content.
+                    // This is used later as the height of the top-level GeometryReader, to override the default
+                    // behaviour of setting the frame to zero (and hiding the content.)
+                    GeometryReader { contentGeometry -> Color in
+                        DispatchQueue.main.async {
+                            contentSize = contentGeometry.size
+                        }
+                        return .clear
+                    })
                 .offset(x: self.dragOffset(width: geometry.size.width))
                 .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
                 .gesture(
@@ -101,17 +114,19 @@ struct TopTabView: View {
                             let threshold: CGFloat = geometry.size.width / 2
                             let newIndex: Int
                             if horizontalAmount > threshold {
+                                // A swipe more than 50% to the right: move back
                                 newIndex = max(selectedTab - 1, 0)
                             } else if horizontalAmount < -threshold {
+                                // A swipe more than 50% to the left: move forward
                                 newIndex = min(selectedTab + 1, tabs.count - 1)
                             } else {
                                 newIndex = selectedTab
                             }
 
-                            // Update underlineOffset when the tab changes
+                            // Update the underlined tab when the tab changes
                             underlineOffset = calculateOffset(index: newIndex)
 
-                            // Call the onSelected closure if it exists for the new tab
+                            // Notifiy the new tab that it's been selected
                             tabs[newIndex].onSelected?()
 
                             // Update the selected tab to the new index
@@ -121,7 +136,7 @@ struct TopTabView: View {
                         }
                 )
             }
-            .frame(height: 300)
+            .frame(height: contentSize.height)
         }
     }
 

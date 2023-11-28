@@ -96,11 +96,14 @@ struct TopTabView: View {
                     // Use a background GeometryReader to get the height of the tab content.
                     // This is used later as the height of the top-level GeometryReader, to override the default
                     // behaviour of setting the frame to zero (and hiding the content.)
-                    GeometryReader { contentGeometry -> Color in
-                        DispatchQueue.main.async {
+                    GeometryReader { contentGeometry in
+                        Color.clear
+                        .onAppear {
                             contentSize = contentGeometry.size
                         }
-                        return .clear
+                        .onChange(of: contentGeometry.size) { newSize in
+                            contentSize = newSize
+                        }
                     })
                 .offset(x: self.dragOffset(width: geometry.size.width))
                 .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))

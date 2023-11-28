@@ -287,6 +287,10 @@ private extension SettingsViewModel {
                 rows.append(.installJetpack)
             }
 
+            if featureFlagService.isFeatureFlagEnabled(.lightweightStorefront) {
+                rows.append(.themes)
+            }
+
             if !defaults.completedAllStoreOnboardingTasks,
                 featureFlagService.isFeatureFlagEnabled(.hideStoreOnboardingTaskList) {
                 rows.append(.storeSetupList)

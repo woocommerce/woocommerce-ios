@@ -179,4 +179,8 @@ public enum FeatureFlag: Int {
     /// Enables creating Subscription products
     ///
     case subscriptionProducts
+
+    /// Enables lightweight storefront project
+    ///
+    case lightweightStorefront
 }

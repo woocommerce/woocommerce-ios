@@ -86,6 +86,14 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
     private(set) var shippingClass: ProductShippingClass?
     private var originalShippingClass: ProductShippingClass?
 
+    /// Product Variations Controller.
+    ///
+    private lazy var productVariationsResultsController: ResultsController<StorageProductVariation> = {
+        let predicate = NSPredicate(format: "siteID == %lld AND productID == %lld", product.siteID, product.productID)
+        let resultsController = ResultsController<StorageProductVariation>(storageManager: storageManager, matching: predicate, sortedBy: [])
+        return resultsController
+    }()
+
     init(product: ProductFormDataModel,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          shippingValueLocalizer: ShippingValueLocalizer = DefaultShippingValueLocalizer()) {
@@ -112,6 +120,18 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
             ]
         default:
             fatalError("Unsupported product type: \(product)")
+        }
+
+        configureResultsController()
+    }
+}
+
+private extension ProductShippingSettingsViewModel {
+    func configureResultsController() {
+        do {
+            try productVariationsResultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ Error fetching product variations from shipping settings screen: \(error)")
         }
     }
 }

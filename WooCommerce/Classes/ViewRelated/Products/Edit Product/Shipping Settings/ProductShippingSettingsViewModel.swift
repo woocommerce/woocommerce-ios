@@ -135,8 +135,9 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
         case is EditableProductModel:
             sections = [
                 Section(rows: [.weight, .length, .width, .height]),
-                Section(rows: [.shippingClass])
-            ]
+                Section(rows: [.shippingClass]),
+                product.subscription.map { _ in Section(rows: [.oneTimeShipping]) }
+            ].compactMap { $0 }
         case is EditableProductVariationModel:
             sections = [
                 Section(rows: [.weight, .length, .width, .height])

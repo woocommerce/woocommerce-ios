@@ -485,8 +485,7 @@ private extension TwoFAViewController {
 
         rows.append(.alternateInstructions)
         rows.append(.sendCode)
-
-        if #available(iOS 16, *), loginFields.nonceInfo?.nonceWebauthn != nil {
+        if #available(iOS 16, *), WordPressAuthenticator.shared.configuration.enablePasskeys, loginFields.nonceInfo?.nonceWebauthn != nil {
             rows.append(.enterSecurityKey)
         }
     }

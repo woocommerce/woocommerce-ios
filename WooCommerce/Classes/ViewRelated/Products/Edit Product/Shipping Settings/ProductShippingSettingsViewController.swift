@@ -201,6 +201,8 @@ private extension ProductShippingSettingsViewController {
             configureHeight(cell: cell)
         case let cell as TitleAndValueTableViewCell where row == .shippingClass:
             configureShippingClass(cell: cell)
+        case let cell as SwitchTableViewCell where row == .oneTimeShipping:
+            configureOneTimeShipping(cell: cell)
         default:
             fatalError()
         }
@@ -242,6 +244,18 @@ private extension ProductShippingSettingsViewController {
         let title = NSLocalizedString("Shipping class", comment: "Title of the cell in Product Shipping Settings > Shipping class")
         cell.updateUI(title: title, value: viewModel.shippingClass?.name)
         cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureOneTimeShipping(cell: SwitchTableViewCell) {
+        cell.title = Localization.OneTimeShipping.title
+        cell.subtitle = {
+            viewModel.supportsOneTimeShipping ? Localization.OneTimeShipping.subtitle : Localization.OneTimeShipping.subtitleDisabled
+        }()
+        cell.isOn = viewModel.oneTimeShipping ?? false
+        cell.isUserInteractionEnabled = viewModel.supportsOneTimeShipping
+        cell.onChange = { [weak self] newValue in
+            self?.viewModel.handleOneTimeShippingChange(newValue)
+        }
     }
 }
 

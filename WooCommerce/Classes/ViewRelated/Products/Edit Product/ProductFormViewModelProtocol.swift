@@ -119,7 +119,11 @@ protocol ProductFormViewModelProtocol {
 
     func updateProductType(productType: BottomSheetProductType)
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?)
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?)
 
     func updateProductCategories(_ categories: [ProductCategory])
 

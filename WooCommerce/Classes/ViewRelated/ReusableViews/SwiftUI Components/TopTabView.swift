@@ -107,10 +107,16 @@ struct TopTabView: View {
                     })
                 .offset(x: self.dragOffset(width: geometry.size.width))
                 .animation(.interactiveSpring(), value: dragOffset(width: geometry.size.width))
-                .gesture(
+                // Allows swipes to be started on any part of the content view area, not just occupied space e.g. Text.
+                .contentShape(Rectangle())
+                // The gesture could be simultaneous with an external scroll view
+                .simultaneousGesture(
                     DragGesture()
                         .updating($dragState) { drag, state, transaction in
-                            state = .dragging(translation: drag.translation)
+                            let isHorizontalDrag = abs(drag.translation.width) > abs(drag.translation.height)
+                            if isHorizontalDrag {
+                                state = .dragging(translation: drag.translation)
+                            }
                         }
                         .onEnded { drag in
                             let horizontalAmount = drag.predictedEndTranslation.width as CGFloat

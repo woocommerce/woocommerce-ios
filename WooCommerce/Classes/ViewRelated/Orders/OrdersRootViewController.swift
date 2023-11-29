@@ -211,9 +211,9 @@ final class OrdersRootViewController: UIViewController {
 
         let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                                                       onSKUBarcodeScanned: { [weak self] scannedBarcode in
-            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderList))
+            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderList))
 
-            self?.configureLeftButtonItemAsLoader()
+            self?.navigationItem.configureLeftBarButtonItemAsLoader()
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self = self else { return }
                 self.configureLeftButtonItemAsProductScanningButton()
@@ -229,7 +229,7 @@ final class OrdersRootViewController: UIViewController {
                 }
             }
         }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+            self?.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -348,13 +348,6 @@ private extension OrdersRootViewController {
 
     func configureLeftButtonItemAsProductScanningButton() {
         navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
-    }
-
-    func configureLeftButtonItemAsLoader() {
-        let indicator = UIActivityIndicatorView(style: .medium)
-        indicator.color = .navigationBarLoadingIndicator
-        indicator.startAnimating()
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: indicator)
     }
 
     func configureFiltersBar() {

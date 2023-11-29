@@ -3,6 +3,10 @@
 16.5
 -----
 - [*] Payments: WooPayments merchants can swipe between currencies in the Deposit Summary on the Payments menu [https://github.com/woocommerce/woocommerce-ios/pull/11309]
+- [**] Shipping Labels: Fixed issue presenting the printing view for customs forms. [https://github.com/woocommerce/woocommerce-ios/pull/11288]
+- [*] Now, merchants can manage "One time shipping" setting for a subscription product. [https://github.com/woocommerce/woocommerce-ios/pull/11310]
+- [**] My Store: The Blaze section is now dismissible. [https://github.com/woocommerce/woocommerce-ios/pull/11308]
+- [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
 
 16.4
 -----
@@ -11,6 +15,8 @@
 - [internal] Payments: Restored analytics for Payments Menu after SwiftUI rewrite [https://github.com/woocommerce/woocommerce-ios/pull/11262]
 - [***] Merchants can now create or edit subscription products. [https://github.com/woocommerce/woocommerce-ios/issues/11183]
 - [*] Order form: when adding/updating a bundle with an optional & non-selected variable item, any other bundled items should be added/updated properly. [https://github.com/woocommerce/woocommerce-ios/pull/11254]
+- [internal] Order form: Fix a bug where the wrong product details appeared when adding a discount to a product in an order. [https://github.com/woocommerce/woocommerce-ios/pull/11280]
+- [*] Now the Blaze section in the Dashboard (My store tab) is displayed under the Stats. Before, it was on top of the view. [https://github.com/woocommerce/woocommerce-ios/pull/11275]
 
 16.3
 -----

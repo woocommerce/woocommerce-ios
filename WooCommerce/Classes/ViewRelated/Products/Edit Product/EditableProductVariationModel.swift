@@ -3,19 +3,40 @@ import Yosemite
 /// Represents an editable data model based on `ProductVariation`.
 final class EditableProductVariationModel {
     let productVariation: ProductVariation
+    private let parentProductType: ProductType
 
     let allAttributes: [ProductAttribute]
     let parentProductDisablesQuantityRules: Bool?
 
-    init(productVariation: ProductVariation, allAttributes: [ProductAttribute], parentProductSKU: String?, parentProductDisablesQuantityRules: Bool?) {
+    init(productVariation: ProductVariation,
+         parentProductType: ProductType,
+         allAttributes: [ProductAttribute],
+         parentProductSKU: String?,
+         parentProductDisablesQuantityRules: Bool?) {
         self.allAttributes = allAttributes
 
         // API sets a variation's SKU to be its parent product's SKU by default.
         // However, variation API update will fail if we send the variation's SKU as its parent product's SKU (duplicate SKU error).
         // As a workaround, we set a variation's SKU to nil if it has the same SKU as its parent product during initialization.
         let sku = parentProductSKU == productVariation.sku ? nil: productVariation.sku
-        self.productVariation = productVariation.copy(sku: sku)
 
+        /// Assigning default subscription value for a variable subscription type product if `nil`
+        ///
+        /// The API sometimes doesn't send any value for variation's subscription even though the parent product type is `variableSubscription`.
+        ///
+        /// https://github.com/woocommerce/woocommerce-ios/issues/11258
+        ///
+        let subscription: ProductSubscription? = {
+            guard parentProductType == .variableSubscription && productVariation.subscription == nil else {
+                return productVariation.subscription
+            }
+
+            return .empty
+        }()
+
+        self.productVariation = productVariation.copy(sku: sku, subscription: subscription)
+
+        self.parentProductType = parentProductType
         self.parentProductDisablesQuantityRules = parentProductDisablesQuantityRules
     }
 }
@@ -94,7 +115,7 @@ extension EditableProductVariationModel: ProductFormDataModel, TaxClassRequestab
     }
 
     var productType: ProductType {
-        .variable
+        parentProductType
     }
 
     var weight: String? {

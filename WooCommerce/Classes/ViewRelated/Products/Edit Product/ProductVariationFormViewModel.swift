@@ -207,6 +207,7 @@ extension ProductVariationFormViewModel {
             return
         }
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(image: images.first),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -214,6 +215,7 @@ extension ProductVariationFormViewModel {
 
     func updateDescription(_ newDescription: String) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(description: newDescription),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -253,6 +255,7 @@ extension ProductVariationFormViewModel {
                 taxClass: taxClass?.slug,
                 subscription: subscription
             ),
+            parentProductType: productVariation.productType,
             allAttributes: allAttributes,
             parentProductSKU: parentProductSKU,
             parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -269,16 +272,24 @@ extension ProductVariationFormViewModel {
                                                                                                                   stockQuantity: stockQuantity,
                                                                                                                   stockStatus: stockStatus,
                                                                                                                   backordersKey: backordersSetting?.rawValue),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                // `oneTimeShipping` is ignored as this setting is not applicable for variation
+                                // this needs to be set on the parent product
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(weight: weight,
-                                                 dimensions: dimensions,
-                                                 shippingClass: shippingClass ?? "",
-                                                 shippingClassID: shippingClassID ?? 0),
+                                                                                                                  dimensions: dimensions,
+                                                                                                                  shippingClass: shippingClass ?? "",
+                                                                                                                  shippingClassID: shippingClassID ?? 0),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -320,6 +331,7 @@ extension ProductVariationFormViewModel {
         ServiceLocator.analytics.track(.productVariationDetailViewStatusSwitchTapped)
         let status: ProductStatus = isEnabled ? .published: .privateStatus
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(status: status),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -335,6 +347,7 @@ extension ProductVariationFormViewModel {
 
     func updateVariationAttributes(_ attributes: [ProductVariationAttribute]) {
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(attributes: attributes),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -348,6 +361,7 @@ extension ProductVariationFormViewModel {
         let subscription = productVariation.subscription?.copy(trialLength: trialLength,
                                                                trialPeriod: trialPeriod)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -356,6 +370,7 @@ extension ProductVariationFormViewModel {
     func updateSubscriptionExpirySettings(length: String) {
         let subscription = productVariation.subscription?.copy(length: length)
         productVariation = EditableProductVariationModel(productVariation: productVariation.productVariation.copy(subscription: subscription),
+                                                         parentProductType: productVariation.productType,
                                                          allAttributes: allAttributes,
                                                          parentProductSKU: parentProductSKU,
                                                          parentProductDisablesQuantityRules: parentProductDisablesQuantityRules)
@@ -377,6 +392,7 @@ extension ProductVariationFormViewModel {
             case .success(let productVariation):
                 ServiceLocator.analytics.track(.productVariationDetailUpdateSuccess)
                 let model = EditableProductVariationModel(productVariation: productVariation,
+                                                          parentProductType: self.productVariation.productType,
                                                           allAttributes: self.allAttributes,
                                                           parentProductSKU: self.parentProductSKU,
                                                           parentProductDisablesQuantityRules: self.parentProductDisablesQuantityRules)
@@ -424,12 +440,14 @@ extension ProductVariationFormViewModel {
                 case .success(let images):
                     let currentProduct = self.productVariation
                     self.resetProductVariation(.init(productVariation: self.originalProductVariation.productVariation.copy(image: images.first),
+                                                     parentProductType: productVariation.productType,
                                                      allAttributes: self.allAttributes,
                                                      parentProductSKU: self.parentProductSKU,
                                                      parentProductDisablesQuantityRules: self.parentProductDisablesQuantityRules))
                     // Because `resetProductVariation` also internally updates the latest `productVariation`, the
                     // `productVariation` is set with the value before `resetProductVariation` to retain any local changes.
                     self.productVariation = .init(productVariation: currentProduct.productVariation,
+                                                  parentProductType: productVariation.productType,
                                                   allAttributes: self.allAttributes,
                                                   parentProductSKU: self.parentProductSKU,
                                                   parentProductDisablesQuantityRules: self.parentProductDisablesQuantityRules)

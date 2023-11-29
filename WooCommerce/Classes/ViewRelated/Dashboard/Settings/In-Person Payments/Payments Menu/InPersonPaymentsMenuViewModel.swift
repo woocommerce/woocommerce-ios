@@ -67,11 +67,11 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
 
     private let dependencies: Dependencies
 
-    private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
+    var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
         dependencies.cardPresentPaymentsConfiguration
     }
 
-    private var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
+    var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
         dependencies.onboardingUseCase
     }
 
@@ -190,25 +190,12 @@ class InPersonPaymentsMenuViewModel: ObservableObject {
         presentManagePaymentGateways = false
     }
 
-    lazy var setUpTapToPayViewModelsAndViews: SetUpTapToPayViewModelsOrderedList = {
-        SetUpTapToPayViewModelsOrderedList(
-            siteID: siteID,
-            configuration: cardPresentPaymentsConfiguration,
-            onboardingUseCase: onboardingUseCase)
-    }()
-
     lazy var aboutTapToPayViewModel: AboutTapToPayViewModel = {
         AboutTapToPayViewModel(
             siteID: siteID,
             configuration: cardPresentPaymentsConfiguration,
             cardPresentPaymentsOnboardingUseCase: onboardingUseCase,
             shouldAlwaysHideSetUpTapToPayButton: shouldAlwaysHideSetUpButtonOnAboutTapToPay)
-    }()
-
-    lazy var manageCardReadersViewModelsAndViews: CardReaderSettingsViewModelsOrderedList = {
-        CardReaderSettingsViewModelsOrderedList(
-            configuration: cardPresentPaymentsConfiguration,
-            siteID: siteID)
     }()
 
     lazy var purchaseCardReaderWebViewModel: PurchaseCardReaderWebViewViewModel = {

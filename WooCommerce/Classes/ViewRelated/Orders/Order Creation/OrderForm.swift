@@ -448,19 +448,17 @@ private struct ProductsSection: View {
                 .renderedIf(viewModel.shouldShowProductsSectionHeader)
 
                 ForEach(viewModel.productRows) { productRow in
-                    CollapsibleProductRowCard(viewModel: productRow,
-                                              flow: flow,
-                                              shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
-                                              shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
-                                              onAddDiscount: {
-                        viewModel.selectOrderItem(productRow.id)
-                    })
-                    .sheet(item: $viewModel.selectedProductViewModel, content: { productViewModel in
-                        ProductDiscountView(imageURL: productRow.imageURL,
-                                            name: productRow.name,
-                                            stockLabel: productRow.stockQuantityLabel,
-                                            productRowViewModel: productRow,
-                                            discountViewModel: productViewModel.discountDetailsViewModel)
+                    CollapsibleProductCard(viewModel: productRow,
+                                           flow: flow,
+                                           shouldDisableDiscountEditing: viewModel.paymentDataViewModel.isLoading,
+                                           shouldDisallowDiscounts: viewModel.shouldDisallowDiscounts,
+                                           onAddDiscount: viewModel.selectOrderItem)
+                    .sheet(item: $viewModel.selectedProductViewModel, content: { selectedProduct in
+                        ProductDiscountView(imageURL: selectedProduct.productRowViewModel.imageURL,
+                                            name: selectedProduct.productRowViewModel.name,
+                                            stockLabel: selectedProduct.productRowViewModel.stockQuantityLabel,
+                                            productRowViewModel: selectedProduct.productRowViewModel,
+                                            discountViewModel: selectedProduct.discountDetailsViewModel)
                     })
                     .sheet(item: $viewModel.configurableProductViewModel) { configurableProductViewModel in
                         ConfigurableBundleProductView(viewModel: configurableProductViewModel)

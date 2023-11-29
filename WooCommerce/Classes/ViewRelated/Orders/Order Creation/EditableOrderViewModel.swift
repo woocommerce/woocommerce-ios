@@ -600,12 +600,18 @@ final class EditableOrderViewModel: ObservableObject {
                                        removeProductIntent: { [weak self] in
                 self?.removeItemFromOrder(item)})
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
+            // If the parent product is a bundle product, quantity cannot be changed.
+            let canChildItemsChangeQuantity = product.productType != .bundle
+            let childProductRows = childItems.compactMap { childItem in
+                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity)
+            }
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
                                        discount: passingDiscountValue,
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        hasParentProduct: item.parent != nil,
+                                       childProductRows: childProductRows,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -1836,16 +1842,12 @@ private extension EditableOrderViewModel {
     ///
     func createProductRows(items: [OrderItem]) -> [ProductRowViewModel] {
         items.compactMap { item -> ProductRowViewModel? in
+            guard item.parent == nil else { // Don't create a separate product row for child items
+                return nil
+            }
+
             let childItems = items.filter { $0.parent == item.itemID }
-            // If the parent product is a bundle product, quantity cannot be changed.
-            let canChangeQuantity: Bool = {
-                guard let parentItem = items.first(where: { $0.itemID == item.parent }),
-                      let parentProduct = allProducts.first(where: { $0.productID == parentItem.productID }) else {
-                    return true
-                }
-                return parentProduct.productType != .bundle
-            }()
-            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: canChangeQuantity) else {
+            guard let productRowViewModel = self.createProductRowViewModel(for: item, childItems: childItems, canChangeQuantity: true) else {
                 return nil
             }
 
@@ -2037,7 +2039,7 @@ extension EditableOrderViewModel {
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
-        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -2069,7 +2071,7 @@ extension EditableOrderViewModel {
     }
 
     func trackBarcodeScanningNotPermitted() {
-        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
     }
 
     /// Attempts to map SKU to Product

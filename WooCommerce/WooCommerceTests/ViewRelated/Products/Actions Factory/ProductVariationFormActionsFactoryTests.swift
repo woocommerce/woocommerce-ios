@@ -176,6 +176,7 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
                                                                                 groupOfQuantity: "4",
                                                                                 overrideProductQuantities: true)
         let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variable,
                                                   allAttributes: [],
                                                   parentProductSKU: nil,
                                                   parentProductDisablesQuantityRules: false)

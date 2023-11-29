@@ -59,9 +59,14 @@ extension WooAnalyticsEvent {
                               properties: [Key.source: source.rawValue])
         }
 
-        /// Tracked when then intro screen for Blaze is displayed.
+        /// Tracked when the intro screen for Blaze is displayed.
         static func blazeIntroDisplayed() -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .blazeIntroDisplayed, properties: [:])
+        }
+
+        /// Tracked when an entry point to Blaze is dismissed.
+        static func blazeViewDismissed(source: BlazeSource) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .blazeViewDismissed, properties: [Key.source: source.analyticsValue])
         }
     }
 }

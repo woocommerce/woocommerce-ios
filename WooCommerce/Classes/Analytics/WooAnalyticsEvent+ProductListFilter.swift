@@ -24,7 +24,7 @@ extension WooAnalyticsEvent {
         }
 
         static func productFilterListExploreButtonTapped(type: PromotableProductType) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .productFilterListExploreButtonTapped, properties: [Key.type: type.description])
+            WooAnalyticsEvent(statName: .productFilterListExploreButtonTapped, properties: [Key.type: type.rawValue])
         }
     }
 }

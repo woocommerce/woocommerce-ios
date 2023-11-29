@@ -58,7 +58,11 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
                                           stockQuantity: productVariation.stockQuantity,
                                           backordersSetting: model.backordersSetting,
                                           stockStatus: productVariation.stockStatus)
-        viewModel.updateShippingSettings(weight: productVariation.weight, dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
+        viewModel.updateShippingSettings(weight: productVariation.weight,
+                                         dimensions: productVariation.dimensions,
+                                         oneTimeShipping: nil,
+                                         shippingClass: nil,
+                                         shippingClassID: nil)
 
         // Assert
         XCTAssertFalse(viewModel.hasUnsavedChanges())
@@ -162,7 +166,11 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 
     func test_product_variation_has_unsaved_changes_from_editing_shipping_settings() {
         // Action
-        viewModel.updateShippingSettings(weight: "88888", dimensions: productVariation.dimensions, shippingClass: nil, shippingClassID: nil)
+        viewModel.updateShippingSettings(weight: "88888",
+                                         dimensions: productVariation.dimensions,
+                                         oneTimeShipping: nil,
+                                         shippingClass: nil,
+                                         shippingClassID: nil)
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
@@ -287,7 +295,11 @@ final class ProductVariationFormViewModel_ChangesTests: XCTestCase {
 // Helper in unit tests
 extension EditableProductVariationModel {
     convenience init(productVariation: ProductVariation) {
-        self.init(productVariation: productVariation, allAttributes: [], parentProductSKU: nil, parentProductDisablesQuantityRules: nil)
+        self.init(productVariation: productVariation,
+                  parentProductType: .variable,
+                  allAttributes: [],
+                  parentProductSKU: nil,
+                  parentProductDisablesQuantityRules: nil)
     }
 }
 

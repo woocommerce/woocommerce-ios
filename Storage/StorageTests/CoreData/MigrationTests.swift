@@ -2378,6 +2378,83 @@ final class MigrationTests: XCTestCase {
         XCTAssertEqual(migratedProduct.value(forKey: "bundleMinSize") as? NSDecimalNumber, 2)
         XCTAssertEqual(migratedProduct.value(forKey: "bundleMaxSize") as? NSDecimalNumber, 6)
     }
+
+    func test_migrating_from_102_to_103_adds_new_oneTimeShipping_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["oneTimeShipping"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let oneTimeShipping = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "oneTimeShipping") as? Bool)
+        XCTAssertFalse(oneTimeShipping, "Confirm expected property exists, and is false by default.")
+    }
+
+    func test_migrating_from_102_to_103_adds_new_paymentSyncDate_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["paymentSyncDate"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let paymentSyncDate = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "paymentSyncDate") as? String)
+        XCTAssertEqual(paymentSyncDate, "", "Confirm expected property exists, and is empty by default.")
+
+        // When
+        migratedProductSubscriptionEntity.setValue("30", forKey: "paymentSyncDate")
+        try targetContext.save()
+
+        // Then
+        XCTAssertEqual(migratedProductSubscriptionEntity.value(forKey: "paymentSyncDate") as? String, "30")
+    }
+
+    func test_migrating_from_102_to_103_adds_new_paymentSyncMonth_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 102")
+        let sourceContext = sourceContainer.viewContext
+
+        let productSubscription = insertProductSubscription(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productSubscription.entity.attributesByName["paymentSyncMonth"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 103")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductSubscriptionEntity = try XCTUnwrap(targetContext.first(entityName: "ProductSubscription"))
+
+        let paymentSyncMonth = try XCTUnwrap(migratedProductSubscriptionEntity.value(forKey: "paymentSyncMonth") as? String)
+        XCTAssertEqual(paymentSyncMonth, "", "Confirm expected property exists, and is empty by default.")
+
+        // When
+        migratedProductSubscriptionEntity.setValue("02", forKey: "paymentSyncMonth")
+        try targetContext.save()
+
+        // Then
+        XCTAssertEqual(migratedProductSubscriptionEntity.value(forKey: "paymentSyncMonth") as? String, "02")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

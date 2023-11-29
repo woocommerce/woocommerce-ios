@@ -69,6 +69,8 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
             depositsOverviews.append(overview)
         }
 
+        moveCurrencyToFront(currency: defaultCurrency, of: &depositsOverviews)
+
         return depositsOverviews
     }
 
@@ -116,5 +118,15 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
                                          type: lastDeposit.type),
             date: lastDeposit.date,
             status: lastDeposit.status)
+    }
+
+    private func moveCurrencyToFront(currency: CurrencyCode, of depositOverviews: inout [WooPaymentsDepositsOverviewByCurrency]) {
+        guard depositOverviews.count > 1,
+            let currencyOverviewIndex = depositOverviews.firstIndex(where: { $0.currency == currency }) else {
+            return
+        }
+
+        let currencyOverview = depositOverviews.remove(at: currencyOverviewIndex)
+        depositOverviews.insert(currencyOverview, at: 0)
     }
 }

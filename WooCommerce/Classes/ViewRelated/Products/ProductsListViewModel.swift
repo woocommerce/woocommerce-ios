@@ -168,14 +168,9 @@ class ProductListViewModel {
 
     func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async throws -> SKUSearchResult {
         do {
-            let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
-            DDLogInfo("SKU search successfully finished with result: \(result)")
-
-            return result
-            // TODO: Show product inventory screen
+            return try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
         } catch {
             DDLogInfo("SKU search failed with error: \(error)")
-
             throw error
             // TODO: Show error notice
         }

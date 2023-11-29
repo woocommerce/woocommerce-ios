@@ -145,4 +145,23 @@ private enum Constants {
 private struct SubscriptionPaymentSyncDate: Decodable {
     let day: String
     let month: String
+
+    /// Custom decoding to handle String and Int types
+    ///
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        day = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .day,
+                                                       alternativeTypes: [.integer(transform: {  String($0) })]) ?? ""
+
+        month = container.failsafeDecodeIfPresent(targetType: String.self,
+                                                       forKey: .month,
+                                                       alternativeTypes: [.integer(transform: {  String($0) })]) ?? ""
+    }
+
+    enum CodingKeys: String, CodingKey {
+        case day
+        case month
+    }
 }

@@ -665,11 +665,11 @@ private extension DefaultProductFormTableViewModel {
 extension DefaultProductFormTableViewModel {
     enum Localization {
         // Subscription Free Trial
-        static let subscriptionFreeTrialTitle = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+        static let subscriptionFreeTrialTitle = NSLocalizedString("defaultProductFormTableViewModel.freeTrialRow.title",
                                                                   value: "Free Trial",
                                                                   comment: "Title for Subscription Free Trial row in the product form screen.")
 
-        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModel.noFreeTrial",
+        static let noTrialPeriod = NSLocalizedString("defaultProductFormTableViewModel.freeTrialRow.noTrialPeriod",
                                                      value: "No trial period",
                                                      comment: "Display label when a subscription has no trial period.")
 

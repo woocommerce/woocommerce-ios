@@ -156,7 +156,8 @@ private struct CollapsibleProductRowCard: View {
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel, font: .subheadline)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel)
+                            .font(.subheadline)
                             .renderedIf(isCollapsed)
                     }
                 }
@@ -298,24 +299,19 @@ struct CollapsibleProductCardPriceSummary: View {
 
     @ObservedObject var viewModel: ProductRowViewModel
 
-    /// Font must be passed into `AttributedText` because font modifiers won't work on it.
-    let font: UIFont
-
-    init(viewModel: ProductRowViewModel,
-         font: UIFont = .body) {
+    init(viewModel: ProductRowViewModel) {
         self.viewModel = viewModel
-        self.font = font
     }
 
     var body: some View {
         HStack {
             HStack {
-                AttributedText(viewModel.priceQuantityLine(font: font))
+                Text(viewModel.priceQuantityLine)
+                    .foregroundColor(.secondary)
                 Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
-                    .font(Font(font))
             }
         }
     }

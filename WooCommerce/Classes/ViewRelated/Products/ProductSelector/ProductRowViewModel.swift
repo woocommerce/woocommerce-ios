@@ -178,26 +178,10 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Formatted price label based on a product's price, quantity, and whether it is priced individually.
     /// Reads as '8 x $10.00'
     ///
-    func priceQuantityLine(font: UIFont = .body) -> NSAttributedString {
+    var priceQuantityLine: String {
         let quantity = quantity.formatted()
-        let price = priceLabel ?? "-"
-        let attributedString = NSMutableAttributedString(
-            string: String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price),
-            attributes: [.font: font,
-                         .foregroundColor: UIColor.textSubtle]
-        )
-
-        guard !pricedIndividually else {
-            return attributedString
-        }
-
-        // Add strikethrough to price label
-        let bundledPrice = NSAttributedString(string: price, attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                                                                          .font: font,
-                                                                          .foregroundColor: UIColor.textSubtle])
-        attributedString.replaceFirstOccurrence(of: price, with: bundledPrice)
-
-        return attributedString
+        let price = ( pricedIndividually ? priceLabel : currencyFormatter.formatAmount(Decimal.zero) ) ?? "-"
+        return String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price)
     }
 
     private(set) var discount: Decimal?

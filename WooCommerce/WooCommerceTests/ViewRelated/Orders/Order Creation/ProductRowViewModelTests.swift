@@ -627,7 +627,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 × $10.71", viewModel.priceQuantityLine().string)
+        assertEqual("8 × $10.71", viewModel.priceQuantityLine)
     }
 
     func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() throws {
@@ -640,16 +640,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: false, pricedIndividually: false)
 
         // Then
-        let expectedString = "8 × $10.71"
-        let attributedString = viewModel.priceQuantityLine(font: .subheadline)
-        assertEqual(expectedString, attributedString.string)
-
-        // Confirm the attributed string has the expected attributes
-        var effectiveRange = NSRange()
-        let rangeUpToPrice = NSRange(expectedString.startIndex..<(try XCTUnwrap(expectedString.range(of: "$")).lowerBound), in: expectedString)
-        let attributesAtPrice = attributedString.attributes(at: rangeUpToPrice.upperBound, effectiveRange: &effectiveRange)
-        assertEqual(NSUnderlineStyle.single.rawValue, try XCTUnwrap(attributesAtPrice[.strikethroughStyle] as? Int))
-        assertEqual(.subheadline, try XCTUnwrap(attributesAtPrice[.font] as? UIFont))
+        assertEqual("8 × $0.00", viewModel.priceQuantityLine)
     }
 
     func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_pricedIndividually() {
@@ -709,7 +700,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 × -", viewModel.priceQuantityLine().string)
+        assertEqual("8 × -", viewModel.priceQuantityLine)
     }
 
     // MARK: - `isConfigurable`

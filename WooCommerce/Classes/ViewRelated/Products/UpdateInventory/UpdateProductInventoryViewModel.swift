@@ -72,15 +72,19 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     @Published var quantity: String = "" {
         didSet {
-            guard quantity != oldValue,
-                    let decimalValue = Decimal(string: quantity) else {
+            guard quantity != oldValue else { return }
+
+            guard let decimalValue = Decimal(string: quantity) else {
+                enableQuantityButton = false
                 return
             }
 
+            enableQuantityButton = true
             updateQuantityButtonMode = decimalValue == inventoryItem.stockQuantity ? .increaseOnce : .customQuantity
         }
     }
 
+    @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
     @Published var name: String = Localization.productNamePlaceholder
     @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce

@@ -53,6 +53,7 @@ struct UpdateProductInventoryView: View {
                                 .textFieldStyle(.roundedBorder)
                                 .keyboardType(.numberPad)
                                 .multilineTextAlignment(.trailing)
+                                .frame(maxWidth: 200, alignment: .trailing)
                                 .fixedSize()
                         }
                         .padding([.top, .bottom], Layout.mediumSpacing)
@@ -72,6 +73,7 @@ struct UpdateProductInventoryView: View {
                                 .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
 
                         }
+                        .disabled(!viewModel.enableQuantityButton)
                         .padding(.bottom, Layout.mediumSpacing)
 
 

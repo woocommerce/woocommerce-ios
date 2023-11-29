@@ -97,11 +97,3 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         inventoryItem.imageURL
     }
 }
-
-extension UpdateProductInventoryViewModel {
-    enum Localization {
-        static let productNamePlaceholder = NSLocalizedString("updateProductInventoryViewModel.productName.placeholder",
-                                                              value: "Product Name",
-                                                              comment: "Placeholder of the product name title.")
-    }
-}

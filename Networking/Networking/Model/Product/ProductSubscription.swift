@@ -32,6 +32,9 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
     /// Subscription Renewal Synchronization date
     public let paymentSyncDate: String
 
+    /// Subscription Renewal Synchronization month
+    public let paymentSyncMonth: String
+
     public init(length: String,
                 period: SubscriptionPeriod,
                 periodInterval: String,
@@ -40,7 +43,8 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
                 trialLength: String,
                 trialPeriod: SubscriptionPeriod,
                 oneTimeShipping: Bool,
-                paymentSyncDate: String) {
+                paymentSyncDate: String,
+                paymentSyncMonth: String) {
         self.length = length
         self.period = period
         self.periodInterval = periodInterval
@@ -50,6 +54,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
         self.trialPeriod = trialPeriod
         self.oneTimeShipping = oneTimeShipping
         self.paymentSyncDate = paymentSyncDate
+        self.paymentSyncMonth = paymentSyncMonth
     }
 
     /// Custom decoding to use default value when JSON doesn't have a key present
@@ -71,7 +76,17 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
 
             return stringValue == Constants.yes
         }()
-        paymentSyncDate = (try? container.decodeIfPresent(String.self, forKey: .paymentSyncDate)) ?? "0"
+
+        if let paymentSyncDateString = try? container.decodeIfPresent(String.self, forKey: .paymentSyncDate) {
+            paymentSyncDate = paymentSyncDateString
+            paymentSyncMonth = ""
+        } else if let paymentSync = try? container.decodeIfPresent(SubscriptionPaymentSyncDate.self, forKey: .paymentSyncDate) {
+            paymentSyncDate = paymentSync.day
+            paymentSyncMonth = paymentSync.month
+        } else {
+            paymentSyncDate = "0"
+            paymentSyncMonth = ""
+        }
     }
 
     func toKeyValuePairs() -> [KeyValuePair] {
@@ -124,4 +139,9 @@ struct KeyValuePair: Encodable, Equatable {
 private enum Constants {
     static let yes = "yes"
     static let no = "no"
+}
+
+private struct SubscriptionPaymentSyncDate: Decodable {
+    let day: String
+    let month: String
 }

@@ -58,15 +58,18 @@ struct UpdateProductInventoryView: View {
 
                         Spacer()
 
-                        Button(updateInventoryButtonTitle) {}
-                            .buttonStyle(PrimaryButtonStyle())
-                            .padding(.bottom, Layout.mediumSpacing)
-
-                        Button(Localization.ViewProductDetailsButtonTitle) {
-
+                        Button(updateInventoryButtonTitle) {
+                            Task {
+                                await viewModel.onTapUpdateStockQuantity()
+                                presentationMode.wrappedValue.dismiss()
+                            }
                         }
-                        .buttonStyle(SecondaryButtonStyle())
-                        .padding(.bottom)
+                        .buttonStyle(PrimaryButtonStyle())
+                        .padding(.bottom, Layout.mediumSpacing)
+
+                        Button(Localization.ViewProductDetailsButtonTitle) {}
+                            .buttonStyle(SecondaryButtonStyle())
+                            .padding(.bottom)
                     }
                     .frame(minHeight: geometry.size.height)
                     .padding()

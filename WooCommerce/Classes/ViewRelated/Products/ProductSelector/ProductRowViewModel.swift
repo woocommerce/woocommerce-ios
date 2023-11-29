@@ -119,9 +119,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         guard let price = price else {
             return nil
         }
-        guard pricedIndividually else {
-            return currencyFormatter.formatAmount(Decimal.zero)
-        }
         let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
         return currencyFormatter.formatAmount(productSubtotal)
     }
@@ -180,7 +177,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     var priceQuantityLine: String {
         let quantity = quantity.formatted()
-        let price = ( pricedIndividually ? priceLabel : currencyFormatter.formatAmount(Decimal.zero) ) ?? "-"
+        let price = priceLabel ?? "-"
         return String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price)
     }
 
@@ -372,6 +369,8 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         let price: String?
         if product.productType == .variable {
             price = nil
+        } else if !pricedIndividually {
+            price = "0"
         } else {
             price = product.price
         }
@@ -474,7 +473,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   productOrVariationID: productVariation.productVariationID,
                   name: name,
                   sku: productVariation.sku,
-                  price: productVariation.price,
+                  price: pricedIndividually ? productVariation.price : "0",
                   discount: discount,
                   stockStatusKey: productVariation.stockStatus.rawValue,
                   stockQuantity: productVariation.stockQuantity,

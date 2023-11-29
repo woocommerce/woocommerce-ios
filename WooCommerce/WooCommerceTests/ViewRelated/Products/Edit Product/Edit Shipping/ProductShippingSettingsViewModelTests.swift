@@ -11,7 +11,8 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = Product.fake()
-            .copy(weight: "1.6",
+            .copy(productTypeKey: "subscription",
+                  weight: "1.6",
                   dimensions: dimensions,
                   shippingClass: "60-day",
                   shippingClassID: 2)
@@ -42,11 +43,14 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = Product.fake()
-            .copy(weight: "1.6",
+            .copy(productTypeKey: "subscription",
+                  weight: "1.6",
                   dimensions: dimensions,
                   shippingClass: "60-day",
                   shippingClassID: 2,
-                  subscription: .fake().copy(oneTimeShipping: true))
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: true,
+                                             paymentSyncDate: "0"))
         let model = EditableProductModel(product: product)
 
         // Act
@@ -69,11 +73,14 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         // Arrange
         let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
         let product = Product.fake()
-            .copy(weight: "1.6",
+            .copy(productTypeKey: "subscription",
+                  weight: "1.6",
                   dimensions: dimensions,
                   shippingClass: "60-day",
                   shippingClassID: 2,
-                  subscription: .fake().copy(oneTimeShipping: true))
+                  subscription: .fake().copy(trialLength: "0",
+                                             oneTimeShipping: true,
+                                             paymentSyncDate: "0"))
         let model = EditableProductModel(product: product)
 
         // Act

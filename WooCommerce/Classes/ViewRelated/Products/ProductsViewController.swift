@@ -775,7 +775,7 @@ private extension ProductsViewController {
                 self?.tableView.updateHeaderHeight()
             },
             onTroubleshootButtonPressed: { [weak self] in
-                guard let self = self else { return }
+                guard let self else { return }
 
                 WebviewHelper.launch(ErrorTopBannerFactory.troubleshootUrl(for: error), with: self)
             },

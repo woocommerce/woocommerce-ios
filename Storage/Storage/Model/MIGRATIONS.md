@@ -7,6 +7,8 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
     - Added `oneTimeShipping` attribute to `ProductSubscription` entity.
 - @selanthiraiyan 2023-11-28
     - Added `paymentSyncDate` attribute to `ProductSubscription` entity.
+- @selanthiraiyan 2023-11-29
+    - Added `paymentSyncMonth` attribute to `ProductSubscription` entity.
 
 ## Model 102 (Release 16.2.0.0)
 - @jaclync 2023-11-15

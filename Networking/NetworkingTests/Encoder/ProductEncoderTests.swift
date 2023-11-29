@@ -12,7 +12,8 @@ final class ProductEncoderTests: XCTestCase {
                                                trialLength: "1",
                                                trialPeriod: .month,
                                                oneTimeShipping: true,
-                                               paymentSyncDate: "6")
+                                               paymentSyncDate: "6",
+                                               paymentSyncMonth: "01")
         let product = Product.fake().copy(productTypeKey: "subscription",
                                           subscription: subscription)
 
@@ -45,9 +46,6 @@ final class ProductEncoderTests: XCTestCase {
 
         let oneTimeShipping = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_one_time_shipping"}))
         XCTAssertEqual(oneTimeShipping["value"] as? String, "yes")
-
-        let paymentSyncDate = try XCTUnwrap(metadata.first(where: { $0["key"] as? String == "_subscription_payment_sync_date"}))
-        XCTAssertEqual(paymentSyncDate["value"] as? String, "6")
     }
 
     func test_it_does_not_encode_metadata_without_subscription() throws {

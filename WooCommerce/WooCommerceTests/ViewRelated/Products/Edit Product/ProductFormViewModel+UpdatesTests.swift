@@ -43,7 +43,8 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
 
     func testUpdatingShippingSettings() {
         // Arrange
-        let product = Product.fake()
+        let subscription = ProductSubscription.fake()
+        let product = Product.fake().copy(subscription: subscription)
         let model = EditableProductModel(product: product)
         let productImageActionHandler = ProductImageActionHandler(siteID: 0, product: model)
         let viewModel = ProductFormViewModel(product: model,
@@ -61,6 +62,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
                                                     slug: "2-days")
         viewModel.updateShippingSettings(weight: newWeight,
                                          dimensions: newDimensions,
+                                         oneTimeShipping: true,
                                          shippingClass: newShippingClass.slug,
                                          shippingClassID: newShippingClass.shippingClassID)
 
@@ -69,6 +71,7 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.name, product.name)
         XCTAssertEqual(viewModel.productModel.weight, newWeight)
         XCTAssertEqual(viewModel.productModel.dimensions, newDimensions)
+        XCTAssertEqual(viewModel.productModel.subscription?.oneTimeShipping, true)
         XCTAssertEqual(viewModel.productModel.shippingClass, newShippingClass.slug)
         XCTAssertEqual(viewModel.productModel.shippingClassID, newShippingClass.shippingClassID)
         XCTAssertEqual(viewModel.productModel.shippingClass, newShippingClass.slug)

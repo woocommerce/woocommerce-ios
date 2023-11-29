@@ -38,6 +38,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
                                                     slug: "2-days")
         viewModel.updateShippingSettings(weight: newWeight,
                                          dimensions: newDimensions,
+                                         oneTimeShipping: nil,
                                          shippingClass: newShippingClass.slug,
                                          shippingClassID: newShippingClass.shippingClassID)
 

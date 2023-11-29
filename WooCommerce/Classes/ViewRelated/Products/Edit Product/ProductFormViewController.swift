@@ -1465,9 +1465,10 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) {
-            [weak self] (weight, dimensions, shippingClass, shippingClassID, hasUnsavedChanges) in
+            [weak self] (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
             self?.onEditShippingSettingsCompletion(weight: weight,
                                                    dimensions: dimensions,
+                                                   oneTimeShipping: oneTimeShipping,
                                                    shippingClass: shippingClass,
                                                    shippingClassID: shippingClassID,
                                                    hasUnsavedChanges: hasUnsavedChanges)
@@ -1477,6 +1478,7 @@ private extension ProductFormViewController {
 
     func onEditShippingSettingsCompletion(weight: String?,
                                           dimensions: ProductDimensions,
+                                          oneTimeShipping: Bool?,
                                           shippingClass: String?,
                                           shippingClassID: Int64?,
                                           hasUnsavedChanges: Bool) {
@@ -1488,7 +1490,11 @@ private extension ProductFormViewController {
         guard hasUnsavedChanges else {
             return
         }
-        viewModel.updateShippingSettings(weight: weight, dimensions: dimensions, shippingClass: shippingClass, shippingClassID: shippingClassID)
+        viewModel.updateShippingSettings(weight: weight,
+                                         dimensions: dimensions,
+                                         oneTimeShipping: oneTimeShipping,
+                                         shippingClass: shippingClass,
+                                         shippingClassID: shippingClassID)
     }
 }
 

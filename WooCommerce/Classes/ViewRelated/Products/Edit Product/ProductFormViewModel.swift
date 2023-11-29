@@ -393,11 +393,17 @@ extension ProductFormViewModel {
                                                                      soldIndividually: soldIndividually))
     }
 
-    func updateShippingSettings(weight: String?, dimensions: ProductDimensions, shippingClass: String?, shippingClassID: Int64?) {
+    func updateShippingSettings(weight: String?,
+                                dimensions: ProductDimensions,
+                                oneTimeShipping: Bool?,
+                                shippingClass: String?,
+                                shippingClassID: Int64?) {
+        let subscription = product.subscription?.copy(oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(weight: weight,
                                                                      dimensions: dimensions,
                                                                      shippingClass: shippingClass ?? "",
-                                                                     shippingClassID: shippingClassID ?? 0))
+                                                                     shippingClassID: shippingClassID ?? 0,
+                                                                     subscription: subscription))
     }
 
     func updateProductCategories(_ categories: [ProductCategory]) {
@@ -503,8 +509,21 @@ extension ProductFormViewModel {
     }
 
     func updateSubscriptionFreeTrialSettings(trialLength: String, trialPeriod: SubscriptionPeriod) {
+        let oneTimeShipping: Bool? = {
+            guard let subscription = product.subscription else {
+                return nil
+            }
+
+            // One time shipping can be turned on only if there is no Free trial
+            guard trialLength.isEmpty || trialLength == "0" else {
+                return false
+            }
+
+            return subscription.oneTimeShipping
+        }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
-                                                      trialPeriod: trialPeriod)
+                                                      trialPeriod: trialPeriod,
+                                                      oneTimeShipping: oneTimeShipping ?? nil)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 

@@ -12,7 +12,8 @@ final class ProductEncoderTests: XCTestCase {
                                                trialLength: "1",
                                                trialPeriod: .month,
                                                oneTimeShipping: true,
-                                               paymentSyncDate: "6")
+                                               paymentSyncDate: "6",
+                                               paymentSyncMonth: "01")
         let product = Product.fake().copy(productTypeKey: "subscription",
                                           subscription: subscription)
 

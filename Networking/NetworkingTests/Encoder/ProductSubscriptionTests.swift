@@ -12,7 +12,8 @@ final class ProductSubscriptionTests: XCTestCase {
                                                trialLength: "1",
                                                trialPeriod: .month,
                                                oneTimeShipping: true,
-                                               paymentSyncDate: "7")
+                                               paymentSyncDate: "7",
+                                               paymentSyncMonth: "02")
 
         // When
         let keyValuePairs = subscription.toKeyValuePairs()

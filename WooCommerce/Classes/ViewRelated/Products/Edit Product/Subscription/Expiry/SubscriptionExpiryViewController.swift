@@ -107,7 +107,8 @@ struct SubscriptionExpiryView_Previews: PreviewProvider {
                                                                            trialLength: "12",
                                                                            trialPeriod: .day,
                                                                            oneTimeShipping: false,
-                                                                           paymentSyncDate: "3"),
+                                                                           paymentSyncDate: "3",
+                                                                           paymentSyncMonth: "01"),
                                                        completion: { _, _  in } )
 
 

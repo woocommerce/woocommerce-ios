@@ -12,7 +12,8 @@ final class ProductVariationEncoderTests: XCTestCase {
                                                trialLength: "1",
                                                trialPeriod: .month,
                                                oneTimeShipping: true,
-                                               paymentSyncDate: "7")
+                                               paymentSyncDate: "7",
+                                               paymentSyncMonth: "01")
         let variation = ProductVariation.fake().copy(subscription: subscription)
 
         // When

@@ -11,67 +11,74 @@ struct UpdateProductInventoryView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State private var isKeyboardVisible = false
-    @State private var buttonTitle: String = Localization.IncreaseStockOnceButtonTitle
+    @State private var updateInventoryButtonTitle: String = Localization.IncreaseStockOnceButtonTitle
 
     var body: some View {
         NavigationView {
-            VStack(alignment: .center, spacing: 0) {
-                AsyncImage(url: viewModel.imageURL) { image in
-                    image.resizable()
-                } placeholder: {
-                    Rectangle()
-                        .foregroundColor(.gray)
-                }
-                .frame(width: Layout.imageDimensionsSize * scale, height: Layout.imageDimensionsSize * scale)
-                .cornerRadius(Layout.imageCornerRadius)
-                .padding(.bottom, Layout.largeVerticalSpacing)
-                .renderedIf(!isKeyboardVisible)
+            GeometryReader { geometry in
+                ScrollView {
+                    VStack(alignment: .center, spacing: 0) {
+                        AsyncImage(url: viewModel.imageURL) { image in
+                            image.resizable()
+                        } placeholder: {
+                            Rectangle()
+                                .foregroundColor(.gray)
+                        }
+                        .frame(width: Layout.imageDimensionsSize * scale, height: Layout.imageDimensionsSize * scale)
+                        .cornerRadius(Layout.imageCornerRadius)
+                        .padding(.bottom, Layout.largeSpacing)
+                        .padding(.top, Layout.mediumSpacing)
+                        .renderedIf(!isKeyboardVisible)
 
-                Text(viewModel.name)
-                    .headlineStyle()
-                    .padding(.bottom, Layout.smallVerticalSpacing)
+                        Text(viewModel.name)
+                            .headlineStyle()
+                            .padding(.bottom, Layout.smallSpacing)
 
 
-                Text(viewModel.sku)
-                    .subheadlineStyle()
-                    .padding(.bottom, Layout.largeVerticalSpacing)
+                        Text(viewModel.sku)
+                            .subheadlineStyle()
+                            .padding(.bottom, Layout.largeSpacing)
 
-                Divider()
+                        Divider()
+                            .padding(.trailing, -Layout.mediumSpacing)
 
-                HStack {
-                    Text(Localization.ProductQuantityTitle)
-                    Spacer()
-                    TextField("", text: $viewModel.quantity, onEditingChanged: { _ in
-                        buttonTitle = Localization.UpdateQuantityButtonTitle
+                        HStack {
+                            Text(Localization.ProductQuantityTitle)
+                            Spacer()
+                            TextField("", text: $viewModel.quantity, onEditingChanged: { _ in
+                                updateInventoryButtonTitle = Localization.UpdateQuantityButtonTitle
+                            })
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                        }
+                        .padding([.top, .bottom], Layout.mediumSpacing)
+
+                        Divider()
+                            .padding(.trailing, -Layout.mediumSpacing)
+
+                        Spacer()
+
+                        Button(updateInventoryButtonTitle) {}
+                            .buttonStyle(PrimaryButtonStyle())
+                            .padding(.bottom, Layout.mediumSpacing)
+
+                        Button(Localization.ViewProductDetailsButtonTitle) {
+
+                        }
+                        .buttonStyle(SecondaryButtonStyle())
+                        .padding(.bottom)
+                    }
+                    .frame(minHeight: geometry.size.height)
+                    .padding()
+                    .navigationBarTitle(Localization.NavigationBarTitle, displayMode: .inline)
+                    .navigationBarItems(leading: Button(Localization.CancelButtonTitle) {
+                        presentationMode.wrappedValue.dismiss()
                     })
-                    .keyboardType(.numberPad)
-                    .multilineTextAlignment(.trailing)
+                    .onReceive(Publishers.keyboardHeight) { keyboardHeight in
+                        isKeyboardVisible = keyboardHeight > 0
+                    }
+                    .frame(width: geometry.size.width)
                 }
-                .padding([.top, .bottom], Layout.mediumVerticalSpacing)
-
-                Divider()
-
-                Spacer()
-
-                Button(buttonTitle) {
-
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.bottom, Layout.mediumVerticalSpacing)
-
-                Button(Localization.ViewProductDetailsButtonTitle) {
-
-                }
-                .buttonStyle(SecondaryButtonStyle())
-                .padding(.bottom)
-            }
-            .padding()
-            .navigationBarTitle(Localization.NavigationBarTitle, displayMode: .inline)
-            .navigationBarItems(leading: Button(Localization.CancelButtonTitle) {
-                presentationMode.wrappedValue.dismiss()
-            })
-            .onReceive(Publishers.keyboardHeight) { keyboardHeight in
-                isKeyboardVisible = keyboardHeight > 0
             }
         }
     }
@@ -81,9 +88,9 @@ extension UpdateProductInventoryView {
     enum Layout {
         static let imageDimensionsSize: CGFloat = 160
         static let imageCornerRadius: CGFloat = 8
-        static let largeVerticalSpacing: CGFloat = 32
-        static let mediumVerticalSpacing: CGFloat = 16
-        static let smallVerticalSpacing: CGFloat = 8
+        static let largeSpacing: CGFloat = 32
+        static let mediumSpacing: CGFloat = 16
+        static let smallSpacing: CGFloat = 8
     }
 
     enum Localization {

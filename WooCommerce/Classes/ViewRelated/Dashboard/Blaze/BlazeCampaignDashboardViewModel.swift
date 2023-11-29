@@ -259,7 +259,7 @@ private extension BlazeCampaignDashboardViewModel {
 
         userDefaults.publisher(for: \.hasDismissedBlazeSectionOnMyStore)
             .dropFirst() // ignores first event because data is already loaded initially.
-            .map { [weak self] hasDismissed -> Bool in
+            .map { [weak self] _ -> Bool in
                 guard let self else {
                     return false
                 }

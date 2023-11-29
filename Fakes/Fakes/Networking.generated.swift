@@ -1027,7 +1027,8 @@ extension Networking.ProductBundleItem {
             overridesVariations: .fake(),
             allowedVariations: .fake(),
             overridesDefaultVariationAttributes: .fake(),
-            defaultVariationAttributes: .fake()
+            defaultVariationAttributes: .fake(),
+            pricedIndividually: .fake()
         )
     }
 }

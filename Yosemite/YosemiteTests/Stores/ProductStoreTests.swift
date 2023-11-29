@@ -1059,7 +1059,8 @@ final class ProductStoreTests: XCTestCase {
                                                overridesVariations: true,
                                                allowedVariations: [12, 18],
                                                overridesDefaultVariationAttributes: true,
-                                               defaultVariationAttributes: [.init(id: 2, name: "Material", option: "Silk")])
+                                               defaultVariationAttributes: [.init(id: 2, name: "Material", option: "Silk")],
+                                               pricedIndividually: true)
         let mockProduct = Product.fake().copy(bundledItems: [mockBundleItem])
         remote.whenSearchingProducts(query: "Accessory", thenReturn: .success([mockProduct]))
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)

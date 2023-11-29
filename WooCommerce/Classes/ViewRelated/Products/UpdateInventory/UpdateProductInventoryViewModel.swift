@@ -61,10 +61,12 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
         Task { @MainActor in
             name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
+            showLoadingName = false
         }
     }
 
     @Published var quantity: String = ""
+    @Published var showLoadingName: Bool = true
     @Published var name: String = Localization.productNamePlaceholder
 
     var sku: String {

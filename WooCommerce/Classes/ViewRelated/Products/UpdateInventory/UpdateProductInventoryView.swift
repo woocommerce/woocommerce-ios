@@ -30,10 +30,15 @@ struct UpdateProductInventoryView: View {
                         .padding(.top, Layout.mediumSpacing)
                         .renderedIf(!isKeyboardVisible)
 
-                        Text(viewModel.name)
-                            .headlineStyle()
-                            .padding(.bottom, Layout.smallSpacing)
+                        Group {
+                            Text(viewModel.name)
+                                .headlineStyle()
+                                .renderedIf(!viewModel.showLoadingName)
 
+                            ProgressView()
+                                .renderedIf(viewModel.showLoadingName)
+                        }
+                        .padding(.bottom, Layout.smallSpacing)
 
                         Text(viewModel.sku)
                             .subheadlineStyle()

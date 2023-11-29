@@ -297,8 +297,9 @@ private extension ProductsViewController {
 
                 do {
                     let scannedItem = try await self.viewModel.handleScannedBarcode(scannedBarcode)
-                    let viewModel = UpdateProductInventoryViewModel(inventoryItem: scannedItem.inventoryItem, siteID: self.viewModel.siteID)
-                    self.present(UIHostingController(rootView: UpdateProductInventoryView(viewModel: viewModel)), animated: true)
+                    self.present(UIHostingController(rootView: UpdateProductInventoryView(inventoryItem: scannedItem.inventoryItem,
+                                                                                          siteID: self.viewModel.siteID)),
+                                 animated: true)
                 } catch {
                     // TODO: Show error notices
                 }

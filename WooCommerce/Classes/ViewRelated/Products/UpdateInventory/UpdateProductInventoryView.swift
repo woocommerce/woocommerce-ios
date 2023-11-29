@@ -12,6 +12,10 @@ struct UpdateProductInventoryView: View {
 
     @State private var isKeyboardVisible = false
 
+    init(inventoryItem: InventoryItem, siteID: Int64) {
+        viewModel = UpdateProductInventoryViewModel(inventoryItem: inventoryItem, siteID: siteID)
+    }
+
     var body: some View {
         NavigationView {
             GeometryReader { geometry in

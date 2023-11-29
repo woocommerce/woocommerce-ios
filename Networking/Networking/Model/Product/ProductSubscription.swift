@@ -98,8 +98,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
             .init(key: CodingKeys.signUpFee.rawValue, value: signUpFee),
             .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
             .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue),
-            .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no),
-            .init(key: CodingKeys.paymentSyncDate.rawValue, value: paymentSyncDate),
+            .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no)
         ]
     }
 }

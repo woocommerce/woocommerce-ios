@@ -27,6 +27,5 @@ final class ProductSubscriptionTests: XCTestCase {
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_trial_length", value: "1")))
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_trial_period", value: "month")))
         XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_one_time_shipping", value: "yes")))
-        XCTAssertTrue(keyValuePairs.contains(.init(key: "_subscription_payment_sync_date", value: "7")))
     }
 }

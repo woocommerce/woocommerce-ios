@@ -242,5 +242,6 @@ private extension ProductSubscription {
     var supportsOneTimeShipping: Bool {
         (trialLength.isEmpty || trialLength == "0")
         && (paymentSyncDate.isEmpty || paymentSyncDate == "0")
+        && (paymentSyncMonth.isEmpty || paymentSyncMonth == "0")
     }
 }

@@ -283,7 +283,8 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                   shippingClass: "60-day",
                   shippingClassID: 2,
                   subscription: .fake().copy(trialLength: "0",
-                                             paymentSyncDate: "0"))
+                                             paymentSyncDate: "0",
+                                             paymentSyncMonth: ""))
         let model = EditableProductModel(product: product)
         let viewModel = ProductShippingSettingsViewModel(product: model)
 
@@ -301,7 +302,8 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                   shippingClass: "60-day",
                   shippingClassID: 2,
                   subscription: .fake().copy(trialLength: "1",
-                                             paymentSyncDate: "0"))
+                                             paymentSyncDate: "0",
+                                             paymentSyncMonth: ""))
         let model = EditableProductModel(product: product)
         let viewModel = ProductShippingSettingsViewModel(product: model)
 
@@ -319,7 +321,27 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
                   shippingClass: "60-day",
                   shippingClassID: 2,
                   subscription: .fake().copy(trialLength: "0",
-                                             paymentSyncDate: "10"))
+                                             paymentSyncDate: "10",
+                                             paymentSyncMonth: ""))
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductShippingSettingsViewModel(product: model)
+
+        // Then
+        XCTAssertFalse(viewModel.supportsOneTimeShipping)
+    }
+
+    func test_supportsOneTimeShipping_is_false_when_payment_sync_month_available() {
+        // Given
+        let dimensions = ProductDimensions(length: "2.9", width: "", height: "1116")
+        let product = Product.fake()
+            .copy(productTypeKey: "subscription",
+                  weight: "1.6",
+                  dimensions: dimensions,
+                  shippingClass: "60-day",
+                  shippingClassID: 2,
+                  subscription: .fake().copy(trialLength: "0",
+                                             paymentSyncDate: "0",
+                                             paymentSyncMonth: "10"))
         let model = EditableProductModel(product: product)
         let viewModel = ProductShippingSettingsViewModel(product: model)
 

@@ -88,6 +88,7 @@ struct UpdateProductInventoryView: View {
                         .padding(.bottom)
                     }
                     .frame(minHeight: geometry.size.height)
+                    .frame(width: geometry.size.width)
                     .padding()
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
@@ -96,7 +97,6 @@ struct UpdateProductInventoryView: View {
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
                         isKeyboardVisible = keyboardHeight > 0
                     }
-                    .frame(width: geometry.size.width)
                 }
             }
         }

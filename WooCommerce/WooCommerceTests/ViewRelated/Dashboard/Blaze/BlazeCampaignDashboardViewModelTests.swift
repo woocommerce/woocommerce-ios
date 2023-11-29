@@ -26,7 +26,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .testingInstance)
+        stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: .fake().copy(siteID: sampleSiteID)))
         storageManager = MockStorageManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -814,6 +814,31 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
 
         // Then
         XCTAssertTrue(analyticsProvider.receivedEvents.filter { $0 == "blaze_entry_point_displayed" }.count == 1)
+    }
+
+    func test_dismissBlazeSection_sets_state_to_empty() async throws {
+        // Given
+        ServiceLocator.setStores(stores) // injecting because we need access through service locator in user defaults
+        let checker = MockBlazeEligibilityChecker(isSiteEligible: true)
+        let uuid = UUID().uuidString
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
+        let viewModel = BlazeCampaignDashboardViewModel(siteID: sampleSiteID,
+                                                        stores: stores,
+                                                        storageManager: storageManager,
+                                                        blazeEligibilityChecker: checker,
+                                                        userDefaults: userDefaults)
+
+        let fakeBlazeCampaign = BlazeCampaign.fake().copy(siteID: sampleSiteID)
+        mockSynchronizeCampaigns(insertCampaignToStorage: fakeBlazeCampaign)
+        await viewModel.reload()
+        // confidence check
+        XCTAssertEqual(viewModel.state, .showCampaign(campaign: fakeBlazeCampaign))
+
+        // When
+        viewModel.dismissBlazeSection()
+
+        // Then
+        XCTAssertEqual(viewModel.state, .empty)
     }
 }
 

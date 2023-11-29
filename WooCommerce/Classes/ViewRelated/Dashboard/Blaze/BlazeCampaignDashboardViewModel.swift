@@ -6,7 +6,7 @@ import protocol Storage.StorageManagerType
 /// View model for `BlazeCampaignDashboardView`.
 final class BlazeCampaignDashboardViewModel: ObservableObject {
     /// UI state of the Blaze campaign view in dashboard.
-    enum State {
+    enum State: Equatable {
         /// Shows placeholder views in redacted state.
         case loading
         /// Shows info about the latest Blaze campaign
@@ -205,10 +205,6 @@ private extension BlazeCampaignDashboardViewModel {
     }
 
     func updateResults() {
-        guard !userDefaults.hasDismissedBlazeSectionOnMyStore(for: siteID) else {
-            update(state: .empty)
-            return
-        }
         if let campaign = blazeCampaignResultsController.fetchedObjects.first {
             update(state: .showCampaign(campaign: campaign))
         } else if let product = latestPublishedProduct {
@@ -261,6 +257,7 @@ private extension BlazeCampaignDashboardViewModel {
             .store(in: &subscriptions)
 
         userDefaults.hasDismissedBlazeSectionOnMyStorePublisher
+            .dropFirst() // ignores first event because data is already loaded initially.
             .removeDuplicates()
             .sink { [weak self] hasDismissed in
                 guard let self else { return }

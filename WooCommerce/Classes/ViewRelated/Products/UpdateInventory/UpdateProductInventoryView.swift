@@ -50,8 +50,10 @@ struct UpdateProductInventoryView: View {
                             Text(Localization.productQuantityTitle)
                             Spacer()
                             TextField("", text: $viewModel.quantity)
-                            .keyboardType(.numberPad)
-                            .multilineTextAlignment(.trailing)
+                                .textFieldStyle(.roundedBorder)
+                                .keyboardType(.numberPad)
+                                .multilineTextAlignment(.trailing)
+                                .fixedSize()
                         }
                         .padding([.top, .bottom], Layout.mediumSpacing)
 

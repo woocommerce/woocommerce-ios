@@ -230,7 +230,6 @@ private extension BlazeCampaignDashboardView {
 
 private extension BlazeCampaignDashboardView {
     enum Layout {
-        static let margin: CGFloat = 16
         static let verticalSpacing: CGFloat = 16
         enum HeadingBlock {
             static let verticalSpacing: CGFloat = 8

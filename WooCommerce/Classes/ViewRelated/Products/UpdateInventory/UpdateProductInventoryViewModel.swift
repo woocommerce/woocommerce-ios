@@ -86,7 +86,7 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
     @Published var enableQuantityButton: Bool = true
     @Published var showLoadingName: Bool = true
-    @Published var name: String = Localization.productNamePlaceholder
+    @Published var name: String = ""
     @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
 
     var sku: String {

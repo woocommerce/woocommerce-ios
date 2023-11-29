@@ -2455,6 +2455,28 @@ final class MigrationTests: XCTestCase {
         // Then
         XCTAssertEqual(migratedProductSubscriptionEntity.value(forKey: "paymentSyncMonth") as? String, "02")
     }
+
+    func test_migrating_from_103_to_104_adds_new_pricedIndividually_attribute() throws {
+        // Given
+        let sourceContainer = try startPersistentContainer("Model 103")
+        let sourceContext = sourceContainer.viewContext
+
+        let productBundleItem = insertProductBundleItem(to: sourceContext)
+        try sourceContext.save()
+
+        XCTAssertNil(productBundleItem.entity.attributesByName["pricedIndividually"], "Precondition. Property does not exist.")
+
+        // When
+        let targetContainer = try migrate(sourceContainer, to: "Model 104")
+
+        // Then
+        let targetContext = targetContainer.viewContext
+        let migratedProductBundleItemEntity = try XCTUnwrap(targetContext.first(entityName: "ProductBundleItem"))
+
+        // The new attribute is false by default.
+        let pricedIndividually = try XCTUnwrap(migratedProductBundleItemEntity.value(forKey: "pricedIndividually") as? Bool)
+        XCTAssertFalse(pricedIndividually, "Confirm expected property exists, and is false by default.")
+    }
 }
 
 // MARK: - Persistent Store Setup and Migrations

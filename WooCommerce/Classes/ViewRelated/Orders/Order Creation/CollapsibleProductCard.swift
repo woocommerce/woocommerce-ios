@@ -312,6 +312,9 @@ struct CollapsibleProductCardPriceSummary: View {
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
+                    .if(!viewModel.pricedIndividually) {
+                        $0.foregroundColor(.secondary)
+                    }
             }
         }
     }

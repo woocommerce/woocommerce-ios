@@ -30,6 +30,7 @@ extension Product: InventoryItem {
 }
 extension ProductVariation: InventoryItem {
     func retrieveName(with stores: StoresManager, siteID: Int64) async throws -> String {
+        // Let's retrieve the parent product's name
         return try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveProduct(siteID: siteID,
                                                        productID: productID) { result in

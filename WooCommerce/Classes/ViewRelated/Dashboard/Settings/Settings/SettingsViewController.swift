@@ -146,6 +146,8 @@ private extension SettingsViewController {
             configureDomain(cell: cell)
         case let cell as BasicTableViewCell where row == .installJetpack:
             configureInstallJetpack(cell: cell)
+        case let cell as BasicTableViewCell where row == .themes:
+            configureThemes(cell: cell)
         case let cell as SwitchTableViewCell where row == .storeSetupList:
             configureStoreSetupList(cell: cell)
         case let cell as BasicTableViewCell where row == .storeName:
@@ -213,6 +215,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = Localization.installJetpack
+    }
+
+    func configureThemes(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = Localization.themes
     }
 
     func configureStoreSetupList(cell: SwitchTableViewCell) {
@@ -688,6 +696,7 @@ extension SettingsViewController {
         case installJetpack
         case storeSetupList
         case storeName
+        case themes
 
         // Help & Feedback
         case support
@@ -756,6 +765,8 @@ extension SettingsViewController {
                 return BasicTableViewCell.self
             case .storeName:
                 return BasicTableViewCell.self
+            case .themes:
+                return BasicTableViewCell.self
             }
         }
 
@@ -811,6 +822,12 @@ private extension SettingsViewController {
         static let installJetpack = NSLocalizedString(
             "Install Jetpack",
             comment: "Navigates to Install Jetpack screen."
+        )
+
+        static let themes = NSLocalizedString(
+            "settingsViewController.themesRow",
+            value: "Themes",
+            comment: "Navigates to Themes screen."
         )
 
         static let storeSetupList = NSLocalizedString(

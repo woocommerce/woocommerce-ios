@@ -48,7 +48,6 @@ struct PaymentsRow<Destination>: View where Destination: View {
 
             Spacer()
         }
-        .foregroundColor(.primary)
         .contentShape(Rectangle())
 
         navigationLink

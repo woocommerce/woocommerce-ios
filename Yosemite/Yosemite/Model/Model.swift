@@ -186,6 +186,7 @@ public typealias WCPayCardPresentReceiptDetails = Networking.WCPayCardPresentRec
 public typealias WCPayPaymentMethodDetails = Networking.WCPayPaymentMethodDetails
 public typealias WCPayChargeStatus = Networking.WCPayChargeStatus
 public typealias WooPaymentsDepositInterval = Networking.WooPaymentsDepositInterval
+public typealias WooPaymentsDepositStatus = Networking.WooPaymentsDepositStatus
 public typealias StoreOnboardingTask = Networking.StoreOnboardingTask
 public typealias WCAnalyticsCustomer = Networking.WCAnalyticsCustomer
 

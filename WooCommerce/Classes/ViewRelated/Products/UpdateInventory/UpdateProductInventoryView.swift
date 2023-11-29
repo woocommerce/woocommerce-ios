@@ -83,9 +83,9 @@ struct UpdateProductInventoryView: View {
                             .buttonStyle(SecondaryButtonStyle())
                             .padding(.bottom)
                     }
+                    .padding()
                     .frame(minHeight: geometry.size.height)
                     .frame(width: geometry.size.width)
-                    .padding()
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
                         dismiss()

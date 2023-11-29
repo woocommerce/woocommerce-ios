@@ -953,6 +953,7 @@
 		EE8A86F1286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json in Resources */ = {isa = PBXBuildFile; fileRef = EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */; };
 		EE8DE432294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */; };
 		EE9826902B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json in Resources */ = {isa = PBXBuildFile; fileRef = EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */; };
+		EE9826922B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json in Resources */ = {isa = PBXBuildFile; fileRef = EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */; };
 		EE99814E295AA7430074AE68 /* RequestAuthenticator.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */; };
 		EE998150295AACE10074AE68 /* RequestConverter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE99814F295AACE10074AE68 /* RequestConverter.swift */; };
 		EEA1E2022AC18CD700A37ADD /* AIProductMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */; };
@@ -1965,6 +1966,7 @@
 		EE8A86F0286C5226003E8AA4 /* media-update-product-id-in-wordpress-site.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "media-update-product-id-in-wordpress-site.json"; sourceTree = "<group>"; };
 		EE8DE431294B17CD005054E7 /* DefaultApplicationPasswordUseCaseTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultApplicationPasswordUseCaseTests.swift; sourceTree = "<group>"; };
 		EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format.json"; sourceTree = "<group>"; };
+		EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-subscription-sync-renewals-day-month-format-int-values.json"; sourceTree = "<group>"; };
 		EE99814D295AA7430074AE68 /* RequestAuthenticator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestAuthenticator.swift; sourceTree = "<group>"; };
 		EE99814F295AACE10074AE68 /* RequestConverter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestConverter.swift; sourceTree = "<group>"; };
 		EEA1E2012AC18CD700A37ADD /* AIProductMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIProductMapperTests.swift; sourceTree = "<group>"; };
@@ -2768,6 +2770,7 @@
 				02DD6491248A3EC00082523E /* product-external.json */,
 				CCFEB8F329E8504300537456 /* product-subscription.json */,
 				EE98268F2B17189B00A3F57E /* product-subscription-sync-renewals-day-month-format.json */,
+				EE9826912B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json */,
 				4524CD9B242CEFAB00B2F20A /* product-on-sale-with-empty-sale-price.json */,
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
 				020220E123966CD900290165 /* product-shipping-classes-load-one.json */,
@@ -3776,6 +3779,7 @@
 				DE9D6BCC270D769C00BA6562 /* shipping-label-address-without-name-validation-success.json in Resources */,
 				74A1D263211898F000931DFA /* site-visits-day.json in Resources */,
 				31054710262E2EE400C5C02B /* wcpay-payment-intent-succeeded.json in Resources */,
+				EE9826922B17569400A3F57E /* product-subscription-sync-renewals-day-month-format-int-values.json in Resources */,
 				02EFF81D2ABC3D0E0015ABB2 /* order-gift-card-invalid-error.json in Resources */,
 				02C54CC624D3E938007D658F /* product-variations-load-all-manage-stock-two-states.json in Resources */,
 				D823D90722376B4800C90817 /* shipment_tracking_new_custom_provider.json in Resources */,

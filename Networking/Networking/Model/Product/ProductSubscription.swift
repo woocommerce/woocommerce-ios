@@ -99,6 +99,8 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
             .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
             .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue),
             .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no)
+            /// We are not encoding `paymentSyncDate` and `paymentSyncMonth` as we don't support editing yet.
+            /// When we support editing we may have to encode these values into dict if the subscription is yearly.
         ]
     }
 }

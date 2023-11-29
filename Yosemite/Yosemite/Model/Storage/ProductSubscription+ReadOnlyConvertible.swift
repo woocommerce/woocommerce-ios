@@ -18,6 +18,7 @@ extension Storage.ProductSubscription: ReadOnlyConvertible {
         trialPeriod = subscription.trialPeriod.rawValue
         oneTimeShipping = subscription.oneTimeShipping
         paymentSyncDate = subscription.paymentSyncDate
+        paymentSyncMonth = subscription.paymentSyncMonth
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -32,7 +33,6 @@ extension Storage.ProductSubscription: ReadOnlyConvertible {
                                    trialPeriod: SubscriptionPeriod(rawValue: trialPeriod ?? "day") ?? .day,
                                    oneTimeShipping: oneTimeShipping,
                                    paymentSyncDate: paymentSyncDate ?? "0",
-                                   // TODO: 11178 Use value from storage
-                                   paymentSyncMonth: "0")
+                                   paymentSyncMonth: paymentSyncMonth ?? "")
     }
 }

@@ -183,6 +183,7 @@ public enum WooAnalyticsStat: String {
     case blazeCampaignListEntryPointSelected = "blaze_campaign_list_entry_point_selected"
     case blazeCampaignDetailSelected = "blaze_campaign_detail_selected"
     case blazeIntroDisplayed = "blaze_intro_displayed"
+    case blazeViewDismissed = "blaze_view_dismissed"
 
     // MARK: Products Onboarding Events
     //

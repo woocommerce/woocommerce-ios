@@ -143,6 +143,7 @@ final class BlazeCampaignDashboardViewModel: ObservableObject {
 
     func dismissBlazeSection() {
         userDefaults.setDismissedBlazeSectionOnMyStore(for: siteID)
+        analytics.track(event: .Blaze.blazeViewDismissed(source: .myStoreSection))
     }
 }
 

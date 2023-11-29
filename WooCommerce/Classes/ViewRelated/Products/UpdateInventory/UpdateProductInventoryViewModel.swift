@@ -90,7 +90,12 @@ extension ProductVariation: InventoryItem {
 }
 
 final class UpdateProductInventoryViewModel: ObservableObject {
-    var inventoryItem: InventoryItem
+    enum UpdateQuantityButtonMode {
+        case increaseOnce
+        case customQuantity
+    }
+
+    let inventoryItem: InventoryItem
     private let stores: StoresManager
 
     init(inventoryItem: InventoryItem,
@@ -103,11 +108,28 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
         Task { @MainActor in
             name = try await inventoryItem.retrieveName(with: stores, siteID: siteID)
+            showLoadingName = false
         }
     }
 
-    @Published var quantity: String = ""
-    @Published var name: String = Localization.productNamePlaceholder
+    @Published var quantity: String = "" {
+        didSet {
+            guard quantity != oldValue else { return }
+
+            guard let decimalValue = Decimal(string: quantity) else {
+                enableQuantityButton = false
+                return
+            }
+
+            enableQuantityButton = true
+            updateQuantityButtonMode = decimalValue == inventoryItem.stockQuantity ? .increaseOnce : .customQuantity
+        }
+    }
+
+    @Published var enableQuantityButton: Bool = true
+    @Published var showLoadingName: Bool = true
+    @Published var name: String = ""
+    @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
 
     var sku: String {
         inventoryItem.sku ?? ""
@@ -124,13 +146,5 @@ final class UpdateProductInventoryViewModel: ObservableObject {
 
         // TODO: Handle error
         try? await inventoryItem.updateStockQuantity(with: quantityDecimal, stores: stores)
-    }
-}
-
-extension UpdateProductInventoryViewModel {
-    enum Localization {
-        static let productNamePlaceholder = NSLocalizedString("updateProductInventoryViewModel.productName.placeholder",
-                                                              value: "Product Name",
-                                                              comment: "Placeholder of the product name title.")
     }
 }

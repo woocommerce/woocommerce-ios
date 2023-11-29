@@ -42,7 +42,10 @@ final class BlazeCampaignDashboardViewHostingController: SelfSizingHostingContro
 private extension BlazeCampaignDashboardViewHostingController {
     /// Handles navigation to the campaign creation web view
     func navigateToCampaignCreation(source: BlazeSource, productID: Int64? = nil) {
-        let webViewModel = BlazeWebViewModel(source: source, siteURL: viewModel.siteURL, productID: productID) { [weak self] in
+        let webViewModel = BlazeWebViewModel(siteID: viewModel.siteID,
+                                             source: source,
+                                             siteURL: viewModel.siteURL,
+                                             productID: productID) { [weak self] in
             self?.handlePostCreation()
         }
         let webViewController = AuthenticatedWebViewController(viewModel: webViewModel)
@@ -142,10 +145,32 @@ struct BlazeCampaignDashboardView: View {
                 viewModel.shouldShowIntroView = false
             })
         }
+        .overlay {
+            topRightMenu
+                .renderedIf(viewModel.shouldRedactView == false)
+        }
     }
 }
 
 private extension BlazeCampaignDashboardView {
+    var topRightMenu: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Menu {
+                    Button(Localization.hideBlaze) {
+                        viewModel.dismissBlazeSection()
+                    }
+                } label: {
+                    Image(uiImage: .ellipsisImage)
+                        .foregroundColor(Color(.textTertiary))
+                }
+            }
+            Spacer()
+        }
+        .padding(Layout.insets)
+    }
+
     var createCampaignButton: some View {
         Button {
             viewModel.checkIfIntroViewIsNeeded()
@@ -237,6 +262,12 @@ private extension BlazeCampaignDashboardView {
         static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
 
         static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+
+        static let hideBlaze = NSLocalizedString(
+            "blazeCampaignDashboardView.hideBlazeButton",
+            value: "Hide Blaze",
+            comment: "Button to dismiss the Blaze campaign section on the My Store screen."
+        )
     }
 }
 

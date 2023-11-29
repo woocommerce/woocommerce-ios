@@ -14,9 +14,13 @@ public final class WooPaymentsDepositService: WooPaymentsDepositServiceProtocol 
 
     // MARK: - Initialization
 
-    public init(siteID: Int64, credentials: Credentials) {
+    public convenience init(siteID: Int64, credentials: Credentials) {
+        self.init(siteID: siteID, network: AlamofireNetwork(credentials: credentials))
+    }
+
+    public init(siteID: Int64, network: Network) {
         self.siteID = siteID
-        self.wooPaymentsRemote = WCPayRemote(network: AlamofireNetwork(credentials: credentials))
+        self.wooPaymentsRemote = WCPayRemote(network: network)
     }
 
     // MARK: - Public Methods

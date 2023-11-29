@@ -287,7 +287,7 @@ private extension SettingsViewModel {
                     rows.append(.installJetpack)
                 }
 
-                let themesUseCase = ThemeEligibilityUseCase(featureFlagService: featureFlagService)
+                let themesUseCase = ThemeEligibilityUseCase()
                 if themesUseCase.isEligible(site: site) {
                     rows.append(.themes)
                 }

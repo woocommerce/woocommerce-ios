@@ -8,7 +8,7 @@ struct UpdateProductInventoryView: View {
     /// Scale of the view based on accessibility changes
     @ScaledMetric private var scale: CGFloat = 1.0
 
-    @Environment(\.presentationMode) var presentationMode
+    @Environment(\.dismiss) private var dismiss
 
     @State private var isKeyboardVisible = false
 
@@ -91,7 +91,7 @@ struct UpdateProductInventoryView: View {
                     .padding()
                     .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
                     .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
-                        presentationMode.wrappedValue.dismiss()
+                        dismiss()
                     })
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
                         isKeyboardVisible = keyboardHeight > 0

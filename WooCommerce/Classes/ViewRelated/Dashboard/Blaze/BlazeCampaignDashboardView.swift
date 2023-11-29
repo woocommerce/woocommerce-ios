@@ -88,7 +88,6 @@ struct BlazeCampaignDashboardView: View {
 
     @ObservedObject private var viewModel: BlazeCampaignDashboardViewModel
     @State private var selectedProductID: Int64?
-    @State private var showingOptions: Bool = false
 
     init(viewModel: BlazeCampaignDashboardViewModel) {
         self.viewModel = viewModel
@@ -158,15 +157,13 @@ private extension BlazeCampaignDashboardView {
         VStack {
             HStack {
                 Spacer()
-                Button {
-                    showingOptions = true
-                } label: {
-                    Image(uiImage: .ellipsisImage)
-                }
-                .confirmationDialog("", isPresented: $showingOptions) {
+                Menu {
                     Button(Localization.hideBlaze) {
                         viewModel.dismissBlazeSection()
                     }
+                } label: {
+                    Image(uiImage: .ellipsisImage)
+                        .foregroundColor(Color(.textTertiary))
                 }
             }
             Spacer()

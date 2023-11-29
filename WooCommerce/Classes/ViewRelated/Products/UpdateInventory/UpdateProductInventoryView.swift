@@ -11,7 +11,6 @@ struct UpdateProductInventoryView: View {
     @Environment(\.presentationMode) var presentationMode
 
     @State private var isKeyboardVisible = false
-    @State private var updateInventoryButtonTitle: String = Localization.IncreaseStockOnceButtonTitle
 
     var body: some View {
         NavigationView {
@@ -48,11 +47,9 @@ struct UpdateProductInventoryView: View {
                             .padding(.trailing, -Layout.mediumSpacing)
 
                         HStack {
-                            Text(Localization.ProductQuantityTitle)
+                            Text(Localization.productQuantityTitle)
                             Spacer()
-                            TextField("", text: $viewModel.quantity, onEditingChanged: { _ in
-                                updateInventoryButtonTitle = Localization.UpdateQuantityButtonTitle
-                            })
+                            TextField("", text: $viewModel.quantity)
                             .keyboardType(.numberPad)
                             .multilineTextAlignment(.trailing)
                         }
@@ -63,11 +60,20 @@ struct UpdateProductInventoryView: View {
 
                         Spacer()
 
-                        Button(updateInventoryButtonTitle) {}
-                            .buttonStyle(PrimaryButtonStyle())
-                            .padding(.bottom, Layout.mediumSpacing)
+                        Group {
+                            Button(Localization.updateQuantityButtonTitle) {}
+                                .buttonStyle(PrimaryButtonStyle())
+                                .renderedIf(viewModel.updateQuantityButtonMode == .customQuantity)
 
-                        Button(Localization.ViewProductDetailsButtonTitle) {
+                            Button(Localization.increaseStockOnceButtonTitle) {}
+                                .buttonStyle(PrimaryButtonStyle())
+                                .renderedIf(viewModel.updateQuantityButtonMode == .increaseOnce)
+
+                        }
+                        .padding(.bottom, Layout.mediumSpacing)
+
+
+                        Button(Localization.viewProductDetailsButtonTitle) {
 
                         }
                         .buttonStyle(SecondaryButtonStyle())
@@ -75,8 +81,8 @@ struct UpdateProductInventoryView: View {
                     }
                     .frame(minHeight: geometry.size.height)
                     .padding()
-                    .navigationBarTitle(Localization.NavigationBarTitle, displayMode: .inline)
-                    .navigationBarItems(leading: Button(Localization.CancelButtonTitle) {
+                    .navigationBarTitle(Localization.navigationBarTitle, displayMode: .inline)
+                    .navigationBarItems(leading: Button(Localization.cancelButtonTitle) {
                         presentationMode.wrappedValue.dismiss()
                     })
                     .onReceive(Publishers.keyboardHeight) { keyboardHeight in
@@ -99,25 +105,25 @@ extension UpdateProductInventoryView {
     }
 
     enum Localization {
-        static let ProductNameTitle = NSLocalizedString("updateProductInventoryView.productNameTitle",
+        static let productNameTitle = NSLocalizedString("updateProductInventoryView.productNameTitle",
                                                         value: "Product Name",
                                                         comment: "Product name label in the update product inventory view.")
-        static let ProductQuantityTitle = NSLocalizedString("updateProductInventoryView.productQuantityTitle",
+        static let productQuantityTitle = NSLocalizedString("updateProductInventoryView.productQuantityTitle",
                                                             value: "Quantity",
                                                             comment: "Product quantity label in the update product inventory view.")
-        static let ViewProductDetailsButtonTitle = NSLocalizedString("updateProductInventoryView.viewProductDetailsButtonTitle",
+        static let viewProductDetailsButtonTitle = NSLocalizedString("updateProductInventoryView.viewProductDetailsButtonTitle",
                                                                      value: "View Product Details",
                                                                      comment: "Product detailsl button title.")
-        static let NavigationBarTitle = NSLocalizedString("updateProductInventoryView.navigationBarTitle",
+        static let navigationBarTitle = NSLocalizedString("updateProductInventoryView.navigationBarTitle",
                                                           value: "Product",
                                                           comment: "Navigation bar title of the update product inventory view.")
-        static let CancelButtonTitle = NSLocalizedString("updateProductInventoryView.cancelButtonTitle",
+        static let cancelButtonTitle = NSLocalizedString("updateProductInventoryView.cancelButtonTitle",
                                                          value: "Cancel",
                                                          comment: "Cancel button title on the update product inventory view.")
-        static let IncreaseStockOnceButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle",
+        static let increaseStockOnceButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.increaseStockOnceButtonTitle",
                                                                     value: "Quantity + 1",
                                                                     comment: "Stock quantity button when a tap increases the stock once.")
-        static let UpdateQuantityButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.updateQuantityButtonTitle",
+        static let updateQuantityButtonTitle = NSLocalizedString("updateProductInventoryView.quantityButton.updateQuantityButtonTitle",
                                                                  value: "Update quantity",
                                                                  comment: "Stock quantity button when the user adds a custom quantity.")
     }

@@ -50,6 +50,11 @@ extension ProductVariation: InventoryItem {
 }
 
 final class UpdateProductInventoryViewModel: ObservableObject {
+    enum UpdateQuantityButtonMode {
+        case increaseOnce
+        case customQuantity
+    }
+
     let inventoryItem: InventoryItem
 
     init(inventoryItem: InventoryItem,
@@ -65,9 +70,20 @@ final class UpdateProductInventoryViewModel: ObservableObject {
         }
     }
 
-    @Published var quantity: String = ""
+    @Published var quantity: String = "" {
+        didSet {
+            guard quantity != oldValue,
+                    let decimalValue = Decimal(string: quantity) else {
+                return
+            }
+
+            updateQuantityButtonMode = decimalValue == inventoryItem.stockQuantity ? .increaseOnce : .customQuantity
+        }
+    }
+
     @Published var showLoadingName: Bool = true
     @Published var name: String = Localization.productNamePlaceholder
+    @Published var updateQuantityButtonMode: UpdateQuantityButtonMode = .increaseOnce
 
     var sku: String {
         inventoryItem.sku ?? ""

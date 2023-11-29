@@ -57,14 +57,12 @@ struct UpdateProductInventoryView: View {
 
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .accessibilityIdentifier("")
                 .padding(.bottom, Layout.mediumVerticalSpacing)
 
                 Button(Localization.ViewProductDetailsButtonTitle) {
 
                 }
                 .buttonStyle(SecondaryButtonStyle())
-                .accessibilityIdentifier("")
                 .padding(.bottom)
             }
             .padding()
@@ -73,7 +71,7 @@ struct UpdateProductInventoryView: View {
                 presentationMode.wrappedValue.dismiss()
             })
             .onReceive(Publishers.keyboardHeight) { keyboardHeight in
-                self.isKeyboardVisible = keyboardHeight > 0
+                isKeyboardVisible = keyboardHeight > 0
             }
         }
     }

@@ -572,7 +572,10 @@ final class EditableOrderViewModel: ObservableObject {
 
     /// Creates a view model for the `ProductRow` corresponding to an order item.
     ///
-    func createProductRowViewModel(for item: OrderItem, childItems: [OrderItem] = [], canChangeQuantity: Bool) -> ProductRowViewModel? {
+    func createProductRowViewModel(for item: OrderItem,
+                                   childItems: [OrderItem] = [],
+                                   canChangeQuantity: Bool,
+                                   pricedIndividually: Bool = true) -> ProductRowViewModel? {
         guard item.quantity > 0 else {
             // Don't render any item with `.zero` quantity.
             return nil
@@ -593,6 +596,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        canChangeQuantity: canChangeQuantity,
                                        displayMode: .attributes(attributes),
                                        hasParentProduct: item.parent != nil,
+                                       pricedIndividually: pricedIndividually,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }
                 self.analytics.track(event: WooAnalyticsEvent.Orders.orderProductQuantityChange(flow: self.flow.analyticsFlow))
@@ -603,7 +607,13 @@ final class EditableOrderViewModel: ObservableObject {
             // If the parent product is a bundle product, quantity cannot be changed.
             let canChildItemsChangeQuantity = product.productType != .bundle
             let childProductRows = childItems.compactMap { childItem in
-                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity)
+                let pricedIndividually = {
+                    guard product.productType == .bundle, let bundledItem = product.bundledItems.first(where: { $0.productID == childItem.productID }) else {
+                        return true
+                    }
+                    return bundledItem.pricedIndividually
+                }()
+                return createProductRowViewModel(for: childItem, canChangeQuantity: canChildItemsChangeQuantity, pricedIndividually: pricedIndividually)
             }
             return ProductRowViewModel(id: item.itemID,
                                        product: product,
@@ -611,6 +621,7 @@ final class EditableOrderViewModel: ObservableObject {
                                        quantity: item.quantity,
                                        canChangeQuantity: canChangeQuantity,
                                        hasParentProduct: item.parent != nil,
+                                       pricedIndividually: pricedIndividually,
                                        childProductRows: childProductRows,
                                        quantityUpdatedCallback: { [weak self] _ in
                 guard let self = self else { return }

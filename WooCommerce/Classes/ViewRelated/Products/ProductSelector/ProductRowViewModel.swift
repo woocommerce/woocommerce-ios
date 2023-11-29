@@ -54,6 +54,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     private(set) var price: String?
 
+    /// Whether the product is priced individually. Defaults to `true`.
+    ///
+    /// Used when a product is part of a bundle, to control how the price is displayed (as part of the bundle price or in addition to it).
+    ///
+    let pricedIndividually: Bool
+
     /// Product stock status
     ///
     private let stockStatus: ProductStockStatus
@@ -113,6 +119,9 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         guard let price = price else {
             return nil
         }
+        guard pricedIndividually else {
+            return currencyFormatter.formatAmount(Decimal.zero)
+        }
         let productSubtotal = quantity * (currencyFormatter.convertToDecimal(price)?.decimalValue ?? Decimal.zero)
         return currencyFormatter.formatAmount(productSubtotal)
     }
@@ -166,13 +175,29 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
 
     }
 
-    /// Formatted price label based on a product's price and quantity.
+    /// Formatted price label based on a product's price, quantity, and whether it is priced individually.
     /// Reads as '8 x $10.00'
     ///
-    var priceQuantityLine: String {
+    func priceQuantityLine(font: UIFont = .body) -> NSAttributedString {
         let quantity = quantity.formatted()
         let price = priceLabel ?? "-"
-        return String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price)
+        let attributedString = NSMutableAttributedString(
+            string: String.localizedStringWithFormat(Localization.priceQuantityLine, quantity, price),
+            attributes: [.font: font,
+                         .foregroundColor: UIColor.textSubtle]
+        )
+
+        guard !pricedIndividually else {
+            return attributedString
+        }
+
+        // Add strikethrough to price label
+        let bundledPrice = NSAttributedString(string: price, attributes: [.strikethroughStyle: NSUnderlineStyle.single.rawValue,
+                                                                          .font: font,
+                                                                          .foregroundColor: UIColor.textSubtle])
+        attributedString.replaceFirstOccurrence(of: price, with: bundledPrice)
+
+        return attributedString
     }
 
     private(set) var discount: Decimal?
@@ -305,6 +330,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
          variationDisplayMode: VariationDisplayMode? = nil,
          selectedState: ProductRow.SelectedState = .notSelected,
          hasParentProduct: Bool,
+         pricedIndividually: Bool = true,
          childProductRows: [ProductRowViewModel] = [],
          isConfigurable: Bool,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
@@ -329,6 +355,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         self.canChangeQuantity = canChangeQuantity
         self.imageURL = imageURL
         self.hasParentProduct = hasParentProduct
+        self.pricedIndividually = pricedIndividually
         self.childProductRows = childProductRows
         self.isConfigurable = isConfigurable
         self.currencyFormatter = currencyFormatter
@@ -349,6 +376,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      canChangeQuantity: Bool,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
                      childProductRows: [ProductRowViewModel] = [],
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
@@ -425,6 +453,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   numberOfVariations: product.variations.count,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
                   childProductRows: childProductRows,
                   isConfigurable: isConfigurable,
                   currencyFormatter: currencyFormatter,
@@ -445,6 +474,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      displayMode: VariationDisplayMode,
                      selectedState: ProductRow.SelectedState = .notSelected,
                      hasParentProduct: Bool = false,
+                     pricedIndividually: Bool = true,
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      analytics: Analytics = ServiceLocator.analytics,
                      quantityUpdatedCallback: @escaping ((Decimal) -> Void) = { _ in },
@@ -471,6 +501,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                   variationDisplayMode: displayMode,
                   selectedState: selectedState,
                   hasParentProduct: hasParentProduct,
+                  pricedIndividually: pricedIndividually,
                   isConfigurable: false,
                   currencyFormatter: currencyFormatter,
                   analytics: analytics,

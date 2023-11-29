@@ -59,7 +59,7 @@ struct CollapsibleProductCard: View {
                                               flow: flow,
                                               shouldDisableDiscountEditing: shouldDisableDiscountEditing,
                                               shouldDisallowDiscounts: shouldDisallowDiscounts,
-                                              onAddDiscount: onAddDiscount) // TODO: #11250 Update design of child items in product bundle
+                                              onAddDiscount: onAddDiscount)
                     Divider().padding(.horizontal)
                 }
             }
@@ -156,8 +156,7 @@ private struct CollapsibleProductRowCard: View {
                             .font(.subheadline)
                             .foregroundColor(Color(.text))
                             .renderedIf(!isCollapsed)
-                        CollapsibleProductCardPriceSummary(viewModel: viewModel)
-                            .font(.subheadline)
+                        CollapsibleProductCardPriceSummary(viewModel: viewModel, font: .subheadline)
                             .renderedIf(isCollapsed)
                     }
                 }
@@ -299,19 +298,24 @@ struct CollapsibleProductCardPriceSummary: View {
 
     @ObservedObject var viewModel: ProductRowViewModel
 
-    init(viewModel: ProductRowViewModel) {
+    /// Font must be passed into `AttributedText` because font modifiers won't work on it.
+    let font: UIFont
+
+    init(viewModel: ProductRowViewModel,
+         font: UIFont = .body) {
         self.viewModel = viewModel
+        self.font = font
     }
 
     var body: some View {
         HStack {
             HStack {
-                Text(viewModel.priceQuantityLine)
-                    .foregroundColor(.secondary)
+                AttributedText(viewModel.priceQuantityLine(font: font))
                 Spacer()
             }
             if let price = viewModel.priceBeforeDiscountsLabel {
                 Text(price)
+                    .font(Font(font))
             }
         }
     }

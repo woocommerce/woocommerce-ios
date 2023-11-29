@@ -627,7 +627,53 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 × $10.71", viewModel.priceQuantityLine)
+        assertEqual("8 × $10.71", viewModel.priceQuantityLine().string)
+    }
+
+    func test_priceQuantityLine_returns_properly_formatted_priceQuantityLine_for_product_not_pricedIndividually() throws {
+        // Given
+        let price = "10.71"
+        let quantity: Decimal = 8
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        let expectedString = "8 × $10.71"
+        let attributedString = viewModel.priceQuantityLine(font: .subheadline)
+        assertEqual(expectedString, attributedString.string)
+
+        // Confirm the attributed string has the expected attributes
+        var effectiveRange = NSRange()
+        let rangeUpToPrice = NSRange(expectedString.startIndex..<(try XCTUnwrap(expectedString.range(of: "$")).lowerBound), in: expectedString)
+        let attributesAtPrice = attributedString.attributes(at: rangeUpToPrice.upperBound, effectiveRange: &effectiveRange)
+        assertEqual(NSUnderlineStyle.single.rawValue, try XCTUnwrap(attributesAtPrice[.strikethroughStyle] as? Int))
+        assertEqual(.subheadline, try XCTUnwrap(attributesAtPrice[.font] as? UIFont))
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: true)
+
+        // Then
+        assertEqual("$10.71", viewModel.priceBeforeDiscountsLabel)
+    }
+
+    func test_priceBeforeDiscountsLabel_returns_expected_price_for_product_not_pricedIndividually() {
+        // Given
+        let price = "10.71"
+        let product = Product.fake().copy(price: price)
+
+        // When
+        let viewModel = ProductRowViewModel(product: product, canChangeQuantity: false, pricedIndividually: false)
+
+        // Then
+        assertEqual("$0.00", viewModel.priceBeforeDiscountsLabel)
     }
 
     func test_totalPriceAfterDiscountLabel_when_product_row_has_one_item_and_discount_then_returns_properly_formatted_price_after_discount() {
@@ -663,7 +709,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let viewModel = ProductRowViewModel(product: product, quantity: quantity, canChangeQuantity: true)
 
         // Then
-        assertEqual("8 × -", viewModel.priceQuantityLine)
+        assertEqual("8 × -", viewModel.priceQuantityLine().string)
     }
 
     // MARK: - `isConfigurable`

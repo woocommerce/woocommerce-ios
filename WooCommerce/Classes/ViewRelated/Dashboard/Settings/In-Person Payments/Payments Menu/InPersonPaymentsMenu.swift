@@ -36,6 +36,7 @@ struct InPersonPaymentsMenu: View {
                         }
                     } header: {
                         Text(Localization.paymentActionsSectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     }
 
                     if let payInPersonToggleViewModel = viewModel.payInPersonToggleViewModel as? InPersonPaymentsCashOnDeliveryToggleRowViewModel {
@@ -48,6 +49,7 @@ struct InPersonPaymentsMenu: View {
                             .padding(.vertical, Layout.cellVerticalPadding)
                         } header: {
                             Text(Localization.paymentSettingsSectionTitle.uppercased())
+                                .accessibilityAddTraits(.isHeader)
                         }
                     }
 
@@ -55,6 +57,7 @@ struct InPersonPaymentsMenu: View {
                         PaymentsRow(image: Image(uiImage: .tapToPayOnIPhoneIcon),
                                     title: viewModel.setUpTryOutTapToPayRowTitle,
                                     shouldBadgeImage: viewModel.shouldBadgeTapToPayOnIPhone)
+                        .accessibilityAddTraits(.isButton)
                         .onTapGesture {
                             viewModel.setUpTryOutTapToPayTapped()
                         }
@@ -82,9 +85,11 @@ struct InPersonPaymentsMenu: View {
                                 AboutTapToPayView(viewModel: viewModel.aboutTapToPayViewModel)
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
 
                         PaymentsRow(image: Image(uiImage: .feedbackOutlineIcon.withRenderingMode(.alwaysTemplate)),
                                     title: Localization.tapToPayOnIPhoneFeedback)
+                        .accessibility(addTraits: .isButton)
                         .foregroundColor(Color(uiColor: .textLink))
                         .onTapGesture {
                             viewModel.tapToPayFeedbackTapped()
@@ -95,6 +100,7 @@ struct InPersonPaymentsMenu: View {
                         .renderedIf(viewModel.shouldShowTapToPayFeedbackRow)
                     } header: {
                         Text(Localization.tapToPaySectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     }
                     .renderedIf(viewModel.shouldShowTapToPaySection)
 
@@ -109,6 +115,7 @@ struct InPersonPaymentsMenu: View {
                                                      viewModel: viewModel.purchaseCardReaderWebViewModel)
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
 
                         Button {
                             viewModel.manageCardReadersTapped()
@@ -131,6 +138,7 @@ struct InPersonPaymentsMenu: View {
                                 }))
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
                         .disabled(viewModel.shouldDisableManageCardReaders)
 
                         Button {
@@ -142,9 +150,11 @@ struct InPersonPaymentsMenu: View {
                                 CardReaderManualsView()
                             }
                         }
+                        .buttonStyle(.scrollViewRow)
                         .accessibilityIdentifier(AccessibilityIdentifiers.cardReaderManualRow)
                     } header: {
                         Text(Localization.cardReaderSectionTitle.uppercased())
+                            .accessibilityAddTraits(.isHeader)
                     } footer: {
                         InPersonPaymentsLearnMore(viewModel: .inPersonPayments(source: .paymentsMenu),
                                                   showInfoIcon: false)
@@ -165,6 +175,7 @@ struct InPersonPaymentsMenu: View {
                             }
                             .padding(.vertical, Layout.cellVerticalPadding)
                         }
+                        .buttonStyle(.scrollViewRow)
                         .renderedIf(viewModel.shouldShowManagePaymentGatewaysRow)
                     }
                     .renderedIf(viewModel.shouldShowPaymentOptionsSection)

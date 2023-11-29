@@ -29,6 +29,9 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
     /// Only charge shipping once on the initial order if `true`.
     public let oneTimeShipping: Bool
 
+    /// Subscription Renewal Synchronization date
+    public let paymentSyncDate: String
+
     public init(length: String,
                 period: SubscriptionPeriod,
                 periodInterval: String,
@@ -36,7 +39,8 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
                 signUpFee: String,
                 trialLength: String,
                 trialPeriod: SubscriptionPeriod,
-                oneTimeShipping: Bool) {
+                oneTimeShipping: Bool,
+                paymentSyncDate: String) {
         self.length = length
         self.period = period
         self.periodInterval = periodInterval
@@ -45,6 +49,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
         self.trialLength = trialLength
         self.trialPeriod = trialPeriod
         self.oneTimeShipping = oneTimeShipping
+        self.paymentSyncDate = paymentSyncDate
     }
 
     /// Custom decoding to use default value when JSON doesn't have a key present
@@ -66,6 +71,7 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
 
             return stringValue == Constants.yes
         }()
+        paymentSyncDate = try container.decodeIfPresent(String.self, forKey: .paymentSyncDate) ?? "0"
     }
 
     func toKeyValuePairs() -> [KeyValuePair] {
@@ -77,7 +83,8 @@ public struct ProductSubscription: Decodable, Equatable, GeneratedFakeable, Gene
             .init(key: CodingKeys.signUpFee.rawValue, value: signUpFee),
             .init(key: CodingKeys.trialLength.rawValue, value: trialLength),
             .init(key: CodingKeys.trialPeriod.rawValue, value: trialPeriod.rawValue),
-            .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no)
+            .init(key: CodingKeys.oneTimeShipping.rawValue, value: oneTimeShipping ? Constants.yes : Constants.no),
+            .init(key: CodingKeys.paymentSyncDate.rawValue, value: paymentSyncDate),
         ]
     }
 }
@@ -94,6 +101,7 @@ private extension ProductSubscription {
         case trialLength        = "_subscription_trial_length"
         case trialPeriod        = "_subscription_trial_period"
         case oneTimeShipping    = "_subscription_one_time_shipping"
+        case paymentSyncDate    = "_subscription_payment_sync_date"
     }
 }
 

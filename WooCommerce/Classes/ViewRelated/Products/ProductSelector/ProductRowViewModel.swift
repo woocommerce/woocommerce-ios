@@ -13,6 +13,11 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     ///
     let canChangeQuantity: Bool
 
+    /// Whether the product row is read-only. Defaults to `false`.
+    ///
+    /// Used to remove product editing controls for read-only order items (e.g. child items of a product bundle).
+    private(set) var isReadOnly: Bool = false
+
     /// Unique ID for the view model.
     ///
     let id: Int64
@@ -397,6 +402,12 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
         && configure != nil
 
         let productTypeLabel: String? = isConfigurable ? product.productType.description: nil
+
+        if product.productType == .bundle {
+            for child in childProductRows {
+                child.isReadOnly = true // Can't edit child bundle items separate from bundle configuration
+            }
+        }
 
         self.init(id: id,
                   productOrVariationID: product.productID,

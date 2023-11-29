@@ -2039,7 +2039,7 @@ extension EditableOrderViewModel {
     /// Attempts to add a Product to the current Order by SKU search
     ///
     func addScannedProductToOrder(barcode: ScannedBarcode, onCompletion: @escaping (Result<Void, Error>) -> Void, onRetryRequested: @escaping () -> Void) {
-        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningSuccess(from: .orderCreation))
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .orderCreation))
         mapScannedBarcodetoBaseItem(barcode: barcode) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -2071,7 +2071,7 @@ extension EditableOrderViewModel {
     }
 
     func trackBarcodeScanningNotPermitted() {
-        analytics.track(event: WooAnalyticsEvent.Orders.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
     }
 
     /// Attempts to map SKU to Product

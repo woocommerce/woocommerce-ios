@@ -20,6 +20,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     ///
     @IBOutlet weak var tableView: UITableView!
 
+    private var barcodeScannerCoordinator: ProductSKUBarcodeScannerCoordinator?
+
     lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
                                                                                                 cellClass: ProductsTabProductTableViewCell.self,
                                                                                                 rowsPerSection: Constants.placeholderRowsPerSection,
@@ -276,7 +278,29 @@ private extension ProductsViewController {
     }
 
     @objc func scanProducts() {
-        // TODO-2407: scan barcodes for products
+        ServiceLocator.analytics.track(.productListProductBarcodeScanningTapped)
+
+        guard let navigationController = navigationController else {
+            return
+        }
+
+        let productSKUBarcodeScannerCoordinator = ProductSKUBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                                                      onSKUBarcodeScanned: { [weak self] scannedBarcode in
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningSuccess(from: .productList))
+
+            self?.navigationItem.configureLeftBarButtonItemAsLoader()
+
+            Task {
+                await self?.viewModel.handleScannedBarcode(scannedBarcode)
+                self?.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
+            }
+
+        }, onPermissionsDenied: {
+            ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
+                                                                                                           reason: .cameraAccessNotPermitted))
+        })
+        barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
+        productSKUBarcodeScannerCoordinator.start()
     }
 
     @objc func addProduct(_ sender: UIBarButtonItem) {
@@ -500,31 +524,17 @@ private extension ProductsViewController {
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
 
+        configureNavigationBarLeftButtonItems()
         configureNavigationBarRightButtonItems()
+    }
+
+    func configureNavigationBarLeftButtonItems() {
+        configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
     }
 
     func configureNavigationBarRightButtonItems() {
         var rightBarButtonItems = [UIBarButtonItem]()
         rightBarButtonItems.append(addProductButton)
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.barcodeScanner) && UIImagePickerController.isSourceTypeAvailable(.camera) {
-            let buttonItem: UIBarButtonItem = {
-                let button = UIBarButtonItem(image: .scanImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(scanProducts))
-                button.accessibilityTraits = .button
-                button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
-                button.accessibilityHint = NSLocalizedString(
-                    "Scans barcodes that are associated with a product SKU for stock management.",
-                    comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
-                )
-                button.accessibilityIdentifier = "product-scan-button"
-
-                return button
-            }()
-            rightBarButtonItems.append(buttonItem)
-        }
 
         let searchItem: UIBarButtonItem = {
             let button = UIBarButtonItem(image: .searchBarButtonItemImage,
@@ -556,7 +566,7 @@ private extension ProductsViewController {
         }()
         rightBarButtonItems.append(bulkEditItem)
 
-        navigationItem.leftBarButtonItem = nil
+
         navigationItem.rightBarButtonItems = rightBarButtonItems
     }
 
@@ -1135,6 +1145,32 @@ private extension ProductsViewController {
         emptyStateViewController.view.removeFromSuperview()
         emptyStateViewController.removeFromParent()
         self.emptyStateViewController = nil
+    }
+
+    func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory),
+              UIImagePickerController.isSourceTypeAvailable(.camera) else {
+            navigationItem.leftBarButtonItem = nil
+            return
+        }
+
+        navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
+    }
+
+    func createAddOrderByProductScanningButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .scanImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(scanProducts))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Scan products", comment: "Scan Products")
+        button.accessibilityHint = NSLocalizedString(
+            "Scans barcodes that are associated with a product SKU for stock management.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to scan products."
+        )
+        button.accessibilityIdentifier = "product-scan-button"
+
+        return button
     }
 }
 

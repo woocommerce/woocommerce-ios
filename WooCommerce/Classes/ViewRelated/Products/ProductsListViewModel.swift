@@ -17,11 +17,15 @@ class ProductListViewModel {
 
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
+    private let barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder
+
     init(siteID: Int64,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         barcodeSKUScannerItemFinder: BarcodeSKUScannerItemFinder = BarcodeSKUScannerItemFinder()) {
         self.siteID = siteID
         self.stores = stores
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
+        self.barcodeSKUScannerItemFinder = barcodeSKUScannerItemFinder
     }
 
     var selectedProductsCount: Int {
@@ -160,5 +164,16 @@ class ProductListViewModel {
     ///
     var isEligibleForSubscriptions: Bool {
         wooSubscriptionProductsEligibilityChecker.isSiteEligible()
+    }
+
+    func handleScannedBarcode(_ scannedBarcode: ScannedBarcode) async {
+        do {
+            let result = try await barcodeSKUScannerItemFinder.searchBySKU(from: scannedBarcode, siteID: siteID, source: .productList)
+            DDLogInfo("SKU search successfully finished with result: \(result)")
+            // TODO: Show product inventory screen
+        } catch {
+            DDLogInfo("SKU search failed with error: \(error)")
+            // TODO: Show error notice
+        }
     }
 }

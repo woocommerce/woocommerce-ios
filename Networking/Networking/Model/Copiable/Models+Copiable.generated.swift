@@ -1735,7 +1735,8 @@ extension Networking.ProductSubscription {
         signUpFee: CopiableProp<String> = .copy,
         trialLength: CopiableProp<String> = .copy,
         trialPeriod: CopiableProp<SubscriptionPeriod> = .copy,
-        oneTimeShipping: CopiableProp<Bool> = .copy
+        oneTimeShipping: CopiableProp<Bool> = .copy,
+        paymentSyncDate: CopiableProp<String> = .copy
     ) -> Networking.ProductSubscription {
         let length = length ?? self.length
         let period = period ?? self.period
@@ -1745,6 +1746,7 @@ extension Networking.ProductSubscription {
         let trialLength = trialLength ?? self.trialLength
         let trialPeriod = trialPeriod ?? self.trialPeriod
         let oneTimeShipping = oneTimeShipping ?? self.oneTimeShipping
+        let paymentSyncDate = paymentSyncDate ?? self.paymentSyncDate
 
         return Networking.ProductSubscription(
             length: length,
@@ -1754,7 +1756,8 @@ extension Networking.ProductSubscription {
             signUpFee: signUpFee,
             trialLength: trialLength,
             trialPeriod: trialPeriod,
-            oneTimeShipping: oneTimeShipping
+            oneTimeShipping: oneTimeShipping,
+            paymentSyncDate: paymentSyncDate
         )
     }
 }

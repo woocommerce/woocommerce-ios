@@ -383,6 +383,7 @@ final class ProductMapperTests: XCTestCase {
         XCTAssertEqual(subscriptionSettings.trialLength, "1")
         XCTAssertEqual(subscriptionSettings.trialPeriod, .week)
         XCTAssertTrue(subscriptionSettings.oneTimeShipping)
+        XCTAssertEqual(subscriptionSettings.paymentSyncDate, "3")
     }
 
     /// Test that `subscription` is nil when parsing non-subscription product response

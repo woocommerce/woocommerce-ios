@@ -183,4 +183,8 @@ public enum FeatureFlag: Int {
     /// Enables lightweight storefront project
     ///
     case lightweightStorefront
+
+    /// Enables the Scan to Update Inventory feature.
+    ///
+    case scanToUpdateInventory
 }

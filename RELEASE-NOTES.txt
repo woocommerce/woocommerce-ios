@@ -6,6 +6,7 @@
 - [*] Now, merchants can manage "One time shipping" setting for a subscription product. [https://github.com/woocommerce/woocommerce-ios/pull/11310]
 - [**] My Store: The Blaze section is now dismissible. [https://github.com/woocommerce/woocommerce-ios/pull/11308]
 - [internal] Product Subscriptions: Handle yearly Synchronise renewals case while enabling One time shipping setting. [https://github.com/woocommerce/woocommerce-ios/pull/11312]
+- [internal] Order form: Updated design for product bundles and their bundled items in order creation/editing, to more clearly show the hierarchy and bundled item prices. [https://github.com/woocommerce/woocommerce-ios/pull/11321]
 
 16.4
 -----

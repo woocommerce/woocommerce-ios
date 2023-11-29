@@ -1746,6 +1746,7 @@
 		B998DF4A2A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */; };
 		B99B30CD2A85200D0066743D /* AddressFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */; };
 		B99B87A72AEFCF0A006B8AB1 /* Order+Empty.swift in Sources */ = {isa = PBXBuildFile; fileRef = B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */; };
+		B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */; };
 		B9B0391628A6824200DC1C83 /* PermanentNoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */; };
 		B9B0391828A6838400DC1C83 /* PermanentNoticeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */; };
 		B9B0391A28A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */; };
@@ -4328,6 +4329,7 @@
 		B998DF492A98AE4200D1C6E8 /* TaxEducationalDialogViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxEducationalDialogViewModel.swift; sourceTree = "<group>"; };
 		B99B30CC2A85200D0066743D /* AddressFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddressFormViewModel.swift; sourceTree = "<group>"; };
 		B99B87A62AEFCF0A006B8AB1 /* Order+Empty.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Order+Empty.swift"; sourceTree = "<group>"; };
+		B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateProductInventoryViewModelTests.swift; sourceTree = "<group>"; };
 		B9B0391528A6824200DC1C83 /* PermanentNoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PermanentNoticePresenter.swift; sourceTree = "<group>"; };
 		B9B0391728A6838400DC1C83 /* PermanentNoticeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PermanentNoticeView.swift; sourceTree = "<group>"; };
 		B9B0391928A68ADE00DC1C83 /* ConstraintsUpdatingHostingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConstraintsUpdatingHostingController.swift; sourceTree = "<group>"; };
@@ -5847,6 +5849,7 @@
 		0269177E23260090002AFC20 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				B9A0F7A42B17359A0035A153 /* UpdateInventory */,
 				EEBDF7E02A2F684D00EFEF47 /* ShareProduct */,
 				26F94E32267AA3DD00DB6CCF /* Addons */,
 				02077F70253816B1005A78EF /* Actions Factory */,
@@ -9373,6 +9376,14 @@
 				B9CA4F342AB2F33200285AB9 /* SelectedStoredTaxRateFetcher.swift */,
 			);
 			path = Taxes;
+			sourceTree = "<group>";
+		};
+		B9A0F7A42B17359A0035A153 /* UpdateInventory */ = {
+			isa = PBXGroup;
+			children = (
+				B9A0F7A52B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift */,
+			);
+			path = UpdateInventory;
 			sourceTree = "<group>";
 		};
 		B9B0391B28A690DA00DC1C83 /* PermanentNotice */ = {
@@ -14374,6 +14385,7 @@
 				0968B80C27CFB2EF0021210A /* BulkUpdateOptionsModelTests.swift in Sources */,
 				DE126D0F26CA71E8007F901D /* ShippingLabelCustomsFormInputViewModelTests.swift in Sources */,
 				0277AE9B256CA8A200F45C4A /* AggregatedShippingLabelOrderItemsTests.swift in Sources */,
+				B9A0F7A62B1735B10035A153 /* UpdateProductInventoryViewModelTests.swift in Sources */,
 				0225C42A24768CE900C5B4F0 /* FilterProductListViewModelProductListFilterTests.swift in Sources */,
 				31AD0B1326E95998000B6391 /* CardPresentModalConnectingFailedTests.swift in Sources */,
 				E16715CD2666543000326230 /* CardPresentModalSuccessWithoutEmailTests.swift in Sources */,

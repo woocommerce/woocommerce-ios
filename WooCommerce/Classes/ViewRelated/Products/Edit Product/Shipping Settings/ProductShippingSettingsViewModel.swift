@@ -147,6 +147,11 @@ final class ProductShippingSettingsViewModel: ProductShippingSettingsViewModelOu
         }
 
         configureResultsController()
+
+        // If `oneTimeShipping` is `true` when there is no support for one time shipping set it as `false`
+        if !supportsOneTimeShipping && oneTimeShipping == true {
+            oneTimeShipping = false
+        }
     }
 }
 

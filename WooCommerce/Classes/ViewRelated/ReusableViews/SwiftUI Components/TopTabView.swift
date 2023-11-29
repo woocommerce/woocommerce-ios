@@ -48,10 +48,14 @@ struct TopTabView: View {
                                             withAnimation {
                                                 selectedTab = index
                                                 tabs[selectedTab].onSelected?()
-                                                underlineOffset = calculateOffset(index: index)
-                                                scrollViewProxy.scrollTo(index, anchor: .center)
                                             }
                                         }
+                                        .onChange(of: selectedTab, perform: { newSelectedTab in
+                                            withAnimation {
+                                                scrollViewProxy.scrollTo(newSelectedTab, anchor: .center)
+                                                underlineOffset = calculateOffset(index: newSelectedTab)
+                                            }
+                                        })
                                         .accessibilityAddTraits(.isButton)
                                         .accessibilityAddTraits(selectedTab == index ? [.isSelected, .isHeader] : [])
                                 }
@@ -60,12 +64,15 @@ struct TopTabView: View {
                                     Color.clear.onAppear {
                                         if index < tabWidths.count {
                                             tabWidths[index] = geometry.size.width
-                                            if index == selectedTab {
-                                                underlineOffset = calculateOffset(index: index)
-                                            }
                                         }
                                     }
                                 })
+                            }
+                            .onAppear {
+                                withAnimation {
+                                    scrollViewProxy.scrollTo(selectedTab, anchor: .center)
+                                    underlineOffset = calculateOffset(index: selectedTab)
+                                }
                             }
                         }
                         .padding(.horizontal, Layout.tabPadding)
@@ -134,9 +141,6 @@ struct TopTabView: View {
                             } else {
                                 newIndex = selectedTab
                             }
-
-                            // Update the underlined tab when the tab changes
-                            underlineOffset = calculateOffset(index: newIndex)
 
                             // Notifiy the new tab that it's been selected, but only if it's changed
                             if newIndex != selectedTab {

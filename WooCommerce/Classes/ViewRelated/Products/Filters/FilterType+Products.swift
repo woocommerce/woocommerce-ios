@@ -40,6 +40,13 @@ extension ProductStatus: FilterType {
 }
 
 extension PromotableProductType: FilterType {
+
+    /// Raw value, used for analytics.
+    ///
+    var rawValue: String {
+        productType.rawValue
+    }
+
     var description: String {
         productType.description
     }

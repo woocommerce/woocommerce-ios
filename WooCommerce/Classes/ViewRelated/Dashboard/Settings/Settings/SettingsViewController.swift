@@ -825,7 +825,8 @@ private extension SettingsViewController {
         )
 
         static let themes = NSLocalizedString(
-            "Themes",
+            "settingsViewController.themesRow",
+            value: "Themes",
             comment: "Navigates to Themes screen."
         )
 
